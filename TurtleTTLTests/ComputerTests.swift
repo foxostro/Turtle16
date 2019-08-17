@@ -760,5 +760,32 @@ class ComputerTests: XCTestCase {
         
         XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
+    
+    func testSaveLoadMicrocode() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 5
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
+        let oldDecoder = computer.currentState.instructionDecoder
+        try! computer.saveMicrocode(to: url)
+        
+        computer.provideMicrocode(microcode: InstructionDecoder())
+        XCTAssertNotEqual(oldDecoder.upperROM.data, computer.currentState.instructionDecoder.upperROM.data)
+        XCTAssertNotEqual(oldDecoder.lowerROM.data, computer.currentState.instructionDecoder.lowerROM.data)
+        
+        try! computer.loadMicrocode(from: url)
+        XCTAssertEqual(oldDecoder.upperROM.data, computer.currentState.instructionDecoder.upperROM.data)
+        XCTAssertEqual(oldDecoder.lowerROM.data, computer.currentState.instructionDecoder.lowerROM.data)
+    }
 }
-

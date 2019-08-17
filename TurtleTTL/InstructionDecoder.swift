@@ -82,12 +82,4 @@ public class InstructionDecoder: NSObject {
     public func load(from address: Int) -> UInt16 {
         return UInt16(upperROM.load(from: address))<<8 | UInt16(lowerROM.load(from: address))
     }
-    
-    public func writeUpperROM(url: URL) throws {
-        try upperROM.data.write(to: url)
-    }
-    
-    public func writeLowerROM(url: URL) throws {
-        try lowerROM.data.write(to: url)
-    }
 }

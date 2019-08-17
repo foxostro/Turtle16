@@ -26,6 +26,8 @@ public class ComputerState: NSObject {
     public let if_id: Instruction
     public let controlWord: ControlWord
     public var dataRAM: RAM
+    public var upperInstructionRAM: RAM
+    public var lowerInstructionRAM: RAM
     public var instructionROM: InstructionROM
     public var instructionDecoder: InstructionDecoder
     
@@ -46,6 +48,8 @@ public class ComputerState: NSObject {
                   withIFID: Instruction(),
                   withControlWord: ControlWord(),
                   withDataRAM: RAM(),
+                  withUpperInstructionRAM: RAM(),
+                  withLowerInstructionRAM: RAM(),
                   withInstructionROM: InstructionROM(),
                   withInstructionDecoder: InstructionDecoder())
     }
@@ -66,6 +70,8 @@ public class ComputerState: NSObject {
                          withIFID if_id: Instruction,
                          withControlWord controlWord: ControlWord,
                          withDataRAM dataRAM: RAM,
+                         withUpperInstructionRAM upperInstructionRAM: RAM,
+                         withLowerInstructionRAM lowerInstructionRAM: RAM,
                          withInstructionROM instructionROM: InstructionROM,
                          withInstructionDecoder instructionDecoder: InstructionDecoder) {
         self.bus = bus
@@ -84,6 +90,8 @@ public class ComputerState: NSObject {
         self.if_id = if_id
         self.controlWord = controlWord
         self.dataRAM = dataRAM
+        self.upperInstructionRAM = upperInstructionRAM
+        self.lowerInstructionRAM = lowerInstructionRAM
         self.instructionROM = instructionROM
         self.instructionDecoder = instructionDecoder
     }
@@ -105,6 +113,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -126,6 +136,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -147,6 +159,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -168,6 +182,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -189,6 +205,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -210,6 +228,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -231,6 +251,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -252,6 +274,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -273,6 +297,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -294,6 +320,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -315,6 +343,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -336,6 +366,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -357,6 +389,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -378,6 +412,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -399,6 +435,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -420,6 +458,54 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
+                             withInstructionROM: instructionROM,
+                             withInstructionDecoder: instructionDecoder)
+    }
+    
+    public func withUpperInstructionRAM(_ upperInstructionRAM: RAM) -> ComputerState {
+        return ComputerState(withBus: bus,
+                             withRegisterA: registerA,
+                             withRegisterB: registerB,
+                             withRegisterC: registerC,
+                             withRegisterD: registerD,
+                             withRegisterX: registerX,
+                             withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
+                             withALUResult: aluResult,
+                             withALUFlags: aluFlags,
+                             withFlags: flags,
+                             withPC: pc,
+                             withPCIF: pc_if,
+                             withIFID: if_id,
+                             withControlWord: controlWord,
+                             withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
+                             withInstructionROM: instructionROM,
+                             withInstructionDecoder: instructionDecoder)
+    }
+    
+    public func withLowerInstructionRAM(_ lowerInstructionRAM: RAM) -> ComputerState {
+        return ComputerState(withBus: bus,
+                             withRegisterA: registerA,
+                             withRegisterB: registerB,
+                             withRegisterC: registerC,
+                             withRegisterD: registerD,
+                             withRegisterX: registerX,
+                             withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
+                             withALUResult: aluResult,
+                             withALUFlags: aluFlags,
+                             withFlags: flags,
+                             withPC: pc,
+                             withPCIF: pc_if,
+                             withIFID: if_id,
+                             withControlWord: controlWord,
+                             withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -441,6 +527,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -462,6 +550,8 @@ public class ComputerState: NSObject {
                              withIFID: if_id,
                              withControlWord: controlWord,
                              withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder)
     }
@@ -469,6 +559,16 @@ public class ComputerState: NSObject {
     public func withStoreToDataRAM(value: UInt8, to address: Int) -> ComputerState {
         let updated = dataRAM.withStore(value: value, to: address)
         return self.withDataRAM(updated)
+    }
+    
+    public func withStoreToUpperInstructionRAM(value: UInt8, to address: Int) -> ComputerState {
+        let updated = upperInstructionRAM.withStore(value: value, to: address)
+        return self.withUpperInstructionRAM(updated)
+    }
+    
+    public func withStoreToLowerInstructionRAM(value: UInt8, to address: Int) -> ComputerState {
+        let updated = lowerInstructionRAM.withStore(value: value, to: address)
+        return self.withLowerInstructionRAM(updated)
     }
     
     public func withStoreToInstructionROM(instructions: [Instruction]) -> ComputerState {
@@ -486,6 +586,6 @@ public class ComputerState: NSObject {
     }
     
     func valueOfXYPair() -> Int {
-        return Int(registerX.value<<8 | registerY.value)
+        return Int(registerX.value)<<8 | Int(registerY.value)
     }
 }

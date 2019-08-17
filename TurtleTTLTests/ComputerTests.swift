@@ -128,6 +128,54 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerA.value, 3)
     }
     
+    func testDescribeALUResult() {
+        let computer = makeComputer()
+        
+        let nop = ControlWord()
+        let lda = ControlWord().withCO(false).withAI(false)
+        let sum = ControlWord().withEO(false).withAI(false)
+        let hlt = ControlWord().withHLT(false)
+        
+        var instructionDecoder = InstructionDecoder()
+        var instructionROM = InstructionROM()
+        
+        // NOP
+        instructionDecoder = instructionDecoder.withStore(opcode: 0, controlWord: nop)
+        instructionROM = instructionROM.withStore(opcode: 0, immediate: 0, to: 0)
+        
+        // Set register A to immediate value 1.
+        instructionDecoder = instructionDecoder.withStore(opcode: 1, controlWord: lda)
+        instructionROM = instructionROM.withStore(opcode: 1, immediate: 1, to: 1)
+        
+        // Set register A to "A plus 1"
+        instructionDecoder = instructionDecoder.withStore(opcode: 2, controlWord: sum)
+        instructionROM = instructionROM.withStore(opcode: 2, immediate: 0, to: 2)
+        
+        // Set register A to "A plus 1"
+        instructionDecoder = instructionDecoder.withStore(opcode: 3, controlWord: sum)
+        instructionROM = instructionROM.withStore(opcode: 3, immediate: 0, to: 3)
+        
+        // Halt
+        instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
+        instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
+        
+        computer.step()
+        computer.step()
+        computer.step()
+        computer.step()
+        computer.step()
+        computer.step()
+        
+        XCTAssertEqual(computer.describeALUResult(), "3")
+        XCTAssertEqual(computer.describeBus(), "3")
+        XCTAssertEqual(computer.describeControlWord(), "1111011011111111")
+        XCTAssertEqual(computer.describeControlSignals(), "{EO, AI}")
+    }
+    
     func testReadWriteRegistersXY() {
         let computer = makeComputer()
         

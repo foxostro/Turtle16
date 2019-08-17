@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
 		6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
 		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
@@ -115,6 +116,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
 		6F37BA462305D903009754D3 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */,
 				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
 				6F86EDA622ECB99500375A00 /* RAMTests.swift */,
+				6F0B0D032308688900478220 /* RegisterTests.swift */,
 				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
 				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
 				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
@@ -551,6 +554,7 @@
 				6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */,
 				6FE003C322F3D88800221C4C /* MicrocodeGeneratorTests.swift in Sources */,
 				6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */,
+				6F0B0D042308688900478220 /* RegisterTests.swift in Sources */,
 				6FE003BD22F3D88800221C4C /* AssemblerBackEndTests.swift in Sources */,
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,

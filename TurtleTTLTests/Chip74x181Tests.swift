@@ -95,4 +95,24 @@ class Chip74x181Tests: XCTestCase {
         XCTAssertEqual(alu.carryOut, 1)
         XCTAssertEqual(alu.equalOut, 1)
     }
+    
+    func testXor2() {
+        let alu = Chip74x181()
+        XCTAssertEqual(alu.xor2(false, false), false)
+        XCTAssertEqual(alu.xor2(false, true), true)
+        XCTAssertEqual(alu.xor2(true, false), true)
+        XCTAssertEqual(alu.xor2(true, true), false)
+    }
+    
+    func testNand3() {
+        let alu = Chip74x181()
+        XCTAssertEqual(alu.nand3(false, false, false), true)
+        XCTAssertEqual(alu.nand3(false, false, true),  true)
+        XCTAssertEqual(alu.nand3(false, true,  false), true)
+        XCTAssertEqual(alu.nand3(false, true,  true),  true)
+        XCTAssertEqual(alu.nand3(true,  false, false), true)
+        XCTAssertEqual(alu.nand3(true,  false, true),  true)
+        XCTAssertEqual(alu.nand3(true,  true,  false), true)
+        XCTAssertEqual(alu.nand3(true,  true,  true),  false)
+    }
 }

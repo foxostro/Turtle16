@@ -125,7 +125,7 @@ public class Chip74x181: NSObject {
         return !(a && b)
     }
     
-    func nand3(_ a: Bool, _ b: Bool, _ c: Bool) -> Bool {
+    public func nand3(_ a: Bool, _ b: Bool, _ c: Bool) -> Bool {
         return !(a && b && c)
     }
     
@@ -149,14 +149,14 @@ public class Chip74x181: NSObject {
         return (a || b || c || d)
     }
     
-    func xor2(_ a: Bool, _ b: Bool) -> Bool {
+    public func xor2(_ a: Bool, _ b: Bool) -> Bool {
         if (a && !b) {
             return true
         } else if (!a && b) {
             return true
-        } else {
-            return false
         }
+        
+        return false
     }
     
     func makeResult(_ f0:Bool, _ f1:Bool, _ f2:Bool, _ f3:Bool) -> UInt8 {

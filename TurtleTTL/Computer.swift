@@ -379,6 +379,10 @@ public class Computer: NSObject {
         return currentState.pc.description
     }
     
+    public func describePCIF() -> String {
+        return currentState.pc_if.description
+    }
+    
     public func describeIFID() -> String {
         return currentState.if_id.description
     }

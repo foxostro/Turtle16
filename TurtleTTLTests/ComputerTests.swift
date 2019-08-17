@@ -825,4 +825,121 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(oldProgram.upperROM.data, computer.currentState.instructionROM.upperROM.data)
         XCTAssertEqual(oldProgram.lowerROM.data, computer.currentState.instructionROM.lowerROM.data)
     }
+    
+    func testModifyRegisterA_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterA(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterA(), "0")
+    }
+    
+    func testModifyRegisterA() {
+        let computer = makeComputer()
+        computer.modifyRegisterA(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterA(), "ff")
+        XCTAssertEqual(computer.currentState.registerA.value, 255)
+    }
+    
+    func testModifyRegisterB_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterB(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterB(), "0")
+    }
+    
+    func testModifyRegisterB() {
+        let computer = makeComputer()
+        computer.modifyRegisterB(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterB(), "ff")
+        XCTAssertEqual(computer.currentState.registerB.value, 255)
+    }
+    
+    func testModifyRegisterC_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterB(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterC(), "0")
+    }
+    
+    func testModifyRegisterC() {
+        let computer = makeComputer()
+        computer.modifyRegisterC(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterC(), "ff")
+        XCTAssertEqual(computer.currentState.registerC.value, 255)
+    }
+    
+    func testModifyRegisterD_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterD(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterD(), "0")
+    }
+    
+    func testModifyRegisterD() {
+        let computer = makeComputer()
+        computer.modifyRegisterD(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterD(), "ff")
+        XCTAssertEqual(computer.currentState.registerD.value, 255)
+    }
+    
+    func testModifyRegisterX_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterX(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterX(), "0")
+    }
+    
+    func testModifyRegisterX() {
+        let computer = makeComputer()
+        computer.modifyRegisterX(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterX(), "ff")
+        XCTAssertEqual(computer.currentState.registerX.value, 255)
+    }
+    
+    func testModifyRegisterY_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterY(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterY(), "0")
+    }
+    
+    func testModifyRegisterY() {
+        let computer = makeComputer()
+        computer.modifyRegisterY(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterY(), "ff")
+        XCTAssertEqual(computer.currentState.registerY.value, 255)
+    }
+    
+    func testModifyPC_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyPC(withString: "foo")
+        XCTAssertEqual(computer.describePC(), "0")
+    }
+    
+    func testModifyPC() {
+        let computer = makeComputer()
+        computer.modifyPC(withString: "ff")
+        XCTAssertEqual(computer.describePC(), "ff")
+        XCTAssertEqual(computer.currentState.pc.value, 255)
+    }
+    
+    func testModifyPCIF_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyPCIF(withString: "foo")
+        XCTAssertEqual(computer.describePCIF(), "0")
+    }
+    
+    func testModifyPCIF() {
+        let computer = makeComputer()
+        computer.modifyPCIF(withString: "ff")
+        XCTAssertEqual(computer.describePCIF(), "ff")
+        XCTAssertEqual(computer.currentState.pc_if.value, 255)
+    }
+    
+    func testModifyIFID_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyIFID(withString: "foo")
+        XCTAssertEqual(computer.describeIFID(), "{op=0b0, imm=0b0}")
+    }
+    
+    func testModifyIFID() {
+        let computer = makeComputer()
+        computer.modifyIFID(withString: "{op=0b11111111, imm=0b11111111}")
+        XCTAssertEqual(computer.describeIFID(), "{op=0b11111111, imm=0b11111111}")
+        XCTAssertEqual(computer.currentState.if_id.value, 0xffff)
+    }
 }

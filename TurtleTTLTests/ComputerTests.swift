@@ -128,6 +128,45 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerA.value, 3)
     }
     
+    func testReadWriteRegistersXY() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldx = 1
+        let ldxControl = ControlWord().withCO(false).withXI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let movyx = 2
+        let moveyxControl = ControlWord().withXO(false).withYI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: movyx, controlWord: moveyxControl)
+        
+        let movay = 3
+        let moveayControl = ControlWord().withYO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: movay, controlWord: moveayControl)
+        
+        let hlt = 4
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),
+            Instruction(opcode: ldx, immediate: 42),
+            Instruction(opcode: movyx, immediate: 0),
+            Instruction(opcode: movay, immediate: 0),
+            Instruction(opcode: hlt, immediate: 0)])
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerA.value, 42)
+    }
+    
     func testRAMStoreLoad() {
         let computer = makeComputer()
         

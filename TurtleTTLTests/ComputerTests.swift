@@ -12,24 +12,16 @@ import TurtleTTL
 class ComputerTests: XCTestCase {
     let isVerboseLogging = true
     
-    class ConsoleLogger: Logger {
-        override func append(_ format: String, _ args: CVarArg...) {
+    class ConsoleLogger: NSObject, Logger {
+        func append(_ format: String, _ args: CVarArg...) {
             let message = String(format:format, arguments:args)
             NSLog(message)
         }
     }
     
-    func makeLogger() -> Logger? {
-        if isVerboseLogging {
-            return ConsoleLogger()
-        } else {
-            return nil
-        }
-    }
-    
     func makeComputer() -> Computer {
         let computer = Computer()
-        computer.logger = makeLogger()
+        computer.logger = isVerboseLogging ? ConsoleLogger() : nil
         return computer
     }
     

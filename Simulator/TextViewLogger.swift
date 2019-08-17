@@ -9,14 +9,14 @@
 import Cocoa
 import TurtleTTL
 
-class TextViewLogger: Logger {
+class TextViewLogger: NSObject, Logger {
     let textView:NSTextView
     
     init(textView:NSTextView) {
         self.textView = textView
     }
     
-    override func append(_ format: String, _ args: CVarArg...) {
+    func append(_ format: String, _ args: CVarArg...) {
         if let display = textView.textStorage?.mutableString {
             let message = String(format:format, arguments:args)
             display.append(message + "\n")

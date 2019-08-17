@@ -8,14 +8,9 @@
 
 import Cocoa
 
-public class RAM: NSObject {
-    public let size: Int = 32768
-    public var contents: [UInt8]
-    public override init() {
-        contents = Array<UInt8>()
-        contents.reserveCapacity(size)
-        for _ in 0..<size {
-            contents.append(0)
-        }
+// Represents RAM in the TurtleTTL hardware.
+public class RAM: Memory {
+    public convenience init() {
+        self.init(withSize: 65536)
     }
 }

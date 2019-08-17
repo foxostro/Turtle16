@@ -8,21 +8,35 @@
 
 import Cocoa
 
+// Represents a program counter in the TurtleTTL hardware.
 public class ProgramCounter: NSObject {
-    public var contents: UInt16 = 0
+    public let value: UInt16
     
     public var stringValue: String {
-        get {
-            return String(contents, radix: 16)
-        }
-        set(newStringValue) {
-            if let value = UInt16(newStringValue, radix: 16) {
-                contents = value
-            }
+        return String(value, radix: 16)
+    }
+    
+    public override var description: String {
+        return stringValue
+    }
+    
+    public required init(withValue value: UInt16) {
+        self.value = value
+    }
+    
+    public convenience override init() {
+        self.init(withValue: 0)
+    }
+    
+    public convenience init?(withStringValue stringValue: String) {
+        if let value = UInt16(stringValue, radix: 16) {
+            self.init(withValue: value)
+        } else {
+            return nil
         }
     }
     
-    public func increment() {
-        contents += 1
+    public func increment() -> ProgramCounter {
+        return ProgramCounter(withValue: value &+ 1)
     }
 }

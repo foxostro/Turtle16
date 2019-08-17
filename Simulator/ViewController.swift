@@ -21,6 +21,8 @@ class ViewController: NSViewController {
     @IBOutlet var controlWord:NSTextField!
     @IBOutlet var controlSignals:NSTextField!
     @IBOutlet var programCounter:NSTextField!
+    @IBOutlet var pc_if:NSTextField!
+    @IBOutlet var if_id:NSTextField!
     @IBOutlet var bus:NSTextField!
     @IBOutlet var outputDisplay:NSTextField!
     @IBOutlet var stepButton:NSButton!
@@ -142,48 +144,64 @@ class ViewController: NSViewController {
     }
     
     @IBAction func modifyRegisterA(_ sender: Any) {
-        computer.registerA.stringValue = registerA.stringValue
+        computer.modifyRegisterA(withString: registerA.stringValue)
         refresh()
     }
     
     @IBAction func modifyRegisterB(_ sender: Any) {
-        computer.registerB.stringValue = registerB.stringValue
+        computer.modifyRegisterB(withString: registerB.stringValue)
+        refresh()
+    }
+    
+    @IBAction func modifyRegisterC(_ sender: Any) {
+        computer.modifyRegisterC(withString: registerC.stringValue)
         refresh()
     }
     
     @IBAction func modifyRegisterD(_ sender: Any) {
-        computer.registerD.stringValue = registerD.stringValue
+        computer.modifyRegisterD(withString: registerD.stringValue)
         refresh()
     }
     
     @IBAction func modifyRegisterX(_ sender: Any) {
-        computer.registerX.stringValue = registerX.stringValue
+        computer.modifyRegisterX(withString: registerX.stringValue)
         refresh()
     }
     
     @IBAction func modifyRegisterY(_ sender: Any) {
-        computer.registerY.stringValue = registerY.stringValue
+        computer.modifyRegisterY(withString: registerY.stringValue)
         refresh()
     }
     
-    @IBAction func modifyRegisterPC(_ sender: Any) {
-        computer.programCounter.stringValue = programCounter.stringValue
+    @IBAction func modifyPC(_ sender: Any) {
+        computer.modifyPC(withString: programCounter.stringValue)
+        refresh()
+    }
+    
+    @IBAction func modifyPCIF(_ sender: Any) {
+        computer.modifyPCIF(withString: pc_if.stringValue)
+        refresh()
+    }
+    
+    @IBAction func modifyIFID(_ sender: Any) {
+        computer.modifyIFID(withString: if_id.stringValue)
         refresh()
     }
     
     func refresh() {
-        registerA.stringValue = computer.registerA.stringValue
-        registerB.stringValue = computer.registerB.stringValue
-        registerC.stringValue = computer.registerC.stringValue
-        registerD.stringValue = computer.registerD.stringValue
-        registerX.stringValue = computer.registerX.stringValue
-        registerY.stringValue = computer.registerY.stringValue
-        aluResult.stringValue = computer.alu.stringValue
-        controlWord.stringValue = computer.controlWordRegister.stringValue
-        controlSignals.stringValue = computer.controlWordRegister.description
-        programCounter.stringValue = computer.programCounter.stringValue
-        bus.stringValue = computer.busStringValue
-        outputDisplay.stringValue = String(computer.registerD.contents)
+        registerA.stringValue = computer.describeRegisterA()
+        registerB.stringValue = computer.describeRegisterB()
+        registerC.stringValue = computer.describeRegisterC()
+        registerD.stringValue = computer.describeRegisterD()
+        registerX.stringValue = computer.describeRegisterX()
+        registerY.stringValue = computer.describeRegisterY()
+        aluResult.stringValue = computer.describeALUResult()
+        controlWord.stringValue = computer.describeControlWord()
+        controlSignals.stringValue = computer.describeControlSignals()
+        programCounter.stringValue = computer.describePC()
+        if_id.stringValue = computer.describeIFID()
+        bus.stringValue = computer.describeBus()
+        outputDisplay.stringValue = computer.describeOutputDisplay()
     }
     
     @IBAction func saveMicrocode(sender: Any?) {

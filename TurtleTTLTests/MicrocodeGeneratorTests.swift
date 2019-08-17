@@ -15,7 +15,7 @@ class MicrocodeGeneratorTests: XCTestCase {
         generator.generate()
         
         let NOP = generator.getOpcode(withMnemonic: "NOP")
-        XCTAssertEqual(generator.microcode.load(opcode: NOP!, carryFlag: 1, equalFlag: 1), ControlWord().contents)
+        XCTAssertEqual(generator.microcode.load(opcode: NOP!, carryFlag: 1, equalFlag: 1), UInt16(ControlWord().unsignedIntegerValue))
     }
     
     func testHLT() {
@@ -23,8 +23,8 @@ class MicrocodeGeneratorTests: XCTestCase {
         generator.generate()
         let HLT = generator.getOpcode(withMnemonic: "HLT")
         
-        let controlWord = ControlWord()
-        controlWord.contents = generator.microcode.load(opcode: HLT!, carryFlag: 1, equalFlag: 1);
+        let value = generator.microcode.load(opcode: HLT!, carryFlag: 1, equalFlag: 1)
+        let controlWord = ControlWord(withValue: UInt(value))
         
         XCTAssertFalse(controlWord.HLT)
     }
@@ -40,8 +40,8 @@ class MicrocodeGeneratorTests: XCTestCase {
         generator.generate()
         let JMP = generator.getOpcode(withMnemonic: "JMP")
         
-        let controlWord = ControlWord()
-        controlWord.contents = generator.microcode.load(opcode: JMP!, carryFlag: 1, equalFlag: 1);
+        let value = generator.microcode.load(opcode: JMP!, carryFlag: 1, equalFlag: 1)
+        let controlWord = ControlWord(withValue: UInt(value))
         
         XCTAssertFalse(controlWord.J)
     }
@@ -51,12 +51,10 @@ class MicrocodeGeneratorTests: XCTestCase {
         generator.generate()
         let JC = generator.getOpcode(withMnemonic: "JC")
         
-        let controlWordOnBranchTaken = ControlWord()
-        controlWordOnBranchTaken.contents = generator.microcode.load(opcode: JC!, carryFlag: 0, equalFlag: 1);
+        let controlWordOnBranchTaken = ControlWord(withValue: UInt(generator.microcode.load(opcode: JC!, carryFlag: 0, equalFlag: 1)))
         XCTAssertFalse(controlWordOnBranchTaken.J)
         
-        let controlWordOnBranchNotTaken = ControlWord()
-        controlWordOnBranchNotTaken.contents = generator.microcode.load(opcode: JC!, carryFlag: 1, equalFlag: 1);
+        let controlWordOnBranchNotTaken = ControlWord(withValue: UInt(generator.microcode.load(opcode: JC!, carryFlag: 1, equalFlag: 1)))
         XCTAssertTrue(controlWordOnBranchNotTaken.J)
     }
 }

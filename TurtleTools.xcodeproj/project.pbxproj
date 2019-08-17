@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
+		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
@@ -20,27 +22,20 @@
 		6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */; };
 		6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */; };
 		6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBD22ECC86400375A00 /* ALU.swift */; };
-		6FE003AB22F3D78B00221C4C /* PipelineStageExecute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C2E22ED3A4F0027A981 /* PipelineStageExecute.swift */; };
 		6FE003AC22F3D78B00221C4C /* RAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDA422ECB7E400375A00 /* RAM.swift */; };
-		6FE003AD22F3D78B00221C4C /* PipelineStageFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C2A22ED373C0027A981 /* PipelineStageFetch.swift */; };
 		6FE003AE22F3D78B00221C4C /* InstructionROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB522ECC53500375A00 /* InstructionROM.swift */; };
 		6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* CodeGenerator.swift */; };
 		6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC122ECE51C00375A00 /* Chip74x181.swift */; };
 		6FE003B122F3D78B00221C4C /* AssemblerBackEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F73054322F27EA0006FD5E7 /* AssemblerBackEnd.swift */; };
-		6FE003B222F3D78B00221C4C /* InstructionRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB322ECC4A400375A00 /* InstructionRegister.swift */; };
-		6FE003B322F3D78B00221C4C /* ControlTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C3222ED3CB70027A981 /* ControlTuple.swift */; };
 		6FE003B422F3D78B00221C4C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AE822EEDD1900B38267 /* Logger.swift */; };
 		6FE003B522F3D78B00221C4C /* Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC522ED113800375A00 /* Computer.swift */; };
 		6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAF22ECBEC400375A00 /* ControlWord.swift */; };
 		6FE003B722F3D78B00221C4C /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F679BD422ED6FB0008C8E2C /* Flags.swift */; };
 		6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C3022ED3AAA0027A981 /* Instruction.swift */; };
-		6FE003B922F3D78B00221C4C /* PipelineStageDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C2C22ED3A440027A981 /* PipelineStageDecode.swift */; };
-		6FE003BA22F3D78B00221C4C /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDA922ECBD2800375A00 /* Register.swift */; };
 		6FE003BB22F3D78B00221C4C /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86CC7F22F0001C008C6322 /* Memory.swift */; };
 		6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */; };
 		6FE003BD22F3D88800221C4C /* AssemblerBackEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F73054522F27EAF006FD5E7 /* AssemblerBackEndTests.swift */; };
 		6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBF22ECCAC800375A00 /* ALUTests.swift */; };
-		6FE003BF22F3D88800221C4C /* ProgramCounterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAD22ECBDD000375A00 /* ProgramCounterTests.swift */; };
 		6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC722ED179C00375A00 /* ComputerTests.swift */; };
 		6FE003C122F3D88800221C4C /* RAMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDA622ECB99500375A00 /* RAMTests.swift */; };
 		6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */; };
@@ -50,6 +45,7 @@
 		6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */; };
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE003DB22F3F4C600221C4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003DA22F3F4C600221C4C /* main.swift */; };
+		6FEB235E230283F7002B68D8 /* ComputerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEB235D230283F6002B68D8 /* ComputerState.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
 		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
 		6FF1995B22ECB37000C255A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FF1995A22ECB37000C255A2 /* Assets.xcassets */; };
@@ -118,11 +114,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6F182C2A22ED373C0027A981 /* PipelineStageFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineStageFetch.swift; sourceTree = "<group>"; };
-		6F182C2C22ED3A440027A981 /* PipelineStageDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineStageDecode.swift; sourceTree = "<group>"; };
-		6F182C2E22ED3A4F0027A981 /* PipelineStageExecute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineStageExecute.swift; sourceTree = "<group>"; };
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
-		6F182C3222ED3CB70027A981 /* ControlTuple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlTuple.swift; sourceTree = "<group>"; };
+		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
+		6F37BA462305D903009754D3 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		6F679BD422ED6FB0008C8E2C /* Flags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flags.swift; sourceTree = "<group>"; };
 		6F73054322F27EA0006FD5E7 /* AssemblerBackEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEnd.swift; sourceTree = "<group>"; };
 		6F73054522F27EAF006FD5E7 /* AssemblerBackEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEndTests.swift; sourceTree = "<group>"; };
@@ -132,12 +126,9 @@
 		6F86CC7F22F0001C008C6322 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
 		6F86EDA422ECB7E400375A00 /* RAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAM.swift; sourceTree = "<group>"; };
 		6F86EDA622ECB99500375A00 /* RAMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAMTests.swift; sourceTree = "<group>"; };
-		6F86EDA922ECBD2800375A00 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramCounter.swift; sourceTree = "<group>"; };
-		6F86EDAD22ECBDD000375A00 /* ProgramCounterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramCounterTests.swift; sourceTree = "<group>"; };
 		6F86EDAF22ECBEC400375A00 /* ControlWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlWord.swift; sourceTree = "<group>"; };
 		6F86EDB122ECC05500375A00 /* ControlWordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlWordTests.swift; sourceTree = "<group>"; };
-		6F86EDB322ECC4A400375A00 /* InstructionRegister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionRegister.swift; sourceTree = "<group>"; };
 		6F86EDB522ECC53500375A00 /* InstructionROM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionROM.swift; sourceTree = "<group>"; };
 		6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionROMTests.swift; sourceTree = "<group>"; };
 		6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionDecoder.swift; sourceTree = "<group>"; };
@@ -162,6 +153,7 @@
 		6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerTests.swift; sourceTree = "<group>"; };
 		6FE003D822F3F4C600221C4C /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FE003DA22F3F4C600221C4C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		6FEB235D230283F6002B68D8 /* ComputerState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputerState.swift; sourceTree = "<group>"; };
 		6FF1995322ECB36F00C255A2 /* Simulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FF1995622ECB36F00C255A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6FF1995822ECB36F00C255A2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -228,26 +220,22 @@
 				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
 				6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */,
 				6F86EDC522ED113800375A00 /* Computer.swift */,
+				6FEB235D230283F6002B68D8 /* ComputerState.swift */,
 				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
 				6F73054322F27EA0006FD5E7 /* AssemblerBackEnd.swift */,
 				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
 				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
 				6F86EDA422ECB7E400375A00 /* RAM.swift */,
-				6F86EDA922ECBD2800375A00 /* Register.swift */,
 				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
+				6F37BA462305D903009754D3 /* Register.swift */,
 				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
 				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
-				6F86EDB322ECC4A400375A00 /* InstructionRegister.swift */,
 				6F86EDB522ECC53500375A00 /* InstructionROM.swift */,
 				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
 				6F86CC7F22F0001C008C6322 /* Memory.swift */,
 				6F86EDBD22ECC86400375A00 /* ALU.swift */,
 				6F86EDC122ECE51C00375A00 /* Chip74x181.swift */,
 				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
-				6F182C3222ED3CB70027A981 /* ControlTuple.swift */,
-				6F182C2A22ED373C0027A981 /* PipelineStageFetch.swift */,
-				6F182C2C22ED3A440027A981 /* PipelineStageDecode.swift */,
-				6F182C2E22ED3A4F0027A981 /* PipelineStageExecute.swift */,
 				6F790AE822EEDD1900B38267 /* Logger.swift */,
 				6FE0038B22F3D75E00221C4C /* Info.plist */,
 			);
@@ -263,10 +251,10 @@
 				6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */,
 				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
 				6F86EDA622ECB99500375A00 /* RAMTests.swift */,
-				6F86EDAD22ECBDD000375A00 /* ProgramCounterTests.swift */,
 				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
 				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
 				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
+				6F37BA442305B559009754D3 /* InstructionTests.swift */,
 				6F86EDBF22ECCAC800375A00 /* ALUTests.swift */,
 				6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */,
 				6FE0039922F3D75E00221C4C /* Info.plist */,
@@ -536,23 +524,19 @@
 				6FE003B122F3D78B00221C4C /* AssemblerBackEnd.swift in Sources */,
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
+				6FEB235E230283F7002B68D8 /* ComputerState.swift in Sources */,
 				6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
 				6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */,
 				6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */,
-				6FE003B922F3D78B00221C4C /* PipelineStageDecode.swift in Sources */,
 				6FE003B522F3D78B00221C4C /* Computer.swift in Sources */,
 				6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */,
-				6FE003AB22F3D78B00221C4C /* PipelineStageExecute.swift in Sources */,
 				6FE003B422F3D78B00221C4C /* Logger.swift in Sources */,
-				6FE003B322F3D78B00221C4C /* ControlTuple.swift in Sources */,
+				6F37BA472305D903009754D3 /* Register.swift in Sources */,
 				6FE003BB22F3D78B00221C4C /* Memory.swift in Sources */,
-				6FE003B222F3D78B00221C4C /* InstructionRegister.swift in Sources */,
 				6FE003B722F3D78B00221C4C /* Flags.swift in Sources */,
 				6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */,
-				6FE003BA22F3D78B00221C4C /* Register.swift in Sources */,
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
-				6FE003AD22F3D78B00221C4C /* PipelineStageFetch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,12 +550,12 @@
 				6FE003BD22F3D88800221C4C /* AssemblerBackEndTests.swift in Sources */,
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
+				6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */,
 				6FE003C422F3D88800221C4C /* ControlWordTests.swift in Sources */,
 				6FE003C122F3D88800221C4C /* RAMTests.swift in Sources */,
 				6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */,
 				6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */,
 				6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */,
-				6FE003BF22F3D88800221C4C /* ProgramCounterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

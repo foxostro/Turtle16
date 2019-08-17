@@ -8,11 +8,16 @@
 
 import Cocoa
 
+// An instruction loaded from instruction memory.
+// Each isntruction is a sixteen bit value composed of an eight-bit opcode and
+// an eight-bit immediate value.
 public class Instruction: NSObject {
-    public var opcode:UInt8 = 0
-    public var immediate:UInt8 = 0
+    public let opcode: UInt8
+    public let immediate: UInt8
     
     public override init() {
+        opcode = 0
+        immediate = 0
     }
     
     public init(opcode: Int, immediate: Int) {
@@ -20,11 +25,43 @@ public class Instruction: NSObject {
         self.immediate = UInt8(immediate)
     }
     
+    public init?(_ stringValue: String) {
+        do {
+            let pattern = "\\{op=0b([10]+), imm=0b([10]+)\\}"
+            let regex = try NSRegularExpression(pattern: pattern)
+            let maybeMatch = regex.firstMatch(in: stringValue, options: [], range: NSRange(stringValue.startIndex..., in: stringValue))
+            
+            if let match = maybeMatch {
+                let opcodeString = String(stringValue[Range(match.range(at: 1), in: stringValue)!])
+                let maybeOpcode = UInt8(opcodeString, radix: 2)
+                if let opcode = maybeOpcode {
+                    self.opcode = opcode
+                } else {
+                    return nil
+                }
+                
+                let immediateString = String(stringValue[Range(match.range(at: 2), in: stringValue)!])
+                let maybeImmediate = UInt8(immediateString, radix: 2)
+                if let immediate = maybeImmediate {
+                    self.immediate = immediate
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
+        } catch {
+            return nil
+        }
+    }
+    
     public var value:UInt16 {
         return UInt16(Int(opcode) << 8 | Int(immediate))
     }
     
     public override var description: String {
-        return String(format: "{op=0x%x, imm=0x%x}", opcode, immediate)
+        return String(format: "{op=0b%@, imm=0b%@}",
+                      String(opcode, radix: 2),
+                      String(immediate, radix: 2))
     }
 }

@@ -8,6 +8,7 @@
 
 import Cocoa
 
+// Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
     public var computer:Computer!
     public var onStep:()->Void = {}
@@ -55,9 +56,8 @@ public class ComputerExecutor: NSObject {
     }
     
     public func tick() {
-        if (false == computer.controlWordRegister.HLT) {
+        if (false == computer.currentState.controlWord.HLT) {
             isExecuting = false
-            isHalted = true
         }
         
         if (isExecuting) {

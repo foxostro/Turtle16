@@ -15,13 +15,11 @@ class ControlWordTests: XCTestCase {
         XCTAssertEqual(controlWord.HLT, true)
     }
     func testModifyCOBit() {
-        let controlWord = ControlWord()
-        controlWord.CO = false
-        XCTAssertEqual(controlWord.contents, 0b1111111111111110)
+        let controlWord = ControlWord().withCO(false)
+        XCTAssertEqual(controlWord.unsignedIntegerValue, 0b1111111111111110)
     }
     func testSettingContentsSetsHLTSignal() {
-        let controlWord = ControlWord()
-        controlWord.contents = 1<<15
+        let controlWord = ControlWord(withValue: 1<<15)
         XCTAssertEqual(controlWord.HLT, true)
     }
 }

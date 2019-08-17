@@ -10,16 +10,15 @@ import XCTest
 import TurtleTTL
 
 class InstructionDecoderTests: XCTestCase {
-    func testContentsInitializedTo255() {
+    func testContentsInitializedToZero() {
         let decoder = InstructionDecoder()
         XCTAssertEqual(decoder.size, 131072)
-        XCTAssertEqual(decoder.load(address: 0), 0xffff)
+        XCTAssertEqual(decoder.load(from: 0), 0)
     }
     
     func testContentsModifiable() {
-        let decoder = InstructionDecoder()
         let value: UInt16 = 1234
-        decoder.store(address: 0, value: value)
-        XCTAssertEqual(decoder.load(address: 0), value)
+        let decoder = InstructionDecoder().withStore(value: value, to: 0)
+        XCTAssertEqual(decoder.load(from: 0), value)
     }
 }

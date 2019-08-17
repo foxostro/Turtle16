@@ -8,6 +8,7 @@
 
 import Cocoa
 
+// Generates machine code for use in the IF stage of TurtleTTL hardware.
 public class CodeGenerator: NSObject {
     public struct CodeGeneratorError: Error {
         public let message: String

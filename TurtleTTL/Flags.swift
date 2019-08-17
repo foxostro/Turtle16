@@ -8,11 +8,22 @@
 
 import Cocoa
 
+// Represents a flags (condition codes) register in the TurtleTTL hardware.
 public class Flags: NSObject {
-    public var carryFlag:Int = 0
-    public var equalFlag:Int = 0
-    override public var description: String {
+    public let carryFlag: Int
+    public let equalFlag: Int
+    public override var description: String {
         return String(format:"{carryFlag: %d, equalFlag: %d}", carryFlag, equalFlag)
+    }
+    
+    public override init() {
+        self.carryFlag = 0
+        self.equalFlag = 0
+    }
+    
+    public init(_ carryFlag: Int, _ equalFlag: Int) {
+        self.carryFlag = carryFlag
+        self.equalFlag = equalFlag
     }
 }
 

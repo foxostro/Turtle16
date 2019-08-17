@@ -9,6 +9,7 @@
 import Cocoa
 import Darwin
 
+// Provides an interface for driving the assembler from the command-line.
 public class AssemblerCommandLineDriver: NSObject {
     public struct AssemblerCommandLineDriverError: Error {
         public let message: String

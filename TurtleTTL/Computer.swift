@@ -24,6 +24,9 @@ public class Computer: NSObject {
                  BankOperation(name: "Output Display",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withOutputDisplay(state.bus.value)
+                 },
+                               load: {(state: ComputerState) -> ComputerState in
+                                return state.withBus(state.outputDisplay.value)
                  }),
                  BankOperation(name: "Upper Instruction RAM",
                                store: {(state: ComputerState) -> ComputerState in

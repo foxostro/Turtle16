@@ -19,12 +19,6 @@ public class ALU: NSObject {
     public private(set) var equalFlag = 0
     public private(set) var result:UInt8 = 0
     
-    public var stringValue: String {
-        get {
-            return String(result, radix: 16)
-        }
-    }
-    
     // The actual hardware will update outputs as inputs change. However, in
     // the simulator, the outputs only update when the update method is called.
     public func update() {

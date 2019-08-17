@@ -413,7 +413,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 4),    // LDD $2
+            Instruction(opcode: ldd,   immediate: 2),    // LDD $2
             Instruction(opcode: ldx,   immediate: 0),    // LDX $0
             Instruction(opcode: ldy,   immediate: 0),    // LDY $0
             Instruction(opcode: store, immediate: 42),   // STORE $42
@@ -467,7 +467,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 4),    // LDD $3
+            Instruction(opcode: ldd,   immediate: 3),    // LDD $3
             Instruction(opcode: ldx,   immediate: 0),    // LDX $0
             Instruction(opcode: ldy,   immediate: 0),    // LDY $0
             Instruction(opcode: store, immediate: 42),   // STORE $42

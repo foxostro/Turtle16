@@ -545,5 +545,59 @@ class ComputerTests: XCTestCase {
         
         XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
+    
+    func testStoreLoadToBankZeroDoesNothing() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldx = 1
+        let ldxControl = ControlWord().withCO(false).withXI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 2
+        let ldyControl = ControlWord().withCO(false).withYI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let store = 3
+        let storeControl = ControlWord().withMI(false).withCO(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
+        
+        let load = 4
+        let loadControl = ControlWord().withMO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
+        
+        let hlt = 5
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let ldd = 6
+        let lddControl = ControlWord().withCO(false).withDI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
+        
+        let lda = 7
+        let ldaControl = ControlWord().withCO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop,   immediate: 0),    // NOP
+            Instruction(opcode: ldd,   immediate: 0),    // LDD $0
+            Instruction(opcode: ldx,   immediate: 0),    // LDX $0
+            Instruction(opcode: ldy,   immediate: 0),    // LDY $0
+            Instruction(opcode: store, immediate: 42),   // STORE $42
+            Instruction(opcode: lda,   immediate: 0),    // LDA $0
+            Instruction(opcode: load,  immediate: 0),    // LOAD A
+            Instruction(opcode: hlt,   immediate: 0)])   // HLT
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerA.value, 0)
+    }
 }
 

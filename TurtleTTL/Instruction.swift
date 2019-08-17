@@ -26,31 +26,27 @@ public class Instruction: NSObject {
     }
     
     public init?(_ stringValue: String) {
-        do {
-            let pattern = "\\{op=0b([10]+), imm=0b([10]+)\\}"
-            let regex = try NSRegularExpression(pattern: pattern)
-            let maybeMatch = regex.firstMatch(in: stringValue, options: [], range: NSRange(stringValue.startIndex..., in: stringValue))
-            
-            if let match = maybeMatch {
-                let opcodeString = String(stringValue[Range(match.range(at: 1), in: stringValue)!])
-                let maybeOpcode = UInt8(opcodeString, radix: 2)
-                if let opcode = maybeOpcode {
-                    self.opcode = opcode
-                } else {
-                    return nil
-                }
-                
-                let immediateString = String(stringValue[Range(match.range(at: 2), in: stringValue)!])
-                let maybeImmediate = UInt8(immediateString, radix: 2)
-                if let immediate = maybeImmediate {
-                    self.immediate = immediate
-                } else {
-                    return nil
-                }
+        let pattern = "\\{op=0b([10]+), imm=0b([10]+)\\}"
+        let regex = try! NSRegularExpression(pattern: pattern)
+        let maybeMatch = regex.firstMatch(in: stringValue, options: [], range: NSRange(stringValue.startIndex..., in: stringValue))
+        
+        if let match = maybeMatch {
+            let opcodeString = String(stringValue[Range(match.range(at: 1), in: stringValue)!])
+            let maybeOpcode = UInt8(opcodeString, radix: 2)
+            if let opcode = maybeOpcode {
+                self.opcode = opcode
             } else {
                 return nil
             }
-        } catch {
+            
+            let immediateString = String(stringValue[Range(match.range(at: 2), in: stringValue)!])
+            let maybeImmediate = UInt8(immediateString, radix: 2)
+            if let immediate = maybeImmediate {
+                self.immediate = immediate
+            } else {
+                return nil
+            }
+        } else {
             return nil
         }
     }

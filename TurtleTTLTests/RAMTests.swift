@@ -13,18 +13,18 @@ class RAMTests: XCTestCase {
     func testContentsInitializedToZero() {
         let memory = RAM()
         for i in 0..<memory.size {
-            XCTAssertEqual(memory.contents[i], 0)
+            XCTAssertEqual(memory.load(from: i), 0)
         }
     }
     
     func testContentsModifiable() {
-        let memory = RAM()
+        var memory = RAM()
         let value: UInt8 = 127
         for i in 0..<memory.size {
-            memory.contents[i] = value
+            memory = memory.withStore(value: value, to: i)
         }
         for i in 0..<memory.size {
-            XCTAssertEqual(memory.contents[i], value)
+            XCTAssertEqual(memory.load(from: i), value)
         }
     }
 }

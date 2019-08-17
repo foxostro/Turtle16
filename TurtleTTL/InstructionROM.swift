@@ -12,36 +12,68 @@ import Cocoa
 // This mirrors the physical construction of the Instruction ROM circuit which
 // uses two eight-bit EEPROM chips to form a sixteen-bit word.
 public class InstructionROM: NSObject {
-    public let size = 131072
-    public let upperROM = Memory(size: 131072)
-    public let lowerROM = Memory(size: 131072)
+    public let upperROM: Memory
+    public let lowerROM: Memory
     
-    public func load(address:Int) -> Instruction {
-        let instruction = Instruction()
-        instruction.opcode = upperROM[address]
-        instruction.immediate = lowerROM[address]
-        return instruction
+    public var size: Int {
+        return lowerROM.size
     }
     
-    public func store(address:Int, value:UInt16) {
-        upperROM[address] = UInt8((value & 0xff00) >> 8)
-        lowerROM[address] = UInt8( value & 0x00ff)
+    public override convenience init() {
+        let blank = Memory(withSize: 131072)
+        self.init(withUpperROM: blank,
+                  withLowerROM: blank)
     }
     
-    public func store(address:Int, opcode:Int, immediate:Int) {
-        upperROM[address] = UInt8(opcode)
-        lowerROM[address] = UInt8(immediate)
+    public required init(withUpperROM upperROM: Memory,
+                         withLowerROM lowerROM: Memory) {
+        assert(lowerROM.size == upperROM.size)
+        self.upperROM = upperROM
+        self.lowerROM = lowerROM
     }
     
-    public func store(address:Int, instruction:Instruction) {
-        store(address: address,
-              opcode: Int(instruction.opcode),
-              immediate: Int(instruction.immediate))
+    public func withUpperROM(_ upperROM: Memory) -> InstructionROM {
+        return InstructionROM(withUpperROM: upperROM,
+                              withLowerROM: lowerROM)
     }
     
-    public func store(_ instructions: [Instruction]) {
+    public func withLowerROM(_ lowerROM: Memory) -> InstructionROM {
+        return InstructionROM(withUpperROM: upperROM,
+                              withLowerROM: lowerROM)
+    }
+    
+    public func withStore(value: UInt16, to address: Int) -> InstructionROM {
+        let updatedUpper = upperROM.withStore(value: UInt8((value & 0xff00) >> 8), to: address)
+        let updatedLower = lowerROM.withStore(value: UInt8( value & 0x00ff), to: address)
+        return self
+            .withUpperROM(updatedUpper)
+            .withLowerROM(updatedLower)
+    }
+    
+    public func withStore(opcode: Int, immediate: Int, to address: Int) -> InstructionROM {
+        let updatedUpper = upperROM.withStore(value: UInt8(opcode), to: address)
+        let updatedLower = lowerROM.withStore(value: UInt8(immediate), to: address)
+        return self
+            .withUpperROM(updatedUpper)
+            .withLowerROM(updatedLower)
+    }
+    
+    public func withStore(instruction: Instruction, to address: Int) -> InstructionROM {
+        return self.withStore(opcode: Int(instruction.opcode),
+                              immediate: Int(instruction.immediate),
+                              to: address)
+    }
+    
+    public func withStore(_ instructions: [Instruction]) -> InstructionROM {
+        var updated = self
         for i in 0..<instructions.count {
-            store(address: i, instruction: instructions[i])
+            updated = updated.withStore(instruction: instructions[i], to: i)
         }
+        return updated
+    }
+    
+    public func load(from address: Int) -> Instruction {
+        return Instruction(opcode: Int(upperROM.load(from: address)),
+                           immediate: Int(lowerROM.load(from: address)))
     }
 }

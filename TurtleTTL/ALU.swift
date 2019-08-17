@@ -8,6 +8,7 @@
 
 import Cocoa
 
+// Represents the ALU module in TurtleTTL hardware.
 public class ALU: NSObject {
     public var a:UInt8 = 0
     public var b:UInt8 = 0

@@ -8,6 +8,7 @@
 
 import Cocoa
 
+// Simulates a single 74x181 ALU IC.
 public class Chip74x181: NSObject {
     public var a:UInt8 = 0
     public var b:UInt8 = 0

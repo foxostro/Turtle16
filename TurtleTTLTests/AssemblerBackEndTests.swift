@@ -76,8 +76,7 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
         
-        let controlWord = ControlWord()
-        controlWord.contents = microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.AO, false)
         XCTAssertEqual(controlWord.DI, false)
@@ -93,8 +92,7 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         XCTAssertEqual(instructions[1].immediate, 42)
         
-        let controlWord = ControlWord()
-        controlWord.contents = microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.CO, false)
         XCTAssertEqual(controlWord.DI, false)
@@ -182,8 +180,7 @@ class AssemblerBackEndTests: XCTestCase {
         
         XCTAssertEqual(instructions[1].immediate, 0b011001)
         
-        let controlWord = ControlWord()
-        controlWord.contents = microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.EO, false)
         XCTAssertEqual(controlWord.DI, false)

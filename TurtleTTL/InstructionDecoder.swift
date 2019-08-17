@@ -12,37 +12,57 @@ import Cocoa
 // This mirrors the physical construction of the Instruction Decoder circuit
 // which uses two eight-bit EEPROM chips to form a sixteen-bit word.
 public class InstructionDecoder: NSObject {
-    public let size = 131072
-    public let upperROM = Memory(size: 131072)
-    public let lowerROM = Memory(size: 131072)
+    public let upperROM: Memory
+    public let lowerROM: Memory
     
-    public func load(opcode:Int, carryFlag:Int, equalFlag:Int) -> UInt16 {
-        return load(address: makeAddress(opcode: opcode,
+    public var size: Int {
+        return lowerROM.size
+    }
+    
+    public override convenience init() {
+        let blank = Memory(withSize: 131072)
+        self.init(withUpperROM: blank,
+                  withLowerROM: blank)
+    }
+    
+    public required init(withUpperROM upperROM: Memory,
+                         withLowerROM lowerROM: Memory) {
+        assert(lowerROM.size == upperROM.size)
+        self.upperROM = upperROM
+        self.lowerROM = lowerROM
+    }
+    
+    public func withUpperROM(_ upperROM: Memory) -> InstructionDecoder {
+        return InstructionDecoder(withUpperROM: upperROM,
+                                  withLowerROM: lowerROM)
+    }
+    
+    public func withLowerROM(_ lowerROM: Memory) -> InstructionDecoder {
+        return InstructionDecoder(withUpperROM: upperROM,
+                                  withLowerROM: lowerROM)
+    }
+    
+    public func withStore(opcode:Int, controlWord:ControlWord) -> InstructionDecoder {
+        return self
+            .withStore(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord)
+            .withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: controlWord)
+            .withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)
+            .withStore(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: controlWord)
+    }
+    
+    public func withStore(opcode:Int, carryFlag:Int, equalFlag:Int, controlWord:ControlWord) -> InstructionDecoder {
+        return withStore(value: UInt16(controlWord.unsignedIntegerValue),
+                         to: makeAddress(opcode: opcode,
                                          carryFlag: carryFlag,
                                          equalFlag: equalFlag))
     }
     
-    public func load(address:Int) -> UInt16 {
-        return UInt16(upperROM[address])<<8 | UInt16(lowerROM[address])
-    }
-    
-    public func store(opcode:Int, controlWord:ControlWord) {
-        store(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord)
-        store(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: controlWord)
-        store(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)
-        store(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: controlWord)
-    }
-    
-    public func store(opcode:Int, carryFlag:Int, equalFlag:Int, controlWord:ControlWord) {
-        store(address: makeAddress(opcode: opcode,
-                                   carryFlag: carryFlag,
-                                   equalFlag: equalFlag),
-              value: controlWord.contents)
-    }
-    
-    public func store(address:Int, value:UInt16) {
-        upperROM[address] = UInt8((value & 0xff00) >> 8)
-        lowerROM[address] = UInt8( value & 0x00ff)
+    public func withStore(value: UInt16, to address: Int) -> InstructionDecoder {
+        let updatedUpper = upperROM.withStore(value: UInt8((value & 0xff00) >> 8), to: address)
+        let updatedLower = lowerROM.withStore(value: UInt8( value & 0x00ff), to: address)
+        return self
+            .withUpperROM(updatedUpper)
+            .withLowerROM(updatedLower)
     }
     
     public func makeAddress(opcode:Int, carryFlag:Int, equalFlag:Int) -> Int {
@@ -51,6 +71,16 @@ public class InstructionDecoder: NSObject {
         // The carry flag is connected to address bit 9.
         // The equal flag is connected to address bit 8.
         return carryFlag<<9 | equalFlag<<8 | opcode
+    }
+    
+    public func load(opcode:Int, carryFlag:Int, equalFlag:Int) -> UInt16 {
+        return load(from: makeAddress(opcode: opcode,
+                                      carryFlag: carryFlag,
+                                      equalFlag: equalFlag))
+    }
+    
+    public func load(from address: Int) -> UInt16 {
+        return UInt16(upperROM.load(from: address))<<8 | UInt16(lowerROM.load(from: address))
     }
     
     public func writeUpperROM(url: URL) throws {

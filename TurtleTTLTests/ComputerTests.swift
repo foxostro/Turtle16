@@ -10,118 +10,154 @@ import XCTest
 import TurtleTTL
 
 class ComputerTests: XCTestCase {
-    func testReset() {
+    let isVerboseLogging = true
+    
+    class ConsoleLogger: Logger {
+        override func append(_ format: String, _ args: CVarArg...) {
+            let message = String(format:format, arguments:args)
+            NSLog(message)
+        }
+    }
+    
+    func makeLogger() -> Logger? {
+        if isVerboseLogging {
+            return ConsoleLogger()
+        } else {
+            return nil
+        }
+    }
+    
+    func makeComputer() -> Computer {
         let computer = Computer()
-        computer.instructionROM.store(address: 0, value: 0)
+        computer.logger = makeLogger()
+        return computer
+    }
+    
+    func testReset() {
+        let computer = makeComputer()
         computer.reset()
-        XCTAssertEqual(computer.programCounter.contents, 0)
-        XCTAssertEqual(computer.registerC.contents, 0)
+        XCTAssertEqual(computer.currentState.pc.value, 0)
+        XCTAssertEqual(computer.currentState.pc_if.value, 0)
+        XCTAssertEqual(computer.currentState.registerC.value, 0)
     }
     
     func testBasicExample() {
-        let computer = Computer()
+        let computer = makeComputer()
         
-        // NOP
-        computer.instructionDecoder.store(address: 0, value: 0b1111111111111111)
-        computer.instructionROM.store(address: 0, value: 0b0000000000000000)
+        let instructionDecoder = InstructionDecoder()
+            .withStore(value: 0b1111111111111111, to: 0) // NOP
+            .withStore(value: 0b1111011111111110, to: 1) // Set register A to immediate value 1.
         
-        // Set register A to immediate value 1.
-        computer.instructionDecoder.store(address: 1, value: 0b1111011111111110)
-        computer.instructionROM.store(address: 1, value: 0b0000000100000001)
+        let instructionROM = InstructionROM()
+            .withStore(value: 0b0000000000000000, to: 0) // NOP
+            .withStore(value: 0b0000000100000001, to: 1) // Set register A to immediate value 1.
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
         
         computer.reset()
         
         // Fetch the NOP, Decode Whatever, Execute Whatever
         computer.step()
         
+        XCTAssertEqual(computer.currentState.pc.value, 1)
+        XCTAssertEqual(computer.currentState.pc_if.value, 0)
+        XCTAssertEqual(computer.currentState.if_id.description, "{op=0b0, imm=0b0}")
+        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffff)
+        
         // Fetch the assignment to A, Decode the NOP, Execute Whatever
         computer.step()
+        
+        XCTAssertEqual(computer.currentState.pc.value, 2)
+        XCTAssertEqual(computer.currentState.pc_if.value, 1)
+        XCTAssertEqual(computer.currentState.if_id.description, "{op=0b0, imm=0b0}")
+        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffff)
         
         // Fetch whatever, Decode the assignment to A, Execute the NOP
         computer.step()
         
+        XCTAssertEqual(computer.currentState.pc.value, 3)
+        XCTAssertEqual(computer.currentState.pc_if.value, 2)
+        XCTAssertEqual(computer.currentState.if_id.description, "{op=0b1, imm=0b1}")
+        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffff)
+        
         // Fetch whatever, Decode whatever, Execute the assignment to A.
-        XCTAssertEqual(computer.registerA.contents, 0)
+        XCTAssertEqual(computer.currentState.registerA.value, 0)
         computer.step()
-        XCTAssertEqual(computer.registerA.contents, 1)
+        XCTAssertEqual(computer.currentState.registerA.value, 1)
     }
     
     func testBasicAddition() {
-        let computer = Computer()
+        let computer = makeComputer()
         
         let nop = ControlWord()
+        let lda = ControlWord().withCO(false).withAI(false)
+        let sum = ControlWord().withEO(false).withAI(false)
+        let hlt = ControlWord().withHLT(false)
         
-        let lda = ControlWord()
-        lda.CO = false
-        lda.AI = false
+        var instructionDecoder = InstructionDecoder()
+        var instructionROM = InstructionROM()
         
-        let sum = ControlWord()
-        sum.EO = false
-        sum.AI = false
-        
-        let hlt = ControlWord()
-        hlt.HLT = false
-
         // NOP
-        computer.instructionDecoder.store(opcode: 0, controlWord: nop)
-        computer.instructionROM.store(address: 0, opcode: 0, immediate: 0)
-
+        instructionDecoder = instructionDecoder.withStore(opcode: 0, controlWord: nop)
+        instructionROM = instructionROM.withStore(opcode: 0, immediate: 0, to: 0)
+        
         // Set register A to immediate value 1.
-        computer.instructionDecoder.store(opcode: 1, controlWord: lda)
-        computer.instructionROM.store(address: 1, opcode: 1, immediate: 1)
-
-        // Set register A to "A plus 1"
-        computer.instructionDecoder.store(opcode: 2, controlWord: sum)
-        computer.instructionROM.store(address: 2, opcode: 2, immediate: 0)
+        instructionDecoder = instructionDecoder.withStore(opcode: 1, controlWord: lda)
+        instructionROM = instructionROM.withStore(opcode: 1, immediate: 1, to: 1)
         
         // Set register A to "A plus 1"
-        computer.instructionDecoder.store(opcode: 3, controlWord: sum)
-        computer.instructionROM.store(address: 3, opcode: 3, immediate: 0)
-
+        instructionDecoder = instructionDecoder.withStore(opcode: 2, controlWord: sum)
+        instructionROM = instructionROM.withStore(opcode: 2, immediate: 0, to: 2)
+        
+        // Set register A to "A plus 1"
+        instructionDecoder = instructionDecoder.withStore(opcode: 3, controlWord: sum)
+        instructionROM = instructionROM.withStore(opcode: 3, immediate: 0, to: 3)
+        
         // Halt
-        computer.instructionDecoder.store(opcode: 4, controlWord: hlt)
-        computer.instructionROM.store(address: 4, opcode: 4, immediate: 0)
-
+        instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
+        instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
+        
         computer.execute()
         
-        XCTAssertEqual(computer.registerA.contents, 3)
+        XCTAssertEqual(computer.currentState.registerA.value, 3)
     }
     
     func testRAMStoreLoad() {
-        let computer = Computer()
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
         
         let nop = 0
         let nopControl = ControlWord()
-        computer.instructionDecoder.store(opcode: nop, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord()
-        ldxControl.CO = false
-        ldxControl.XI = false
-        computer.instructionDecoder.store(opcode: ldx, controlWord: ldxControl)
+        let ldxControl = ControlWord().withCO(false).withXI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 2
-        let ldyControl = ControlWord()
-        ldyControl.CO = false
-        ldyControl.YI = false
-        computer.instructionDecoder.store(opcode: ldy, controlWord: ldyControl)
+        let ldyControl = ControlWord().withCO(false).withYI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord()
-        storeControl.MI = false
-        storeControl.CO = false
-        computer.instructionDecoder.store(opcode: store, controlWord: storeControl)
+        let storeControl = ControlWord().withMI(false).withCO(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord()
-        loadControl.MO = false
-        loadControl.AI = false
-        computer.instructionDecoder.store(opcode: load, controlWord: loadControl)
+        let loadControl = ControlWord().withMO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord()
-        hltControl.HLT = false
-        computer.instructionDecoder.store(opcode: hlt, controlWord: hltControl)
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
             Instruction(opcode: nop, immediate: 0),    // NOP
@@ -133,50 +169,46 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.registerA.contents, 42)
+        XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
     func testUnconditionalJump() {
-        let computer = Computer()
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
         
         let nop = 0
         let nopControl = ControlWord()
-        computer.instructionDecoder.store(opcode: nop, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord()
-        hltControl.HLT = false
-        computer.instructionDecoder.store(opcode: hlt, controlWord: hltControl)
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let lda = 2
-        let ldaControl = ControlWord()
-        ldaControl.CO = false
-        ldaControl.AI = false
-        computer.instructionDecoder.store(opcode: lda, controlWord: ldaControl)
+        let ldaControl = ControlWord().withCO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let ldx = 3
-        let ldxControl = ControlWord()
-        ldxControl.CO = false
-        ldxControl.XI = false
-        computer.instructionDecoder.store(opcode: ldx, controlWord: ldxControl)
+        let ldxControl = ControlWord().withCO(false).withXI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 4
-        let ldyControl = ControlWord()
-        ldyControl.CO = false
-        ldyControl.YI = false
-        computer.instructionDecoder.store(opcode: ldy, controlWord: ldyControl)
+        let ldyControl = ControlWord().withCO(false).withYI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let jmp = 5
-        let jmpControl = ControlWord()
-        jmpControl.J = false
-        computer.instructionDecoder.store(opcode: jmp, controlWord: jmpControl)
+        let jmpControl = ControlWord().withJ(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: jmp, controlWord: jmpControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
             Instruction(opcode: nop, immediate: 0),  // NOP
             Instruction(opcode: lda, immediate: 1),  // LDA $1
             Instruction(opcode: ldx, immediate: 0),  // LDX $0
-            Instruction(opcode: ldy, immediate: 8),  // LDY $0
-            Instruction(opcode: jmp, immediate: 0),  // JMP $8
+            Instruction(opcode: ldy, immediate: 8),  // LDY $8
+            Instruction(opcode: jmp, immediate: 0),  // JMP
             Instruction(opcode: nop, immediate: 0),  // NOP
             Instruction(opcode: nop, immediate: 0),  // NOP
             Instruction(opcode: lda, immediate: 2),  // LDA $2
@@ -184,81 +216,72 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.registerA.contents, 1)
+        XCTAssertEqual(computer.currentState.registerA.value, 1)
     }
     
     func testConditionalJumpOnCarry_DontTakeTheJump() {
-        let computer = Computer()
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
         
         let nop = 0
         let nopControl = ControlWord()
-        computer.instructionDecoder.store(opcode: nop, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord()
-        hltControl.HLT = false
-        computer.instructionDecoder.store(opcode: hlt, controlWord: hltControl)
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let lda = 2
-        let ldaControl = ControlWord()
-        ldaControl.CO = false
-        ldaControl.AI = false
-        computer.instructionDecoder.store(opcode: lda, controlWord: ldaControl)
+        let ldaControl = ControlWord().withCO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let ldb = 3
-        let ldbControl = ControlWord()
-        ldbControl.CO = false
-        ldbControl.BI = false
-        computer.instructionDecoder.store(opcode: ldb, controlWord: ldbControl)
+        let ldbControl = ControlWord().withCO(false).withBI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
         
         let ldx = 4
-        let ldxControl = ControlWord()
-        ldxControl.CO = false
-        ldxControl.XI = false
-        computer.instructionDecoder.store(opcode: ldx, controlWord: ldxControl)
+        let ldxControl = ControlWord().withCO(false).withXI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 5
-        let ldyControl = ControlWord()
-        ldyControl.CO = false
-        ldyControl.YI = false
-        computer.instructionDecoder.store(opcode: ldy, controlWord: ldyControl)
+        let ldyControl = ControlWord().withCO(false).withYI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let alu = 6
-        let aluControl = ControlWord()
-        aluControl.EO = false
-        aluControl.DI = false
-        aluControl.FI = false
-        computer.instructionDecoder.store(opcode: alu, controlWord: aluControl)
+        let aluControl = ControlWord().withEO(false).withDI(false).withFI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
         
         let jc = 7
-        let jcControl = ControlWord()
-        jcControl.J = false
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:0,
-                                          equalFlag:0,
-                                          controlWord: nopControl)
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:1,
-                                          equalFlag:0,
-                                          controlWord: jcControl)
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:0,
-                                          equalFlag:1,
-                                          controlWord: nopControl)
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:1,
-                                          equalFlag:1,
-                                          controlWord: jcControl)
+        let jcControl = ControlWord().withJ(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:0,
+                                                          equalFlag:0,
+                                                          controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:1,
+                                                          equalFlag:0,
+                                                          controlWord: jcControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:0,
+                                                          equalFlag:1,
+                                                          controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:1,
+                                                          equalFlag:1,
+                                                          controlWord: jcControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
             Instruction(opcode: nop, immediate: 0),          // NOP
             Instruction(opcode: lda, immediate: 2),          // LDA $2
             Instruction(opcode: ldb, immediate: 1),          // LDB $1
             Instruction(opcode: ldx, immediate: 0),          // LDX $0
-            Instruction(opcode: ldy, immediate: 11),         // LDY $0
+            Instruction(opcode: ldy, immediate: 11),         // LDY $11
             Instruction(opcode: alu, immediate: 0b00000110), // SUB
             Instruction(opcode: nop, immediate: 0),          // NOP (We must at least one instruction between setting the flags and testing the flags)
-            Instruction(opcode:  jc, immediate: 0),          // JC $11
+            Instruction(opcode:  jc, immediate: 0),          // JC
             Instruction(opcode: nop, immediate: 0),          // NOP (We must have two NOPs following a jump to prevent the pipeline from filling with incorrect instructions)
             Instruction(opcode: nop, immediate: 0),          // NOP
             Instruction(opcode: lda, immediate: 42),         // LDA $42
@@ -266,79 +289,70 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.registerD.contents, 1)
-        XCTAssertEqual(computer.registerA.contents, 42)
+        XCTAssertEqual(computer.currentState.registerD.value, 1)
+        XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
     func testConditionalJumpOnCarry_TakeTheJump() {
-        let computer = Computer()
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
         
         let nop = 0
         let nopControl = ControlWord()
-        computer.instructionDecoder.store(opcode: nop, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord()
-        hltControl.HLT = false
-        computer.instructionDecoder.store(opcode: hlt, controlWord: hltControl)
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let lda = 2
-        let ldaControl = ControlWord()
-        ldaControl.CO = false
-        ldaControl.AI = false
-        computer.instructionDecoder.store(opcode: lda, controlWord: ldaControl)
+        let ldaControl = ControlWord().withCO(false).withAI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let ldb = 3
-        let ldbControl = ControlWord()
-        ldbControl.CO = false
-        ldbControl.BI = false
-        computer.instructionDecoder.store(opcode: ldb, controlWord: ldbControl)
+        let ldbControl = ControlWord().withCO(false).withBI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
         
         let ldx = 4
-        let ldxControl = ControlWord()
-        ldxControl.CO = false
-        ldxControl.XI = false
-        computer.instructionDecoder.store(opcode: ldx, controlWord: ldxControl)
+        let ldxControl = ControlWord().withCO(false).withXI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 5
-        let ldyControl = ControlWord()
-        ldyControl.CO = false
-        ldyControl.YI = false
-        computer.instructionDecoder.store(opcode: ldy, controlWord: ldyControl)
+        let ldyControl = ControlWord().withCO(false).withYI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let alu = 6
-        let aluControl = ControlWord()
-        aluControl.EO = false
-        aluControl.DI = false
-        aluControl.FI = false
-        computer.instructionDecoder.store(opcode: alu, controlWord: aluControl)
+        let aluControl = ControlWord().withEO(false).withFI(false).withDI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
         
         let jc = 7
-        let jcControl = ControlWord()
-        jcControl.J = false
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:1,
-                                          equalFlag:0,
-                                          controlWord: jcControl)
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:0,
-                                          equalFlag:0,
-                                          controlWord: nopControl)
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:1,
-                                          equalFlag:1,
-                                          controlWord: jcControl)
-        computer.instructionDecoder.store(opcode: jc,
-                                          carryFlag:0,
-                                          equalFlag:1,
-                                          controlWord: nopControl)
+        let jcControl = ControlWord().withJ(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:1,
+                                                          equalFlag:0,
+                                                          controlWord: jcControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:0,
+                                                          equalFlag:0,
+                                                          controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:1,
+                                                          equalFlag:1,
+                                                          controlWord: jcControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jc,
+                                                          carryFlag:0,
+                                                          equalFlag:1,
+                                                          controlWord: nopControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
             Instruction(opcode: nop, immediate: 0),          // NOP
             Instruction(opcode: lda, immediate: 1),          // LDA $1
             Instruction(opcode: ldb, immediate: 2),          // LDB $2
             Instruction(opcode: ldx, immediate: 0),          // LDX $0
-            Instruction(opcode: ldy, immediate: 11),         // LDY $0
+            Instruction(opcode: ldy, immediate: 11),         // LDY $11
             Instruction(opcode: alu, immediate: 0b00000110), // SUB
             Instruction(opcode: nop, immediate: 0),          // NOP (We must at least one instruction between setting the flags and testing the flags)
             Instruction(opcode:  jc, immediate: 0),          // JC $11
@@ -349,7 +363,8 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.registerD.contents, 255)
-        XCTAssertEqual(computer.registerA.contents, 1)
+        XCTAssertEqual(computer.currentState.registerD.value, 255)
+        XCTAssertEqual(computer.currentState.registerA.value, 1)
     }
 }
+

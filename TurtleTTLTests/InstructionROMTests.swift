@@ -10,16 +10,15 @@ import XCTest
 import TurtleTTL
 
 class InstructionROMTests: XCTestCase {
-    func testContentsInitializedTo255() {
+    func testContentsInitializedToZero() {
         let memory = InstructionROM()
         XCTAssertEqual(memory.size, 131072)
-        XCTAssertEqual(memory.load(address: 0).value, 0xffff)
+        XCTAssertEqual(memory.load(from: 0).value, 0)
     }
     
     func testContentsModifiable() {
-        let memory = InstructionROM()
         let value: UInt16 = 32767
-        memory.store(address: 0, value: value)
-        XCTAssertEqual(memory.load(address: 0).value, value)
+        let memory = InstructionROM().withStore(value: value, to: 0)
+        XCTAssertEqual(memory.load(from: 0).value, value)
     }
 }

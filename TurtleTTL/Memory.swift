@@ -8,39 +8,46 @@
 
 import Cocoa
 
+// Represents a memory-like object in hardware such as a ROM or RAM.
 public class Memory: NSObject {
-    public let size:Int
-    public var contents: [UInt8]
+    let contents: [UInt8]
     
-    public var data: Data {
-        get {
-            let data = NSMutableData()
-            for value in contents {
-                data.append(Data([value]))
-            }
-            return data as Data
-        }
-        set(newData) {
-            contents = [UInt8](newData)
-        }
+    public var size: Int {
+        return contents.count
     }
     
-    public subscript(i:Int) -> UInt8 {
-        get {
-            return contents[i]
-        }
-        set(newValue) {
-            contents[i] = newValue
-        }
+    public convenience init(withData data: Data) {
+        self.init(withContents: [UInt8](data))
     }
     
-    public required init(size: Int) {
-        self.size = size
-        contents = [UInt8]()
+    public convenience init(withSize size: Int) {
+        var contents = [UInt8]()
         contents.reserveCapacity(size)
         for _ in 0..<size {
-            contents.append(0xff)
+            contents.append(0)
         }
-        super.init()
+        self.init(withContents: contents)
+    }
+    
+    public required init(withContents contents: [UInt8]) {
+        self.contents = contents
+    }
+    
+    public func withStore(value: UInt8, to address: Int) -> RAM {
+        var updatedContents = self.contents
+        updatedContents[address] = value
+        return RAM(withContents: updatedContents)
+    }
+    
+    public func load(from address: Int) -> UInt8 {
+        return self.contents[address]
+    }
+    
+    public var data: Data {
+        let data = NSMutableData()
+        for value in contents {
+            data.append(Data([value]))
+        }
+        return data as Data
     }
 }

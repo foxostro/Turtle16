@@ -8,6 +8,7 @@
 
 import Cocoa
 
+// Provides an interface for driving the code generator.
 public class AssemblerBackEnd: NSObject {
     public struct AssemblerBackEndError: Error {
         public let message: String

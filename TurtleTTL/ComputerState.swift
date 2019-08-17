@@ -17,6 +17,7 @@ public class ComputerState: NSObject {
     public let registerD: Register
     public let registerX: Register
     public let registerY: Register
+    public let outputDisplay: Register
     public let aluResult: Register
     public let aluFlags: Flags
     public let flags: Flags
@@ -36,6 +37,7 @@ public class ComputerState: NSObject {
                   withRegisterD: Register(),
                   withRegisterX: Register(),
                   withRegisterY: Register(),
+                  withOutputDisplay: Register(),
                   withALUResult: Register(),
                   withALUFlags: Flags(),
                   withFlags: Flags(),
@@ -55,6 +57,7 @@ public class ComputerState: NSObject {
                          withRegisterD registerD: Register,
                          withRegisterX registerX: Register,
                          withRegisterY registerY: Register,
+                         withOutputDisplay outputDisplay: Register,
                          withALUResult aluResult: Register,
                          withALUFlags aluFlags: Flags,
                          withFlags flags: Flags,
@@ -72,6 +75,7 @@ public class ComputerState: NSObject {
         self.registerD = registerD
         self.registerX = registerX
         self.registerY = registerY
+        self.outputDisplay = outputDisplay
         self.aluResult = aluResult
         self.aluFlags = aluFlags
         self.flags = flags
@@ -92,6 +96,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -112,6 +117,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -132,6 +138,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -152,6 +159,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -172,6 +180,7 @@ public class ComputerState: NSObject {
                              withRegisterD: Register(withValue: registerD),
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -192,6 +201,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: Register(withValue: registerX),
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -212,6 +222,28 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: Register(withValue: registerY),
+                             withOutputDisplay: outputDisplay,
+                             withALUResult: aluResult,
+                             withALUFlags: aluFlags,
+                             withFlags: flags,
+                             withPC: pc,
+                             withPCIF: pc_if,
+                             withIFID: if_id,
+                             withControlWord: controlWord,
+                             withDataRAM: dataRAM,
+                             withInstructionROM: instructionROM,
+                             withInstructionDecoder: instructionDecoder)
+    }
+    
+    public func withOutputDisplay(_ outputDisplay: UInt8) -> ComputerState {
+        return ComputerState(withBus: bus,
+                             withRegisterA: registerA,
+                             withRegisterB: registerB,
+                             withRegisterC: registerC,
+                             withRegisterD: registerD,
+                             withRegisterX: registerX,
+                             withRegisterY: registerY,
+                             withOutputDisplay: Register(withValue: outputDisplay),
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -232,6 +264,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: Register(withValue: aluResult),
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -252,6 +285,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -272,6 +306,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -292,6 +327,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -312,6 +348,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -332,6 +369,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -352,6 +390,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -372,6 +411,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -392,6 +432,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,
@@ -412,6 +453,7 @@ public class ComputerState: NSObject {
                              withRegisterD: registerD,
                              withRegisterX: registerX,
                              withRegisterY: registerY,
+                             withOutputDisplay: outputDisplay,
                              withALUResult: aluResult,
                              withALUFlags: aluFlags,
                              withFlags: flags,

@@ -11,6 +11,7 @@
 		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
+		6F8519582307551200AF9E39 /* BankOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8519572307551200AF9E39 /* BankOperation.swift */; };
 		6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
 		6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */; };
 		6FE0039122F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
@@ -123,6 +124,7 @@
 		6F790AE822EEDD1900B38267 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewLogger.swift; sourceTree = "<group>"; };
 		6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerExecutor.swift; sourceTree = "<group>"; };
+		6F8519572307551200AF9E39 /* BankOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankOperation.swift; sourceTree = "<group>"; };
 		6F86CC7F22F0001C008C6322 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
 		6F86EDA422ECB7E400375A00 /* RAM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAM.swift; sourceTree = "<group>"; };
 		6F86EDA622ECB99500375A00 /* RAMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAMTests.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
 				6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */,
 				6F86EDC522ED113800375A00 /* Computer.swift */,
+				6F8519572307551200AF9E39 /* BankOperation.swift */,
 				6FEB235D230283F6002B68D8 /* ComputerState.swift */,
 				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
 				6F73054322F27EA0006FD5E7 /* AssemblerBackEnd.swift */,
@@ -525,6 +528,7 @@
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
 				6FEB235E230283F7002B68D8 /* ComputerState.swift in Sources */,
+				6F8519582307551200AF9E39 /* BankOperation.swift in Sources */,
 				6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
 				6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */,

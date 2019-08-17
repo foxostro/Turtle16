@@ -157,10 +157,15 @@ class ComputerTests: XCTestCase {
         let hltControl = ControlWord().withHLT(false)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
+        let ldd = 6
+        let lddControl = ControlWord().withCO(false).withDI(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
+        
         computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
             Instruction(opcode: nop, immediate: 0),    // NOP
+            Instruction(opcode: ldd, immediate: 4),    // LDD $4
             Instruction(opcode: ldx, immediate: 0),    // LDX $0
             Instruction(opcode: ldy, immediate: 0),    // LDY $0
             Instruction(opcode: store, immediate: 42), // STORE $42

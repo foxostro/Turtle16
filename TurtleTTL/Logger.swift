@@ -9,7 +9,6 @@
 import Cocoa
 
 // Provides an interface for logging simulation progress.
-open class Logger: NSObject {
-    open func append(_ format: String, _ args: CVarArg...) {
-    }
+public protocol Logger {
+    func append(_ format: String, _ args: CVarArg...) -> Void
 }

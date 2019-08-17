@@ -788,4 +788,41 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(oldDecoder.upperROM.data, computer.currentState.instructionDecoder.upperROM.data)
         XCTAssertEqual(oldDecoder.lowerROM.data, computer.currentState.instructionDecoder.lowerROM.data)
     }
+    
+    func testSaveLoadProgram() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(false)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop,   immediate: 0),    // NOP
+            Instruction(opcode: hlt,   immediate: 0)])   // HLT
+        
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
+        let oldProgram = computer.currentState.instructionROM
+        try! computer.saveProgram(to: url)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop,   immediate: 1),    // NOP
+            Instruction(opcode: nop,   immediate: 1),    // NOP
+            Instruction(opcode: nop,   immediate: 1),    // NOP
+            Instruction(opcode: nop,   immediate: 1),    // NOP
+            Instruction(opcode: hlt,   immediate: 1)])   // HLT
+        XCTAssertNotEqual(oldProgram.upperROM.data, computer.currentState.instructionROM.upperROM.data)
+        XCTAssertNotEqual(oldProgram.lowerROM.data, computer.currentState.instructionROM.lowerROM.data)
+        
+        try! computer.loadProgram(from: url)
+        XCTAssertEqual(oldProgram.upperROM.data, computer.currentState.instructionROM.upperROM.data)
+        XCTAssertEqual(oldProgram.lowerROM.data, computer.currentState.instructionROM.lowerROM.data)
+    }
 }

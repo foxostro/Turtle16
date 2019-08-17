@@ -34,7 +34,19 @@ class InstructionTests: XCTestCase {
         XCTAssertEqual(maybeInstruction?.immediate, 0)
     }
     
-    func testInitWithOneMatch() {
+    func testInitWithOneMatch_1() {
         XCTAssertNil(Instruction("{op=0b0, imm=0bXXXX}"))
+    }
+    
+    func testInitWithOneMatch_2() {
+        XCTAssertNil(Instruction("{op=0bX, imm=0b0}"))
+    }
+    
+    func testInitWithTooLargeOpcode() {
+        XCTAssertNil(Instruction("{op=0b1111111111111111, imm=0b0}"))
+    }
+    
+    func testInitWithTooLargeImmediate() {
+        XCTAssertNil(Instruction("{op=0b0, imm=0b1111111111111111}"))
     }
 }

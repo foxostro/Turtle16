@@ -10,6 +10,18 @@ import XCTest
 import TurtleTTL
 
 class InstructionTests: XCTestCase {
+    func testInit_1() {
+        let instruction = Instruction()
+        XCTAssertEqual(instruction.opcode, 0)
+        XCTAssertEqual(instruction.immediate, 0)
+    }
+    
+    func testInit_2() {
+        let instruction = Instruction(opcode: 1, immediate: 2)
+        XCTAssertEqual(instruction.opcode, 1)
+        XCTAssertEqual(instruction.immediate, 2)
+    }
+    
     func testInitWithNilString() {
         let instruction = Instruction("")
         XCTAssertNil(instruction)

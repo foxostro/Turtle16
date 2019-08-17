@@ -12,6 +12,7 @@ import Cocoa
 public class Computer: NSObject {
     public var currentState: ComputerState
     public var logger:Logger? = nil
+    let banks: [BankOperation]
     let lowerDecoderRomFilename = "Lower Decoder ROM.bin"
     let upperDecoderRomFilename = "Upper Decoder ROM.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
@@ -19,6 +20,23 @@ public class Computer: NSObject {
     
     public override init() {
         currentState = ComputerState()
+        banks = [BankOperation(),
+                 BankOperation(name: "Output Display",
+                               store: {(state: ComputerState) -> ComputerState in
+                                return state.withOutputDisplay(state.bus.value)
+                 }),
+                 BankOperation(name: "Upper Instruction RAM"),
+                 BankOperation(name: "Lower Instruction RAM"),
+                 BankOperation(name: "Data RAM",
+                               store: {(state: ComputerState) -> ComputerState in
+                                return state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfXYPair())
+                 },
+                               load: {(state: ComputerState) -> ComputerState in
+                                return state.withBus(state.dataRAM.load(from: state.valueOfXYPair()))
+                 }),
+                 BankOperation(),
+                 BankOperation(),
+                 BankOperation()]
     }
     
     public func reset() {
@@ -104,10 +122,14 @@ public class Computer: NSObject {
             logger?.append("XO -- output %@ onto bus", state.bus)
         }
         if (false == state.controlWord.MO) {
-            let address = state.valueOfXYPair()
-            let bus: UInt8 = state.dataRAM.load(from: address)
-            state = state.withBus(bus)
-            logger?.append("MO -- output %@ onto bus", state.bus)
+            let currentBank = banks[Int(state.registerD.value)]
+            var updatedState = state.withBus(0) // ensure bus is invalidated
+            updatedState = currentBank.load(updatedState)
+            logger?.append("MO -- Load %@ from current bank, \"%@\", at address 0x%x",
+                           updatedState.bus,
+                           currentBank.name,
+                           String(state.valueOfXYPair(), radix: 16))
+            state = updatedState
         }
         if (false == state.controlWord.EO) {
             let bus = state.aluResult.value
@@ -148,13 +170,18 @@ public class Computer: NSObject {
             state = state.withRegisterB(state.bus.value)
         }
         if (false == state.controlWord.DI) {
-            logger?.append("DI -- input %@ from bus", state.bus)
             state = state.withRegisterD(state.bus.value)
+            let currentBank = banks[Int(state.registerD.value & 0b111)]
+            logger?.append("DI -- input %@ from bus. Selected bank is now \"%@\"",
+                           state.registerD, currentBank.name)
         }
         if (false == state.controlWord.MI) {
-            logger?.append("MI -- input %@ from bus", state.bus)
-            let address = state.valueOfXYPair()
-            state = state.withStoreToDataRAM(value: state.bus.value, to: address)
+            let currentBank = banks[Int(state.registerD.value)]
+            logger?.append("MI -- Store %@ to current bank, \"%@\", at address 0x%x",
+                           state.bus,
+                           currentBank.name,
+                           String(state.valueOfXYPair(), radix: 16))
+            state = currentBank.store(state)
         }
         if (false == state.controlWord.J) {
             let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))
@@ -336,6 +363,6 @@ public class Computer: NSObject {
     }
     
     public func describeOutputDisplay() -> String {
-        return String(currentState.registerD.value, radix: 10)
+        return String(currentState.outputDisplay.value, radix: 10)
     }
 }

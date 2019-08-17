@@ -25,8 +25,20 @@ public class Computer: NSObject {
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withOutputDisplay(state.bus.value)
                  }),
-                 BankOperation(name: "Upper Instruction RAM"),
-                 BankOperation(name: "Lower Instruction RAM"),
+                 BankOperation(name: "Upper Instruction RAM",
+                               store: {(state: ComputerState) -> ComputerState in
+                                return state.withStoreToUpperInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
+                 },
+                               load: {(state: ComputerState) -> ComputerState in
+                                return state.withBus(state.upperInstructionRAM.load(from: state.valueOfXYPair()))
+                 }),
+                 BankOperation(name: "Lower Instruction RAM",
+                               store: {(state: ComputerState) -> ComputerState in
+                                return state.withStoreToLowerInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
+                 },
+                               load: {(state: ComputerState) -> ComputerState in
+                                return state.withBus(state.lowerInstructionRAM.load(from: state.valueOfXYPair()))
+                 }),
                  BankOperation(name: "Data RAM",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfXYPair())
@@ -61,7 +73,17 @@ public class Computer: NSObject {
     }
     
     func doIF(withState currentState: ComputerState) -> ComputerState {
-        let if_id = currentState.instructionROM.load(from: Int(currentState.pc_if.value))
+        let offset = 0x8000
+        let pc_if = Int(currentState.pc_if.value)
+        let if_id: Instruction
+        if pc_if < offset {
+            if_id = currentState.instructionROM.load(from: pc_if)
+        } else {
+            let opcode = Int(currentState.upperInstructionRAM.load(from: pc_if - offset))
+            let immediate = Int(currentState.lowerInstructionRAM.load(from: pc_if - offset))
+            if_id = Instruction(opcode: opcode, immediate: immediate)
+        }
+        
         logger?.append("IF/ID -> %@", if_id)
         return currentState.withIFID(if_id)
     }
@@ -125,7 +147,7 @@ public class Computer: NSObject {
             let currentBank = banks[Int(state.registerD.value)]
             var updatedState = state.withBus(0) // ensure bus is invalidated
             updatedState = currentBank.load(updatedState)
-            logger?.append("MO -- Load %@ from current bank, \"%@\", at address 0x%x",
+            logger?.append("MO -- Load %@ from current bank, \"%@\", at address 0x%@",
                            updatedState.bus,
                            currentBank.name,
                            String(state.valueOfXYPair(), radix: 16))
@@ -177,7 +199,7 @@ public class Computer: NSObject {
         }
         if (false == state.controlWord.MI) {
             let currentBank = banks[Int(state.registerD.value)]
-            logger?.append("MI -- Store %@ to current bank, \"%@\", at address 0x%x",
+            logger?.append("MI -- Store %@ to current bank, \"%@\", at address 0x%@",
                            state.bus,
                            currentBank.name,
                            String(state.valueOfXYPair(), radix: 16))

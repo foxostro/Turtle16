@@ -11,6 +11,10 @@ import TurtleTTL
 
 class ComputerTests: XCTestCase {
     let isVerboseLogging = true
+    let kOutputDisplay = 1
+    let kUpperInstructionRAM = 3
+    let kLowerInstructionRAM = 4
+    let kDataRAM = 5
     
     class ConsoleLogger: NSObject, Logger {
         func append(_ format: String, _ args: CVarArg...) {
@@ -282,13 +286,13 @@ class ComputerTests: XCTestCase {
         computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
-            Instruction(opcode: nop, immediate: 0),    // NOP
-            Instruction(opcode: ldd, immediate: 4),    // LDD $4
-            Instruction(opcode: ldx, immediate: 0),    // LDX $0
-            Instruction(opcode: ldy, immediate: 0),    // LDY $0
-            Instruction(opcode: store, immediate: 42), // STORE $42
-            Instruction(opcode: load, immediate: 0),   // LOAD A
-            Instruction(opcode: hlt, immediate: 0)])   // HLT
+            Instruction(opcode: nop,   immediate: 0),        // NOP
+            Instruction(opcode: ldd,   immediate: kDataRAM), // LDD $kDataRAM
+            Instruction(opcode: ldx,   immediate: 0),        // LDX $0
+            Instruction(opcode: ldy,   immediate: 0),        // LDY $0
+            Instruction(opcode: store, immediate: 42),       // STORE $42
+            Instruction(opcode: load,  immediate: 0),        // LOAD A
+            Instruction(opcode: hlt,   immediate: 0)])       // HLT
         
         computer.execute()
         
@@ -531,7 +535,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 2),    // LDD $2
+            Instruction(opcode: ldd,   immediate: kUpperInstructionRAM),    // LDD $kUpperInstructionRAM
             Instruction(opcode: ldx,   immediate: 0),    // LDX $0
             Instruction(opcode: ldy,   immediate: 0),    // LDY $0
             Instruction(opcode: store, immediate: 42),   // STORE $42
@@ -585,7 +589,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 3),    // LDD $3
+            Instruction(opcode: ldd,   immediate: kLowerInstructionRAM),    // LDD $kLowerInstructionRAM
             Instruction(opcode: ldx,   immediate: 0),    // LDX $0
             Instruction(opcode: ldy,   immediate: 0),    // LDY $0
             Instruction(opcode: store, immediate: 42),   // STORE $42
@@ -641,15 +645,15 @@ class ComputerTests: XCTestCase {
             Instruction(opcode: nop,   immediate: 0),    // NOP
             Instruction(opcode: ldx,   immediate: 0),    // LDX $0
             Instruction(opcode: ldy,   immediate: 0),    // LDY $0
-            Instruction(opcode: ldd,   immediate: 2),    // LDD $2 (Select Upper Instruction RAM)
+            Instruction(opcode: ldd,   immediate: kUpperInstructionRAM),    // LDD $kUpperInstructionRAM
             Instruction(opcode: store, immediate: lda),  // STORE
-            Instruction(opcode: ldd,   immediate: 3),    // LDD $3 (Select Lower Instruction RAM)
+            Instruction(opcode: ldd,   immediate: kLowerInstructionRAM),    // LDD $kLowerInstructionRAM
             Instruction(opcode: store, immediate: 42),   // STORE
             Instruction(opcode: ldx,   immediate: 1),    // LDX $1
             Instruction(opcode: ldy,   immediate: 1),    // LDY $1
-            Instruction(opcode: ldd,   immediate: 2),    // LDD $2 (Select Upper Instruction RAM)
+            Instruction(opcode: ldd,   immediate: kUpperInstructionRAM),    // LDD $kUpperInstructionRAM
             Instruction(opcode: store, immediate: hlt),  // STORE
-            Instruction(opcode: ldd,   immediate: 3),    // LDD $3 (Select Lower Instruction RAM)
+            Instruction(opcode: ldd,   immediate: kLowerInstructionRAM),    // LDD $kLowerInstructionRAM
             Instruction(opcode: store, immediate: 0),    // STORE
             Instruction(opcode: ldx,   immediate: 0x80), // LDX $0x80
             Instruction(opcode: ldy,   immediate: 0x00), // LDY $0x00
@@ -747,7 +751,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 1),    // LDD $1
+            Instruction(opcode: ldd,   immediate: kOutputDisplay),    // LDD $kOutputDisplay
             Instruction(opcode: store, immediate: 42),   // STORE $42
             Instruction(opcode: hlt,   immediate: 0)])   // HLT
         
@@ -790,7 +794,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 1),    // LDD $1
+            Instruction(opcode: ldd,   immediate: kOutputDisplay),    // LDD $kOutputDisplay
             Instruction(opcode: store, immediate: 42),   // STORE $42
             Instruction(opcode: lda,   immediate: 0),    // LDA $0
             Instruction(opcode: load,  immediate: 0),    // LOAD A

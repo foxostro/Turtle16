@@ -403,6 +403,10 @@ public class Computer: NSObject {
     }
     
     public func describeSerialOutput() -> String {
-        return String(bytes: currentState.serialOutput, encoding: .utf8)!
+        var result = ""
+        for byte in currentState.serialOutput {
+            result += String(bytes: [byte], encoding: .utf8) ?? "�"
+        }
+        return result
     }
 }

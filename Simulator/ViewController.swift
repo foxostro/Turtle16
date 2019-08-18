@@ -71,12 +71,15 @@ class ViewController: NSViewController {
         a.begin()
         try a.li("A", 0)
         try a.li("B", 1)
-        try a.li("D", 1) // select the output display as the target for "M"
+        try a.li("D", 1) // select the output display
         try a.li("M", 0) // initialize output display to zero
         try a.label("loop")
         try a.add("A")
         try a.jc("end")
+        try a.li("D", 1) // select the output display
         try a.mov("M", "A") // move the value in A to the output display
+        try a.li("D", 6) // select the serial interface
+        try a.mov("M", "A") // move the value in A to the serial interface
         try a.jmp("loop")
         try a.label("end")
         a.hlt()

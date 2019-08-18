@@ -297,4 +297,18 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions[4].opcode, nop)
         XCTAssertEqual(instructions[5].opcode, nop)
     }
+    
+    func testCMP() {
+        let backEnd = makeBackEnd()
+        backEnd.begin()
+        try! backEnd.cmp()
+        try! backEnd.end()
+        let instructions = backEnd.instructions
+        
+        XCTAssertEqual(instructions.count, 2)
+        
+        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
+        XCTAssertEqual(instructions[1].immediate, 0b010110)
+    }
 }

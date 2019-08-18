@@ -85,6 +85,7 @@ class ViewController: NSViewController {
         try a.label("loop")
         
         // Wait until the number of available bytes is greater than zero.
+        try a.li("D", kSerialInterface)
         try a.li("Y", kStatusRegister)
         try a.mov("B", "M")
         try a.li("A", 1)
@@ -94,6 +95,10 @@ class ViewController: NSViewController {
         // Read a byte and echo it back.
         try a.li("Y", kIORegister)
         try a.mov("A", "M")
+        try a.mov("M", "A")
+        
+        // Show it on the output display too.
+        try a.li("D", kOutputDisplay)
         try a.mov("M", "A")
         
         try a.jmp("loop")
@@ -298,7 +303,7 @@ class ViewController: NSViewController {
     }
     
     @IBAction func provideSerialInput(sender: Any?) {
-        let bytes = Array(serialInput.stringValue.appending("\r\n").utf8)
+        let bytes = Array(serialInput.stringValue.appending("\n").utf8)
         computer.provideSerialInput(bytes: bytes)
         serialInput.stringValue = ""
     }

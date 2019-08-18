@@ -50,7 +50,7 @@ public class Computer: NSObject {
                                load: {(state: ComputerState) -> ComputerState in
                                 return state.withBus(state.dataRAM.load(from: state.valueOfXYPair()))
                  }),
-                 BankOperation(),
+                 SerialInterface(),
                  BankOperation(),
                  BankOperation()]
     }

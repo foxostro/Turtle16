@@ -9,11 +9,11 @@
 import Cocoa
 
 // A memory-like operation which is affected by bank switching.
-class BankOperation: NSObject {
-    static let nop = {(state: ComputerState) -> ComputerState in
+public class BankOperation: NSObject {
+    public static let nop = {(state: ComputerState) -> ComputerState in
         return state // NOP
     }
-    public var name: String
+    public let name: String
     public var store: (ComputerState) -> ComputerState
     public var load: (ComputerState) -> ComputerState
     

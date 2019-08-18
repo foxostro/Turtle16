@@ -298,7 +298,7 @@ class ViewController: NSViewController {
     }
     
     @IBAction func provideSerialInput(sender: Any?) {
-        let bytes = Array(serialInput.stringValue.appending("\n").utf8)
+        let bytes = Array(serialInput.stringValue.appending("\r\n").utf8)
         computer.provideSerialInput(bytes: bytes)
         serialInput.stringValue = ""
     }

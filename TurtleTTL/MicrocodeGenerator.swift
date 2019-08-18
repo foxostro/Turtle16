@@ -109,6 +109,17 @@ public class MicrocodeGenerator: NSObject {
             mapMnemonicToOpcode[mnemonic] = opcode
             microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
         }
+        
+        aluNoDest()
+    }
+    
+    // The case of an ALU operation with no destination register.
+    // Only updates the flags.
+    func aluNoDest() {
+        let opcode = getNextOpcode()
+        mapMnemonicToOpcode["ALU"] = opcode
+        microcode = microcode.withStore(opcode: opcode,
+                                        controlWord: ControlWord().outputEToBus().withFI(false))
     }
     
     public func jmp() {

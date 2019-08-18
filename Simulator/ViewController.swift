@@ -76,7 +76,7 @@ class ViewController: NSViewController {
         
         let a = makeAssemblerBackEnd()
         a.begin()
-        for i in String("Hello, World!\n").utf8 {
+        for i in String("Hello, World!\r\n").utf8 {
             try a.li("D", kOutputDisplay)
             try a.li("M", Int(i))
             try a.li("D", kSerialInterface)

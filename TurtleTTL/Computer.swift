@@ -395,4 +395,12 @@ public class Computer: NSObject {
     public func describeOutputDisplay() -> String {
         return String(currentState.outputDisplay.value, radix: 10)
     }
+    
+    public func provideSerialInput(bytes: [UInt8]) {
+        currentState = currentState.withSerialInput(bytes)
+    }
+    
+    public func describeSerialOutput() -> String {
+        return String(bytes: currentState.serialOutput, encoding: .utf8) ?? ""
+    }
 }

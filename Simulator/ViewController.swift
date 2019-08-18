@@ -67,21 +67,17 @@ class ViewController: NSViewController {
     }
     
     func tryGenerateExampleProgram() throws -> [Instruction] {
+        let kOutputDisplay = 1
+        let kSerialInterface = 6
+        
         let a = makeAssemblerBackEnd()
         a.begin()
-        try a.li("A", 0)
-        try a.li("B", 1)
-        try a.li("D", 1) // select the output display
-        try a.li("M", 0) // initialize output display to zero
-        try a.label("loop")
-        try a.add("A")
-        try a.jc("end")
-        try a.li("D", 1) // select the output display
-        try a.mov("M", "A") // move the value in A to the output display
-        try a.li("D", 6) // select the serial interface
-        try a.mov("M", "A") // move the value in A to the serial interface
-        try a.jmp("loop")
-        try a.label("end")
+        for i in [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21] {
+            try a.li("D", kOutputDisplay)
+            try a.li("M", i)
+            try a.li("D", kSerialInterface)
+            try a.li("M", i)
+        }
         a.hlt()
         try a.end()
         return a.instructions

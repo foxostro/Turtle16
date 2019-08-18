@@ -1361,10 +1361,76 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <tabView initialItem="2c1-fK-G9t" translatesAutoresizingMaskIntoConstraints="NO" id="XNT-bC-LBf">
+                                    <tabView translatesAutoresizingMaskIntoConstraints="NO" id="XNT-bC-LBf">
                                         <rect key="frame" x="231" y="-10" width="608" height="495"/>
                                         <font key="font" metaFont="system"/>
                                         <tabViewItems>
+                                            <tabViewItem label="Serial" identifier="" id="MgL-Aa-su6">
+                                                <view key="view" id="kIz-pQ-pPv">
+                                                    <rect key="frame" x="10" y="33" width="588" height="449"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oCb-BJ-txQ">
+                                                            <rect key="frame" x="0.0" y="0.0" width="588" height="419"/>
+                                                            <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="6nJ-Ht-neG">
+                                                                <rect key="frame" x="0.0" y="0.0" width="588" height="419"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <subviews>
+                                                                    <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" spellingCorrection="YES" smartInsertDelete="YES" id="dR3-bF-7rT">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="588" height="419"/>
+                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                        <size key="minSize" width="588" height="419"/>
+                                                                        <size key="maxSize" width="588" height="10000000"/>
+                                                                        <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textView>
+                                                                </subviews>
+                                                            </clipView>
+                                                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="NSl-d3-8zh">
+                                                                <rect key="frame" x="-100" y="-100" width="240" height="16"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                            </scroller>
+                                                            <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Kvw-iW-0kO">
+                                                                <rect key="frame" x="572" y="0.0" width="16" height="419"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                            </scroller>
+                                                        </scrollView>
+                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0cD-fj-cdb">
+                                                            <rect key="frame" x="0.0" y="427" width="521" height="22"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="8yC-56-y2n">
+                                                                <font key="font" usesAppearanceFont="YES"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                            <connections>
+                                                                <action selector="provideSerialInputWithSender:" target="XfG-lQ-9wD" id="SWf-tr-0uh"/>
+                                                            </connections>
+                                                        </textField>
+                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ppk-6m-xQC">
+                                                            <rect key="frame" x="523" y="420" width="71" height="32"/>
+                                                            <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PHc-6m-o4g">
+                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="provideSerialInputWithSender:" target="XfG-lQ-9wD" id="4ou-TR-5Pl"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="oCb-BJ-txQ" firstAttribute="top" secondItem="0cD-fj-cdb" secondAttribute="bottom" constant="8" symbolic="YES" id="2VC-wP-6vg"/>
+                                                        <constraint firstItem="Ppk-6m-xQC" firstAttribute="leading" secondItem="0cD-fj-cdb" secondAttribute="trailing" constant="8" symbolic="YES" id="9Ib-EM-Eby"/>
+                                                        <constraint firstItem="oCb-BJ-txQ" firstAttribute="leading" secondItem="kIz-pQ-pPv" secondAttribute="leading" id="CFN-1Z-PA7"/>
+                                                        <constraint firstItem="0cD-fj-cdb" firstAttribute="leading" secondItem="kIz-pQ-pPv" secondAttribute="leading" id="DEi-k2-PH8"/>
+                                                        <constraint firstAttribute="trailing" secondItem="oCb-BJ-txQ" secondAttribute="trailing" id="Vzl-Uh-jJV"/>
+                                                        <constraint firstAttribute="trailing" secondItem="Ppk-6m-xQC" secondAttribute="trailing" id="WUT-8e-WGv"/>
+                                                        <constraint firstAttribute="bottom" secondItem="oCb-BJ-txQ" secondAttribute="bottom" id="czy-7I-7tJ"/>
+                                                        <constraint firstItem="Ppk-6m-xQC" firstAttribute="firstBaseline" secondItem="0cD-fj-cdb" secondAttribute="firstBaseline" id="sNU-W1-EwR"/>
+                                                        <constraint firstItem="0cD-fj-cdb" firstAttribute="top" secondItem="kIz-pQ-pPv" secondAttribute="top" id="woU-ed-P5g"/>
+                                                    </constraints>
+                                                </view>
+                                            </tabViewItem>
                                             <tabViewItem label="Log" identifier="" id="2c1-fK-G9t">
                                                 <view key="view" id="C9e-b9-eOI">
                                                     <rect key="frame" x="10" y="33" width="588" height="449"/>
@@ -1403,12 +1469,6 @@
                                                         <constraint firstItem="lec-KG-fe2" firstAttribute="leading" secondItem="C9e-b9-eOI" secondAttribute="leading" id="rqV-cw-1rH"/>
                                                         <constraint firstItem="lec-KG-fe2" firstAttribute="top" secondItem="C9e-b9-eOI" secondAttribute="top" id="zOR-We-rLC"/>
                                                     </constraints>
-                                                </view>
-                                            </tabViewItem>
-                                            <tabViewItem label="Unused" identifier="" id="MgL-Aa-su6">
-                                                <view key="view" id="kIz-pQ-pPv">
-                                                    <rect key="frame" x="10" y="33" width="588" height="449"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                             </tabViewItem>
                                         </tabViewItems>
@@ -1453,6 +1513,8 @@
                         <outlet property="registerX" destination="4w9-ht-fQq" id="ThS-0c-Av9"/>
                         <outlet property="registerY" destination="dSZ-PW-AH6" id="Qnc-i9-7hN"/>
                         <outlet property="runButton" destination="uxN-1E-3li" id="p36-5f-Img"/>
+                        <outlet property="serialInput" destination="0cD-fj-cdb" id="kNg-ae-7Hg"/>
+                        <outlet property="serialOutput" destination="dR3-bF-7rT" id="7vS-Fr-dIc"/>
                         <outlet property="stepButton" destination="vHF-hX-KMo" id="Uvb-JN-GSZ"/>
                     </connections>
                 </viewController>

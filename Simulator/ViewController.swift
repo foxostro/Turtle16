@@ -28,6 +28,8 @@ class ViewController: NSViewController {
     @IBOutlet var stepButton:NSButton!
     @IBOutlet var runButton:NSButton!
     @IBOutlet var eventLog:NSTextView!
+    @IBOutlet var serialInput:NSTextField!
+    @IBOutlet var serialOutput:NSTextView!
     var logger:TextViewLogger!
     let executor = ComputerExecutor()
     let microcodeGenerator = MicrocodeGenerator()
@@ -201,6 +203,11 @@ class ViewController: NSViewController {
         if_id.stringValue = computer.describeIFID()
         bus.stringValue = computer.describeBus()
         outputDisplay.stringValue = computer.describeOutputDisplay()
+        
+        if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
+            serialOutputDisplay.setString(computer.describeSerialOutput())
+            serialOutput.scrollToEndOfDocument(self)
+        }
     }
     
     @IBAction func saveMicrocode(sender: Any?) {
@@ -271,5 +278,11 @@ class ViewController: NSViewController {
                 }
             }
         }
+    }
+    
+    @IBAction func provideSerialInput(sender: Any?) {
+        let bytes = Array(serialInput.stringValue.appending("\n").utf8)
+        computer.provideSerialInput(bytes: bytes)
+        serialInput.stringValue = ""
     }
 }

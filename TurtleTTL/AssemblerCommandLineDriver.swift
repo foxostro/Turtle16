@@ -63,7 +63,6 @@ public class AssemblerCommandLineDriver: NSObject {
 
     func parseInputFileName() throws {
         inputFileName = URL(fileURLWithPath: arguments[1])
-        print("inputFileName: " + inputFileName!.relativePath)
         var isDirectory: ObjCBool = false
         if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
             throw AssemblerCommandLineDriverError(format: "Input file does not exist: %@", inputFileName!.relativePath)
@@ -78,7 +77,6 @@ public class AssemblerCommandLineDriver: NSObject {
     
     func parseOutputFileName() throws {
         outputFileName = URL(fileURLWithPath: arguments[2])
-        print("outputFileName: " + outputFileName!.relativePath)
         if !FileManager.default.fileExists(atPath: outputFileName!.deletingLastPathComponent().relativePath) {
             throw AssemblerCommandLineDriverError(format: "Specified output directory does not exist: %@", outputFileName!.deletingLastPathComponent().relativePath)
         }

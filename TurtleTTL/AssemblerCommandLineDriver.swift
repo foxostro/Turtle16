@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import Darwin
 
 // Provides an interface for driving the assembler from the command-line.
 public class AssemblerCommandLineDriver: NSObject {
@@ -20,9 +19,11 @@ public class AssemblerCommandLineDriver: NSObject {
     }
     
     public var status: Int32 = 1
+    public var stdout: TextOutputStream = String()
+    public var stderr: TextOutputStream = String()
     let arguments: [String]
-    var inputFileName: URL? = nil
-    var outputFileName: URL? = nil
+    var inputFileName: URL?
+    var outputFileName: URL?
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -39,7 +40,7 @@ public class AssemblerCommandLineDriver: NSObject {
     }
     
     func reportError(withMessage message: String) {
-        fputs("Error: " + message + "\n", stderr)
+        stderr.write("Error: " + message + "\n")
     }
     
     func tryRun() throws {

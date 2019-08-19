@@ -10,23 +10,28 @@ import Cocoa
 
 public class AssemblerFrontEnd: NSObject {
     public struct AssemblerFrontEndError: Error {
+        public let line: Int
         public let message: String
         
-        public init(format: String, _ args: CVarArg...) {
+        public init(line: Int, format: String, _ args: CVarArg...) {
+            self.line = line
             message = String(format:format, arguments:args)
         }
     }
     
     public func compile(_ text: String) throws -> [Instruction] {
         var result = [Instruction(opcode: 0, immediate: 0)]
-        for line in text.split(separator: "\n") {
+        let lines = text.split(separator: "\n")
+        for i in 0..<lines.count {
+            let line = String(lines[i])
             if line == "" {
                 // do nothing
-            }
-            else if line == "NOP" {
-                result.append(Instruction(opcode: 0, immediate: 0))
+            } else if line == "NOP" {
+                result.append(Instruction())
             } else {
-                throw AssemblerFrontEndError(format: "Unrecognized opcode: %@", text)
+                throw AssemblerFrontEndError(line: i+1,
+                                             format: "Unrecognized opcode: %@",
+                                             text)
             }
         }
         return result

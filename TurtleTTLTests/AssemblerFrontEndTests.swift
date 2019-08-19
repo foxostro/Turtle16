@@ -28,10 +28,13 @@ class AssemblerFrontEndTests: XCTestCase {
     
     // Compiling an invalid opcode results in an error.
     func testCompilingBogusOpcodeYieldsError() {
-        XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS"))
+        XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS")) { e in
+            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            XCTAssertEqual(error.line, 1)
+        }
     }
     
-    func testCompileTwoNOPSYieldsProgramWithThreeNOPs() {
+    func testCompileTwoNOPsYieldsProgramWithThreeNOPs() {
         let instructions = try! AssemblerFrontEnd().compile("NOP\nNOP\n")
         XCTAssertEqual(instructions.count, 3)
         XCTAssertEqual(instructions[0], Instruction())

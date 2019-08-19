@@ -13,6 +13,7 @@
 		6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
 		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
+		6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F8519582307551200AF9E39 /* BankOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8519572307551200AF9E39 /* BankOperation.swift */; };
 		6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
@@ -124,6 +125,7 @@
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
 		6F37BA462305D903009754D3 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
+		6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandleTextOutputStream.swift; sourceTree = "<group>"; };
 		6F679BD422ED6FB0008C8E2C /* Flags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flags.swift; sourceTree = "<group>"; };
 		6F73054322F27EA0006FD5E7 /* AssemblerBackEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEnd.swift; sourceTree = "<group>"; };
 		6F73054522F27EAF006FD5E7 /* AssemblerBackEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEndTests.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				6F0C18082309001E005B9E12 /* SerialInterface.swift */,
 				6FEB235D230283F6002B68D8 /* ComputerState.swift */,
 				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
+				6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */,
 				6F73054322F27EA0006FD5E7 /* AssemblerBackEnd.swift */,
 				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
 				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
@@ -536,6 +539,7 @@
 				6FE003B122F3D78B00221C4C /* AssemblerBackEnd.swift in Sources */,
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
+				6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */,
 				6F0C18092309001E005B9E12 /* SerialInterface.swift in Sources */,
 				6FEB235E230283F7002B68D8 /* ComputerState.swift in Sources */,
 				6F8519582307551200AF9E39 /* BankOperation.swift in Sources */,

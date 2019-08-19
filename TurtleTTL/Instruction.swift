@@ -18,6 +18,7 @@ public class Instruction: NSObject {
     public override init() {
         opcode = 0
         immediate = 0
+        super.init()
     }
     
     public init(opcode: Int, immediate: Int) {
@@ -60,4 +61,20 @@ public class Instruction: NSObject {
                       String(opcode, radix: 2),
                       String(immediate, radix: 2))
     }
+    
+    public override var hash: Int {
+        return value.hashValue
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        if let rhs = rhs as? Instruction {
+            return self == rhs
+        } else {
+            return false
+        }
+    }
+}
+
+public func ==(lhs: Instruction, rhs: Instruction) -> Bool {
+    return lhs.value == rhs.value
 }

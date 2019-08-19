@@ -19,24 +19,31 @@ public class AssemblerFrontEnd: NSObject {
         }
     }
     
+    let backend: AssemblerBackEnd
+    
+    public override init() {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        backend = AssemblerBackEnd(codeGenerator: CodeGenerator(microcodeGenerator: microcodeGenerator))
+    }
+    
     public func compile(_ text: String) throws -> [Instruction] {
-        var result = [Instruction(opcode: 0, immediate: 0)]
+        backend.begin()
         let lines = text.split(separator: "\n")
         for i in 0..<lines.count {
             let line = String(lines[i])
-            if let instruction = try processLine(line, i+1) {
-                result.append(instruction)
-            }
+            try processLine(line, i+1)
         }
-        return result
+        try backend.end()
+        return backend.instructions
     }
     
-    func processLine(_ line: String, _ lineNumber: Int) throws -> Instruction? {
+    func processLine(_ line: String, _ lineNumber: Int) throws {
         guard let opcode = extractOpcode(stripComments(line)) else {
-            return nil
+            return
         }
         if opcode == "NOP" {
-            return Instruction()
+            backend.nop()
         } else {
             throw AssemblerFrontEndError(line: lineNumber,
                                          format: "no such instruction: `%@'",

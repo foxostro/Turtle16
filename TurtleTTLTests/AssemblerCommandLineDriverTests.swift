@@ -29,4 +29,25 @@ class AssemblerCommandLineDriverTests: XCTestCase {
         let driver = AssemblerCommandLineDriver(withArguments: ["", "", ""])
         XCTAssertThrowsError(try driver.parseArguments())
     }
+    
+    func testParseArgumentsFailsWhenInputFileIsMissing() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        let fileNameOut = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString + ".program").path
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        XCTAssertThrowsError(try driver.parseArguments())
+        XCTAssertEqual(fileNameIn, driver.inputFileName?.path)
+    }
+    
+    func testParseArgumentsSucceedsWhenFilenamesAreValidAndPresent() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        FileManager.default.createFile(atPath: fileNameIn, contents: Data(), attributes: nil)
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameIn)
+        }
+        let fileNameOut = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString + ".program").path
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        try! driver.parseArguments()
+        XCTAssertEqual(fileNameIn, driver.inputFileName?.path)
+        XCTAssertEqual(fileNameOut, driver.outputFileName?.path)
+    }
 }

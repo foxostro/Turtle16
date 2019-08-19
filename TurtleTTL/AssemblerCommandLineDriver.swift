@@ -22,8 +22,8 @@ public class AssemblerCommandLineDriver: NSObject {
     public var stdout: TextOutputStream = String()
     public var stderr: TextOutputStream = String()
     let arguments: [String]
-    var inputFileName: URL?
-    var outputFileName: URL?
+    public private(set) var inputFileName: URL?
+    public private(set) var outputFileName: URL?
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -60,8 +60,12 @@ public class AssemblerCommandLineDriver: NSObject {
     func parseInputFileName() throws {
         inputFileName = URL(fileURLWithPath: arguments[1])
         print("inputFileName: " + inputFileName!.relativePath)
-        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath) {
+        var isDirectory: ObjCBool = false
+        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
             throw AssemblerCommandLineDriverError(format: "Input file does not exist: %@", inputFileName!.relativePath)
+        }
+        if (isDirectory.boolValue) {
+            throw AssemblerCommandLineDriverError(format: "Input file is a directory: %@", inputFileName!.relativePath)
         }
         if !FileManager.default.isReadableFile(atPath: inputFileName!.relativePath) {
             throw AssemblerCommandLineDriverError(format: "Input file is not readable: %@", inputFileName!.relativePath)

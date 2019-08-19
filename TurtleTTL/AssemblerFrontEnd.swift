@@ -23,18 +23,25 @@ public class AssemblerFrontEnd: NSObject {
         var result = [Instruction(opcode: 0, immediate: 0)]
         let lines = text.split(separator: "\n")
         for i in 0..<lines.count {
-            let line = stripComments(String(lines[i]))
-            if let opcode = extractOpcode(line) {
-                if opcode == "NOP" {
-                    result.append(Instruction())
-                } else {
-                    throw AssemblerFrontEndError(line: i+1,
-                                                 format: "Unrecognized opcode: %@",
-                                                 opcode)
-                }
+            let line = String(lines[i])
+            if let instruction = try processLine(line, i+1) {
+                result.append(instruction)
             }
         }
         return result
+    }
+    
+    func processLine(_ line: String, _ lineNumber: Int) throws -> Instruction? {
+        guard let opcode = extractOpcode(stripComments(line)) else {
+            return nil
+        }
+        if opcode == "NOP" {
+            return Instruction()
+        } else {
+            throw AssemblerFrontEndError(line: lineNumber,
+                                         format: "Unrecognized opcode: %@",
+                                         opcode)
+        }
     }
     
     func stripComments(_ line: String) -> String {

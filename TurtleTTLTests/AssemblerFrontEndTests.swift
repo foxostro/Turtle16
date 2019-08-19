@@ -31,7 +31,7 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS\n")) { e in
             let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
             XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "Unrecognized opcode: BOGUS")
+            XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
         }
     }
     

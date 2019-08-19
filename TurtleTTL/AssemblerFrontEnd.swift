@@ -39,7 +39,7 @@ public class AssemblerFrontEnd: NSObject {
             return Instruction()
         } else {
             throw AssemblerFrontEndError(line: lineNumber,
-                                         format: "Unrecognized opcode: %@",
+                                         format: "no such instruction: `%@'",
                                          opcode)
         }
     }

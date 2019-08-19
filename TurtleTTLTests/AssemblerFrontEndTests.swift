@@ -42,4 +42,17 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[1], Instruction())
         XCTAssertEqual(instructions[2], Instruction())
     }
+    
+    func testCompilerIgnoresComments() {
+        let instructions = try! AssemblerFrontEnd().compile("// comment")
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0], Instruction())
+    }
+    
+    func testCompilerIgnoresCommentsAfterOpcodesToo() {
+        let instructions = try! AssemblerFrontEnd().compile("NOP// do nothing\n")
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(instructions[1], Instruction())
+    }
 }

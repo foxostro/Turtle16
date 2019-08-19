@@ -139,4 +139,15 @@ class CodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
     }
+    
+    func testCMP() {
+        let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
+        codeGen.begin()
+        codeGen.cmp()
+        codeGen.end()
+        let instructions = codeGen.instructions
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
+    }
 }

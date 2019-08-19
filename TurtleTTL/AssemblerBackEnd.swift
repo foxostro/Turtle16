@@ -142,7 +142,7 @@ public class AssemblerBackEnd: NSObject {
     public func cmp() throws {
         assert(isAssembling)
         commands.append({
-            try self.codeGenerator.cmp()
+            self.codeGenerator.cmp()
         })
         programCounter += 1
     }

@@ -49,4 +49,9 @@ class InstructionTests: XCTestCase {
     func testInitWithTooLargeImmediate() {
         XCTAssertNil(Instruction("{op=0b0, imm=0b1111111111111111}"))
     }
+    
+    func testTwoDefaultInitInstructionsAreEqual() {
+        XCTAssertTrue(Instruction() == Instruction())
+        XCTAssertEqual(Instruction(), Instruction())
+    }
 }

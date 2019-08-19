@@ -50,7 +50,7 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCompilerIgnoresCommentsAfterOpcodesToo() {
-        let instructions = try! AssemblerFrontEnd().compile("NOP// do nothing\n")
+        let instructions = try! AssemblerFrontEnd().compile("NOP  // do nothing\n")
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())

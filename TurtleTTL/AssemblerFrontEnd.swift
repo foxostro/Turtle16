@@ -24,14 +24,14 @@ public class AssemblerFrontEnd: NSObject {
         let lines = text.split(separator: "\n")
         for i in 0..<lines.count {
             let line = stripComments(String(lines[i]))
-            if line == "" {
-                // do nothing
-            } else if line == "NOP" {
-                result.append(Instruction())
-            } else {
-                throw AssemblerFrontEndError(line: i+1,
-                                             format: "Unrecognized opcode: %@",
-                                             line)
+            if let opcode = extractOpcode(line) {
+                if opcode == "NOP" {
+                    result.append(Instruction())
+                } else {
+                    throw AssemblerFrontEndError(line: i+1,
+                                                 format: "Unrecognized opcode: %@",
+                                                 opcode)
+                }
             }
         }
         return result
@@ -45,6 +45,17 @@ public class AssemblerFrontEnd: NSObject {
             return String(line[Range(match.range(at: 1), in: line)!])
         } else {
             return line
+        }
+    }
+    
+    func extractOpcode(_ line: String) -> String? {
+        let regex = try! NSRegularExpression(pattern: "(^.*)\\b.*$")
+        let maybeMatch = regex.firstMatch(in: line, options: [], range: NSRange(line.startIndex..., in: line))
+        
+        if let match = maybeMatch {
+            return String(line[Range(match.range(at: 1), in: line)!])
+        } else {
+            return nil
         }
     }
 }

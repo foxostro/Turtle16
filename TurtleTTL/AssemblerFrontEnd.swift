@@ -23,7 +23,7 @@ public class AssemblerFrontEnd: NSObject {
         var result = [Instruction(opcode: 0, immediate: 0)]
         let lines = text.split(separator: "\n")
         for i in 0..<lines.count {
-            let line = String(lines[i])
+            let line = stripComments(String(lines[i]))
             if line == "" {
                 // do nothing
             } else if line == "NOP" {
@@ -35,5 +35,16 @@ public class AssemblerFrontEnd: NSObject {
             }
         }
         return result
+    }
+    
+    func stripComments(_ line: String) -> String {
+        let regex = try! NSRegularExpression(pattern: "(^.*)//.*$")
+        let maybeMatch = regex.firstMatch(in: line, options: [], range: NSRange(line.startIndex..., in: line))
+        
+        if let match = maybeMatch {
+            return String(line[Range(match.range(at: 1), in: line)!])
+        } else {
+            return line
+        }
     }
 }

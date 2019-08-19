@@ -10,42 +10,23 @@ import XCTest
 import TurtleTTL
 
 class AssemblerCommandLineDriverTests: XCTestCase {
-    func testInitWithNoArguments() {
+    func testParseArgumentsFailsWithNoArguments() {
         let driver = AssemblerCommandLineDriver(withArguments: [])
-        driver.stdout = String()
-        driver.stderr = String()
-        driver.run()
-        XCTAssertEqual(driver.status, 1)
-        XCTAssertNotEqual(driver.stderr as! String, "")
-        XCTAssertTrue((driver.stderr as! String).contains("Error"))
+        XCTAssertThrowsError(try driver.parseArguments())
     }
     
-    func testInitWithOneArgument() {
+    func testParseArgumentsFailsWithOneArgument() {
         let driver = AssemblerCommandLineDriver(withArguments: [""])
-        driver.stdout = String()
-        driver.stderr = String()
-        driver.run()
-        XCTAssertEqual(driver.status, 1)
-        XCTAssertNotEqual(driver.stderr as! String, "")
-        XCTAssertTrue((driver.stderr as! String).contains("Error"))
+        XCTAssertThrowsError(try driver.parseArguments())
     }
     
-    func testInitWithTwoArguments() {
+    func testParseArgumentsFailsWithTwoArguments() {
         let driver = AssemblerCommandLineDriver(withArguments: ["", ""])
-        driver.stdout = String()
-        driver.stderr = String()
-        driver.run()
-        XCTAssertEqual(driver.status, 1)
-        XCTAssertNotEqual(driver.stderr as! String, "")
-        XCTAssertTrue((driver.stderr as! String).contains("Error"))
+        XCTAssertThrowsError(try driver.parseArguments())
     }
     
-    func testInitWithThreeArguments() {
+    func testParseArgumentsFailsWithThreeEmptyArguments() {
         let driver = AssemblerCommandLineDriver(withArguments: ["", "", ""])
-        driver.stdout = String()
-        driver.stderr = String()
-        driver.run()
-        XCTAssertEqual(driver.status, 0)
-        XCTAssertEqual(driver.stderr as! String, "")
+        XCTAssertThrowsError(try driver.parseArguments())
     }
 }

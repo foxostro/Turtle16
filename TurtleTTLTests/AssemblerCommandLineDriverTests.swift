@@ -93,4 +93,22 @@ class AssemblerCommandLineDriverTests: XCTestCase {
         XCTAssert(instruction == Instruction(opcode: 0, immediate: 0))
         XCTAssertEqual(instruction.value, 0)
     }
+    
+    func testCompileFailsWhenInputContainsInvalidText() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        FileManager.default.createFile(atPath: fileNameIn,
+                                       contents: Data([0xff]),
+                                       attributes: nil)
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameIn)
+        }
+        let urlOut = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString + ".program")
+        let fileNameOut = urlOut.path
+        
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        driver.stderr = String()
+        driver.run()
+        XCTAssertEqual(driver.status, 1)
+        XCTAssertTrue((driver.stderr as! String).contains("Error"))
+    }
 }

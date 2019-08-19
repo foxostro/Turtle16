@@ -89,7 +89,7 @@ class ViewController: NSViewController {
         try a.li("Y", kStatusRegister)
         try a.mov("B", "M")
         try a.li("A", 1)
-        try a.cmp()
+        a.cmp()
         try a.jc("loop")
         
         // Read a byte and echo it back.

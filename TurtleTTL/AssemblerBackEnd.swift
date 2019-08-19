@@ -142,7 +142,7 @@ public class AssemblerBackEnd: NSObject {
     
     // Compare -- The ALU compares the contents of the A and B registers.
     //            Flags are updated but the ALU result is not stored.
-    public func cmp() throws {
+    public func cmp() {
         assert(isAssembling)
         commands.append({
             self.codeGenerator.cmp()

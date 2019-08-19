@@ -55,4 +55,10 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
     }
+    
+    func testOpcodesAreCaseInsensitive() {
+        let a = try! AssemblerFrontEnd().compile("nop")
+        let b = try! AssemblerFrontEnd().compile("NOP")
+        XCTAssertEqual(a, b)
+    }
 }

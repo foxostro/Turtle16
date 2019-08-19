@@ -60,7 +60,7 @@ public class AssemblerFrontEnd: NSObject {
         let maybeMatch = regex.firstMatch(in: line, options: [], range: NSRange(line.startIndex..., in: line))
         
         if let match = maybeMatch {
-            return String(line[Range(match.range(at: 1), in: line)!])
+            return String(line[Range(match.range(at: 1), in: line)!]).uppercased()
         } else {
             return nil
         }

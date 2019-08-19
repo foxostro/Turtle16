@@ -45,12 +45,16 @@ public class AssemblerCommandLineDriver: NSObject {
     
     func tryRun() throws {
         try parseArguments()
-        try writeToFile(instructions: compile())
+        try writeToFile(instructions: try compile())
         status = 0
     }
     
-    func compile() -> [Instruction] {
-        let assembler = AssemblerFrontEnd()
+    func compile() throws -> [Instruction] {
+        let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+        guard let text = maybeText else {
+            throw AssemblerCommandLineDriverError(format: "Failed to read input file as UTF-8 text: %@", inputFileName!.relativePath)
+        }
+        let assembler = AssemblerFrontEnd(withText: text)
         return assembler.compile()
     }
     

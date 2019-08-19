@@ -68,12 +68,11 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(a, b)
     }
     
-//    func testNOPAcceptsNoOperands() {
-//        XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
-//            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
-//            XCTAssertEqual(error.line, 1)
-//            XCTAssertEqual(error.message, "operand type mismatch for `NOP'")
-//            #error("I'm at the point where an actual parser would be useful. Run the parser against each line and extract an array of tokens.")
-//        }
-//    }
+    func testNOPAcceptsNoOperands() {
+        XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
+            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
+        }
+    }
 }

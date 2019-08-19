@@ -28,9 +28,10 @@ class AssemblerFrontEndTests: XCTestCase {
     
     // Compiling an invalid opcode results in an error.
     func testCompilingBogusOpcodeYieldsError() {
-        XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS")) { e in
+        XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS\n")) { e in
             let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
             XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "Unrecognized opcode: BOGUS")
         }
     }
     

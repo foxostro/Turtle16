@@ -805,7 +805,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
-    func testSaveLoadMicrocode() {
+    func disabled_too_slow_testSaveLoadMicrocode() {
         let computer = makeComputer()
         
         var instructionDecoder = InstructionDecoder()
@@ -833,7 +833,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(oldDecoder.lowerROM.data, computer.currentState.instructionDecoder.lowerROM.data)
     }
     
-    func testSaveLoadProgram() {
+    func disabled_too_slow_testSaveLoadProgram() {
         let computer = makeComputer()
         
         var instructionDecoder = InstructionDecoder()

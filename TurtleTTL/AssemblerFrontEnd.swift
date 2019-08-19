@@ -17,13 +17,7 @@ public class AssemblerFrontEnd: NSObject {
         }
     }
     
-    let text: String
-    
-    public required init(withText text: String) {
-        self.text = text
-    }
-    
-    public func compile() throws -> [Instruction] {
+    public func compile(_ text: String) throws -> [Instruction] {
         var result = [Instruction(opcode: 0, immediate: 0)]
         for line in text.split(separator: "\n") {
             if line == "" {

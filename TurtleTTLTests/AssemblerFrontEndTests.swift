@@ -11,8 +11,7 @@ import TurtleTTL
 
 class AssemblerFrontEndTests: XCTestCase {
     func testCompileEmptyProgramYieldsNOP() {
-        let assembler = AssemblerFrontEnd(withText: "")
-        let instructions = try! assembler.compile()
+        let instructions = try! AssemblerFrontEnd().compile("")
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0], Instruction())
     }
@@ -21,8 +20,7 @@ class AssemblerFrontEndTests: XCTestCase {
     // instruction. Compiling a single NOP instruction yields a program composed
     // of two NOPs.
     func testCompileASingleNOPYieldsTwoNOPs() {
-        let assembler = AssemblerFrontEnd(withText: "NOP")
-        let instructions = try! assembler.compile()
+        let instructions = try! AssemblerFrontEnd().compile("NOP")
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
@@ -30,7 +28,14 @@ class AssemblerFrontEndTests: XCTestCase {
     
     // Compiling an invalid opcode results in an error.
     func testCompilingBogusOpcodeYieldsError() {
-        let assembler = AssemblerFrontEnd(withText: "BOGUS")
-        XCTAssertThrowsError(try assembler.compile())
+        XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS"))
+    }
+    
+    func testCompileTwoNOPSYieldsProgramWithThreeNOPs() {
+        let instructions = try! AssemblerFrontEnd().compile("NOP\nNOP\n")
+        XCTAssertEqual(instructions.count, 3)
+        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(instructions[1], Instruction())
+        XCTAssertEqual(instructions[2], Instruction())
     }
 }

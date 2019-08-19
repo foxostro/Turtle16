@@ -44,23 +44,26 @@ public class AssemblerFrontEnd: NSObject {
         if opcode == "" {
             return // do nothing
         } else if opcode == "NOP" {
-            if components.count > 1 {
-                throw AssemblerFrontEndError(line: lineNumber,
-                                             format: "instruction takes no operands: `%@'",
-                                             opcode)
-            }
+            try ensureNoOperands(lineNumber, components)
             backend.nop()
         } else if opcode == "CMP" {
-            if components.count > 1 {
-                throw AssemblerFrontEndError(line: lineNumber,
-                                             format: "instruction takes no operands: `%@'",
-                                             opcode)
-            }
+            try ensureNoOperands(lineNumber, components)
             backend.cmp()
+        } else if opcode == "HLT" {
+            try ensureNoOperands(lineNumber, components)
+            backend.hlt()
         } else {
             throw AssemblerFrontEndError(line: lineNumber,
                                          format: "no such instruction: `%@'",
-                                         opcode)
+                                         components[0])
+        }
+    }
+    
+    func ensureNoOperands(_ lineNumber: Int, _ components: [String]) throws {
+        if components.count > 1 {
+            throw AssemblerFrontEndError(line: lineNumber,
+                                         format: "instruction takes no operands: `%@'",
+                                         components[0])
         }
     }
     

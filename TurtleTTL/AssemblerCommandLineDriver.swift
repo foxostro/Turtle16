@@ -45,11 +45,19 @@ public class AssemblerCommandLineDriver: NSObject {
     
     func tryRun() throws {
         try parseArguments()
-        let instructions = [Instruction(opcode: 0, immediate: 0)]
+        try writeToFile(instructions: compile())
+        status = 0
+    }
+    
+    func compile() -> [Instruction] {
+        let assembler = AssemblerFrontEnd()
+        return assembler.compile()
+    }
+    
+    func writeToFile(instructions: [Instruction]) throws {
         let computer = Computer()
         computer.provideInstructions(instructions)
         try computer.saveProgram(to: outputFileName!)
-        status = 0
     }
     
     public func parseArguments() throws {

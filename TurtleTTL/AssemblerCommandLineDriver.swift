@@ -48,7 +48,7 @@ public class AssemblerCommandLineDriver: NSObject {
         status = 0
     }
     
-    func parseArguments() throws {
+    public func parseArguments() throws {
         if (arguments.count != 3) {
             throw AssemblerCommandLineDriverError(format: "Expected two arguments, got %d:\n%@", arguments.count-1, arguments.joined(separator: " "))
         }

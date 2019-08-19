@@ -39,10 +39,16 @@ public class AssemblerFrontEnd: NSObject {
     }
     
     func processLine(_ line: String, _ lineNumber: Int) throws {
-        guard let opcode = extractOpcode(stripComments(line)) else {
-            return
-        }
-        if opcode == "NOP" {
+        let components = stripComments(line).trimmingCharacters(in: .whitespaces).components(separatedBy: .whitespaces)
+        let opcode = components[0].uppercased()
+        if opcode == "" {
+            return // do nothing
+        } else if opcode == "NOP" {
+            if components.count > 1 {
+                throw AssemblerFrontEndError(line: lineNumber,
+                                             format: "instruction takes no operands: `%@'",
+                                             opcode)
+            }
             backend.nop()
         } else {
             throw AssemblerFrontEndError(line: lineNumber,
@@ -59,17 +65,6 @@ public class AssemblerFrontEnd: NSObject {
             return String(line[Range(match.range(at: 1), in: line)!])
         } else {
             return line
-        }
-    }
-    
-    func extractOpcode(_ line: String) -> String? {
-        let regex = try! NSRegularExpression(pattern: "(^.*)\\b.*$")
-        let maybeMatch = regex.firstMatch(in: line, options: [], range: NSRange(line.startIndex..., in: line))
-        
-        if let match = maybeMatch {
-            return String(line[Range(match.range(at: 1), in: line)!]).uppercased()
-        } else {
-            return nil
         }
     }
 }

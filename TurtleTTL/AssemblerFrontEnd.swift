@@ -53,18 +53,26 @@ public class AssemblerFrontEnd: NSObject {
             try ensureNoOperands(lineNumber, components)
             backend.hlt()
         } else {
-            throw AssemblerFrontEndError(line: lineNumber,
-                                         format: "no such instruction: `%@'",
-                                         components[0])
+            throw unrecognizedInstructionError(lineNumber, components)
         }
     }
     
     func ensureNoOperands(_ lineNumber: Int, _ components: [String]) throws {
         if components.count > 1 {
-            throw AssemblerFrontEndError(line: lineNumber,
-                                         format: "instruction takes no operands: `%@'",
-                                         components[0])
+            throw zeroOperandsExpectedError(lineNumber, components)
         }
+    }
+    
+    func zeroOperandsExpectedError(_ lineNumber: Int, _ components: [String]) -> AssemblerFrontEndError {
+        return AssemblerFrontEndError(line: lineNumber,
+                                      format: "instruction takes no operands: `%@'",
+                                      components[0])
+    }
+    
+    func unrecognizedInstructionError(_ lineNumber: Int, _ components: [String]) -> AssemblerFrontEndError {
+        return AssemblerFrontEndError(line: lineNumber,
+                                      format: "no such instruction: `%@'",
+                                      components[0])
     }
     
     func stripComments(_ line: String) -> String {

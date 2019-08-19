@@ -301,7 +301,7 @@ class AssemblerBackEndTests: XCTestCase {
     func testCMP() {
         let backEnd = makeBackEnd()
         backEnd.begin()
-        try! backEnd.cmp()
+        backEnd.cmp()
         try! backEnd.end()
         let instructions = backEnd.instructions
         

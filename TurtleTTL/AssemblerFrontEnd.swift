@@ -31,7 +31,7 @@ public class AssemblerFrontEnd: NSObject {
             } else {
                 throw AssemblerFrontEndError(line: i+1,
                                              format: "Unrecognized opcode: %@",
-                                             text)
+                                             line)
             }
         }
         return result

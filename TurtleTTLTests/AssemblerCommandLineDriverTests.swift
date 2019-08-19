@@ -50,4 +50,47 @@ class AssemblerCommandLineDriverTests: XCTestCase {
         XCTAssertEqual(fileNameIn, driver.inputFileName?.path)
         XCTAssertEqual(fileNameOut, driver.outputFileName?.path)
     }
+    
+    func testCompileProgramConsistingOfOneNOP() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        FileManager.default.createFile(atPath: fileNameIn,
+                                       contents: "\n".data(using: .utf8),
+                                       attributes: nil)
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameIn)
+        }
+        let urlOut = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString + ".program")
+        let upperDataUrl = urlOut.appendingPathComponent("Upper Instruction ROM.bin")
+        let lowerDataUrl = urlOut.appendingPathComponent("Lower Instruction ROM.bin")
+        let fileNameOut = urlOut.path
+        defer {
+            try? FileManager.default.removeItem(at: urlOut)
+        }
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        driver.run()
+        XCTAssertEqual(driver.status, 0)
+        
+        XCTAssertEqual(fileNameIn, driver.inputFileName?.path)
+        XCTAssertEqual(fileNameOut, driver.outputFileName?.path)
+        var isDirectory: ObjCBool = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: fileNameOut, isDirectory: &isDirectory))
+        XCTAssertTrue(isDirectory.boolValue)
+        
+        isDirectory = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: upperDataUrl.path, isDirectory: &isDirectory))
+        XCTAssertFalse(isDirectory.boolValue)
+        let upperData = try! Data(contentsOf: upperDataUrl)
+        
+        isDirectory = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: lowerDataUrl.path, isDirectory: &isDirectory))
+        XCTAssertFalse(isDirectory.boolValue)
+        let lowerData = try! Data(contentsOf: lowerDataUrl)
+        
+        // Now unpack the first instruction. Is it the NOP that we expected?
+        let instructionROM = InstructionROM(withUpperROM: Memory(withData: upperData),
+                                            withLowerROM: Memory(withData: lowerData))
+        let instruction = instructionROM.load(from: 0)
+        XCTAssert(instruction == Instruction(opcode: 0, immediate: 0))
+        XCTAssertEqual(instruction.value, 0)
+    }
 }

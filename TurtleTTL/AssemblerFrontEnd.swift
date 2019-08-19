@@ -50,6 +50,13 @@ public class AssemblerFrontEnd: NSObject {
                                              opcode)
             }
             backend.nop()
+        } else if opcode == "CMP" {
+            if components.count > 1 {
+                throw AssemblerFrontEndError(line: lineNumber,
+                                             format: "instruction takes no operands: `%@'",
+                                             opcode)
+            }
+            backend.cmp()
         } else {
             throw AssemblerFrontEndError(line: lineNumber,
                                          format: "no such instruction: `%@'",

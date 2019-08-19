@@ -75,4 +75,28 @@ class AssemblerFrontEndTests: XCTestCase {
             XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
         }
     }
+    
+    func testCMPCompiles() {
+        let instructions = try! assembler.compile("CMP")
+        XCTAssertEqual(instructions.count, 2)
+        
+        let cmpOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "ALU")!
+        let kALUControlForCMP = 0b010110
+        let cmpInstruction = Instruction(opcode: cmpOpcode, immediate: kALUControlForCMP)
+        XCTAssertEqual(instructions[1], cmpInstruction)
+    }
+    
+    func makeMicrocodeGenerator() -> MicrocodeGenerator {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        return microcodeGenerator
+    }
+    
+    func testCMPAcceptsNoOperands() {
+        XCTAssertThrowsError(try AssemblerFrontEnd().compile("CMP $1")) { e in
+            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "instruction takes no operands: `CMP'")
+        }
+    }
 }

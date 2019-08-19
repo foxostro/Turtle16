@@ -33,7 +33,10 @@ public class AssemblerBackEnd: NSObject {
     
     // Begin emitting instructions.
     public func begin() {
+        instructions = []
         isAssembling = true
+        symbols = [String:Int]()
+        commands = []
         programCounter = 1
         codeGenerator.begin()
     }

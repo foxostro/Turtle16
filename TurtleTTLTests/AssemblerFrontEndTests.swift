@@ -10,8 +10,14 @@ import XCTest
 import TurtleTTL
 
 class AssemblerFrontEndTests: XCTestCase {
+    var assembler = AssemblerFrontEnd()
+    
+    override func setUp() {
+        assembler = AssemblerFrontEnd()
+    }
+    
     func testCompileEmptyProgramYieldsNOP() {
-        let instructions = try! AssemblerFrontEnd().compile("")
+        let instructions = try! assembler.compile("")
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0], Instruction())
     }
@@ -20,7 +26,7 @@ class AssemblerFrontEndTests: XCTestCase {
     // instruction. Compiling a single NOP instruction yields a program composed
     // of two NOPs.
     func testCompileASingleNOPYieldsTwoNOPs() {
-        let instructions = try! AssemblerFrontEnd().compile("NOP")
+        let instructions = try! assembler.compile("NOP")
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
@@ -28,7 +34,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     // Compiling an invalid opcode results in an error.
     func testCompilingBogusOpcodeYieldsError() {
-        XCTAssertThrowsError(try AssemblerFrontEnd().compile("BOGUS\n")) { e in
+        XCTAssertThrowsError(try assembler.compile("BOGUS\n")) { e in
             let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
@@ -36,7 +42,7 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCompileTwoNOPsYieldsProgramWithThreeNOPs() {
-        let instructions = try! AssemblerFrontEnd().compile("NOP\nNOP\n")
+        let instructions = try! assembler.compile("NOP\nNOP\n")
         XCTAssertEqual(instructions.count, 3)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
@@ -44,21 +50,30 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCompilerIgnoresComments() {
-        let instructions = try! AssemblerFrontEnd().compile("// comment")
+        let instructions = try! assembler.compile("// comment")
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0], Instruction())
     }
     
     func testCompilerIgnoresCommentsAfterOpcodesToo() {
-        let instructions = try! AssemblerFrontEnd().compile("NOP  // do nothing\n")
+        let instructions = try! assembler.compile("NOP  // do nothing\n")
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
     }
     
     func testOpcodesAreCaseInsensitive() {
-        let a = try! AssemblerFrontEnd().compile("nop")
-        let b = try! AssemblerFrontEnd().compile("NOP")
+        let a = try! assembler.compile("nop")
+        let b = try! assembler.compile("NOP")
         XCTAssertEqual(a, b)
     }
+    
+//    func testNOPAcceptsNoOperands() {
+//        XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
+//            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+//            XCTAssertEqual(error.line, 1)
+//            XCTAssertEqual(error.message, "operand type mismatch for `NOP'")
+//            #error("I'm at the point where an actual parser would be useful. Run the parser against each line and extract an array of tokens.")
+//        }
+//    }
 }

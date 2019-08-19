@@ -30,6 +30,7 @@ public class CodeGenerator: NSObject {
     // Begin emitting instructions.
     public func begin() {
         isAssembling = true
+        instructions = []
         nop()
     }
     

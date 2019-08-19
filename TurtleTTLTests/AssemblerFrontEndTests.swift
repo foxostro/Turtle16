@@ -99,4 +99,21 @@ class AssemblerFrontEndTests: XCTestCase {
             XCTAssertEqual(error.message, "instruction takes no operands: `CMP'")
         }
     }
+    
+    func testHLTCompiles() {
+        let instructions = try! assembler.compile("HLT")
+        XCTAssertEqual(instructions.count, 2)
+        
+        let hltOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "HLT")!
+        let hltInstruction = Instruction(opcode: hltOpcode, immediate: 0)
+        XCTAssertEqual(instructions[1], hltInstruction)
+    }
+    
+    func testHLTAcceptsNoOperands() {
+        XCTAssertThrowsError(try AssemblerFrontEnd().compile("HLT $1")) { e in
+            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "instruction takes no operands: `HLT'")
+        }
+    }
 }

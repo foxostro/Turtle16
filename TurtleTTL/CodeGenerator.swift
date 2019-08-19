@@ -96,9 +96,9 @@ public class CodeGenerator: NSObject {
     
     // Compare -- The ALU compares the contents of the A and B registers.
     //            Flags are updated but the ALU result is not stored.
-    public func cmp() throws {
+    public func cmp() {
         assert(isAssembling)
-        try instruction(withMnemonic: "ALU", immediate: 0b010110)
+        try! instruction(withMnemonic: "ALU", immediate: 0b010110)
     }
     
     // Jump -- Jump to the address specified by the XY register pair.

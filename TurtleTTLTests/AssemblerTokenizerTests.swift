@@ -101,6 +101,12 @@ class AssemblerTokenizerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens[3].string, "$1")
     }
     
+    func testTokenizeLineWithOnlyComment() {
+        let tokenizer = AssemblerTokenizer(withText: "// comment here")
+        try! tokenizer.tokenize()
+        XCTAssertEqual(tokenizer.tokens.count, 0)
+    }
+    
     func testTokenizeLineWithComment() {
         let tokenizer = AssemblerTokenizer(withText: "FOO// comment here")
         try! tokenizer.tokenize()

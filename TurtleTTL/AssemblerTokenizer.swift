@@ -79,9 +79,11 @@ public class AssemblerTokenizer: NSObject {
     func stripComments(_ line: String) -> String {
         let scanner = Scanner(string: line)
         scanner.charactersToBeSkipped = nil
-        var maybeBeforeComment: NSString?
-        if scanner.scanUpTo("//", into: &maybeBeforeComment) {
-            let beforeComment = maybeBeforeComment! as String
+        var maybe: NSString?
+        if scanner.scanString("//", into: &maybe) {
+            return ""
+        } else if scanner.scanUpTo("//", into: &maybe) {
+            let beforeComment = maybe! as String
             return beforeComment
         } else {
             return line

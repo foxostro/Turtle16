@@ -28,61 +28,71 @@ public class AssemblerFrontEnd: NSObject {
     }
     
     public func compile(_ text: String) throws -> [Instruction] {
+        let tokenizer = AssemblerTokenizer(withText: text)
+        try tokenizer.tokenize()
+        var tokens = tokenizer.tokens
         backend.begin()
-        let lines = text.split(separator: "\n")
-        for i in 0..<lines.count {
-            let line = String(lines[i])
-            try processLine(line, i+1)
+        while tokens.count > 0 {
+            try consumeLine(&tokens)
         }
         try backend.end()
         return backend.instructions
     }
     
-    func processLine(_ line: String, _ lineNumber: Int) throws {
-        let components = stripComments(line).trimmingCharacters(in: .whitespaces).components(separatedBy: .whitespaces)
-        let opcode = components[0].uppercased()
-        if opcode == "" {
-            return // do nothing
-        } else if opcode == "NOP" {
-            try ensureNoOperands(lineNumber, components)
+    func consumeLine(_ tokens: inout [AssemblerTokenizer.Token]) throws {
+        try consumeNOP(&tokens)
+        try consumeHLT(&tokens)
+        try consumeCMP(&tokens)
+        
+        // At this point, we expect the end of the line.
+        if let token = tokens.first {
+            if token.type == .newline {
+                tokens.removeFirst()
+            } else {
+                throw unrecognizedInstructionError(token.lineNumber, instruction: token.string)
+            }
+        }
+    }
+    
+    func consumeNOP(_ tokens: inout [AssemblerTokenizer.Token]) throws {
+        try consumeZeroOperandInstruction(&tokens, instruction: "NOP") {
             backend.nop()
-        } else if opcode == "CMP" {
-            try ensureNoOperands(lineNumber, components)
-            backend.cmp()
-        } else if opcode == "HLT" {
-            try ensureNoOperands(lineNumber, components)
+        }
+    }
+    
+    func consumeHLT(_ tokens: inout [AssemblerTokenizer.Token]) throws {
+        try consumeZeroOperandInstruction(&tokens, instruction: "HLT") {
             backend.hlt()
+        }
+    }
+    
+    func consumeCMP(_ tokens: inout [AssemblerTokenizer.Token]) throws {
+        try consumeZeroOperandInstruction(&tokens, instruction: "CMP") {
+            backend.cmp()
+        }
+    }
+    
+    func consumeZeroOperandInstruction(_ tokens: inout [AssemblerTokenizer.Token], instruction: String, closure: () -> Void) throws {
+        guard tokens.count > 0 else { return }
+        let token = tokens.first!
+        guard token.type == .token && token.string.caseInsensitiveCompare(instruction) == .orderedSame else { return }
+        tokens.removeFirst()
+        if (tokens.count > 0 && tokens.first!.type != .newline) {
+            throw zeroOperandsExpectedError(token.lineNumber, instruction)
         } else {
-            throw unrecognizedInstructionError(lineNumber, components)
+            closure()
         }
     }
     
-    func ensureNoOperands(_ lineNumber: Int, _ components: [String]) throws {
-        if components.count > 1 {
-            throw zeroOperandsExpectedError(lineNumber, components)
-        }
-    }
-    
-    func zeroOperandsExpectedError(_ lineNumber: Int, _ components: [String]) -> AssemblerFrontEndError {
+    func zeroOperandsExpectedError(_ lineNumber: Int, _ instruction: String) -> AssemblerFrontEndError {
         return AssemblerFrontEndError(line: lineNumber,
                                       format: "instruction takes no operands: `%@'",
-                                      components[0])
+                                      instruction)
     }
     
-    func unrecognizedInstructionError(_ lineNumber: Int, _ components: [String]) -> AssemblerFrontEndError {
+    func unrecognizedInstructionError(_ lineNumber: Int, instruction: String) -> AssemblerFrontEndError {
         return AssemblerFrontEndError(line: lineNumber,
                                       format: "no such instruction: `%@'",
-                                      components[0])
-    }
-    
-    func stripComments(_ line: String) -> String {
-        let regex = try! NSRegularExpression(pattern: "(^.*)//.*$")
-        let maybeMatch = regex.firstMatch(in: line, options: [], range: NSRange(line.startIndex..., in: line))
-        
-        if let match = maybeMatch {
-            return String(line[Range(match.range(at: 1), in: line)!])
-        } else {
-            return line
-        }
+                                      instruction)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  TextInputStreamTests.swift
+//  TurtleScannerTests.swift
 //  TurtleTTLTests
 //
 //  Created by Andrew Fox on 8/20/19.
@@ -9,7 +9,7 @@
 import XCTest
 import TurtleTTL
 
-class TextInputStreamTests: XCTestCase {
+class TurtleScannerTests: XCTestCase {
     func testInitWithEmptyString() {
         let input = TurtleScanner(withString: "")
         XCTAssertEqual(input.string, "")
@@ -99,5 +99,20 @@ class TextInputStreamTests: XCTestCase {
         let input = TurtleScanner(withString: "abcd\n")
         input.advanceToNewline()
         XCTAssertEqual(input.peek(), "\n")
+    }
+    
+    func testMatchBadPattern() {
+        let input = TurtleScanner(withString: "NOP $1\n")
+        XCTAssertEqual(input.match(pattern: "["), nil)
+    }
+    
+    func testMatchEmptyPattern() {
+        let input = TurtleScanner(withString: "NOP $1\n")
+        XCTAssertEqual(input.match(pattern: ""), nil)
+    }
+    
+    func testMatchPattern() {
+        let input = TurtleScanner(withString: "NOP $1\n")
+        XCTAssertEqual(input.match(pattern: "[A-Z]+"), "NOP")
     }
 }

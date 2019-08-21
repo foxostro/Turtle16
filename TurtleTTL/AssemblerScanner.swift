@@ -22,6 +22,7 @@ public class AssemblerScanner: TurtleScanner {
         case jmp
         case jc
         case add
+        case li
         case identifier
     }
     
@@ -97,6 +98,9 @@ public class AssemblerScanner: TurtleScanner {
         },
         Rule(pattern: "ADD\\b") {
             Token(type: .add, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "LI\\b") {
+            Token(type: .li, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "[ABCDEMXY]\\b") {
             Token(type: .register, lineNumber: $0.lineNumber, lexeme: $1, literal: $1)

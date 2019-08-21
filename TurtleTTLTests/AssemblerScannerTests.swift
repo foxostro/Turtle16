@@ -364,4 +364,15 @@ class AssemblerScannerTests: XCTestCase {
                                                 lineNumber: 1,
                                                 lexeme: "")])
     }
+    
+    func testTokenizeLI() {
+        let tokenizer = AssemblerScanner(withString: "LI")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .li,
+                                                lineNumber: 1,
+                                                lexeme: "LI"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
+    }
 }

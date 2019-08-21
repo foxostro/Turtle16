@@ -97,6 +97,18 @@ public class AssemblerParser: NSObject {
             } else {
                 throw operandTypeMismatchError(instruction)
             }
+        } else if let instruction = accept(.li) {
+            guard let destination = accept(.register) else {
+                throw operandTypeMismatchError(instruction)
+            }
+            try expectRegisterCanBeUsedAsDestination(destination)
+            try expect(type: .comma, error: operandTypeMismatchError(instruction))
+            guard let source = accept(.number) else {
+                throw operandTypeMismatchError(instruction)
+            }
+            try expect(types: [.newline, .eof],
+                       error: operandTypeMismatchError(instruction))
+            try backend.li(destination.literal as! String, source.literal as! Int)
         } else if nil != accept(.newline) {
             // do nothing
         } else if nil != accept(.eof) {

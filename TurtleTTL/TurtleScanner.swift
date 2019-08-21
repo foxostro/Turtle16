@@ -1,5 +1,5 @@
 //
-//  TextInputStream.swift
+//  TurtleScanner.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 8/20/19.
@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class TextInputStream: NSObject {
+public class TurtleScanner: NSObject {
     public private(set) var string = ""
     public var isAtEnd:Bool {
         return string == ""

@@ -19,6 +19,41 @@ public class AssemblerScanner: TurtleScanner {
         }
     }
     
+    struct Rule {
+        let pattern: String
+        let emit: (AssemblerScanner, String) -> AssemblerToken?
+    }
+    
+    let rules: [Rule] = [
+        Rule(pattern: ",") {
+            AssemblerToken(type: .comma, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "\n") {
+            let token = AssemblerToken(type: .newline, lineNumber: $0.lineNumber, lexeme: $1)
+            $0.lineNumber += 1
+            return token
+        },
+        Rule(pattern: "//") {(scanner: AssemblerScanner, lexeme: String) in
+            scanner.advanceToNewline()
+            return nil
+        },
+        Rule(pattern: "NOP") {
+            AssemblerToken(type: .nop, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "CMP") {
+            AssemblerToken(type: .cmp, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "HLT") {
+            AssemblerToken(type: .hlt, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+") {
+            AssemblerToken(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "[ \t]+") {(scanner: AssemblerScanner, lexeme: String) in
+            nil
+        }
+    ]
+    
     public private(set) var tokens: [AssemblerToken] = []
     var lineNumber = 1
     
@@ -29,55 +64,9 @@ public class AssemblerScanner: TurtleScanner {
     }
     
     public func scanToken() throws {
-        let rules: [(String, (String) -> AssemblerToken?)] = [
-            (
-                ",", {
-                    AssemblerToken(type: .comma, lineNumber: self.lineNumber, lexeme: $0)
-                }
-            ),
-            (
-                "\n", {
-                    let token = AssemblerToken(type: .newline, lineNumber: self.lineNumber, lexeme: $0)
-                    self.lineNumber += 1
-                    return token
-                }
-            ),
-            (
-                "//", {_ in
-                    self.advanceToNewline()
-                    return nil
-                }
-            ),
-            (
-                "NOP", {
-                    AssemblerToken(type: .nop, lineNumber: self.lineNumber, lexeme: $0)
-                }
-            ),
-            (
-                "CMP", {
-                    AssemblerToken(type: .cmp, lineNumber: self.lineNumber, lexeme: $0)
-                }
-            ),
-            (
-                "HLT", {
-                    AssemblerToken(type: .hlt, lineNumber: self.lineNumber, lexeme: $0)
-                }
-            ),
-            (
-                "[_a-zA-Z][_a-zA-Z0-9]+", {
-                    AssemblerToken(type: .identifier, lineNumber: self.lineNumber, lexeme: $0)
-                }
-            ),
-            (
-                "[ \t]+", { _ in
-                    nil
-                }
-            )
-        ]
-        
         for rule in rules {
-            if let lexeme = match(pattern: rule.0) {
-                if let token = rule.1(lexeme) {
+            if let lexeme = match(pattern: rule.pattern) {
+                if let token = rule.emit(self, lexeme) {
                     tokens.append(token)
                 }
                 return

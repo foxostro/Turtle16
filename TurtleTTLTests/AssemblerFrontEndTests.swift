@@ -290,4 +290,63 @@ class AssemblerFrontEndTests: XCTestCase {
             XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
         }
     }
+    
+    func testFailToCompileLIWithNoOperands() {
+        XCTAssertThrowsError(try assembler.compile("LI")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
+    
+    func testFailToCompileLIWithOneOperand() {
+        XCTAssertThrowsError(try assembler.compile("LI $1")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
+    
+    func testFailToCompileLIWhichIsMissingTheCommaOperand() {
+        XCTAssertThrowsError(try assembler.compile("LI A $1")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
+    
+    func testFailToCompileLIWithBadComma() {
+        XCTAssertThrowsError(try assembler.compile("LI,")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
+    
+    func testFailToCompileLIWhereDestinationIsANumber() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("LI $1, A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
+    
+    func testFailToCompileLIWhereSourceIsARegister() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("LI B, A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
+    
+    func testFailToCompileLIWithTooManyOperands() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("LI A, $1, B")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
+        }
+    }
 }

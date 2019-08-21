@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class Token : NSObject {
+public class AssemblerToken : NSObject {
     public enum TokenType {
         case newline
         case comma
@@ -33,7 +33,7 @@ public class Token : NSObject {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? Token {
+        if let rhs = rhs as? AssemblerToken {
             return self == rhs
         } else {
             return false
@@ -41,7 +41,7 @@ public class Token : NSObject {
     }
 }
 
-public func ==(lhs: Token, rhs: Token) -> Bool {
+public func ==(lhs: AssemblerToken, rhs: AssemblerToken) -> Bool {
     return lhs.type == rhs.type
         && lhs.lineNumber == rhs.lineNumber
         && lhs.lexeme == rhs.lexeme

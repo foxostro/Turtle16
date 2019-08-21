@@ -19,7 +19,7 @@ public class AssemblerScanner: CharacterStream {
         }
     }
     
-    public private(set) var tokens: [Token] = []
+    public private(set) var tokens: [AssemblerToken] = []
     var lineNumber = 1
     
     public func scanTokens() throws {
@@ -45,8 +45,8 @@ public class AssemblerScanner: CharacterStream {
         }
     }
     
-    func emit(type: Token.TokenType, lineNumber: Int, lexeme: String) {
-        tokens.append(Token(type: type, lineNumber: lineNumber, lexeme: lexeme))
+    func emit(type: AssemblerToken.TokenType, lineNumber: Int, lexeme: String) {
+        tokens.append(AssemblerToken(type: type, lineNumber: lineNumber, lexeme: lexeme))
     }
     
     public func match(_ string: String) -> Bool {

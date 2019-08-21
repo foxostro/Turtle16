@@ -9,16 +9,6 @@
 import Cocoa
 
 public class AssemblerScanner: TurtleScanner {
-    public struct AssemblerScannerError: Error {
-        public let line: Int
-        public let message: String
-        
-        public init(line: Int, format: String, _ args: CVarArg...) {
-            self.line = line
-            message = String(format:format, arguments:args)
-        }
-    }
-    
     public enum TokenType {
         case eof
         case newline
@@ -197,8 +187,8 @@ public class AssemblerScanner: TurtleScanner {
         tokens.append(Token(type: type, lineNumber: lineNumber, lexeme: lexeme))
     }
     
-    func unexpectedCharacterError(_ character: String) -> AssemblerScannerError {
-        return AssemblerScannerError(line: lineNumber, format: "unexpected character: `%@'", character)
+    func unexpectedCharacterError(_ character: String) -> AssemblerError {
+        return AssemblerError(line: lineNumber, format: "unexpected character: `%@'", character)
     }
 }
 

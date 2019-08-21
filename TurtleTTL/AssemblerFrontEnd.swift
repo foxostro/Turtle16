@@ -28,6 +28,6 @@ public class AssemblerFrontEnd: NSObject {
     }
     
     public func resolveSymbol(_ name: String) throws -> Int {
-        return try backend.resolveSymbol(name)
+        return try backend.resolveSymbol(name: name)
     }
 }

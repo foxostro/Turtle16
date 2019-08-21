@@ -34,7 +34,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testCompilingBogusOpcodeYieldsError() {
         XCTAssertThrowsError(try assembler.compile("BOGUS")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
         }
@@ -42,7 +42,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testCompilingBogusOpcodeWithNewlineYieldsError() {
         XCTAssertThrowsError(try assembler.compile("BOGUS\n")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
         }
@@ -71,7 +71,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testNOPAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
         }
@@ -95,7 +95,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testCMPAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("CMP $1")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "instruction takes no operands: `CMP'")
         }
@@ -112,7 +112,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testHLTAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("HLT $1")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "instruction takes no operands: `HLT'")
         }
@@ -135,7 +135,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testDuplicateLabelDeclaration() {
         XCTAssertThrowsError(try assembler.compile("label:\nlabel:")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 2)
             XCTAssertEqual(error.message, "duplicate label: `label'")
         }
@@ -143,28 +143,28 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testParseLabelNameIsANumber() {
         XCTAssertThrowsError(try assembler.compile("123:")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.message, "unexpected end of input")
         }
     }
     
     func testParseLabelNameIsAKeyword() {
         XCTAssertThrowsError(try assembler.compile("NOP:")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
         }
     }
     
     func testParseExtraneousColon() {
         XCTAssertThrowsError(try assembler.compile(":")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.message, "unexpected end of input")
         }
     }
     
     func testFailToCompileJMPWithZeroOperands() {
         XCTAssertThrowsError(try assembler.compile("JMP")) { e in
-            let error = e as! AssemblerParser.AssemblerParserError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "operand type mismatch: `JMP'")
         }
@@ -172,9 +172,8 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testFailToCompileJMPWithUndeclaredLabel() {
         XCTAssertThrowsError(try assembler.compile("JMP label")) { e in
-            let error = e as! AssemblerBackEnd.AssemblerBackEndError
-            // TODO: Need a line number in the error here
-//            XCTAssertEqual(error.line, 1)
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
         }
     }

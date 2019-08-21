@@ -29,20 +29,17 @@ public class AssemblerScanner: CharacterStream {
     }
     
     public func scanToken() throws {
-        guard let character = advance() else { return }
-        if character == "," {
+        if match(",") {
             emit(type: .comma, lineNumber: lineNumber, lexeme: ",")
-        } else if character == "\n" {
+        } else if match("\n") {
             emit(type: .newline, lineNumber: lineNumber, lexeme: "\n")
             lineNumber += 1
-        } else if character == "/" {
-            if peek() == "/" {
-                advanceToNewline()
-            }
-        } else if character == " " || character == "\t" {
+        } else if match("//") {
+            advanceToNewline()
+        } else if match(" ") || match("\t") {
             // consume whitespace without doing anything
         } else {
-            throw unexpectedCharacterError(character)
+            throw unexpectedCharacterError(peek()!)
         }
     }
     
@@ -50,12 +47,10 @@ public class AssemblerScanner: CharacterStream {
         tokens.append(Token(type: type, lineNumber: lineNumber, lexeme: lexeme))
     }
     
-    public func match(character: Character) -> Bool {
-        if let c = peek() {
-            if c == character {
-                advance()
-                return true
-            }
+    public func match(_ string: String) -> Bool {
+        if (peek(count: string.count) == string) {
+            advance(count: string.count)
+            return true
         }
         return false
     }
@@ -72,21 +67,4 @@ public class AssemblerScanner: CharacterStream {
     func unexpectedCharacterError(_ character: Character) -> AssemblerScannerError {
         return AssemblerScannerError(line: lineNumber, format: "unexpected character: `%@'", String(character))
     }
-    
-//    public func match(string: String) -> Bool {
-//        return match(array: Array(string))
-//    }
-//
-//    public func match(array: Array<Character>) -> Bool {
-//        for i in 1..<array.count {
-//            guard let character = peek(i) else {
-//                return false
-//            }
-//            if character == array[i] {
-//                advance()
-//                return true
-//            }
-//        }
-//        return false
-//    }
 }

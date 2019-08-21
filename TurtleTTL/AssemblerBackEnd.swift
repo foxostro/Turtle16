@@ -80,6 +80,16 @@ public class AssemblerBackEnd: NSObject {
         programCounter += 1
     }
     
+    // Load Immediate -- Loads an immediate value to the specified destination
+    public func li(_ destination: String, token immediate: AssemblerScanner.Token) throws {
+        assert(isAssembling)
+        assert(immediate.type == .number)
+        commands.append({
+            try self.codeGenerator.li(destination, token: immediate)
+        })
+        programCounter += 1
+    }
+    
     // Store -- Store the contents of a register to memory at the address.
     public func store(address: Int, source: String) throws {
         assert(isAssembling)
@@ -142,7 +152,7 @@ public class AssemblerBackEnd: NSObject {
         programCounter += 1
     }
     
-    public func label(identifier: AssemblerScanner.Token) throws {
+    public func label(token identifier: AssemblerScanner.Token) throws {
         assert(isAssembling)
         assert(identifier.type == .identifier)
         let name = identifier.lexeme
@@ -162,7 +172,7 @@ public class AssemblerBackEnd: NSObject {
         }
     }
     
-    public func resolveSymbol(identifier: AssemblerScanner.Token) throws -> Int {
+    public func resolveSymbol(token identifier: AssemblerScanner.Token) throws -> Int {
         assert(identifier.type == .identifier)
         let name = identifier.lexeme
         if let value = self.symbols[name] {
@@ -193,18 +203,18 @@ public class AssemblerBackEnd: NSObject {
         try self.setAddress(address)
     }
     
-    func setAddress(identifier: AssemblerScanner.Token) throws {
+    func setAddress(token identifier: AssemblerScanner.Token) throws {
         assert(identifier.type == .identifier)
-        let address = try self.resolveSymbol(identifier: identifier)
+        let address = try self.resolveSymbol(token: identifier)
         try self.setAddress(address)
     }
     
     // Jump -- Jump to the specified label.
-    public func jmp(identifier: AssemblerScanner.Token) throws {
+    public func jmp(token identifier: AssemblerScanner.Token) throws {
         assert(identifier.type == .identifier)
         assert(isAssembling)
         commands.append({
-            try self.setAddress(identifier: identifier)
+            try self.setAddress(token: identifier)
             self.codeGenerator.jmp()
             self.codeGenerator.nop()
             self.codeGenerator.nop()
@@ -238,11 +248,11 @@ public class AssemblerBackEnd: NSObject {
     
     // Jump on Carry -- If the carry flag is set then jump to the specified
     // label. Otherwise, do nothing.
-    public func jc(identifier: AssemblerScanner.Token) throws {
+    public func jc(token identifier: AssemblerScanner.Token) throws {
         assert(identifier.type == .identifier)
         assert(isAssembling)
         commands.append({
-            try self.setAddress(identifier: identifier)
+            try self.setAddress(token: identifier)
             self.codeGenerator.jc()
             self.codeGenerator.nop()
             self.codeGenerator.nop()

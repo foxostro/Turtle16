@@ -375,4 +375,15 @@ class AssemblerScannerTests: XCTestCase {
                                                 lineNumber: 1,
                                                 lexeme: "")])
     }
+    
+    func testTokenizeMOV() {
+        let tokenizer = AssemblerScanner(withString: "MOV")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .mov,
+                                                lineNumber: 1,
+                                                lexeme: "MOV"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
+    }
 }

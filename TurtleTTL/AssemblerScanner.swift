@@ -19,17 +19,53 @@ public class AssemblerScanner: TurtleScanner {
         }
     }
     
+    public enum TokenType {
+        case newline
+        case comma
+        case nop
+        case cmp
+        case hlt
+        case identifier
+    }
+    
+    public class Token : NSObject {
+        public let type: TokenType
+        public let lineNumber: Int
+        public let lexeme: String
+        
+        public required init(type: TokenType,
+                             lineNumber: Int,
+                             lexeme: String) {
+            self.type = type
+            self.lineNumber = lineNumber
+            self.lexeme = lexeme
+            super.init()
+        }
+        
+        public override var description: String {
+            return String(format: "<Token: type=%@, lineNumber=%d, lexeme=\"%@\">", String(describing: type), lineNumber, lexeme)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            if let rhs = rhs as? Token {
+                return self == rhs
+            } else {
+                return false
+            }
+        }
+    }
+    
     struct Rule {
         let pattern: String
-        let emit: (AssemblerScanner, String) -> AssemblerToken?
+        let emit: (AssemblerScanner, String) -> Token?
     }
     
     let rules: [Rule] = [
         Rule(pattern: ",") {
-            AssemblerToken(type: .comma, lineNumber: $0.lineNumber, lexeme: $1)
+            Token(type: .comma, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "\n") {
-            let token = AssemblerToken(type: .newline, lineNumber: $0.lineNumber, lexeme: $1)
+            let token = Token(type: .newline, lineNumber: $0.lineNumber, lexeme: $1)
             $0.lineNumber += 1
             return token
         },
@@ -38,23 +74,23 @@ public class AssemblerScanner: TurtleScanner {
             return nil
         },
         Rule(pattern: "NOP") {
-            AssemblerToken(type: .nop, lineNumber: $0.lineNumber, lexeme: $1)
+            Token(type: .nop, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "CMP") {
-            AssemblerToken(type: .cmp, lineNumber: $0.lineNumber, lexeme: $1)
+            Token(type: .cmp, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "HLT") {
-            AssemblerToken(type: .hlt, lineNumber: $0.lineNumber, lexeme: $1)
+            Token(type: .hlt, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+") {
-            AssemblerToken(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
+            Token(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "[ \t]+") {(scanner: AssemblerScanner, lexeme: String) in
             nil
         }
     ]
     
-    public private(set) var tokens: [AssemblerToken] = []
+    public private(set) var tokens: [Token] = []
     var lineNumber = 1
     
     public func scanTokens() throws {
@@ -76,11 +112,17 @@ public class AssemblerScanner: TurtleScanner {
         throw unexpectedCharacterError(peek()!)
     }
     
-    func emit(type: AssemblerToken.TokenType, lineNumber: Int, lexeme: String) {
-        tokens.append(AssemblerToken(type: type, lineNumber: lineNumber, lexeme: lexeme))
+    func emit(type: TokenType, lineNumber: Int, lexeme: String) {
+        tokens.append(Token(type: type, lineNumber: lineNumber, lexeme: lexeme))
     }
     
     func unexpectedCharacterError(_ character: String) -> AssemblerScannerError {
         return AssemblerScannerError(line: lineNumber, format: "unexpected character: `%@'", character)
     }
+}
+
+public func ==(lhs: AssemblerScanner.Token, rhs: AssemblerScanner.Token) -> Bool {
+    return lhs.type == rhs.type
+        && lhs.lineNumber == rhs.lineNumber
+        && lhs.lexeme == rhs.lexeme
 }

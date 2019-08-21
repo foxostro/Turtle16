@@ -1,0 +1,80 @@
+//
+//  AssemblerScannerTests.swift
+//  TurtleTTLTests
+//
+//  Created by Andrew Fox on 8/20/19.
+//  Copyright © 2019 Andrew Fox. All rights reserved.
+//
+
+import XCTest
+import TurtleTTL
+
+class AssemblerScannerTests: XCTestCase {
+    func testTokenizeEmptyString() {
+        let tokenizer = AssemblerScanner(withString: "")
+        try! tokenizer.scanTokens()
+        let tokens = tokenizer.tokens
+        XCTAssertEqual(tokens.count, 0)
+    }
+    
+    func testTokenizeNewLine() {
+        let tokenizer = AssemblerScanner(withString: "\n")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .newline,
+                                                lineNumber: 1,
+                                                lexeme: "\n")])
+    }
+    
+    func testTokenizeSomeNewLines() {
+        let tokenizer = AssemblerScanner(withString: "\n\n\n")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .newline,
+                                                lineNumber: 1,
+                                                lexeme: "\n"),
+                                          Token(type: .newline,
+                                                lineNumber: 2,
+                                                lexeme: "\n"),
+                                          Token(type: .newline,
+                                                lineNumber: 3,
+                                                lexeme: "\n")])
+    }
+    
+    func testTokenizeComma() {
+        let tokenizer = AssemblerScanner(withString: ",")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .comma,
+                                                lineNumber: 1,
+                                                lexeme: ",")])
+    }
+    
+    func testTokenizeComment() {
+        let tokenizer = AssemblerScanner(withString: "// comment")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [])
+    }
+    
+    func testTokenizeCommaAndComment() {
+        let tokenizer = AssemblerScanner(withString: ",// comment")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .comma,
+                                                lineNumber: 1,
+                                                lexeme: ",")])
+    }
+    
+    func testTokenizeCommentWithWhitespace() {
+        let tokenizer = AssemblerScanner(withString: " \t  // comment\n")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .newline,
+                                                lineNumber: 1,
+                                                lexeme: "\n")])
+    }
+    
+    func testUnexpectedCharacter() {
+        let tokenizer = AssemblerScanner(withString: "'")
+        XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
+            let error = e as! AssemblerScanner.AssemblerScannerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "unexpected character: `''")
+        }
+    }
+}

@@ -51,4 +51,11 @@ class CharacterStreamTests: XCTestCase {
         XCTAssertEqual(input.advance(), "a")
         XCTAssertTrue(input.isAtEnd)
     }
+    
+    func testAdvanceMultipleCharacter() {
+        let input = CharacterStream(withString: "ab")
+        XCTAssertFalse(input.isAtEnd)
+        XCTAssertEqual(input.advance(count: 3), "ab")
+        XCTAssertTrue(input.isAtEnd)
+    }
 }

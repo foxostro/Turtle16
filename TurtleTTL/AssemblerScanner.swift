@@ -36,7 +36,7 @@ public class AssemblerScanner: CharacterStream {
             lineNumber += 1
         } else if match("//") {
             advanceToNewline()
-        } else if match(" ") || match("\t") {
+        } else if match(characterSet: CharacterSet.whitespaces) {
             // consume whitespace without doing anything
         } else {
             throw unexpectedCharacterError(peek()!)
@@ -51,6 +51,16 @@ public class AssemblerScanner: CharacterStream {
         if (peek(count: string.count) == string) {
             advance(count: string.count)
             return true
+        }
+        return false
+    }
+    
+    public func match(characterSet: CharacterSet) -> Bool {
+        if let c = peek() {
+            if c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
+                advance()
+                return true
+            }
         }
         return false
     }

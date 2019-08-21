@@ -42,7 +42,7 @@ public class AssemblerScanner: TurtleScanner {
             emit(type: .cmp, lineNumber: lineNumber, lexeme: lexeme)
         } else if let lexeme = match("HLT") {
             emit(type: .hlt, lineNumber: lineNumber, lexeme: lexeme)
-        } else if let lexeme = match(characterSet: .alphanumerics) {
+        } else if let lexeme = match(pattern: "[_a-zA-Z][_a-zA-Z0-9]+") {
             emit(type: .identifier, lineNumber: lineNumber, lexeme: lexeme)
         } else if nil != match(characterSet: .whitespaces) {
             // consume whitespace without doing anything

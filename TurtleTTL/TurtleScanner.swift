@@ -58,7 +58,7 @@ public class TurtleScanner: NSObject {
     }
     
     public func match(pattern: String) -> String? {
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+        guard let regex = try? NSRegularExpression(pattern: "^\(pattern)", options: []) else {
             return nil
         }
         guard let match = regex.firstMatch(in: string, options: [], range: NSRange(string.startIndex..., in: string)) else {

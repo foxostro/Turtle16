@@ -50,13 +50,6 @@ public class TurtleScanner: NSObject {
         return result
     }
     
-    public func match(_ string: String) -> String? {
-        if (peek(count: string.count) == string) {
-            return advance(count: string.count)
-        }
-        return nil
-    }
-    
     public func match(pattern: String) -> String? {
         guard let regex = try? NSRegularExpression(pattern: "^\(pattern)", options: []) else {
             return nil

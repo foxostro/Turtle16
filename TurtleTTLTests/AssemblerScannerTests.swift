@@ -92,7 +92,7 @@ class AssemblerScannerTests: XCTestCase {
     func testUnexpectedCharacter() {
         let tokenizer = AssemblerScanner(withString: "'")
         XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
-            let error = e as! AssemblerScanner.AssemblerScannerError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "unexpected character: `''")
         }
@@ -167,7 +167,7 @@ class AssemblerScannerTests: XCTestCase {
     func testFailToTokenizeInvalidIdentifier() {
         let tokenizer = AssemblerScanner(withString: "*")
         XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
-            let error = e as! AssemblerScanner.AssemblerScannerError
+            let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "unexpected character: `*'")
         }

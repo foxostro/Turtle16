@@ -52,7 +52,7 @@ class ViewController: NSViewController {
         var program = [Instruction]()
         do {
             program = try tryGenerateExampleProgram()
-        } catch let error as AssemblerBackEnd.AssemblerBackEndError {
+        } catch let error as AssemblerError {
             alert(withMessage: "Assembler Back End Error: " + error.message)
         } catch let error as CodeGenerator.CodeGeneratorError {
             alert(withMessage: "Code Generator Error: " + error.message)
@@ -82,7 +82,7 @@ class ViewController: NSViewController {
             try a.li("D", kSerialInterface)
             try a.li("M", Int(i))
         }
-        try a.label("loop")
+        try a.label(name: "loop")
         
         // Wait until the number of available bytes is greater than zero.
         try a.li("D", kSerialInterface)

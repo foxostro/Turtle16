@@ -10,14 +10,6 @@ import Cocoa
 
 // Provides an interface for driving the code generator.
 public class AssemblerBackEnd: NSObject {
-    public struct AssemblerBackEndError: Error {
-        public let message: String
-        
-        public init(format: String, _ args: CVarArg...) {
-            message = String(format:format, arguments:args)
-        }
-    }
-    
     public var instructions = [Instruction]()
     public var isAssembling: Bool = false
     let codeGenerator: CodeGenerator
@@ -92,7 +84,7 @@ public class AssemblerBackEnd: NSObject {
     public func store(address: Int, source: String) throws {
         assert(isAssembling)
         if(address < 0 || address > 0xffff) {
-            throw AssemblerBackEndError(format: "Address is invalid: 0x%x", address)
+            throw AssemblerError(format: "Address is invalid: 0x%x", address)
         }
         commands.append({
             try self.setAddress(address)
@@ -105,10 +97,10 @@ public class AssemblerBackEnd: NSObject {
     public func store(address: Int, immediate: Int) throws {
         assert(isAssembling)
         if(address < 0 || address > 0xffff) {
-            throw AssemblerBackEndError(format: "Address is invalid: 0x%x", address)
+            throw AssemblerError(format: "Address is invalid: 0x%x", address)
         }
         if(immediate < 0 || immediate > 0xff) {
-            throw AssemblerBackEndError(format: "Immediate is invalid: 0x%x", address)
+            throw AssemblerError(format: "Immediate is invalid: 0x%x", address)
         }
         commands.append({
             try self.setAddress(address)
@@ -121,7 +113,7 @@ public class AssemblerBackEnd: NSObject {
     public func load(address: Int, destination: String) throws {
         assert(isAssembling)
         if(address < 0 || address > 0xffff) {
-            throw AssemblerBackEndError(format: "Address is invalid: 0x%x", address)
+            throw AssemblerError(format: "Address is invalid: 0x%x", address)
         }
         commands.append({
             try self.setAddress(address)
@@ -150,34 +142,74 @@ public class AssemblerBackEnd: NSObject {
         programCounter += 1
     }
     
-    public func label(_ name: String) throws {
+    public func label(identifier: AssemblerScanner.Token) throws {
+        assert(isAssembling)
+        assert(identifier.type == .identifier)
+        let name = identifier.lexeme
+        if symbols[name] == nil {
+            symbols[name] = self.programCounter
+        } else {
+            throw AssemblerError(line: identifier.lineNumber, format: "duplicate label: `%@'", name)
+        }
+    }
+    
+    public func label(name: String) throws {
         assert(isAssembling)
         if symbols[name] == nil {
             symbols[name] = self.programCounter
         } else {
-            throw AssemblerBackEndError(format: "duplicate label: `%@'", name)
+            throw AssemblerError(format: "duplicate label: `%@'", name)
         }
     }
     
-    public func resolveSymbol(_ name: String) throws -> Int {
+    public func resolveSymbol(identifier: AssemblerScanner.Token) throws -> Int {
+        assert(identifier.type == .identifier)
+        let name = identifier.lexeme
         if let value = self.symbols[name] {
             return value
         } else {
-            throw AssemblerBackEndError(format: "unrecognized symbol name: `%@'", name)
+            throw AssemblerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
+        }
+    }
+    
+    public func resolveSymbol(name: String) throws -> Int {
+        if let value = self.symbols[name] {
+            return value
+        } else {
+            throw AssemblerError(format: "unrecognized symbol name: `%@'", name)
         }
     }
     
     func setAddress(_ address: Int) throws {
         if(address < 0 || address > 0xffff) {
-            throw AssemblerBackEndError(format: "invalid address: 0x%x", address)
+            throw AssemblerError(format: "invalid address: 0x%x", address)
         }
         try self.codeGenerator.li("X", (address & 0xff00) >> 8)
         try self.codeGenerator.li("Y", (address & 0xff))
     }
     
     func setAddress(withSymbol name: String) throws {
-        let address = try self.resolveSymbol(name)
+        let address = try self.resolveSymbol(name: name)
         try self.setAddress(address)
+    }
+    
+    func setAddress(identifier: AssemblerScanner.Token) throws {
+        assert(identifier.type == .identifier)
+        let address = try self.resolveSymbol(identifier: identifier)
+        try self.setAddress(address)
+    }
+    
+    // Jump -- Jump to the specified label.
+    public func jmp(identifier: AssemblerScanner.Token) throws {
+        assert(identifier.type == .identifier)
+        assert(isAssembling)
+        commands.append({
+            try self.setAddress(identifier: identifier)
+            self.codeGenerator.jmp()
+            self.codeGenerator.nop()
+            self.codeGenerator.nop()
+        })
+        programCounter += 5
     }
     
     // Jump -- Jump to the specified label.

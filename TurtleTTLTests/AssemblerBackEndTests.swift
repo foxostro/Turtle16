@@ -189,27 +189,27 @@ class AssemblerBackEndTests: XCTestCase {
     func testResolveUnrecognizedLabel() {
         let backEnd = makeBackEnd()
         backEnd.begin()
-        XCTAssertThrowsError(try backEnd.resolveSymbol(""))
+        XCTAssertThrowsError(try backEnd.resolveSymbol(name: ""))
     }
     
     func testLabel() {
         let backEnd = makeBackEnd()
         backEnd.begin()
-        try! backEnd.label("foo")
-        XCTAssertEqual(try! backEnd.resolveSymbol("foo"), 1)
+        try! backEnd.label(name: "foo")
+        XCTAssertEqual(try! backEnd.resolveSymbol(name: "foo"), 1)
     }
     
     func testDuplicateLabel() {
         let backEnd = makeBackEnd()
         backEnd.begin()
-        try! backEnd.label("foo")
-        XCTAssertThrowsError(try backEnd.label("foo"))
+        try! backEnd.label(name: "foo")
+        XCTAssertThrowsError(try backEnd.label(name: "foo"))
     }
     
     func testJmp() {
         let backEnd = makeBackEnd()
         backEnd.begin()
-        try! backEnd.label("foo")
+        try! backEnd.label(name: "foo")
         try! backEnd.jmp("foo")
         try! backEnd.end()
         let instructions = backEnd.instructions
@@ -239,7 +239,7 @@ class AssemblerBackEndTests: XCTestCase {
         let backEnd = makeBackEnd()
         backEnd.begin()
         try! backEnd.jmp("foo")
-        try! backEnd.label("foo")
+        try! backEnd.label(name: "foo")
         backEnd.hlt()
         try! backEnd.end()
         let instructions = backEnd.instructions
@@ -271,7 +271,7 @@ class AssemblerBackEndTests: XCTestCase {
     func testJC() {
         let backEnd = makeBackEnd()
         backEnd.begin()
-        try! backEnd.label("foo")
+        try! backEnd.label(name: "foo")
         try! backEnd.jc("foo")
         try! backEnd.end()
         let instructions = backEnd.instructions

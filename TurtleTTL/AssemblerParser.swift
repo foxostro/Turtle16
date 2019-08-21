@@ -9,21 +9,6 @@
 import Cocoa
 
 public class AssemblerParser: NSObject {
-    public struct AssemblerParserError: Error {
-        public let line: Int?
-        public let message: String
-        
-        public init(line: Int, format: String, _ args: CVarArg...) {
-            self.line = line
-            message = String(format:format, arguments:args)
-        }
-        
-        public init(format: String, _ args: CVarArg...) {
-            self.line = nil
-            message = String(format:format, arguments:args)
-        }
-    }
-    
     let backend: AssemblerBackEnd
     public typealias Token = AssemblerScanner.Token
     typealias TokenType = AssemblerScanner.TokenType
@@ -91,7 +76,7 @@ public class AssemblerParser: NSObject {
             if let identifier = accept(.identifier) {
                 try expect(types: [.newline, .eof],
                            error: operandTypeMismatchError(instruction))
-                try backend.jmp(identifier.lexeme)
+                try backend.jmp(identifier: identifier)
             } else {
                 throw operandTypeMismatchError(instruction)
             }
@@ -101,34 +86,30 @@ public class AssemblerParser: NSObject {
             // do nothing
         } else if let identifier = accept(.identifier) {
             if nil != accept(.colon) {
-                do {
-                    try backend.label(identifier.lexeme)
-                } catch let error as AssemblerBackEnd.AssemblerBackEndError {
-                    throw AssemblerParserError(line: identifier.lineNumber, format: error.message)
-                }
+                try backend.label(identifier: identifier)
             } else {
                 throw unrecognizedInstructionError(identifier)
             }
         } else {
-            throw AssemblerParserError(format: "unexpected end of input")
+            throw AssemblerError(format: "unexpected end of input")
         }
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {
-        return AssemblerParserError(line: instruction.lineNumber,
-                                    format: "instruction takes no operands: `%@'",
-                                    instruction.lexeme)
+        return AssemblerError(line: instruction.lineNumber,
+                              format: "instruction takes no operands: `%@'",
+                              instruction.lexeme)
     }
     
     func operandTypeMismatchError(_ instruction: Token) -> Error {
-        return AssemblerParserError(line: instruction.lineNumber,
-                                    format: "operand type mismatch: `%@'",
-                                    instruction.lexeme)
+        return AssemblerError(line: instruction.lineNumber,
+                              format: "operand type mismatch: `%@'",
+                              instruction.lexeme)
     }
     
     func unrecognizedInstructionError(_ instruction: Token) -> Error {
-        return AssemblerParserError(line: instruction.lineNumber,
-                                    format: "no such instruction: `%@'",
-                                    instruction.lexeme)
+        return AssemblerError(line: instruction.lineNumber,
+                              format: "no such instruction: `%@'",
+                              instruction.lexeme)
     }
 }

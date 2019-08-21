@@ -9,18 +9,18 @@
 import Cocoa
 
 public class CharacterStream: NSObject {
-    public private(set) var characters: [Character]
+    public private(set) var string = ""
     public var isAtEnd:Bool {
-        return characters.count == 0
+        return string == ""
     }
     
     public required init(withString string: String) {
-        characters = Array<Character>(string)
+        self.string = string
     }
     
-    public func peek(_ ahead: Int = 0) -> Character? {
-        if ahead >= 0 && ahead < characters.count {
-           return characters[ahead]
+    public func peek(_ ahead: Int = 0) -> String? {
+        if ahead >= 0 && ahead < string.count {
+           return String(Array(string)[ahead])
         } else {
             return nil
         }
@@ -37,7 +37,7 @@ public class CharacterStream: NSObject {
     
     @discardableResult public func advance() -> String? {
         guard let character = peek() else { return nil }
-        characters.removeFirst()
+        string.remove(at: string.startIndex)
         return String(character)
     }
     

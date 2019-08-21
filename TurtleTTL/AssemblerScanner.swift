@@ -87,7 +87,7 @@ public class AssemblerScanner: CharacterStream {
         }
     }
     
-    func unexpectedCharacterError(_ character: Character) -> AssemblerScannerError {
-        return AssemblerScannerError(line: lineNumber, format: "unexpected character: `%@'", String(character))
+    func unexpectedCharacterError(_ character: String) -> AssemblerScannerError {
+        return AssemblerScannerError(line: lineNumber, format: "unexpected character: `%@'", character)
     }
 }

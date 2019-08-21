@@ -12,13 +12,13 @@ import TurtleTTL
 class CharacterStreamTests: XCTestCase {
     func testInitWithEmptyString() {
         let input = CharacterStream(withString: "")
-        XCTAssertEqual(input.characters, [])
+        XCTAssertEqual(input.string, "")
         XCTAssertTrue(input.isAtEnd)
     }
     
     func testInitWithOneCharacter() {
         let input = CharacterStream(withString: "a")
-        XCTAssertEqual(input.characters, ["a"])
+        XCTAssertEqual(input.string, "a")
         XCTAssertFalse(input.isAtEnd)
     }
     

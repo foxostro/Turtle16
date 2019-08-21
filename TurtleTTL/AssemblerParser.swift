@@ -88,6 +88,15 @@ public class AssemblerParser: NSObject {
             } else {
                 throw operandTypeMismatchError(instruction)
             }
+        } else if let instruction = accept(.add) {
+            if let register = accept(.register) {
+                try expectRegisterCanBeUsedAsDestination(register)
+                try expect(types: [.newline, .eof],
+                           error: operandTypeMismatchError(instruction))
+                try backend.add(register.literal as! String)
+            } else {
+                throw operandTypeMismatchError(instruction)
+            }
         } else if nil != accept(.newline) {
             // do nothing
         } else if nil != accept(.eof) {
@@ -100,6 +109,12 @@ public class AssemblerParser: NSObject {
             }
         } else {
             throw AssemblerError(format: "unexpected end of input")
+        }
+    }
+    
+    func expectRegisterCanBeUsedAsDestination(_ register: Token) throws {
+        if register.literal as! String == "E" || register.literal as! String == "C" {
+            throw badDestinationError(register)
         }
     }
     
@@ -119,5 +134,11 @@ public class AssemblerParser: NSObject {
         return AssemblerError(line: instruction.lineNumber,
                               format: "no such instruction: `%@'",
                               instruction.lexeme)
+    }
+    
+    func badDestinationError(_ register: Token) -> Error {
+        return AssemblerError(line: register.lineNumber,
+                              format: "register cannot be used as a destination: `%@'",
+                              register.lexeme)
     }
 }

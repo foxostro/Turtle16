@@ -109,4 +109,13 @@ class AssemblerScannerTests: XCTestCase {
                                                          lineNumber: 1,
                                                          lexeme: "Bogus")])
     }
+    
+    func testFailToTokenizeInvalidIdentifier() {
+        let tokenizer = AssemblerScanner(withString: "1Bogus")
+        XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
+            let error = e as! AssemblerScanner.AssemblerScannerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "unexpected character: `1'")
+        }
+    }
 }

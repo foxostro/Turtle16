@@ -36,6 +36,8 @@ public class AssemblerScanner: CharacterStream {
             lineNumber += 1
         } else if match("//") {
             advanceToNewline()
+        } else if match("NOP") {
+            emit(type: .nop, lineNumber: lineNumber, lexeme: "NOP")
         } else if match(characterSet: CharacterSet.whitespaces) {
             // consume whitespace without doing anything
         } else {

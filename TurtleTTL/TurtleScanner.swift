@@ -26,28 +26,10 @@ public class TurtleScanner: NSObject {
         }
     }
     
-    public func peek(count: Int) -> String {
-        var result = ""
-        for i in 0..<count {
-            guard let c = peek(i) else { break }
-            result += String(c)
-        }
-        return result
-    }
-    
     @discardableResult public func advance() -> String? {
         guard let character = peek() else { return nil }
         string.remove(at: string.startIndex)
         return String(character)
-    }
-    
-    @discardableResult public func advance(count: Int) -> String {
-        var result = ""
-        for _ in 0..<count {
-            guard let c = advance() else { break }
-            result += String(c)
-        }
-        return result
     }
     
     public func match(pattern: String) -> String? {

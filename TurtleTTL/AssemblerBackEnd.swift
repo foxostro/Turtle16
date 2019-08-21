@@ -155,7 +155,7 @@ public class AssemblerBackEnd: NSObject {
         if symbols[name] == nil {
             symbols[name] = self.programCounter
         } else {
-            throw AssemblerBackEndError(format: "Duplicate label \"%@\"", name)
+            throw AssemblerBackEndError(format: "duplicate label: `%@'", name)
         }
     }
     
@@ -163,13 +163,13 @@ public class AssemblerBackEnd: NSObject {
         if let value = self.symbols[name] {
             return value
         } else {
-            throw AssemblerBackEndError(format: "Unrecognized symbol name \"%@\"", name)
+            throw AssemblerBackEndError(format: "unrecognized symbol name: `%@'", name)
         }
     }
     
     func setAddress(_ address: Int) throws {
         if(address < 0 || address > 0xffff) {
-            throw AssemblerBackEndError(format: "Address is invalid: 0x%x", address)
+            throw AssemblerBackEndError(format: "invalid address: 0x%x", address)
         }
         try self.codeGenerator.li("X", (address & 0xff00) >> 8)
         try self.codeGenerator.li("Y", (address & 0xff))

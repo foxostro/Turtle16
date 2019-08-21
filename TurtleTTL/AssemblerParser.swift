@@ -10,11 +10,16 @@ import Cocoa
 
 public class AssemblerParser: NSObject {
     public struct AssemblerParserError: Error {
-        public let line: Int
+        public let line: Int?
         public let message: String
         
         public init(line: Int, format: String, _ args: CVarArg...) {
             self.line = line
+            message = String(format:format, arguments:args)
+        }
+        
+        public init(format: String, _ args: CVarArg...) {
+            self.line = nil
             message = String(format:format, arguments:args)
         }
     }
@@ -86,10 +91,18 @@ public class AssemblerParser: NSObject {
             // do nothing
         } else if nil != accept(.eof) {
             // do nothing
-        } else if let instruction = peek() {
-            throw unrecognizedInstructionError(instruction)
+        } else if let identifier = accept(.identifier) {
+            if nil != accept(.colon) {
+                do {
+                    try backend.label(identifier.lexeme)
+                } catch let error as AssemblerBackEnd.AssemblerBackEndError {
+                    throw AssemblerParserError(line: identifier.lineNumber, format: error.message)
+                }
+            } else {
+                throw unrecognizedInstructionError(identifier)
+            }
         } else {
-            throw AssemblerParserError(line: -1, format: "unexpected end of input")
+            throw AssemblerParserError(format: "unexpected end of input")
         }
     }
     

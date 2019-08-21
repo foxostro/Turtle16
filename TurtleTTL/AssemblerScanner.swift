@@ -42,9 +42,9 @@ public class AssemblerScanner: TextInputStream {
             emit(type: .cmp, lineNumber: lineNumber, lexeme: lexeme)
         } else if let lexeme = match("HLT") {
             emit(type: .hlt, lineNumber: lineNumber, lexeme: lexeme)
-        } else if let lexeme = match(characterSet: CharacterSet.alphanumerics) {
+        } else if let lexeme = match(characterSet: .alphanumerics) {
             emit(type: .identifier, lineNumber: lineNumber, lexeme: lexeme)
-        } else if nil != match(characterSet: CharacterSet.whitespaces) {
+        } else if nil != match(characterSet: .whitespaces) {
             // consume whitespace without doing anything
         } else {
             throw unexpectedCharacterError(peek()!)
@@ -53,38 +53,6 @@ public class AssemblerScanner: TextInputStream {
     
     func emit(type: AssemblerToken.TokenType, lineNumber: Int, lexeme: String) {
         tokens.append(AssemblerToken(type: type, lineNumber: lineNumber, lexeme: lexeme))
-    }
-    
-    public func match(_ string: String) -> String? {
-        if (peek(count: string.count) == string) {
-            return advance(count: string.count)
-        }
-        return nil
-    }
-    
-    public func match(characterSet: CharacterSet) -> String? {
-        var result = ""
-        while let c = peek() {
-            if c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
-                result += advance() ?? ""
-            } else {
-                break
-            }
-        }
-        if result == "" {
-            return nil
-        } else {
-            return result
-        }
-    }
-    
-    func advanceToNewline() {
-        while let next = peek() {
-            if next == "\n" {
-                return
-            }
-            advance()
-        }
     }
     
     func unexpectedCharacterError(_ character: String) -> AssemblerScannerError {

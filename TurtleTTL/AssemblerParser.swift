@@ -87,6 +87,14 @@ public class AssemblerParser: NSObject {
             try expect(types: [.newline, .eof],
                        error: zeroOperandsExpectedError(instruction))
             backend.hlt()
+        } else if let instruction = accept(.jmp) {
+            if let identifier = accept(.identifier) {
+                try expect(types: [.newline, .eof],
+                           error: operandTypeMismatchError(instruction))
+                try backend.jmp(identifier.lexeme)
+            } else {
+                throw operandTypeMismatchError(instruction)
+            }
         } else if nil != accept(.newline) {
             // do nothing
         } else if nil != accept(.eof) {
@@ -109,6 +117,12 @@ public class AssemblerParser: NSObject {
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {
         return AssemblerParserError(line: instruction.lineNumber,
                                     format: "instruction takes no operands: `%@'",
+                                    instruction.lexeme)
+    }
+    
+    func operandTypeMismatchError(_ instruction: Token) -> Error {
+        return AssemblerParserError(line: instruction.lineNumber,
+                                    format: "operand type mismatch: `%@'",
                                     instruction.lexeme)
     }
     

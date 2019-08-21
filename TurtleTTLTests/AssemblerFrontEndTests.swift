@@ -62,12 +62,6 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[1], Instruction())
     }
     
-    func testOpcodesAreCaseInsensitive() {
-        let a = try! assembler.compile("nop")
-        let b = try! assembler.compile("NOP")
-        XCTAssertEqual(a, b)
-    }
-    
     func testNOPAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
             let error = e as! AssemblerFrontEnd.AssemblerFrontEndError

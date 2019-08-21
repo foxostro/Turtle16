@@ -15,8 +15,9 @@ class AssemblerScannerTests: XCTestCase {
     func testTokenizeEmptyString() {
         let tokenizer = AssemblerScanner(withString: "")
         try! tokenizer.scanTokens()
-        let tokens = tokenizer.tokens
-        XCTAssertEqual(tokens.count, 0)
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeNewLine() {
@@ -24,7 +25,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .newline,
                                                 lineNumber: 1,
-                                                lexeme: "\n")])
+                                                lexeme: "\n"),
+                                          Token(type: .eof,
+                                                lineNumber: 2,
+                                                lexeme: "")])
     }
     
     func testTokenizeSomeNewLines() {
@@ -38,7 +42,10 @@ class AssemblerScannerTests: XCTestCase {
                                                 lexeme: "\n"),
                                           Token(type: .newline,
                                                 lineNumber: 3,
-                                                lexeme: "\n")])
+                                                lexeme: "\n"),
+                                          Token(type: .eof,
+                                                lineNumber: 4,
+                                                lexeme: "")])
     }
     
     func testTokenizeComma() {
@@ -46,13 +53,18 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .comma,
                                                 lineNumber: 1,
-                                                lexeme: ",")])
+                                                lexeme: ","),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeComment() {
         let tokenizer = AssemblerScanner(withString: "// comment")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [])
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeCommaAndComment() {
@@ -60,7 +72,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .comma,
                                                 lineNumber: 1,
-                                                lexeme: ",")])
+                                                lexeme: ","),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeCommentWithWhitespace() {
@@ -68,7 +83,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .newline,
                                                 lineNumber: 1,
-                                                lexeme: "\n")])
+                                                lexeme: "\n"),
+                                          Token(type: .eof,
+                                                lineNumber: 2,
+                                                lexeme: "")])
     }
     
     func testUnexpectedCharacter() {
@@ -85,7 +103,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .nop,
                                                 lineNumber: 1,
-                                                lexeme: "NOP")])
+                                                lexeme: "NOP"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeCMP() {
@@ -93,7 +114,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .cmp,
                                                 lineNumber: 1,
-                                                lexeme: "CMP")])
+                                                lexeme: "CMP"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeHLT() {
@@ -101,7 +125,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .hlt,
                                                 lineNumber: 1,
-                                                lexeme: "HLT")])
+                                                lexeme: "HLT"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeIdentifier() {
@@ -109,7 +136,10 @@ class AssemblerScannerTests: XCTestCase {
         try! tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [Token(type: .identifier,
                                                 lineNumber: 1,
-                                                lexeme: "Bogus")])
+                                                lexeme: "Bogus"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testFailToTokenizeInvalidIdentifier() {
@@ -127,7 +157,10 @@ class AssemblerScannerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
                                                 lineNumber: 1,
                                                 lexeme: "123",
-                                                literal: 123)])
+                                                literal: 123),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeDollarHexadecimalLiteral() {
@@ -136,7 +169,10 @@ class AssemblerScannerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
                                                 lineNumber: 1,
                                                 lexeme: "$ff",
-                                                literal: 255)])
+                                                literal: 255),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
     
     func testTokenizeHexadecimalLiteral() {
@@ -145,6 +181,9 @@ class AssemblerScannerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
                                                 lineNumber: 1,
                                                 lexeme: "0xff",
-                                                literal: 255)])
+                                                literal: 255),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
     }
 }

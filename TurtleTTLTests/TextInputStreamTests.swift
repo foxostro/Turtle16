@@ -58,4 +58,46 @@ class TextInputStreamTests: XCTestCase {
         XCTAssertEqual(input.advance(count: 3), "ab")
         XCTAssertTrue(input.isAtEnd)
     }
+    
+    func testMatchEmptyString() {
+        let input = TextInputStream(withString: "ab")
+        XCTAssertEqual(input.match(""), "")
+    }
+    
+    func testMatchCharacter() {
+        let input = TextInputStream(withString: "ab")
+        XCTAssertEqual(input.match("a"), "a")
+        XCTAssertEqual(input.match("b"), "b")
+        XCTAssertTrue(input.isAtEnd)
+    }
+    
+    func testMatchString() {
+        let input = TextInputStream(withString: "ab")
+        XCTAssertEqual(input.match("ab"), "ab")
+        XCTAssertTrue(input.isAtEnd)
+    }
+    
+    func testMatchWhitespaceButNoneIsThere() {
+        let input = TextInputStream(withString: "\n")
+        XCTAssertEqual(input.match(characterSet: .whitespaces), nil)
+        XCTAssertEqual(input.peek(), "\n")
+    }
+    
+    func testMatchWhitespace() {
+        let input = TextInputStream(withString: "  \t\n")
+        XCTAssertEqual(input.match(characterSet: .whitespaces), "  \t")
+        XCTAssertEqual(input.peek(), "\n")
+    }
+    
+    func testAdvanceToNewlineWithEmptyString() {
+        let input = TextInputStream(withString: "")
+        input.advanceToNewline()
+        XCTAssertTrue(input.isAtEnd)
+    }
+    
+    func testAdvanceToNewline() {
+        let input = TextInputStream(withString: "abcd\n")
+        input.advanceToNewline()
+        XCTAssertEqual(input.peek(), "\n")
+    }
 }

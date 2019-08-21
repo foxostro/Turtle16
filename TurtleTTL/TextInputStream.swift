@@ -43,10 +43,42 @@ public class TextInputStream: NSObject {
     
     @discardableResult public func advance(count: Int) -> String {
         var result = ""
-        for _ in 1...count {
+        for _ in 0..<count {
             guard let c = advance() else { break }
             result += String(c)
         }
         return result
+    }
+    
+    public func match(_ string: String) -> String? {
+        if (peek(count: string.count) == string) {
+            return advance(count: string.count)
+        }
+        return nil
+    }
+    
+    public func match(characterSet: CharacterSet) -> String? {
+        var result = ""
+        while let c = peek() {
+            if c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
+                result += advance() ?? ""
+            } else {
+                break
+            }
+        }
+        if result == "" {
+            return nil
+        } else {
+            return result
+        }
+    }
+    
+    public func advanceToNewline() {
+        while let next = peek() {
+            if next == "\n" {
+                return
+            }
+            advance()
+        }
     }
 }

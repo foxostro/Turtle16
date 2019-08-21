@@ -15,32 +15,26 @@ public class AssemblerScanner: TurtleScanner {
         case comma
         case colon
         case number
-        case identifier
+        case register
         case nop
         case cmp
         case hlt
         case jmp
         case jc
-        case registerA
-        case registerB
-        case registerC
-        case registerD
-        case registerE
-        case registerM
-        case registerX
-        case registerY
+        case add
+        case identifier
     }
     
     public class Token : NSObject {
         public let type: TokenType
         public let lineNumber: Int
         public let lexeme: String
-        public let literal: Int?
+        public let literal: Any?
         
         public required init(type: TokenType,
                              lineNumber: Int,
                              lexeme: String,
-                             literal: Int? = nil) {
+                             literal: Any? = nil) {
             self.type = type
             self.lineNumber = lineNumber
             self.lexeme = lexeme
@@ -101,29 +95,11 @@ public class AssemblerScanner: TurtleScanner {
         Rule(pattern: "JC\\b") {
             Token(type: .jc, lineNumber: $0.lineNumber, lexeme: $1)
         },
-        Rule(pattern: "A\\b") {
-            Token(type: .registerA, lineNumber: $0.lineNumber, lexeme: $1)
+        Rule(pattern: "ADD\\b") {
+            Token(type: .add, lineNumber: $0.lineNumber, lexeme: $1)
         },
-        Rule(pattern: "B\\b") {
-            Token(type: .registerB, lineNumber: $0.lineNumber, lexeme: $1)
-        },
-        Rule(pattern: "C\\b") {
-            Token(type: .registerC, lineNumber: $0.lineNumber, lexeme: $1)
-        },
-        Rule(pattern: "D\\b") {
-            Token(type: .registerD, lineNumber: $0.lineNumber, lexeme: $1)
-        },
-        Rule(pattern: "E\\b") {
-            Token(type: .registerE, lineNumber: $0.lineNumber, lexeme: $1)
-        },
-        Rule(pattern: "M\\b") {
-            Token(type: .registerM, lineNumber: $0.lineNumber, lexeme: $1)
-        },
-        Rule(pattern: "X\\b") {
-            Token(type: .registerX, lineNumber: $0.lineNumber, lexeme: $1)
-        },
-        Rule(pattern: "Y\\b") {
-            Token(type: .registerY, lineNumber: $0.lineNumber, lexeme: $1)
+        Rule(pattern: "[ABCDEMXY]\\b") {
+            Token(type: .register, lineNumber: $0.lineNumber, lexeme: $1, literal: $1)
         },
         Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {
             Token(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
@@ -193,8 +169,49 @@ public class AssemblerScanner: TurtleScanner {
 }
 
 public func ==(lhs: AssemblerScanner.Token, rhs: AssemblerScanner.Token) -> Bool {
-    return lhs.type == rhs.type
-        && lhs.lineNumber == rhs.lineNumber
-        && lhs.lexeme == rhs.lexeme
-        && lhs.literal == rhs.literal
+    if lhs.type != rhs.type {
+        return false
+    }
+    
+    if lhs.lineNumber != rhs.lineNumber {
+        return false
+    }
+    
+    if lhs.lexeme != rhs.lexeme {
+        return false
+    }
+    
+    if (lhs.literal == nil) != (rhs.literal == nil) {
+        return false
+    }
+    
+    if type(of: lhs.literal) != type(of: rhs.literal) {
+        return false
+    }
+    
+    if let a = lhs.literal as? Int {
+        if let b = rhs.literal as? Int {
+            return a == b
+        } else {
+            return false
+        }
+    }
+    
+    if let a = lhs.literal as? String {
+        if let b = rhs.literal as? String {
+            return a == b
+        } else {
+            return false
+        }
+    }
+    
+    if let a = lhs.literal as? NSObject {
+        if let b = rhs.literal as? NSObject {
+            return a.isEqual(b)
+        } else {
+            return false
+        }
+    }
+    
+    return true
 }

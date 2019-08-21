@@ -245,4 +245,49 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[4].opcode, nop)
         XCTAssertEqual(instructions[5].opcode, nop)
     }
+    
+    func testFailToCompileADDWithZeroOperands() {
+        XCTAssertThrowsError(try assembler.compile("ADD")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `ADD'")
+        }
+    }
+    
+    func testFailToCompileADDWithIdentifierOperand() {
+        XCTAssertThrowsError(try assembler.compile("ADD label")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `ADD'")
+        }
+    }
+    
+    func testCompileADDWithRegisterOperand() {
+        let instructions = try! assembler.compile("ADD D")
+        
+        XCTAssertEqual(instructions.count, 2)
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        XCTAssertEqual(instructions[1].immediate, 0b011001)
+        
+        let microcodeGenerator = makeMicrocodeGenerator()
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.EO, false)
+        XCTAssertEqual(controlWord.DI, false)
+    }
+    
+    func testFailToCompileADDWithInvalidDestinationRegisters() {
+        XCTAssertThrowsError(try assembler.compile("ADD E")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
+        }
+        XCTAssertThrowsError(try assembler.compile("ADD C")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
+        }
+    }
 }

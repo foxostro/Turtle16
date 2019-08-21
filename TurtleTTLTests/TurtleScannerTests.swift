@@ -108,7 +108,7 @@ class TurtleScannerTests: XCTestCase {
     
     func testMatchEmptyPattern() {
         let input = TurtleScanner(withString: "NOP $1\n")
-        XCTAssertEqual(input.match(pattern: ""), nil)
+        XCTAssertEqual(input.match(pattern: ""), "")
     }
     
     func testMatchPattern() {

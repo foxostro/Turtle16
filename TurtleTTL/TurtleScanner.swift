@@ -73,12 +73,7 @@ public class TurtleScanner: NSObject {
         }
     }
     
-    public func advanceToNewline() {
-        while let next = peek() {
-            if next == "\n" {
-                return
-            }
-            advance()
-        }
+    @discardableResult public func advanceToNewline() -> String? {
+        return match(characterSet: CharacterSet.newlines.inverted)
     }
 }

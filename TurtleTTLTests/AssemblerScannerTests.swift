@@ -77,4 +77,12 @@ class AssemblerScannerTests: XCTestCase {
             XCTAssertEqual(error.message, "unexpected character: `''")
         }
     }
+    
+    func testTokenizeNOP() {
+        let tokenizer = AssemblerScanner(withString: "NOP")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .nop,
+                                                lineNumber: 1,
+                                                lexeme: "NOP")])
+    }
 }

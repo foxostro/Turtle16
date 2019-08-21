@@ -42,8 +42,8 @@ public class AssemblerScanner: CharacterStream {
             emit(type: .cmp, lineNumber: lineNumber, lexeme: lexeme)
         } else if let lexeme = match("HLT") {
             emit(type: .hlt, lineNumber: lineNumber, lexeme: lexeme)
-//        } else if let lexeme = match(pattern: "\\S+") {
-//            emit(type: .identifier, lineNumber: lineNumber, lexeme: lexeme)
+        } else if let lexeme = match(characterSet: CharacterSet.alphanumerics) {
+            emit(type: .identifier, lineNumber: lineNumber, lexeme: lexeme)
         } else if nil != match(characterSet: CharacterSet.whitespaces) {
             // consume whitespace without doing anything
         } else {
@@ -62,17 +62,20 @@ public class AssemblerScanner: CharacterStream {
         return nil
     }
     
-    public func match(pattern: String) -> String? {
-        return nil
-    }
-    
     public func match(characterSet: CharacterSet) -> String? {
-        if let c = peek() {
+        var result = ""
+        while let c = peek() {
             if c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
-                return advance()
+                result += advance() ?? ""
+            } else {
+                break
             }
         }
-        return nil
+        if result == "" {
+            return nil
+        } else {
+            return result
+        }
     }
     
     func advanceToNewline() {

@@ -53,9 +53,7 @@ class ViewController: NSViewController {
         do {
             program = try tryGenerateExampleProgram()
         } catch let error as AssemblerError {
-            alert(withMessage: "Assembler Back End Error: " + error.message)
-        } catch let error as CodeGenerator.CodeGeneratorError {
-            alert(withMessage: "Code Generator Error: " + error.message)
+            alert(withMessage: "Error: " + error.message)
         } catch {
             alert(withMessage: "Unknown Error")
         }

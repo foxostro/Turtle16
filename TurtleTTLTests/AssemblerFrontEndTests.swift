@@ -278,12 +278,15 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(controlWord.DI, false)
     }
     
-    func testFailToCompileADDWithInvalidDestinationRegisters() {
+    func testFailToCompileADDWithInvalidDestinationRegisterE() {
         XCTAssertThrowsError(try assembler.compile("ADD E")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
         }
+    }
+    
+    func testFailToCompileADDWithInvalidDestinationRegisterC() {
         XCTAssertThrowsError(try assembler.compile("ADD C")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -348,5 +351,109 @@ class AssemblerFrontEndTests: XCTestCase {
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "operand type mismatch: `LI'")
         }
+    }
+    
+    func testCompileValidLI() {
+        let instructions = try! assembler.compile("LI D, 42")
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, 0)
+        XCTAssertEqual(instructions[1].immediate, 42)
+        
+        let microcodeGenerator = makeMicrocodeGenerator()
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.CO, false)
+        XCTAssertEqual(controlWord.DI, false)
+    }
+    
+    func testFailToCompileLIWithTooBigNumber() {
+        XCTAssertThrowsError(try assembler.compile("LI D, 10000000")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "immediate value is not between 0 and 255: `10000000'")
+        }
+    }
+    
+    func testFailToCompileMOVWithNoOperands() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("MOV")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
+        }
+    }
+    
+    func testFailToCompileMOVWithOneOperand() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("MOV A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
+        }
+    }
+    
+    func testFailToCompileMOVWithTooManyOperands() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("MOV A, B, C")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
+        }
+    }
+    
+    func testFailToCompileMOVWithNumberInFirstOperand() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("MOV $1, A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
+        }
+    }
+    
+    func testFailToCompileMOVWithNumberInSecondOperand() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try assembler.compile("MOV A, $1")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
+        }
+    }
+    
+    func testFailToCompileMOVWithInvalidDestinationRegisterE() {
+        XCTAssertThrowsError(try assembler.compile("MOV E, A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
+        }
+    }
+    
+    func testFailToCompileMOVWithInvalidDestinationRegisterC() {
+        XCTAssertThrowsError(try assembler.compile("MOV C, A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
+        }
+    }
+    
+    func testFailToCompileMOVWithInvalidSourceRegisterD() {
+        XCTAssertThrowsError(try assembler.compile("MOV A, D")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a source: `D'")
+        }
+    }
+    
+    func testCompileValidMOV() {
+        let instructions = try! assembler.compile("MOV D, A")
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, 0)
+        
+        let microcodeGenerator = makeMicrocodeGenerator()
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.AO, false)
+        XCTAssertEqual(controlWord.DI, false)
     }
 }

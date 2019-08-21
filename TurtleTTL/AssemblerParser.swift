@@ -76,7 +76,7 @@ public class AssemblerParser: NSObject {
             if let identifier = accept(.identifier) {
                 try expect(types: [.newline, .eof],
                            error: operandTypeMismatchError(instruction))
-                try backend.jmp(identifier: identifier)
+                try backend.jmp(token: identifier)
             } else {
                 throw operandTypeMismatchError(instruction)
             }
@@ -84,13 +84,13 @@ public class AssemblerParser: NSObject {
             if let identifier = accept(.identifier) {
                 try expect(types: [.newline, .eof],
                            error: operandTypeMismatchError(instruction))
-                try backend.jc(identifier: identifier)
+                try backend.jc(token: identifier)
             } else {
                 throw operandTypeMismatchError(instruction)
             }
         } else if let instruction = accept(.add) {
             if let register = accept(.register) {
-                try expectRegisterCanBeUsedAsDestination(register)
+                try checkRegisterCanBeUsedAsDestination(register)
                 try expect(types: [.newline, .eof],
                            error: operandTypeMismatchError(instruction))
                 try backend.add(register.literal as! String)
@@ -101,21 +101,34 @@ public class AssemblerParser: NSObject {
             guard let destination = accept(.register) else {
                 throw operandTypeMismatchError(instruction)
             }
-            try expectRegisterCanBeUsedAsDestination(destination)
+            try checkRegisterCanBeUsedAsDestination(destination)
             try expect(type: .comma, error: operandTypeMismatchError(instruction))
             guard let source = accept(.number) else {
                 throw operandTypeMismatchError(instruction)
             }
             try expect(types: [.newline, .eof],
                        error: operandTypeMismatchError(instruction))
-            try backend.li(destination.literal as! String, source.literal as! Int)
+            try backend.li(destination.literal as! String, token: source)
+        } else if let instruction = accept(.mov) {
+            guard let destination = accept(.register) else {
+                throw operandTypeMismatchError(instruction)
+            }
+            try expect(type: .comma, error: operandTypeMismatchError(instruction))
+            try checkRegisterCanBeUsedAsDestination(destination)
+            guard let source = accept(.register) else {
+                throw operandTypeMismatchError(instruction)
+            }
+            try checkRegisterCanBeUsedAsSource(source)
+            try expect(types: [.newline, .eof],
+                       error: operandTypeMismatchError(instruction))
+            try backend.mov(destination.literal as! String, source.literal as! String)
         } else if nil != accept(.newline) {
             // do nothing
         } else if nil != accept(.eof) {
             // do nothing
         } else if let identifier = accept(.identifier) {
             if nil != accept(.colon) {
-                try backend.label(identifier: identifier)
+                try backend.label(token: identifier)
             } else {
                 throw unrecognizedInstructionError(identifier)
             }
@@ -124,9 +137,15 @@ public class AssemblerParser: NSObject {
         }
     }
     
-    func expectRegisterCanBeUsedAsDestination(_ register: Token) throws {
+    func checkRegisterCanBeUsedAsDestination(_ register: Token) throws {
         if register.literal as! String == "E" || register.literal as! String == "C" {
             throw badDestinationError(register)
+        }
+    }
+    
+    func checkRegisterCanBeUsedAsSource(_ register: Token) throws {
+        if register.literal as! String == "D" {
+            throw badSourceError(register)
         }
     }
     
@@ -151,6 +170,12 @@ public class AssemblerParser: NSObject {
     func badDestinationError(_ register: Token) -> Error {
         return AssemblerError(line: register.lineNumber,
                               format: "register cannot be used as a destination: `%@'",
+                              register.lexeme)
+    }
+    
+    func badSourceError(_ register: Token) -> Error {
+        return AssemblerError(line: register.lineNumber,
+                              format: "register cannot be used as a source: `%@'",
                               register.lexeme)
     }
 }

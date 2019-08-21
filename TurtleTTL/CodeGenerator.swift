@@ -10,14 +10,6 @@ import Cocoa
 
 // Generates machine code for use in the IF stage of TurtleTTL hardware.
 public class CodeGenerator: NSObject {
-    public struct CodeGeneratorError: Error {
-        public let message: String
-        
-        init(format: String, _ args: CVarArg...) {
-            message = String(format:format, arguments:args)
-        }
-    }
-    
     public let microcodeGenerator: MicrocodeGenerator
     public var instructions = [Instruction]()
     var isAssembling: Bool = false
@@ -44,14 +36,31 @@ public class CodeGenerator: NSObject {
     public func instruction(withMnemonic mnemonic:String, immediate: Int) throws {
         assert(isAssembling)
         if immediate < 0 || immediate > 255 {
-            throw CodeGeneratorError(format: "Immediate value %d is not in [0,255].", immediate)
+            throw AssemblerError(format: "immediate value is not between 0 and 255: `%d'", immediate)
         }
         let maybeOpcode = microcodeGenerator.getOpcode(withMnemonic: mnemonic)
         if let opcode = maybeOpcode {
             let inst = Instruction(opcode: opcode, immediate: immediate)
             instructions.append(inst)
         } else {
-            throw CodeGeneratorError(format: "Unrecognized mnemonic \"%@\"", mnemonic)
+            throw AssemblerError(format: "unrecognized mnemonic: `%@'", mnemonic)
+        }
+    }
+    
+    // Produce a generic instruction with the specified immediate value.
+    public func instruction(withMnemonic mnemonic:String, token immediateToken: AssemblerScanner.Token) throws {
+        assert(isAssembling)
+        assert(immediateToken.type == .number)
+        let immediate = immediateToken.literal as! Int
+        if immediate < 0 || immediate > 255 {
+            throw AssemblerError(line: immediateToken.lineNumber, format: "immediate value is not between 0 and 255: `%d'", immediate)
+        }
+        let maybeOpcode = microcodeGenerator.getOpcode(withMnemonic: mnemonic)
+        if let opcode = maybeOpcode {
+            let inst = Instruction(opcode: opcode, immediate: immediate)
+            instructions.append(inst)
+        } else {
+            throw AssemblerError(line: immediateToken.lineNumber, format: "unrecognized mnemonic: `%@'", mnemonic)
         }
     }
     
@@ -75,6 +84,14 @@ public class CodeGenerator: NSObject {
     }
     
     // Move -- Copy a value from one bus device to another.
+    public func mov(_ destination: String, _ source: String, token immediate: AssemblerScanner.Token) throws {
+        assert(isAssembling)
+        assert(immediate.type == .number)
+        let mnemonic = String(format: "MOV %@, %@", destination, source)
+        try instruction(withMnemonic: mnemonic, token: immediate)
+    }
+    
+    // Move -- Copy a value from one bus device to another.
     public func mov(_ destination: String, _ source: String) throws {
         assert(isAssembling)
         let mnemonic = String(format: "MOV %@, %@", destination, source)
@@ -85,6 +102,13 @@ public class CodeGenerator: NSObject {
     public func li(_ destination: String, _ immediate: Int) throws {
         assert(isAssembling)
         try mov(destination, "C", immediate)
+    }
+    
+    // Load Immediate -- Loads an immediate value to the specified destination
+    public func li(_ destination: String, token immediate: AssemblerScanner.Token) throws {
+        assert(isAssembling)
+        assert(immediate.type == .number)
+        try mov(destination, "C", token: immediate)
     }
     
     // Addition -- The ALU adds the contents of the A and B registers and moves

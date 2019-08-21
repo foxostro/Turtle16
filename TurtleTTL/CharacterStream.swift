@@ -35,12 +35,10 @@ public class CharacterStream: NSObject {
         return result
     }
     
-    @discardableResult public func advance() -> Character? {
-        let character = peek()
-        if character != nil {
-            characters.removeFirst()
-        }
-        return character
+    @discardableResult public func advance() -> String? {
+        guard let character = peek() else { return nil }
+        characters.removeFirst()
+        return String(character)
     }
     
     @discardableResult public func advance(count: Int) -> String {

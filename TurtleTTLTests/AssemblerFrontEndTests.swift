@@ -35,7 +35,7 @@ class AssemblerFrontEndTests: XCTestCase {
     // Compiling an invalid opcode results in an error.
     func testCompilingBogusOpcodeYieldsError() {
         XCTAssertThrowsError(try assembler.compile("BOGUS\n")) { e in
-            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            let error = e as! AssemblerParser.AssemblerParserError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
         }
@@ -64,7 +64,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testNOPAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
-            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            let error = e as! AssemblerParser.AssemblerParserError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
         }
@@ -88,7 +88,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testCMPAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("CMP $1")) { e in
-            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            let error = e as! AssemblerParser.AssemblerParserError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "instruction takes no operands: `CMP'")
         }
@@ -105,7 +105,7 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func testHLTAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("HLT $1")) { e in
-            let error = e as! AssemblerFrontEnd.AssemblerFrontEndError
+            let error = e as! AssemblerParser.AssemblerParserError
             XCTAssertEqual(error.line, 1)
             XCTAssertEqual(error.message, "instruction takes no operands: `HLT'")
         }

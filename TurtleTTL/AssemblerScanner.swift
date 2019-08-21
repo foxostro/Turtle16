@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class AssemblerScanner: TextInputStream {
+public class AssemblerScanner: TurtleScanner {
     public struct AssemblerScannerError: Error {
         public let line: Int
         public let message: String

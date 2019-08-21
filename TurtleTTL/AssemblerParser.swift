@@ -80,6 +80,14 @@ public class AssemblerParser: NSObject {
             } else {
                 throw operandTypeMismatchError(instruction)
             }
+        } else if let instruction = accept(.jc) {
+            if let identifier = accept(.identifier) {
+                try expect(types: [.newline, .eof],
+                           error: operandTypeMismatchError(instruction))
+                try backend.jc(identifier: identifier)
+            } else {
+                throw operandTypeMismatchError(instruction)
+            }
         } else if nil != accept(.newline) {
             // do nothing
         } else if nil != accept(.eof) {

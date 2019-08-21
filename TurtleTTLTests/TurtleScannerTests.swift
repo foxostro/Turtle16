@@ -59,24 +59,6 @@ class TurtleScannerTests: XCTestCase {
         XCTAssertTrue(input.isAtEnd)
     }
     
-    func testMatchEmptyString() {
-        let input = TurtleScanner(withString: "ab")
-        XCTAssertEqual(input.match(""), "")
-    }
-    
-    func testMatchCharacter() {
-        let input = TurtleScanner(withString: "ab")
-        XCTAssertEqual(input.match("a"), "a")
-        XCTAssertEqual(input.match("b"), "b")
-        XCTAssertTrue(input.isAtEnd)
-    }
-    
-    func testMatchString() {
-        let input = TurtleScanner(withString: "ab")
-        XCTAssertEqual(input.match("ab"), "ab")
-        XCTAssertTrue(input.isAtEnd)
-    }
-    
     func testMatchWhitespaceButNoneIsThere() {
         let input = TurtleScanner(withString: "\n")
         XCTAssertEqual(input.match(characterSet: .whitespaces), nil)

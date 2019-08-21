@@ -113,11 +113,38 @@ class AssemblerScannerTests: XCTestCase {
     }
     
     func testFailToTokenizeInvalidIdentifier() {
-        let tokenizer = AssemblerScanner(withString: "1Bogus")
+        let tokenizer = AssemblerScanner(withString: "*")
         XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
             let error = e as! AssemblerScanner.AssemblerScannerError
             XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unexpected character: `1'")
+            XCTAssertEqual(error.message, "unexpected character: `*'")
         }
+    }
+    
+    func testTokenizeDecimalLiteral() {
+        let tokenizer = AssemblerScanner(withString: "123")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
+                                                lineNumber: 1,
+                                                lexeme: "123",
+                                                literal: 123)])
+    }
+    
+    func testTokenizeDollarHexadecimalLiteral() {
+        let tokenizer = AssemblerScanner(withString: "$ff")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
+                                                lineNumber: 1,
+                                                lexeme: "$ff",
+                                                literal: 255)])
+    }
+    
+    func testTokenizeHexadecimalLiteral() {
+        let tokenizer = AssemblerScanner(withString: "0xff")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
+                                                lineNumber: 1,
+                                                lexeme: "0xff",
+                                                literal: 255)])
     }
 }

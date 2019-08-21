@@ -29,26 +29,62 @@ public class AssemblerScanner: TurtleScanner {
     }
     
     public func scanToken() throws {
-        if let lexeme = match(",") {
-            emit(type: .comma, lineNumber: lineNumber, lexeme: lexeme)
-        } else if let lexeme = match("\n") {
-            emit(type: .newline, lineNumber: lineNumber, lexeme: lexeme)
-            lineNumber += 1
-        } else if nil != match("//") {
-            advanceToNewline()
-        } else if let lexeme = match("NOP") {
-            emit(type: .nop, lineNumber: lineNumber, lexeme: lexeme)
-        } else if let lexeme = match("CMP") {
-            emit(type: .cmp, lineNumber: lineNumber, lexeme: lexeme)
-        } else if let lexeme = match("HLT") {
-            emit(type: .hlt, lineNumber: lineNumber, lexeme: lexeme)
-        } else if let lexeme = match(pattern: "[_a-zA-Z][_a-zA-Z0-9]+") {
-            emit(type: .identifier, lineNumber: lineNumber, lexeme: lexeme)
-        } else if nil != match(characterSet: .whitespaces) {
-            // consume whitespace without doing anything
-        } else {
-            throw unexpectedCharacterError(peek()!)
+        let rules: [(String, (String) -> AssemblerToken?)] = [
+            (
+                ",", {
+                    AssemblerToken(type: .comma, lineNumber: self.lineNumber, lexeme: $0)
+                }
+            ),
+            (
+                "\n", {
+                    let token = AssemblerToken(type: .newline, lineNumber: self.lineNumber, lexeme: $0)
+                    self.lineNumber += 1
+                    return token
+                }
+            ),
+            (
+                "//", {_ in
+                    self.advanceToNewline()
+                    return nil
+                }
+            ),
+            (
+                "NOP", {
+                    AssemblerToken(type: .nop, lineNumber: self.lineNumber, lexeme: $0)
+                }
+            ),
+            (
+                "CMP", {
+                    AssemblerToken(type: .cmp, lineNumber: self.lineNumber, lexeme: $0)
+                }
+            ),
+            (
+                "HLT", {
+                    AssemblerToken(type: .hlt, lineNumber: self.lineNumber, lexeme: $0)
+                }
+            ),
+            (
+                "[_a-zA-Z][_a-zA-Z0-9]+", {
+                    AssemblerToken(type: .identifier, lineNumber: self.lineNumber, lexeme: $0)
+                }
+            ),
+            (
+                "[ \t]+", { _ in
+                    nil
+                }
+            )
+        ]
+        
+        for rule in rules {
+            if let lexeme = match(pattern: rule.0) {
+                if let token = rule.1(lexeme) {
+                    tokens.append(token)
+                }
+                return
+            }
         }
+        
+        throw unexpectedCharacterError(peek()!)
     }
     
     func emit(type: AssemblerToken.TokenType, lineNumber: Int, lexeme: String) {

@@ -163,6 +163,18 @@ class AssemblerScannerTests: XCTestCase {
                                                 lexeme: "")])
     }
     
+    func testTokenizeNegativeDecimalLiteral() {
+        let tokenizer = AssemblerScanner(withString: "-123")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .number,
+                                                lineNumber: 1,
+                                                lexeme: "-123",
+                                                literal: -123),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
+    }
+    
     func testTokenizeDollarHexadecimalLiteral() {
         let tokenizer = AssemblerScanner(withString: "$ff")
         try! tokenizer.scanTokens()

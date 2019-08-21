@@ -130,7 +130,7 @@ public class AssemblerScanner: TurtleScanner {
         Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {
             Token(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
         },
-        Rule(pattern: "[0-9]+\\b") {
+        Rule(pattern: "[-]{0,1}[0-9]+\\b") {
             let scanner = Scanner(string: $1)
             var number: Int = 0
             if scanner.scanInt(&number) {

@@ -32,8 +32,15 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[1], Instruction())
     }
     
-    // Compiling an invalid opcode results in an error.
     func testCompilingBogusOpcodeYieldsError() {
+        XCTAssertThrowsError(try assembler.compile("BOGUS")) { e in
+            let error = e as! AssemblerParser.AssemblerParserError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
+        }
+    }
+    
+    func testCompilingBogusOpcodeWithNewlineYieldsError() {
         XCTAssertThrowsError(try assembler.compile("BOGUS\n")) { e in
             let error = e as! AssemblerParser.AssemblerParserError
             XCTAssertEqual(error.line, 1)
@@ -152,6 +159,23 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertThrowsError(try assembler.compile(":")) { e in
             let error = e as! AssemblerParser.AssemblerParserError
             XCTAssertEqual(error.message, "unexpected end of input")
+        }
+    }
+    
+    func testFailToCompileJMPWithZeroOperands() {
+        XCTAssertThrowsError(try assembler.compile("JMP")) { e in
+            let error = e as! AssemblerParser.AssemblerParserError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `JMP'")
+        }
+    }
+    
+    func testFailToCompileJMPWithUndeclaredLabel() {
+        XCTAssertThrowsError(try assembler.compile("JMP label")) { e in
+            let error = e as! AssemblerBackEnd.AssemblerBackEndError
+            // TODO: Need a line number in the error here
+//            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
         }
     }
 }

@@ -131,6 +131,28 @@ class AssemblerScannerTests: XCTestCase {
                                                 lexeme: "")])
     }
     
+    func testTokenizeJMP() {
+        let tokenizer = AssemblerScanner(withString: "JMP")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .jmp,
+                                                lineNumber: 1,
+                                                lexeme: "JMP"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
+    }
+    
+    func testTokenizeJC() {
+        let tokenizer = AssemblerScanner(withString: "JC")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .jc,
+                                                lineNumber: 1,
+                                                lexeme: "JC"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
+    }
+    
     func testTokenizeIdentifier() {
         let tokenizer = AssemblerScanner(withString: "Bogus")
         try! tokenizer.scanTokens()

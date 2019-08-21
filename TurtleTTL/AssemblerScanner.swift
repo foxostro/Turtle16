@@ -29,6 +29,8 @@ public class AssemblerScanner: TurtleScanner {
         case nop
         case cmp
         case hlt
+        case jmp
+        case jc
         case registerA
         case registerB
         case registerC
@@ -102,6 +104,12 @@ public class AssemblerScanner: TurtleScanner {
         },
         Rule(pattern: "HLT\\b") {
             Token(type: .hlt, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "JMP\\b") {
+            Token(type: .jmp, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "JC\\b") {
+            Token(type: .jc, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "A\\b") {
             Token(type: .registerA, lineNumber: $0.lineNumber, lexeme: $1)

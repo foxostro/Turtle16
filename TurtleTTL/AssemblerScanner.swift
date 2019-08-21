@@ -20,13 +20,14 @@ public class AssemblerScanner: TurtleScanner {
     }
     
     public enum TokenType {
+        case eof
         case newline
         case comma
+        case number
+        case identifier
         case nop
         case cmp
         case hlt
-        case identifier
-        case number
     }
     
     public class Token : NSObject {
@@ -132,6 +133,7 @@ public class AssemblerScanner: TurtleScanner {
         while !isAtEnd {
             try scanToken()
         }
+        emit(type: .eof, lineNumber: lineNumber, lexeme: "")
     }
     
     public func scanToken() throws {

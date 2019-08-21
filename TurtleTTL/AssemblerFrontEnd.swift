@@ -20,6 +20,9 @@ public class AssemblerFrontEnd: NSObject {
     }
     
     let backend: AssemblerBackEnd
+    typealias Token = AssemblerScanner.Token
+    typealias TokenType = AssemblerScanner.TokenType
+    var tokens: [Token] = []
     
     public override init() {
         let microcodeGenerator = MicrocodeGenerator()
@@ -28,71 +31,83 @@ public class AssemblerFrontEnd: NSObject {
     }
     
     public func compile(_ text: String) throws -> [Instruction] {
-        let tokenizer = AssemblerTokenizer(withText: text)
-        try tokenizer.tokenize()
-        var tokens = tokenizer.tokens
+        let tokenizer = AssemblerScanner(withString: text)
+        try tokenizer.scanTokens()
+        tokens = tokenizer.tokens
         backend.begin()
         while tokens.count > 0 {
-            try consumeLine(&tokens)
+            try consumeInstruction()
         }
         try backend.end()
         return backend.instructions
     }
     
-    func consumeLine(_ tokens: inout [AssemblerTokenizer.Token]) throws {
-        try consumeNOP(&tokens)
-        try consumeHLT(&tokens)
-        try consumeCMP(&tokens)
-        
-        // At this point, we expect the end of the line.
-        if let token = tokens.first {
-            if token.type == .newline {
-                tokens.removeFirst()
-            } else {
-                throw unrecognizedInstructionError(token.lineNumber, instruction: token.string)
+    func advance() {
+        tokens.removeFirst()
+    }
+    
+    func peek() -> Token? {
+        return tokens.first
+    }
+    
+    func accept(_ type: TokenType) -> Token? {
+        if let token = peek() {
+            if token.type == type {
+                advance()
+                return token
             }
         }
+        return nil
     }
     
-    func consumeNOP(_ tokens: inout [AssemblerTokenizer.Token]) throws {
-        try consumeZeroOperandInstruction(&tokens, instruction: "NOP") {
+    func expect(type: TokenType, error: Error) throws {
+        if nil == accept(type) {
+            throw error
+        }
+    }
+    
+    func expect(types: [TokenType], error: Error) throws {
+        for type in types {
+            if nil != accept(type) {
+                return
+            }
+        }
+        throw error
+    }
+    
+    func consumeInstruction() throws {
+        if let instruction = accept(.nop) {
+            try expect(types: [.newline, .eof],
+                       error: zeroOperandsExpectedError(instruction))
             backend.nop()
-        }
-    }
-    
-    func consumeHLT(_ tokens: inout [AssemblerTokenizer.Token]) throws {
-        try consumeZeroOperandInstruction(&tokens, instruction: "HLT") {
-            backend.hlt()
-        }
-    }
-    
-    func consumeCMP(_ tokens: inout [AssemblerTokenizer.Token]) throws {
-        try consumeZeroOperandInstruction(&tokens, instruction: "CMP") {
+        } else if let instruction = accept(.cmp) {
+            try expect(types: [.newline, .eof],
+                       error: zeroOperandsExpectedError(instruction))
             backend.cmp()
-        }
-    }
-    
-    func consumeZeroOperandInstruction(_ tokens: inout [AssemblerTokenizer.Token], instruction: String, closure: () -> Void) throws {
-        guard tokens.count > 0 else { return }
-        let token = tokens.first!
-        guard token.type == .token && token.string.caseInsensitiveCompare(instruction) == .orderedSame else { return }
-        tokens.removeFirst()
-        if (tokens.count > 0 && tokens.first!.type != .newline) {
-            throw zeroOperandsExpectedError(token.lineNumber, instruction)
+        } else if let instruction = accept(.hlt) {
+            try expect(types: [.newline, .eof],
+                       error: zeroOperandsExpectedError(instruction))
+            backend.hlt()
+        } else if nil != accept(.newline) {
+            // do nothing
+        } else if nil != accept(.eof) {
+            // do nothing
+        } else if let instruction = peek() {
+            throw unrecognizedInstructionError(instruction)
         } else {
-            closure()
+            throw AssemblerFrontEndError(line: -1, format: "unexpected end of input")
         }
     }
     
-    func zeroOperandsExpectedError(_ lineNumber: Int, _ instruction: String) -> AssemblerFrontEndError {
-        return AssemblerFrontEndError(line: lineNumber,
+    func zeroOperandsExpectedError(_ instruction: Token) -> AssemblerFrontEndError {
+        return AssemblerFrontEndError(line: instruction.lineNumber,
                                       format: "instruction takes no operands: `%@'",
-                                      instruction)
+                                      instruction.lexeme)
     }
     
-    func unrecognizedInstructionError(_ lineNumber: Int, instruction: String) -> AssemblerFrontEndError {
-        return AssemblerFrontEndError(line: lineNumber,
+    func unrecognizedInstructionError(_ instruction: Token) -> AssemblerFrontEndError {
+        return AssemblerFrontEndError(line: instruction.lineNumber,
                                       format: "no such instruction: `%@'",
-                                      instruction)
+                                      instruction.lexeme)
     }
 }

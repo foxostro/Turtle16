@@ -28,6 +28,14 @@ public class AssemblerScanner: TurtleScanner {
         case nop
         case cmp
         case hlt
+        case registerA
+        case registerB
+        case registerC
+        case registerD
+        case registerE
+        case registerM
+        case registerX
+        case registerY
     }
     
     public class Token : NSObject {
@@ -82,16 +90,40 @@ public class AssemblerScanner: TurtleScanner {
             scanner.advanceToNewline()
             return nil
         },
-        Rule(pattern: "NOP") {
+        Rule(pattern: "NOP\\b") {
             Token(type: .nop, lineNumber: $0.lineNumber, lexeme: $1)
         },
-        Rule(pattern: "CMP") {
+        Rule(pattern: "CMP\\b") {
             Token(type: .cmp, lineNumber: $0.lineNumber, lexeme: $1)
         },
-        Rule(pattern: "HLT") {
+        Rule(pattern: "HLT\\b") {
             Token(type: .hlt, lineNumber: $0.lineNumber, lexeme: $1)
         },
-        Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+") {
+        Rule(pattern: "A\\b") {
+            Token(type: .registerA, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "B\\b") {
+            Token(type: .registerB, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "C\\b") {
+            Token(type: .registerC, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "D\\b") {
+            Token(type: .registerD, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "E\\b") {
+            Token(type: .registerE, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "M\\b") {
+            Token(type: .registerM, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "X\\b") {
+            Token(type: .registerX, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "Y\\b") {
+            Token(type: .registerY, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {
             Token(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "[0-9]+\\b") {

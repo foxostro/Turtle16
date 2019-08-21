@@ -23,6 +23,7 @@ public class AssemblerScanner: TurtleScanner {
         case eof
         case newline
         case comma
+        case colon
         case number
         case identifier
         case nop
@@ -78,9 +79,6 @@ public class AssemblerScanner: TurtleScanner {
     }
     
     let rules: [Rule] = [
-        Rule(pattern: ",") {
-            Token(type: .comma, lineNumber: $0.lineNumber, lexeme: $1)
-        },
         Rule(pattern: "\n") {
             let token = Token(type: .newline, lineNumber: $0.lineNumber, lexeme: $1)
             $0.lineNumber += 1
@@ -89,6 +87,12 @@ public class AssemblerScanner: TurtleScanner {
         Rule(pattern: "//") {(scanner: AssemblerScanner, lexeme: String) in
             scanner.advanceToNewline()
             return nil
+        },
+        Rule(pattern: ",") {
+            Token(type: .comma, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: ":") {
+            Token(type: .colon, lineNumber: $0.lineNumber, lexeme: $1)
         },
         Rule(pattern: "NOP\\b") {
             Token(type: .nop, lineNumber: $0.lineNumber, lexeme: $1)

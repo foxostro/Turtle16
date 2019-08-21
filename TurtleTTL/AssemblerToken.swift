@@ -13,6 +13,9 @@ public class AssemblerToken : NSObject {
         case newline
         case comma
         case nop
+        case cmp
+        case hlt
+        case identifier
     }
     
     public let type: TokenType

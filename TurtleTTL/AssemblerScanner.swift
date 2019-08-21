@@ -29,16 +29,22 @@ public class AssemblerScanner: CharacterStream {
     }
     
     public func scanToken() throws {
-        if match(",") {
-            emit(type: .comma, lineNumber: lineNumber, lexeme: ",")
-        } else if match("\n") {
-            emit(type: .newline, lineNumber: lineNumber, lexeme: "\n")
+        if let lexeme = match(",") {
+            emit(type: .comma, lineNumber: lineNumber, lexeme: lexeme)
+        } else if let lexeme = match("\n") {
+            emit(type: .newline, lineNumber: lineNumber, lexeme: lexeme)
             lineNumber += 1
-        } else if match("//") {
+        } else if nil != match("//") {
             advanceToNewline()
-        } else if match("NOP") {
-            emit(type: .nop, lineNumber: lineNumber, lexeme: "NOP")
-        } else if match(characterSet: CharacterSet.whitespaces) {
+        } else if let lexeme = match("NOP") {
+            emit(type: .nop, lineNumber: lineNumber, lexeme: lexeme)
+        } else if let lexeme = match("CMP") {
+            emit(type: .cmp, lineNumber: lineNumber, lexeme: lexeme)
+        } else if let lexeme = match("HLT") {
+            emit(type: .hlt, lineNumber: lineNumber, lexeme: lexeme)
+//        } else if let lexeme = match(pattern: "\\S+") {
+//            emit(type: .identifier, lineNumber: lineNumber, lexeme: lexeme)
+        } else if nil != match(characterSet: CharacterSet.whitespaces) {
             // consume whitespace without doing anything
         } else {
             throw unexpectedCharacterError(peek()!)
@@ -49,22 +55,24 @@ public class AssemblerScanner: CharacterStream {
         tokens.append(AssemblerToken(type: type, lineNumber: lineNumber, lexeme: lexeme))
     }
     
-    public func match(_ string: String) -> Bool {
+    public func match(_ string: String) -> String? {
         if (peek(count: string.count) == string) {
-            advance(count: string.count)
-            return true
+            return advance(count: string.count)
         }
-        return false
+        return nil
     }
     
-    public func match(characterSet: CharacterSet) -> Bool {
+    public func match(pattern: String) -> String? {
+        return nil
+    }
+    
+    public func match(characterSet: CharacterSet) -> String? {
         if let c = peek() {
             if c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
-                advance()
-                return true
+                return advance()
             }
         }
-        return false
+        return nil
     }
     
     func advanceToNewline() {

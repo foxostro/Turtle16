@@ -85,4 +85,28 @@ class AssemblerScannerTests: XCTestCase {
                                                 lineNumber: 1,
                                                 lexeme: "NOP")])
     }
+    
+    func testTokenizeCMP() {
+        let tokenizer = AssemblerScanner(withString: "CMP")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [AssemblerToken(type: .cmp,
+                                                         lineNumber: 1,
+                                                         lexeme: "CMP")])
+    }
+    
+    func testTokenizeHLT() {
+        let tokenizer = AssemblerScanner(withString: "HLT")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [AssemblerToken(type: .hlt,
+                                                         lineNumber: 1,
+                                                         lexeme: "HLT")])
+    }
+    
+    func testTokenizeIdentifier() {
+        let tokenizer = AssemblerScanner(withString: "Bogus")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [AssemblerToken(type: .identifier,
+                                                         lineNumber: 1,
+                                                         lexeme: "Bogus")])
+    }
 }

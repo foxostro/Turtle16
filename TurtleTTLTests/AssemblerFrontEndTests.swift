@@ -110,4 +110,48 @@ class AssemblerFrontEndTests: XCTestCase {
             XCTAssertEqual(error.message, "instruction takes no operands: `HLT'")
         }
     }
+    
+    func testLabelDeclaration() {
+        let instructions = try! assembler.compile("label:")
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(try assembler.resolveSymbol("label"), 1)
+    }
+    
+    func testLabelDeclarationAtAnotherAddress() {
+        let instructions = try! assembler.compile("NOP\nlabel:")
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(instructions[1], Instruction())
+        XCTAssertEqual(try assembler.resolveSymbol("label"), 2)
+    }
+    
+    func testDuplicateLabelDeclaration() {
+        XCTAssertThrowsError(try assembler.compile("label:\nlabel:")) { e in
+            let error = e as! AssemblerParser.AssemblerParserError
+            XCTAssertEqual(error.line, 2)
+            XCTAssertEqual(error.message, "duplicate label: `label'")
+        }
+    }
+    
+    func testParseLabelNameIsANumber() {
+        XCTAssertThrowsError(try assembler.compile("123:")) { e in
+            let error = e as! AssemblerParser.AssemblerParserError
+            XCTAssertEqual(error.message, "unexpected end of input")
+        }
+    }
+    
+    func testParseLabelNameIsAKeyword() {
+        XCTAssertThrowsError(try assembler.compile("NOP:")) { e in
+            let error = e as! AssemblerParser.AssemblerParserError
+            XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
+        }
+    }
+    
+    func testParseExtraneousColon() {
+        XCTAssertThrowsError(try assembler.compile(":")) { e in
+            let error = e as! AssemblerParser.AssemblerParserError
+            XCTAssertEqual(error.message, "unexpected end of input")
+        }
+    }
 }

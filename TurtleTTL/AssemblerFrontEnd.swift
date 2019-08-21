@@ -26,4 +26,8 @@ public class AssemblerFrontEnd: NSObject {
         try backend.end()
         return backend.instructions
     }
+    
+    public func resolveSymbol(_ name: String) throws -> Int {
+        return try backend.resolveSymbol(name)
+    }
 }

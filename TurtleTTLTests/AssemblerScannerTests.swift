@@ -297,4 +297,18 @@ class AssemblerScannerTests: XCTestCase {
                                                 lineNumber: 1,
                                                 lexeme: "")])
     }
+    
+    func testTokenizeColon() {
+        let tokenizer = AssemblerScanner(withString: "label:")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [Token(type: .identifier,
+                                                lineNumber: 1,
+                                                lexeme: "label"),
+                                          Token(type: .colon,
+                                                lineNumber: 1,
+                                                lexeme: ":"),
+                                          Token(type: .eof,
+                                                lineNumber: 1,
+                                                lexeme: "")])
+    }
 }

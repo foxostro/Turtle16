@@ -26,24 +26,32 @@ public class AssemblerScanner: TurtleScanner {
         case cmp
         case hlt
         case identifier
+        case number
     }
     
     public class Token : NSObject {
         public let type: TokenType
         public let lineNumber: Int
         public let lexeme: String
+        public let literal: Int?
         
         public required init(type: TokenType,
                              lineNumber: Int,
-                             lexeme: String) {
+                             lexeme: String,
+                             literal: Int? = nil) {
             self.type = type
             self.lineNumber = lineNumber
             self.lexeme = lexeme
+            self.literal = literal
             super.init()
         }
         
         public override var description: String {
-            return String(format: "<Token: type=%@, lineNumber=%d, lexeme=\"%@\">", String(describing: type), lineNumber, lexeme)
+            if let literal = literal {
+                return String(format: "<Token: type=%@, lineNumber=%d, lexeme=\"%@\", literal=%@>", String(describing: type), lineNumber, lexeme, String(describing: literal))
+            } else {
+                return String(format: "<Token: type=%@, lineNumber=%d, lexeme=\"%@\">", String(describing: type), lineNumber, lexeme)
+            }
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -85,6 +93,33 @@ public class AssemblerScanner: TurtleScanner {
         Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+") {
             Token(type: .identifier, lineNumber: $0.lineNumber, lexeme: $1)
         },
+        Rule(pattern: "[0-9]+\\b") {
+            let scanner = Scanner(string: $1)
+            var number: Int = 0
+            if scanner.scanInt(&number) {
+                return Token(type: .number, lineNumber: $0.lineNumber, lexeme: $1, literal: number)
+            } else {
+                assert(false)
+            }
+        },
+        Rule(pattern: "\\$[0-9a-fA-F]+\\b") {
+            let scanner = Scanner(string: String($1.dropFirst()))
+            var number: UInt32 = 0
+            if scanner.scanHexInt32(&number) {
+                return Token(type: .number, lineNumber: $0.lineNumber, lexeme: $1, literal: Int(number))
+            } else {
+                assert(false)
+            }
+        },
+        Rule(pattern: "0[xX][0-9a-fA-F]+\\b") {
+            let scanner = Scanner(string: String($1))
+            var number: UInt32 = 0
+            if scanner.scanHexInt32(&number) {
+                return Token(type: .number, lineNumber: $0.lineNumber, lexeme: $1, literal: Int(number))
+            } else {
+                assert(false)
+            }
+        },
         Rule(pattern: "[ \t]+") {(scanner: AssemblerScanner, lexeme: String) in
             nil
         }
@@ -125,4 +160,5 @@ public func ==(lhs: AssemblerScanner.Token, rhs: AssemblerScanner.Token) -> Bool
     return lhs.type == rhs.type
         && lhs.lineNumber == rhs.lineNumber
         && lhs.lexeme == rhs.lexeme
+        && lhs.literal == rhs.literal
 }

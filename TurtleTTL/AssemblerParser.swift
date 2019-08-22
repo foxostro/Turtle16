@@ -60,31 +60,26 @@ public class AssemblerParser: NSObject {
     }
     
     func consumeInstruction() throws {
-        if try consumeNOP() {
-            // do nothing
-        } else if try consumeCMP() {
-            // do nothing
-        } else if try consumeHLT() {
-            // do nothing
-        } else if try consumeJMP() {
-            // do nothing
-        } else if try consumeJC() {
-            // do nothing
-        } else if try consumeADD() {
-            // do nothing
-        } else if try consumeLI() {
-            // do nothing
-        } else if try consumeMOV() {
-            // do nothing
-        } else if try consumeNewline() {
-            // do nothing
-        } else if try consumeEOF() {
-            // do nothing
-        } else if try consumeIdentifier() {
-            // do nothing
-        } else {
-            throw AssemblerError(format: "unexpected end of input")
+        typealias Rule = () throws -> Bool
+        let rules: [Rule] = [
+            { return try self.consumeNOP() },
+            { return try self.consumeCMP() },
+            { return try self.consumeHLT() },
+            { return try self.consumeJMP() },
+            { return try self.consumeJC() },
+            { return try self.consumeADD() },
+            { return try self.consumeLI() },
+            { return try self.consumeMOV() },
+            { return try self.consumeNewline() },
+            { return try self.consumeEOF() },
+            { return try self.consumeIdentifier() }
+        ]
+        for rule in rules {
+            if try rule() {
+                return
+            }
         }
+        throw AssemblerError(format: "unexpected end of input")
     }
     
     func consumeNOP() throws -> Bool {

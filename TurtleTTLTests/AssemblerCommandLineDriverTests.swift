@@ -111,4 +111,55 @@ class AssemblerCommandLineDriverTests: XCTestCase {
         XCTAssertEqual(driver.status, 1)
         XCTAssertTrue((driver.stderr as! String).contains("Error"))
     }
+    
+    func testFailWhenInputFileIsUnreadable() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        FileManager.default.createFile(atPath: fileNameIn,
+                                       contents: Data(),
+                                       attributes: [.posixPermissions: 0o000])
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameIn)
+        }
+        let fileNameOut = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString + ".program").path
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        XCTAssertThrowsError(try driver.parseArguments()) { e in
+            let error = e as! AssemblerCommandLineDriver.AssemblerCommandLineDriverError
+            XCTAssertEqual(error.message, "Input file is not readable: \(fileNameIn)")
+        }
+    }
+    
+    func testFailWhenOutputDirectoryDoesNotExist() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        FileManager.default.createFile(atPath: fileNameIn, contents: Data(), attributes: nil)
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameIn)
+        }
+        let fileNameOutDir = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
+        let fileNameOut = fileNameOutDir.appendingPathComponent(NSUUID().uuidString + ".program").path
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        XCTAssertThrowsError(try driver.parseArguments()) { e in
+            let error = e as! AssemblerCommandLineDriver.AssemblerCommandLineDriverError
+            XCTAssertEqual(error.message, "Specified output directory does not exist: \(fileNameOutDir.path)")
+        }
+    }
+    
+    func testFailWhenOutputFileExistsButIsUnwritable() {
+        let fileNameIn = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString).path
+        FileManager.default.createFile(atPath: fileNameIn, contents: Data())
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameIn)
+        }
+        let fileNameOut = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString + ".program").path
+        defer {
+            try? FileManager.default.removeItem(atPath: fileNameOut)
+        }
+        FileManager.default.createFile(atPath: fileNameOut,
+                                       contents: Data(),
+                                       attributes: [.posixPermissions: 0o000])
+        let driver = AssemblerCommandLineDriver(withArguments: ["", fileNameIn, fileNameOut])
+        XCTAssertThrowsError(try driver.parseArguments()) { e in
+            let error = e as! AssemblerCommandLineDriver.AssemblerCommandLineDriverError
+            XCTAssertEqual(error.message, "Output file exists but is not writable: \(fileNameOut)")
+        }
+    }
 }

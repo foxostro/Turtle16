@@ -110,7 +110,7 @@ public class AssemblerBackEnd: NSObject {
             throw AssemblerError(format: "Address is invalid: 0x%x", address)
         }
         if(immediate < 0 || immediate > 0xff) {
-            throw AssemblerError(format: "Immediate is invalid: 0x%x", address)
+            throw AssemblerError(format: "Immediate is invalid: 0x%x", immediate)
         }
         commands.append({
             try self.setAddress(address)
@@ -177,17 +177,15 @@ public class AssemblerBackEnd: NSObject {
         let name = identifier.lexeme
         if let value = self.symbols[name] {
             return value
-        } else {
-            throw AssemblerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
         }
+        throw AssemblerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
     }
     
     public func resolveSymbol(name: String) throws -> Int {
         if let value = self.symbols[name] {
             return value
-        } else {
-            throw AssemblerError(format: "unrecognized symbol name: `%@'", name)
         }
+        throw AssemblerError(format: "unrecognized symbol name: `%@'", name)
     }
     
     func setAddress(_ address: Int) throws {

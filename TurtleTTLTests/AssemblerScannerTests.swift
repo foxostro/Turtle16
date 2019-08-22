@@ -386,4 +386,72 @@ class AssemblerScannerTests: XCTestCase {
                                                 lineNumber: 1,
                                                 lexeme: "")])
     }
+    
+    func testTokenizeDescription() {
+        XCTAssertEqual(Token(type: .mov, lineNumber: 1, lexeme: "MOV").description, "<Token: type=mov, lineNumber=1, lexeme=\"MOV\">")
+    }
+    
+    func testTokenizeDescriptionWithLiteral() {
+        XCTAssertEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: 123).description, "<Token: type=number, lineNumber=1, lexeme=\"123\", literal=123>")
+    }
+    
+    func testTokensTestEqualityWithDifferentTypes() {
+        XCTAssertNotEqual(Token(type: .identifier, lineNumber: 1, lexeme: "123"),
+                          Token(type: .number, lineNumber: 1, lexeme: "123"))
+    }
+    
+    func testTokensTestEqualityWithDifferentLines() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: 123),
+                          Token(type: .number, lineNumber: 2, lexeme: "123", literal: 1))
+    }
+    
+    func testTokensTestEqualityWithDifferentLexemes() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "456", literal: 123),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: 1))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralNullity() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: nil),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: 1))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralTypes() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: 1),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: ""))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralTypes2() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: ""),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: 1))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralTypes3() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: NSArray()),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: 1))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralInts() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: 1),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: 2))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralStrings() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: "a"),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: "b"))
+    }
+    
+    func testTokensTestEqualityWithDifferentLiteralNSObjects() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: NSArray()),
+                          Token(type: .number, lineNumber: 1, lexeme: "123", literal: NSString()))
+    }
+    
+    func testTokensEqual() {
+        XCTAssertEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: 123),
+                       Token(type: .number, lineNumber: 1, lexeme: "123", literal: 123))
+    }
+    
+    func testTokensEqualityTestWithDifferentTypes() {
+        XCTAssertNotEqual(Token(type: .number, lineNumber: 1, lexeme: "123", literal: 123),
+                          NSString())
+    }
 }

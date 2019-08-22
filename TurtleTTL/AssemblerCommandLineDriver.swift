@@ -93,7 +93,7 @@ public class AssemblerCommandLineDriver: NSObject {
         }
         if FileManager.default.fileExists(atPath: outputFileName!.relativePath) {
             if !FileManager.default.isWritableFile(atPath: outputFileName!.relativePath) {
-                throw AssemblerCommandLineDriverError(format: "Output file exists but is not writable: %@", inputFileName!.relativePath)
+                throw AssemblerCommandLineDriverError(format: "Output file exists but is not writable: %@", outputFileName!.relativePath)
             }
         }
     }

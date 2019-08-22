@@ -9,9 +9,29 @@
 import Cocoa
 
 public class AssemblerParser: NSObject {
-    let backend: AssemblerBackEnd
     public typealias Token = AssemblerScanner.Token
     typealias TokenType = AssemblerScanner.TokenType
+    
+    struct Production {
+        typealias Generator = (AssemblerParser,Token) throws -> Bool
+        let symbol: TokenType
+        let generator: Generator
+    }
+    
+    let productions: [Production] = [
+        Production(symbol: .eof,        generator: { _,_ in true }),
+        Production(symbol: .newline,    generator: { _,_ in true }),
+        Production(symbol: .nop,        generator: { try $0.consumeNOP($1) }),
+        Production(symbol: .cmp,        generator: { try $0.consumeCMP($1) }),
+        Production(symbol: .hlt,        generator: { try $0.consumeHLT($1) }),
+        Production(symbol: .jmp,        generator: { try $0.consumeJMP($1) }),
+        Production(symbol: .jc,         generator: { try $0.consumeJC($1) }),
+        Production(symbol: .add,        generator: { try $0.consumeADD($1) }),
+        Production(symbol: .li,         generator: { try $0.consumeLI($1) }),
+        Production(symbol: .mov,        generator: { try $0.consumeMOV($1) }),
+        Production(symbol: .identifier, generator: { try $0.consumeIdentifier($1) })
+    ]
+    let backend: AssemblerBackEnd
     var tokens: [Token] = []
     
     public required init(backend: AssemblerBackEnd, tokens: [Token]) {
@@ -22,7 +42,7 @@ public class AssemblerParser: NSObject {
     
     public func parse() throws {
         while tokens.count > 0 {
-            try consumeInstruction()
+            try consumeStatement()
         }
     }
     
@@ -59,55 +79,39 @@ public class AssemblerParser: NSObject {
         throw error
     }
     
-    func consumeInstruction() throws {
-        typealias Rule = () throws -> Bool
-        let rules: [Rule] = [
-            { return try self.consumeNOP() },
-            { return try self.consumeCMP() },
-            { return try self.consumeHLT() },
-            { return try self.consumeJMP() },
-            { return try self.consumeJC() },
-            { return try self.consumeADD() },
-            { return try self.consumeLI() },
-            { return try self.consumeMOV() },
-            { return try self.consumeNewline() },
-            { return try self.consumeEOF() },
-            { return try self.consumeIdentifier() }
-        ]
-        for rule in rules {
-            if try rule() {
-                return
+    func consumeStatement() throws {
+        for production in productions {
+            if let symbol = accept(production.symbol) {
+                if try production.generator(self, symbol) {
+                    return
+                }
             }
         }
         throw AssemblerError(format: "unexpected end of input")
     }
     
-    func consumeNOP() throws -> Bool {
-        guard let instruction = accept(.nop) else { return false }
+    func consumeNOP(_ instruction: Token) throws -> Bool {
         try expect(types: [.newline, .eof],
                    error: zeroOperandsExpectedError(instruction))
         backend.nop()
         return true
     }
     
-    func consumeCMP() throws -> Bool {
-        guard let instruction = accept(.cmp) else { return false }
+    func consumeCMP(_ instruction: Token) throws -> Bool {
         try expect(types: [.newline, .eof],
                    error: zeroOperandsExpectedError(instruction))
         backend.cmp()
         return true
     }
     
-    func consumeHLT() throws -> Bool {
-        guard let instruction = accept(.hlt) else { return false }
+    func consumeHLT(_ instruction: Token) throws -> Bool {
         try expect(types: [.newline, .eof],
                    error: zeroOperandsExpectedError(instruction))
         backend.hlt()
         return true
     }
     
-    func consumeJMP() throws -> Bool {
-        guard let instruction = accept(.jmp) else { return false }
+    func consumeJMP(_ instruction: Token) throws -> Bool {
         guard let identifier = accept(.identifier) else {
             throw operandTypeMismatchError(instruction)
         }
@@ -117,8 +121,7 @@ public class AssemblerParser: NSObject {
         return true
     }
     
-    func consumeJC() throws -> Bool {
-        guard let instruction = accept(.jc) else { return false }
+    func consumeJC(_ instruction: Token) throws -> Bool {
         guard let identifier = accept(.identifier) else {
             throw operandTypeMismatchError(instruction)
         }
@@ -128,24 +131,22 @@ public class AssemblerParser: NSObject {
         return true
     }
     
-    func consumeADD() throws -> Bool {
-        guard let instruction = accept(.add) else { return false }
+    func consumeADD(_ instruction: Token) throws -> Bool {
         guard let register = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
-        try checkRegisterCanBeUsedAsDestination(register)
+        try expectRegisterCanBeUsedAsDestination(register)
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
         try backend.add(register.literal as! String)
         return true
     }
     
-    func consumeLI() throws -> Bool {
-        guard let instruction = accept(.li) else { return false }
+    func consumeLI(_ instruction: Token) throws -> Bool {
         guard let destination = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
-        try checkRegisterCanBeUsedAsDestination(destination)
+        try expectRegisterCanBeUsedAsDestination(destination)
         try expect(type: .comma, error: operandTypeMismatchError(instruction))
         guard let source = accept(.number) else {
             throw operandTypeMismatchError(instruction)
@@ -156,45 +157,35 @@ public class AssemblerParser: NSObject {
         return true
     }
     
-    func consumeMOV() throws -> Bool {
-        guard let instruction = accept(.mov) else { return false }
+    func consumeMOV(_ instruction: Token) throws -> Bool {
         guard let destination = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
         try expect(type: .comma, error: operandTypeMismatchError(instruction))
-        try checkRegisterCanBeUsedAsDestination(destination)
+        try expectRegisterCanBeUsedAsDestination(destination)
         guard let source = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
-        try checkRegisterCanBeUsedAsSource(source)
+        try expectRegisterCanBeUsedAsSource(source)
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
         try backend.mov(destination.literal as! String, source.literal as! String)
         return true
     }
     
-    func consumeNewline() throws -> Bool {
-        return nil != accept(.newline)
-    }
-    
-    func consumeEOF() throws -> Bool {
-        return nil != accept(.eof)
-    }
-    
-    func consumeIdentifier() throws -> Bool {
-        guard let identifier = accept(.identifier) else { return false }
+    func consumeIdentifier(_ identifier: Token) throws -> Bool {
         try expect(type: .colon, error: unrecognizedInstructionError(identifier))
         try backend.label(token: identifier)
         return true
     }
     
-    func checkRegisterCanBeUsedAsDestination(_ register: Token) throws {
+    func expectRegisterCanBeUsedAsDestination(_ register: Token) throws {
         if register.literal as! String == "E" || register.literal as! String == "C" {
             throw badDestinationError(register)
         }
     }
     
-    func checkRegisterCanBeUsedAsSource(_ register: Token) throws {
+    func expectRegisterCanBeUsedAsSource(_ register: Token) throws {
         if register.literal as! String == "D" {
             throw badSourceError(register)
         }

@@ -162,6 +162,24 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions[6].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV A, M")!))
     }
     
+    func testLoadFromMemoryWithNegativeAddress() {
+        let backEnd = makeBackEnd()
+        backEnd.begin()
+        XCTAssertThrowsError(try backEnd.store(address: -1, immediate: 42)) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
+        }
+    }
+    
+    func testLoadFromMemoryWithTooLargeImmediate() {
+        let backEnd = makeBackEnd()
+        backEnd.begin()
+        XCTAssertThrowsError(try backEnd.store(address: 0, immediate: 1000)) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.message, "Immediate is invalid: 0x3e8")
+        }
+    }
+    
     func testLoadFromMemoryWithInvalidAddress() {
         let backEnd = makeBackEnd()
         backEnd.begin()
@@ -266,6 +284,54 @@ class AssemblerBackEndTests: XCTestCase {
 
         // HLT halts the machine to stop it running.
         XCTAssertEqual(instructions[6].opcode, hlt)
+    }
+    
+    func testJmpToAddressZero() {
+        let backEnd = makeBackEnd()
+        backEnd.begin()
+        try! backEnd.jmp(0)
+        try! backEnd.end()
+        let instructions = backEnd.instructions
+        
+        XCTAssertEqual(instructions.count, 6)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // Load the resolved label address into XY.
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 0)
+        
+        // The JMP command jumps to the address in the XY register pair.
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        
+        // JMP must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[4].opcode, nop)
+        XCTAssertEqual(instructions[5].opcode, nop)
+    }
+    
+    func testJmpToAddressNegative() {
+        let backEnd = makeBackEnd()
+        backEnd.begin()
+        try! backEnd.jmp(-1)
+        XCTAssertThrowsError(try backEnd.end()) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.message, "invalid address: 0xffffffff")
+        }
+    }
+    
+    func testJmpToAddressTooLarge() {
+        let backEnd = makeBackEnd()
+        backEnd.begin()
+        try! backEnd.jmp(0x10000)
+        XCTAssertThrowsError(try backEnd.end()) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.message, "invalid address: 0x10000")
+        }
     }
     
     func testJC() {

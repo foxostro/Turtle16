@@ -60,81 +60,137 @@ public class AssemblerParser: NSObject {
     }
     
     func consumeInstruction() throws {
-        if let instruction = accept(.nop) {
-            try expect(types: [.newline, .eof],
-                       error: zeroOperandsExpectedError(instruction))
-            backend.nop()
-        } else if let instruction = accept(.cmp) {
-            try expect(types: [.newline, .eof],
-                       error: zeroOperandsExpectedError(instruction))
-            backend.cmp()
-        } else if let instruction = accept(.hlt) {
-            try expect(types: [.newline, .eof],
-                       error: zeroOperandsExpectedError(instruction))
-            backend.hlt()
-        } else if let instruction = accept(.jmp) {
-            if let identifier = accept(.identifier) {
-                try expect(types: [.newline, .eof],
-                           error: operandTypeMismatchError(instruction))
-                try backend.jmp(token: identifier)
-            } else {
-                throw operandTypeMismatchError(instruction)
-            }
-        } else if let instruction = accept(.jc) {
-            if let identifier = accept(.identifier) {
-                try expect(types: [.newline, .eof],
-                           error: operandTypeMismatchError(instruction))
-                try backend.jc(token: identifier)
-            } else {
-                throw operandTypeMismatchError(instruction)
-            }
-        } else if let instruction = accept(.add) {
-            if let register = accept(.register) {
-                try checkRegisterCanBeUsedAsDestination(register)
-                try expect(types: [.newline, .eof],
-                           error: operandTypeMismatchError(instruction))
-                try backend.add(register.literal as! String)
-            } else {
-                throw operandTypeMismatchError(instruction)
-            }
-        } else if let instruction = accept(.li) {
-            guard let destination = accept(.register) else {
-                throw operandTypeMismatchError(instruction)
-            }
-            try checkRegisterCanBeUsedAsDestination(destination)
-            try expect(type: .comma, error: operandTypeMismatchError(instruction))
-            guard let source = accept(.number) else {
-                throw operandTypeMismatchError(instruction)
-            }
-            try expect(types: [.newline, .eof],
-                       error: operandTypeMismatchError(instruction))
-            try backend.li(destination.literal as! String, token: source)
-        } else if let instruction = accept(.mov) {
-            guard let destination = accept(.register) else {
-                throw operandTypeMismatchError(instruction)
-            }
-            try expect(type: .comma, error: operandTypeMismatchError(instruction))
-            try checkRegisterCanBeUsedAsDestination(destination)
-            guard let source = accept(.register) else {
-                throw operandTypeMismatchError(instruction)
-            }
-            try checkRegisterCanBeUsedAsSource(source)
-            try expect(types: [.newline, .eof],
-                       error: operandTypeMismatchError(instruction))
-            try backend.mov(destination.literal as! String, source.literal as! String)
-        } else if nil != accept(.newline) {
+        if try consumeNOP() {
             // do nothing
-        } else if nil != accept(.eof) {
+        } else if try consumeCMP() {
             // do nothing
-        } else if let identifier = accept(.identifier) {
-            if nil != accept(.colon) {
-                try backend.label(token: identifier)
-            } else {
-                throw unrecognizedInstructionError(identifier)
-            }
+        } else if try consumeHLT() {
+            // do nothing
+        } else if try consumeJMP() {
+            // do nothing
+        } else if try consumeJC() {
+            // do nothing
+        } else if try consumeADD() {
+            // do nothing
+        } else if try consumeLI() {
+            // do nothing
+        } else if try consumeMOV() {
+            // do nothing
+        } else if try consumeNewline() {
+            // do nothing
+        } else if try consumeEOF() {
+            // do nothing
+        } else if try consumeIdentifier() {
+            // do nothing
         } else {
             throw AssemblerError(format: "unexpected end of input")
         }
+    }
+    
+    func consumeNOP() throws -> Bool {
+        guard let instruction = accept(.nop) else { return false }
+        try expect(types: [.newline, .eof],
+                   error: zeroOperandsExpectedError(instruction))
+        backend.nop()
+        return true
+    }
+    
+    func consumeCMP() throws -> Bool {
+        guard let instruction = accept(.cmp) else { return false }
+        try expect(types: [.newline, .eof],
+                   error: zeroOperandsExpectedError(instruction))
+        backend.cmp()
+        return true
+    }
+    
+    func consumeHLT() throws -> Bool {
+        guard let instruction = accept(.hlt) else { return false }
+        try expect(types: [.newline, .eof],
+                   error: zeroOperandsExpectedError(instruction))
+        backend.hlt()
+        return true
+    }
+    
+    func consumeJMP() throws -> Bool {
+        guard let instruction = accept(.jmp) else { return false }
+        guard let identifier = accept(.identifier) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(types: [.newline, .eof],
+                   error: operandTypeMismatchError(instruction))
+        try backend.jmp(token: identifier)
+        return true
+    }
+    
+    func consumeJC() throws -> Bool {
+        guard let instruction = accept(.jc) else { return false }
+        guard let identifier = accept(.identifier) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(types: [.newline, .eof],
+                   error: operandTypeMismatchError(instruction))
+        try backend.jc(token: identifier)
+        return true
+    }
+    
+    func consumeADD() throws -> Bool {
+        guard let instruction = accept(.add) else { return false }
+        guard let register = accept(.register) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try checkRegisterCanBeUsedAsDestination(register)
+        try expect(types: [.newline, .eof],
+                   error: operandTypeMismatchError(instruction))
+        try backend.add(register.literal as! String)
+        return true
+    }
+    
+    func consumeLI() throws -> Bool {
+        guard let instruction = accept(.li) else { return false }
+        guard let destination = accept(.register) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try checkRegisterCanBeUsedAsDestination(destination)
+        try expect(type: .comma, error: operandTypeMismatchError(instruction))
+        guard let source = accept(.number) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(types: [.newline, .eof],
+                   error: operandTypeMismatchError(instruction))
+        try backend.li(destination.literal as! String, token: source)
+        return true
+    }
+    
+    func consumeMOV() throws -> Bool {
+        guard let instruction = accept(.mov) else { return false }
+        guard let destination = accept(.register) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(type: .comma, error: operandTypeMismatchError(instruction))
+        try checkRegisterCanBeUsedAsDestination(destination)
+        guard let source = accept(.register) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try checkRegisterCanBeUsedAsSource(source)
+        try expect(types: [.newline, .eof],
+                   error: operandTypeMismatchError(instruction))
+        try backend.mov(destination.literal as! String, source.literal as! String)
+        return true
+    }
+    
+    func consumeNewline() throws -> Bool {
+        return nil != accept(.newline)
+    }
+    
+    func consumeEOF() throws -> Bool {
+        return nil != accept(.eof)
+    }
+    
+    func consumeIdentifier() throws -> Bool {
+        guard let identifier = accept(.identifier) else { return false }
+        try expect(type: .colon, error: unrecognizedInstructionError(identifier))
+        try backend.label(token: identifier)
+        return true
     }
     
     func checkRegisterCanBeUsedAsDestination(_ register: Token) throws {

@@ -69,6 +69,12 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[1], Instruction())
     }
     
+    func testCompilerIgnoresHashCommentsToo() {
+        let instructions = try! assembler.compile("# comment")
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0], Instruction())
+    }
+    
     func testNOPAcceptsNoOperands() {
         XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
             let error = e as! AssemblerError

@@ -71,7 +71,7 @@ public class AssemblerScanner: TurtleScanner {
             $0.lineNumber += 1
             return token
         },
-        Rule(pattern: "//") {(scanner: AssemblerScanner, lexeme: String) in
+        Rule(pattern: "((#)|(//))") {(scanner: AssemblerScanner, lexeme: String) in
             scanner.advanceToNewline()
             return nil
         },

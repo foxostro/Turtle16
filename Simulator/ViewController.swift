@@ -51,7 +51,7 @@ class ViewController: NSViewController {
     func generateExampleProgram() -> [Instruction] {
         var program = [Instruction]()
         do {
-            program = try tryGenerateExampleProgram()
+            program = try tryCompileExampleProgram()
         } catch let error as AssemblerError {
             alert(withMessage: "Error: " + error.message)
         } catch {
@@ -64,6 +64,23 @@ class ViewController: NSViewController {
         let alert = NSAlert()
         alert.messageText = message
         alert.runModal()
+    }
+    
+    func tryCompileExampleProgram() throws -> [Instruction] {
+        return try AssemblerFrontEnd().compile(loadExampleProgram())
+    }
+    
+    func loadExampleProgram() -> String {
+        if let fileName = Bundle.main.path(forResource: "Example", ofType: "txt") {
+            do {
+                return try String(contentsOfFile: fileName)
+            } catch {
+                alert(withMessage: "Error: Example program could not be loaded.")
+            }
+        } else {
+            alert(withMessage: "Error: Example program could not be found.")
+        }
+        return ""
     }
     
     func tryGenerateExampleProgram() throws -> [Instruction] {

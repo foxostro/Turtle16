@@ -1,0 +1,91 @@
+# let kOutputDisplay = 1
+# let kSerialInterface = 6
+# let kIORegister = 0
+# let kStatusRegister = 1
+
+LI D, 1 # kOutputDisplay
+LI M, 72 # 'H'
+LI D, 6 # kSerialInterface
+LI M, 72 # 'H'
+
+LI D, 1 # kOutputDisplay
+LI M, 101 # 'e'
+LI D, 6 # kSerialInterface
+LI M, 101 # 'e'
+
+LI D, 1 # kOutputDisplay
+LI M, 108 # 'l'
+LI D, 6 # kSerialInterface
+LI M, 108 # 'l'
+
+LI D, 1 # kOutputDisplay
+LI M, 108 # 'l'
+LI D, 6 # kSerialInterface
+LI M, 108 # 'l'
+
+LI D, 1 # kOutputDisplay
+LI M, 111 # 'o'
+LI D, 6 # kSerialInterface
+LI M, 111 # 'o'
+
+LI D, 1 # kOutputDisplay
+LI M, 44 # ','
+LI D, 6 # kSerialInterface
+LI M, 44 # ','
+
+LI D, 1 # kOutputDisplay
+LI M, 32 # ' '
+LI D, 6 # kSerialInterface
+LI M, 32 # ' '
+
+LI D, 1 # kOutputDisplay
+LI M, 87 # 'W'
+LI D, 6 # kSerialInterface
+LI M, 87 # 'W'
+
+LI D, 1 # kOutputDisplay
+LI M, 111 # 'o'
+LI D, 6 # kSerialInterface
+LI M, 111 # 'o'
+
+LI D, 1 # kOutputDisplay
+LI M, 114 # 'r'
+LI D, 6 # kSerialInterface
+LI M, 114 # 'r'
+
+LI D, 1 # kOutputDisplay
+LI M, 108 # 'l'
+LI D, 6 # kSerialInterface
+LI M, 108 # 'l'
+
+LI D, 1 # kOutputDisplay
+LI M, 100 # 'd'
+LI D, 6 # kSerialInterface
+LI M, 100 # 'd'
+
+LI D, 1 # kOutputDisplay
+LI M, 33 # '!'
+LI D, 6 # kSerialInterface
+LI M, 33 # '!'
+
+loop:
+
+# Wait until the number of available bytes is greater than zero.
+LI D, 6 # kSerialInterface
+LI Y, 1 # kStatusRegister
+MOV B, M
+LI A, 1
+CMP
+JC loop
+
+# Read a byte and echo it back.
+LI Y, 0 # kIORegister
+MOV A, M
+MOV M, A
+
+# Show it on the output display too.
+LI D, 1 # kOutputDisplay
+MOV M, A
+
+JMP loop
+HLT

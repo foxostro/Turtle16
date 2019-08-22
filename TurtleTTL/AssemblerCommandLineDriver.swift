@@ -65,7 +65,7 @@ public class AssemblerCommandLineDriver: NSObject {
     
     public func parseArguments() throws {
         if (arguments.count != 3) {
-            throw AssemblerCommandLineDriverError(format: "Expected two arguments, got %d:\n%@", arguments.count-1, arguments.joined(separator: " "))
+            throw AssemblerCommandLineDriverError(format: "usage: TurtleAssembler <INPUT> <OUTPUT>\nExpected two arguments, got \(arguments.count-1): \(arguments.debugDescription)")
         }
         
         try parseInputFileName()

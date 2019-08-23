@@ -170,7 +170,7 @@ class AssemblerParserTests: XCTestCase {
     func testParseSucceedsWithJCWithUndeclaredLabel() {
         let ast = try! parse("JC label")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JCNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], JCToLabelNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
     }
 
     func testJCParses() {
@@ -178,7 +178,7 @@ class AssemblerParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 2)
         XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
-        XCTAssertEqual(ast.children[1], JCNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
+        XCTAssertEqual(ast.children[1], JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
     }
 
     func testFailToParseADDWithZeroOperands() {

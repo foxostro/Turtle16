@@ -14,12 +14,12 @@ class JCNodeTests: XCTestCase {
     
     func testDoesNotEqualAnotherNodeType() {
         let label = Token(type: .identifier, lineNumber: 1, lexeme: "label")
-        XCTAssertNotEqual(JCNode(token: label), NOPNode())
+        XCTAssertNotEqual(JCToLabelNode(token: label), NOPNode())
     }
     
     func testDoesNotEqualLabelWithDifferentIdentifier() {
         let foo = Token(type: .identifier, lineNumber: 1, lexeme: "foo")
         let bar = Token(type: .identifier, lineNumber: 2, lexeme: "bar")
-        XCTAssertNotEqual(JCNode(token: foo), JCNode(token: bar))
+        XCTAssertNotEqual(JCToLabelNode(token: foo), JCToLabelNode(token: bar))
     }
 }

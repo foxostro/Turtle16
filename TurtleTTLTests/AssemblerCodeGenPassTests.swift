@@ -291,7 +291,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     func testJC() {
         let ast = AbstractSyntaxTreeNode(children: [
             LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo")),
-            JCNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))])
+            JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))])
         let instructions = try! makeBackEnd(symbols: ["foo" : 1]).generate(ast)
         
         XCTAssertEqual(instructions.count, 6)

@@ -124,21 +124,6 @@ class AssemblerFrontEndTests: XCTestCase {
         }
     }
     
-    func testLabelDeclaration() {
-        let instructions = try! assembler.compile("label:")
-        XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction())
-        XCTAssertEqual(try assembler.resolveSymbol("label"), 1)
-    }
-    
-    func testLabelDeclarationAtAnotherAddress() {
-        let instructions = try! assembler.compile("NOP\nlabel:")
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0], Instruction())
-        XCTAssertEqual(instructions[1], Instruction())
-        XCTAssertEqual(try assembler.resolveSymbol("label"), 2)
-    }
-    
     func testDuplicateLabelDeclaration() {
         XCTAssertThrowsError(try assembler.compile("label:\nlabel:")) { e in
             let error = e as! AssemblerError

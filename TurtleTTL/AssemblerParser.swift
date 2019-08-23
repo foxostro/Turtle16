@@ -13,14 +13,14 @@ public class AssemblerParser: NSObject {
     typealias TokenType = AssemblerScanner.TokenType
     
     struct Production {
-        typealias Generator = (AssemblerParser,Token) throws -> Bool
+        typealias Generator = (AssemblerParser,Token) throws -> [AbstractSyntaxTreeNode]?
         let symbol: TokenType
         let generator: Generator
     }
     
     let productions: [Production] = [
-        Production(symbol: .eof,        generator: { _,_ in true }),
-        Production(symbol: .newline,    generator: { _,_ in true }),
+        Production(symbol: .eof,        generator: { _,_ in [] }),
+        Production(symbol: .newline,    generator: { _,_ in [] }),
         Production(symbol: .nop,        generator: { try $0.consumeNOP($1) }),
         Production(symbol: .cmp,        generator: { try $0.consumeCMP($1) }),
         Production(symbol: .hlt,        generator: { try $0.consumeHLT($1) }),
@@ -31,19 +31,19 @@ public class AssemblerParser: NSObject {
         Production(symbol: .mov,        generator: { try $0.consumeMOV($1) }),
         Production(symbol: .identifier, generator: { try $0.consumeIdentifier($1) })
     ]
-    let backend: AssemblerBackEnd
     var tokens: [Token] = []
     
-    public required init(backend: AssemblerBackEnd, tokens: [Token]) {
-        self.backend = backend
+    public required init(tokens: [Token]) {
         self.tokens = tokens
         super.init()
     }
     
-    public func parse() throws {
+    public func parse() throws -> AbstractSyntaxTreeNode {
+        var statements: [AbstractSyntaxTreeNode] = []
         while tokens.count > 0 {
-            try consumeStatement()
+            statements += try consumeStatement()
         }
+        return AbstractSyntaxTreeNode(children: statements)
     }
     
     func advance() {
@@ -79,70 +79,63 @@ public class AssemblerParser: NSObject {
         throw error
     }
     
-    func consumeStatement() throws {
+    func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         for production in productions {
-            if let symbol = accept(production.symbol) {
-                if try production.generator(self, symbol) {
-                    return
-                }
+            guard let symbol = accept(production.symbol) else { continue }
+            if let statements = try production.generator(self, symbol) {
+                return statements
             }
         }
         throw AssemblerError(format: "unexpected end of input")
     }
     
-    func consumeNOP(_ instruction: Token) throws -> Bool {
+    func consumeNOP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         try expect(types: [.newline, .eof],
                    error: zeroOperandsExpectedError(instruction))
-        backend.nop()
-        return true
+        return [NOPNode()]
     }
     
-    func consumeCMP(_ instruction: Token) throws -> Bool {
+    func consumeCMP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         try expect(types: [.newline, .eof],
                    error: zeroOperandsExpectedError(instruction))
-        backend.cmp()
-        return true
+        return [CMPNode()]
     }
     
-    func consumeHLT(_ instruction: Token) throws -> Bool {
+    func consumeHLT(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         try expect(types: [.newline, .eof],
                    error: zeroOperandsExpectedError(instruction))
-        backend.hlt()
-        return true
+        return [HLTNode()]
     }
     
-    func consumeJMP(_ instruction: Token) throws -> Bool {
+    func consumeJMP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         guard let identifier = accept(.identifier) else {
             throw operandTypeMismatchError(instruction)
         }
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
-        try backend.jmp(token: identifier)
-        return true
+        return [JMPNode(token: identifier)]
     }
     
-    func consumeJC(_ instruction: Token) throws -> Bool {
+    func consumeJC(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         guard let identifier = accept(.identifier) else {
             throw operandTypeMismatchError(instruction)
         }
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
-        try backend.jc(token: identifier)
-        return true
+        return [JCNode(token: identifier)]
     }
     
-    func consumeADD(_ instruction: Token) throws -> Bool {
+    func consumeADD(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         guard let register = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
         try expectRegisterCanBeUsedAsDestination(register)
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
-        try backend.add(register.literal as! String)
-        return true
+        return [ADDNode(destination: register.literal as! String)]
     }
     
-    func consumeLI(_ instruction: Token) throws -> Bool {
+    func consumeLI(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         guard let destination = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
@@ -153,11 +146,10 @@ public class AssemblerParser: NSObject {
         }
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
-        try backend.li(destination.literal as! String, token: source)
-        return true
+        return [LINode(destination: destination.literal as! String, immediate: source)]
     }
     
-    func consumeMOV(_ instruction: Token) throws -> Bool {
+    func consumeMOV(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
         guard let destination = accept(.register) else {
             throw operandTypeMismatchError(instruction)
         }
@@ -169,14 +161,13 @@ public class AssemblerParser: NSObject {
         try expectRegisterCanBeUsedAsSource(source)
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
-        try backend.mov(destination.literal as! String, source.literal as! String)
-        return true
+        return [MOVNode(destination: destination.literal as! String,
+                        source: source.literal as! String)]
     }
     
-    func consumeIdentifier(_ identifier: Token) throws -> Bool {
+    func consumeIdentifier(_ identifier: Token) throws -> [AbstractSyntaxTreeNode] {
         try expect(type: .colon, error: unrecognizedInstructionError(identifier))
-        try backend.label(token: identifier)
-        return true
+        return [LabelDeclarationNode(identifier: identifier)]
     }
     
     func expectRegisterCanBeUsedAsDestination(_ register: Token) throws {

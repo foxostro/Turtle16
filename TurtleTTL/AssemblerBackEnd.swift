@@ -8,8 +8,8 @@
 
 import Cocoa
 
-// Provides an interface for driving the code generator.
-public class AssemblerBackEnd: NSObject {
+// Takes an AST and drives the code generator.
+public class AssemblerBackEnd: NSObject, AbstractSyntaxTreeNodeVisitor {
     public var instructions = [Instruction]()
     public var isAssembling: Bool = false
     let codeGenerator: CodeGenerator
@@ -21,6 +21,15 @@ public class AssemblerBackEnd: NSObject {
     public required init(codeGenerator: CodeGenerator) {
         self.codeGenerator = codeGenerator
         super.init()
+    }
+    
+    public func generate(_ root: AbstractSyntaxTreeNode) throws -> [Instruction] {
+        begin()
+        try root.iterate {
+            try $0.accept(visitor: self)
+        }
+        try end()
+        return instructions
     }
     
     // Begin emitting instructions.
@@ -42,6 +51,42 @@ public class AssemblerBackEnd: NSObject {
         codeGenerator.end()
         instructions = codeGenerator.instructions
         isAssembling = false
+    }
+    
+    public func visit(node: NOPNode) throws {
+        nop()
+    }
+    
+    public func visit(node: CMPNode) throws {
+        cmp()
+    }
+    
+    public func visit(node: HLTNode) throws {
+        hlt()
+    }
+    
+    public func visit(node: JMPNode) throws {
+        try jmp(token: node.identifier)
+    }
+    
+    public func visit(node: JCNode) throws {
+        try jc(token: node.identifier)
+    }
+    
+    public func visit(node: ADDNode) throws {
+        try add(node.destination)
+    }
+    
+    public func visit(node: LINode) throws {
+        try li(node.destination, token: node.immediate)
+    }
+    
+    public func visit(node: MOVNode) throws {
+        try mov(node.destination, node.source)
+    }
+    
+    public func visit(node: LabelDeclarationNode) throws {
+        try label(token: node.identifier)
     }
     
     // No Operation -- Do nothing

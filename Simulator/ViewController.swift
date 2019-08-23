@@ -83,51 +83,6 @@ class ViewController: NSViewController {
         return ""
     }
     
-    func tryGenerateExampleProgram() throws -> [Instruction] {
-        let kOutputDisplay = 1
-        let kSerialInterface = 6
-        let kIORegister = 0
-        let kStatusRegister = 1
-        
-        let a = makeAssemblerBackEnd()
-        a.begin()
-        for i in String("Hello, World!\r\n").utf8 {
-            try a.li("D", kOutputDisplay)
-            try a.li("M", Int(i))
-            try a.li("D", kSerialInterface)
-            try a.li("M", Int(i))
-        }
-        try a.label(name: "loop")
-        
-        // Wait until the number of available bytes is greater than zero.
-        try a.li("D", kSerialInterface)
-        try a.li("Y", kStatusRegister)
-        try a.mov("B", "M")
-        try a.li("A", 1)
-        a.cmp()
-        try a.jc("loop")
-        
-        // Read a byte and echo it back.
-        try a.li("Y", kIORegister)
-        try a.mov("A", "M")
-        try a.mov("M", "A")
-        
-        // Show it on the output display too.
-        try a.li("D", kOutputDisplay)
-        try a.mov("M", "A")
-        
-        try a.jmp("loop")
-        a.hlt()
-        try a.end()
-        return a.instructions
-    }
-    
-    func makeAssemblerBackEnd() -> AssemblerBackEnd {
-        let codeGenerator = CodeGenerator(microcodeGenerator: microcodeGenerator)
-        let assembler = AssemblerBackEnd(codeGenerator: codeGenerator)
-        return assembler
-    }
-    
     func setupExecutor() {
         executor.computer = computer
         

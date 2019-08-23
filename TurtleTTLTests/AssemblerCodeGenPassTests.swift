@@ -186,7 +186,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmp() {
         let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
         let backEnd = makeBackEnd(symbols: ["foo" : 1])
         let instructions = try! backEnd.generate(ast)
@@ -214,7 +214,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testForwardJmp() {
         let ast = AbstractSyntaxTreeNode(children: [
-            JMPNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "foo")),
+            JMPToLabelNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "foo")),
             LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 2, lexeme: "foo")),
             HLTNode()])
         let backEnd = makeBackEnd(symbols: ["foo" : 6])

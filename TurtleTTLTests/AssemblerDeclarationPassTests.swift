@@ -143,7 +143,7 @@ class AssemblerDeclarationPassTests: XCTestCase {
     
     func testLabel() {
         let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)
@@ -165,7 +165,7 @@ class AssemblerDeclarationPassTests: XCTestCase {
     
     func testJmp() {
         let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)
@@ -174,7 +174,7 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testForwardJmp() {
-        let jmpNode = JMPNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
         let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
         let hltNode = HLTNode()
         let ast = AbstractSyntaxTreeNode(children: [jmpNode, labelNode, hltNode])

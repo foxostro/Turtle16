@@ -11,7 +11,7 @@ import Cocoa
 public class AbstractSyntaxTreeNode : NSObject {
     public let children: [AbstractSyntaxTreeNode]
     
-    public init(children: [AbstractSyntaxTreeNode]) {
+    public init(children: [AbstractSyntaxTreeNode] = []) {
         self.children = children
     }
     

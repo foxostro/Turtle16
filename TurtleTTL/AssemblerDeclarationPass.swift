@@ -48,6 +48,10 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         programCounter += 5
     }
     
+    public func visit(node: JCToAddressNode) throws {
+        programCounter += 5
+    }
+    
     public func visit(node: ADDNode) throws {
         programCounter += 1
     }

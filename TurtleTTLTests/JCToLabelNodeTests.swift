@@ -1,5 +1,5 @@
 //
-//  JCNodeTests.swift
+//  JCToLabelNodeTests.swift
 //  TurtleTTLTests
 //
 //  Created by Andrew Fox on 8/22/19.
@@ -9,7 +9,7 @@
 import XCTest
 import TurtleTTL
 
-class JCNodeTests: XCTestCase {
+class JCToLabelNodeTests: XCTestCase {
     typealias Token = AssemblerScanner.Token
     
     func testDoesNotEqualAnotherNodeType() {

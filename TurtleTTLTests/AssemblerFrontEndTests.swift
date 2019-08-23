@@ -195,6 +195,32 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[5].opcode, nop)
     }
     
+    func testJMPToAddressCompiles() {
+        let instructions = try! assembler.compile("JMP 0x0000")
+        
+        XCTAssertEqual(instructions.count, 6)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // Load the resolved label address into XY.
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 0)
+        
+        // The JMP command jumps to the address in the XY register pair.
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        
+        // JMP must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[4].opcode, nop)
+        XCTAssertEqual(instructions[5].opcode, nop)
+    }
+    
     func testFailToCompileJCWithZeroOperands() {
         XCTAssertThrowsError(try assembler.compile("JC")) { e in
             let error = e as! AssemblerError
@@ -227,6 +253,32 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[1].immediate, 0)
         XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
         XCTAssertEqual(instructions[2].immediate, 1)
+        
+        // The JC command jumps to the address in the XY register pair.
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        
+        // JC must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[4].opcode, nop)
+        XCTAssertEqual(instructions[5].opcode, nop)
+    }
+    
+    func testJCToAddressCompiles() {
+        let instructions = try! assembler.compile("JC 0x0000")
+        
+        XCTAssertEqual(instructions.count, 6)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // Load the resolved label address into XY.
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 0)
         
         // The JC command jumps to the address in the XY register pair.
         XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))

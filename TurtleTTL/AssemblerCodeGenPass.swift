@@ -71,6 +71,13 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         self.codeGenerator.nop()
     }
     
+    public func visit(node: JCToAddressNode) throws {
+        try self.setAddress(node.address)
+        self.codeGenerator.jc()
+        self.codeGenerator.nop()
+        self.codeGenerator.nop()
+    }
+    
     // Addition -- The ALU adds the contents of the A and B registers and moves
     // the result to the specified destination bus device.
     public func visit(node: ADDNode) throws {

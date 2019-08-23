@@ -10,8 +10,6 @@ import XCTest
 import TurtleTTL
 
 class AssemblerScannerTests: XCTestCase {
-    typealias Token = AssemblerScanner.Token
-    
     func testTokenizeEmptyString() {
         let tokenizer = AssemblerScanner(withString: "")
         try! tokenizer.scanTokens()

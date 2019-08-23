@@ -10,7 +10,6 @@ import XCTest
 import TurtleTTL
 
 class AssemblerCodeGenPassTests: XCTestCase {
-    typealias Token = AssemblerScanner.Token
     var microcodeGenerator = MicrocodeGenerator()
     var nop: UInt8 = 0
     var hlt: UInt8 = 0

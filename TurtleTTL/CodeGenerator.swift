@@ -48,7 +48,7 @@ public class CodeGenerator: NSObject {
     }
     
     // Produce a generic instruction with the specified immediate value.
-    public func instruction(withMnemonic mnemonic:String, token immediateToken: AssemblerScanner.Token) throws {
+    public func instruction(withMnemonic mnemonic:String, token immediateToken: Token) throws {
         assert(isAssembling)
         assert(immediateToken.type == .number)
         let immediate = immediateToken.literal as! Int
@@ -84,7 +84,7 @@ public class CodeGenerator: NSObject {
     }
     
     // Move -- Copy a value from one bus device to another.
-    public func mov(_ destination: String, _ source: String, token immediate: AssemblerScanner.Token) throws {
+    public func mov(_ destination: String, _ source: String, token immediate: Token) throws {
         assert(isAssembling)
         assert(immediate.type == .number)
         let mnemonic = String(format: "MOV %@, %@", destination, source)
@@ -105,7 +105,7 @@ public class CodeGenerator: NSObject {
     }
     
     // Load Immediate -- Loads an immediate value to the specified destination
-    public func li(_ destination: String, token immediate: AssemblerScanner.Token) throws {
+    public func li(_ destination: String, token immediate: Token) throws {
         assert(isAssembling)
         assert(immediate.type == .number)
         try mov(destination, "C", token: immediate)

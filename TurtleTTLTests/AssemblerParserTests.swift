@@ -10,8 +10,6 @@ import XCTest
 import TurtleTTL
 
 class AssemblerParserTests: XCTestCase {
-    typealias Token = AssemblerScanner.Token
-    
     func parse(_ text: String) throws -> AbstractSyntaxTreeNode {
         let tokens = tokenize(text)
         let parser = AssemblerParser(tokens: tokens)

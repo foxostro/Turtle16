@@ -9,57 +9,6 @@
 import Cocoa
 
 public class AssemblerScanner: TurtleScanner {
-    public enum TokenType {
-        case eof
-        case newline
-        case comma
-        case colon
-        case number
-        case register
-        case nop
-        case cmp
-        case hlt
-        case jmp
-        case jc
-        case add
-        case li
-        case mov
-        case identifier
-    }
-    
-    public class Token : NSObject {
-        public let type: TokenType
-        public let lineNumber: Int
-        public let lexeme: String
-        public let literal: Any?
-        
-        public required init(type: TokenType,
-                             lineNumber: Int,
-                             lexeme: String,
-                             literal: Any? = nil) {
-            self.type = type
-            self.lineNumber = lineNumber
-            self.lexeme = lexeme
-            self.literal = literal
-            super.init()
-        }
-        
-        public override var description: String {
-            if let literal = literal {
-                return String(format: "<Token: type=%@, lineNumber=%d, lexeme=\"%@\", literal=%@>", String(describing: type), lineNumber, lexeme, String(describing: literal))
-            }
-            
-            return String(format: "<Token: type=%@, lineNumber=%d, lexeme=\"%@\">", String(describing: type), lineNumber, lexeme)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            if let rhs = rhs as? Token {
-                return self == rhs
-            }
-            return false
-        }
-    }
-    
     struct Rule {
         let pattern: String
         let emit: (AssemblerScanner, String) -> Token?
@@ -169,7 +118,7 @@ public class AssemblerScanner: TurtleScanner {
     }
 }
 
-public func ==(lhs: AssemblerScanner.Token, rhs: AssemblerScanner.Token) -> Bool {
+public func ==(lhs: Token, rhs: Token) -> Bool {
     if lhs.type != rhs.type {
         return false
     }

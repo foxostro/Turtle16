@@ -10,8 +10,6 @@ import XCTest
 import TurtleTTL
 
 class LabelDeclarationNodeTests: XCTestCase {
-    typealias Token = AssemblerScanner.Token
-    
     func testDoesNotEqualAnotherNodeType() {
         let label = Token(type: .identifier, lineNumber: 1, lexeme: "label")
         XCTAssertNotEqual(LabelDeclarationNode(identifier: label), NOPNode())

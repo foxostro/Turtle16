@@ -151,6 +151,13 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
         XCTAssertEqual(ast.children[1], JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
     }
+    
+    func testParseJMPWithAddress() {
+        let ast = try! parse("JMP 0x0000")
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], JMPToAddressNode(address: 0))
+    }
 
     func testFailToParseJCWithZeroOperands() {
         XCTAssertThrowsError(try parse("JC")) { e in

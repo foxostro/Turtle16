@@ -316,6 +316,50 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(instructions[5].opcode, nop)
     }
     
+    func testJCToAddressZero() {
+        let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: 0)])
+        let backEnd = makeBackEnd()
+        let instructions = try! backEnd.generate(ast)
+        
+        XCTAssertEqual(instructions.count, 6)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // Load the resolved label address into XY.
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 0)
+        
+        // The JC command jumps to the address in the XY register pair.
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        
+        // JC must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[4].opcode, nop)
+        XCTAssertEqual(instructions[5].opcode, nop)
+    }
+    
+    func testJCToAddressNegative() {
+        let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: -1)])
+        let backEnd = makeBackEnd()
+        XCTAssertThrowsError(try backEnd.generate(ast)) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.message, "invalid address: 0xffffffff")
+        }
+    }
+    
+    func testJCToAddressTooLarge() {
+        let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: 0x10000)])
+        let backEnd = makeBackEnd()
+        XCTAssertThrowsError(try backEnd.generate(ast)) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.message, "invalid address: 0x10000")
+        }
+    }
+    
     func testCMP() {
         let ast = AbstractSyntaxTreeNode(children: [CMPNode()])
         let instructions = try! makeBackEnd().generate(ast)

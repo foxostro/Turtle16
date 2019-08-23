@@ -180,6 +180,13 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
         XCTAssertEqual(ast.children[1], JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
     }
+    
+    func testParseJCWithAddress() {
+        let ast = try! parse("JC 0x0000")
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], JCToAddressNode(address: 0))
+    }
 
     func testFailToParseADDWithZeroOperands() {
         XCTAssertThrowsError(try parse("ADD")) { e in

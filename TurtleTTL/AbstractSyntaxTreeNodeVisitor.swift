@@ -15,6 +15,7 @@ public protocol AbstractSyntaxTreeNodeVisitor {
     func visit(node: JMPToLabelNode) throws
     func visit(node: JMPToAddressNode) throws
     func visit(node: JCToLabelNode) throws
+    func visit(node: JCToAddressNode) throws
     func visit(node: ADDNode) throws
     func visit(node: LINode) throws
     func visit(node: MOVNode) throws

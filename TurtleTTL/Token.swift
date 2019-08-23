@@ -40,3 +40,29 @@ public class Token : NSObject {
         return false
     }
 }
+
+public func ==(lhs: Token, rhs: Token) -> Bool {
+    if lhs.type != rhs.type {
+        return false
+    }
+    
+    if lhs.lineNumber != rhs.lineNumber {
+        return false
+    }
+    
+    if lhs.lexeme != rhs.lexeme {
+        return false
+    }
+    
+    if (lhs.literal == nil) != (rhs.literal == nil) {
+        return false
+    }
+    
+    if (lhs.literal == nil) && (rhs.literal == nil) {
+        return true
+    }
+    
+    let a = lhs.literal as! NSObject
+    let b = rhs.literal as! NSObject
+    return a.isEqual(b)
+}

@@ -63,7 +63,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     // Jump on Carry -- If the carry flag is set then jump to the specified
     // label. Otherwise, do nothing.
-    public func visit(node: JCNode) throws {
+    public func visit(node: JCToLabelNode) throws {
         assert(node.identifier.type == .identifier)
         try self.setAddress(token: node.identifier)
         self.codeGenerator.jc()

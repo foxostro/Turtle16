@@ -195,7 +195,7 @@ class AssemblerDeclarationPassTests: XCTestCase {
     
     func testJC() {
         let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jcNode = JCNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let jcNode = JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jcNode])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)

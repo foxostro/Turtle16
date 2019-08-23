@@ -140,7 +140,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
 //        programCounter += 3
 //    }
     
-    public func resolveSymbol(token identifier: AssemblerScanner.Token) throws -> Int {
+    public func resolveSymbol(token identifier: Token) throws -> Int {
         assert(identifier.type == .identifier)
         let name = identifier.lexeme
         if let value = self.symbols[name] {
@@ -169,7 +169,6 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
 //        try self.setAddress(address)
 //    }
     
-    func setAddress(token identifier: AssemblerScanner.Token) throws {
         assert(identifier.type == .identifier)
         let address = try self.resolveSymbol(token: identifier)
         try self.setAddress(address)

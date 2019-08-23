@@ -9,9 +9,6 @@
 import Cocoa
 
 public class AssemblerParser: NSObject {
-    public typealias Token = AssemblerScanner.Token
-    typealias TokenType = AssemblerScanner.TokenType
-    
     struct Production {
         typealias Generator = (AssemblerParser,Token) throws -> [AbstractSyntaxTreeNode]?
         let symbol: TokenType

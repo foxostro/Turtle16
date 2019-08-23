@@ -34,6 +34,8 @@
 		6F088099230FADB500AB2339 /* JCToAddressNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088098230FADB500AB2339 /* JCToAddressNode.swift */; };
 		6F08809B230FAE9000AB2339 /* JMPToAddressNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */; };
 		6F08809D230FAE9700AB2339 /* JCToAddressNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */; };
+		6F08809F230FBDD300AB2339 /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08809E230FBDD300AB2339 /* TokenType.swift */; };
+		6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A0230FBDFF00AB2339 /* Token.swift */; };
 		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
 		6F0C18092309001E005B9E12 /* SerialInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0C18082309001E005B9E12 /* SerialInterface.swift */; };
 		6F0C180B23090063005B9E12 /* SerialInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0C180A23090063005B9E12 /* SerialInterfaceTests.swift */; };
@@ -182,6 +184,8 @@
 		6F088098230FADB500AB2339 /* JCToAddressNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCToAddressNode.swift; sourceTree = "<group>"; };
 		6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JMPToAddressNodeTests.swift; sourceTree = "<group>"; };
 		6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCToAddressNodeTests.swift; sourceTree = "<group>"; };
+		6F08809E230FBDD300AB2339 /* TokenType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenType.swift; sourceTree = "<group>"; };
+		6F0880A0230FBDFF00AB2339 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F0C18082309001E005B9E12 /* SerialInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInterface.swift; sourceTree = "<group>"; };
 		6F0C180A23090063005B9E12 /* SerialInterfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInterfaceTests.swift; sourceTree = "<group>"; };
@@ -309,6 +313,8 @@
 				6F4BE175230D2E31008C2329 /* AssemblerError.swift */,
 				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
 				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
+				6F08809E230FBDD300AB2339 /* TokenType.swift */,
+				6F0880A0230FBDFF00AB2339 /* Token.swift */,
 				6F615176230CB54200282B12 /* TurtleScanner.swift */,
 				6F615170230CAF4A00282B12 /* AssemblerScanner.swift */,
 				6F088068230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift */,
@@ -651,6 +657,8 @@
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
 				6F088073230F5D7E00AB2339 /* JCToLabelNode.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
+				6F08809F230FBDD300AB2339 /* TokenType.swift in Sources */,
+				6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */,
 				6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */,
 				6F0C18092309001E005B9E12 /* SerialInterface.swift in Sources */,
 				6FEB235E230283F7002B68D8 /* ComputerState.swift in Sources */,

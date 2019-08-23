@@ -9,9 +9,9 @@
 import Cocoa
 
 public class JMPToLabelNode: AbstractSyntaxTreeNode {
-    public let identifier: AssemblerScanner.Token
+    public let identifier: Token
     
-    public init(token identifier: AssemblerScanner.Token) {
+    public init(token identifier: Token) {
         self.identifier = identifier
         super.init(children: [])
     }

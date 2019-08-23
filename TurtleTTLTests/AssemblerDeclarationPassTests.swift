@@ -10,8 +10,6 @@ import XCTest
 import TurtleTTL
 
 class AssemblerDeclarationPassTests: XCTestCase {
-    typealias Token = AssemblerScanner.Token
-    
     func testEmptyProgram() {
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(AbstractSyntaxTreeNode())

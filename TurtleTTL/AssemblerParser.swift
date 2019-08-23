@@ -108,12 +108,16 @@ public class AssemblerParser: NSObject {
     }
     
     func consumeJMP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        guard let identifier = accept(.identifier) else {
-            throw operandTypeMismatchError(instruction)
+        if let identifier = accept(.identifier) {
+            try expect(types: [.newline, .eof],
+                       error: operandTypeMismatchError(instruction))
+            return [JMPToLabelNode(token: identifier)]
+        } else if let address = accept(.number) {
+            try expect(types: [.newline, .eof],
+                       error: operandTypeMismatchError(instruction))
+            return [JMPToAddressNode(address: address.literal as! Int)]
         }
-        try expect(types: [.newline, .eof],
-                   error: operandTypeMismatchError(instruction))
-        return [JMPToLabelNode(token: identifier)]
+        throw operandTypeMismatchError(instruction)
     }
     
     func consumeJC(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {

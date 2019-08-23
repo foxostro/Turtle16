@@ -53,6 +53,14 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         self.codeGenerator.nop()
     }
     
+    // Jump -- Jump to the specified absolute address.
+    public func visit(node: JMPToAddressNode) throws {
+        try self.setAddress(node.address)
+        self.codeGenerator.jmp()
+        self.codeGenerator.nop()
+        self.codeGenerator.nop()
+    }
+    
     // Jump on Carry -- If the carry flag is set then jump to the specified
     // label. Otherwise, do nothing.
     public func visit(node: JCNode) throws {

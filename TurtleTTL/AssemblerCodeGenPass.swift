@@ -45,7 +45,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     // Jump -- Jump to the specified label.
-    public func visit(node: JMPNode) throws {
+    public func visit(node: JMPToLabelNode) throws {
         assert(node.identifier.type == .identifier)
         try self.setAddress(token: node.identifier)
         self.codeGenerator.jmp()

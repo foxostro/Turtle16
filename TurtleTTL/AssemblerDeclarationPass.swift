@@ -34,7 +34,7 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         programCounter += 1
     }
     
-    public func visit(node: JMPNode) throws {
+    public func visit(node: JMPToLabelNode) throws {
         assert(node.identifier.type == .identifier)
         programCounter += 5
     }

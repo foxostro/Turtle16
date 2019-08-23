@@ -113,7 +113,7 @@ public class AssemblerParser: NSObject {
         }
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
-        return [JMPNode(token: identifier)]
+        return [JMPToLabelNode(token: identifier)]
     }
     
     func consumeJC(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {

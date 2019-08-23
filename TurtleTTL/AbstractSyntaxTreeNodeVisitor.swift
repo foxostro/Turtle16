@@ -12,7 +12,7 @@ public protocol AbstractSyntaxTreeNodeVisitor {
     func visit(node: NOPNode) throws
     func visit(node: CMPNode) throws
     func visit(node: HLTNode) throws
-    func visit(node: JMPNode) throws
+    func visit(node: JMPToLabelNode) throws
     func visit(node: JCNode) throws
     func visit(node: ADDNode) throws
     func visit(node: LINode) throws

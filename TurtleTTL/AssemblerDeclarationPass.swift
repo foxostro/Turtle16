@@ -112,26 +112,4 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
 //        })
 //        programCounter += 3
 //    }
-    
-//    public func jmp(_ address: Int) throws {
-//        assert(isAssembling)
-//        commands.append({
-//            try self.setAddress(address)
-//            self.codeGenerator.jmp()
-//            self.codeGenerator.nop()
-//            self.codeGenerator.nop()
-//        })
-//        programCounter += 5
-//    }
-    
-//    public func jc(_ name: String) throws {
-//        assert(isAssembling)
-//        commands.append({
-//            try self.setAddress(withSymbol: name)
-//            self.codeGenerator.jc()
-//            self.codeGenerator.nop()
-//            self.codeGenerator.nop()
-//        })
-//        programCounter += 5
-//    }
 }

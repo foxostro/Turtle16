@@ -58,16 +58,34 @@ class CodeGeneratorTests: XCTestCase {
         XCTAssertThrowsError(try codeGen.instruction(withMnemonic: "", immediate: 0))
     }
     
+    func testInstructionWithInvalidMnemonicThrowsUsingToken() {
+        let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
+        codeGen.begin()
+        XCTAssertThrowsError(try codeGen.instruction(withMnemonic: "", token: Token(type: .number, lineNumber: 1, lexeme: "0", literal: 0)))
+    }
+    
     func testInstructionWithNegativeImmediateThrows() {
         let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
         codeGen.begin()
         XCTAssertThrowsError(try codeGen.instruction(withMnemonic: "NOP", immediate: -1))
     }
     
+    func testInstructionWithNegativeImmediateThrowsUsingToken() {
+        let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
+        codeGen.begin()
+        XCTAssertThrowsError(try codeGen.instruction(withMnemonic: "NOP", token: Token(type: .number, lineNumber: 1, lexeme: "0xffffffff", literal: -1)))
+    }
+    
     func testInstructionWithTooLargeImmediateThrows() {
         let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
         codeGen.begin()
         XCTAssertThrowsError(try codeGen.instruction(withMnemonic: "NOP", immediate: 256))
+    }
+    
+    func testInstructionWithTooLargeImmediateThrowsUsingToken() {
+        let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
+        codeGen.begin()
+        XCTAssertThrowsError(try codeGen.instruction(withMnemonic: "NOP", token: Token(type: .number, lineNumber: 1, lexeme: "256", literal: 256)))
     }
     
     func testMovFromScratch() {

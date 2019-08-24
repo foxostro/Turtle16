@@ -74,42 +74,15 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         }
     }
     
-//    public func store(address: Int, source: String) throws {
-//        assert(isAssembling)
-//        if(address < 0 || address > 0xffff) {
-//            throw AssemblerError(format: "Address is invalid: 0x%x", address)
-//        }
-//        commands.append({
-//            try self.setAddress(address)
-//            try self.codeGenerator.mov("M", source)
-//        })
-//        programCounter += 3
-//    }
+    public func visit(node: LoadNode) throws {
+        programCounter += 3
+    }
     
-//    public func store(address: Int, immediate: Int) throws {
-//        assert(isAssembling)
-//        if(address < 0 || address > 0xffff) {
-//            throw AssemblerError(format: "Address is invalid: 0x%x", address)
-//        }
-//        if(immediate < 0 || immediate > 0xff) {
-//            throw AssemblerError(format: "Immediate is invalid: 0x%x", immediate)
-//        }
-//        commands.append({
-//            try self.setAddress(address)
-//            try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: immediate)
-//        })
-//        programCounter += 3
-//    }
+    public func visit(node: StoreNode) throws {
+        programCounter += 3
+    }
     
-//    public func load(address: Int, destination: String) throws {
-//        assert(isAssembling)
-//        if(address < 0 || address > 0xffff) {
-//            throw AssemblerError(format: "Address is invalid: 0x%x", address)
-//        }
-//        commands.append({
-//            try self.setAddress(address)
-//            try self.codeGenerator.mov(destination, "M")
-//        })
-//        programCounter += 3
-//    }
+    public func visit(node: StoreImmediateNode) throws {
+        programCounter += 3
+    }
 }

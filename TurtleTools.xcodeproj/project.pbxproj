@@ -37,6 +37,12 @@
 		6F08809F230FBDD300AB2339 /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08809E230FBDD300AB2339 /* TokenType.swift */; };
 		6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A0230FBDFF00AB2339 /* Token.swift */; };
 		6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
+		6F0880A5230FD6CB00AB2339 /* StoreImmediateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */; };
+		6F0880A7230FD6D200AB2339 /* LoadNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A6230FD6D200AB2339 /* LoadNode.swift */; };
+		6F0880A9230FD6EE00AB2339 /* StoreImmediateNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A8230FD6EE00AB2339 /* StoreImmediateNodeTests.swift */; };
+		6F0880AB230FD6F400AB2339 /* LoadNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */; };
+		6F0880AD230FD86A00AB2339 /* StoreNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880AC230FD86A00AB2339 /* StoreNodeTests.swift */; };
+		6F0880AF230FD8A800AB2339 /* StoreNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880AE230FD8A800AB2339 /* StoreNode.swift */; };
 		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
 		6F0C18092309001E005B9E12 /* SerialInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0C18082309001E005B9E12 /* SerialInterface.swift */; };
 		6F0C180B23090063005B9E12 /* SerialInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0C180A23090063005B9E12 /* SerialInterfaceTests.swift */; };
@@ -188,6 +194,12 @@
 		6F08809E230FBDD300AB2339 /* TokenType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenType.swift; sourceTree = "<group>"; };
 		6F0880A0230FBDFF00AB2339 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6F0880A2230FC09B00AB2339 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
+		6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreImmediateNode.swift; sourceTree = "<group>"; };
+		6F0880A6230FD6D200AB2339 /* LoadNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadNode.swift; sourceTree = "<group>"; };
+		6F0880A8230FD6EE00AB2339 /* StoreImmediateNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreImmediateNodeTests.swift; sourceTree = "<group>"; };
+		6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadNodeTests.swift; sourceTree = "<group>"; };
+		6F0880AC230FD86A00AB2339 /* StoreNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNodeTests.swift; sourceTree = "<group>"; };
+		6F0880AE230FD8A800AB2339 /* StoreNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNode.swift; sourceTree = "<group>"; };
 		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F0C18082309001E005B9E12 /* SerialInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInterface.swift; sourceTree = "<group>"; };
 		6F0C180A23090063005B9E12 /* SerialInterfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInterfaceTests.swift; sourceTree = "<group>"; };
@@ -330,6 +342,9 @@
 				6F088074230F5D8F00AB2339 /* ADDNode.swift */,
 				6F088076230F5D9400AB2339 /* LINode.swift */,
 				6F088078230F5D9C00AB2339 /* MOVNode.swift */,
+				6F0880A6230FD6D200AB2339 /* LoadNode.swift */,
+				6F0880AE230FD8A800AB2339 /* StoreNode.swift */,
+				6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */,
 				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
 				6F08807C230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift */,
 				6F61517E230D041600282B12 /* AssemblerParser.swift */,
@@ -374,6 +389,9 @@
 				6F08808A230F6E4F00AB2339 /* ADDNodeTests.swift */,
 				6F08808C230F6E5700AB2339 /* LINodeTests.swift */,
 				6F08808E230F6E5F00AB2339 /* MOVNodeTests.swift */,
+				6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */,
+				6F0880AC230FD86A00AB2339 /* StoreNodeTests.swift */,
+				6F0880A8230FD6EE00AB2339 /* StoreImmediateNodeTests.swift */,
 				6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */,
 				6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */,
 				6F73054522F27EAF006FD5E7 /* AssemblerDeclarationPassTests.swift */,
@@ -658,6 +676,7 @@
 				6F08806D230F5D5A00AB2339 /* CMPNode.swift in Sources */,
 				6FE003B122F3D78B00221C4C /* AssemblerDeclarationPass.swift in Sources */,
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
+				6F0880AF230FD8A800AB2339 /* StoreNode.swift in Sources */,
 				6F088073230F5D7E00AB2339 /* JCToLabelNode.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
 				6F08809F230FBDD300AB2339 /* TokenType.swift in Sources */,
@@ -676,11 +695,13 @@
 				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
 				6FE003B522F3D78B00221C4C /* Computer.swift in Sources */,
 				6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */,
+				6F0880A5230FD6CB00AB2339 /* StoreImmediateNode.swift in Sources */,
 				6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */,
 				6F08806F230F5D6600AB2339 /* HLTNode.swift in Sources */,
 				6F088071230F5D7500AB2339 /* JMPToLabelNode.swift in Sources */,
 				6FE003B422F3D78B00221C4C /* Logger.swift in Sources */,
 				6F37BA472305D903009754D3 /* Register.swift in Sources */,
+				6F0880A7230FD6D200AB2339 /* LoadNode.swift in Sources */,
 				6F088075230F5D8F00AB2339 /* ADDNode.swift in Sources */,
 				6FE003BB22F3D78B00221C4C /* Memory.swift in Sources */,
 				6F4BE176230D2E31008C2329 /* AssemblerError.swift in Sources */,
@@ -717,15 +738,18 @@
 				6F615179230CB56E00282B12 /* TurtleScannerTests.swift in Sources */,
 				6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */,
 				6FE003BD22F3D88800221C4C /* AssemblerDeclarationPassTests.swift in Sources */,
+				6F0880AB230FD6F400AB2339 /* LoadNodeTests.swift in Sources */,
 				6F08808F230F6E5F00AB2339 /* MOVNodeTests.swift in Sources */,
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6F088083230F6E2D00AB2339 /* CMPNodeTests.swift in Sources */,
 				6F08809D230FAE9700AB2339 /* JCToAddressNodeTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
+				6F0880A9230FD6EE00AB2339 /* StoreImmediateNodeTests.swift in Sources */,
 				6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */,
 				6FE003C422F3D88800221C4C /* ControlWordTests.swift in Sources */,
 				6FE003C122F3D88800221C4C /* RAMTests.swift in Sources */,
 				6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */,
+				6F0880AD230FD86A00AB2339 /* StoreNodeTests.swift in Sources */,
 				6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */,
 				6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */,
 				6F615173230CAF5600282B12 /* AssemblerScannerTests.swift in Sources */,

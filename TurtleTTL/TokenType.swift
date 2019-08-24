@@ -23,5 +23,7 @@ public enum TokenType {
     case add
     case li
     case mov
+    case store
+    case load
     case identifier
 }

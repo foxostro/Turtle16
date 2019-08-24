@@ -499,4 +499,57 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(controlWord.AO, false)
         XCTAssertEqual(controlWord.DI, false)
     }
+    
+    func testCompileValidStoreToMemory() {
+        let instructions = try! assembler.compile("STORE 0xAABB, A")
+        
+        XCTAssertEqual(instructions.count, 4)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // The next two instructions load an address into XY.
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0xaa)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 0xbb)
+        
+        // And an instructions to store the A register in memory
+        let opcode = UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV M, A")!)
+        XCTAssertEqual(instructions[3].opcode, opcode)
+    }
+    
+    func testCompileValidLoadFromMemory() {
+        let instructions = try! assembler.compile("STORE 0xAABB, 42\nLOAD A, 0xAABB")
+        
+        XCTAssertEqual(instructions.count, 7)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // The next two instructions load an address into XY.
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0xaa)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 0xbb)
+        
+        // And an instructions to store the immediate value 42 in memory
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV M, C")!))
+        XCTAssertEqual(instructions[3].immediate, 42)
+        
+        // The next two instructions load an address into XY.
+        XCTAssertEqual(instructions[4].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[4].immediate, 0xaa)
+        XCTAssertEqual(instructions[5].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[5].immediate, 0xbb)
+        
+        // And an instructions to store the A register in memory
+        XCTAssertEqual(instructions[6].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV A, M")!))
+    }
 }

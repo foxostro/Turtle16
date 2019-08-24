@@ -54,6 +54,12 @@ public class AssemblerScanner: TurtleScanner {
         Rule(pattern: "MOV\\b") {
             Token(type: .mov, lineNumber: $0.lineNumber, lexeme: $1)
         },
+        Rule(pattern: "STORE\\b") {
+            Token(type: .store, lineNumber: $0.lineNumber, lexeme: $1)
+        },
+        Rule(pattern: "LOAD\\b") {
+            Token(type: .load, lineNumber: $0.lineNumber, lexeme: $1)
+        },
         Rule(pattern: "[ABCDEMXY]\\b") {
             Token(type: .register, lineNumber: $0.lineNumber, lexeme: $1, literal: $1)
         },

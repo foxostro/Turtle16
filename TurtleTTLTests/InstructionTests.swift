@@ -54,4 +54,12 @@ class InstructionTests: XCTestCase {
         XCTAssertTrue(Instruction() == Instruction())
         XCTAssertEqual(Instruction(), Instruction())
     }
+    
+    func testDifferentInstructionsTestNotEqual() {
+        XCTAssertNotEqual(Instruction(), Instruction(opcode: 1, immediate: 2))
+    }
+    
+    func testInstructionTestsNotEqualAgainstDifferentObject() {
+        XCTAssertNotEqual([Instruction() as NSObject], [1 as NSObject])
+    }
 }

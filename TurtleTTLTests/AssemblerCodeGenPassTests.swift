@@ -108,6 +108,24 @@ class AssemblerCodeGenPassTests: XCTestCase {
             XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
         }
     }
+    
+    func testStoreImmediateToMemoryWithInvalidAddress() {
+        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff), immediate: 0)])
+        XCTAssertThrowsError(try makeBackEnd().generate(ast)) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
+        }
+    }
+    
+    func testStoreImmediateToMemoryWithImmediate() {
+        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "0", literal: 0), immediate: 0xffffffff)])
+        XCTAssertThrowsError(try makeBackEnd().generate(ast)) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "Immediate is invalid: 0xffffffff")
+        }
+    }
 
     func testLoadFromMemory() {
         let ast = AbstractSyntaxTreeNode(children: [

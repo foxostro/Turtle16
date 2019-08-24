@@ -19,5 +19,8 @@ public protocol AbstractSyntaxTreeNodeVisitor {
     func visit(node: ADDNode) throws
     func visit(node: LINode) throws
     func visit(node: MOVNode) throws
+    func visit(node: LoadNode) throws
+    func visit(node: StoreNode) throws
+    func visit(node: StoreImmediateNode) throws
     func visit(node: LabelDeclarationNode) throws
 }

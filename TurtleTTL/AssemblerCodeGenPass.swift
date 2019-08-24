@@ -86,47 +86,38 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         // do nothing
     }
     
-//    // Store -- Store the contents of a register to memory at the address.
-//    public func store(address: Int, source: String) throws {
-//        assert(isAssembling)
-//        if(address < 0 || address > 0xffff) {
-//            throw AssemblerError(format: "Address is invalid: 0x%x", address)
-//        }
-//        commands.append({
-//            try self.setAddress(address)
-//            try self.codeGenerator.mov("M", source)
-//        })
-//        programCounter += 3
-//    }
+    public func visit(node: LoadNode) throws {
+        let lineNumber = node.sourceAddress.lineNumber
+        let address = node.sourceAddress.literal as! Int
+        if(address < 0 || address > 0xffff) {
+            throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
+        }
+        try self.setAddress(address)
+        try self.codeGenerator.mov(node.destination, "M")
+    }
     
-//    // Store -- Store the contents of a register to memory at the address.
-//    public func store(address: Int, immediate: Int) throws {
-//        assert(isAssembling)
-//        if(address < 0 || address > 0xffff) {
-//            throw AssemblerError(format: "Address is invalid: 0x%x", address)
-//        }
-//        if(immediate < 0 || immediate > 0xff) {
-//            throw AssemblerError(format: "Immediate is invalid: 0x%x", immediate)
-//        }
-//        commands.append({
-//            try self.setAddress(address)
-//            try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: immediate)
-//        })
-//        programCounter += 3
-//    }
+    public func visit(node: StoreNode) throws {
+        let lineNumber = node.destinationAddress.lineNumber
+        let address = node.destinationAddress.literal as! Int
+        if(address < 0 || address > 0xffff) {
+            throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
+        }
+        try self.setAddress(address)
+        try self.codeGenerator.mov("M", node.source)
+    }
     
-//    // Load -- Load the contents of the memory at the address to a register.
-//    public func load(address: Int, destination: String) throws {
-//        assert(isAssembling)
-//        if(address < 0 || address > 0xffff) {
-//            throw AssemblerError(format: "Address is invalid: 0x%x", address)
-//        }
-//        commands.append({
-//            try self.setAddress(address)
-//            try self.codeGenerator.mov(destination, "M")
-//        })
-//        programCounter += 3
-//    }
+    public func visit(node: StoreImmediateNode) throws {
+        let lineNumber = node.destinationAddress.lineNumber
+        let address = node.destinationAddress.literal as! Int
+        if(address < 0 || address > 0xffff) {
+            throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
+        }
+        if(node.immediate < 0 || node.immediate > 0xff) {
+            throw AssemblerError(line: lineNumber, format: "Immediate is invalid: 0x%x", node.immediate)
+        }
+        try self.setAddress(address)
+        try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: node.immediate)
+    }
     
     public func resolveSymbol(token identifier: Token) throws -> Int {
         assert(identifier.type == .identifier)

@@ -25,6 +25,8 @@ public class AssemblerParser: NSObject {
         Production(symbol: .jc,         generator: { try $0.consumeJC($1) }),
         Production(symbol: .add,        generator: { try $0.consumeADD($1) }),
         Production(symbol: .li,         generator: { try $0.consumeLI($1) }),
+        Production(symbol: .store,      generator: { try $0.consumeSTORE($1) }),
+        Production(symbol: .load,       generator: { try $0.consumeLOAD($1) }),
         Production(symbol: .mov,        generator: { try $0.consumeMOV($1) }),
         Production(symbol: .identifier, generator: { try $0.consumeIdentifier($1) })
     ]
@@ -152,6 +154,41 @@ public class AssemblerParser: NSObject {
         try expect(types: [.newline, .eof],
                    error: operandTypeMismatchError(instruction))
         return [LINode(destination: destination.literal as! String, immediate: source)]
+    }
+    
+    func consumeSTORE(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(.number) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(type: .comma, error: operandTypeMismatchError(instruction))
+        if let source = accept(.register) {
+            try expectRegisterCanBeUsedAsSource(source)
+            try expect(types: [.newline, .eof],
+                       error: operandTypeMismatchError(instruction))
+            return [StoreNode(destinationAddress: destination, source: source.literal as! String)]
+        }
+        else if let source = accept(.number) {
+            try expect(types: [.newline, .eof],
+                       error: operandTypeMismatchError(instruction))
+            return [StoreImmediateNode(destinationAddress: destination, immediate: source.literal as! Int)]
+        }
+        else {
+            throw operandTypeMismatchError(instruction)
+        }
+    }
+    
+    func consumeLOAD(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(.register) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expectRegisterCanBeUsedAsDestination(destination)
+        try expect(type: .comma, error: operandTypeMismatchError(instruction))
+        guard let source = accept(.number) else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(types: [.newline, .eof],
+                   error: operandTypeMismatchError(instruction))
+        return [LoadNode(destination: destination.literal as! String, sourceAddress: source)]
     }
     
     func consumeMOV(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {

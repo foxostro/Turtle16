@@ -370,4 +370,130 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0], MOVNode(destination: "D", source: "A"))
     }
+    
+    func testFailToParseStoreWithZeroOperands() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("STORE")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `STORE'")
+        }
+    }
+    
+    func testFailToParseStoreWithTooFewArguments() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("STORE $0")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `STORE'")
+        }
+    }
+    
+    func testFailToParseStoreWithTooManyArguments() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("STORE $0, $0, $0")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `STORE'")
+        }
+    }
+    
+    func testFailToParseStoreWithBadTypeForDestination() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("STORE A, 1")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `STORE'")
+        }
+    }
+    
+    func testFailToParseStoreWithBadTypeForSource() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("STORE A, B")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `STORE'")
+        }
+    }
+    
+    func testFailToParseStoreWithInappropriateSourceRegister() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("STORE 0, D")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a source: `D'")
+        }
+    }
+    
+    func testParseValidStore() {
+        let ast = try! parse("STORE 42, A")
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], StoreNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42), source: "A"))
+    }
+    
+    func testParseValidStoreImmediate() {
+        let ast = try! parse("STORE 1, 2")
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], StoreImmediateNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "1", literal: 1), immediate: 2))
+    }
+    
+    func testFailToParseLoadWithZeroOperands() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("LOAD")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LOAD'")
+        }
+    }
+    
+    func testFailToParseLoadWithTooFewArguments() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("LOAD $0")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LOAD'")
+        }
+    }
+    
+    func testFailToParseLoadWithTooManyArguments() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("LOAD $0, $0, $0")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LOAD'")
+        }
+    }
+
+    func testFailToParseLoadWithBadTypeForDestination() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("LOAD 1, 1")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LOAD'")
+        }
+    }
+
+    func testFailToParseLoadWithBadTypeForSource() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("LOAD A, A")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "operand type mismatch: `LOAD'")
+        }
+    }
+
+    func testFailToParseLoadWithInappropriateDestinationRegister() {
+        // TODO: Better error message here
+        XCTAssertThrowsError(try parse("LOAD C, 0")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
+        }
+    }
+
+    func testParseValidLoad() {
+        let ast = try! parse("LOAD A, 42")
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], LoadNode(destination: "A", sourceAddress: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42)))
+    }
 }

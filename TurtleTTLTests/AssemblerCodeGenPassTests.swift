@@ -197,6 +197,11 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertThrowsError(try backEnd.resolveSymbol(name: ""))
     }
     
+    func testSuccessfullyResolveALabel() {
+        let backEnd = makeBackEnd(symbols: ["foo" : 1])
+        XCTAssertEqual(try backEnd.resolveSymbol(name: "foo"), 1)
+    }
+    
     func testJmp() {
         let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
         let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))

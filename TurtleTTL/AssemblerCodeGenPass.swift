@@ -11,7 +11,9 @@ import Cocoa
 // Takes an AST and performs a pass that does final code generation.
 public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     let codeGenerator: CodeGenerator
-    var symbols: [String:Int]
+    
+    // Maps from the symbol name to the symbol value.
+    public private(set) var symbols: [String:Int] = [:]
     
     public required init(codeGenerator: CodeGenerator, symbols: [String:Int] = [:]) {
         self.codeGenerator = codeGenerator

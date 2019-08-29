@@ -13,6 +13,9 @@ public class CodeGenerator: NSObject {
     public let microcodeGenerator: MicrocodeGenerator
     public var instructions = [Instruction]()
     var isAssembling: Bool = false
+    public var programCounter: Int {
+        return instructions.count
+    }
     
     public init(microcodeGenerator: MicrocodeGenerator) {
         self.microcodeGenerator = microcodeGenerator

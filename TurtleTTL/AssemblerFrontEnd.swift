@@ -25,7 +25,7 @@ public class AssemblerFrontEnd: NSObject {
         let symbols = declarationsPass.symbols
         
         let codeGenPass = AssemblerCodeGenPass(codeGenerator: codeGenerator, symbols: symbols)
-        let instructions = try codeGenPass.generate(ast)
+        let instructions = try codeGenPass.compile(ast)
         
         return instructions
     }

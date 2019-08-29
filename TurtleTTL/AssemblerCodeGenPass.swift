@@ -19,7 +19,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         super.init()
     }
     
-    public func generate(_ root: AbstractSyntaxTreeNode) throws -> [Instruction] {
+    public func compile(_ root: AbstractSyntaxTreeNode) throws -> [Instruction] {
         codeGenerator.begin()
         try root.iterate {
             try $0.accept(visitor: self)
@@ -119,7 +119,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: node.immediate)
     }
     
-    public func resolveSymbol(token identifier: Token) throws -> Int {
+    func resolveSymbol(token identifier: Token) throws -> Int {
         assert(identifier.type == .identifier)
         let name = identifier.lexeme
         if let value = self.symbols[name] {

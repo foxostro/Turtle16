@@ -13,6 +13,14 @@ public class TurtleScanner: NSObject {
     public var isAtEnd:Bool {
         return string == ""
     }
+    public private(set) var tokens: [Token] = []
+    var lineNumber = 1
+    
+    public struct Rule {
+        let pattern: String
+        let emit: (String) -> Token?
+    }
+    var rules: [Rule] = []
     
     public required init(withString string: String) {
         self.string = string
@@ -62,5 +70,29 @@ public class TurtleScanner: NSObject {
     
     @discardableResult public func advanceToNewline() -> String? {
         return match(characterSet: CharacterSet.newlines.inverted)
+    }
+    
+    public func scanTokens() throws {
+        while !isAtEnd {
+            try scanToken()
+        }
+        tokens.append(TokenEOF(lineNumber: lineNumber, lexeme: ""))
+    }
+    
+    public func scanToken() throws {
+        for rule in rules {
+            if let lexeme = match(pattern: rule.pattern) {
+                if let token = rule.emit(lexeme) {
+                    tokens.append(token)
+                }
+                return
+            }
+        }
+        
+        throw unexpectedCharacterError(peek()!)
+    }
+    
+    func unexpectedCharacterError(_ character: String) -> AssemblerError {
+        return AssemblerError(line: lineNumber, format: "unexpected character: `%@'", character)
     }
 }

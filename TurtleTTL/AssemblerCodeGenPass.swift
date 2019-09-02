@@ -13,9 +13,9 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     let codeGenerator: CodeGenerator
     
     // Maps from the symbol name to the symbol value.
-    public private(set) var symbols: [String:Int] = [:]
+    public private(set) var symbols: SymbolTable = [:]
     
-    public required init(codeGenerator: CodeGenerator, symbols: [String:Int] = [:]) {
+    public required init(codeGenerator: CodeGenerator, symbols: SymbolTable = [:]) {
         self.codeGenerator = codeGenerator
         self.symbols = symbols
         super.init()

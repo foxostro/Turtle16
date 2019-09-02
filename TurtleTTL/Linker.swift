@@ -30,18 +30,17 @@ public class Linker: NSObject {
         for action in actions {
             let oldInstruction = instructions[action.index]
             let newInstruction = Instruction(opcode: Int(oldInstruction.opcode),
-                                             immediate: try resolve(symbol: action.symbol))
+                                             immediate: try resolveSymbol(name: action.symbol))
             instructions[action.index] = newInstruction
         }
         return instructions
     }
     
-    func resolve(symbol: String) throws -> Int {
-        if let value = symbols[symbol] {
+    func resolveSymbol(name: String) throws -> Int {
+        if let value = symbols[name] {
             return value
-        } else {
-            throw AssemblerError(format: "unresolved symbol: `%@'", symbol)
         }
+        throw AssemblerError(format: "unresolved symbol: `%@'", name)
     }
     
 //    let codeGenerator: CodeGenerator

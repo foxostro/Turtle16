@@ -12,8 +12,7 @@ public class StoreNode: AbstractSyntaxTreeNode {
     let destinationAddress: Token
     let source: String
     
-    public required init(destinationAddress: Token, source: String) {
-        assert(destinationAddress.type == .number)
+    public required init(destinationAddress: TokenNumber, source: String) {
         self.destinationAddress = destinationAddress
         self.source = source
         super.init(children: [])

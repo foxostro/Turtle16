@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class AssemblerDeclarationPassTests: XCTestCase {
-    let zero = Token(type: .number, lineNumber: 1, lexeme: "0", literal: 0)
+    let zero = TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)
     
     func testEmptyProgram() {
         let backEnd = AssemblerDeclarationPass()
@@ -40,7 +40,7 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testLoadImmediate() {
-        let ast = AbstractSyntaxTreeNode(children: [LINode(destination: "D", immediate: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42))])
+        let ast = AbstractSyntaxTreeNode(children: [LINode(destination: "D", immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)
         XCTAssertEqual(backEnd.programCounter, 2)
@@ -75,8 +75,8 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testLabel() {
-        let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)
@@ -85,8 +85,8 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testDuplicateLabel() {
-        let labelNode1 = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let labelNode2 = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let labelNode1 = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let labelNode2 = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode1, labelNode2])
         let backEnd = AssemblerDeclarationPass()
         XCTAssertThrowsError(try backEnd.doDeclarations(ast)) { e in
@@ -97,8 +97,8 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testJmp() {
-        let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)
@@ -107,8 +107,8 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testForwardJmp() {
-        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
-        let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
+        let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let hltNode = HLTNode()
         let ast = AbstractSyntaxTreeNode(children: [jmpNode, labelNode, hltNode])
         let backEnd = AssemblerDeclarationPass()
@@ -127,8 +127,8 @@ class AssemblerDeclarationPassTests: XCTestCase {
     }
     
     func testJC() {
-        let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jcNode = JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let jcNode = JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jcNode])
         let backEnd = AssemblerDeclarationPass()
         try! backEnd.doDeclarations(ast)

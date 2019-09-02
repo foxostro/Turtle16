@@ -10,8 +10,8 @@ import XCTest
 import TurtleTTL
 
 class StoreNodeTests: XCTestCase {
-    let zero = Token(type: .number, lineNumber: 1, lexeme: "0", literal: 0)
-    let one = Token(type: .number, lineNumber: 1, lexeme: "1", literal: 1)
+    let zero = TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)
+    let one = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
     
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: ""), CMPNode())

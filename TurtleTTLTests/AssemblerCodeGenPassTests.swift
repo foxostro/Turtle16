@@ -10,9 +10,9 @@ import XCTest
 import TurtleTTL
 
 class AssemblerCodeGenPassTests: XCTestCase {
-    let aabb = Token(type: .number, lineNumber: 1, lexeme: "0xaabb", literal: 0xaabb)
-    let tooLargeAddress = Token(type: .number, lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff)
-    let negativeAddress = Token(type: .number, lineNumber: 1, lexeme: "-1", literal: -1)
+    let aabb = TokenNumber(lineNumber: 1, lexeme: "0xaabb", literal: 0xaabb)
+    let tooLargeAddress = TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff)
+    let negativeAddress = TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)
     
     var microcodeGenerator = MicrocodeGenerator()
     var nop: UInt8 = 0
@@ -66,7 +66,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testLoadImmediate() {
-        let ast = AbstractSyntaxTreeNode(children: [LINode(destination: "D", immediate: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42))])
+        let ast = AbstractSyntaxTreeNode(children: [LINode(destination: "D", immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))])
         let instructions = try! makeBackEnd().compile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -110,7 +110,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testStoreImmediateToMemoryWithInvalidAddress() {
-        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff), immediate: 0)])
+        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff), immediate: 0)])
         XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -119,7 +119,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testStoreImmediateToMemoryWithImmediate() {
-        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "0", literal: 0), immediate: 0xffffffff)])
+        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0), immediate: 0xffffffff)])
         XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -203,8 +203,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testJmp() {
-        let labelNode = LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))
+        let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
         let backEnd = makeBackEnd(symbols: ["foo" : 1])
         let instructions = try! backEnd.compile(ast)
@@ -232,8 +232,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testForwardJmp() {
         let ast = AbstractSyntaxTreeNode(children: [
-            JMPToLabelNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "foo")),
-            LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 2, lexeme: "foo")),
+            JMPToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
             HLTNode()])
         let backEnd = makeBackEnd(symbols: ["foo" : 6])
         let instructions = try! backEnd.compile(ast)
@@ -308,8 +308,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJC() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "foo")),
-            JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "foo"))])
+            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+            JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))])
         let instructions = try! makeBackEnd(symbols: ["foo" : 1]).compile(ast)
         
         XCTAssertEqual(instructions.count, 6)

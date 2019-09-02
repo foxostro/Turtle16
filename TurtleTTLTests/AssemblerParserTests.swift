@@ -97,14 +97,14 @@ class AssemblerParserTests: XCTestCase {
     func testLabelDeclaration() {
         let ast = try! parse("label:")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
     }
 
     func testLabelDeclarationAtAnotherAddress() {
         let ast = try! parse("NOP\nlabel:")
         XCTAssertEqual(ast.children.count, 2)
         XCTAssertEqual(ast.children[0], NOPNode())
-        XCTAssertEqual(ast.children[1], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
+        XCTAssertEqual(ast.children[1], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "label")))
     }
 
     func testParseLabelNameIsANumber() {
@@ -139,15 +139,15 @@ class AssemblerParserTests: XCTestCase {
     func testParseSucceedsWithJMPWithUndeclaredLabel() {
         let ast = try! parse("JMP label")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JMPToLabelNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], JMPToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
     }
 
     func testJMPParses() {
         let ast = try! parse("label:\nJMP label")
 
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
-        XCTAssertEqual(ast.children[1], JMPToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[1], JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "label")))
     }
     
     func testParseJMPWithAddress() {
@@ -168,15 +168,15 @@ class AssemblerParserTests: XCTestCase {
     func testParseSucceedsWithJCWithUndeclaredLabel() {
         let ast = try! parse("JC label")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JCToLabelNode(token: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], JCToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
     }
 
     func testJCParses() {
         let ast = try! parse("label:\nJC label")
         
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: Token(type: .identifier, lineNumber: 1, lexeme: "label")))
-        XCTAssertEqual(ast.children[1], JCToLabelNode(token: Token(type: .identifier, lineNumber: 2, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[1], JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "label")))
     }
     
     func testParseJCWithAddress() {
@@ -286,14 +286,14 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidLI() {
         let ast = try! parse("LI D, 42")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LINode(destination: "D", immediate: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42)))
+        XCTAssertEqual(ast.children[0], LINode(destination: "D", immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
     }
 
     func testLIParsesWithTooBigNumber() {
         // It's the code generator which checks that the value is appropriate.
         let ast = try! parse("LI D, 10000000")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LINode(destination: "D", immediate: Token(type: .number, lineNumber: 1, lexeme: "10000000", literal: 10000000)))
+        XCTAssertEqual(ast.children[0], LINode(destination: "D", immediate: TokenNumber(lineNumber: 1, lexeme: "10000000", literal: 10000000)))
     }
 
     func testFailToParseMOVWithNoOperands() {
@@ -428,13 +428,13 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidStore() {
         let ast = try! parse("STORE 42, A")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], StoreNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42), source: "A"))
+        XCTAssertEqual(ast.children[0], StoreNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42), source: "A"))
     }
     
     func testParseValidStoreImmediate() {
         let ast = try! parse("STORE 1, 2")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], StoreImmediateNode(destinationAddress: Token(type: .number, lineNumber: 1, lexeme: "1", literal: 1), immediate: 2))
+        XCTAssertEqual(ast.children[0], StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1), immediate: 2))
     }
     
     func testFailToParseLoadWithZeroOperands() {
@@ -494,6 +494,6 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidLoad() {
         let ast = try! parse("LOAD A, 42")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LoadNode(destination: "A", sourceAddress: Token(type: .number, lineNumber: 1, lexeme: "42", literal: 42)))
+        XCTAssertEqual(ast.children[0], LoadNode(destination: "A", sourceAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
     }
 }

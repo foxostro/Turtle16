@@ -9,9 +9,9 @@
 import Cocoa
 
 public class LabelDeclarationNode: AbstractSyntaxTreeNode {
-    public let identifier: Token
+    public let identifier: TokenIdentifier
     
-    public required init(identifier: Token) {
+    public required init(identifier: TokenIdentifier) {
         self.identifier = identifier
         super.init(children: [])
     }

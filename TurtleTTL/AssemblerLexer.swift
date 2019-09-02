@@ -1,5 +1,5 @@
 //
-//  AssemblerScanner.swift
+//  AssemblerLexer.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 8/20/19.
@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class AssemblerScanner: Lexer {
+public class AssemblerLexer: Lexer {
     public required init(withString string: String) {
         super.init(withString: string)
         self.rules = [

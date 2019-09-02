@@ -10,7 +10,7 @@ import Cocoa
 
 public class AssemblerFrontEnd: NSObject {
     public func compile(_ text: String) throws -> [Instruction] {
-        let tokenizer = AssemblerScanner(withString: text)
+        let tokenizer = AssemblerLexer(withString: text)
         try tokenizer.scanTokens()
         
         let parser = AssemblerParser(tokens: tokenizer.tokens)

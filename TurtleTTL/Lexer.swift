@@ -1,5 +1,5 @@
 //
-//  TurtleScanner.swift
+//  Lexer.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 8/20/19.
@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class TurtleScanner: NSObject {
+public class Lexer: NSObject {
     public private(set) var string = ""
     public var isAtEnd:Bool {
         return string == ""

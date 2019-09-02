@@ -53,6 +53,7 @@
 		6F5A00E623184880003E7C7F /* Linker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E523184880003E7C7F /* Linker.swift */; };
 		6F5A00E823184896003E7C7F /* LinkerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* LinkerTests.swift */; };
 		6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
+		6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00ED231D029D003E7C7F /* Parser.swift */; };
 		6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
 		6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */; };
 		6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */; };
@@ -212,6 +213,7 @@
 		6F5A00E523184880003E7C7F /* Linker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Linker.swift; sourceTree = "<group>"; };
 		6F5A00E723184896003E7C7F /* LinkerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkerTests.swift; sourceTree = "<group>"; };
 		6F5A00E9231C6454003E7C7F /* SymbolTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTable.swift; sourceTree = "<group>"; };
+		6F5A00ED231D029D003E7C7F /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandleTextOutputStream.swift; sourceTree = "<group>"; };
 		6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerFrontEnd.swift; sourceTree = "<group>"; };
 		6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerFrontEndTests.swift; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
 				6F08807C230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift */,
 				6F61517E230D041600282B12 /* AssemblerParser.swift */,
+				6F5A00ED231D029D003E7C7F /* Parser.swift */,
 				6F73054322F27EA0006FD5E7 /* AssemblerDeclarationPass.swift */,
 				6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */,
 				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
@@ -695,6 +698,7 @@
 				6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
 				6F088099230FADB500AB2339 /* JCToAddressNode.swift in Sources */,
+				6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */,
 				6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */,
 				6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */,
 				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,

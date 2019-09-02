@@ -8,84 +8,25 @@
 
 import Cocoa
 
-public class AssemblerParser: NSObject {
-    struct Production {
-        typealias Generator = (AssemblerParser,Token) throws -> [AbstractSyntaxTreeNode]?
-        let symbol: Token.Type
-        let generator: Generator
-    }
-    
-    let productions: [Production] = [
-        Production(symbol: TokenEOF.self,        generator: { _,_ in [] }),
-        Production(symbol: TokenNewline.self,    generator: { _,_ in [] }),
-        Production(symbol: TokenNOP.self,        generator: { try $0.consumeNOP($1 as! TokenNOP) }),
-        Production(symbol: TokenCMP.self,        generator: { try $0.consumeCMP($1 as! TokenCMP) }),
-        Production(symbol: TokenHLT.self,        generator: { try $0.consumeHLT($1 as! TokenHLT) }),
-        Production(symbol: TokenJMP.self,        generator: { try $0.consumeJMP($1 as! TokenJMP) }),
-        Production(symbol: TokenJC.self,         generator: { try $0.consumeJC($1 as! TokenJC) }),
-        Production(symbol: TokenADD.self,        generator: { try $0.consumeADD($1 as! TokenADD) }),
-        Production(symbol: TokenLI.self,         generator: { try $0.consumeLI($1 as! TokenLI) }),
-        Production(symbol: TokenSTORE.self,      generator: { try $0.consumeSTORE($1 as! TokenSTORE) }),
-        Production(symbol: TokenLOAD.self,       generator: { try $0.consumeLOAD($1 as! TokenLOAD) }),
-        Production(symbol: TokenMOV.self,        generator: { try $0.consumeMOV($1 as! TokenMOV) }),
-        Production(symbol: TokenIdentifier.self, generator: { try $0.consumeIdentifier($1 as! TokenIdentifier) })
-    ]
-    var tokens: [Token] = []
-    
-    public required init(tokens: [Token]) {
-        self.tokens = tokens
+public class AssemblerParser: Parser {
+    public init(tokens: [Token]) {
         super.init()
-    }
-    
-    public func parse() throws -> AbstractSyntaxTreeNode {
-        var statements: [AbstractSyntaxTreeNode] = []
-        while tokens.count > 0 {
-            statements += try consumeStatement()
-        }
-        return AbstractSyntaxTreeNode(children: statements)
-    }
-    
-    func advance() {
-        tokens.removeFirst()
-    }
-    
-    func peek() -> Token? {
-        return tokens.first
-    }
-    
-    func accept(_ typeInQuestion: AnyClass) -> Any? {
-        if let token = peek() {
-            if typeInQuestion == type(of: token) {
-                advance()
-                return token
-            }
-        }
-        return nil
-    }
-    
-    func expect(type: AnyClass, error: Error) throws {
-        if nil == accept(type) {
-            throw error
-        }
-    }
-    
-    func expect(types: [AnyClass], error: Error) throws {
-        for t in types {
-            if nil != accept(t) {
-                return
-            }
-        }
-        throw error
-    }
-    
-    func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        for production in productions {
-            guard let symbol = accept(production.symbol) as? Token else { continue }
-            if let statements = try production.generator(self, symbol) {
-                return statements
-            }
-        }
-        throw AssemblerError(format: "unexpected end of input")
+        self.tokens = tokens
+        self.productions = [
+            Production(symbol: TokenEOF.self,        generator: { _ in [] }),
+            Production(symbol: TokenNewline.self,    generator: { _ in [] }),
+            Production(symbol: TokenNOP.self,        generator: { try self.consumeNOP($0 as! TokenNOP) }),
+            Production(symbol: TokenCMP.self,        generator: { try self.consumeCMP($0 as! TokenCMP) }),
+            Production(symbol: TokenHLT.self,        generator: { try self.consumeHLT($0 as! TokenHLT) }),
+            Production(symbol: TokenJMP.self,        generator: { try self.consumeJMP($0 as! TokenJMP) }),
+            Production(symbol: TokenJC.self,         generator: { try self.consumeJC($0 as! TokenJC) }),
+            Production(symbol: TokenADD.self,        generator: { try self.consumeADD($0 as! TokenADD) }),
+            Production(symbol: TokenLI.self,         generator: { try self.consumeLI($0 as! TokenLI) }),
+            Production(symbol: TokenSTORE.self,      generator: { try self.consumeSTORE($0 as! TokenSTORE) }),
+            Production(symbol: TokenLOAD.self,       generator: { try self.consumeLOAD($0 as! TokenLOAD) }),
+            Production(symbol: TokenMOV.self,        generator: { try self.consumeMOV($0 as! TokenMOV) }),
+            Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) })
+        ]
     }
     
     func consumeNOP(_ instruction: TokenNOP) throws -> [AbstractSyntaxTreeNode] {

@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class AssemblerScanner: TurtleScanner {
+public class AssemblerScanner: Lexer {
     public required init(withString string: String) {
         super.init(withString: string)
         self.rules = [

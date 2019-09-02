@@ -35,7 +35,6 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     public func visit(node: JMPToLabelNode) throws {
-        assert(node.identifier.type == .identifier)
         programCounter += 5
     }
     
@@ -44,7 +43,6 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     public func visit(node: JCToLabelNode) throws {
-        assert(node.identifier.type == .identifier)
         programCounter += 5
     }
     
@@ -65,7 +63,6 @@ public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     public func visit(node: LabelDeclarationNode) throws {
-        assert(node.identifier.type == .identifier)
         let name = node.identifier.lexeme
         if symbols[name] == nil {
             symbols[name] = self.programCounter

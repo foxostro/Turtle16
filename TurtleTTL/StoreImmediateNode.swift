@@ -9,11 +9,10 @@
 import Cocoa
 
 public class StoreImmediateNode: AbstractSyntaxTreeNode {
-    let destinationAddress: Token
+    let destinationAddress: TokenNumber
     let immediate: Int
     
-    public required init(destinationAddress: Token, immediate: Int) {
-        assert(destinationAddress.type == .number)
+    public required init(destinationAddress: TokenNumber, immediate: Int) {
         self.destinationAddress = destinationAddress
         self.immediate = immediate
         super.init(children: [])

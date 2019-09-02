@@ -11,24 +11,24 @@ import Cocoa
 public class AssemblerParser: NSObject {
     struct Production {
         typealias Generator = (AssemblerParser,Token) throws -> [AbstractSyntaxTreeNode]?
-        let symbol: TokenType
+        let symbol: Token.Type
         let generator: Generator
     }
     
     let productions: [Production] = [
-        Production(symbol: .eof,        generator: { _,_ in [] }),
-        Production(symbol: .newline,    generator: { _,_ in [] }),
-        Production(symbol: .nop,        generator: { try $0.consumeNOP($1) }),
-        Production(symbol: .cmp,        generator: { try $0.consumeCMP($1) }),
-        Production(symbol: .hlt,        generator: { try $0.consumeHLT($1) }),
-        Production(symbol: .jmp,        generator: { try $0.consumeJMP($1) }),
-        Production(symbol: .jc,         generator: { try $0.consumeJC($1) }),
-        Production(symbol: .add,        generator: { try $0.consumeADD($1) }),
-        Production(symbol: .li,         generator: { try $0.consumeLI($1) }),
-        Production(symbol: .store,      generator: { try $0.consumeSTORE($1) }),
-        Production(symbol: .load,       generator: { try $0.consumeLOAD($1) }),
-        Production(symbol: .mov,        generator: { try $0.consumeMOV($1) }),
-        Production(symbol: .identifier, generator: { try $0.consumeIdentifier($1) })
+        Production(symbol: TokenEOF.self,        generator: { _,_ in [] }),
+        Production(symbol: TokenNewline.self,    generator: { _,_ in [] }),
+        Production(symbol: TokenNOP.self,        generator: { try $0.consumeNOP($1 as! TokenNOP) }),
+        Production(symbol: TokenCMP.self,        generator: { try $0.consumeCMP($1 as! TokenCMP) }),
+        Production(symbol: TokenHLT.self,        generator: { try $0.consumeHLT($1 as! TokenHLT) }),
+        Production(symbol: TokenJMP.self,        generator: { try $0.consumeJMP($1 as! TokenJMP) }),
+        Production(symbol: TokenJC.self,         generator: { try $0.consumeJC($1 as! TokenJC) }),
+        Production(symbol: TokenADD.self,        generator: { try $0.consumeADD($1 as! TokenADD) }),
+        Production(symbol: TokenLI.self,         generator: { try $0.consumeLI($1 as! TokenLI) }),
+        Production(symbol: TokenSTORE.self,      generator: { try $0.consumeSTORE($1 as! TokenSTORE) }),
+        Production(symbol: TokenLOAD.self,       generator: { try $0.consumeLOAD($1 as! TokenLOAD) }),
+        Production(symbol: TokenMOV.self,        generator: { try $0.consumeMOV($1 as! TokenMOV) }),
+        Production(symbol: TokenIdentifier.self, generator: { try $0.consumeIdentifier($1 as! TokenIdentifier) })
     ]
     var tokens: [Token] = []
     
@@ -53,9 +53,9 @@ public class AssemblerParser: NSObject {
         return tokens.first
     }
     
-    func accept(_ type: TokenType) -> Token? {
+    func accept(_ typeInQuestion: AnyClass) -> Any? {
         if let token = peek() {
-            if token.type == type {
+            if typeInQuestion == type(of: token) {
                 advance()
                 return token
             }
@@ -63,15 +63,15 @@ public class AssemblerParser: NSObject {
         return nil
     }
     
-    func expect(type: TokenType, error: Error) throws {
+    func expect(type: AnyClass, error: Error) throws {
         if nil == accept(type) {
             throw error
         }
     }
     
-    func expect(types: [TokenType], error: Error) throws {
-        for type in types {
-            if nil != accept(type) {
+    func expect(types: [AnyClass], error: Error) throws {
+        for t in types {
+            if nil != accept(t) {
                 return
             }
         }
@@ -80,7 +80,7 @@ public class AssemblerParser: NSObject {
     
     func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         for production in productions {
-            guard let symbol = accept(production.symbol) else { continue }
+            guard let symbol = accept(production.symbol) as? Token else { continue }
             if let statements = try production.generator(self, symbol) {
                 return statements
             }
@@ -88,87 +88,87 @@ public class AssemblerParser: NSObject {
         throw AssemblerError(format: "unexpected end of input")
     }
     
-    func consumeNOP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        try expect(types: [.newline, .eof],
+    func consumeNOP(_ instruction: TokenNOP) throws -> [AbstractSyntaxTreeNode] {
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: zeroOperandsExpectedError(instruction))
         return [NOPNode()]
     }
     
-    func consumeCMP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        try expect(types: [.newline, .eof],
+    func consumeCMP(_ instruction: TokenCMP) throws -> [AbstractSyntaxTreeNode] {
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: zeroOperandsExpectedError(instruction))
         return [CMPNode()]
     }
     
-    func consumeHLT(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        try expect(types: [.newline, .eof],
+    func consumeHLT(_ instruction: TokenHLT) throws -> [AbstractSyntaxTreeNode] {
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: zeroOperandsExpectedError(instruction))
         return [HLTNode()]
     }
     
-    func consumeJMP(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        if let identifier = accept(.identifier) {
-            try expect(types: [.newline, .eof],
+    func consumeJMP(_ instruction: TokenJMP) throws -> [AbstractSyntaxTreeNode] {
+        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [JMPToLabelNode(token: identifier)]
-        } else if let address = accept(.number) {
-            try expect(types: [.newline, .eof],
+        } else if let address = accept(TokenNumber.self) as? TokenNumber {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [JMPToAddressNode(address: address.literal as! Int)]
         }
         throw operandTypeMismatchError(instruction)
     }
     
-    func consumeJC(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        if let identifier = accept(.identifier) {
-            try expect(types: [.newline, .eof],
+    func consumeJC(_ instruction: TokenJC) throws -> [AbstractSyntaxTreeNode] {
+        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [JCToLabelNode(token: identifier)]
-        } else if let address = accept(.number) {
-            try expect(types: [.newline, .eof],
+        } else if let address = accept(TokenNumber.self) as? TokenNumber {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [JCToAddressNode(address: address.literal as! Int)]
         }
         throw operandTypeMismatchError(instruction)
     }
     
-    func consumeADD(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        guard let register = accept(.register) else {
+    func consumeADD(_ instruction: TokenADD) throws -> [AbstractSyntaxTreeNode] {
+        guard let register = accept(TokenRegister.self) as? TokenRegister else {
             throw operandTypeMismatchError(instruction)
         }
         try expectRegisterCanBeUsedAsDestination(register)
-        try expect(types: [.newline, .eof],
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
         return [ADDNode(destination: register.literal as! String)]
     }
     
-    func consumeLI(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        guard let destination = accept(.register) else {
+    func consumeLI(_ instruction: TokenLI) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(TokenRegister.self) as? TokenRegister else {
             throw operandTypeMismatchError(instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
-        try expect(type: .comma, error: operandTypeMismatchError(instruction))
-        guard let source = accept(.number) else {
+        try expect(type: TokenComma.self, error: operandTypeMismatchError(instruction))
+        guard let source = accept(TokenNumber.self) as? TokenNumber else {
             throw operandTypeMismatchError(instruction)
         }
-        try expect(types: [.newline, .eof],
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
         return [LINode(destination: destination.literal as! String, immediate: source)]
     }
     
-    func consumeSTORE(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        guard let destination = accept(.number) else {
+    func consumeSTORE(_ instruction: TokenSTORE) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(TokenNumber.self) as? TokenNumber else {
             throw operandTypeMismatchError(instruction)
         }
-        try expect(type: .comma, error: operandTypeMismatchError(instruction))
-        if let source = accept(.register) {
+        try expect(type: TokenComma.self, error: operandTypeMismatchError(instruction))
+        if let source = accept(TokenRegister.self) as? TokenRegister {
             try expectRegisterCanBeUsedAsSource(source)
-            try expect(types: [.newline, .eof],
+            try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [StoreNode(destinationAddress: destination, source: source.literal as! String)]
         }
-        else if let source = accept(.number) {
-            try expect(types: [.newline, .eof],
+        else if let source = accept(TokenNumber.self) as? TokenNumber {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [StoreImmediateNode(destinationAddress: destination, immediate: source.literal as! Int)]
         }
@@ -177,48 +177,48 @@ public class AssemblerParser: NSObject {
         }
     }
     
-    func consumeLOAD(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        guard let destination = accept(.register) else {
+    func consumeLOAD(_ instruction: TokenLOAD) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(TokenRegister.self) as? TokenRegister else {
             throw operandTypeMismatchError(instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
-        try expect(type: .comma, error: operandTypeMismatchError(instruction))
-        guard let source = accept(.number) else {
+        try expect(type: TokenComma.self, error: operandTypeMismatchError(instruction))
+        guard let source = accept(TokenNumber.self) as? TokenNumber else {
             throw operandTypeMismatchError(instruction)
         }
-        try expect(types: [.newline, .eof],
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
         return [LoadNode(destination: destination.literal as! String, sourceAddress: source)]
     }
     
-    func consumeMOV(_ instruction: Token) throws -> [AbstractSyntaxTreeNode] {
-        guard let destination = accept(.register) else {
+    func consumeMOV(_ instruction: TokenMOV) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(TokenRegister.self) as? TokenRegister else {
             throw operandTypeMismatchError(instruction)
         }
-        try expect(type: .comma, error: operandTypeMismatchError(instruction))
+        try expect(type: TokenComma.self, error: operandTypeMismatchError(instruction))
         try expectRegisterCanBeUsedAsDestination(destination)
-        guard let source = accept(.register) else {
+        guard let source = accept(TokenRegister.self) as? TokenRegister else {
             throw operandTypeMismatchError(instruction)
         }
         try expectRegisterCanBeUsedAsSource(source)
-        try expect(types: [.newline, .eof],
+        try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
         return [MOVNode(destination: destination.literal as! String,
                         source: source.literal as! String)]
     }
     
-    func consumeIdentifier(_ identifier: Token) throws -> [AbstractSyntaxTreeNode] {
-        try expect(type: .colon, error: unrecognizedInstructionError(identifier))
+    func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {
+        try expect(type: TokenColon.self, error: unrecognizedInstructionError(identifier))
         return [LabelDeclarationNode(identifier: identifier)]
     }
     
-    func expectRegisterCanBeUsedAsDestination(_ register: Token) throws {
+    func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
         if register.literal as! String == "E" || register.literal as! String == "C" {
             throw badDestinationError(register)
         }
     }
     
-    func expectRegisterCanBeUsedAsSource(_ register: Token) throws {
+    func expectRegisterCanBeUsedAsSource(_ register: TokenRegister) throws {
         if register.literal as! String == "D" {
             throw badSourceError(register)
         }
@@ -242,13 +242,13 @@ public class AssemblerParser: NSObject {
                               instruction.lexeme)
     }
     
-    func badDestinationError(_ register: Token) -> Error {
+    func badDestinationError(_ register: TokenRegister) -> Error {
         return AssemblerError(line: register.lineNumber,
                               format: "register cannot be used as a destination: `%@'",
                               register.lexeme)
     }
     
-    func badSourceError(_ register: Token) -> Error {
+    func badSourceError(_ register: TokenRegister) -> Error {
         return AssemblerError(line: register.lineNumber,
                               format: "register cannot be used as a source: `%@'",
                               register.lexeme)

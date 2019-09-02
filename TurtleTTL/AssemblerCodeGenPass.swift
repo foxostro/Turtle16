@@ -43,7 +43,6 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     public func visit(node: JMPToLabelNode) throws {
-        assert(node.identifier.type == .identifier)
         try self.setAddress(token: node.identifier)
         self.codeGenerator.jmp()
         self.codeGenerator.nop()
@@ -58,7 +57,6 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     public func visit(node: JCToLabelNode) throws {
-        assert(node.identifier.type == .identifier)
         try self.setAddress(token: node.identifier)
         self.codeGenerator.jc()
         self.codeGenerator.nop()
@@ -121,8 +119,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: node.immediate)
     }
     
-    func resolveSymbol(token identifier: Token) throws -> Int {
-        assert(identifier.type == .identifier)
+    func resolveSymbol(token identifier: TokenIdentifier) throws -> Int {
         let name = identifier.lexeme
         if let value = self.symbols[name] {
             return value
@@ -145,8 +142,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try self.codeGenerator.li("Y", (address & 0xff))
     }
     
-    func setAddress(token identifier: Token) throws {
-        assert(identifier.type == .identifier)
+    func setAddress(token identifier: TokenIdentifier) throws {
         let address = try self.resolveSymbol(token: identifier)
         try self.setAddress(address)
     }

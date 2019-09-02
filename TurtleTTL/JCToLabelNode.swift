@@ -9,9 +9,9 @@
 import Cocoa
 
 public class JCToLabelNode: AbstractSyntaxTreeNode {
-    public let identifier: Token
+    public let identifier: TokenIdentifier
     
-    public init(token identifier: Token) {
+    public init(token identifier: TokenIdentifier) {
         self.identifier = identifier
         super.init(children: [])
     }

@@ -11,13 +11,13 @@ import TurtleTTL
 
 class JCToLabelNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let label = Token(type: .identifier, lineNumber: 1, lexeme: "label")
+        let label = TokenIdentifier(lineNumber: 1, lexeme: "label")
         XCTAssertNotEqual(JCToLabelNode(token: label), NOPNode())
     }
     
     func testDoesNotEqualLabelWithDifferentIdentifier() {
-        let foo = Token(type: .identifier, lineNumber: 1, lexeme: "foo")
-        let bar = Token(type: .identifier, lineNumber: 2, lexeme: "bar")
+        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
+        let bar = TokenIdentifier(lineNumber: 2, lexeme: "bar")
         XCTAssertNotEqual(JCToLabelNode(token: foo), JCToLabelNode(token: bar))
     }
 }

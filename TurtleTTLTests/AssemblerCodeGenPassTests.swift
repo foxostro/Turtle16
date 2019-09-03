@@ -20,7 +20,9 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func makeBackEnd(symbols: [String : Int] = [:]) -> AssemblerCodeGenPass {
         let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
-        return AssemblerCodeGenPass(codeGenerator: codeGen, symbols: symbols)
+        let compiler = AssemblerCodeGenPass(codeGenerator: codeGen)
+        compiler.symbols = symbols
+        return compiler
     }
     
     override func setUp() {
@@ -192,21 +194,11 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(controlWord.DI, false)
     }
     
-    func testResolveUnrecognizedLabel() {
-        let backEnd = makeBackEnd()
-        XCTAssertThrowsError(try backEnd.resolveSymbol(name: ""))
-    }
-    
-    func testSuccessfullyResolveALabel() {
-        let backEnd = makeBackEnd(symbols: ["foo" : 1])
-        XCTAssertEqual(try backEnd.resolveSymbol(name: "foo"), 1)
-    }
-    
     func testJmp() {
         let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
         let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
-        let backEnd = makeBackEnd(symbols: ["foo" : 1])
+        let backEnd = makeBackEnd()
         let instructions = try! backEnd.compile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -235,7 +227,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
             JMPToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
             HLTNode()])
-        let backEnd = makeBackEnd(symbols: ["foo" : 6])
+        let backEnd = makeBackEnd()
         let instructions = try! backEnd.compile(ast)
         
         XCTAssertEqual(instructions.count, 7)
@@ -310,7 +302,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
         let ast = AbstractSyntaxTreeNode(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))])
-        let instructions = try! makeBackEnd(symbols: ["foo" : 1]).compile(ast)
+        let instructions = try! makeBackEnd().compile(ast)
         
         XCTAssertEqual(instructions.count, 6)
         

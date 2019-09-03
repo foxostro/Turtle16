@@ -11,23 +11,26 @@ import Cocoa
 // Takes an AST and performs a pass that does final code generation.
 public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     let codeGenerator: CodeGenerator
+    public var symbols: [String:Int] = [:]
+    var patcherActions: [Patcher.Action] = []
     
-    // Maps from the symbol name to the symbol value.
-    public private(set) var symbols: SymbolTable = [:]
-    
-    public required init(codeGenerator: CodeGenerator, symbols: SymbolTable = [:]) {
+    public required init(codeGenerator: CodeGenerator) {
         self.codeGenerator = codeGenerator
-        self.symbols = symbols
         super.init()
     }
     
     public func compile(_ root: AbstractSyntaxTreeNode) throws -> [Instruction] {
+        patcherActions = []
         codeGenerator.begin()
         try root.iterate {
             try $0.accept(visitor: self)
         }
         codeGenerator.end()
-        return codeGenerator.instructions
+        let patcher = Patcher(inputInstructions: codeGenerator.instructions,
+                              symbols: symbols,
+                              actions: patcherActions)
+        let postPatchInstructions = try patcher.patch()
+        return postPatchInstructions
     }
     
     public func visit(node: NOPNode) throws {
@@ -83,7 +86,12 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     public func visit(node: LabelDeclarationNode) throws {
-        // do nothing
+        let name = node.identifier.lexeme
+        if symbols[name] == nil {
+            symbols[name] = codeGenerator.programCounter
+        } else {
+            throw AssemblerError(line: node.identifier.lineNumber, format: "duplicate label: `%@'", name)
+        }
     }
     
     public func visit(node: LoadNode) throws {
@@ -119,21 +127,6 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: node.immediate)
     }
     
-    func resolveSymbol(token identifier: TokenIdentifier) throws -> Int {
-        let name = identifier.lexeme
-        if let value = self.symbols[name] {
-            return value
-        }
-        throw AssemblerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
-    }
-    
-    public func resolveSymbol(name: String) throws -> Int {
-        if let value = self.symbols[name] {
-            return value
-        }
-        throw AssemblerError(format: "unrecognized symbol name: `%@'", name)
-    }
-    
     func setAddress(_ address: Int) throws {
         if(address < 0 || address > 0xffff) {
             throw AssemblerError(format: "invalid address: 0x%x", address)
@@ -143,7 +136,14 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     func setAddress(token identifier: TokenIdentifier) throws {
-        let address = try self.resolveSymbol(token: identifier)
-        try self.setAddress(address)
+        patcherActions.append((index: codeGenerator.programCounter,
+                               symbol: identifier,
+                               shift: 8))
+        try codeGenerator.li("X", 0xAB)
+        
+        patcherActions.append((index: codeGenerator.programCounter,
+                               symbol: identifier,
+                               shift: 0))
+        try codeGenerator.li("Y", 0xCD)
     }
 }

@@ -10,12 +10,11 @@ import Cocoa
 
 // Takes an AST and performs a pass that does declarations.
 public class AssemblerDeclarationPass: NSObject, AbstractSyntaxTreeNodeVisitor {
-    public typealias Symbols = [String:Int]
-    public var symbols: Symbols = [:]
+    public var symbols: SymbolTable = [:]
     public var programCounter = 0
     
     public func doDeclarations(_ root: AbstractSyntaxTreeNode) throws {
-        symbols = [String:Int]()
+        symbols = [:]
         programCounter = 1
         try root.iterate {
             try $0.accept(visitor: self)

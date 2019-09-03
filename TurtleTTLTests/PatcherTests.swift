@@ -28,7 +28,7 @@ class PatcherTests: XCTestCase {
     func testLinkWithNoOpChangeToInstruction() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let symbols: SymbolTable = ["" : 0]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "")]
+        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -40,7 +40,19 @@ class PatcherTests: XCTestCase {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
         let symbols: SymbolTable = ["" : 255]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "")]
+        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 0)]
+        let patcher = Patcher(inputInstructions: inputInstructions,
+                              symbols: symbols,
+                              actions: actions)
+        let actual = try! patcher.patch()
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLinkWithChangeToInstructionAndShift() {
+        let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
+        let expected = [Instruction(opcode: 0, immediate: 255)]
+        let symbols: SymbolTable = ["" : 0xff00]
+        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 8)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -58,9 +70,9 @@ class PatcherTests: XCTestCase {
         let symbols: SymbolTable = ["a" : 10,
                                     "b" : 20,
                                     "c" : 30]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "a"),
-                                        (index: 1, symbol: "b"),
-                                        (index: 2, symbol: "c")]
+        let actions: [Patcher.Action] = [(index: 0, symbol: "a", shift: 0),
+                                         (index: 1, symbol: "b", shift: 0),
+                                         (index: 2, symbol: "c", shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -70,7 +82,7 @@ class PatcherTests: XCTestCase {
     
     func testLinkWithUnresolvedSymbol() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "")]
+        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: [:],
                               actions: actions)

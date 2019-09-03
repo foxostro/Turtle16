@@ -16,7 +16,7 @@ public class Patcher: NSObject {
     
     // For some given instruction (given by index), specify a symbol through
     // which to determine the the new immediate value to use.
-    public typealias Action = (index: Int, symbol: String)
+    public typealias Action = (index: Int, symbol: String, shift: Int)
     let actions: [Action]
     
     public required init(inputInstructions: [Instruction],
@@ -31,8 +31,10 @@ public class Patcher: NSObject {
         var instructions = inputInstructions
         for action in actions {
             let oldInstruction = instructions[action.index]
-            let newInstruction = Instruction(opcode: Int(oldInstruction.opcode),
-                                             immediate: try resolveSymbol(name: action.symbol))
+            let symbolValue = try resolveSymbol(name: action.symbol)
+            let immediate: UInt8 = UInt8((symbolValue >> action.shift) & 0xff)
+            let newInstruction = Instruction(opcode: oldInstruction.opcode,
+                                             immediate: immediate)
             instructions[action.index] = newInstruction
         }
         return instructions

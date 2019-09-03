@@ -1,5 +1,5 @@
 //
-//  LinkerTests.swift
+//  PatcherTests.swift
 //  TurtleTTLTests
 //
 //  Created by Andrew Fox on 8/29/19.
@@ -9,30 +9,30 @@
 import XCTest
 import TurtleTTL
 
-class LinkerTests: XCTestCase {
-    func testLinkWithNoInstructions() {
-        let linker = Linker(inputInstructions: [], symbols: [:], actions: [])
-        let output = try! linker.link()
+class PatcherTests: XCTestCase {
+    func testPatchWithNoInstructions() {
+        let patcher = Patcher(inputInstructions: [], symbols: [:], actions: [])
+        let output = try! patcher.patch()
         XCTAssertEqual([], output)
     }
     
     func testLinkWithNoChangesToInstructions() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let linker = Linker(inputInstructions: inputInstructions,
-                            symbols: [:],
-                            actions: [])
-        let output = try! linker.link()
+        let patcher = Patcher(inputInstructions: inputInstructions,
+                              symbols: [:],
+                              actions: [])
+        let output = try! patcher.patch()
         XCTAssertEqual(inputInstructions, output)
     }
     
     func testLinkWithNoOpChangeToInstruction() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let symbols: SymbolTable = ["" : 0]
-        let actions: [Linker.Action] = [(index: 0, symbol: "")]
-        let linker = Linker(inputInstructions: inputInstructions,
-                            symbols: symbols,
-                            actions: actions)
-        let output = try! linker.link()
+        let actions: [Patcher.Action] = [(index: 0, symbol: "")]
+        let patcher = Patcher(inputInstructions: inputInstructions,
+                              symbols: symbols,
+                              actions: actions)
+        let output = try! patcher.patch()
         XCTAssertEqual(inputInstructions, output)
     }
     
@@ -40,11 +40,11 @@ class LinkerTests: XCTestCase {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
         let symbols: SymbolTable = ["" : 255]
-        let actions: [Linker.Action] = [(index: 0, symbol: "")]
-        let linker = Linker(inputInstructions: inputInstructions,
-                            symbols: symbols,
-                            actions: actions)
-        let actual = try! linker.link()
+        let actions: [Patcher.Action] = [(index: 0, symbol: "")]
+        let patcher = Patcher(inputInstructions: inputInstructions,
+                              symbols: symbols,
+                              actions: actions)
+        let actual = try! patcher.patch()
         XCTAssertEqual(expected, actual)
     }
     
@@ -58,23 +58,23 @@ class LinkerTests: XCTestCase {
         let symbols: SymbolTable = ["a" : 10,
                                     "b" : 20,
                                     "c" : 30]
-        let actions: [Linker.Action] = [(index: 0, symbol: "a"),
+        let actions: [Patcher.Action] = [(index: 0, symbol: "a"),
                                         (index: 1, symbol: "b"),
                                         (index: 2, symbol: "c")]
-        let linker = Linker(inputInstructions: inputInstructions,
-                            symbols: symbols,
-                            actions: actions)
-        let actual = try! linker.link()
+        let patcher = Patcher(inputInstructions: inputInstructions,
+                              symbols: symbols,
+                              actions: actions)
+        let actual = try! patcher.patch()
         XCTAssertEqual(expected, actual)
     }
     
     func testLinkWithUnresolvedSymbol() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let actions: [Linker.Action] = [(index: 0, symbol: "")]
-        let linker = Linker(inputInstructions: inputInstructions,
-                            symbols: [:],
-                            actions: actions)
-        XCTAssertThrowsError(try linker.link()) { e in
+        let actions: [Patcher.Action] = [(index: 0, symbol: "")]
+        let patcher = Patcher(inputInstructions: inputInstructions,
+                              symbols: [:],
+                              actions: actions)
+        XCTAssertThrowsError(try patcher.patch()) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.message, "unresolved symbol: `'")
         }

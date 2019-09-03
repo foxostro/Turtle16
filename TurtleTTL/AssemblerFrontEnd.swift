@@ -20,12 +20,8 @@ public class AssemblerFrontEnd: NSObject {
         microcodeGenerator.generate()
         let codeGenerator = CodeGenerator(microcodeGenerator: microcodeGenerator)
         
-        let declarationsPass = AssemblerDeclarationPass()
-        try declarationsPass.doDeclarations(ast)
-        let symbols = declarationsPass.symbols
-        
-        let codeGenPass = AssemblerCodeGenPass(codeGenerator: codeGenerator, symbols: symbols)
-        let instructions = try codeGenPass.compile(ast)
+        let compiler = AssemblerCodeGenPass(codeGenerator: codeGenerator)
+        let instructions = try compiler.compile(ast)
         
         return instructions
     }

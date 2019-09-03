@@ -16,7 +16,7 @@ class PatcherTests: XCTestCase {
         XCTAssertEqual([], output)
     }
     
-    func testLinkWithNoChangesToInstructions() {
+    func testPatchWithNoChangesToInstructions() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: [:],
@@ -25,10 +25,11 @@ class PatcherTests: XCTestCase {
         XCTAssertEqual(inputInstructions, output)
     }
     
-    func testLinkWithNoOpChangeToInstruction() {
+    func testPatchWithNoOpChangeToInstruction() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let symbols: SymbolTable = ["" : 0]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 0)]
+        let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
+        let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -36,11 +37,12 @@ class PatcherTests: XCTestCase {
         XCTAssertEqual(inputInstructions, output)
     }
     
-    func testLinkWithChangeToInstruction() {
+    func testPatchWithChangeToInstruction() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
         let symbols: SymbolTable = ["" : 255]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 0)]
+        let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
+        let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -48,11 +50,12 @@ class PatcherTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testLinkWithChangeToInstructionAndShift() {
+    func testPatchWithChangeToInstructionAndShift() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
         let symbols: SymbolTable = ["" : 0xff00]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 8)]
+        let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
+        let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 8)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -60,7 +63,7 @@ class PatcherTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testLinkWithChangeToAFewInstructions() {
+    func testPatchWithChangeToAFewInstructions() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0),
                                  Instruction(opcode: 1, immediate: 0),
                                  Instruction(opcode: 2, immediate: 0)]
@@ -70,9 +73,9 @@ class PatcherTests: XCTestCase {
         let symbols: SymbolTable = ["a" : 10,
                                     "b" : 20,
                                     "c" : 30]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "a", shift: 0),
-                                         (index: 1, symbol: "b", shift: 0),
-                                         (index: 2, symbol: "c", shift: 0)]
+        let actions: [Patcher.Action] = [(index: 0, symbol: TokenIdentifier(lineNumber: 1, lexeme: "a"), shift: 0),
+                                         (index: 1, symbol: TokenIdentifier(lineNumber: 2, lexeme: "b"), shift: 0),
+                                         (index: 2, symbol: TokenIdentifier(lineNumber: 3, lexeme: "c"), shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
                               actions: actions)
@@ -80,15 +83,15 @@ class PatcherTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testLinkWithUnresolvedSymbol() {
+    func testPatchWithUnresolvedSymbol() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let actions: [Patcher.Action] = [(index: 0, symbol: "", shift: 0)]
+        let actions: [Patcher.Action] = [(index: 0, symbol: TokenIdentifier(lineNumber: 0, lexeme: ""), shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: [:],
                               actions: actions)
         XCTAssertThrowsError(try patcher.patch()) { e in
             let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "unresolved symbol: `'")
+            XCTAssertEqual(error.message, "unrecognized symbol name: `'")
         }
     }
 }

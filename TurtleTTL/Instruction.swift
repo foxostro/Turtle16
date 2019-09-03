@@ -21,6 +21,11 @@ public class Instruction: NSObject {
         super.init()
     }
     
+    public init(opcode: UInt8, immediate: UInt8) {
+        self.opcode = opcode
+        self.immediate = immediate
+    }
+    
     public init(opcode: Int, immediate: Int) {
         self.opcode = UInt8(opcode)
         self.immediate = UInt8(immediate)

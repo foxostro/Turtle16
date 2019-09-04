@@ -55,7 +55,7 @@ public class AssemblerParser: Parser {
         } else if let address = accept(TokenNumber.self) as? TokenNumber {
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
-            return [JMPToAddressNode(address: address.literal as! Int)]
+            return [JMPToAddressNode(address: address.literal)]
         }
         throw operandTypeMismatchError(instruction)
     }
@@ -68,7 +68,7 @@ public class AssemblerParser: Parser {
         } else if let address = accept(TokenNumber.self) as? TokenNumber {
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
-            return [JCToAddressNode(address: address.literal as! Int)]
+            return [JCToAddressNode(address: address.literal)]
         }
         throw operandTypeMismatchError(instruction)
     }
@@ -80,7 +80,7 @@ public class AssemblerParser: Parser {
         try expectRegisterCanBeUsedAsDestination(register)
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
-        return [ADDNode(destination: register.literal as! String)]
+        return [ADDNode(destination: register.literal)]
     }
     
     func consumeLI(_ instruction: TokenLI) throws -> [AbstractSyntaxTreeNode] {
@@ -94,7 +94,7 @@ public class AssemblerParser: Parser {
         }
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
-        return [LINode(destination: destination.literal as! String, immediate: source)]
+        return [LINode(destination: destination.literal, immediate: source)]
     }
     
     func consumeSTORE(_ instruction: TokenSTORE) throws -> [AbstractSyntaxTreeNode] {
@@ -106,12 +106,12 @@ public class AssemblerParser: Parser {
             try expectRegisterCanBeUsedAsSource(source)
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
-            return [StoreNode(destinationAddress: destination, source: source.literal as! String)]
+            return [StoreNode(destinationAddress: destination, source: source.literal)]
         }
         else if let source = accept(TokenNumber.self) as? TokenNumber {
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
-            return [StoreImmediateNode(destinationAddress: destination, immediate: source.literal as! Int)]
+            return [StoreImmediateNode(destinationAddress: destination, immediate: source.literal)]
         }
         else {
             throw operandTypeMismatchError(instruction)
@@ -129,7 +129,7 @@ public class AssemblerParser: Parser {
         }
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
-        return [LoadNode(destination: destination.literal as! String, sourceAddress: source)]
+        return [LoadNode(destination: destination.literal, sourceAddress: source)]
     }
     
     func consumeMOV(_ instruction: TokenMOV) throws -> [AbstractSyntaxTreeNode] {
@@ -144,8 +144,8 @@ public class AssemblerParser: Parser {
         try expectRegisterCanBeUsedAsSource(source)
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
-        return [MOVNode(destination: destination.literal as! String,
-                        source: source.literal as! String)]
+        return [MOVNode(destination: destination.literal,
+                        source: source.literal)]
     }
     
     func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {
@@ -154,13 +154,13 @@ public class AssemblerParser: Parser {
     }
     
     func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
-        if register.literal as! String == "E" || register.literal as! String == "C" {
+        if register.literal == "E" || register.literal == "C" {
             throw badDestinationError(register)
         }
     }
     
     func expectRegisterCanBeUsedAsSource(_ register: TokenRegister) throws {
-        if register.literal as! String == "D" {
+        if register.literal == "D" {
             throw badSourceError(register)
         }
     }

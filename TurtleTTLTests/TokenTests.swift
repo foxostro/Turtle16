@@ -20,7 +20,7 @@ class TokenTests: XCTestCase {
     
     func testTokensTestEqualityWithDifferentTypes() {
         XCTAssertNotEqual(TokenIdentifier(lineNumber: 1, lexeme: "123"),
-                          TokenNumber(lineNumber: 1, lexeme: "123"))
+                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 123))
     }
     
     func testTokensTestEqualityWithDifferentLines() {
@@ -33,39 +33,14 @@ class TokenTests: XCTestCase {
                           TokenNumber(lineNumber: 1, lexeme: "123", literal: 1))
     }
     
-    func testTokensTestEqualityWithDifferentLiteralNullity() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: nil),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 1))
-    }
-    
-    func testTokensTestEqualityWithDifferentLiteralTypes() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 1),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: ""))
-    }
-    
-    func testTokensTestEqualityWithDifferentLiteralTypes2() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: ""),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 1))
-    }
-    
-    func testTokensTestEqualityWithDifferentLiteralTypes3() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: NSArray()),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 1))
-    }
-    
     func testTokensTestEqualityWithDifferentLiteralInts() {
         XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 1),
                           TokenNumber(lineNumber: 1, lexeme: "123", literal: 2))
     }
     
     func testTokensTestEqualityWithDifferentLiteralStrings() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: "a"),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: "b"))
-    }
-    
-    func testTokensTestEqualityWithDifferentLiteralNSObjects() {
-        XCTAssertNotEqual(TokenNumber( lineNumber: 1, lexeme: "123", literal: NSArray()),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: NSString()))
+        XCTAssertNotEqual(TokenRegister(lineNumber: 1, lexeme: "A", literal: "A"),
+                          TokenRegister(lineNumber: 1, lexeme: "B", literal: "B"))
     }
     
     func testTokensEqual() {

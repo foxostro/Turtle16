@@ -10,7 +10,7 @@ import Cocoa
 
 public class LoadNode: AbstractSyntaxTreeNode {
     let destination: String
-    let sourceAddress: Token
+    let sourceAddress: TokenNumber
     
     public required init(destination: String, sourceAddress: TokenNumber) {
         self.destination = destination

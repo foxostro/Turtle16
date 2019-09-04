@@ -11,45 +11,35 @@ import TurtleTTL
 
 class TokenTests: XCTestCase {
     func testTokenDescription() {
-        XCTAssertEqual(TokenMOV(lineNumber: 1, lexeme: "MOV").description, "<TokenMOV: lineNumber=1, lexeme=\"MOV\">")
+        XCTAssertEqual(Token(lineNumber: 42, lexeme: "foo").description, "<Token: lineNumber=42, lexeme=\"foo\">")
     }
     
-    func testTokenDescriptionWithLiteral() {
-        XCTAssertEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 123).description, "<TokenNumber: lineNumber=1, lexeme=\"123\", literal=123>")
+    func testTokenEquality() {
+        let a = Token(lineNumber: 1, lexeme: "")
+        let b = Token(lineNumber: 1, lexeme: "")
+        XCTAssertEqual(a, b)
     }
     
-    func testTokensTestEqualityWithDifferentTypes() {
-        XCTAssertNotEqual(TokenIdentifier(lineNumber: 1, lexeme: "123"),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 123))
+    func testTokenIsNotEqualToSomeOtherNSObject() {
+        let token = Token(lineNumber: 42, lexeme: "foo")
+        XCTAssertNotEqual(token, NSArray())
     }
     
-    func testTokensTestEqualityWithDifferentLines() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 123),
-                          TokenNumber(lineNumber: 2, lexeme: "123", literal: 1))
+    func testTokenIsNotEqualToTokenWithDifferentLineNumber() {
+        let a = Token(lineNumber: 1, lexeme: "")
+        let b = Token(lineNumber: 2, lexeme: "")
+        XCTAssertNotEqual(a, b)
     }
     
-    func testTokensTestEqualityWithDifferentLexemes() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "456", literal: 123),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 1))
+    func testTokenIsNotEqualToTokenWithDifferentLexeme() {
+        let a = Token(lineNumber: 1, lexeme: "foo")
+        let b = Token(lineNumber: 1, lexeme: "bar")
+        XCTAssertNotEqual(a, b)
     }
     
-    func testTokensTestEqualityWithDifferentLiteralInts() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 1),
-                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 2))
-    }
-    
-    func testTokensTestEqualityWithDifferentLiteralRegisterNames() {
-        XCTAssertNotEqual(TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                          TokenRegister(lineNumber: 1, lexeme: "B", literal: .B))
-    }
-    
-    func testTokensEqual() {
-        XCTAssertEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 123),
-                       TokenNumber(lineNumber: 1, lexeme: "123", literal: 123))
-    }
-    
-    func testTokensEqualityTestWithDifferentTypes() {
-        XCTAssertNotEqual(TokenNumber(lineNumber: 1, lexeme: "123", literal: 123),
-                          NSString())
+    func testTokenIsNotEqualToTokenOfDifferentType() {
+        let a = Token(lineNumber: 1, lexeme: "")
+        let b = TokenEOF(lineNumber: 1)
+        XCTAssertNotEqual(a, b)
     }
 }

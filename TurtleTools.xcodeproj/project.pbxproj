@@ -55,6 +55,26 @@
 		6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
 		6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00ED231D029D003E7C7F /* Parser.swift */; };
 		6F5A00F2231E2FFD003E7C7F /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
+		6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
+		6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */; };
+		6F5A00F8231F6406003E7C7F /* TokenEOF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F7231F6406003E7C7F /* TokenEOF.swift */; };
+		6F5A00FA231F6415003E7C7F /* TokenNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F9231F6415003E7C7F /* TokenNewline.swift */; };
+		6F5A00FC231F642A003E7C7F /* TokenComma.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FB231F642A003E7C7F /* TokenComma.swift */; };
+		6F5A00FE231F6439003E7C7F /* TokenColon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FD231F6439003E7C7F /* TokenColon.swift */; };
+		6F5A0100231F6449003E7C7F /* TokenNOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FF231F6449003E7C7F /* TokenNOP.swift */; };
+		6F5A0102231F645A003E7C7F /* TokenCMP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0101231F645A003E7C7F /* TokenCMP.swift */; };
+		6F5A0104231F646B003E7C7F /* TokenHLT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0103231F646B003E7C7F /* TokenHLT.swift */; };
+		6F5A0106231F648C003E7C7F /* TokenJMP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0105231F648C003E7C7F /* TokenJMP.swift */; };
+		6F5A0108231F6499003E7C7F /* TokenJC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0107231F6499003E7C7F /* TokenJC.swift */; };
+		6F5A010A231F64A6003E7C7F /* TokenADD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0109231F64A6003E7C7F /* TokenADD.swift */; };
+		6F5A010C231F64B2003E7C7F /* TokenLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A010B231F64B2003E7C7F /* TokenLI.swift */; };
+		6F5A010E231F64C1003E7C7F /* TokenMOV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A010D231F64C1003E7C7F /* TokenMOV.swift */; };
+		6F5A0110231F64D9003E7C7F /* TokenSTORE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A010F231F64D9003E7C7F /* TokenSTORE.swift */; };
+		6F5A0112231F64EF003E7C7F /* TokenLOAD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0111231F64EF003E7C7F /* TokenLOAD.swift */; };
+		6F5A0114231F6503003E7C7F /* TokenIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */; };
+		6F5A0116231F721B003E7C7F /* TokenEOFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */; };
+		6F5A011E231F725A003E7C7F /* TokenNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */; };
+		6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
 		6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
 		6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */; };
 		6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */; };
@@ -214,6 +234,26 @@
 		6F5A00E9231C6454003E7C7F /* SymbolTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTable.swift; sourceTree = "<group>"; };
 		6F5A00ED231D029D003E7C7F /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterName.swift; sourceTree = "<group>"; };
+		6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRegister.swift; sourceTree = "<group>"; };
+		6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumber.swift; sourceTree = "<group>"; };
+		6F5A00F7231F6406003E7C7F /* TokenEOF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenEOF.swift; sourceTree = "<group>"; };
+		6F5A00F9231F6415003E7C7F /* TokenNewline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNewline.swift; sourceTree = "<group>"; };
+		6F5A00FB231F642A003E7C7F /* TokenComma.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenComma.swift; sourceTree = "<group>"; };
+		6F5A00FD231F6439003E7C7F /* TokenColon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenColon.swift; sourceTree = "<group>"; };
+		6F5A00FF231F6449003E7C7F /* TokenNOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNOP.swift; sourceTree = "<group>"; };
+		6F5A0101231F645A003E7C7F /* TokenCMP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCMP.swift; sourceTree = "<group>"; };
+		6F5A0103231F646B003E7C7F /* TokenHLT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenHLT.swift; sourceTree = "<group>"; };
+		6F5A0105231F648C003E7C7F /* TokenJMP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenJMP.swift; sourceTree = "<group>"; };
+		6F5A0107231F6499003E7C7F /* TokenJC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenJC.swift; sourceTree = "<group>"; };
+		6F5A0109231F64A6003E7C7F /* TokenADD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenADD.swift; sourceTree = "<group>"; };
+		6F5A010B231F64B2003E7C7F /* TokenLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenLI.swift; sourceTree = "<group>"; };
+		6F5A010D231F64C1003E7C7F /* TokenMOV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMOV.swift; sourceTree = "<group>"; };
+		6F5A010F231F64D9003E7C7F /* TokenSTORE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenSTORE.swift; sourceTree = "<group>"; };
+		6F5A0111231F64EF003E7C7F /* TokenLOAD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenLOAD.swift; sourceTree = "<group>"; };
+		6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenIdentifier.swift; sourceTree = "<group>"; };
+		6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenEOFTests.swift; sourceTree = "<group>"; };
+		6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumberTests.swift; sourceTree = "<group>"; };
+		6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRegisterTests.swift; sourceTree = "<group>"; };
 		6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandleTextOutputStream.swift; sourceTree = "<group>"; };
 		6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerFrontEnd.swift; sourceTree = "<group>"; };
 		6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerFrontEndTests.swift; sourceTree = "<group>"; };
@@ -333,6 +373,23 @@
 				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
 				6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */,
 				6F0880A0230FBDFF00AB2339 /* Token.swift */,
+				6F5A00F7231F6406003E7C7F /* TokenEOF.swift */,
+				6F5A00F9231F6415003E7C7F /* TokenNewline.swift */,
+				6F5A00FB231F642A003E7C7F /* TokenComma.swift */,
+				6F5A00FD231F6439003E7C7F /* TokenColon.swift */,
+				6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */,
+				6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */,
+				6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */,
+				6F5A00FF231F6449003E7C7F /* TokenNOP.swift */,
+				6F5A0101231F645A003E7C7F /* TokenCMP.swift */,
+				6F5A0103231F646B003E7C7F /* TokenHLT.swift */,
+				6F5A0105231F648C003E7C7F /* TokenJMP.swift */,
+				6F5A0107231F6499003E7C7F /* TokenJC.swift */,
+				6F5A0109231F64A6003E7C7F /* TokenADD.swift */,
+				6F5A010B231F64B2003E7C7F /* TokenLI.swift */,
+				6F5A010D231F64C1003E7C7F /* TokenMOV.swift */,
+				6F5A010F231F64D9003E7C7F /* TokenSTORE.swift */,
+				6F5A0111231F64EF003E7C7F /* TokenLOAD.swift */,
 				6F615176230CB54200282B12 /* Lexer.swift */,
 				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
 				6F088068230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift */,
@@ -385,6 +442,9 @@
 				6F615178230CB56E00282B12 /* LexerTests.swift */,
 				6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */,
 				6F0880A2230FC09B00AB2339 /* TokenTests.swift */,
+				6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */,
+				6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */,
+				6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */,
 				6F088080230F6E2500AB2339 /* NOPNodeTests.swift */,
 				6F088082230F6E2D00AB2339 /* CMPNodeTests.swift */,
 				6F088084230F6E3700AB2339 /* HLTNodeTests.swift */,
@@ -686,12 +746,18 @@
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
 				6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */,
 				6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */,
+				6F5A0112231F64EF003E7C7F /* TokenLOAD.swift in Sources */,
+				6F5A0110231F64D9003E7C7F /* TokenSTORE.swift in Sources */,
+				6F5A00FC231F642A003E7C7F /* TokenComma.swift in Sources */,
 				6F0C18092309001E005B9E12 /* SerialInterface.swift in Sources */,
 				6FEB235E230283F7002B68D8 /* ComputerState.swift in Sources */,
 				6F615177230CB54200282B12 /* Lexer.swift in Sources */,
+				6F5A0106231F648C003E7C7F /* TokenJMP.swift in Sources */,
 				6F8519582307551200AF9E39 /* BankOperation.swift in Sources */,
+				6F5A0104231F646B003E7C7F /* TokenHLT.swift in Sources */,
 				6F61517F230D041600282B12 /* AssemblerParser.swift in Sources */,
 				6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */,
+				6F5A0108231F6499003E7C7F /* TokenJC.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
 				6F088099230FADB500AB2339 /* JCToAddressNode.swift in Sources */,
 				6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */,
@@ -700,29 +766,40 @@
 				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
 				6FE003B522F3D78B00221C4C /* Computer.swift in Sources */,
 				6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */,
+				6F5A0102231F645A003E7C7F /* TokenCMP.swift in Sources */,
 				6F0880A5230FD6CB00AB2339 /* StoreImmediateNode.swift in Sources */,
 				6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */,
 				6F08806F230F5D6600AB2339 /* HLTNode.swift in Sources */,
 				6F088071230F5D7500AB2339 /* JMPToLabelNode.swift in Sources */,
 				6FE003B422F3D78B00221C4C /* Logger.swift in Sources */,
 				6F37BA472305D903009754D3 /* Register.swift in Sources */,
+				6F5A0100231F6449003E7C7F /* TokenNOP.swift in Sources */,
 				6F0880A7230FD6D200AB2339 /* LoadNode.swift in Sources */,
+				6F5A00FE231F6439003E7C7F /* TokenColon.swift in Sources */,
 				6F088075230F5D8F00AB2339 /* ADDNode.swift in Sources */,
 				6FE003BB22F3D78B00221C4C /* Memory.swift in Sources */,
 				6F4BE176230D2E31008C2329 /* AssemblerError.swift in Sources */,
 				6F5A00F2231E2FFD003E7C7F /* RegisterName.swift in Sources */,
+				6F5A010A231F64A6003E7C7F /* TokenADD.swift in Sources */,
 				6F08807B230F5DBF00AB2339 /* LabelDeclarationNode.swift in Sources */,
 				6FE003B722F3D78B00221C4C /* Flags.swift in Sources */,
 				6F615171230CAF4A00282B12 /* AssemblerLexer.swift in Sources */,
 				6F088069230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift in Sources */,
+				6F5A010E231F64C1003E7C7F /* TokenMOV.swift in Sources */,
+				6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */,
 				6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */,
 				6F5A00E623184880003E7C7F /* Patcher.swift in Sources */,
 				6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */,
+				6F5A010C231F64B2003E7C7F /* TokenLI.swift in Sources */,
+				6F5A00FA231F6415003E7C7F /* TokenNewline.swift in Sources */,
 				6F088079230F5D9C00AB2339 /* MOVNode.swift in Sources */,
+				6F5A00F8231F6406003E7C7F /* TokenEOF.swift in Sources */,
 				6F088077230F5D9400AB2339 /* LINode.swift in Sources */,
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
+				6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */,
 				6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */,
 				6F088097230FAA1E00AB2339 /* JMPToAddressNode.swift in Sources */,
+				6F5A0114231F6503003E7C7F /* TokenIdentifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -743,11 +820,13 @@
 				6F08808D230F6E5700AB2339 /* LINodeTests.swift in Sources */,
 				6F0B0D042308688900478220 /* RegisterTests.swift in Sources */,
 				6F088095230F864D00AB2339 /* AssemblerCodeGenPassTests.swift in Sources */,
+				6F5A0116231F721B003E7C7F /* TokenEOFTests.swift in Sources */,
 				6F615179230CB56E00282B12 /* LexerTests.swift in Sources */,
 				6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */,
 				6F0880AB230FD6F400AB2339 /* LoadNodeTests.swift in Sources */,
 				6F08808F230F6E5F00AB2339 /* MOVNodeTests.swift in Sources */,
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
+				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,
 				6F088083230F6E2D00AB2339 /* CMPNodeTests.swift in Sources */,
 				6F08809D230FAE9700AB2339 /* JCToAddressNodeTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
@@ -756,6 +835,7 @@
 				6FE003C422F3D88800221C4C /* ControlWordTests.swift in Sources */,
 				6FE003C122F3D88800221C4C /* RAMTests.swift in Sources */,
 				6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */,
+				6F5A011E231F725A003E7C7F /* TokenNumberTests.swift in Sources */,
 				6F0880AD230FD86A00AB2339 /* StoreNodeTests.swift in Sources */,
 				6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */,
 				6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */,

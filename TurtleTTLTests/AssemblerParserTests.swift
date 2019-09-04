@@ -205,7 +205,7 @@ class AssemblerParserTests: XCTestCase {
     func testParseADDWithRegisterOperand() {
         let ast = try! parse("ADD D")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], ADDNode(destination: "D"))
+        XCTAssertEqual(ast.children[0], ADDNode(destination: .D))
     }
 
     func testFailToParseADDWithInvalidDestinationRegisterE() {
@@ -286,14 +286,14 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidLI() {
         let ast = try! parse("LI D, 42")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LINode(destination: "D", immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
+        XCTAssertEqual(ast.children[0], LINode(destination: .D, immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
     }
 
     func testLIParsesWithTooBigNumber() {
         // It's the code generator which checks that the value is appropriate.
         let ast = try! parse("LI D, 10000000")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LINode(destination: "D", immediate: TokenNumber(lineNumber: 1, lexeme: "10000000", literal: 10000000)))
+        XCTAssertEqual(ast.children[0], LINode(destination: .D, immediate: TokenNumber(lineNumber: 1, lexeme: "10000000", literal: 10000000)))
     }
 
     func testFailToParseMOVWithNoOperands() {
@@ -368,7 +368,7 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidMOV() {
         let ast = try! parse("MOV D, A")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], MOVNode(destination: "D", source: "A"))
+        XCTAssertEqual(ast.children[0], MOVNode(destination: .D, source: .A))
     }
     
     func testFailToParseStoreWithZeroOperands() {
@@ -428,7 +428,7 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidStore() {
         let ast = try! parse("STORE 42, A")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], StoreNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42), source: "A"))
+        XCTAssertEqual(ast.children[0], StoreNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42), source: .A))
     }
     
     func testParseValidStoreImmediate() {
@@ -494,6 +494,6 @@ class AssemblerParserTests: XCTestCase {
     func testParseValidLoad() {
         let ast = try! parse("LOAD A, 42")
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LoadNode(destination: "A", sourceAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
+        XCTAssertEqual(ast.children[0], LoadNode(destination: .A, sourceAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
     }
 }

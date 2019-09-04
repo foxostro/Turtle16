@@ -9,10 +9,10 @@
 import Cocoa
 
 public class LINode: AbstractSyntaxTreeNode {
-    public let destination: String
+    public let destination: RegisterName
     public let immediate: TokenNumber
     
-    public required init(destination: String, immediate: TokenNumber) {
+    public required init(destination: RegisterName, immediate: TokenNumber) {
         self.destination = destination
         self.immediate = immediate
         super.init(children: [])

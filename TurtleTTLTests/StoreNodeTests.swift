@@ -14,21 +14,21 @@ class StoreNodeTests: XCTestCase {
     let one = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
     
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: ""), CMPNode())
+        XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: .A), CMPNode())
     }
     
     func testEqualsStoreNode() {
-        XCTAssertEqual(StoreNode(destinationAddress: zero, source: ""),
-                       StoreNode(destinationAddress: zero, source: ""))
+        XCTAssertEqual(StoreNode(destinationAddress: zero, source: .A),
+                       StoreNode(destinationAddress: zero, source: .A))
     }
     
     func testNotEqualToStoreNodeWithDifferentDestinationAddress() {
-        XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: ""),
-                          StoreNode(destinationAddress: one, source: ""))
+        XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: .A),
+                          StoreNode(destinationAddress: one, source: .A))
     }
     
     func testNotEqualToStoreNodeWithDifferentSource() {
-        XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: "A"),
-                          StoreNode(destinationAddress: zero, source: "B"))
+        XCTAssertNotEqual(StoreNode(destinationAddress: zero, source: .A),
+                          StoreNode(destinationAddress: zero, source: .B))
     }
 }

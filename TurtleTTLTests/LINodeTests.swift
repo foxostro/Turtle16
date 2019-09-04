@@ -12,19 +12,19 @@ import TurtleTTL
 class LINodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let immediate = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertNotEqual(LINode(destination: "", immediate: immediate), NOPNode())
+        XCTAssertNotEqual(LINode(destination: .A, immediate: immediate), NOPNode())
     }
     
     func testDoesNotEqualNodeWithDifferentDestination() {
         let immediate = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertNotEqual(LINode(destination: "a", immediate: immediate),
-                          LINode(destination: "b", immediate: immediate))
+        XCTAssertNotEqual(LINode(destination: .A, immediate: immediate),
+                          LINode(destination: .B, immediate: immediate))
     }
     
     func testDoesNotEqualNodeWithDifferentImmediate() {
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 2)
-        XCTAssertNotEqual(LINode(destination: "", immediate: a),
-                          LINode(destination: "", immediate: b))
+        XCTAssertNotEqual(LINode(destination: .A, immediate: a),
+                          LINode(destination: .A, immediate: b))
     }
 }

@@ -101,7 +101,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
         }
         try self.setAddress(address)
-        try self.codeGenerator.mov(node.destination, "M")
+        try self.codeGenerator.mov(node.destination, .M)
     }
     
     public func visit(node: StoreNode) throws {
@@ -111,7 +111,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
         }
         try self.setAddress(address)
-        try self.codeGenerator.mov("M", node.source)
+        try self.codeGenerator.mov(.M, node.source)
     }
     
     public func visit(node: StoreImmediateNode) throws {
@@ -131,19 +131,19 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         if(address < 0 || address > 0xffff) {
             throw AssemblerError(format: "invalid address: 0x%x", address)
         }
-        try self.codeGenerator.li("X", (address & 0xff00) >> 8)
-        try self.codeGenerator.li("Y", (address & 0xff))
+        try self.codeGenerator.li(.X, (address & 0xff00) >> 8)
+        try self.codeGenerator.li(.Y, (address & 0xff))
     }
     
     func setAddress(token identifier: TokenIdentifier) throws {
         patcherActions.append((index: codeGenerator.programCounter,
                                symbol: identifier,
                                shift: 8))
-        try codeGenerator.li("X", 0xAB)
+        try codeGenerator.li(.X, 0xAB)
         
         patcherActions.append((index: codeGenerator.programCounter,
                                symbol: identifier,
                                shift: 0))
-        try codeGenerator.li("Y", 0xCD)
+        try codeGenerator.li(.Y, 0xCD)
     }
 }

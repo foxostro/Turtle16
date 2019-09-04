@@ -9,10 +9,10 @@
 import Cocoa
 
 public class LoadNode: AbstractSyntaxTreeNode {
-    let destination: String
+    let destination: RegisterName
     let sourceAddress: TokenNumber
     
-    public required init(destination: String, sourceAddress: TokenNumber) {
+    public required init(destination: RegisterName, sourceAddress: TokenNumber) {
         self.destination = destination
         self.sourceAddress = sourceAddress
         super.init(children: [])

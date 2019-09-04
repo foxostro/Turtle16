@@ -87,15 +87,15 @@ public class TokenNumber : Token {
 }
 
 public class TokenRegister : Token {
-    public let literal: String
+    public let literal: RegisterName
     
-    public init(lineNumber: Int, lexeme: String, literal: String) {
+    public init(lineNumber: Int, lexeme: String, literal: RegisterName) {
         self.literal = literal
         super.init(lineNumber: lineNumber, lexeme: lexeme)
     }
     
     public override var description: String {
-        return String(format: "<%@: lineNumber=%d, lexeme=\"%@\", literal=%@>", String(describing: type(of: self)), lineNumber, lexeme, literal)
+        return String(format: "<%@: lineNumber=%d, lexeme=\"%@\", literal=%@>", String(describing: type(of: self)), lineNumber, lexeme, String(describing: literal))
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

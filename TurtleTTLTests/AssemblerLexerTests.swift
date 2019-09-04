@@ -164,56 +164,56 @@ class AssemblerLexerTests: XCTestCase {
     func testTokenizeRegisterA() {
         let tokenizer = AssemblerLexer(withString: "A")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "A", literal: "A"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterB() {
         let tokenizer = AssemblerLexer(withString: "B")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "B", literal: "B"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterC() {
         let tokenizer = AssemblerLexer(withString: "C")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "C", literal: "C"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterD() {
         let tokenizer = AssemblerLexer(withString: "D")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "D", literal: "D"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterE() {
         let tokenizer = AssemblerLexer(withString: "E")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "E", literal: "E"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterF() {
         let tokenizer = AssemblerLexer(withString: "M")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "M", literal: "M"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "M", literal: .M),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterX() {
         let tokenizer = AssemblerLexer(withString: "X")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "X", literal: "X"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "X", literal: .X),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
     func testTokenizeRegisterY() {
         let tokenizer = AssemblerLexer(withString: "Y")
         try! tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "Y", literal: "Y"),
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "Y", literal: .Y),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     

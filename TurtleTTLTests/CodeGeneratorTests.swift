@@ -103,7 +103,7 @@ class CodeGeneratorTests: XCTestCase {
     func testGenericMovWithImmediate() {
         let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
         codeGen.begin()
-        try! codeGen.mov("D", "C", 42)
+        try! codeGen.mov(.D, .C, 42)
         codeGen.end()
         let instructions = codeGen.instructions
         XCTAssertEqual(instructions.count, 2)
@@ -115,7 +115,7 @@ class CodeGeneratorTests: XCTestCase {
     func testLoadImmediate() {
         let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
         codeGen.begin()
-        try! codeGen.li("D", 42)
+        try! codeGen.li(.D, 42)
         codeGen.end()
         let instructions = codeGen.instructions
         XCTAssertEqual(instructions.count, 2)
@@ -127,7 +127,7 @@ class CodeGeneratorTests: XCTestCase {
     func testAdd() {
         let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
         codeGen.begin()
-        try! codeGen.add("D")
+        try! codeGen.add(.D)
         codeGen.end()
         let instructions = codeGen.instructions
         XCTAssertEqual(instructions.count, 2)

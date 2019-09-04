@@ -9,10 +9,10 @@
 import Cocoa
 
 public class MOVNode: AbstractSyntaxTreeNode {
-    public let destination: String
-    public let source: String
+    public let destination: RegisterName
+    public let source: RegisterName
     
-    public required init(destination: String, source: String) {
+    public required init(destination: RegisterName, source: RegisterName) {
         self.destination = destination
         self.source = source
         super.init(children: [])

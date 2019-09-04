@@ -9,9 +9,9 @@
 import Cocoa
 
 public class ADDNode: AbstractSyntaxTreeNode {
-    public let destination: String
+    public let destination: RegisterName
     
-    public required init(destination: String) {
+    public required init(destination: RegisterName) {
         self.destination = destination
         super.init(children: [])
     }

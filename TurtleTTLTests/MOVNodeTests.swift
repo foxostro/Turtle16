@@ -11,16 +11,16 @@ import TurtleTTL
 
 class MOVNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(MOVNode(destination: "", source: ""), NOPNode())
+        XCTAssertNotEqual(MOVNode(destination: .A, source: .A), NOPNode())
     }
     
     func testDoesNotEqualNodeWithDifferentDestination() {
-        XCTAssertNotEqual(MOVNode(destination: "a", source: ""),
-                          MOVNode(destination: "b", source: ""))
+        XCTAssertNotEqual(MOVNode(destination: .A, source: .A),
+                          MOVNode(destination: .B, source: .A))
     }
     
     func testDoesNotEqualNodeWithDifferentSource() {
-        XCTAssertNotEqual(MOVNode(destination: "", source: "a"),
-                          MOVNode(destination: "", source: "b"))
+        XCTAssertNotEqual(MOVNode(destination: .A, source: .A),
+                          MOVNode(destination: .A, source: .B))
     }
 }

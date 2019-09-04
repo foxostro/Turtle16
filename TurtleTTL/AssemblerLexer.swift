@@ -57,8 +57,29 @@ public class AssemblerLexer: Lexer {
             Rule(pattern: "LOAD\\b") {
                 TokenLOAD(lineNumber: self.lineNumber, lexeme: $0)
             },
-            Rule(pattern: "[ABCDEMXY]\\b") {
-                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: $0)
+            Rule(pattern: "A\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .A)
+            },
+            Rule(pattern: "B\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .B)
+            },
+            Rule(pattern: "C\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .C)
+            },
+            Rule(pattern: "D\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .D)
+            },
+            Rule(pattern: "E\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .E)
+            },
+            Rule(pattern: "M\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .M)
+            },
+            Rule(pattern: "X\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .X)
+            },
+            Rule(pattern: "Y\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .Y)
             },
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {
                 TokenIdentifier(lineNumber: self.lineNumber, lexeme: $0)

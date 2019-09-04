@@ -154,13 +154,13 @@ public class AssemblerParser: Parser {
     }
     
     func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
-        if register.literal == "E" || register.literal == "C" {
+        if register.literal == .E || register.literal == .C {
             throw badDestinationError(register)
         }
     }
     
     func expectRegisterCanBeUsedAsSource(_ register: TokenRegister) throws {
-        if register.literal == "D" {
+        if register.literal == .D {
             throw badSourceError(register)
         }
     }

@@ -11,10 +11,10 @@ import TurtleTTL
 
 class ADDNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(ADDNode(destination: ""), NOPNode())
+        XCTAssertNotEqual(ADDNode(destination: .A), NOPNode())
     }
     
     func testDoesNotEqualNodeWithDifferentDestination() {
-        XCTAssertNotEqual(ADDNode(destination: "a"), ADDNode(destination: "b"))
+        XCTAssertNotEqual(ADDNode(destination: .A), ADDNode(destination: .B))
     }
 }

@@ -38,9 +38,9 @@ class TokenTests: XCTestCase {
                           TokenNumber(lineNumber: 1, lexeme: "123", literal: 2))
     }
     
-    func testTokensTestEqualityWithDifferentLiteralStrings() {
-        XCTAssertNotEqual(TokenRegister(lineNumber: 1, lexeme: "A", literal: "A"),
-                          TokenRegister(lineNumber: 1, lexeme: "B", literal: "B"))
+    func testTokensTestEqualityWithDifferentLiteralRegisterNames() {
+        XCTAssertNotEqual(TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                          TokenRegister(lineNumber: 1, lexeme: "B", literal: .B))
     }
     
     func testTokensEqual() {

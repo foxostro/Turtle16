@@ -79,43 +79,43 @@ public class CodeGenerator: NSObject {
     }
     
     // Move -- Copy a value from one bus device to another.
-    public func mov(_ destination: String, _ source: String, _ immediate: Int) throws {
+    public func mov(_ destination: RegisterName, _ source: RegisterName, _ immediate: Int) throws {
         assert(isAssembling)
-        let mnemonic = String(format: "MOV %@, %@", destination, source)
+        let mnemonic = String(format: "MOV %@, %@", String(describing: destination), String(describing: source))
         try instruction(withMnemonic: mnemonic, immediate: immediate)
     }
     
     // Move -- Copy a value from one bus device to another.
-    public func mov(_ destination: String, _ source: String, token immediate: TokenNumber) throws {
+    public func mov(_ destination: RegisterName, _ source: RegisterName, token immediate: TokenNumber) throws {
         assert(isAssembling)
-        let mnemonic = String(format: "MOV %@, %@", destination, source)
+        let mnemonic = String(format: "MOV %@, %@", String(describing: destination), String(describing: source))
         try instruction(withMnemonic: mnemonic, token: immediate)
     }
     
     // Move -- Copy a value from one bus device to another.
-    public func mov(_ destination: String, _ source: String) throws {
+    public func mov(_ destination: RegisterName, _ source: RegisterName) throws {
         assert(isAssembling)
-        let mnemonic = String(format: "MOV %@, %@", destination, source)
+        let mnemonic = String(format: "MOV %@, %@", String(describing: destination), String(describing: source))
         try instruction(withMnemonic: mnemonic, immediate: 0)
     }
     
     // Load Immediate -- Loads an immediate value to the specified destination
-    public func li(_ destination: String, _ immediate: Int) throws {
+    public func li(_ destination: RegisterName, _ immediate: Int) throws {
         assert(isAssembling)
-        try mov(destination, "C", immediate)
+        try mov(destination, .C, immediate)
     }
     
     // Load Immediate -- Loads an immediate value to the specified destination
-    public func li(_ destination: String, token immediate: TokenNumber) throws {
+    public func li(_ destination: RegisterName, token immediate: TokenNumber) throws {
         assert(isAssembling)
-        try mov(destination, "C", token: immediate)
+        try mov(destination, .C, token: immediate)
     }
     
     // Addition -- The ALU adds the contents of the A and B registers and moves
     // the result to the specified destination bus device.
-    public func add(_ destination: String) throws {
+    public func add(_ destination: RegisterName) throws {
         assert(isAssembling)
-        let mnemonic = String(format: "ALU %@", destination)
+        let mnemonic = String(format: "ALU %@", String(describing: destination))
         try instruction(withMnemonic: mnemonic, immediate: 0b011001)
     }
     

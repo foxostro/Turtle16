@@ -8,6 +8,4 @@
 
 import Cocoa
 
-class RegisterName: NSObject {
-
-}
+public enum RegisterName { case A, B, C, D, E, M, X, Y }

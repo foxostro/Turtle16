@@ -14,21 +14,21 @@ class LoadNodeTests: XCTestCase {
     let one = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
     
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(LoadNode(destination: "", sourceAddress: zero), NOPNode())
+        XCTAssertNotEqual(LoadNode(destination: .A, sourceAddress: zero), NOPNode())
     }
     
     func testEqualsLoadNode() {
-        XCTAssertEqual(LoadNode(destination: "", sourceAddress: zero),
-                       LoadNode(destination: "", sourceAddress: zero))
+        XCTAssertEqual(LoadNode(destination: .A, sourceAddress: zero),
+                       LoadNode(destination: .A, sourceAddress: zero))
     }
     
     func testNotEqualToLoadNodeWithDifferentDestination() {
-        XCTAssertNotEqual(LoadNode(destination: "a", sourceAddress: zero),
-                          LoadNode(destination: "b", sourceAddress: zero))
+        XCTAssertNotEqual(LoadNode(destination: .A, sourceAddress: zero),
+                          LoadNode(destination: .B, sourceAddress: zero))
     }
     
     func testNotEqualToLoadNodeWithDifferentSourceAddress() {
-        XCTAssertNotEqual(LoadNode(destination: "", sourceAddress: zero),
-                          LoadNode(destination: "", sourceAddress: one))
+        XCTAssertNotEqual(LoadNode(destination: .A, sourceAddress: zero),
+                          LoadNode(destination: .A, sourceAddress: one))
     }
 }

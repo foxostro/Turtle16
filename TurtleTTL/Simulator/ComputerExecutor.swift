@@ -16,8 +16,9 @@ public class ComputerExecutor: NSObject {
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
     public var didReset:()->Void = {}
+    var timer: Timer? = nil
     
-    var isExecuting = false {
+    public var isExecuting = false {
         didSet {
             if (isExecuting) {
                 didStart()
@@ -27,7 +28,7 @@ public class ComputerExecutor: NSObject {
         }
     }
     
-    var isHalted = false {
+    public var isHalted = false {
         didSet {
             isExecuting = false
             if (isHalted) {
@@ -50,19 +51,23 @@ public class ComputerExecutor: NSObject {
         isExecuting = false
         reset()
         
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: {timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: {timer in
             self.tick()
         })
     }
     
+    public func shutdown() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
     public func tick() {
         if (false == computer.currentState.controlWord.HLT) {
-            isExecuting = false
+            isHalted = true
         }
         
         if (isExecuting) {
-            computer.step()
-            onStep()
+            step()
         }
     }
     

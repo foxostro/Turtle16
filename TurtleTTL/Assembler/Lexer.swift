@@ -81,7 +81,6 @@ public class Lexer: NSObject {
                 }
                 return
             }
-            NSLog("test")
         }
         
         throw unexpectedCharacterError(peek()!)

@@ -10,12 +10,18 @@ import Cocoa
 
 public class Parser: NSObject {
     public struct Production {
-        typealias Generator = (Token) throws -> [AbstractSyntaxTreeNode]?
+        public typealias Generator = (Token) throws -> [AbstractSyntaxTreeNode]?
+        
         let symbol: Token.Type
         let generator: Generator
+        
+        public init(symbol: Token.Type, generator: @escaping Generator) {
+            self.symbol = symbol
+            self.generator = generator
+        }
     }
-    var productions: [Production] = []
-    var tokens: [Token] = []
+    public var productions: [Production] = []
+    public var tokens: [Token] = []
     
     public func parse() throws -> AbstractSyntaxTreeNode {
         var statements: [AbstractSyntaxTreeNode] = []

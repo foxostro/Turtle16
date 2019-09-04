@@ -53,7 +53,7 @@ public class CodeGenerator: NSObject {
     // Produce a generic instruction with the specified immediate value.
     public func instruction(withMnemonic mnemonic:String, token immediateToken: TokenNumber) throws {
         assert(isAssembling)
-        let immediate = immediateToken.literal as! Int
+        let immediate = immediateToken.literal
         if immediate < 0 || immediate > 255 {
             throw AssemblerError(line: immediateToken.lineNumber, format: "immediate value is not between 0 and 255: `%d'", immediate)
         }

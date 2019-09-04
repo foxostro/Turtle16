@@ -9,7 +9,7 @@
 import Cocoa
 
 public class StoreNode: AbstractSyntaxTreeNode {
-    let destinationAddress: Token
+    let destinationAddress: TokenNumber
     let source: String
     
     public required init(destinationAddress: TokenNumber, source: String) {

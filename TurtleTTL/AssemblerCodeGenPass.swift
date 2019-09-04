@@ -96,7 +96,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     public func visit(node: LoadNode) throws {
         let lineNumber = node.sourceAddress.lineNumber
-        let address = node.sourceAddress.literal as! Int
+        let address = node.sourceAddress.literal
         if(address < 0 || address > 0xffff) {
             throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
         }
@@ -106,7 +106,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     public func visit(node: StoreNode) throws {
         let lineNumber = node.destinationAddress.lineNumber
-        let address = node.destinationAddress.literal as! Int
+        let address = node.destinationAddress.literal
         if(address < 0 || address > 0xffff) {
             throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
         }
@@ -116,7 +116,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     public func visit(node: StoreImmediateNode) throws {
         let lineNumber = node.destinationAddress.lineNumber
-        let address = node.destinationAddress.literal as! Int
+        let address = node.destinationAddress.literal
         if(address < 0 || address > 0xffff) {
             throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
         }

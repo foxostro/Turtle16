@@ -14,13 +14,10 @@ public class Lexer: NSObject {
         return string == ""
     }
     public private(set) var tokens: [Token] = []
-    var lineNumber = 1
+    public var lineNumber = 1
     
-    public struct Rule {
-        let pattern: String
-        let emit: (String) -> Token?
-    }
-    var rules: [Rule] = []
+    public typealias Rule = (pattern: String, emit: (String) -> Token?)
+    public var rules: [Rule] = []
     
     public required init(withString string: String) {
         self.string = string
@@ -29,9 +26,8 @@ public class Lexer: NSObject {
     public func peek(_ ahead: Int = 0) -> String? {
         if ahead >= 0 && ahead < string.count {
            return String(Array(string)[ahead])
-        } else {
-            return nil
         }
+        return nil
     }
     
     @discardableResult public func advance() -> String? {
@@ -55,17 +51,15 @@ public class Lexer: NSObject {
     public func match(characterSet: CharacterSet) -> String? {
         var result = ""
         while let c = peek() {
-            if c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
-                result += advance() ?? ""
-            } else {
+            if !c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
                 break
             }
+            result += advance()!
         }
         if result == "" {
             return nil
-        } else {
-            return result
         }
+        return result
     }
     
     @discardableResult public func advanceToNewline() -> String? {
@@ -87,6 +81,7 @@ public class Lexer: NSObject {
                 }
                 return
             }
+            NSLog("test")
         }
         
         throw unexpectedCharacterError(peek()!)

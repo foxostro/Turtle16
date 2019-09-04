@@ -90,4 +90,57 @@ class LexerTests: XCTestCase {
         let input = Lexer(withString: "NOP $1\n")
         XCTAssertEqual(input.match(pattern: "[A-Z]+"), "NOP")
     }
+    
+    func testFailToMatchPattern() {
+        let input = Lexer(withString: "NOP $1\n")
+        XCTAssertEqual(input.match(pattern: "A\\b"), nil)
+    }
+    
+    func testScanTokensInEmptyString() {
+        let tokenizer = Lexer(withString: "")
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testScanTokensYieldingUnexpectedEndOfInputError() {
+        let tokenizer = Lexer(withString: "\n")
+        XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "unexpected character: `\n'")
+        }
+    }
+    
+    func testScanTokensWithNewlines() {
+        let tokenizer = Lexer(withString: "\n\n")
+        tokenizer.rules = [
+            Lexer.Rule(pattern: "\n") {
+                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
+                tokenizer.lineNumber += 1
+                return token
+            }
+        ]
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenNewline(lineNumber: 1, lexeme: "\n"),
+                                          TokenNewline(lineNumber: 2, lexeme: "\n"),
+                                          TokenEOF(lineNumber: 3, lexeme: "")])
+    }
+    
+    func testScanTokensWithMoreThanOneRule() {
+        let tokenizer = Lexer(withString: ",\n")
+        tokenizer.rules = [
+            Lexer.Rule(pattern: ",") {
+                TokenComma(lineNumber: tokenizer.lineNumber, lexeme: $0)
+            },
+            Lexer.Rule(pattern: "\n") {
+                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
+                tokenizer.lineNumber += 1
+                return token
+            }
+        ]
+        try! tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenComma(lineNumber: 1, lexeme: ","),
+                                          TokenNewline(lineNumber: 1, lexeme: "\n"),
+                                          TokenEOF(lineNumber: 2, lexeme: "")])
+    }
 }

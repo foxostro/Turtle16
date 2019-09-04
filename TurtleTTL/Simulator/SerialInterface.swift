@@ -31,14 +31,14 @@ public class SerialInterface: BankOperation {
         let selectedRegister: Int = Int(state.registerY.value & 1)
         if selectedRegister == 1 {
             return state.withBus(UInt8(state.serialInput.count))
-        } else {
-            if let byte = state.serialInput.first {
-                var serialInput = state.serialInput
-                serialInput.removeFirst()
-                return state.withBus(byte).withSerialInput(serialInput)
-            } else {
-                return state.withBus(0xff)
-            }
         }
+        
+        if let byte = state.serialInput.first {
+            var serialInput = state.serialInput
+            serialInput.removeFirst()
+            return state.withBus(byte).withSerialInput(serialInput)
+        }
+        
+        return state.withBus(0xff)
     }
 }

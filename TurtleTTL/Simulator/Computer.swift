@@ -270,7 +270,7 @@ public class Computer: NSObject {
         let upperROM = currentState.instructionROM.upperROM.data
         
         try FileManager.default.createDirectory(at: to,
-                                                withIntermediateDirectories: false,
+                                                withIntermediateDirectories: true,
                                                 attributes: [:])
         try lowerROM.write(to: to.appendingPathComponent(lowerInstructionROMFilename))
         try upperROM.write(to: to.appendingPathComponent(upperInstructionROMFilename))

@@ -12,7 +12,9 @@ import TurtleTTL
 class ParserTests: XCTestCase {
     func testParseNothingToYieldNothing() {
         let parser = Parser()
-        let ast = try! parser.parse()
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 0)
         XCTAssertTrue(type(of: ast) == AbstractSyntaxTreeNode.self)
     }
@@ -23,7 +25,9 @@ class ParserTests: XCTestCase {
         parser.productions = [
             Parser.Production(symbol: TokenEOF.self,        generator: { _ in [] }),
         ]
-        let ast = try! parser.parse()
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 0)
         XCTAssertTrue(type(of: ast) == AbstractSyntaxTreeNode.self)
     }
@@ -35,7 +39,9 @@ class ParserTests: XCTestCase {
             Parser.Production(symbol: TokenEOF.self,        generator: { _ in [] }),
             Parser.Production(symbol: TokenNewline.self,    generator: { _ in [] }),
         ]
-        let ast = try! parser.parse()
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 0)
         XCTAssertTrue(type(of: ast) == AbstractSyntaxTreeNode.self)
     }

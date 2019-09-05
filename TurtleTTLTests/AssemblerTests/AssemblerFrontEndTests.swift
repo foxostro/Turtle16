@@ -16,8 +16,20 @@ class AssemblerFrontEndTests: XCTestCase {
         assembler = AssemblerFrontEnd()
     }
     
+    func mustCompile(_ sourceCode: String) -> [Instruction] {
+        assembler.compile(sourceCode)
+        assert(!assembler.hasError)
+        return assembler.instructions
+    }
+    
+    func mustFailToCompile(_ sourceCode: String) -> [AssemblerError] {
+        assembler.compile(sourceCode)
+        assert(assembler.hasError)
+        return assembler.errors
+    }
+    
     func testCompileEmptyProgramYieldsNOP() {
-        let instructions = try! assembler.compile("")
+        let instructions = mustCompile("")
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0], Instruction())
     }
@@ -26,38 +38,35 @@ class AssemblerFrontEndTests: XCTestCase {
     // instruction. Compiling a single NOP instruction yields a program composed
     // of two NOPs.
     func testCompileASingleNOPYieldsTwoNOPs() {
-        let instructions = try! assembler.compile("NOP")
+        let instructions = mustCompile("NOP")
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
     }
     
     func testCompileFailsDuringLexingDueToInvalidCharacter() {
-        XCTAssertThrowsError(try assembler.compile("@")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unexpected character: `@'")
-        }
+        let errors = mustFailToCompile("@")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "unexpected character: `@'")
     }
     
     func testCompilingBogusOpcodeYieldsError() {
-        XCTAssertThrowsError(try assembler.compile("BOGUS")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
-        }
+        let errors = mustFailToCompile("BOGUS")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
     }
     
     func testCompilingBogusOpcodeWithNewlineYieldsError() {
-        XCTAssertThrowsError(try assembler.compile("BOGUS\n")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
-        }
+        let errors = mustFailToCompile("BOGUS\n")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "no such instruction: `BOGUS'")
     }
     
     func testCompileTwoNOPsYieldsProgramWithThreeNOPs() {
-        let instructions = try! assembler.compile("NOP\nNOP\n")
+        let instructions = mustCompile("NOP\nNOP\n")
         XCTAssertEqual(instructions.count, 3)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
@@ -65,34 +74,33 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCompilerIgnoresComments() {
-        let instructions = try! assembler.compile("// comment")
+        let instructions = mustCompile("// comment")
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0], Instruction())
     }
     
     func testCompilerIgnoresCommentsAfterOpcodesToo() {
-        let instructions = try! assembler.compile("NOP  // do nothing\n")
+        let instructions = mustCompile("NOP  // do nothing\n")
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0], Instruction())
         XCTAssertEqual(instructions[1], Instruction())
     }
     
     func testCompilerIgnoresHashCommentsToo() {
-        let instructions = try! assembler.compile("# comment")
+        let instructions = mustCompile("# comment")
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0], Instruction())
     }
     
     func testNOPAcceptsNoOperands() {
-        XCTAssertThrowsError(try AssemblerFrontEnd().compile("NOP $1\n")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
-        }
+        let errors = mustFailToCompile("NOP $1\n")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
     }
     
     func testCMPCompiles() {
-        let instructions = try! assembler.compile("CMP")
+        let instructions = mustCompile("CMP")
         XCTAssertEqual(instructions.count, 2)
         
         let cmpOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "ALU")!
@@ -108,15 +116,14 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCMPAcceptsNoOperands() {
-        XCTAssertThrowsError(try AssemblerFrontEnd().compile("CMP $1")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "instruction takes no operands: `CMP'")
-        }
+        let errors = mustFailToCompile("CMP $1")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "instruction takes no operands: `CMP'")
     }
     
     func testHLTCompiles() {
-        let instructions = try! assembler.compile("HLT")
+        let instructions = mustCompile("HLT")
         XCTAssertEqual(instructions.count, 2)
         
         let hltOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "HLT")!
@@ -125,60 +132,53 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testHLTAcceptsNoOperands() {
-        XCTAssertThrowsError(try AssemblerFrontEnd().compile("HLT $1")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "instruction takes no operands: `HLT'")
-        }
+        let errors = mustFailToCompile("HLT $1")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "instruction takes no operands: `HLT'")
     }
     
     func testDuplicateLabelDeclaration() {
-        XCTAssertThrowsError(try assembler.compile("label:\nlabel:")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 2)
-            XCTAssertEqual(error.message, "duplicate label: `label'")
-        }
+        let errors = mustFailToCompile("label:\nlabel:")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 2)
+        XCTAssertEqual(error.message, "duplicate label: `label'")
     }
     
     func testParseLabelNameIsANumber() {
-        XCTAssertThrowsError(try assembler.compile("123:")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "unexpected end of input")
-        }
+        let errors = mustFailToCompile("123:")
+        let error = errors.first!
+        XCTAssertEqual(error.message, "unexpected end of input")
     }
     
     func testParseLabelNameIsAKeyword() {
-        XCTAssertThrowsError(try assembler.compile("NOP:")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
-        }
+        let errors = mustFailToCompile("NOP:")
+        let error = errors.first!
+        XCTAssertEqual(error.message, "instruction takes no operands: `NOP'")
     }
     
     func testParseExtraneousColon() {
-        XCTAssertThrowsError(try assembler.compile(":")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "unexpected end of input")
-        }
+        let errors = mustFailToCompile(":")
+        let error = errors.first!
+        XCTAssertEqual(error.message, "unexpected end of input")
     }
     
     func testFailToCompileJMPWithZeroOperands() {
-        XCTAssertThrowsError(try assembler.compile("JMP")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `JMP'")
-        }
+        let errors = mustFailToCompile("JMP")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `JMP'")
     }
     
     func testFailToCompileJMPWithUndeclaredLabel() {
-        XCTAssertThrowsError(try assembler.compile("JMP label")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
-        }
+        let errors = mustFailToCompile("JMP label")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
     }
     
     func testJMPCompiles() {
-        let instructions = try! assembler.compile("label:\nJMP label")
+        let instructions = mustCompile("label:\nJMP label")
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -204,7 +204,7 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testJMPToAddressCompiles() {
-        let instructions = try! assembler.compile("JMP 0x0000")
+        let instructions = mustCompile("JMP 0x0000")
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -230,23 +230,21 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileJCWithZeroOperands() {
-        XCTAssertThrowsError(try assembler.compile("JC")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `JC'")
-        }
+        let errors = mustFailToCompile("JC")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `JC'")
     }
     
     func testFailToCompileJCWithUndeclaredLabel() {
-        XCTAssertThrowsError(try assembler.compile("JC label")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
-        }
+        let errors = mustFailToCompile("JC label")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
     }
     
     func testJCCompiles() {
-        let instructions = try! assembler.compile("label:\nJC label")
+        let instructions = mustCompile("label:\nJC label")
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -272,7 +270,7 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testJCToAddressCompiles() {
-        let instructions = try! assembler.compile("JC 0x0000")
+        let instructions = mustCompile("JC 0x0000")
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -298,23 +296,21 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileADDWithZeroOperands() {
-        XCTAssertThrowsError(try assembler.compile("ADD")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `ADD'")
-        }
+        let errors = mustFailToCompile("ADD")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `ADD'")
     }
     
     func testFailToCompileADDWithIdentifierOperand() {
-        XCTAssertThrowsError(try assembler.compile("ADD label")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `ADD'")
-        }
+        let errors = mustFailToCompile("ADD label")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `ADD'")
     }
     
     func testCompileADDWithRegisterOperand() {
-        let instructions = try! assembler.compile("ADD D")
+        let instructions = mustCompile("ADD D")
         
         XCTAssertEqual(instructions.count, 2)
         let nop: UInt8 = 0
@@ -330,79 +326,70 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileADDWithInvalidDestinationRegisterE() {
-        XCTAssertThrowsError(try assembler.compile("ADD E")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
-        }
+        let errors = mustFailToCompile("ADD E")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
     }
     
     func testFailToCompileADDWithInvalidDestinationRegisterC() {
-        XCTAssertThrowsError(try assembler.compile("ADD C")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
-        }
+        let errors = mustFailToCompile("ADD C")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
     }
     
     func testFailToCompileLIWithNoOperands() {
-        XCTAssertThrowsError(try assembler.compile("LI")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testFailToCompileLIWithOneOperand() {
-        XCTAssertThrowsError(try assembler.compile("LI $1")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI $1")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testFailToCompileLIWhichIsMissingTheCommaOperand() {
-        XCTAssertThrowsError(try assembler.compile("LI A $1")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI A $1")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testFailToCompileLIWithBadComma() {
-        XCTAssertThrowsError(try assembler.compile("LI,")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI,")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testFailToCompileLIWhereDestinationIsANumber() {
-        XCTAssertThrowsError(try assembler.compile("LI $1, A")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI $1, A")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testFailToCompileLIWhereSourceIsARegister() {
-        XCTAssertThrowsError(try assembler.compile("LI B, A")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI B, A")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testFailToCompileLIWithTooManyOperands() {
-        XCTAssertThrowsError(try assembler.compile("LI A, $1, B")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `LI'")
-        }
+        let errors = mustFailToCompile("LI A, $1, B")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LI'")
     }
     
     func testCompileValidLI() {
-        let instructions = try! assembler.compile("LI D, 42")
+        let instructions = mustCompile("LI D, 42")
         
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, 0)
@@ -416,79 +403,70 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileLIWithTooBigNumber() {
-        XCTAssertThrowsError(try assembler.compile("LI D, 10000000")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "immediate value is not between 0 and 255: `10000000'")
-        }
+        let errors = mustFailToCompile("LI D, 10000000")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "immediate value is not between 0 and 255: `10000000'")
     }
     
     func testFailToCompileMOVWithNoOperands() {
-        XCTAssertThrowsError(try assembler.compile("MOV")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
-        }
+        let errors = mustFailToCompile("MOV")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
     }
     
     func testFailToCompileMOVWithOneOperand() {
-        XCTAssertThrowsError(try assembler.compile("MOV A")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
-        }
+        let errors = mustFailToCompile("MOV A")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
     }
     
     func testFailToCompileMOVWithTooManyOperands() {
-        XCTAssertThrowsError(try assembler.compile("MOV A, B, C")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
-        }
+        let errors = mustFailToCompile("MOV A, B, C")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
     }
     
     func testFailToCompileMOVWithNumberInFirstOperand() {
-        XCTAssertThrowsError(try assembler.compile("MOV $1, A")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
-        }
+        let errors = mustFailToCompile("MOV $1, A")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
     }
     
     func testFailToCompileMOVWithNumberInSecondOperand() {
-        XCTAssertThrowsError(try assembler.compile("MOV A, $1")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
-        }
+        let errors = mustFailToCompile("MOV A, $1")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `MOV'")
     }
     
     func testFailToCompileMOVWithInvalidDestinationRegisterE() {
-        XCTAssertThrowsError(try assembler.compile("MOV E, A")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
-        }
+        let errors = mustFailToCompile("MOV E, A")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "register cannot be used as a destination: `E'")
     }
     
     func testFailToCompileMOVWithInvalidDestinationRegisterC() {
-        XCTAssertThrowsError(try assembler.compile("MOV C, A")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
-        }
+        let errors = mustFailToCompile("MOV C, A")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "register cannot be used as a destination: `C'")
     }
     
     func testFailToCompileMOVWithInvalidSourceRegisterD() {
-        XCTAssertThrowsError(try assembler.compile("MOV A, D")) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "register cannot be used as a source: `D'")
-        }
+        let errors = mustFailToCompile("MOV A, D")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "register cannot be used as a source: `D'")
     }
     
     func testCompileValidMOV() {
-        let instructions = try! assembler.compile("MOV D, A")
+        let instructions = mustCompile("MOV D, A")
         
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, 0)
@@ -501,7 +479,7 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCompileValidStoreToMemory() {
-        let instructions = try! assembler.compile("STORE 0xAABB, A")
+        let instructions = mustCompile("STORE 0xAABB, A")
         
         XCTAssertEqual(instructions.count, 4)
         
@@ -523,7 +501,7 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testCompileValidLoadFromMemory() {
-        let instructions = try! assembler.compile("STORE 0xAABB, 42\nLOAD A, 0xAABB")
+        let instructions = mustCompile("STORE 0xAABB, 42\nLOAD A, 0xAABB")
         
         XCTAssertEqual(instructions.count, 7)
         
@@ -551,5 +529,25 @@ class AssemblerFrontEndTests: XCTestCase {
         
         // And an instructions to store the A register in memory
         XCTAssertEqual(instructions[6].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV A, M")!))
+    }
+    
+    func testOmnibusErrorWithNoErrors() {
+        let error = assembler.makeOmnibusError(fileName: nil, errors: [])
+        XCTAssertEqual(error.line, nil)
+        XCTAssertEqual(error.message, "0 errors generated\n")
+    }
+    
+    func testOmnibusErrorWithOneError() {
+        let errors = mustFailToCompile("MOV E, A")
+        let error = assembler.makeOmnibusError(fileName: "foo.s", errors: errors)
+        XCTAssertEqual(error.line, nil)
+        XCTAssertEqual(error.message, "foo.s:1: error: register cannot be used as a destination: `E'\n1 error generated\n")
+    }
+    
+    func testOmnibusErrorWithMultipleErrors() {
+        let errors = mustFailToCompile("MOV E, A\nMOV\n")
+        let error = assembler.makeOmnibusError(fileName: "foo.s", errors: errors)
+        XCTAssertEqual(error.line, nil)
+        XCTAssertEqual(error.message, "foo.s:1: error: register cannot be used as a destination: `E'\nfoo.s:2: error: operand type mismatch: `MOV'\n2 errors generated\n")
     }
 }

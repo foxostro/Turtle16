@@ -12,13 +12,20 @@ import TurtleTTL
 class ComputerExecutorTests: XCTestCase {
     let sourceCode = "NOP\nHLT"
     
+    func mustCompile(_ sourceCode: String) -> [Instruction] {
+        let frontEnd = AssemblerFrontEnd()
+        frontEnd.compile(sourceCode)
+        assert(!frontEnd.hasError)
+        return frontEnd.instructions
+    }
+    
     func makeComputer() -> Computer {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         
         let computer = Computer()
         computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.provideInstructions(try! AssemblerFrontEnd().compile(sourceCode))
+        computer.provideInstructions(mustCompile(sourceCode))
         
         return computer
     }

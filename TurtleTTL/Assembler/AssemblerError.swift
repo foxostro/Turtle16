@@ -17,8 +17,13 @@ public struct AssemblerError: Error {
         message = String(format:format, arguments:args)
     }
     
+    public init(message: String) {
+        line = nil
+        self.message = message
+    }
+    
     public init(format: String, _ args: CVarArg...) {
-        self.line = nil
+        line = nil
         message = String(format:format, arguments:args)
     }
 }

@@ -49,25 +49,19 @@ class ViewController: NSViewController {
     }
     
     func generateExampleProgram() -> [Instruction] {
-        var program = [Instruction]()
-        do {
-            program = try tryCompileExampleProgram()
-        } catch let error as AssemblerError {
-            alert(withMessage: "Error: " + error.message)
-        } catch {
-            alert(withMessage: "Unknown Error")
+        let frontEnd = AssemblerFrontEnd()
+        frontEnd.compile(loadExampleProgram())
+        if frontEnd.hasError {
+            let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
+            alert(withMessage: error.message)
         }
-        return program
+        return frontEnd.instructions
     }
     
     func alert(withMessage message: String) {
         let alert = NSAlert()
         alert.messageText = message
         alert.runModal()
-    }
-    
-    func tryCompileExampleProgram() throws -> [Instruction] {
-        return try AssemblerFrontEnd().compile(loadExampleProgram())
     }
     
     func loadExampleProgram() -> String {

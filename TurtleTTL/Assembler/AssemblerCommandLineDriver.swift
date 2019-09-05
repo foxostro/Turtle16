@@ -50,11 +50,17 @@ public class AssemblerCommandLineDriver: NSObject {
     }
     
     func compile() throws -> [Instruction] {
+        let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
-            throw AssemblerCommandLineDriverError(format: "Failed to read input file as UTF-8 text: %@", inputFileName!.relativePath)
+            throw AssemblerCommandLineDriverError(format: "Failed to read input file as UTF-8 text: %@", fileName)
         }
-        return try AssemblerFrontEnd().compile(text)
+        let frontEnd = AssemblerFrontEnd()
+        frontEnd.compile(text)
+        if frontEnd.hasError {
+            throw frontEnd.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
+        }
+        return frontEnd.instructions
     }
     
     func writeToFile(instructions: [Instruction]) throws {

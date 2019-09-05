@@ -61,11 +61,10 @@ class AssemblerLexerTests: XCTestCase {
     
     func testUnexpectedCharacter() {
         let tokenizer = AssemblerLexer(withString: "'")
-        XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unexpected character: `''")
-        }
+        try! tokenizer.scanTokens()
+        XCTAssertTrue(tokenizer.hasError)
+        XCTAssertEqual(tokenizer.errors.first?.line, 1)
+        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `''")
     }
     
     func testTokenizeNOP() {
@@ -112,11 +111,10 @@ class AssemblerLexerTests: XCTestCase {
     
     func testFailToTokenizeInvalidIdentifier() {
         let tokenizer = AssemblerLexer(withString: "*")
-        XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unexpected character: `*'")
-        }
+        try! tokenizer.scanTokens()
+        XCTAssertTrue(tokenizer.hasError)
+        XCTAssertEqual(tokenizer.errors.first?.line, 1)
+        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `*'")
     }
     
     func testTokenizeDecimalLiteral() {

@@ -12,6 +12,9 @@ public class AssemblerFrontEnd: NSObject {
     public func compile(_ text: String) throws -> [Instruction] {
         let tokenizer = AssemblerLexer(withString: text)
         try tokenizer.scanTokens()
+        if tokenizer.hasError {
+            throw tokenizer.errors.first!
+        }
         
         let parser = AssemblerParser(tokens: tokenizer.tokens)
         let ast = try parser.parse()

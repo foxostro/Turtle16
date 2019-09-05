@@ -28,8 +28,10 @@ public class AssemblerFrontEnd: NSObject {
         let codeGenerator = CodeGenerator(microcodeGenerator: microcodeGenerator)
         
         let compiler = AssemblerCodeGenPass(codeGenerator: codeGenerator)
-        let instructions = try compiler.compile(ast)
-        
-        return instructions
+        compiler.compile(ast)
+        if compiler.hasError {
+            throw compiler.errors.first!
+        }
+        return compiler.instructions
     }
 }

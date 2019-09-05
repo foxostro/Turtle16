@@ -14,12 +14,33 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []
     
+    public var instructions: [Instruction] = []
+    
+    public private(set) var errors: [AssemblerError] = []
+    public var hasError:Bool {
+        return errors.count != 0
+    }
+    
     public required init(codeGenerator: CodeGenerator) {
         self.codeGenerator = codeGenerator
         super.init()
     }
     
-    public func compile(_ root: AbstractSyntaxTreeNode) throws -> [Instruction] {
+    public func compile(_ root: AbstractSyntaxTreeNode) {
+        do {
+            try tryCompile(root)
+        } catch let error as AssemblerError {
+            errors.append(error)
+        } catch {
+            // This catch block should be unreachable because patch()
+            // only throws AssemblerError. Regardless, we need it to satisfy
+            // the compiler.
+            errors.append(AssemblerError(format: "unrecoverable error: %@", error.localizedDescription))
+        }
+    }
+    
+    func tryCompile(_ root: AbstractSyntaxTreeNode) throws {
+        instructions = []
         patcherActions = []
         codeGenerator.begin()
         try root.iterate {
@@ -29,8 +50,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         let patcher = Patcher(inputInstructions: codeGenerator.instructions,
                               symbols: symbols,
                               actions: patcherActions)
-        let postPatchInstructions = try patcher.patch()
-        return postPatchInstructions
+        instructions = try patcher.patch()
     }
     
     public func visit(node: NOPNode) throws {

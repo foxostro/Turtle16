@@ -102,15 +102,6 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
-    func testScanTokensYieldingUnexpectedEndOfInputError() {
-        let tokenizer = Lexer(withString: "\n")
-        XCTAssertThrowsError(try tokenizer.scanTokens()) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "unexpected character: `\n'")
-        }
-    }
-    
     func testScanTokensWithNewlines() {
         let tokenizer = Lexer(withString: "\n\n")
         tokenizer.rules = [
@@ -124,6 +115,39 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                           TokenNewline(lineNumber: 2, lexeme: "\n"),
                                           TokenEOF(lineNumber: 3, lexeme: "")])
+    }
+    
+    func testScanTokensYieldingUnexpectedCharacterError() {
+        let tokenizer = Lexer(withString: "@\n")
+        tokenizer.rules = [
+            Lexer.Rule(pattern: "\n") {
+                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
+                tokenizer.lineNumber += 1
+                return token
+            }
+        ]
+        try! tokenizer.scanTokens()
+        XCTAssertTrue(tokenizer.hasError)
+        XCTAssertEqual(tokenizer.errors.first?.line, 1)
+        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `@'")
+    }
+    
+    func testScanTokensYieldingMultipleUnexpectedCharacterErrors() {
+        let tokenizer = Lexer(withString: "@\n$\n")
+        tokenizer.rules = [
+            Lexer.Rule(pattern: "\n") {
+                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
+                tokenizer.lineNumber += 1
+                return token
+            }
+        ]
+        try! tokenizer.scanTokens()
+        XCTAssertTrue(tokenizer.hasError)
+        XCTAssertEqual(tokenizer.errors.count, 2)
+        XCTAssertEqual(tokenizer.errors[0].line, 1)
+        XCTAssertEqual(tokenizer.errors[0].message, "unexpected character: `@'")
+        XCTAssertEqual(tokenizer.errors[1].line, 2)
+        XCTAssertEqual(tokenizer.errors[1].message, "unexpected character: `$'")
     }
     
     func testScanTokensWithMoreThanOneRule() {

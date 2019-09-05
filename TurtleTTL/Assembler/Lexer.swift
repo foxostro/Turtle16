@@ -19,6 +19,11 @@ public class Lexer: NSObject {
     public typealias Rule = (pattern: String, emit: (String) -> Token?)
     public var rules: [Rule] = []
     
+    public private(set) var errors: [AssemblerError] = []
+    public var hasError:Bool {
+        return errors.count != 0
+    }
+    
     public required init(withString string: String) {
         self.string = string
     }
@@ -67,8 +72,14 @@ public class Lexer: NSObject {
     }
     
     public func scanTokens() throws {
+        errors = []
         while !isAtEnd {
-            try scanToken()
+            do {
+                try scanToken()
+            } catch let error as AssemblerError {
+                errors.append(error)
+                advanceToNewline() // recover by skipping to the next line
+            }
         }
         tokens.append(TokenEOF(lineNumber: lineNumber, lexeme: ""))
     }

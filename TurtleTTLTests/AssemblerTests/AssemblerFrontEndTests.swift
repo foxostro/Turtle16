@@ -32,6 +32,14 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[1], Instruction())
     }
     
+    func testCompileFailsDuringLexingDueToInvalidCharacter() {
+        XCTAssertThrowsError(try assembler.compile("@")) { e in
+            let error = e as! AssemblerError
+            XCTAssertEqual(error.line, 1)
+            XCTAssertEqual(error.message, "unexpected character: `@'")
+        }
+    }
+    
     func testCompilingBogusOpcodeYieldsError() {
         XCTAssertThrowsError(try assembler.compile("BOGUS")) { e in
             let error = e as! AssemblerError

@@ -378,7 +378,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileLIWhereDestinationIsANumber() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("LI $1, A")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -387,7 +386,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileLIWhereSourceIsARegister() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("LI B, A")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -396,7 +394,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileLIWithTooManyOperands() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("LI A, $1, B")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -427,7 +424,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithNoOperands() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("MOV")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -436,7 +432,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithOneOperand() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("MOV A")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -445,7 +440,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithTooManyOperands() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("MOV A, B, C")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -454,7 +448,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithNumberInFirstOperand() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("MOV $1, A")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)
@@ -463,7 +456,6 @@ class AssemblerFrontEndTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithNumberInSecondOperand() {
-        // TODO: Better error message here
         XCTAssertThrowsError(try assembler.compile("MOV A, $1")) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.line, 1)

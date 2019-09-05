@@ -71,7 +71,7 @@ public class Lexer: NSObject {
         return match(characterSet: CharacterSet.newlines.inverted)
     }
     
-    public func scanTokens() throws {
+    public func scanTokens() {
         errors = []
         while !isAtEnd {
             do {
@@ -79,6 +79,12 @@ public class Lexer: NSObject {
             } catch let error as AssemblerError {
                 errors.append(error)
                 advanceToNewline() // recover by skipping to the next line
+            } catch {
+                // This catch block should be unreachable because scanToken()
+                // only throws AssemblerError. Regardless, we need it to satisfy
+                // the compiler.
+                errors.append(AssemblerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
+                return
             }
         }
         tokens.append(TokenEOF(lineNumber: lineNumber, lexeme: ""))

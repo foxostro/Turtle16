@@ -98,7 +98,7 @@ class LexerTests: XCTestCase {
     
     func testScanTokensInEmptyString() {
         let tokenizer = Lexer(withString: "")
-        try! tokenizer.scanTokens()
+        tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
@@ -111,7 +111,7 @@ class LexerTests: XCTestCase {
                 return token
             }
         ]
-        try! tokenizer.scanTokens()
+        tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                           TokenNewline(lineNumber: 2, lexeme: "\n"),
                                           TokenEOF(lineNumber: 3, lexeme: "")])
@@ -126,7 +126,7 @@ class LexerTests: XCTestCase {
                 return token
             }
         ]
-        try! tokenizer.scanTokens()
+        tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
         XCTAssertEqual(tokenizer.errors.first?.line, 1)
         XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `@'")
@@ -141,7 +141,7 @@ class LexerTests: XCTestCase {
                 return token
             }
         ]
-        try! tokenizer.scanTokens()
+        tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
         XCTAssertEqual(tokenizer.errors.count, 2)
         XCTAssertEqual(tokenizer.errors[0].line, 1)
@@ -162,7 +162,7 @@ class LexerTests: XCTestCase {
                 return token
             }
         ]
-        try! tokenizer.scanTokens()
+        tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenComma(lineNumber: 1, lexeme: ","),
                                           TokenNewline(lineNumber: 1, lexeme: "\n"),
                                           TokenEOF(lineNumber: 2, lexeme: "")])

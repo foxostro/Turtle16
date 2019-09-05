@@ -19,7 +19,7 @@ class AssemblerParserTests: XCTestCase {
     
     func tokenize(_ text: String) -> [Token] {
         let tokenizer = AssemblerLexer(withString: text)
-        try! tokenizer.scanTokens()
+        tokenizer.scanTokens()
         let tokens = tokenizer.tokens
         return tokens
     }

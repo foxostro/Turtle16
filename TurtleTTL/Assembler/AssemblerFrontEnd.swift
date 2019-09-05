@@ -11,7 +11,7 @@ import Cocoa
 public class AssemblerFrontEnd: NSObject {
     public func compile(_ text: String) throws -> [Instruction] {
         let tokenizer = AssemblerLexer(withString: text)
-        try tokenizer.scanTokens()
+        tokenizer.scanTokens()
         if tokenizer.hasError {
             throw tokenizer.errors.first!
         }

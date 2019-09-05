@@ -32,15 +32,29 @@ class AssemblerCodeGenPassTests: XCTestCase {
         hlt = UInt8(microcodeGenerator.getOpcode(withMnemonic: "HLT")!)
     }
     
+    func mustCompile(_ root: AbstractSyntaxTreeNode) -> [Instruction] {
+        let compiler = makeBackEnd()
+        compiler.compile(root)
+        assert(!compiler.hasError)
+        return compiler.instructions
+    }
+    
+    func mustFailToCompile(_ root: AbstractSyntaxTreeNode) -> [AssemblerError] {
+        let compiler = makeBackEnd()
+        compiler.compile(root)
+        assert(compiler.hasError)
+        return compiler.errors
+    }
+    
     func testEmptyProgram() {
-        let instructions = try! makeBackEnd().compile(AbstractSyntaxTreeNode())
+        let instructions = mustCompile(AbstractSyntaxTreeNode())
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
     func testNop() {
         let ast = AbstractSyntaxTreeNode(children: [NOPNode()])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
         XCTAssertEqual(instructions[1].opcode, nop)
@@ -48,7 +62,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testHlt() {
         let ast = AbstractSyntaxTreeNode(children: [HLTNode()])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
         XCTAssertEqual(instructions[1].opcode, hlt)
@@ -56,7 +70,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testMov() throws {
         let ast = AbstractSyntaxTreeNode(children: [MOVNode(destination: .D, source: .A)])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
@@ -69,7 +83,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testLoadImmediate() {
         let ast = AbstractSyntaxTreeNode(children: [LINode(destination: .D, immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
@@ -83,7 +97,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testStoreToMemory() {
         let ast = AbstractSyntaxTreeNode(children: [StoreNode(destinationAddress: aabb, source: .A)])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
 
         XCTAssertEqual(instructions.count, 4)
 
@@ -104,36 +118,33 @@ class AssemblerCodeGenPassTests: XCTestCase {
 
     func testStoreToMemoryWithInvalidAddress() {
         let ast = AbstractSyntaxTreeNode(children: [StoreNode(destinationAddress: tooLargeAddress, source: .A)])
-        XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
     }
     
     func testStoreImmediateToMemoryWithInvalidAddress() {
         let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff), immediate: 0)])
-        XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
     }
     
     func testStoreImmediateToMemoryWithImmediate() {
         let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0), immediate: 0xffffffff)])
-        XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "Immediate is invalid: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "Immediate is invalid: 0xffffffff")
     }
 
     func testLoadFromMemory() {
         let ast = AbstractSyntaxTreeNode(children: [
             StoreImmediateNode(destinationAddress: aabb, immediate: 42),
             LoadNode(destination: .A, sourceAddress: aabb)])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
 
         XCTAssertEqual(instructions.count, 7)
 
@@ -163,25 +174,23 @@ class AssemblerCodeGenPassTests: XCTestCase {
 
     func testLoadFromMemoryWithNegativeAddress() {
         let ast = AbstractSyntaxTreeNode(children: [LoadNode(destination: .A, sourceAddress: negativeAddress)])
-        XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
     }
 
     func testLoadFromMemoryWithTooLargeAddress() {
         let ast = AbstractSyntaxTreeNode(children: [LoadNode(destination: .A, sourceAddress: tooLargeAddress)])
-        XCTAssertThrowsError(try makeBackEnd().compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.line, 1)
-            XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
     }
     
     func testAdd() {
         let ast = AbstractSyntaxTreeNode(children: [ADDNode(destination: .D)])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
@@ -198,8 +207,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
         let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
         let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
-        let backEnd = makeBackEnd()
-        let instructions = try! backEnd.compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -227,8 +235,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
             JMPToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
             HLTNode()])
-        let backEnd = makeBackEnd()
-        let instructions = try! backEnd.compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 7)
         
@@ -256,8 +263,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmpToAddressZero() {
         let ast = AbstractSyntaxTreeNode(children: [JMPToAddressNode(address: 0)])
-        let backEnd = makeBackEnd()
-        let instructions = try! backEnd.compile(ast)
+        let instructions = mustCompile(ast)
 
         XCTAssertEqual(instructions.count, 6)
 
@@ -282,27 +288,23 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmpToAddressNegative() {
         let ast = AbstractSyntaxTreeNode(children: [JMPToAddressNode(address: -1)])
-        let backEnd = makeBackEnd()
-        XCTAssertThrowsError(try backEnd.compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "invalid address: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.message, "invalid address: 0xffffffff")
     }
     
     func testJmpToAddressTooLarge() {
         let ast = AbstractSyntaxTreeNode(children: [JMPToAddressNode(address: 0x10000)])
-        let backEnd = makeBackEnd()
-        XCTAssertThrowsError(try backEnd.compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "invalid address: 0x10000")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.message, "invalid address: 0x10000")
     }
     
     func testJC() {
         let ast = AbstractSyntaxTreeNode(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -328,8 +330,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJCToAddressZero() {
         let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: 0)])
-        let backEnd = makeBackEnd()
-        let instructions = try! backEnd.compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
         
@@ -354,25 +355,21 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJCToAddressNegative() {
         let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: -1)])
-        let backEnd = makeBackEnd()
-        XCTAssertThrowsError(try backEnd.compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "invalid address: 0xffffffff")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.message, "invalid address: 0xffffffff")
     }
     
     func testJCToAddressTooLarge() {
         let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: 0x10000)])
-        let backEnd = makeBackEnd()
-        XCTAssertThrowsError(try backEnd.compile(ast)) { e in
-            let error = e as! AssemblerError
-            XCTAssertEqual(error.message, "invalid address: 0x10000")
-        }
+        let errors = mustFailToCompile(ast)
+        let error = errors.first!
+        XCTAssertEqual(error.message, "invalid address: 0x10000")
     }
     
     func testCMP() {
         let ast = AbstractSyntaxTreeNode(children: [CMPNode()])
-        let instructions = try! makeBackEnd().compile(ast)
+        let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
         

@@ -17,7 +17,11 @@ public class AssemblerFrontEnd: NSObject {
         }
         
         let parser = AssemblerParser(tokens: tokenizer.tokens)
-        let ast = try parser.parse()
+        parser.parse()
+        if parser.hasError {
+            throw parser.errors.first!
+        }
+        let ast = parser.syntaxTree!
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()

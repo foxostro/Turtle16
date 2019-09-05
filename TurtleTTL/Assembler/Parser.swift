@@ -23,16 +23,49 @@ public class Parser: NSObject {
     public var productions: [Production] = []
     public var tokens: [Token] = []
     
-    public func parse() throws -> AbstractSyntaxTreeNode {
+    public private(set) var errors: [AssemblerError] = []
+    public var hasError:Bool {
+        return errors.count != 0
+    }
+    public private(set) var syntaxTree: AbstractSyntaxTreeNode? = nil
+    
+    public func parse() {
         var statements: [AbstractSyntaxTreeNode] = []
         while tokens.count > 0 {
-            statements += try consumeStatement()
+            do {
+                statements += try consumeStatement()
+            } catch let error as AssemblerError {
+                errors.append(error)
+                advanceToNewline() // recover by skipping to the next line
+            } catch {
+                // This catch block should be unreachable because
+                // consumeStatement() only throws AssemblerError. Regardless,
+                // we need it to satisfy the compiler.
+                let lineNumber = peek()?.lineNumber ?? 1
+                errors.append(AssemblerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
+                return
+            }
         }
-        return AbstractSyntaxTreeNode(children: statements)
+        if hasError {
+            syntaxTree = nil
+        } else {
+            syntaxTree = AbstractSyntaxTreeNode(children: statements)
+        }
     }
     
     func advance() {
         tokens.removeFirst()
+    }
+    
+    func advanceToNewline() {
+        while let token = peek() {
+            let tokenType = type(of: token)
+            if (tokenType == TokenEOF.self) || (tokenType == TokenNewline.self) {
+                break
+            } else {
+                advance()
+            }
+        }
     }
     
     func peek() -> Token? {

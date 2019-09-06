@@ -365,53 +365,21 @@
 		6F5A0137231F7C56003E7C7F /* Assembler */ = {
 			isa = PBXGroup;
 			children = (
-				6F088068230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift */,
-				6F08807C230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift */,
-				6F088074230F5D8F00AB2339 /* ADDNode.swift */,
+				6FF07F832323123A00072830 /* AST */,
+				6FF07F862323128F00072830 /* Token */,
 				6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */,
 				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
 				6F4BE175230D2E31008C2329 /* AssemblerError.swift */,
 				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
 				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
 				6F61517E230D041600282B12 /* AssemblerParser.swift */,
-				6F08806C230F5D5A00AB2339 /* CMPNode.swift */,
 				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
 				6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */,
-				6F08806E230F5D6600AB2339 /* HLTNode.swift */,
-				6F088098230FADB500AB2339 /* JCToAddressNode.swift */,
-				6F088072230F5D7E00AB2339 /* JCToLabelNode.swift */,
-				6F088096230FAA1E00AB2339 /* JMPToAddressNode.swift */,
-				6F088070230F5D7500AB2339 /* JMPToLabelNode.swift */,
-				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
 				6F615176230CB54200282B12 /* Lexer.swift */,
-				6F088076230F5D9400AB2339 /* LINode.swift */,
-				6F0880A6230FD6D200AB2339 /* LoadNode.swift */,
-				6F088078230F5D9C00AB2339 /* MOVNode.swift */,
-				6F08806A230F5CE800AB2339 /* NOPNode.swift */,
 				6F5A00ED231D029D003E7C7F /* Parser.swift */,
 				6F5A00E523184880003E7C7F /* Patcher.swift */,
 				6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */,
-				6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */,
-				6F0880AE230FD8A800AB2339 /* StoreNode.swift */,
 				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
-				6F0880A0230FBDFF00AB2339 /* Token.swift */,
-				6F5A0109231F64A6003E7C7F /* TokenADD.swift */,
-				6F5A0101231F645A003E7C7F /* TokenCMP.swift */,
-				6F5A00FD231F6439003E7C7F /* TokenColon.swift */,
-				6F5A00FB231F642A003E7C7F /* TokenComma.swift */,
-				6F5A00F7231F6406003E7C7F /* TokenEOF.swift */,
-				6F5A0103231F646B003E7C7F /* TokenHLT.swift */,
-				6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */,
-				6F5A0107231F6499003E7C7F /* TokenJC.swift */,
-				6F5A0105231F648C003E7C7F /* TokenJMP.swift */,
-				6F5A010B231F64B2003E7C7F /* TokenLI.swift */,
-				6F5A0111231F64EF003E7C7F /* TokenLOAD.swift */,
-				6F5A010D231F64C1003E7C7F /* TokenMOV.swift */,
-				6F5A00F9231F6415003E7C7F /* TokenNewline.swift */,
-				6F5A00FF231F6449003E7C7F /* TokenNOP.swift */,
-				6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */,
-				6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */,
-				6F5A010F231F64D9003E7C7F /* TokenSTORE.swift */,
 			);
 			path = Assembler;
 			sourceTree = "<group>";
@@ -441,33 +409,17 @@
 		6F5A0139231F7CA7003E7C7F /* AssemblerTests */ = {
 			isa = PBXGroup;
 			children = (
-				6F08808A230F6E4F00AB2339 /* ADDNodeTests.swift */,
+				6FF07F842323126000072830 /* AST */,
+				6FF07F852323127D00072830 /* Token */,
 				6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */,
 				6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */,
 				6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */,
 				6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */,
 				6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */,
-				6F088082230F6E2D00AB2339 /* CMPNodeTests.swift */,
 				6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */,
-				6F088084230F6E3700AB2339 /* HLTNodeTests.swift */,
-				6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */,
-				6F088088230F6E4800AB2339 /* JCToLabelNodeTests.swift */,
-				6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */,
-				6F088086230F6E3E00AB2339 /* JMPToLabelNodeTests.swift */,
-				6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */,
 				6F615178230CB56E00282B12 /* LexerTests.swift */,
-				6F08808C230F6E5700AB2339 /* LINodeTests.swift */,
-				6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */,
-				6F08808E230F6E5F00AB2339 /* MOVNodeTests.swift */,
-				6F088080230F6E2500AB2339 /* NOPNodeTests.swift */,
 				6F5A013B231F7DCC003E7C7F /* ParserTests.swift */,
 				6F5A00E723184896003E7C7F /* PatcherTests.swift */,
-				6F0880A8230FD6EE00AB2339 /* StoreImmediateNodeTests.swift */,
-				6F0880AC230FD86A00AB2339 /* StoreNodeTests.swift */,
-				6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */,
-				6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */,
-				6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */,
-				6F0880A2230FC09B00AB2339 /* TokenTests.swift */,
 			);
 			path = AssemblerTests;
 			sourceTree = "<group>";
@@ -521,6 +473,86 @@
 				6FE003DA22F3F4C600221C4C /* main.swift */,
 			);
 			path = TurtleAssembler;
+			sourceTree = "<group>";
+		};
+		6FF07F832323123A00072830 /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6F088068230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift */,
+				6F08807C230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift */,
+				6F088074230F5D8F00AB2339 /* ADDNode.swift */,
+				6F08806C230F5D5A00AB2339 /* CMPNode.swift */,
+				6F08806E230F5D6600AB2339 /* HLTNode.swift */,
+				6F088098230FADB500AB2339 /* JCToAddressNode.swift */,
+				6F088072230F5D7E00AB2339 /* JCToLabelNode.swift */,
+				6F088096230FAA1E00AB2339 /* JMPToAddressNode.swift */,
+				6F088070230F5D7500AB2339 /* JMPToLabelNode.swift */,
+				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
+				6F088076230F5D9400AB2339 /* LINode.swift */,
+				6F0880A6230FD6D200AB2339 /* LoadNode.swift */,
+				6F088078230F5D9C00AB2339 /* MOVNode.swift */,
+				6F08806A230F5CE800AB2339 /* NOPNode.swift */,
+				6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */,
+				6F0880AE230FD8A800AB2339 /* StoreNode.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		6FF07F842323126000072830 /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6F08808A230F6E4F00AB2339 /* ADDNodeTests.swift */,
+				6F088082230F6E2D00AB2339 /* CMPNodeTests.swift */,
+				6F088084230F6E3700AB2339 /* HLTNodeTests.swift */,
+				6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */,
+				6F088088230F6E4800AB2339 /* JCToLabelNodeTests.swift */,
+				6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */,
+				6F088086230F6E3E00AB2339 /* JMPToLabelNodeTests.swift */,
+				6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */,
+				6F08808C230F6E5700AB2339 /* LINodeTests.swift */,
+				6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */,
+				6F08808E230F6E5F00AB2339 /* MOVNodeTests.swift */,
+				6F088080230F6E2500AB2339 /* NOPNodeTests.swift */,
+				6F0880A8230FD6EE00AB2339 /* StoreImmediateNodeTests.swift */,
+				6F0880AC230FD86A00AB2339 /* StoreNodeTests.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		6FF07F852323127D00072830 /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */,
+				6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */,
+				6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */,
+				6F0880A2230FC09B00AB2339 /* TokenTests.swift */,
+			);
+			path = Token;
+			sourceTree = "<group>";
+		};
+		6FF07F862323128F00072830 /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				6F0880A0230FBDFF00AB2339 /* Token.swift */,
+				6F5A0109231F64A6003E7C7F /* TokenADD.swift */,
+				6F5A0101231F645A003E7C7F /* TokenCMP.swift */,
+				6F5A00FD231F6439003E7C7F /* TokenColon.swift */,
+				6F5A00FB231F642A003E7C7F /* TokenComma.swift */,
+				6F5A00F7231F6406003E7C7F /* TokenEOF.swift */,
+				6F5A0103231F646B003E7C7F /* TokenHLT.swift */,
+				6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */,
+				6F5A0107231F6499003E7C7F /* TokenJC.swift */,
+				6F5A0105231F648C003E7C7F /* TokenJMP.swift */,
+				6F5A010B231F64B2003E7C7F /* TokenLI.swift */,
+				6F5A0111231F64EF003E7C7F /* TokenLOAD.swift */,
+				6F5A010D231F64C1003E7C7F /* TokenMOV.swift */,
+				6F5A00F9231F6415003E7C7F /* TokenNewline.swift */,
+				6F5A00FF231F6449003E7C7F /* TokenNOP.swift */,
+				6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */,
+				6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */,
+				6F5A010F231F64D9003E7C7F /* TokenSTORE.swift */,
+			);
+			path = Token;
 			sourceTree = "<group>";
 		};
 		6FF1994A22ECB36F00C255A2 = {

@@ -152,6 +152,13 @@ class AssemblerLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeLiteralCharacter() {
+        let tokenizer = AssemblerLexer(withString: "'A'")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenNumber(lineNumber: 1, lexeme: "'A'", literal: 65),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeIdentifierWhichStartsWithA() {
         let tokenizer = AssemblerLexer(withString: "Animal")
         tokenizer.scanTokens()

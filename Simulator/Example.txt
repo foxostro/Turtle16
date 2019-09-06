@@ -4,69 +4,69 @@
 # let kStatusRegister = 1
 
 LI D, 1 # kOutputDisplay
-LI M, 72 # 'H'
+LI M, 'H'
 LI D, 6 # kSerialInterface
-LI M, 72 # 'H'
+LI M, 'H'
 
 LI D, 1 # kOutputDisplay
-LI M, 101 # 'e'
+LI M, 'e'
 LI D, 6 # kSerialInterface
-LI M, 101 # 'e'
+LI M, 'e'
 
 LI D, 1 # kOutputDisplay
-LI M, 108 # 'l'
+LI M, 'l'
 LI D, 6 # kSerialInterface
-LI M, 108 # 'l'
+LI M, 'l'
 
 LI D, 1 # kOutputDisplay
-LI M, 108 # 'l'
+LI M, 'l'
 LI D, 6 # kSerialInterface
-LI M, 108 # 'l'
+LI M, 'l'
 
 LI D, 1 # kOutputDisplay
-LI M, 111 # 'o'
+LI M, 'o'
 LI D, 6 # kSerialInterface
-LI M, 111 # 'o'
+LI M, 'o'
 
 LI D, 1 # kOutputDisplay
-LI M, 44 # ','
+LI M, ','
 LI D, 6 # kSerialInterface
-LI M, 44 # ','
+LI M, ','
 
 LI D, 1 # kOutputDisplay
-LI M, 32 # ' '
+LI M, ' '
 LI D, 6 # kSerialInterface
-LI M, 32 # ' '
+LI M, ' '
 
 LI D, 1 # kOutputDisplay
-LI M, 87 # 'W'
+LI M, 'W'
 LI D, 6 # kSerialInterface
-LI M, 87 # 'W'
+LI M, 'W'
 
 LI D, 1 # kOutputDisplay
-LI M, 111 # 'o'
+LI M, 'o'
 LI D, 6 # kSerialInterface
-LI M, 111 # 'o'
+LI M, 'o'
 
 LI D, 1 # kOutputDisplay
-LI M, 114 # 'r'
+LI M, 'r'
 LI D, 6 # kSerialInterface
-LI M, 114 # 'r'
+LI M, 'r'
 
 LI D, 1 # kOutputDisplay
-LI M, 108 # 'l'
+LI M, 'l'
 LI D, 6 # kSerialInterface
-LI M, 108 # 'l'
+LI M, 'l'
 
 LI D, 1 # kOutputDisplay
-LI M, 100 # 'd'
+LI M, 'd'
 LI D, 6 # kSerialInterface
-LI M, 100 # 'd'
+LI M, 'd'
 
 LI D, 1 # kOutputDisplay
-LI M, 33 # '!'
+LI M, '!'
 LI D, 6 # kSerialInterface
-LI M, 33 # '!'
+LI M, '!'
 
 loop:
 

@@ -105,6 +105,10 @@ public class AssemblerLexer: Lexer {
                 assert(result)
                 return TokenNumber(lineNumber: self.lineNumber, lexeme: $0, literal: Int(number))
             },
+            Rule(pattern: "'.'") {
+                let number = Int(String($0).split(separator: "'").first!.unicodeScalars.first!.value)
+                return TokenNumber(lineNumber: self.lineNumber, lexeme: $0, literal: number)
+            },
             Rule(pattern: "[ \t]+") {(lexeme: String) in
                 nil
             }

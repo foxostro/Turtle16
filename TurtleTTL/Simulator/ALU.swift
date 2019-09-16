@@ -25,7 +25,7 @@ public class ALU: NSObject {
         let lower181 = Chip74x181()
         lower181.a = (a & 0b1111)
         lower181.b = (b & 0b1111)
-        lower181.s = s
+        lower181.s = (s & 0b1111)
         lower181.mode = mode
         lower181.carryIn = carryIn
         lower181.update()
@@ -33,7 +33,7 @@ public class ALU: NSObject {
         let upper181 = Chip74x181()
         upper181.a = (a & 0b11110000) >> 4
         upper181.b = (b & 0b11110000) >> 4
-        upper181.s = s
+        upper181.s = (s & 0b1111)
         upper181.mode = mode
         upper181.carryIn = lower181.carryOut
         upper181.update()

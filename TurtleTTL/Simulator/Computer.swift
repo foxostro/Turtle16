@@ -110,7 +110,7 @@ public class Computer: NSObject {
         let b = currentState.registerB.value
         let c = currentState.registerC.value
         let alu = ALU()
-        alu.s = c
+        alu.s = (c & 0b1111)
         alu.carryIn = Int(c & 0b10000) >> 4
         alu.mode = Int(c & 0b100000) >> 5
         alu.a = a

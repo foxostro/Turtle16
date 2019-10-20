@@ -12,31 +12,31 @@ import Cocoa
 public class Computer: NSObject {
     public var currentState: ComputerState
     public var logger:Logger? = nil
-    let banks: [BankOperation]
+    let peripherals: [PeripheralDeviceOperation]
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
     
     public override init() {
         currentState = ComputerState()
-        banks = [BankOperation(name: "Upper Instruction RAM",
+        peripherals = [PeripheralDeviceOperation(name: "Upper Instruction RAM",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withStoreToUpperInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
                  },
                                load: {(state: ComputerState) -> ComputerState in
                                 return state.withBus(state.upperInstructionRAM.load(from: state.valueOfXYPair()))
                  }),
-                 BankOperation(name: "Lower Instruction RAM",
+                 PeripheralDeviceOperation(name: "Lower Instruction RAM",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withStoreToLowerInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
                  },
                                load: {(state: ComputerState) -> ComputerState in
                                 return state.withBus(state.lowerInstructionRAM.load(from: state.valueOfXYPair()))
                  }),
-                 BankOperation(),
-                 BankOperation(),
-                 BankOperation(),
-                 BankOperation(name: "Data RAM",
+                 PeripheralDeviceOperation(),
+                 PeripheralDeviceOperation(),
+                 PeripheralDeviceOperation(),
+                 PeripheralDeviceOperation(name: "Data RAM",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfXYPair())
                  },
@@ -44,8 +44,8 @@ public class Computer: NSObject {
                                 return state.withBus(state.dataRAM.load(from: state.valueOfXYPair()))
                  }),
                  SerialInterface(),
-                 BankOperation(),
-                 BankOperation()]
+                 PeripheralDeviceOperation(),
+                 PeripheralDeviceOperation()]
     }
     
     public func reset() {
@@ -141,12 +141,12 @@ public class Computer: NSObject {
             logger?.append("XO -- output %@ onto bus", state.bus)
         }
         if (.active == state.controlWord.PO) {
-            let currentBank = banks[Int(state.registerD.value)]
+            let currentPeripheral = peripherals[Int(state.registerD.value)]
             var updatedState = state.withBus(0) // ensure bus is invalidated
-            updatedState = currentBank.load(updatedState)
-            logger?.append("MO -- Load %@ from current bank, \"%@\", at address 0x%@",
+            updatedState = currentPeripheral.load(updatedState)
+            logger?.append("MO -- Load %@ from current peripheral, \"%@\", at address 0x%@",
                            updatedState.bus,
-                           currentBank.name,
+                           currentPeripheral.name,
                            String(state.valueOfXYPair(), radix: 16))
             state = updatedState
         }
@@ -190,17 +190,17 @@ public class Computer: NSObject {
         }
         if (.active == state.controlWord.DI) {
             state = state.withRegisterD(state.bus.value)
-            let currentBank = banks[Int(state.registerD.value & 0b111)]
-            logger?.append("DI -- input %@ from bus. Selected bank is now \"%@\"",
-                           state.registerD, currentBank.name)
+            let currentPeripheral = peripherals[Int(state.registerD.value & 0b111)]
+            logger?.append("DI -- input %@ from bus. Selected peripheral is now \"%@\"",
+                           state.registerD, currentPeripheral.name)
         }
         if (.active == state.controlWord.PI) {
-            let currentBank = banks[Int(state.registerD.value)]
-            logger?.append("MI -- Store %@ to current bank, \"%@\", at address 0x%@",
+            let currentPeripheral = peripherals[Int(state.registerD.value)]
+            logger?.append("MI -- Store %@ to current peripheral, \"%@\", at address 0x%@",
                            state.bus,
-                           currentBank.name,
+                           currentPeripheral.name,
                            String(state.valueOfXYPair(), radix: 16))
-            state = currentBank.store(state)
+            state = currentPeripheral.store(state)
         }
         if (.active == state.controlWord.J) {
             let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))

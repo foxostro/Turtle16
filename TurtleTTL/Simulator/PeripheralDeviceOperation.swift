@@ -1,5 +1,5 @@
 //
-//  BankOperation.swift
+//  PeripheralDeviceOperation.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 8/16/19.
@@ -8,8 +8,9 @@
 
 import Cocoa
 
-// A memory-like operation which is affected by bank switching.
-public class BankOperation: NSObject {
+// Represents an operation performed aginst a peripheral device.
+// The computer can interact with peripheral devices like memory.
+public class PeripheralDeviceOperation: NSObject {
     public static let nop = {(state: ComputerState) -> ComputerState in
         return state // NOP
     }

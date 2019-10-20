@@ -24,7 +24,6 @@ class ViewController: NSViewController {
     @IBOutlet var pc_if:NSTextField!
     @IBOutlet var if_id:NSTextField!
     @IBOutlet var bus:NSTextField!
-    @IBOutlet var outputDisplay:NSTextField!
     @IBOutlet var stepButton:NSButton!
     @IBOutlet var runButton:NSButton!
     @IBOutlet var eventLog:NSTextView!
@@ -188,7 +187,6 @@ class ViewController: NSViewController {
         programCounter.stringValue = computer.describePC()
         if_id.stringValue = computer.describeIFID()
         bus.stringValue = computer.describeBus()
-        outputDisplay.stringValue = computer.describeOutputDisplay()
         
         if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
             serialOutputDisplay.setString(computer.describeSerialOutput())

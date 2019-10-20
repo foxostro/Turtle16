@@ -1,70 +1,43 @@
-# let kOutputDisplay = 1
 # let kSerialInterface = 6
 # let kIORegister = 0
 # let kStatusRegister = 1
 
-LI D, 1 # kOutputDisplay
-LI M, 'H'
 LI D, 6 # kSerialInterface
 LI M, 'H'
 
-LI D, 1 # kOutputDisplay
-LI M, 'e'
 LI D, 6 # kSerialInterface
 LI M, 'e'
 
-LI D, 1 # kOutputDisplay
-LI M, 'l'
 LI D, 6 # kSerialInterface
 LI M, 'l'
 
-LI D, 1 # kOutputDisplay
-LI M, 'l'
 LI D, 6 # kSerialInterface
 LI M, 'l'
 
-LI D, 1 # kOutputDisplay
-LI M, 'o'
 LI D, 6 # kSerialInterface
 LI M, 'o'
 
-LI D, 1 # kOutputDisplay
-LI M, ','
 LI D, 6 # kSerialInterface
 LI M, ','
 
-LI D, 1 # kOutputDisplay
-LI M, ' '
 LI D, 6 # kSerialInterface
 LI M, ' '
 
-LI D, 1 # kOutputDisplay
-LI M, 'W'
 LI D, 6 # kSerialInterface
 LI M, 'W'
 
-LI D, 1 # kOutputDisplay
-LI M, 'o'
 LI D, 6 # kSerialInterface
 LI M, 'o'
 
-LI D, 1 # kOutputDisplay
-LI M, 'r'
 LI D, 6 # kSerialInterface
 LI M, 'r'
 
-LI D, 1 # kOutputDisplay
-LI M, 'l'
 LI D, 6 # kSerialInterface
 LI M, 'l'
 
-LI D, 1 # kOutputDisplay
-LI M, 'd'
 LI D, 6 # kSerialInterface
 LI M, 'd'
 
-LI D, 1 # kOutputDisplay
-LI M, '!'
 LI D, 6 # kSerialInterface
 LI M, '!'
 
@@ -81,10 +54,6 @@ JC loop
 # Read a byte and echo it back.
 LI Y, 0 # kIORegister
 MOV A, M
-MOV M, A
-
-# Show it on the output display too.
-LI D, 1 # kOutputDisplay
 MOV M, A
 
 JMP loop

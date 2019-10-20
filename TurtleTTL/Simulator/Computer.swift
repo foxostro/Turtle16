@@ -21,13 +21,7 @@ public class Computer: NSObject {
     public override init() {
         currentState = ComputerState()
         banks = [BankOperation(),
-                 BankOperation(name: "Output Display",
-                               store: {(state: ComputerState) -> ComputerState in
-                                return state.withOutputDisplay(state.bus.value)
-                 },
-                               load: {(state: ComputerState) -> ComputerState in
-                                return state.withBus(state.outputDisplay.value)
-                 }),
+                 BankOperation(),
                  BankOperation(),
                  BankOperation(name: "Upper Instruction RAM",
                                store: {(state: ComputerState) -> ComputerState in
@@ -390,10 +384,6 @@ public class Computer: NSObject {
     
     public func describeBus() -> String {
         return currentState.bus.description
-    }
-    
-    public func describeOutputDisplay() -> String {
-        return String(currentState.outputDisplay.value, radix: 10)
     }
     
     public func provideSerialInput(bytes: [UInt8]) {

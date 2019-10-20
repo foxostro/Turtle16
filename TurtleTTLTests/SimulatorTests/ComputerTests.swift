@@ -11,7 +11,6 @@ import TurtleTTL
 
 class ComputerTests: XCTestCase {
     let isVerboseLogging = true
-    let kOutputDisplay = 1
     let kUpperInstructionRAM = 3
     let kLowerInstructionRAM = 4
     let kDataRAM = 5
@@ -720,89 +719,6 @@ class ComputerTests: XCTestCase {
         computer.execute()
         
         XCTAssertEqual(computer.currentState.registerA.value, 0)
-    }
-    
-    func testStoreToOutputDisplay() {
-        let computer = makeComputer()
-        
-        var instructionDecoder = InstructionDecoder()
-        
-        let nop = 0
-        let nopControl = ControlWord()
-        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
-        
-        let store = 3
-        let storeControl = ControlWord().withPI(.active).withCO(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
-        
-        let load = 4
-        let loadControl = ControlWord().withPO(.active).withAI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
-        
-        let hlt = 5
-        let hltControl = ControlWord().withHLT(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
-        
-        let ldd = 6
-        let lddControl = ControlWord().withCO(.active).withDI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
-        
-        computer.provideMicrocode(microcode: instructionDecoder)
-        
-        computer.provideInstructions([
-            Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: kOutputDisplay),    // LDD $kOutputDisplay
-            Instruction(opcode: store, immediate: 42),   // STORE $42
-            Instruction(opcode: hlt,   immediate: 0)])   // HLT
-        
-        computer.execute()
-        
-        XCTAssertEqual(computer.currentState.outputDisplay.value, 42)
-        XCTAssertEqual(computer.describeOutputDisplay(), String(42, radix: 10))
-    }
-    
-    func testLoadFromOutputDisplay() {
-        let computer = makeComputer()
-        
-        var instructionDecoder = InstructionDecoder()
-        
-        let nop = 0
-        let nopControl = ControlWord()
-        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
-        
-        let store = 3
-        let storeControl = ControlWord().withPI(.active).withCO(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
-        
-        let load = 4
-        let loadControl = ControlWord().withPO(.active).withAI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
-        
-        let hlt = 5
-        let hltControl = ControlWord().withHLT(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
-        
-        let ldd = 6
-        let lddControl = ControlWord().withCO(.active).withDI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
-        
-        let lda = 7
-        let ldaControl = ControlWord().withCO(.active).withAI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
-        
-        computer.provideMicrocode(microcode: instructionDecoder)
-        
-        computer.provideInstructions([
-            Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: kOutputDisplay),    // LDD $kOutputDisplay
-            Instruction(opcode: store, immediate: 42),   // STORE $42
-            Instruction(opcode: lda,   immediate: 0),    // LDA $0
-            Instruction(opcode: load,  immediate: 0),    // LOAD A
-            Instruction(opcode: hlt,   immediate: 0)])   // HLT
-        
-        computer.execute()
-        
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
     func disabled_too_slow_testSaveLoadMicrocode() {

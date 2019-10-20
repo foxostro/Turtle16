@@ -3,58 +3,58 @@
 # let kStatusRegister = 1
 
 LI D, 6 # kSerialInterface
-LI M, 'H'
+LI P, 'H'
 
 LI D, 6 # kSerialInterface
-LI M, 'e'
+LI P, 'e'
 
 LI D, 6 # kSerialInterface
-LI M, 'l'
+LI P, 'l'
 
 LI D, 6 # kSerialInterface
-LI M, 'l'
+LI P, 'l'
 
 LI D, 6 # kSerialInterface
-LI M, 'o'
+LI P, 'o'
 
 LI D, 6 # kSerialInterface
-LI M, ','
+LI P, ','
 
 LI D, 6 # kSerialInterface
-LI M, ' '
+LI P, ' '
 
 LI D, 6 # kSerialInterface
-LI M, 'W'
+LI P, 'W'
 
 LI D, 6 # kSerialInterface
-LI M, 'o'
+LI P, 'o'
 
 LI D, 6 # kSerialInterface
-LI M, 'r'
+LI P, 'r'
 
 LI D, 6 # kSerialInterface
-LI M, 'l'
+LI P, 'l'
 
 LI D, 6 # kSerialInterface
-LI M, 'd'
+LI P, 'd'
 
 LI D, 6 # kSerialInterface
-LI M, '!'
+LI P, '!'
 
 loop:
 
 # Wait until the number of available bytes is greater than zero.
 LI D, 6 # kSerialInterface
 LI Y, 1 # kStatusRegister
-MOV B, M
+MOV B, P
 LI A, 1
 CMP
 JC loop
 
 # Read a byte and echo it back.
 LI Y, 0 # kIORegister
-MOV A, M
-MOV M, A
+MOV A, P
+MOV P, A
 
 JMP loop
 HLT

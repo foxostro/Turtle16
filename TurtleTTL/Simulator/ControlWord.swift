@@ -16,8 +16,8 @@ public class ControlWord: NSObject {
     public let XI: Bool
     public let YO: Bool
     public let XO: Bool
-    public let MO: Bool
-    public let MI: Bool
+    public let PO: Bool
+    public let PI: Bool
     public let EO: Bool
     public let FI: Bool
     public let AO: Bool
@@ -33,8 +33,8 @@ public class ControlWord: NSObject {
                          withXI XI: Bool,
                          withYO YO: Bool,
                          withXO XO: Bool,
-                         withMO MO: Bool,
-                         withMI MI: Bool,
+                         withPO PO: Bool,
+                         withPI PI: Bool,
                          withEO EO: Bool,
                          withFI FI: Bool,
                          withAO AO: Bool,
@@ -49,8 +49,8 @@ public class ControlWord: NSObject {
         self.XI  = XI
         self.YO  = YO
         self.XO  = XO
-        self.MO  = MO
-        self.MI  = MI
+        self.PO  = PO
+        self.PI  = PI
         self.EO  = EO
         self.FI  = FI
         self.AO  = AO
@@ -68,8 +68,8 @@ public class ControlWord: NSObject {
                   withXI:  true,
                   withYO:  true,
                   withXO:  true,
-                  withMO:  true,
-                  withMI:  true,
+                  withPO:  true,
+                  withPI:  true,
                   withEO:  true,
                   withFI:  true,
                   withAO:  true,
@@ -87,8 +87,8 @@ public class ControlWord: NSObject {
                   withXI: (value & (1<<3))  != 0,
                   withYO: (value & (1<<4))  != 0,
                   withXO: (value & (1<<5))  != 0,
-                  withMO: (value & (1<<6))  != 0,
-                  withMI: (value & (1<<7))  != 0,
+                  withPO: (value & (1<<6))  != 0,
+                  withPI: (value & (1<<7))  != 0,
                   withEO: (value & (1<<8))  != 0,
                   withFI: (value & (1<<9))  != 0,
                   withAO: (value & (1<<10)) != 0,
@@ -107,8 +107,8 @@ public class ControlWord: NSObject {
         result +=  XI ? (1<<3) : 0
         result +=  YO ? (1<<4) : 0
         result +=  XO ? (1<<5) : 0
-        result +=  MO ? (1<<6) : 0
-        result +=  MI ? (1<<7) : 0
+        result +=  PO ? (1<<6) : 0
+        result +=  PI ? (1<<7) : 0
         result +=  EO ? (1<<8) : 0
         result +=  FI ? (1<<9) : 0
         result +=  AO ? (1<<10) : 0
@@ -148,10 +148,10 @@ public class ControlWord: NSObject {
         if (false == XO) {
             signals.append("XO")
         }
-        if (false == MO) {
-            signals.append("MO")
+        if (false == PO) {
+            signals.append("PO")
         }
-        if (false == MI) {
+        if (false == PI) {
             signals.append("MI")
         }
         if (false == EO) {
@@ -188,8 +188,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -207,8 +207,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -226,8 +226,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -245,8 +245,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -264,8 +264,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -283,8 +283,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -295,15 +295,15 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withMO(_ MO: Bool) -> ControlWord {
+    public func withPO(_ PO: Bool) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -314,15 +314,15 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withMI(_ MI: Bool) -> ControlWord {
+    public func withPI(_ PI: Bool) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -340,8 +340,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -359,8 +359,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -378,8 +378,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -397,8 +397,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -416,8 +416,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -435,8 +435,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -454,8 +454,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -473,8 +473,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  MI,
+                           withPO:  PO,
+                           withPI:  PI,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -492,8 +492,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  true,
                            withXO:  true,
-                           withMO:  true,
-                           withMI:  MI,
+                           withPO:  true,
+                           withPI:  PI,
                            withEO:  true,
                            withFI:  FI,
                            withAO:  false,
@@ -511,8 +511,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  true,
                            withXO:  true,
-                           withMO:  true,
-                           withMI:  MI,
+                           withPO:  true,
+                           withPI:  PI,
                            withEO:  true,
                            withFI:  FI,
                            withAO:  true,
@@ -530,8 +530,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  true,
                            withXO:  true,
-                           withMO:  true,
-                           withMI:  MI,
+                           withPO:  true,
+                           withPI:  PI,
                            withEO:  true,
                            withFI:  FI,
                            withAO:  true,
@@ -549,8 +549,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  true,
                            withXO:  false,
-                           withMO:  true,
-                           withMI:  MI,
+                           withPO:  true,
+                           withPI:  PI,
                            withEO:  true,
                            withFI:  FI,
                            withAO:  true,
@@ -568,8 +568,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  false,
                            withXO:  true,
-                           withMO:  true,
-                           withMI:  MI,
+                           withPO:  true,
+                           withPI:  PI,
                            withEO:  true,
                            withFI:  FI,
                            withAO:  true,
@@ -587,8 +587,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  true,
                            withXO:  true,
-                           withMO:  true,
-                           withMI:  MI,
+                           withPO:  true,
+                           withPI:  PI,
                            withEO:  false,
                            withFI:  FI,
                            withAO:  true,
@@ -606,8 +606,8 @@ public class ControlWord: NSObject {
                            withXI:  XI,
                            withYO:  true,
                            withXO:  true,
-                           withMO:  false,
-                           withMI:  MI,
+                           withPO:  false,
+                           withPI:  PI,
                            withEO:  true,
                            withFI:  FI,
                            withAO:  true,
@@ -625,8 +625,8 @@ public class ControlWord: NSObject {
                            withXI:  true,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  true,
+                           withPO:  PO,
+                           withPI:  true,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -644,8 +644,8 @@ public class ControlWord: NSObject {
                            withXI:  true,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  true,
+                           withPO:  PO,
+                           withPI:  true,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -663,8 +663,8 @@ public class ControlWord: NSObject {
                            withXI:  true,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  true,
+                           withPO:  PO,
+                           withPI:  true,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -682,8 +682,8 @@ public class ControlWord: NSObject {
                            withXI:  false,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  true,
+                           withPO:  PO,
+                           withPI:  true,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -701,8 +701,8 @@ public class ControlWord: NSObject {
                            withXI:  true,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  true,
+                           withPO:  PO,
+                           withPI:  true,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
@@ -720,8 +720,8 @@ public class ControlWord: NSObject {
                            withXI:  true,
                            withYO:  YO,
                            withXO:  XO,
-                           withMO:  MO,
-                           withMI:  false,
+                           withPO:  PO,
+                           withPI:  false,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,

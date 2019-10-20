@@ -268,11 +268,11 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withMO(false).withAI(false)
+        let loadControl = ControlWord().withPO(false).withAI(false)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
@@ -512,11 +512,11 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withMO(false).withAI(false)
+        let loadControl = ControlWord().withPO(false).withAI(false)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
@@ -566,11 +566,11 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withMO(false).withAI(false)
+        let loadControl = ControlWord().withPO(false).withAI(false)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
@@ -620,7 +620,7 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let hlt = 4
@@ -686,11 +686,11 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withMO(false).withAI(false)
+        let loadControl = ControlWord().withPO(false).withAI(false)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
@@ -732,11 +732,11 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withMO(false).withAI(false)
+        let loadControl = ControlWord().withPO(false).withAI(false)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
@@ -771,11 +771,11 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let store = 3
-        let storeControl = ControlWord().withMI(false).withCO(false)
+        let storeControl = ControlWord().withPI(false).withCO(false)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withMO(false).withAI(false)
+        let loadControl = ControlWord().withPO(false).withAI(false)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5

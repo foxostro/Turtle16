@@ -147,7 +147,7 @@ public class Computer: NSObject {
             state = state.withBus(bus)
             logger?.append("XO -- output %@ onto bus", state.bus)
         }
-        if (false == state.controlWord.MO) {
+        if (false == state.controlWord.PO) {
             let currentBank = banks[Int(state.registerD.value)]
             var updatedState = state.withBus(0) // ensure bus is invalidated
             updatedState = currentBank.load(updatedState)
@@ -201,7 +201,7 @@ public class Computer: NSObject {
             logger?.append("DI -- input %@ from bus. Selected bank is now \"%@\"",
                            state.registerD, currentBank.name)
         }
-        if (false == state.controlWord.MI) {
+        if (false == state.controlWord.PI) {
             let currentBank = banks[Int(state.registerD.value)]
             logger?.append("MI -- Store %@ to current bank, \"%@\", at address 0x%@",
                            state.bus,

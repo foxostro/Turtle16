@@ -19,10 +19,7 @@ public class Computer: NSObject {
     
     public override init() {
         currentState = ComputerState()
-        banks = [BankOperation(),
-                 BankOperation(),
-                 BankOperation(),
-                 BankOperation(name: "Upper Instruction RAM",
+        banks = [BankOperation(name: "Upper Instruction RAM",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withStoreToUpperInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
                  },
@@ -36,6 +33,9 @@ public class Computer: NSObject {
                                load: {(state: ComputerState) -> ComputerState in
                                 return state.withBus(state.lowerInstructionRAM.load(from: state.valueOfXYPair()))
                  }),
+                 BankOperation(),
+                 BankOperation(),
+                 BankOperation(),
                  BankOperation(name: "Data RAM",
                                store: {(state: ComputerState) -> ComputerState in
                                 return state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfXYPair())

@@ -20,7 +20,7 @@ class SerialInterfaceTests: XCTestCase {
         let state = ComputerState()
             .withBus(0xff)
             .withRegisterY(1)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
         
         let updatedState = serial.load(state)
         
@@ -32,7 +32,7 @@ class SerialInterfaceTests: XCTestCase {
         let state = ComputerState()
             .withBus(0xff)
             .withRegisterY(1)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
             .withSerialInput([])
         
         let updatedState = serial.load(state)
@@ -45,7 +45,7 @@ class SerialInterfaceTests: XCTestCase {
         let state = ComputerState()
             .withBus(0xff)
             .withRegisterY(1)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
             .withSerialInput([1, 2, 3])
         
         let updatedState = serial.load(state)
@@ -58,7 +58,7 @@ class SerialInterfaceTests: XCTestCase {
         let state = ComputerState()
             .withBus(0xff)
             .withRegisterY(0)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
             .withSerialInput([1, 2, 3])
         
         let updatedState = serial.load(state)
@@ -71,7 +71,7 @@ class SerialInterfaceTests: XCTestCase {
         var state = ComputerState()
             .withBus(0xff)
             .withRegisterY(0)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
             .withSerialInput([1, 2, 3])
         
         state = serial.load(state)
@@ -89,7 +89,7 @@ class SerialInterfaceTests: XCTestCase {
         var state = ComputerState()
             .withBus(0xff)
             .withRegisterY(0)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
         
         state = serial.load(state)
         XCTAssertEqual(state.bus.value, 0xff)
@@ -100,7 +100,7 @@ class SerialInterfaceTests: XCTestCase {
         let state = ComputerState()
             .withBus(2)
             .withRegisterY(0)
-            .withControlWord(ControlWord().withMO(false))
+            .withControlWord(ControlWord().withPO(false))
             .withSerialOutput([1])
         
         let updatedState = serial.store(state)

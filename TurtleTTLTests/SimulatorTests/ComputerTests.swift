@@ -207,6 +207,49 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
+        XCTAssertEqual(computer.currentState.registerX.value, 42)
+        XCTAssertEqual(computer.currentState.registerY.value, 42)
+        XCTAssertEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testReadWriteRegistersUV() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldu = 1
+        let lduControl = ControlWord().withCO(.active).withUI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldu, controlWord: lduControl)
+        
+        let movvu = 2
+        let movevuControl = ControlWord().withUO(.active).withVI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: movvu, controlWord: movevuControl)
+        
+        let movav = 3
+        let moveavControl = ControlWord().withVO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: movav, controlWord: moveavControl)
+        
+        let hlt = 4
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),
+            Instruction(opcode: ldu, immediate: 42),
+            Instruction(opcode: movvu, immediate: 0),
+            Instruction(opcode: movav, immediate: 0),
+            Instruction(opcode: hlt, immediate: 0)])
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerU.value, 42)
+        XCTAssertEqual(computer.currentState.registerV.value, 42)
         XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
@@ -869,6 +912,32 @@ class ComputerTests: XCTestCase {
         computer.modifyRegisterY(withString: "ff")
         XCTAssertEqual(computer.describeRegisterY(), "ff")
         XCTAssertEqual(computer.currentState.registerY.value, 255)
+    }
+    
+    func testModifyRegisterU_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterU(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterU(), "0")
+    }
+    
+    func testModifyRegisterU() {
+        let computer = makeComputer()
+        computer.modifyRegisterU(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterU(), "ff")
+        XCTAssertEqual(computer.currentState.registerU.value, 255)
+    }
+    
+    func testModifyRegisterV_InvalidInput() {
+        let computer = makeComputer()
+        computer.modifyRegisterV(withString: "foo")
+        XCTAssertEqual(computer.describeRegisterV(), "0")
+    }
+    
+    func testModifyRegisterV() {
+        let computer = makeComputer()
+        computer.modifyRegisterV(withString: "ff")
+        XCTAssertEqual(computer.describeRegisterV(), "ff")
+        XCTAssertEqual(computer.currentState.registerV.value, 255)
     }
     
     func testModifyPC_InvalidInput() {

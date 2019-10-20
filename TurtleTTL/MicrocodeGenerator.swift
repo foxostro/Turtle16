@@ -78,7 +78,7 @@ public class MicrocodeGenerator: NSObject {
     public func hlt() {
         let opcode = getNextOpcode()
         mapMnemonicToOpcode["HLT"] = opcode
-        let controlWord = ControlWord().withHLT(false)
+        let controlWord = ControlWord().withHLT(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
@@ -103,7 +103,7 @@ public class MicrocodeGenerator: NSObject {
             var controlWord = ControlWord()
             controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
             controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
-            controlWord = controlWord.withFI(false)
+            controlWord = controlWord.withFI(.active)
             let mnemonic = String(format: "ALU %@", String(describing: destination))
             let opcode = getNextOpcode()
             mapMnemonicToOpcode[mnemonic] = opcode
@@ -119,13 +119,13 @@ public class MicrocodeGenerator: NSObject {
         let opcode = getNextOpcode()
         mapMnemonicToOpcode["ALU"] = opcode
         microcode = microcode.withStore(opcode: opcode,
-                                        controlWord: ControlWord().outputEToBus().withFI(false))
+                                        controlWord: ControlWord().outputEToBus().withFI(.active))
     }
     
     public func jmp() {
         let opcode = getNextOpcode()
         mapMnemonicToOpcode["JMP"] = opcode
-        let controlWord = ControlWord().withJ(false)
+        let controlWord = ControlWord().withJ(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
@@ -133,7 +133,7 @@ public class MicrocodeGenerator: NSObject {
         // JC performs a jump when the carry flag is set.
         let opcode = getNextOpcode()
         mapMnemonicToOpcode["JC"] = opcode
-        let controlWord = ControlWord().withJ(false)
+        let controlWord = ControlWord().withJ(.active)
         microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord)
         microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: ControlWord())
         microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)

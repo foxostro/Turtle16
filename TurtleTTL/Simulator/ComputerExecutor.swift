@@ -62,7 +62,7 @@ public class ComputerExecutor: NSObject {
     }
     
     public func tick() {
-        if (false == computer.currentState.controlWord.HLT) {
+        if (.active == computer.currentState.controlWord.HLT) {
             isHalted = true
         }
         

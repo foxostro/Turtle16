@@ -119,7 +119,7 @@ public class Computer: NSObject {
         let aluResult = alu.result
         let aluFlags = Flags(alu.carryFlag, alu.equalFlag)
         
-        if (!currentState.controlWord.EO || !currentState.controlWord.FI) {
+        if (.active==currentState.controlWord.EO || .active==currentState.controlWord.FI) {
             logger?.append("ALU operation with s = 0b%@, carryIn = %x, mode = %x, a = 0x%x, b = 0x%x. This yields result = 0x%x, carryFlag = %x, equalFlag = %x", String(alu.s, radix: 2), alu.carryIn, alu.mode, alu.a, alu.b, alu.result, alu.carryFlag, alu.equalFlag)
         }
         
@@ -132,22 +132,22 @@ public class Computer: NSObject {
         var state = oldState
         
         logger?.append("Executing control word %@", state.controlWord)
-        if (false == state.controlWord.CO) {
+        if (.active == state.controlWord.CO) {
             let bus = state.registerC.value
             state = state.withBus(bus)
             logger?.append("CO -- output %@ onto bus", state.bus)
         }
-        if (false == state.controlWord.YO) {
+        if (.active == state.controlWord.YO) {
             let bus = state.registerY.value
             state = state.withBus(bus)
             logger?.append("YO -- output %@ onto bus", state.bus)
         }
-        if (false == state.controlWord.XO) {
+        if (.active == state.controlWord.XO) {
             let bus = state.registerX.value
             state = state.withBus(bus)
             logger?.append("XO -- output %@ onto bus", state.bus)
         }
-        if (false == state.controlWord.PO) {
+        if (.active == state.controlWord.PO) {
             let currentBank = banks[Int(state.registerD.value)]
             var updatedState = state.withBus(0) // ensure bus is invalidated
             updatedState = currentBank.load(updatedState)
@@ -157,51 +157,51 @@ public class Computer: NSObject {
                            String(state.valueOfXYPair(), radix: 16))
             state = updatedState
         }
-        if (false == state.controlWord.EO) {
+        if (.active == state.controlWord.EO) {
             let bus = state.aluResult.value
             state = state.withBus(bus)
             logger?.append("EO -- output %@ onto bus", state.bus)
         }
-        if (false == state.controlWord.FI) {
+        if (.active == state.controlWord.FI) {
             let updatedState = state.withFlags(state.aluFlags)
             logger?.append("FI -- flags changing from %@ to %@",
                            state.flags, updatedState.flags)
             state = updatedState
         }
-        if (false == state.controlWord.AO) {
+        if (.active == state.controlWord.AO) {
             let bus = state.registerA.value
             state = state.withBus(bus)
             logger?.append("AO -- output %@ onto bus", state.bus)
         }
-        if (false == state.controlWord.BO) {
+        if (.active == state.controlWord.BO) {
             let bus = state.registerB.value
             state = state.withBus(bus)
             logger?.append("BO -- output %@ onto bus", state.bus)
         }
         
-        if (false == state.controlWord.YI) {
+        if (.active == state.controlWord.YI) {
             logger?.append("YI -- input %@ from bus", state.bus)
             state = state.withRegisterY(state.bus.value)
         }
-        if (false == state.controlWord.XI) {
+        if (.active == state.controlWord.XI) {
             logger?.append("XI -- input %@ from bus", state.bus)
             state = state.withRegisterX(state.bus.value)
         }
-        if (false == state.controlWord.AI) {
+        if (.active == state.controlWord.AI) {
             logger?.append("AI -- input %@ from bus", state.bus)
             state = state.withRegisterA(state.bus.value)
         }
-        if (false == state.controlWord.BI) {
+        if (.active == state.controlWord.BI) {
             logger?.append("BI -- input %@ from bus", state.bus)
             state = state.withRegisterB(state.bus.value)
         }
-        if (false == state.controlWord.DI) {
+        if (.active == state.controlWord.DI) {
             state = state.withRegisterD(state.bus.value)
             let currentBank = banks[Int(state.registerD.value & 0b111)]
             logger?.append("DI -- input %@ from bus. Selected bank is now \"%@\"",
                            state.registerD, currentBank.name)
         }
-        if (false == state.controlWord.PI) {
+        if (.active == state.controlWord.PI) {
             let currentBank = banks[Int(state.registerD.value)]
             logger?.append("MI -- Store %@ to current bank, \"%@\", at address 0x%@",
                            state.bus,
@@ -209,7 +209,7 @@ public class Computer: NSObject {
                            String(state.valueOfXYPair(), radix: 16))
             state = currentBank.store(state)
         }
-        if (false == state.controlWord.J) {
+        if (.active == state.controlWord.J) {
             let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))
             state = state.withPC(pc)
             logger?.append("J -- jump to %@", state.pc)
@@ -218,7 +218,7 @@ public class Computer: NSObject {
             state = state.withPC(pc)
             logger?.append("PC -> %@", state.pc)
         }
-        if (false == state.controlWord.HLT) {
+        if (.active == state.controlWord.HLT) {
             logger?.append("HLT")
         }
         
@@ -227,7 +227,7 @@ public class Computer: NSObject {
     
     public func execute() {
         reset()
-        while (true == currentState.controlWord.HLT) {
+        while (.inactive == currentState.controlWord.HLT) {
             step()
         }
     }

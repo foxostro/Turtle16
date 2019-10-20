@@ -667,7 +667,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
-    func testStoreLoadToBankSevenDoesNothing() {
+    func testStoreLoadToPeripheralDeviceSevenDoesNothing() {
         // We've currently bound device seven to no peripheral devices.
         // In this case, an attempt to read or write to device seven will have
         // no effect.

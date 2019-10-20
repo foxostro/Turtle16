@@ -10,7 +10,7 @@ import Cocoa
 
 // Represents the serial interface module, a hardware peripheral which
 // enables bidirectional communication with a PC.
-public class SerialInterface: BankOperation {
+public class SerialInterface: PeripheralDeviceOperation {
     public required init() {
         super.init(name: "Serial")
         self.store = {(state: ComputerState) -> ComputerState in

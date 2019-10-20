@@ -17,6 +17,8 @@ class ViewController: NSViewController {
     @IBOutlet var registerD:NSTextField!
     @IBOutlet var registerX:NSTextField!
     @IBOutlet var registerY:NSTextField!
+    @IBOutlet var registerU:NSTextField!
+    @IBOutlet var registerV:NSTextField!
     @IBOutlet var aluResult:NSTextField!
     @IBOutlet var controlWord:NSTextField!
     @IBOutlet var controlSignals:NSTextField!
@@ -159,6 +161,16 @@ class ViewController: NSViewController {
         refresh()
     }
     
+    @IBAction func modifyRegisterU(_ sender: Any) {
+        computer.modifyRegisterU(withString: registerU.stringValue)
+        refresh()
+    }
+    
+    @IBAction func modifyRegisterV(_ sender: Any) {
+        computer.modifyRegisterV(withString: registerV.stringValue)
+        refresh()
+    }
+    
     @IBAction func modifyPC(_ sender: Any) {
         computer.modifyPC(withString: programCounter.stringValue)
         refresh()
@@ -181,6 +193,8 @@ class ViewController: NSViewController {
         registerD.stringValue = computer.describeRegisterD()
         registerX.stringValue = computer.describeRegisterX()
         registerY.stringValue = computer.describeRegisterY()
+        registerU.stringValue = computer.describeRegisterU()
+        registerV.stringValue = computer.describeRegisterV()
         aluResult.stringValue = computer.describeALUResult()
         controlWord.stringValue = computer.describeControlWord()
         controlSignals.stringValue = computer.describeControlSignals()

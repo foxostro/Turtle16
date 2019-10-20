@@ -77,8 +77,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
         
         let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
-        XCTAssertEqual(controlWord.AO, false)
-        XCTAssertEqual(controlWord.DI, false)
+        XCTAssertEqual(controlWord.AO, .active)
+        XCTAssertEqual(controlWord.DI, .active)
     }
     
     func testLoadImmediate() {
@@ -91,8 +91,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
         
         let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
-        XCTAssertEqual(controlWord.CO, false)
-        XCTAssertEqual(controlWord.DI, false)
+        XCTAssertEqual(controlWord.CO, .active)
+        XCTAssertEqual(controlWord.DI, .active)
     }
     
     func testStoreToMemory() {
@@ -199,8 +199,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
         
         let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
-        XCTAssertEqual(controlWord.EO, false)
-        XCTAssertEqual(controlWord.DI, false)
+        XCTAssertEqual(controlWord.EO, .active)
+        XCTAssertEqual(controlWord.DI, .active)
     }
     
     func testJmp() {

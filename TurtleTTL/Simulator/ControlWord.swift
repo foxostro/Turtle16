@@ -10,39 +10,41 @@ import Cocoa
 
 // Represents a control word in the TurtleTTL hardware.
 public class ControlWord: NSObject {
-    public let CO: Bool
-    public let J: Bool
-    public let YI: Bool
-    public let XI: Bool
-    public let YO: Bool
-    public let XO: Bool
-    public let PO: Bool
-    public let PI: Bool
-    public let EO: Bool
-    public let FI: Bool
-    public let AO: Bool
-    public let AI: Bool
-    public let BO: Bool
-    public let BI: Bool
-    public let DI: Bool
-    public let HLT: Bool
+    public enum ControlSignal { case active, inactive }
     
-    public required init(withCO CO: Bool,
-                         withJ J: Bool,
-                         withYI YI: Bool,
-                         withXI XI: Bool,
-                         withYO YO: Bool,
-                         withXO XO: Bool,
-                         withPO PO: Bool,
-                         withPI PI: Bool,
-                         withEO EO: Bool,
-                         withFI FI: Bool,
-                         withAO AO: Bool,
-                         withAI AI: Bool,
-                         withBO BO: Bool,
-                         withBI BI: Bool,
-                         withDI DI: Bool,
-                         withHLT HLT: Bool) {
+    public let CO: ControlSignal
+    public let J: ControlSignal
+    public let YI: ControlSignal
+    public let XI: ControlSignal
+    public let YO: ControlSignal
+    public let XO: ControlSignal
+    public let PO: ControlSignal
+    public let PI: ControlSignal
+    public let EO: ControlSignal
+    public let FI: ControlSignal
+    public let AO: ControlSignal
+    public let AI: ControlSignal
+    public let BO: ControlSignal
+    public let BI: ControlSignal
+    public let DI: ControlSignal
+    public let HLT: ControlSignal
+    
+    public required init(withCO CO: ControlSignal,
+                         withJ J: ControlSignal,
+                         withYI YI: ControlSignal,
+                         withXI XI: ControlSignal,
+                         withYO YO: ControlSignal,
+                         withXO XO: ControlSignal,
+                         withPO PO: ControlSignal,
+                         withPI PI: ControlSignal,
+                         withEO EO: ControlSignal,
+                         withFI FI: ControlSignal,
+                         withAO AO: ControlSignal,
+                         withAI AI: ControlSignal,
+                         withBO BO: ControlSignal,
+                         withBI BI: ControlSignal,
+                         withDI DI: ControlSignal,
+                         withHLT HLT: ControlSignal) {
         self.CO  = CO
         self.J   = J
         self.YI  = YI
@@ -62,61 +64,61 @@ public class ControlWord: NSObject {
     }
     
     public override convenience init() {
-        self.init(withCO:  true,
-                  withJ:   true,
-                  withYI:  true,
-                  withXI:  true,
-                  withYO:  true,
-                  withXO:  true,
-                  withPO:  true,
-                  withPI:  true,
-                  withEO:  true,
-                  withFI:  true,
-                  withAO:  true,
-                  withAI:  true,
-                  withBO:  true,
-                  withBI:  true,
-                  withDI:  true,
-                  withHLT: true)
+        self.init(withCO:  .inactive,
+                  withJ:   .inactive,
+                  withYI:  .inactive,
+                  withXI:  .inactive,
+                  withYO:  .inactive,
+                  withXO:  .inactive,
+                  withPO:  .inactive,
+                  withPI:  .inactive,
+                  withEO:  .inactive,
+                  withFI:  .inactive,
+                  withAO:  .inactive,
+                  withAI:  .inactive,
+                  withBO:  .inactive,
+                  withBI:  .inactive,
+                  withDI:  .inactive,
+                  withHLT: .inactive)
     }
     
     public convenience init(withValue value: UInt) {
-        self.init(withCO: (value & (1<<0))  != 0,
-                  withJ:  (value & (1<<1))  != 0,
-                  withYI: (value & (1<<2))  != 0,
-                  withXI: (value & (1<<3))  != 0,
-                  withYO: (value & (1<<4))  != 0,
-                  withXO: (value & (1<<5))  != 0,
-                  withPO: (value & (1<<6))  != 0,
-                  withPI: (value & (1<<7))  != 0,
-                  withEO: (value & (1<<8))  != 0,
-                  withFI: (value & (1<<9))  != 0,
-                  withAO: (value & (1<<10)) != 0,
-                  withAI: (value & (1<<11)) != 0,
-                  withBO: (value & (1<<12)) != 0,
-                  withBI: (value & (1<<13)) != 0,
-                  withDI: (value & (1<<14)) != 0,
-                  withHLT:(value & (1<<15)) != 0)
+        self.init(withCO: ((value & (1<<0))  != 0) ? .inactive : .active,
+                  withJ:  ((value & (1<<1))  != 0) ? .inactive : .active,
+                  withYI: ((value & (1<<2))  != 0) ? .inactive : .active,
+                  withXI: ((value & (1<<3))  != 0) ? .inactive : .active,
+                  withYO: ((value & (1<<4))  != 0) ? .inactive : .active,
+                  withXO: ((value & (1<<5))  != 0) ? .inactive : .active,
+                  withPO: ((value & (1<<6))  != 0) ? .inactive : .active,
+                  withPI: ((value & (1<<7))  != 0) ? .inactive : .active,
+                  withEO: ((value & (1<<8))  != 0) ? .inactive : .active,
+                  withFI: ((value & (1<<9))  != 0) ? .inactive : .active,
+                  withAO: ((value & (1<<10)) != 0) ? .inactive : .active,
+                  withAI: ((value & (1<<11)) != 0) ? .inactive : .active,
+                  withBO: ((value & (1<<12)) != 0) ? .inactive : .active,
+                  withBI: ((value & (1<<13)) != 0) ? .inactive : .active,
+                  withDI: ((value & (1<<14)) != 0) ? .inactive : .active,
+                  withHLT:((value & (1<<15)) != 0) ? .inactive : .active)
     }
     
     public var unsignedIntegerValue: UInt {
         var result: UInt = 0
-        result +=  CO ? (1<<0) : 0
-        result +=   J ? (1<<1) : 0
-        result +=  YI ? (1<<2) : 0
-        result +=  XI ? (1<<3) : 0
-        result +=  YO ? (1<<4) : 0
-        result +=  XO ? (1<<5) : 0
-        result +=  PO ? (1<<6) : 0
-        result +=  PI ? (1<<7) : 0
-        result +=  EO ? (1<<8) : 0
-        result +=  FI ? (1<<9) : 0
-        result +=  AO ? (1<<10) : 0
-        result +=  AI ? (1<<11) : 0
-        result +=  BO ? (1<<12) : 0
-        result +=  BI ? (1<<13) : 0
-        result +=  DI ? (1<<14) : 0
-        result += HLT ? (1<<15) : 0
+        result += ( CO == .inactive) ? (1<<0) : 0
+        result += (  J == .inactive) ? (1<<1) : 0
+        result += ( YI == .inactive) ? (1<<2) : 0
+        result += ( XI == .inactive) ? (1<<3) : 0
+        result += ( YO == .inactive) ? (1<<4) : 0
+        result += ( XO == .inactive) ? (1<<5) : 0
+        result += ( PO == .inactive) ? (1<<6) : 0
+        result += ( PI == .inactive) ? (1<<7) : 0
+        result += ( EO == .inactive) ? (1<<8) : 0
+        result += ( FI == .inactive) ? (1<<9) : 0
+        result += ( AO == .inactive) ? (1<<10) : 0
+        result += ( AI == .inactive) ? (1<<11) : 0
+        result += ( BO == .inactive) ? (1<<12) : 0
+        result += ( BI == .inactive) ? (1<<13) : 0
+        result += ( DI == .inactive) ? (1<<14) : 0
+        result += (HLT == .inactive) ? (1<<15) : 0
         return result
     }
     
@@ -130,58 +132,58 @@ public class ControlWord: NSObject {
     
     public override var description: String {
         var signals = [String]()
-        if (false == CO) {
+        if (.active == CO) {
             signals.append("CO")
         }
-        if (false == J) {
+        if (.active == J) {
             signals.append("J")
         }
-        if (false == YI) {
+        if (.active == YI) {
             signals.append("YI")
         }
-        if (false == XI) {
+        if (.active == XI) {
             signals.append("XI")
         }
-        if (false == YO) {
+        if (.active == YO) {
             signals.append("YO")
         }
-        if (false == XO) {
+        if (.active == XO) {
             signals.append("XO")
         }
-        if (false == PO) {
+        if (.active == PO) {
             signals.append("PO")
         }
-        if (false == PI) {
+        if (.active == PI) {
             signals.append("MI")
         }
-        if (false == EO) {
+        if (.active == EO) {
             signals.append("EO")
         }
-        if (false == FI) {
+        if (.active == FI) {
             signals.append("FI")
         }
-        if (false == AO) {
+        if (.active == AO) {
             signals.append("AO")
         }
-        if (false == AI) {
+        if (.active == AI) {
             signals.append("AI")
         }
-        if (false == BO) {
+        if (.active == BO) {
             signals.append("BO")
         }
-        if (false == BI) {
+        if (.active == BI) {
             signals.append("BI")
         }
-        if (false == DI) {
+        if (.active == DI) {
             signals.append("DI")
         }
-        if (false == HLT) {
+        if (.active == HLT) {
             signals.append("HLT")
         }
         return String(format: "{%@}", signals.joined(separator: ", "));
     }
     
-    public func withCO(_ CO: Bool) -> ControlWord {
+    public func withCO(_ CO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -200,7 +202,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withJ(_ J: Bool) -> ControlWord {
+    public func withJ(_ J: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -219,7 +221,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withYI(_ YI: Bool) -> ControlWord {
+    public func withYI(_ YI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -238,7 +240,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withXI(_ XI: Bool) -> ControlWord {
+    public func withXI(_ XI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -257,7 +259,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withYO(_ YO: Bool) -> ControlWord {
+    public func withYO(_ YO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -276,7 +278,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withXO(_ XO: Bool) -> ControlWord {
+    public func withXO(_ XO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -295,7 +297,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withPO(_ PO: Bool) -> ControlWord {
+    public func withPO(_ PO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -314,7 +316,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withPI(_ PI: Bool) -> ControlWord {
+    public func withPI(_ PI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -333,7 +335,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withEO(_ EO: Bool) -> ControlWord {
+    public func withEO(_ EO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -352,7 +354,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withFI(_ FI: Bool) -> ControlWord {
+    public func withFI(_ FI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -371,7 +373,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withAO(_ AO: Bool) -> ControlWord {
+    public func withAO(_ AO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -390,7 +392,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withAI(_ AI: Bool) -> ControlWord {
+    public func withAI(_ AI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -409,7 +411,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withBO(_ BO: Bool) -> ControlWord {
+    public func withBO(_ BO: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -428,7 +430,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withBI(_ BI: Bool) -> ControlWord {
+    public func withBI(_ BI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -447,7 +449,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withDI(_ DI: Bool) -> ControlWord {
+    public func withDI(_ DI: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -466,7 +468,7 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
-    public func withHLT(_ HLT: Bool) -> ControlWord {
+    public func withHLT(_ HLT: ControlSignal) -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
                            withYI:  YI,
@@ -486,133 +488,133 @@ public class ControlWord: NSObject {
     }
     
     func outputAToBus() -> ControlWord {
-        return ControlWord(withCO:  true,
+        return ControlWord(withCO:  .inactive,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  true,
-                           withXO:  true,
-                           withPO:  true,
+                           withYO:  .inactive,
+                           withXO:  .inactive,
+                           withPO:  .inactive,
                            withPI:  PI,
-                           withEO:  true,
+                           withEO:  .inactive,
                            withFI:  FI,
-                           withAO:  false,
+                           withAO:  .active,
                            withAI:  AI,
-                           withBO:  true,
+                           withBO:  .inactive,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
     }
     
     func outputBToBus() -> ControlWord {
-        return ControlWord(withCO:  true,
+        return ControlWord(withCO:  .inactive,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  true,
-                           withXO:  true,
-                           withPO:  true,
+                           withYO:  .inactive,
+                           withXO:  .inactive,
+                           withPO:  .inactive,
                            withPI:  PI,
-                           withEO:  true,
+                           withEO:  .inactive,
                            withFI:  FI,
-                           withAO:  true,
+                           withAO:  .inactive,
                            withAI:  AI,
-                           withBO:  false,
+                           withBO:  .active,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
     }
     
     func outputCToBus() -> ControlWord {
-        return ControlWord(withCO:  false,
+        return ControlWord(withCO:  .active,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  true,
-                           withXO:  true,
-                           withPO:  true,
+                           withYO:  .inactive,
+                           withXO:  .inactive,
+                           withPO:  .inactive,
                            withPI:  PI,
-                           withEO:  true,
+                           withEO:  .inactive,
                            withFI:  FI,
-                           withAO:  true,
+                           withAO:  .inactive,
                            withAI:  AI,
-                           withBO:  true,
+                           withBO:  .inactive,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
     }
     
     func outputXToBus() -> ControlWord {
-        return ControlWord(withCO:  true,
+        return ControlWord(withCO:  .inactive,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  true,
-                           withXO:  false,
-                           withPO:  true,
+                           withYO:  .inactive,
+                           withXO:  .active,
+                           withPO:  .inactive,
                            withPI:  PI,
-                           withEO:  true,
+                           withEO:  .inactive,
                            withFI:  FI,
-                           withAO:  true,
+                           withAO:  .inactive,
                            withAI:  AI,
-                           withBO:  true,
+                           withBO:  .inactive,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
     }
     
     func outputYToBus() -> ControlWord {
-        return ControlWord(withCO:  true,
+        return ControlWord(withCO:  .inactive,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  false,
-                           withXO:  true,
-                           withPO:  true,
+                           withYO:  .active,
+                           withXO:  .inactive,
+                           withPO:  .inactive,
                            withPI:  PI,
-                           withEO:  true,
+                           withEO:  .inactive,
                            withFI:  FI,
-                           withAO:  true,
+                           withAO:  .inactive,
                            withAI:  AI,
-                           withBO:  true,
+                           withBO:  .inactive,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
     }
     
     func outputEToBus() -> ControlWord {
-        return ControlWord(withCO:  true,
+        return ControlWord(withCO:  .inactive,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  true,
-                           withXO:  true,
-                           withPO:  true,
+                           withYO:  .inactive,
+                           withXO:  .inactive,
+                           withPO:  .inactive,
                            withPI:  PI,
-                           withEO:  false,
+                           withEO:  .active,
                            withFI:  FI,
-                           withAO:  true,
+                           withAO:  .inactive,
                            withAI:  AI,
-                           withBO:  true,
+                           withBO:  .inactive,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
     }
     
     func outputMToBus() -> ControlWord {
-        return ControlWord(withCO:  true,
+        return ControlWord(withCO:  .inactive,
                            withJ:   J,
                            withYI:  YI,
                            withXI:  XI,
-                           withYO:  true,
-                           withXO:  true,
-                           withPO:  false,
+                           withYO:  .inactive,
+                           withXO:  .inactive,
+                           withPO:  .active,
                            withPI:  PI,
-                           withEO:  true,
+                           withEO:  .inactive,
                            withFI:  FI,
-                           withAO:  true,
+                           withAO:  .inactive,
                            withAI:  AI,
-                           withBO:  true,
+                           withBO:  .inactive,
                            withBI:  BI,
                            withDI:  DI,
                            withHLT: HLT)
@@ -621,114 +623,114 @@ public class ControlWord: NSObject {
     func inputAFromBus() -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
-                           withYI:  true,
-                           withXI:  true,
+                           withYI:  .inactive,
+                           withXI:  .inactive,
                            withYO:  YO,
                            withXO:  XO,
                            withPO:  PO,
-                           withPI:  true,
+                           withPI:  .inactive,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
-                           withAI:  false,
+                           withAI:  .active,
                            withBO:  BO,
-                           withBI:  true,
-                           withDI:  true,
+                           withBI:  .inactive,
+                           withDI:  .inactive,
                            withHLT: HLT)
     }
     
     func inputBFromBus() -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
-                           withYI:  true,
-                           withXI:  true,
+                           withYI:  .inactive,
+                           withXI:  .inactive,
                            withYO:  YO,
                            withXO:  XO,
                            withPO:  PO,
-                           withPI:  true,
+                           withPI:  .inactive,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
-                           withAI:  true,
+                           withAI:  .inactive,
                            withBO:  BO,
-                           withBI:  false,
-                           withDI:  true,
+                           withBI:  .active,
+                           withDI:  .inactive,
                            withHLT: HLT)
     }
     
     func inputDFromBus() -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
-                           withYI:  true,
-                           withXI:  true,
+                           withYI:  .inactive,
+                           withXI:  .inactive,
                            withYO:  YO,
                            withXO:  XO,
                            withPO:  PO,
-                           withPI:  true,
+                           withPI:  .inactive,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
-                           withAI:  true,
+                           withAI:  .inactive,
                            withBO:  BO,
-                           withBI:  true,
-                           withDI:  false,
+                           withBI:  .inactive,
+                           withDI:  .active,
                            withHLT: HLT)
     }
     
     func inputXFromBus() -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
-                           withYI:  true,
-                           withXI:  false,
+                           withYI:  .inactive,
+                           withXI:  .active,
                            withYO:  YO,
                            withXO:  XO,
                            withPO:  PO,
-                           withPI:  true,
+                           withPI:  .inactive,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
-                           withAI:  true,
+                           withAI:  .inactive,
                            withBO:  BO,
-                           withBI:  true,
-                           withDI:  true,
+                           withBI:  .inactive,
+                           withDI:  .inactive,
                            withHLT: HLT)
     }
     
     func inputYFromBus() -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
-                           withYI:  false,
-                           withXI:  true,
+                           withYI:  .active,
+                           withXI:  .inactive,
                            withYO:  YO,
                            withXO:  XO,
                            withPO:  PO,
-                           withPI:  true,
+                           withPI:  .inactive,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
-                           withAI:  true,
+                           withAI:  .inactive,
                            withBO:  BO,
-                           withBI:  true,
-                           withDI:  true,
+                           withBI:  .inactive,
+                           withDI:  .inactive,
                            withHLT: HLT)
     }
     
     func inputMFromBus() -> ControlWord {
         return ControlWord(withCO:  CO,
                            withJ:   J,
-                           withYI:  true,
-                           withXI:  true,
+                           withYI:  .inactive,
+                           withXI:  .inactive,
                            withYO:  YO,
                            withXO:  XO,
                            withPO:  PO,
-                           withPI:  false,
+                           withPI:  .active,
                            withEO:  EO,
                            withFI:  FI,
                            withAO:  AO,
-                           withAI:  true,
+                           withAI:  .inactive,
                            withBO:  BO,
-                           withBI:  true,
-                           withDI:  true,
+                           withBI:  .inactive,
+                           withDI:  .inactive,
                            withHLT: HLT)
     }
 }

@@ -26,7 +26,7 @@ class MicrocodeGeneratorTests: XCTestCase {
         let value = generator.microcode.load(opcode: HLT!, carryFlag: 1, equalFlag: 1)
         let controlWord = ControlWord(withValue: UInt(value))
         
-        XCTAssertFalse(controlWord.HLT)
+        XCTAssertEqual(.active, controlWord.HLT)
     }
     
     func testGetOpcode() {
@@ -43,7 +43,7 @@ class MicrocodeGeneratorTests: XCTestCase {
         let value = generator.microcode.load(opcode: JMP!, carryFlag: 1, equalFlag: 1)
         let controlWord = ControlWord(withValue: UInt(value))
         
-        XCTAssertFalse(controlWord.J)
+        XCTAssertEqual(.active, controlWord.J)
     }
     
     func testJC() {
@@ -52,9 +52,9 @@ class MicrocodeGeneratorTests: XCTestCase {
         let JC = generator.getOpcode(withMnemonic: "JC")
         
         let controlWordOnBranchTaken = ControlWord(withValue: UInt(generator.microcode.load(opcode: JC!, carryFlag: 0, equalFlag: 1)))
-        XCTAssertFalse(controlWordOnBranchTaken.J)
+        XCTAssertEqual(.active, controlWordOnBranchTaken.J)
         
         let controlWordOnBranchNotTaken = ControlWord(withValue: UInt(generator.microcode.load(opcode: JC!, carryFlag: 1, equalFlag: 1)))
-        XCTAssertTrue(controlWordOnBranchNotTaken.J)
+        XCTAssertEqual(.inactive, controlWordOnBranchNotTaken.J)
     }
 }

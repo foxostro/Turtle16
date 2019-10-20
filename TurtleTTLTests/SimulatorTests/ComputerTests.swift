@@ -88,9 +88,9 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         
         let nop = ControlWord()
-        let lda = ControlWord().withCO(false).withAI(false)
-        let sum = ControlWord().withEO(false).withAI(false)
-        let hlt = ControlWord().withHLT(false)
+        let lda = ControlWord().withCO(.active).withAI(.active)
+        let sum = ControlWord().withEO(.active).withAI(.active)
+        let hlt = ControlWord().withHLT(.active)
         
         var instructionDecoder = InstructionDecoder()
         var instructionROM = InstructionROM()
@@ -128,9 +128,9 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         
         let nop = ControlWord()
-        let lda = ControlWord().withCO(false).withAI(false)
-        let sum = ControlWord().withEO(false).withAI(false)
-        let hlt = ControlWord().withHLT(false)
+        let lda = ControlWord().withCO(.active).withAI(.active)
+        let sum = ControlWord().withEO(.active).withAI(.active)
+        let hlt = ControlWord().withHLT(.active)
         
         var instructionDecoder = InstructionDecoder()
         var instructionROM = InstructionROM()
@@ -182,19 +182,19 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let movyx = 2
-        let moveyxControl = ControlWord().withXO(false).withYI(false)
+        let moveyxControl = ControlWord().withXO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: movyx, controlWord: moveyxControl)
         
         let movay = 3
-        let moveayControl = ControlWord().withYO(false).withAI(false)
+        let moveayControl = ControlWord().withYO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: movay, controlWord: moveayControl)
         
         let hlt = 4
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -221,19 +221,19 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let lda = 1
-        let ldaControl = ControlWord().withAI(false).withCO(false)
+        let ldaControl = ControlWord().withAI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let movba = 2
-        let movebaControl = ControlWord().withBI(false).withAO(false)
+        let movebaControl = ControlWord().withBI(.active).withAO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: movba, controlWord: movebaControl)
         
         let movdb = 3
-        let movedbControl = ControlWord().withDI(false).withBO(false)
+        let movedbControl = ControlWord().withDI(.active).withBO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: movdb, controlWord: movedbControl)
         
         let hlt = 4
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -260,27 +260,27 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 2
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(false).withAI(false)
+        let loadControl = ControlWord().withPO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 6
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -309,23 +309,23 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let lda = 2
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let ldx = 3
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 4
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let jmp = 5
-        let jmpControl = ControlWord().withJ(false)
+        let jmpControl = ControlWord().withJ(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: jmp, controlWord: jmpControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -356,31 +356,31 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let lda = 2
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let ldb = 3
-        let ldbControl = ControlWord().withCO(false).withBI(false)
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
         
         let ldx = 4
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 5
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let alu = 6
-        let aluControl = ControlWord().withEO(false).withDI(false).withFI(false)
+        let aluControl = ControlWord().withEO(.active).withDI(.active).withFI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
         
         let jc = 7
-        let jcControl = ControlWord().withJ(false)
+        let jcControl = ControlWord().withJ(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: jc,
                                                           carryFlag:0,
                                                           equalFlag:0,
@@ -430,31 +430,31 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let lda = 2
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let ldb = 3
-        let ldbControl = ControlWord().withCO(false).withBI(false)
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
         
         let ldx = 4
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 5
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let alu = 6
-        let aluControl = ControlWord().withEO(false).withFI(false).withDI(false)
+        let aluControl = ControlWord().withEO(.active).withFI(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
         
         let jc = 7
-        let jcControl = ControlWord().withJ(false)
+        let jcControl = ControlWord().withJ(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: jc,
                                                           carryFlag:1,
                                                           equalFlag:0,
@@ -504,31 +504,31 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 2
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(false).withAI(false)
+        let loadControl = ControlWord().withPO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 6
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         let lda = 7
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -558,31 +558,31 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 2
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(false).withAI(false)
+        let loadControl = ControlWord().withPO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 6
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         let lda = 7
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -612,31 +612,31 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 2
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let hlt = 4
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 5
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         let lda = 6
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         let jmp = 7
-        let jmpControl = ControlWord().withJ(false)
+        let jmpControl = ControlWord().withJ(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: jmp, controlWord: jmpControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -678,31 +678,31 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let ldx = 1
-        let ldxControl = ControlWord().withCO(false).withXI(false)
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
         
         let ldy = 2
-        let ldyControl = ControlWord().withCO(false).withYI(false)
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(false).withAI(false)
+        let loadControl = ControlWord().withPO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 6
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         let lda = 7
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -732,19 +732,19 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(false).withAI(false)
+        let loadControl = ControlWord().withPO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 6
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -771,23 +771,23 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(false).withCO(false)
+        let storeControl = ControlWord().withPI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(false).withAI(false)
+        let loadControl = ControlWord().withPO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         let ldd = 6
-        let lddControl = ControlWord().withCO(false).withDI(false)
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
         
         let lda = 7
-        let ldaControl = ControlWord().withCO(false).withAI(false)
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -815,7 +815,7 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 5
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)
@@ -843,7 +843,7 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
         let hlt = 1
-        let hltControl = ControlWord().withHLT(false)
+        let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
         computer.provideMicrocode(microcode: instructionDecoder)

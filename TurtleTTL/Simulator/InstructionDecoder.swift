@@ -8,38 +8,34 @@
 
 import Cocoa
 
-// Instruction Decoder is backed by two ROM buffers.
+// Instruction Decoder is backed by four ROM buffers.
 // This mirrors the physical construction of the Instruction Decoder circuit
-// which uses two eight-bit EEPROM chips to form a sixteen-bit word.
+// which uses four 8-bit ROM chips to form a 32-bit word.
 public class InstructionDecoder: NSObject {
-    public let upperROM: Memory
-    public let lowerROM: Memory
+    public let rom: [Memory]
     
     public var size: Int {
-        return lowerROM.size
+        return rom[0].size
     }
     
     public override convenience init() {
         let blank = Memory(withSize: 131072)
-        self.init(withUpperROM: blank,
-                  withLowerROM: blank)
+        self.init(withROM: [blank, blank, blank, blank])
     }
     
-    public required init(withUpperROM upperROM: Memory,
-                         withLowerROM lowerROM: Memory) {
-        assert(lowerROM.size == upperROM.size)
-        self.upperROM = upperROM
-        self.lowerROM = lowerROM
+    public required init(withROM rom: [Memory]) {
+        assert(rom.count == 4)
+        self.rom = rom
     }
     
-    public func withUpperROM(_ upperROM: Memory) -> InstructionDecoder {
-        return InstructionDecoder(withUpperROM: upperROM,
-                                  withLowerROM: lowerROM)
+    public func withROM(newROM: [Memory]) -> InstructionDecoder {
+        return InstructionDecoder(withROM: newROM)
     }
     
-    public func withLowerROM(_ lowerROM: Memory) -> InstructionDecoder {
-        return InstructionDecoder(withUpperROM: upperROM,
-                                  withLowerROM: lowerROM)
+    public func withROM(index: Int, newROM: Memory) -> InstructionDecoder {
+        var rom = self.rom
+        rom[index] = newROM
+        return InstructionDecoder(withROM: rom)
     }
     
     public func withStore(opcode:Int, controlWord:ControlWord) -> InstructionDecoder {
@@ -51,18 +47,17 @@ public class InstructionDecoder: NSObject {
     }
     
     public func withStore(opcode:Int, carryFlag:Int, equalFlag:Int, controlWord:ControlWord) -> InstructionDecoder {
-        return withStore(value: UInt16(controlWord.unsignedIntegerValue),
+        return withStore(value: UInt32(controlWord.unsignedIntegerValue),
                          to: makeAddress(opcode: opcode,
                                          carryFlag: carryFlag,
                                          equalFlag: equalFlag))
     }
     
-    public func withStore(value: UInt16, to address: Int) -> InstructionDecoder {
-        let updatedUpper = upperROM.withStore(value: UInt8((value & 0xff00) >> 8), to: address)
-        let updatedLower = lowerROM.withStore(value: UInt8( value & 0x00ff), to: address)
-        return self
-            .withUpperROM(updatedUpper)
-            .withLowerROM(updatedLower)
+    public func withStore(value: UInt32, to address: Int) -> InstructionDecoder {
+        return self.withROM(newROM: [rom[0].withStore(value: UInt8( value & 0x000000ff), to: address),
+                                     rom[1].withStore(value: UInt8((value & 0x0000ff00) >> 8), to: address),
+                                     rom[2].withStore(value: UInt8((value & 0x00ff0000) >> 16), to: address),
+                                     rom[3].withStore(value: UInt8((value & 0xff000000) >> 24), to: address)])
     }
     
     public func makeAddress(opcode:Int, carryFlag:Int, equalFlag:Int) -> Int {
@@ -73,13 +68,16 @@ public class InstructionDecoder: NSObject {
         return carryFlag<<9 | equalFlag<<8 | opcode
     }
     
-    public func load(opcode:Int, carryFlag:Int, equalFlag:Int) -> UInt16 {
+    public func load(opcode:Int, carryFlag:Int, equalFlag:Int) -> UInt32 {
         return load(from: makeAddress(opcode: opcode,
                                       carryFlag: carryFlag,
                                       equalFlag: equalFlag))
     }
     
-    public func load(from address: Int) -> UInt16 {
-        return UInt16(upperROM.load(from: address))<<8 | UInt16(lowerROM.load(from: address))
+    public func load(from address: Int) -> UInt32 {
+        return UInt32(rom[3].load(from: address))<<24
+             | UInt32(rom[2].load(from: address))<<16
+             | UInt32(rom[1].load(from: address))<<8
+             | UInt32(rom[0].load(from: address))
     }
 }

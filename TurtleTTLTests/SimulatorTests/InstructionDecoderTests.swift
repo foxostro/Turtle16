@@ -17,7 +17,7 @@ class InstructionDecoderTests: XCTestCase {
     }
     
     func testContentsModifiable() {
-        let value: UInt16 = 1234
+        let value: UInt32 = 0xffffffff
         let decoder = InstructionDecoder().withStore(value: value, to: 0)
         XCTAssertEqual(decoder.load(from: 0), value)
     }

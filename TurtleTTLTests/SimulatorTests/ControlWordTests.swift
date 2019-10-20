@@ -17,16 +17,16 @@ class ControlWordTests: XCTestCase {
     
     func testModifyCOBit() {
         let controlWord = ControlWord().withCO(.active)
-        XCTAssertEqual(controlWord.unsignedIntegerValue, 0b1111111111111110)
+        XCTAssertEqual(controlWord.unsignedIntegerValue, 0b11111111111111111111111111101111)
     }
     
     func testSettingContentsSetsHLTSignal() {
-        let controlWord = ControlWord(withValue: 1<<15)
+        let controlWord = ControlWord(withValue: 1<<31)
         XCTAssertEqual(controlWord.HLT, .inactive)
     }
     
     func testControlWordStringIsPaddedOutToLength() {
         let hlt = ControlWord().withHLT(.active)
-        XCTAssertEqual(hlt.stringValue, "0111111111111111")
+        XCTAssertEqual(hlt.stringValue, "01111111111111111111111111111111")
     }
 }

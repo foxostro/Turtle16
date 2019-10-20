@@ -15,7 +15,7 @@ class MicrocodeGeneratorTests: XCTestCase {
         generator.generate()
         
         let NOP = generator.getOpcode(withMnemonic: "NOP")
-        XCTAssertEqual(generator.microcode.load(opcode: NOP!, carryFlag: 1, equalFlag: 1), UInt16(ControlWord().unsignedIntegerValue))
+        XCTAssertEqual(generator.microcode.load(opcode: NOP!, carryFlag: 1, equalFlag: 1), UInt32(ControlWord().unsignedIntegerValue))
     }
     
     func testHLT() {

@@ -40,8 +40,8 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         
         let instructionDecoder = InstructionDecoder()
-            .withStore(value: 0b1111111111111111, to: 0) // NOP
-            .withStore(value: 0b1111011111111110, to: 1) // Set register A to immediate value 1.
+            .withStore(value: 0b11111111111111111111111111111111, to: 0) // NOP
+            .withStore(value: 0b11111111111111111111111111101110, to: 1) // MOV C, A
         
         let instructionROM = InstructionROM()
             .withStore(value: 0b0000000000000000, to: 0) // NOP
@@ -59,7 +59,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.pc.value, 1)
         XCTAssertEqual(computer.currentState.pc_if.value, 0)
         XCTAssertEqual(computer.currentState.if_id.description, "{op=0b0, imm=0b0}")
-        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffff)
+        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch the assignment to A, Decode the NOP, Execute Whatever
         computer.step()
@@ -67,7 +67,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.pc.value, 2)
         XCTAssertEqual(computer.currentState.pc_if.value, 1)
         XCTAssertEqual(computer.currentState.if_id.description, "{op=0b0, imm=0b0}")
-        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffff)
+        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch whatever, Decode the assignment to A, Execute the NOP
         computer.step()
@@ -75,7 +75,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.pc.value, 3)
         XCTAssertEqual(computer.currentState.pc_if.value, 2)
         XCTAssertEqual(computer.currentState.if_id.description, "{op=0b1, imm=0b1}")
-        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffff)
+        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch whatever, Decode whatever, Execute the assignment to A.
         XCTAssertEqual(computer.currentState.registerA.value, 0)
@@ -167,8 +167,8 @@ class ComputerTests: XCTestCase {
         
         XCTAssertEqual(computer.describeALUResult(), "3")
         XCTAssertEqual(computer.describeBus(), "3")
-        XCTAssertEqual(computer.describeControlWord(), "1111011011111111")
-        XCTAssertEqual(computer.describeControlSignals(), "{EO, AI}")
+        XCTAssertEqual(computer.describeControlWord(), "11111111111111111111111110111110")
+        XCTAssertEqual(computer.describeControlSignals(), "{AI, EO}")
     }
     
     func testReadWriteRegistersXY() {
@@ -741,12 +741,16 @@ class ComputerTests: XCTestCase {
         try! computer.saveMicrocode(to: url)
         
         computer.provideMicrocode(microcode: InstructionDecoder())
-        XCTAssertNotEqual(oldDecoder.upperROM.data, computer.currentState.instructionDecoder.upperROM.data)
-        XCTAssertNotEqual(oldDecoder.lowerROM.data, computer.currentState.instructionDecoder.lowerROM.data)
+        
+        for i in 0...oldDecoder.rom.count {
+            XCTAssertNotEqual(oldDecoder.rom[i].data, computer.currentState.instructionDecoder.rom[i].data)
+        }
         
         try! computer.loadMicrocode(from: url)
-        XCTAssertEqual(oldDecoder.upperROM.data, computer.currentState.instructionDecoder.upperROM.data)
-        XCTAssertEqual(oldDecoder.lowerROM.data, computer.currentState.instructionDecoder.lowerROM.data)
+        
+        for i in 0...oldDecoder.rom.count {
+            XCTAssertEqual(oldDecoder.rom[i].data, computer.currentState.instructionDecoder.rom[i].data)
+        }
     }
     
     func disabled_too_slow_testSaveLoadProgram() {

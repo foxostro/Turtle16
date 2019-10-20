@@ -13,8 +13,7 @@ public class Computer: NSObject {
     public var currentState: ComputerState
     public var logger:Logger? = nil
     let banks: [BankOperation]
-    let lowerDecoderRomFilename = "Lower Decoder ROM.bin"
-    let upperDecoderRomFilename = "Upper Decoder ROM.bin"
+    let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
     
@@ -233,23 +232,26 @@ public class Computer: NSObject {
     public func saveMicrocode(to: URL) throws {
         // Use minipro on the command-line to flash the binary file to EEPROM:
         //   % minipro -p SST29EE010 -y -w ./file.bin
-        let lowerDecoderROM = currentState.instructionDecoder.lowerROM.data
-        let upperDecoderROM = currentState.instructionDecoder.upperROM.data
-        
         try FileManager.default.createDirectory(at: to,
                                                 withIntermediateDirectories: false,
                                                 attributes: [:])
-        try lowerDecoderROM.write(to: to.appendingPathComponent(lowerDecoderRomFilename))
-        try upperDecoderROM.write(to: to.appendingPathComponent(upperDecoderRomFilename))
+        let roms = currentState.instructionDecoder.rom
+        for i in 0...roms.count {
+            let fileName = String(format: decoderRomFilenameFormat, i)
+            let rom = roms[i].data
+            try rom.write(to: to.appendingPathComponent(fileName))
+        }
     }
     
     public func loadMicrocode(from: URL) throws {
-        let lowerData = try Data(contentsOf: from.appendingPathComponent(lowerDecoderRomFilename) as URL)
-        let upperData = try Data(contentsOf: from.appendingPathComponent(upperDecoderRomFilename) as URL)
-        
-        let decoder = InstructionDecoder(withUpperROM: Memory(withData: upperData),
-                                         withLowerROM: Memory(withData: lowerData))
-        
+        var roms = [Memory]()
+        for i in 0...currentState.instructionDecoder.rom.count {
+            let fileName = String(format: decoderRomFilenameFormat, i)
+            let data = try Data(contentsOf: from.appendingPathComponent(fileName) as URL)
+            let rom = Memory(withData: data)
+            roms.append(rom)
+        }
+        let decoder = InstructionDecoder(withROM: roms)
         provideMicrocode(microcode: decoder)
     }
     

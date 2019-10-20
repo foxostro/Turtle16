@@ -201,10 +201,31 @@ class AssemblerLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
-    func testTokenizeRegisterF() {
+    func testTokenizeRegisterM() {
         let tokenizer = AssemblerLexer(withString: "M")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "M", literal: .M),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeRegisterP() {
+        let tokenizer = AssemblerLexer(withString: "P")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "P", literal: .P),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeRegisterU() {
+        let tokenizer = AssemblerLexer(withString: "U")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "U", literal: .U),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeRegisterV() {
+        let tokenizer = AssemblerLexer(withString: "V")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "V", literal: .V),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     

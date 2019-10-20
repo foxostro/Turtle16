@@ -8,4 +8,4 @@
 
 import Cocoa
 
-public enum RegisterName { case A, B, C, D, E, M, X, Y }
+public enum RegisterName { case A, B, C, D, E, M, P, U, V, X, Y }

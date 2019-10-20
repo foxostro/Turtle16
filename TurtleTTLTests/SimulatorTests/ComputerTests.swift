@@ -11,8 +11,8 @@ import TurtleTTL
 
 class ComputerTests: XCTestCase {
     let isVerboseLogging = true
-    let kUpperInstructionRAM = 3
-    let kLowerInstructionRAM = 4
+    let kUpperInstructionRAM = 0
+    let kLowerInstructionRAM = 1
     let kDataRAM = 5
     
     class ConsoleLogger: NSObject, Logger {
@@ -667,7 +667,10 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerA.value, 42)
     }
     
-    func testStoreLoadToBankZeroDoesNothing() {
+    func testStoreLoadToBankSevenDoesNothing() {
+        // We've currently bound device seven to no peripheral devices.
+        // In this case, an attempt to read or write to device seven will have
+        // no effect.
         let computer = makeComputer()
         
         var instructionDecoder = InstructionDecoder()
@@ -708,7 +711,7 @@ class ComputerTests: XCTestCase {
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),    // NOP
-            Instruction(opcode: ldd,   immediate: 0),    // LDD $0
+            Instruction(opcode: ldd,   immediate: 7),    // LDD $7
             Instruction(opcode: ldx,   immediate: 0),    // LDX $0
             Instruction(opcode: ldy,   immediate: 0),    // LDY $0
             Instruction(opcode: store, immediate: 42),   // STORE $42

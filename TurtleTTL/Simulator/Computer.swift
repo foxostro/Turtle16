@@ -150,6 +150,16 @@ public class Computer: NSObject {
                            String(state.valueOfXYPair(), radix: 16))
             state = updatedState
         }
+        if (.active == state.controlWord.VO) {
+            let bus = state.registerV.value
+            state = state.withBus(bus)
+            logger?.append("VO -- output %@ onto bus", state.bus)
+        }
+        if (.active == state.controlWord.UO) {
+            let bus = state.registerU.value
+            state = state.withBus(bus)
+            logger?.append("UO -- output %@ onto bus", state.bus)
+        }
         if (.active == state.controlWord.EO) {
             let bus = state.aluResult.value
             state = state.withBus(bus)
@@ -179,6 +189,14 @@ public class Computer: NSObject {
         if (.active == state.controlWord.XI) {
             logger?.append("XI -- input %@ from bus", state.bus)
             state = state.withRegisterX(state.bus.value)
+        }
+        if (.active == state.controlWord.VI) {
+            logger?.append("VI -- input %@ from bus", state.bus)
+            state = state.withRegisterV(state.bus.value)
+        }
+        if (.active == state.controlWord.UI) {
+            logger?.append("UI -- input %@ from bus", state.bus)
+            state = state.withRegisterU(state.bus.value)
         }
         if (.active == state.controlWord.AI) {
             logger?.append("AI -- input %@ from bus", state.bus)
@@ -318,6 +336,18 @@ public class Computer: NSObject {
         }
     }
     
+    public func modifyRegisterU(withString s: String) {
+        if let value = UInt8(s, radix: 16) {
+            currentState = currentState.withRegisterU(value)
+        }
+    }
+    
+    public func modifyRegisterV(withString s: String) {
+        if let value = UInt8(s, radix: 16) {
+            currentState = currentState.withRegisterV(value)
+        }
+    }
+    
     public func modifyPC(withString s: String) {
         if let value = ProgramCounter(withStringValue: s) {
             currentState = currentState.withPC(value)
@@ -358,6 +388,14 @@ public class Computer: NSObject {
     
     public func describeRegisterY() -> String {
         return currentState.registerY.description
+    }
+    
+    public func describeRegisterU() -> String {
+        return currentState.registerU.description
+    }
+    
+    public func describeRegisterV() -> String {
+        return currentState.registerV.description
     }
     
     public func describeALUResult() -> String {

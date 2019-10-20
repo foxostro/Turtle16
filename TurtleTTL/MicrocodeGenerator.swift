@@ -16,7 +16,7 @@ public class MicrocodeGenerator: NSObject {
     
     // Registers which can take in a value from the bus.
     public enum SourceRegister : CaseIterable {
-        case A, B, C, X, Y, E, M
+        case A, B, C, E, M, P, U, V, X, Y
     }
     
     public func modifyControlWord(controlWord: ControlWord, toOutputToBus: SourceRegister) -> ControlWord {
@@ -27,20 +27,26 @@ public class MicrocodeGenerator: NSObject {
             return controlWord.outputBToBus()
         case .C:
             return controlWord.outputCToBus()
-        case .X:
-            return controlWord.outputXToBus()
-        case .Y:
-            return controlWord.outputYToBus()
         case .E:
             return controlWord.outputEToBus()
         case .M:
             return controlWord.outputMToBus()
+        case .P:
+            return controlWord.outputPToBus()
+        case .U:
+            return controlWord.outputUToBus()
+        case .V:
+            return controlWord.outputVToBus()
+        case .X:
+            return controlWord.outputXToBus()
+        case .Y:
+            return controlWord.outputYToBus()
         }
     }
     
     // Registers which can output a value to the bus.
     public enum DestinationRegister : CaseIterable {
-        case A, B, D, X, Y, M
+        case A, B, D, M, P, U, V, X, Y
     }
     
     public func modifyControlWord(controlWord: ControlWord, toInputFromBus: DestinationRegister) -> ControlWord {
@@ -51,12 +57,18 @@ public class MicrocodeGenerator: NSObject {
             return controlWord.inputBFromBus()
         case .D:
             return controlWord.inputDFromBus()
+        case .M:
+            return controlWord.inputMFromBus()
+        case .P:
+            return controlWord.inputPFromBus()
+        case .U:
+            return controlWord.inputUFromBus()
+        case .V:
+            return controlWord.inputVFromBus()
         case .X:
             return controlWord.inputXFromBus()
         case .Y:
             return controlWord.inputYFromBus()
-        case .M:
-            return controlWord.inputMFromBus()
         }
     }
     
@@ -141,6 +153,7 @@ public class MicrocodeGenerator: NSObject {
     }
     
     func getNextOpcode() -> Int {
+        assert(nextOpcode < 256)
         let opcode = nextOpcode
         nextOpcode += 1
         return opcode

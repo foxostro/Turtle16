@@ -36,13 +36,7 @@ public class Computer: NSObject {
                  PeripheralDeviceOperation(),
                  PeripheralDeviceOperation(),
                  PeripheralDeviceOperation(),
-                 PeripheralDeviceOperation(name: "Data RAM",
-                               store: {(state: ComputerState) -> ComputerState in
-                                return state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfXYPair())
-                 },
-                               load: {(state: ComputerState) -> ComputerState in
-                                return state.withBus(state.dataRAM.load(from: state.valueOfXYPair()))
-                 }),
+                 PeripheralDeviceOperation(),
                  SerialInterface(),
                  PeripheralDeviceOperation(),
                  PeripheralDeviceOperation()]
@@ -144,10 +138,18 @@ public class Computer: NSObject {
             let currentPeripheral = peripherals[Int(state.registerD.value)]
             var updatedState = state.withBus(0) // ensure bus is invalidated
             updatedState = currentPeripheral.load(updatedState)
-            logger?.append("MO -- Load %@ from current peripheral, \"%@\", at address 0x%@",
+            logger?.append("PO -- Load %@ from current peripheral, \"%@\", at address 0x%@",
                            updatedState.bus,
                            currentPeripheral.name,
                            String(state.valueOfXYPair(), radix: 16))
+            state = updatedState
+        }
+        if (.active == state.controlWord.MO) {
+            var updatedState = state.withBus(0) // ensure bus is invalidated
+            updatedState = state.withBus(state.dataRAM.load(from: state.valueOfUVPair()))
+            logger?.append("MO -- Load %@ from Data RAM at address 0x%@",
+                           updatedState.bus,
+                           String(state.valueOfUVPair(), radix: 16))
             state = updatedState
         }
         if (.active == state.controlWord.VO) {
@@ -214,11 +216,16 @@ public class Computer: NSObject {
         }
         if (.active == state.controlWord.PI) {
             let currentPeripheral = peripherals[Int(state.registerD.value)]
-            logger?.append("MI -- Store %@ to current peripheral, \"%@\", at address 0x%@",
+            logger?.append("PI -- Store %@ to current peripheral, \"%@\", at address 0x%@",
                            state.bus,
                            currentPeripheral.name,
                            String(state.valueOfXYPair(), radix: 16))
             state = currentPeripheral.store(state)
+        }
+        if (.active == state.controlWord.MI) {
+            logger?.append("MI -- Store %@ to Data RAM at address 0x%@",
+                           state.bus, String(state.valueOfUVPair(), radix: 16))
+            state = state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfUVPair())
         }
         if (.active == state.controlWord.J) {
             let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))

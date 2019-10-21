@@ -13,7 +13,6 @@ class ComputerTests: XCTestCase {
     let isVerboseLogging = true
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
-    let kDataRAM = 5
     
     class ConsoleLogger: NSObject, Logger {
         func append(_ format: String, _ args: CVarArg...) {
@@ -301,37 +300,32 @@ class ComputerTests: XCTestCase {
         let nopControl = ControlWord()
         instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
         
-        let ldx = 1
-        let ldxControl = ControlWord().withCO(.active).withXI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        let ldu = 1
+        let lduControl = ControlWord().withCO(.active).withUI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldu, controlWord: lduControl)
         
-        let ldy = 2
-        let ldyControl = ControlWord().withCO(.active).withYI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        let ldv = 2
+        let ldvControl = ControlWord().withCO(.active).withVI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldv, controlWord: ldvControl)
         
         let store = 3
-        let storeControl = ControlWord().withPI(.active).withCO(.active)
+        let storeControl = ControlWord().withMI(.active).withCO(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: store, controlWord: storeControl)
         
         let load = 4
-        let loadControl = ControlWord().withPO(.active).withAI(.active)
+        let loadControl = ControlWord().withMO(.active).withAI(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: load, controlWord: loadControl)
         
         let hlt = 5
         let hltControl = ControlWord().withHLT(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
         
-        let ldd = 6
-        let lddControl = ControlWord().withCO(.active).withDI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
-        
         computer.provideMicrocode(microcode: instructionDecoder)
         
         computer.provideInstructions([
             Instruction(opcode: nop,   immediate: 0),        // NOP
-            Instruction(opcode: ldd,   immediate: kDataRAM), // LDD $kDataRAM
-            Instruction(opcode: ldx,   immediate: 0),        // LDX $0
-            Instruction(opcode: ldy,   immediate: 0),        // LDY $0
+            Instruction(opcode: ldu,   immediate: 0),        // LDU $0
+            Instruction(opcode: ldv,   immediate: 0),        // LDV $0
             Instruction(opcode: store, immediate: 42),       // STORE $42
             Instruction(opcode: load,  immediate: 0),        // LOAD A
             Instruction(opcode: hlt,   immediate: 0)])       // HLT

@@ -744,4 +744,8 @@ public class ComputerState: NSObject {
     func valueOfXYPair() -> Int {
         return Int(registerX.value)<<8 | Int(registerY.value)
     }
+    
+    func valueOfUVPair() -> Int {
+        return Int(registerU.value)<<8 | Int(registerV.value)
+    }
 }

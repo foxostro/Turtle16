@@ -104,8 +104,8 @@ public class Computer: NSObject {
         let c = currentState.registerC.value
         let alu = ALU()
         alu.s = (c & 0b1111)
-        alu.carryIn = Int(c & 0b10000) >> 4
-        alu.mode = Int(c & 0b100000) >> 5
+        alu.mode = Int(c & 0b10000) >> 4
+        alu.carryIn = (currentState.controlWord.CarryIn == .active) ? 0 : 1
         alu.a = a
         alu.b = b
         alu.update()

@@ -1594,7 +1594,7 @@
                 <userDefaultsController representsSharedInstance="YES" id="UzL-l0-aAD"/>
                 <customObject id="QI0-sg-86H" customClass="Computer" customModule="TurtleTTL"/>
             </objects>
-            <point key="canvasLocation" x="74" y="971.5"/>
+            <point key="canvasLocation" x="75" y="1089"/>
         </scene>
     </scenes>
 </document>

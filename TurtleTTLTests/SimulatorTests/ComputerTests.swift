@@ -88,7 +88,7 @@ class ComputerTests: XCTestCase {
         
         let nop = ControlWord()
         let lda = ControlWord().withCO(.active).withAI(.active)
-        let sum = ControlWord().withEO(.active).withAI(.active)
+        let sum = ControlWord().withEO(.active).withAI(.active).withCarryIn(.active)
         let hlt = ControlWord().withHLT(.active)
         
         var instructionDecoder = InstructionDecoder()
@@ -128,7 +128,7 @@ class ComputerTests: XCTestCase {
         
         let nop = ControlWord()
         let lda = ControlWord().withCO(.active).withAI(.active)
-        let sum = ControlWord().withEO(.active).withAI(.active)
+        let sum = ControlWord().withEO(.active).withAI(.active).withCarryIn(.active)
         let hlt = ControlWord().withHLT(.active)
         
         var instructionDecoder = InstructionDecoder()
@@ -167,8 +167,8 @@ class ComputerTests: XCTestCase {
         
         XCTAssertEqual(computer.describeALUResult(), "3")
         XCTAssertEqual(computer.describeBus(), "3")
-        XCTAssertEqual(computer.describeControlWord(), "11111111111111111111111110111110")
-        XCTAssertEqual(computer.describeControlSignals(), "{AI, EO}")
+        XCTAssertEqual(computer.describeControlWord(), "11111011111111111111111110111110")
+        XCTAssertEqual(computer.describeControlSignals(), "{AI, EO, CarryIn}")
     }
     
     func testReadWriteRegistersXY() {
@@ -418,7 +418,7 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let alu = 6
-        let aluControl = ControlWord().withEO(.active).withDI(.active).withFI(.active)
+        let aluControl = ControlWord().withEO(.active).withDI(.active).withFI(.active).withCarryIn(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
         
         let jc = 7
@@ -492,7 +492,7 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
         
         let alu = 6
-        let aluControl = ControlWord().withEO(.active).withFI(.active).withDI(.active)
+        let aluControl = ControlWord().withEO(.active).withFI(.active).withDI(.active).withCarryIn(.active)
         instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
         
         let jc = 7

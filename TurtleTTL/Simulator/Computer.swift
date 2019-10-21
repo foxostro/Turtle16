@@ -227,6 +227,16 @@ public class Computer: NSObject {
                            state.bus, String(state.valueOfUVPair(), radix: 16))
             state = state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfUVPair())
         }
+        if (.active == state.controlWord.XYInc) {
+            state = state.incrementXY()
+            logger?.append("XYInc -- Increment XY register pair. New value is 0x%@",
+                           String(state.valueOfXYPair(), radix: 16))
+        }
+        if (.active == state.controlWord.UVInc) {
+            state = state.incrementUV()
+            logger?.append("XYInc -- Increment UV register pair. New value is 0x%@",
+                           String(state.valueOfUVPair(), radix: 16))
+        }
         if (.active == state.controlWord.J) {
             let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))
             state = state.withPC(pc)

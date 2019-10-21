@@ -89,6 +89,7 @@
 		6F8519582307551200AF9E39 /* PeripheralDeviceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8519572307551200AF9E39 /* PeripheralDeviceOperation.swift */; };
 		6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
 		6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */; };
+		6FB22E94235D4C8800F8654B /* ComputerStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB22E93235D4C8800F8654B /* ComputerStateTests.swift */; };
 		6FE0039122F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6FE0039A22F3D75E00221C4C /* TurtleTTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FE0038A22F3D75E00221C4C /* TurtleTTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FE0039D22F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
@@ -289,6 +290,7 @@
 		6F86EDC722ED179C00375A00 /* ComputerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerTests.swift; sourceTree = "<group>"; };
 		6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
 		6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriverTests.swift; sourceTree = "<group>"; };
+		6FB22E93235D4C8800F8654B /* ComputerStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStateTests.swift; sourceTree = "<group>"; };
 		6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGenerator.swift; sourceTree = "<group>"; };
 		6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6FDFED7922F1627500AADA07 /* CodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGenerator.swift; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */,
 				6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */,
 				6F86EDC722ED179C00375A00 /* ComputerTests.swift */,
+				6FB22E93235D4C8800F8654B /* ComputerStateTests.swift */,
 				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
 				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
 				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
@@ -891,6 +894,7 @@
 				6F08808D230F6E5700AB2339 /* LINodeTests.swift in Sources */,
 				6F0B0D042308688900478220 /* RegisterTests.swift in Sources */,
 				6F088095230F864D00AB2339 /* AssemblerCodeGenPassTests.swift in Sources */,
+				6FB22E94235D4C8800F8654B /* ComputerStateTests.swift in Sources */,
 				6F5A0116231F721B003E7C7F /* TokenEOFTests.swift in Sources */,
 				6F615179230CB56E00282B12 /* LexerTests.swift in Sources */,
 				6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */,

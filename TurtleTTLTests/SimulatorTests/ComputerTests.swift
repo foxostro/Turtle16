@@ -972,4 +972,84 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.describeIFID(), "{op=0b11111111, imm=0b11111111}")
         XCTAssertEqual(computer.currentState.if_id.value, 0xffff)
     }
+    
+    func testIncrementXY() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldx = 1
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 2
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let inc = 3
+        let incControl = ControlWord().withXYInc(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: inc, controlWord: incControl)
+        
+        let hlt = 4
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),
+            Instruction(opcode: ldx, immediate: 0),
+            Instruction(opcode: ldy, immediate: 0),
+            Instruction(opcode: inc, immediate: 0),
+            Instruction(opcode: hlt, immediate: 0)])
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerX.value, 0)
+        XCTAssertEqual(computer.currentState.registerY.value, 1)
+    }
+    
+    func testIncrementUV() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldu = 1
+        let lduControl = ControlWord().withCO(.active).withUI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldu, controlWord: lduControl)
+        
+        let ldv = 2
+        let ldvControl = ControlWord().withCO(.active).withVI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldv, controlWord: ldvControl)
+        
+        let inc = 3
+        let incControl = ControlWord().withUVInc(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: inc, controlWord: incControl)
+        
+        let hlt = 4
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),
+            Instruction(opcode: ldu, immediate: 0),
+            Instruction(opcode: ldv, immediate: 0),
+            Instruction(opcode: inc, immediate: 0),
+            Instruction(opcode: hlt, immediate: 0)])
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerU.value, 0)
+        XCTAssertEqual(computer.currentState.registerV.value, 1)
+    }
 }

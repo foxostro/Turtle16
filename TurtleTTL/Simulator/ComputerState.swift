@@ -748,4 +748,20 @@ public class ComputerState: NSObject {
     func valueOfUVPair() -> Int {
         return Int(registerU.value)<<8 | Int(registerV.value)
     }
+    
+    public func incrementXY() -> ComputerState {
+        if self.registerY.value == 255 {
+            return self.withRegisterX(self.registerX.value &+ 1).withRegisterY(0)
+        } else {
+            return self.withRegisterY(self.registerY.value &+ 1)
+        }
+    }
+    
+    public func incrementUV() -> ComputerState {
+        if self.registerV.value == 255 {
+            return self.withRegisterU(self.registerU.value &+ 1).withRegisterV(0)
+        } else {
+            return self.withRegisterV(self.registerV.value &+ 1)
+        }
+   }
 }

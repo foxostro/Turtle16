@@ -209,14 +209,9 @@ public class ControlWord: NSObject {
     
     public override var description: String {
         var signals = [String]()
-        if (.active == CO) {
-            signals.append("CO")
-        }
-        
         if (.active == AI) {
             signals.append("AI")
         }
-        
         if (.active == AO) {
             signals.append("AO")
         }

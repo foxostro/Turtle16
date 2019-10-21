@@ -237,6 +237,14 @@ public class Computer: NSObject {
             logger?.append("XYInc -- Increment UV register pair. New value is 0x%@",
                            String(state.valueOfUVPair(), radix: 16))
         }
+        if (.active == state.controlWord.LinkIn) {
+            let pc = state.pc.value
+            let g = UInt8((pc >> 8) & 0xff)
+            let h = UInt8(pc & 0xff)
+            state = state.withRegisterG(g).withRegisterH(h)
+            logger?.append("LinkIn -- Setting the Link register with PC value of 0x%@",
+                           state.pc.stringValue)
+        }
         if (.active == state.controlWord.J) {
             let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))
             state = state.withPC(pc)

@@ -1052,4 +1052,57 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerU.value, 0)
         XCTAssertEqual(computer.currentState.registerV.value, 1)
     }
+    
+    func testJALR() {
+        // The JALR instruction enters the pipeline when PC is equal to 3.
+        // The value of PC has been incremented to 5 by the time the EX stage
+        // produces the control signal which causes the Link register to load.
+        // So, the Link register will contain the address of the second delay
+        // slot after the jump. (typically a NOP) The program can return to the
+        // point immediately after the jump by jumping to the address stored in
+        // the link register. This is useful for returning from a function call.
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldx = 1
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 2
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let jalr = 3
+        let jalrControl = ControlWord().withLinkIn(.active).withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jalr, controlWord: jalrControl)
+        
+        let hlt = 4
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop,  immediate: 0),    // 0
+            Instruction(opcode: ldx,  immediate: 0),    // 1
+            Instruction(opcode: ldy,  immediate: 7),    // 2
+            Instruction(opcode: jalr, immediate: 0),    // 3
+            Instruction(opcode: nop,  immediate: 0),    // 4
+            Instruction(opcode: nop,  immediate: 0),    // 5
+            Instruction(opcode: ldx,  immediate: 0xff), // 6
+            Instruction(opcode: hlt,  immediate: 0),    // 7
+            Instruction(opcode: hlt,  immediate: 0),    // 8
+            Instruction(opcode: hlt,  immediate: 0)])   // 9
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerG.value, 0)
+        XCTAssertEqual(computer.currentState.registerH.value, 5)
+        XCTAssertEqual(computer.currentState.registerX.value, 0) // Assert that instruction 6 was skipped.
+    }
 }

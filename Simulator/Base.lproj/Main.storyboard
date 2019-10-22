@@ -769,7 +769,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZL8-Zq-Hfb" userLabel="A">
                                                 <rect key="frame" x="0.0" y="502" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4XQ-ZN-vO5">
+                                                    <textField toolTip="ALU left operand" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4XQ-ZN-vO5">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="A:" id="j3t-Ne-ZDd">
                                                             <font key="font" metaFont="system"/>
@@ -801,7 +801,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7sq-AR-Asi" userLabel="B">
                                                 <rect key="frame" x="0.0" y="473" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Nt-Z3-Q5i">
+                                                    <textField toolTip="ALU right operand" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Nt-Z3-Q5i">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="B:" id="jFN-kw-qVf">
                                                             <font key="font" metaFont="system"/>
@@ -833,7 +833,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SUl-XI-TGf" userLabel="C">
                                                 <rect key="frame" x="0.0" y="444" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="48X-He-YOd">
+                                                    <textField toolTip="Constant" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="48X-He-YOd">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="C:" id="8wg-dJ-aiK">
                                                             <font key="font" metaFont="system"/>
@@ -865,7 +865,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Equ-F3-GVw" userLabel="D">
                                                 <rect key="frame" x="0.0" y="415" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hbg-il-9Sf">
+                                                    <textField toolTip="Peripheral select index" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hbg-il-9Sf">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="D:" id="RI4-xD-YDK">
                                                             <font key="font" metaFont="system"/>
@@ -897,7 +897,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Is2-kH-WcT" userLabel="G">
                                                 <rect key="frame" x="0.0" y="386" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JEf-1B-MMN">
+                                                    <textField toolTip="Link Register Upper Byte" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JEf-1B-MMN">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="G:" id="nCr-uD-ARp">
                                                             <font key="font" metaFont="system"/>
@@ -932,7 +932,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PEV-yN-Tkt" userLabel="H">
                                                 <rect key="frame" x="0.0" y="357" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rSA-Ld-ajw">
+                                                    <textField toolTip="Link Register Lower Byte" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rSA-Ld-ajw">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="H:" id="fY5-IZ-Do0">
                                                             <font key="font" metaFont="system"/>
@@ -964,7 +964,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DLv-mV-raf" userLabel="U">
                                                 <rect key="frame" x="0.0" y="328" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aUM-Ih-nZh">
+                                                    <textField toolTip="Data RAM Address Upper Byte" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aUM-Ih-nZh">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="U:" id="0Kb-MT-7RN">
                                                             <font key="font" metaFont="system"/>
@@ -996,7 +996,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="voK-WS-v9E" userLabel="V">
                                                 <rect key="frame" x="0.0" y="299" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cDT-nv-WDr">
+                                                    <textField toolTip="Data RAM Address Lower Byte" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cDT-nv-WDr">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="V:" id="VI9-aL-Rbz">
                                                             <font key="font" metaFont="system"/>
@@ -1028,7 +1028,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PVQ-ac-x8n" userLabel="X">
                                                 <rect key="frame" x="0.0" y="270" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D38-KR-JpE">
+                                                    <textField toolTip="Peripheral Address Upper Byte" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D38-KR-JpE">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="X:" id="8Gg-oT-bsw">
                                                             <font key="font" metaFont="system"/>
@@ -1060,7 +1060,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mq1-qa-aWB" userLabel="Y">
                                                 <rect key="frame" x="0.0" y="241" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="V5h-OY-h8M">
+                                                    <textField toolTip="Peripheral Address Lower Byte" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="V5h-OY-h8M">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Y:" id="rNw-Jh-Wa7">
                                                             <font key="font" metaFont="system"/>
@@ -1092,7 +1092,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xPh-XT-9vm" userLabel="ALU">
                                                 <rect key="frame" x="0.0" y="217" width="145" height="16"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="99v-tO-czv">
+                                                    <textField toolTip="ALU Result" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="99v-tO-czv">
                                                         <rect key="frame" x="-2" y="0.0" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="ALU:" id="1q9-Yt-6qj">
                                                             <font key="font" metaFont="system"/>
@@ -1124,7 +1124,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fvh-CU-p31" userLabel="PC">
                                                 <rect key="frame" x="0.0" y="188" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4jm-9F-Obg">
+                                                    <textField toolTip="Program Counter" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4jm-9F-Obg">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="PC:" id="4va-Oe-kWk">
                                                             <font key="font" metaFont="system"/>
@@ -1156,7 +1156,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rSr-79-u1h" userLabel="PC/IF">
                                                 <rect key="frame" x="0.0" y="159" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DaI-wQ-pMa">
+                                                    <textField toolTip="Interstage register between PC and IF" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DaI-wQ-pMa">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="PC/IF:" id="bdi-ld-0YV">
                                                             <font key="font" metaFont="system"/>
@@ -1188,7 +1188,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mdf-UH-V8X" userLabel="IF/ID">
                                                 <rect key="frame" x="0.0" y="130" width="290" height="21"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="quo-5A-gwG">
+                                                    <textField toolTip="Interstage register between IF and ID" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="quo-5A-gwG">
                                                         <rect key="frame" x="-2" y="5" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="IF/ID:" id="A6N-EV-jhx">
                                                             <font key="font" metaFont="system"/>
@@ -1223,7 +1223,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ypt-h1-CNj" userLabel="Control Word 1">
                                                 <rect key="frame" x="0.0" y="106" width="292" height="16"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HhU-Ad-73f">
+                                                    <textField toolTip="Control signals in the EX stage" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HhU-Ad-73f">
                                                         <rect key="frame" x="-2" y="0.0" width="88" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Control Word:" id="byY-3u-UOo">
                                                             <font key="font" metaFont="system"/>
@@ -1252,7 +1252,7 @@
                                                     <real value="3.4028234663852886e+38"/>
                                                 </customSpacing>
                                             </stackView>
-                                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="INz-y8-kkB" userLabel="Control Word 3">
+                                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="INz-y8-kkB" userLabel="Control Word 2">
                                                 <rect key="frame" x="0.0" y="24" width="50" height="74"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Sqc-vl-S27">
@@ -1274,7 +1274,7 @@
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cDe-QQ-WrL" userLabel="Bus">
                                                 <rect key="frame" x="0.0" y="0.0" width="145" height="16"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vQW-CY-biN">
+                                                    <textField toolTip="Data bus" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vQW-CY-biN">
                                                         <rect key="frame" x="-2" y="0.0" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Bus:" id="eHa-uZ-Am3">
                                                             <font key="font" metaFont="system"/>

@@ -14,9 +14,10 @@ public class MicrocodeGenerator: NSObject {
     var mapMnemonicToOpcode = [String:Int]()
     var nextOpcode = 0
     
-    // Registers which can take in a value from the bus.
+    // Registers which can output a value to the bus.
+    // These can be the source for a MOV instruction.
     public enum SourceRegister : CaseIterable {
-        case A, B, C, E, M, P, U, V, X, Y
+        case A, B, C, E, G, H, M, P, U, V, X, Y
     }
     
     public func modifyControlWord(controlWord: ControlWord, toOutputToBus: SourceRegister) -> ControlWord {
@@ -29,6 +30,10 @@ public class MicrocodeGenerator: NSObject {
             return controlWord.outputCToBus()
         case .E:
             return controlWord.outputEToBus()
+        case .G:
+            return controlWord.outputLinkHiToBus()
+        case .H:
+            return controlWord.outputLinkLoToBus()
         case .M:
             return controlWord.outputMToBus()
         case .P:
@@ -44,7 +49,8 @@ public class MicrocodeGenerator: NSObject {
         }
     }
     
-    // Registers which can output a value to the bus.
+    // Registers which can take in a value from the bus.
+    // These can be the destination for a MOV instruction.
     public enum DestinationRegister : CaseIterable {
         case A, B, D, M, P, U, V, X, Y
     }

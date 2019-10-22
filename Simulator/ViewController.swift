@@ -15,10 +15,12 @@ class ViewController: NSViewController {
     @IBOutlet var registerB:NSTextField!
     @IBOutlet var registerC:NSTextField!
     @IBOutlet var registerD:NSTextField!
-    @IBOutlet var registerX:NSTextField!
-    @IBOutlet var registerY:NSTextField!
+    @IBOutlet var registerG:NSTextField!
+    @IBOutlet var registerH:NSTextField!
     @IBOutlet var registerU:NSTextField!
     @IBOutlet var registerV:NSTextField!
+    @IBOutlet var registerX:NSTextField!
+    @IBOutlet var registerY:NSTextField!
     @IBOutlet var aluResult:NSTextField!
     @IBOutlet var controlWord:NSTextField!
     @IBOutlet var controlSignals:NSTextField!
@@ -151,13 +153,13 @@ class ViewController: NSViewController {
         refresh()
     }
     
-    @IBAction func modifyRegisterX(_ sender: Any) {
-        computer.modifyRegisterX(withString: registerX.stringValue)
+    @IBAction func modifyRegisterG(_ sender: Any) {
+        computer.modifyRegisterG(withString: registerG.stringValue)
         refresh()
     }
     
-    @IBAction func modifyRegisterY(_ sender: Any) {
-        computer.modifyRegisterY(withString: registerY.stringValue)
+    @IBAction func modifyRegisterH(_ sender: Any) {
+        computer.modifyRegisterH(withString: registerH.stringValue)
         refresh()
     }
     
@@ -168,6 +170,16 @@ class ViewController: NSViewController {
     
     @IBAction func modifyRegisterV(_ sender: Any) {
         computer.modifyRegisterV(withString: registerV.stringValue)
+        refresh()
+    }
+    
+    @IBAction func modifyRegisterX(_ sender: Any) {
+        computer.modifyRegisterX(withString: registerX.stringValue)
+        refresh()
+    }
+    
+    @IBAction func modifyRegisterY(_ sender: Any) {
+        computer.modifyRegisterY(withString: registerY.stringValue)
         refresh()
     }
     
@@ -191,10 +203,12 @@ class ViewController: NSViewController {
         registerB.stringValue = computer.describeRegisterB()
         registerC.stringValue = computer.describeRegisterC()
         registerD.stringValue = computer.describeRegisterD()
-        registerX.stringValue = computer.describeRegisterX()
-        registerY.stringValue = computer.describeRegisterY()
+        registerG.stringValue = computer.describeRegisterG()
+        registerH.stringValue = computer.describeRegisterH()
         registerU.stringValue = computer.describeRegisterU()
         registerV.stringValue = computer.describeRegisterV()
+        registerX.stringValue = computer.describeRegisterX()
+        registerY.stringValue = computer.describeRegisterY()
         aluResult.stringValue = computer.describeALUResult()
         controlWord.stringValue = computer.describeControlWord()
         controlSignals.stringValue = computer.describeControlSignals()

@@ -349,15 +349,15 @@ public class Computer: NSObject {
         }
     }
     
-    public func modifyRegisterX(withString s: String) {
+    public func modifyRegisterG(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterX(value)
+            currentState = currentState.withRegisterG(value)
         }
     }
     
-    public func modifyRegisterY(withString s: String) {
+    public func modifyRegisterH(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterY(value)
+            currentState = currentState.withRegisterH(value)
         }
     }
     
@@ -370,6 +370,18 @@ public class Computer: NSObject {
     public func modifyRegisterV(withString s: String) {
         if let value = UInt8(s, radix: 16) {
             currentState = currentState.withRegisterV(value)
+        }
+    }
+    
+    public func modifyRegisterX(withString s: String) {
+        if let value = UInt8(s, radix: 16) {
+            currentState = currentState.withRegisterX(value)
+        }
+    }
+    
+    public func modifyRegisterY(withString s: String) {
+        if let value = UInt8(s, radix: 16) {
+            currentState = currentState.withRegisterY(value)
         }
     }
     
@@ -407,12 +419,12 @@ public class Computer: NSObject {
         return currentState.registerD.description
     }
     
-    public func describeRegisterX() -> String {
-        return currentState.registerX.description
+    public func describeRegisterG() -> String {
+        return currentState.registerG.description
     }
     
-    public func describeRegisterY() -> String {
-        return currentState.registerY.description
+    public func describeRegisterH() -> String {
+        return currentState.registerH.description
     }
     
     public func describeRegisterU() -> String {
@@ -421,6 +433,14 @@ public class Computer: NSObject {
     
     public func describeRegisterV() -> String {
         return currentState.registerV.description
+    }
+    
+    public func describeRegisterX() -> String {
+        return currentState.registerX.description
+    }
+    
+    public func describeRegisterY() -> String {
+        return currentState.registerY.description
     }
     
     public func describeALUResult() -> String {

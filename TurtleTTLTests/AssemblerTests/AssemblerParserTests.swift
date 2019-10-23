@@ -160,7 +160,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LXY'")
     }
 
-    func testParseLXY() {
+    func testParseLXYWithLabel() {
         let parser = AssemblerParser(tokens: tokenize("LXY label"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
@@ -168,6 +168,16 @@ class AssemblerParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0], LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+    }
+
+    func testParseLXYWithAddress() {
+        let parser = AssemblerParser(tokens: tokenize("LXY 0"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], LXYWithAddressNode(address: 0))
     }
 
     func testFailToParseJALRWithZeroOperands() {

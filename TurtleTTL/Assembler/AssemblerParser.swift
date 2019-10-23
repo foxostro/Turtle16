@@ -54,10 +54,10 @@ public class AssemblerParser: Parser {
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [LXYWithLabelNode(token: identifier)]
-//        } else if let address = accept(TokenNumber.self) as? TokenNumber {
-//            try expect(types: [TokenNewline.self, TokenEOF.self],
-//                       error: operandTypeMismatchError(instruction))
-//            return [LXYWithAddressNode(address: address.literal)]
+        } else if let address = accept(TokenNumber.self) as? TokenNumber {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
+                       error: operandTypeMismatchError(instruction))
+            return [LXYWithAddressNode(address: address.literal)]
         }
         throw operandTypeMismatchError(instruction)
     }

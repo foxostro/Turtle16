@@ -118,6 +118,10 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try self.setAddress(token: node.identifier)
     }
     
+    public func visit(node: LXYWithAddressNode) throws {
+        try self.setAddress(node.address)
+    }
+    
     public func visit(node: MOVNode) throws {
         try self.codeGenerator.mov(node.destination, node.source)
     }

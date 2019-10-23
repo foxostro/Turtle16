@@ -4,47 +4,26 @@
 
 LI D, 6 # kSerialInterface
 LI P, 'H'
-
-LI D, 6 # kSerialInterface
 LI P, 'e'
-
-LI D, 6 # kSerialInterface
 LI P, 'l'
-
-LI D, 6 # kSerialInterface
 LI P, 'l'
-
-LI D, 6 # kSerialInterface
 LI P, 'o'
-
-LI D, 6 # kSerialInterface
 LI P, ','
-
-LI D, 6 # kSerialInterface
 LI P, ' '
-
-LI D, 6 # kSerialInterface
 LI P, 'W'
-
-LI D, 6 # kSerialInterface
 LI P, 'o'
-
-LI D, 6 # kSerialInterface
 LI P, 'r'
-
-LI D, 6 # kSerialInterface
 LI P, 'l'
-
-LI D, 6 # kSerialInterface
 LI P, 'd'
-
-LI D, 6 # kSerialInterface
 LI P, '!'
+LI P, 10
 
 beginningOfInputLoop:
 
 LXY waitForInput
 JALR
+NOP
+NOP
 
 # Read a byte and echo it back.
 LI D, 6 # kSerialInterface
@@ -54,6 +33,8 @@ MOV P, A
 
 LXY beginningOfInputLoop
 JMP
+NOP
+NOP
 HLT
 
 
@@ -70,8 +51,12 @@ LI A, 1
 CMP
 LXY loop
 JC
+NOP
+NOP
 
 # Return from the function.
 MOV X, G
 MOV Y, H
 JMP
+NOP
+NOP

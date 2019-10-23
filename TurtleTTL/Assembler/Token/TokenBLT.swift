@@ -1,5 +1,5 @@
 //
-//  TokenINXY.swift
+//  TokenBLT.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 10/22/19.
@@ -8,4 +8,4 @@
 
 import Cocoa
 
-public class TokenINXY: Token {}
+public class TokenBLT: Token {}

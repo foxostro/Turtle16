@@ -29,6 +29,7 @@ public class AssemblerParser: Parser {
             Production(symbol: TokenSTORE.self,      generator: { try self.consumeSTORE($0 as! TokenSTORE) }),
             Production(symbol: TokenLOAD.self,       generator: { try self.consumeLOAD($0 as! TokenLOAD) }),
             Production(symbol: TokenMOV.self,        generator: { try self.consumeMOV($0 as! TokenMOV) }),
+            Production(symbol: TokenBLT.self,        generator: { try self.consumeBLT($0 as! TokenBLT) }),
             Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) })
         ]
     }
@@ -166,6 +167,22 @@ public class AssemblerParser: Parser {
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: operandTypeMismatchError(instruction))
         return [MOVNode(destination: destination.literal,
+                        source: source.literal)]
+    }
+    
+    func consumeBLT(_ instruction: TokenBLT) throws -> [AbstractSyntaxTreeNode] {
+        guard let destination = accept(TokenRegister.self) as? TokenRegister else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expect(type: TokenComma.self, error: operandTypeMismatchError(instruction))
+        try expectRegisterCanBeUsedAsDestination(destination)
+        guard let source = accept(TokenRegister.self) as? TokenRegister else {
+            throw operandTypeMismatchError(instruction)
+        }
+        try expectRegisterCanBeUsedAsSource(source)
+        try expect(types: [TokenNewline.self, TokenEOF.self],
+                   error: operandTypeMismatchError(instruction))
+        return [BLTNode(destination: destination.literal,
                         source: source.literal)]
     }
     

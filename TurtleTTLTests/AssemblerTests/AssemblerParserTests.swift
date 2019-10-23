@@ -659,4 +659,77 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0], INXYNode())
     }
+    
+    func testFailToParseBLTWithNoOperands() {
+        let parser = AssemblerParser(tokens: tokenize("BLT"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToParseBLTWithOneOperand() {
+        let parser = AssemblerParser(tokens: tokenize("BLT M"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToParseBLTWithTooManyOperands() {
+        let parser = AssemblerParser(tokens: tokenize("BLT M, P, C"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToParseBLTWithNumberInFirstOperand() {
+        let parser = AssemblerParser(tokens: tokenize("BLT $1, M"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToParseBLTWithNumberInSecondOperand() {
+        let parser = AssemblerParser(tokens: tokenize("BLT M, $1"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToParseBLTWithInvalidDestinationRegisterE() {
+        let parser = AssemblerParser(tokens: tokenize("BLT E, M"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `E'")
+    }
+
+    func testFailToParseBLTWithInvalidSourceRegisterD() {
+        let parser = AssemblerParser(tokens: tokenize("BLT A, D"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a source: `D'")
+    }
+
+    func testParseValidBLT() {
+        let parser = AssemblerParser(tokens: tokenize("BLT P, M"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], BLTNode(destination: .P, source: .M))
+    }
 }

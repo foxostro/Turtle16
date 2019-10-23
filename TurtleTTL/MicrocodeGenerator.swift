@@ -88,6 +88,7 @@ public class MicrocodeGenerator: NSObject {
         jalr()
         inuv()
         inxy()
+        blt()
     }
     
     public func nop() {
@@ -180,6 +181,22 @@ public class MicrocodeGenerator: NSObject {
         mapMnemonicToOpcode["INXY"] = opcode
         let controlWord = ControlWord().withXYInc(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
+    }
+    
+    public func blt() {
+        for source in SourceRegister.allCases {
+            for destination in DestinationRegister.allCases {
+                var controlWord = ControlWord().withUVInc(.active).withXYInc(.active)
+                controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: source)
+                controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
+                let mnemonic = String(format: "BLT %@, %@",
+                                      String(describing: destination),
+                                      String(describing: source))
+                let opcode = getNextOpcode()
+                mapMnemonicToOpcode[mnemonic] = opcode
+                microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
+            }
+        }
     }
     
     func getNextOpcode() -> Int {

@@ -147,6 +147,10 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: node.immediate)
     }
     
+    public func visit(node: BLTNode) throws {
+        try self.codeGenerator.blt(node.destination, node.source)
+    }
+    
     func setAddress(_ address: Int) throws {
         if(address < 0 || address > 0xffff) {
             throw AssemblerError(format: "invalid address: 0x%x", address)

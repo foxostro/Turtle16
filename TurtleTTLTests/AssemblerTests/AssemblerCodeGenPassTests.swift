@@ -439,4 +439,19 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INXY")!))
         XCTAssertEqual(instructions[1].immediate, 0)
     }
+    
+    func testBLT() {
+        let ast = AbstractSyntaxTreeNode(children: [BLTNode(destination: .P, source: .M)])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.PI, .active)
+        XCTAssertEqual(controlWord.MO, .active)
+        XCTAssertEqual(controlWord.UVInc, .active)
+        XCTAssertEqual(controlWord.XYInc, .active)
+    }
 }

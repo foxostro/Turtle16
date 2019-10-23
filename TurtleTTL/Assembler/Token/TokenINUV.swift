@@ -8,6 +8,4 @@
 
 import Cocoa
 
-class TokenINUV: Token {
-
-}
+public class TokenINUV: Token {}

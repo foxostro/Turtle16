@@ -521,4 +521,27 @@ class AssemblerFrontEndTests: XCTestCase {
         
         XCTAssertEqual(controlWord.XYInc, .active)
     }
+    
+    func testFailsToCompileBLTWithZeroOperands() {
+        let errors = mustFailToCompile("BLT")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `BLT'")
+    }
+    
+    func testBLT() {
+        let instructions = mustCompile("BLT P, M")
+        
+        XCTAssertEqual(instructions.count, 2)
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        let microcodeGenerator = makeMicrocodeGenerator()
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.XYInc, .active)
+        XCTAssertEqual(controlWord.UVInc, .active)
+        XCTAssertEqual(controlWord.PI,    .active)
+        XCTAssertEqual(controlWord.MO,    .active)
+    }
 }

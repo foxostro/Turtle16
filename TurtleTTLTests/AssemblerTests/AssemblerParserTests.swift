@@ -180,23 +180,32 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], LXYWithAddressNode(address: 0))
     }
 
-    func testFailToParseJALRWithZeroOperands() {
+    func testParseJALRWithZeroOperands() {
         let parser = AssemblerParser(tokens: tokenize("JALR"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `JALR'")
-    }
-
-    func testParseJALR() {
-        let parser = AssemblerParser(tokens: tokenize("JALR label"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JALRNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[0], JALRNode())
+    }
+
+    func testFailToParseJALRWithLabelOperand() {
+        let parser = AssemblerParser(tokens: tokenize("JALR label"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JALR'")
+    }
+
+    func testFailToParseJALRWithAddressOperand() {
+        let parser = AssemblerParser(tokens: tokenize("JALR 0"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JALR'")
     }
 
     func testJMPWithZeroOperandsDoesParse() {
@@ -209,35 +218,22 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], JMPNode())
     }
 
-    func testParseSucceedsWithJMPWithUndeclaredLabel() {
+    func testFailToParseJMPWithLabelOperands() {
         let parser = AssemblerParser(tokens: tokenize("JMP label"))
         parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JMPToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-    }
-
-    func testJMPParses() {
-        let parser = AssemblerParser(tokens: tokenize("label:\nJMP label"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-
-        XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-        XCTAssertEqual(ast.children[1], JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "label")))
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JMP'")
     }
     
-    func testParseJMPWithAddress() {
+    func testFailtToParseJMPWithAddressOperand() {
         let parser = AssemblerParser(tokens: tokenize("JMP 0x0000"))
         parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JMPToAddressNode(address: 0))
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JMP'")
     }
 
     func testJCWithZeroOperandsDoesParse() {
@@ -250,35 +246,22 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], JCNode())
     }
 
-    func testParseSucceedsWithJCWithUndeclaredLabel() {
+    func testFailToParseJCWithLabelOperands() {
         let parser = AssemblerParser(tokens: tokenize("JC label"))
         parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JCToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-    }
-
-    func testJCParses() {
-        let parser = AssemblerParser(tokens: tokenize("label:\nJC label"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-        XCTAssertEqual(ast.children[1], JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "label")))
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JC'")
     }
     
-    func testParseJCWithAddress() {
+    func testFailToParseJCWithAddressOperand() {
         let parser = AssemblerParser(tokens: tokenize("JC 0x0000"))
         parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JCToAddressNode(address: 0))
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JC'")
     }
 
     func testFailToParseADDWithZeroOperands() {

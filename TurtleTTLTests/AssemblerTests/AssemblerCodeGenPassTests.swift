@@ -205,8 +205,9 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmp() {
         let labelNode = LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        let jmpNode = JMPToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
-        let ast = AbstractSyntaxTreeNode(children: [labelNode, jmpNode])
+        let lxyNode = LXYWithLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
+        let jmpNode = JMPNode()
+        let ast = AbstractSyntaxTreeNode(children: [labelNode, lxyNode, jmpNode])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -232,7 +233,8 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testForwardJmp() {
         let ast = AbstractSyntaxTreeNode(children: [
-            JMPToLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+            LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+            JMPNode(),
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
             HLTNode()])
         let instructions = mustCompile(ast)
@@ -262,7 +264,10 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testJmpToAddressZero() {
-        let ast = AbstractSyntaxTreeNode(children: [JMPToAddressNode(address: 0)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            LXYWithAddressNode(address: 0),
+            JMPNode()
+        ])
         let instructions = mustCompile(ast)
 
         XCTAssertEqual(instructions.count, 6)
@@ -287,14 +292,20 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testJmpToAddressNegative() {
-        let ast = AbstractSyntaxTreeNode(children: [JMPToAddressNode(address: -1)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            LXYWithAddressNode(address: -1),
+            JMPNode()
+        ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
         XCTAssertEqual(error.message, "invalid address: 0xffffffff")
     }
     
     func testJmpToAddressTooLarge() {
-        let ast = AbstractSyntaxTreeNode(children: [JMPToAddressNode(address: 0x10000)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            LXYWithAddressNode(address: 0x10000),
+            JMPNode()
+        ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
         XCTAssertEqual(error.message, "invalid address: 0x10000")
@@ -303,7 +314,9 @@ class AssemblerCodeGenPassTests: XCTestCase {
     func testJC() {
         let ast = AbstractSyntaxTreeNode(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            JCToLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo"))])
+            LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+            JCNode()
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -329,7 +342,10 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testJCToAddressZero() {
-        let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: 0)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            LXYWithAddressNode(address: 0),
+            JCNode()
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -354,14 +370,20 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testJCToAddressNegative() {
-        let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: -1)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            LXYWithAddressNode(address: -1),
+            JCNode()
+        ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
         XCTAssertEqual(error.message, "invalid address: 0xffffffff")
     }
     
     func testJCToAddressTooLarge() {
-        let ast = AbstractSyntaxTreeNode(children: [JCToAddressNode(address: 0x10000)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            LXYWithAddressNode(address: 0x10000),
+            JCNode()
+        ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
         XCTAssertEqual(error.message, "invalid address: 0x10000")

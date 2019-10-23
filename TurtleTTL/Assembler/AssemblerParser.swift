@@ -63,44 +63,21 @@ public class AssemblerParser: Parser {
     }
     
     func consumeJALR(_ instruction: TokenJALR) throws -> [AbstractSyntaxTreeNode] {
-        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: operandTypeMismatchError(instruction))
-            return [JALRNode(token: identifier)]
-        }
-        throw operandTypeMismatchError(instruction)
+        try expect(types: [TokenNewline.self, TokenEOF.self],
+                   error: zeroOperandsExpectedError(instruction))
+        return [JALRNode()]
     }
     
     func consumeJMP(_ instruction: TokenJMP) throws -> [AbstractSyntaxTreeNode] {
-        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: operandTypeMismatchError(instruction))
-            return [JMPToLabelNode(token: identifier)]
-        } else if let address = accept(TokenNumber.self) as? TokenNumber {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: operandTypeMismatchError(instruction))
-            return [JMPToAddressNode(address: address.literal)]
-        } else {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: zeroOperandsExpectedError(instruction))
-            return [JMPNode()]
-        }
+        try expect(types: [TokenNewline.self, TokenEOF.self],
+                   error: zeroOperandsExpectedError(instruction))
+        return [JMPNode()]
     }
     
     func consumeJC(_ instruction: TokenJC) throws -> [AbstractSyntaxTreeNode] {
-        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: operandTypeMismatchError(instruction))
-            return [JCToLabelNode(token: identifier)]
-        } else if let address = accept(TokenNumber.self) as? TokenNumber {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: operandTypeMismatchError(instruction))
-            return [JCToAddressNode(address: address.literal)]
-        } else {
-            try expect(types: [TokenNewline.self, TokenEOF.self],
-                       error: zeroOperandsExpectedError(instruction))
-            return [JCNode()]
-       }
+        try expect(types: [TokenNewline.self, TokenEOF.self],
+                   error: zeroOperandsExpectedError(instruction))
+        return [JCNode()]
     }
     
     func consumeADD(_ instruction: TokenADD) throws -> [AbstractSyntaxTreeNode] {

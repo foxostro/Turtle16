@@ -18,6 +18,7 @@ public class AssemblerParser: Parser {
             Production(symbol: TokenNOP.self,        generator: { try self.consumeNOP($0 as! TokenNOP) }),
             Production(symbol: TokenCMP.self,        generator: { try self.consumeCMP($0 as! TokenCMP) }),
             Production(symbol: TokenHLT.self,        generator: { try self.consumeHLT($0 as! TokenHLT) }),
+            Production(symbol: TokenLXY.self,        generator: { try self.consumeLXY($0 as! TokenLXY) }),
             Production(symbol: TokenJALR.self,       generator: { try self.consumeJALR($0 as! TokenJALR) }),
             Production(symbol: TokenJMP.self,        generator: { try self.consumeJMP($0 as! TokenJMP) }),
             Production(symbol: TokenJC.self,         generator: { try self.consumeJC($0 as! TokenJC) }),
@@ -46,6 +47,19 @@ public class AssemblerParser: Parser {
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: zeroOperandsExpectedError(instruction))
         return [HLTNode()]
+    }
+    
+    func consumeLXY(_ instruction: TokenLXY) throws -> [AbstractSyntaxTreeNode] {
+        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
+                       error: operandTypeMismatchError(instruction))
+            return [LXYWithLabelNode(token: identifier)]
+//        } else if let address = accept(TokenNumber.self) as? TokenNumber {
+//            try expect(types: [TokenNewline.self, TokenEOF.self],
+//                       error: operandTypeMismatchError(instruction))
+//            return [LXYWithAddressNode(address: address.literal)]
+        }
+        throw operandTypeMismatchError(instruction)
     }
     
     func consumeJALR(_ instruction: TokenJALR) throws -> [AbstractSyntaxTreeNode] {

@@ -43,6 +43,7 @@ LI P, '!'
 
 beginningOfInputLoop:
 
+LXY waitForInput
 JALR waitForInput
 
 # Read a byte and echo it back.
@@ -51,7 +52,8 @@ LI Y, 0 # kIORegister
 MOV A, P
 MOV P, A
 
-JMP beginningOfInputLoop
+LXY beginningOfInputLoop
+JMP
 HLT
 
 
@@ -66,7 +68,8 @@ LI Y, 1 # kStatusRegister
 MOV B, P
 LI A, 1
 CMP
-JC loop
+LXY loop
+JC
 
 # Return from the function.
 MOV X, G

@@ -67,20 +67,14 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     public func visit(node: JALRNode) throws {
         self.codeGenerator.jalr()
-        self.codeGenerator.nop()
-        self.codeGenerator.nop()
     }
     
     public func visit(node: JMPNode) throws {
         self.codeGenerator.jmp()
-        self.codeGenerator.nop()
-        self.codeGenerator.nop()
     }
     
     public func visit(node: JCNode) throws {
         self.codeGenerator.jc()
-        self.codeGenerator.nop()
-        self.codeGenerator.nop()
     }
     
     public func visit(node: ADDNode) throws {

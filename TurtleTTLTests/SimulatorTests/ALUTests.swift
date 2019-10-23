@@ -253,4 +253,17 @@ class ALUTests: XCTestCase {
         XCTAssertEqual(alu.carryFlag, 0)
         XCTAssertEqual(alu.equalFlag, 0)
     }
+    
+    func testAPlusB() {
+        let alu = ALU()
+        alu.a = 2
+        alu.b = 2
+        alu.s = 0b1001
+        alu.mode = 0
+        alu.carryIn = 1
+        alu.update()
+        XCTAssertEqual(alu.result, 4)
+        XCTAssertEqual(alu.carryFlag, 1)
+        XCTAssertEqual(alu.equalFlag, 0)
+    }
 }

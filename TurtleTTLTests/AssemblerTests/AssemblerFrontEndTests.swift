@@ -104,7 +104,7 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions.count, 2)
         
         let cmpOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "ALU")!
-        let kALUControlForCMP = 0b010110
+        let kALUControlForCMP = 0b0110
         let cmpInstruction = Instruction(opcode: cmpOpcode, immediate: kALUControlForCMP)
         XCTAssertEqual(instructions[1], cmpInstruction)
     }
@@ -261,13 +261,14 @@ class AssemblerFrontEndTests: XCTestCase {
         let nop: UInt8 = 0
         XCTAssertEqual(instructions[0].opcode, nop)
         
-        XCTAssertEqual(instructions[1].immediate, 0b011001)
+        XCTAssertEqual(instructions[1].immediate, 0b1001)
         
         let microcodeGenerator = makeMicrocodeGenerator()
         let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.EO, .active)
         XCTAssertEqual(controlWord.DI, .active)
+        XCTAssertEqual(controlWord.CarryIn, .inactive)
     }
     
     func testFailToCompileADDWithInvalidDestinationRegisterE() {

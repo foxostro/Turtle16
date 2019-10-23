@@ -60,6 +60,9 @@ public class AssemblerLexer: Lexer {
             Rule(pattern: "LOAD\\b") {
                 TokenLOAD(lineNumber: self.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "LXY\\b") {
+                TokenLXY(lineNumber: self.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "A\\b") {
                 TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .A)
             },

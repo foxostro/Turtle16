@@ -163,6 +163,38 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(error.message, "unexpected end of input")
     }
     
+    func testFailToCompileLXYWithUndeclaredLabel() {
+        let errors = mustFailToCompile("LXY label")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
+    }
+    
+    func testFailToCompileLXYWithZeroOperands() {
+        let errors = mustFailToCompile("LXY")
+        let error = errors.first!
+        XCTAssertEqual(error.line, 1)
+        XCTAssertEqual(error.message, "operand type mismatch: `LXY'")
+    }
+    
+    func testLXYCompiles() {
+        let instructions = mustCompile("label:\nLXY label")
+        
+        XCTAssertEqual(instructions.count, 3)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // Load the resolved label address into XY.
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 1)
+    }
+    
     func testFailToCompileJALRWithUndeclaredLabel() {
         let errors = mustFailToCompile("JALR label")
         let error = errors.first!

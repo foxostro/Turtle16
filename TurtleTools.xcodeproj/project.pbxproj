@@ -130,6 +130,9 @@
 		6FF960F8235FDC87002FFE24 /* TokenJALR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF960F7235FDC87002FFE24 /* TokenJALR.swift */; };
 		6FF960FA235FDCCD002FFE24 /* JALRNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF960F9235FDCCD002FFE24 /* JALRNode.swift */; };
 		6FF960FC235FDCF6002FFE24 /* JMPNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF960FB235FDCF5002FFE24 /* JMPNode.swift */; };
+		6FF960FE235FEAE7002FFE24 /* LXYWithLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF960FD235FEAE7002FFE24 /* LXYWithLabelNode.swift */; };
+		6FF96100235FEB0D002FFE24 /* TokenLXY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF960FF235FEB0D002FFE24 /* TokenLXY.swift */; };
+		6FF96102235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF96101235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -323,6 +326,9 @@
 		6FF960F7235FDC87002FFE24 /* TokenJALR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenJALR.swift; sourceTree = "<group>"; };
 		6FF960F9235FDCCD002FFE24 /* JALRNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JALRNode.swift; sourceTree = "<group>"; };
 		6FF960FB235FDCF5002FFE24 /* JMPNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JMPNode.swift; sourceTree = "<group>"; };
+		6FF960FD235FEAE7002FFE24 /* LXYWithLabelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LXYWithLabelNode.swift; sourceTree = "<group>"; };
+		6FF960FF235FEB0D002FFE24 /* TokenLXY.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenLXY.swift; sourceTree = "<group>"; };
+		6FF96101235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LXYWithLabelNodeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -505,6 +511,7 @@
 				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
 				6F088076230F5D9400AB2339 /* LINode.swift */,
 				6F0880A6230FD6D200AB2339 /* LoadNode.swift */,
+				6FF960FD235FEAE7002FFE24 /* LXYWithLabelNode.swift */,
 				6F088078230F5D9C00AB2339 /* MOVNode.swift */,
 				6F08806A230F5CE800AB2339 /* NOPNode.swift */,
 				6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */,
@@ -528,6 +535,7 @@
 				6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */,
 				6F08808C230F6E5700AB2339 /* LINodeTests.swift */,
 				6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */,
+				6FF96101235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift */,
 				6F08808E230F6E5F00AB2339 /* MOVNodeTests.swift */,
 				6F088080230F6E2500AB2339 /* NOPNodeTests.swift */,
 				6F0880A8230FD6EE00AB2339 /* StoreImmediateNodeTests.swift */,
@@ -563,6 +571,7 @@
 				6F5A0105231F648C003E7C7F /* TokenJMP.swift */,
 				6F5A010B231F64B2003E7C7F /* TokenLI.swift */,
 				6F5A0111231F64EF003E7C7F /* TokenLOAD.swift */,
+				6FF960FF235FEB0D002FFE24 /* TokenLXY.swift */,
 				6F5A010D231F64C1003E7C7F /* TokenMOV.swift */,
 				6F5A00F9231F6415003E7C7F /* TokenNewline.swift */,
 				6F5A00FF231F6449003E7C7F /* TokenNOP.swift */,
@@ -834,6 +843,8 @@
 				6F088073230F5D7E00AB2339 /* JCToLabelNode.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
 				6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */,
+				6FF96100235FEB0D002FFE24 /* TokenLXY.swift in Sources */,
+				6FF960FE235FEAE7002FFE24 /* LXYWithLabelNode.swift in Sources */,
 				6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */,
 				6F5A0112231F64EF003E7C7F /* TokenLOAD.swift in Sources */,
 				6F5A0110231F64D9003E7C7F /* TokenSTORE.swift in Sources */,
@@ -906,6 +917,7 @@
 				6F08809B230FAE9000AB2339 /* JMPToAddressNodeTests.swift in Sources */,
 				6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */,
 				6F08807F230F6AEC00AB2339 /* AssemblerParserTests.swift in Sources */,
+				6FF96102235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift in Sources */,
 				6F088091230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift in Sources */,
 				6F088087230F6E3E00AB2339 /* JMPToLabelNodeTests.swift in Sources */,
 				6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */,

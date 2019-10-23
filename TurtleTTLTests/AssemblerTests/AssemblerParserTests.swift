@@ -151,7 +151,26 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
 
-    func testFailToCompileJALRWithZeroOperands() {
+    func testFailToParseLXYWithZeroOperands() {
+        let parser = AssemblerParser(tokens: tokenize("LXY"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LXY'")
+    }
+
+    func testParseLXY() {
+        let parser = AssemblerParser(tokens: tokenize("LXY label"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+    }
+
+    func testFailToParseJALRWithZeroOperands() {
         let parser = AssemblerParser(tokens: tokenize("JALR"))
         parser.parse()
         XCTAssertTrue(parser.hasError)

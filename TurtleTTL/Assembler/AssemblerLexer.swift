@@ -60,6 +60,9 @@ public class AssemblerLexer: Lexer {
             Rule(pattern: "MOV\\b") {
                 TokenMOV(lineNumber: self.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "BLT\\b") {
+                TokenBLT(lineNumber: self.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "STORE\\b") {
                 TokenSTORE(lineNumber: self.lineNumber, lexeme: $0)
             },

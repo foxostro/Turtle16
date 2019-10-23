@@ -8,4 +8,4 @@
 
 import Cocoa
 
-class TokenLXY : Token {}
+public class TokenLXY : Token {}

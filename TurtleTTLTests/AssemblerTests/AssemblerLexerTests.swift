@@ -271,4 +271,39 @@ class AssemblerLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenMOV(lineNumber: 1, lexeme: "MOV"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeLXY() {
+        let tokenizer = AssemblerLexer(withString: "LXY")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLXY(lineNumber: 1, lexeme: "LXY"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeJALR() {
+        let tokenizer = AssemblerLexer(withString: "JALR")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenJALR(lineNumber: 1, lexeme: "JALR"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeINUV() {
+        let tokenizer = AssemblerLexer(withString: "INUV")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenINUV(lineNumber: 1, lexeme: "INUV"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeINXY() {
+        let tokenizer = AssemblerLexer(withString: "INXY")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenINXY(lineNumber: 1, lexeme: "INXY"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeBLT() {
+        let tokenizer = AssemblerLexer(withString: "BLT")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenBLT(lineNumber: 1, lexeme: "BLT"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

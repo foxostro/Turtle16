@@ -156,4 +156,12 @@ public class CodeGenerator: NSObject {
         assert(isAssembling)
         try! instruction(withMnemonic: "JC", immediate: 0)
     }
+    
+    // Bit Blit -- Copy a value from a peripheral to data RAM (or vice versa)
+    // and increment the address registers for both the source and destination.
+    public func blt(_ destination: RegisterName, _ source: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic = String(format: "BLT %@, %@", String(describing: destination), String(describing: source))
+        try instruction(withMnemonic: mnemonic, immediate: 0)
+    }
 }

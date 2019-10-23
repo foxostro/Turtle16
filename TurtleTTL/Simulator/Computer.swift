@@ -183,6 +183,16 @@ public class Computer: NSObject {
             state = state.withBus(bus)
             logger?.append("BO -- output %@ onto bus", state.bus)
         }
+        if (.active == state.controlWord.LinkHiOut) {
+            let bus = state.registerG.value
+            state = state.withBus(bus)
+            logger?.append("LinkHiOut -- output %@ onto bus", state.bus)
+        }
+        if (.active == state.controlWord.LinkLoOut) {
+            let bus = state.registerH.value
+            state = state.withBus(bus)
+            logger?.append("LinkLoOut -- output %@ onto bus", state.bus)
+        }
         
         if (.active == state.controlWord.YI) {
             logger?.append("YI -- input %@ from bus", state.bus)

@@ -121,27 +121,34 @@ public class MicrocodeGenerator: NSObject {
     }
     
     public func alu() {
+        alu(base: "ALUC", withCarry: .active)
+        alu(base: "ALU", withCarry: .inactive)
+    }
+    
+    public func alu(base: String, withCarry carry: ControlWord.ControlSignal) {
         for destination in DestinationRegister.allCases {
             var controlWord = ControlWord()
             controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
             controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
-            controlWord = controlWord.withFI(.active)
-            let mnemonic = String(format: "ALU %@", String(describing: destination))
+            controlWord = controlWord.withFI(.active).withCarryIn(carry)
+            let mnemonic = String(format: "%@ %@", base, String(describing: destination))
             let opcode = getNextOpcode()
             mapMnemonicToOpcode[mnemonic] = opcode
             microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
         }
         
-        aluNoDest()
+        aluNoDest(mnemonic: base, withCarry: carry)
     }
     
     // The case of an ALU operation with no destination register.
     // Only updates the flags.
-    func aluNoDest() {
+    func aluNoDest(mnemonic: String, withCarry carry: ControlWord.ControlSignal) {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["ALU"] = opcode
+        mapMnemonicToOpcode[mnemonic] = opcode
         microcode = microcode.withStore(opcode: opcode,
-                                        controlWord: ControlWord().outputEToBus().withFI(.active))
+                                        controlWord: ControlWord()
+                                            .withFI(.active)
+                                            .withCarryIn(carry))
     }
     
     public func jalr() {
@@ -163,10 +170,10 @@ public class MicrocodeGenerator: NSObject {
         let opcode = getNextOpcode()
         mapMnemonicToOpcode["JC"] = opcode
         let controlWord = ControlWord().withJ(.active)
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord)
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: ControlWord())
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: ControlWord())
+        microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord) // A Greater Than B
+        microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: ControlWord()) // A Less Than B
+        microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord) // ?
+        microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: ControlWord()) // A Equal B
     }
     
     public func inuv() {

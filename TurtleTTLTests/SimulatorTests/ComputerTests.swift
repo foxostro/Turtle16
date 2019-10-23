@@ -122,6 +122,173 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerA.value, 3)
     }
     
+    func testAddTwoOperands() {
+        let computer = makeComputer()
+        
+        let nop = ControlWord()
+        let lda = ControlWord().withCO(.active).withAI(.active)
+        let ldb = ControlWord().withCO(.active).withBI(.active)
+        let sum = ControlWord().withEO(.active).withXI(.active).withCarryIn(.inactive)
+        let hlt = ControlWord().withHLT(.active)
+        
+        var instructionDecoder = InstructionDecoder()
+        var instructionROM = InstructionROM()
+        
+        // NOP
+        instructionDecoder = instructionDecoder.withStore(opcode: 0, controlWord: nop)
+        instructionROM = instructionROM.withStore(opcode: 0, immediate: 0, to: 0)
+        
+        // Set register A to immediate value 2.
+        instructionDecoder = instructionDecoder.withStore(opcode: 1, controlWord: lda)
+        instructionROM = instructionROM.withStore(opcode: 1, immediate: 2, to: 1)
+        
+        // Set register B to immediate value 2.
+        instructionDecoder = instructionDecoder.withStore(opcode: 2, controlWord: ldb)
+        instructionROM = instructionROM.withStore(opcode: 2, immediate: 2, to: 2)
+        
+        // Set register X to "A plus B"
+        instructionDecoder = instructionDecoder.withStore(opcode: 3, controlWord: sum)
+        instructionROM = instructionROM.withStore(opcode: 3, immediate: 0b01001, to: 3)
+        
+        // Halt
+        instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
+        instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerX.value, 4)
+    }
+    
+    func testCompareTwoOperands_Equal() {
+        let computer = makeComputer()
+        
+        let nop = ControlWord()
+        let lda = ControlWord().withCO(.active).withAI(.active)
+        let ldb = ControlWord().withCO(.active).withBI(.active)
+        let cmp = ControlWord().withFI(.active).withCarryIn(.inactive)
+        let hlt = ControlWord().withHLT(.active)
+        
+        var instructionDecoder = InstructionDecoder()
+        var instructionROM = InstructionROM()
+        
+        // NOP
+        instructionDecoder = instructionDecoder.withStore(opcode: 0, controlWord: nop)
+        instructionROM = instructionROM.withStore(opcode: 0, immediate: 0, to: 0)
+        
+        // Set register A to immediate value 42.
+        instructionDecoder = instructionDecoder.withStore(opcode: 1, controlWord: lda)
+        instructionROM = instructionROM.withStore(opcode: 1, immediate: 42, to: 1)
+        
+        // Set register B to immediate value 42.
+        instructionDecoder = instructionDecoder.withStore(opcode: 2, controlWord: ldb)
+        instructionROM = instructionROM.withStore(opcode: 2, immediate: 42, to: 2)
+        
+        // Compare
+        instructionDecoder = instructionDecoder.withStore(opcode: 3, controlWord: cmp)
+        instructionROM = instructionROM.withStore(opcode: 3, immediate: 0b00110, to: 3)
+        
+        // Halt
+        instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
+        instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.flags.carryFlag, 1)
+        XCTAssertEqual(computer.currentState.flags.equalFlag, 1)
+    }
+    
+    func testCompareTwoOperands_GreaterThan() {
+        let computer = makeComputer()
+        
+        let nop = ControlWord()
+        let lda = ControlWord().withCO(.active).withAI(.active)
+        let ldb = ControlWord().withCO(.active).withBI(.active)
+        let cmp = ControlWord().withFI(.active).withCarryIn(.inactive)
+        let hlt = ControlWord().withHLT(.active)
+        
+        var instructionDecoder = InstructionDecoder()
+        var instructionROM = InstructionROM()
+        
+        // NOP
+        instructionDecoder = instructionDecoder.withStore(opcode: 0, controlWord: nop)
+        instructionROM = instructionROM.withStore(opcode: 0, immediate: 0, to: 0)
+        
+        // Set register A to immediate value 42.
+        instructionDecoder = instructionDecoder.withStore(opcode: 1, controlWord: lda)
+        instructionROM = instructionROM.withStore(opcode: 1, immediate: 42, to: 1)
+        
+        // Set register B to immediate value 1.
+        instructionDecoder = instructionDecoder.withStore(opcode: 2, controlWord: ldb)
+        instructionROM = instructionROM.withStore(opcode: 2, immediate: 1, to: 2)
+        
+        // Compare
+        instructionDecoder = instructionDecoder.withStore(opcode: 3, controlWord: cmp)
+        instructionROM = instructionROM.withStore(opcode: 3, immediate: 0b00110, to: 3)
+        
+        // Halt
+        instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
+        instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.flags.carryFlag, 0)
+        XCTAssertEqual(computer.currentState.flags.equalFlag, 0)
+    }
+    
+    func testCompareTwoOperands_LessThan() {
+        let computer = makeComputer()
+        
+        let nop = ControlWord()
+        let lda = ControlWord().withCO(.active).withAI(.active)
+        let ldb = ControlWord().withCO(.active).withBI(.active)
+        let cmp = ControlWord().withFI(.active).withCarryIn(.inactive)
+        let hlt = ControlWord().withHLT(.active)
+        
+        var instructionDecoder = InstructionDecoder()
+        var instructionROM = InstructionROM()
+        
+        // NOP
+        instructionDecoder = instructionDecoder.withStore(opcode: 0, controlWord: nop)
+        instructionROM = instructionROM.withStore(opcode: 0, immediate: 0, to: 0)
+        
+        // Set register A to immediate value 1.
+        instructionDecoder = instructionDecoder.withStore(opcode: 1, controlWord: lda)
+        instructionROM = instructionROM.withStore(opcode: 1, immediate: 1, to: 1)
+        
+        // Set register B to immediate value 42.
+        instructionDecoder = instructionDecoder.withStore(opcode: 2, controlWord: ldb)
+        instructionROM = instructionROM.withStore(opcode: 2, immediate: 42, to: 2)
+        
+        // Compare
+        instructionDecoder = instructionDecoder.withStore(opcode: 3, controlWord: cmp)
+        instructionROM = instructionROM.withStore(opcode: 3, immediate: 0b00110, to: 3)
+        
+        // Halt
+        instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
+        instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
+        
+        computer.currentState = computer.currentState
+            .withInstructionDecoder(instructionDecoder)
+            .withInstructionROM(instructionROM)
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.flags.carryFlag, 1)
+        XCTAssertEqual(computer.currentState.flags.equalFlag, 0)
+    }
+    
     func testDescribeALUResult() {
         let computer = makeComputer()
         

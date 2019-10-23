@@ -128,14 +128,14 @@ public class CodeGenerator: NSObject {
     public func add(_ destination: RegisterName) throws {
         assert(isAssembling)
         let mnemonic = String(format: "ALU %@", String(describing: destination))
-        try instruction(withMnemonic: mnemonic, immediate: 0b011001)
+        try instruction(withMnemonic: mnemonic, immediate: 0b1001)
     }
     
     // Compare -- The ALU compares the contents of the A and B registers.
     //            Flags are updated but the ALU result is not stored.
     public func cmp() {
         assert(isAssembling)
-        try! instruction(withMnemonic: "ALU", immediate: 0b010110)
+        try! instruction(withMnemonic: "ALU", immediate: 0b0110)
     }
     
     // Jump -- Jump to the address specified by the XY register pair, and load the link register

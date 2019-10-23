@@ -2,21 +2,49 @@
 # let kIORegister = 0
 # let kStatusRegister = 1
 
+
+
+# Showcase the BLT instruction by using it to printing "Hello, World!".
+# First, we copy some bytes from instruction memory to data RAM. Once that's
+# done, we use the BLT instruction to copy from Data RAM to serial I/O.
+# This isn't the most efficient way to get a literal string out to serial, but
+# it does showcase the accelerated bit blit operation we get from having self-
+# incrementing address registers and a separate bus for data RAM and peripheral
+# I/O.
+
+# First, setup a string in data RAM at address 100.
+LXY setupStringInMemory
+JALR
+NOP
+NOP
+
+# Second, setup the address registers to prepare for the copy.
 LI D, 6 # kSerialInterface
-LI P, 'H'
-LI P, 'e'
-LI P, 'l'
-LI P, 'l'
-LI P, 'o'
-LI P, ','
-LI P, ' '
-LI P, 'W'
-LI P, 'o'
-LI P, 'r'
-LI P, 'l'
-LI P, 'd'
-LI P, '!'
-LI P, 10
+LI X, 0
+LI Y, 0
+LI U, 0
+LI V, 100
+
+# Finally, use repeated invocations of the BLT instruction to perform the copy.
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+
+
+
+# Now, we enter a loop where we wait for serial input and then echo it to
+# serial output.
 
 beginningOfInputLoop:
 
@@ -39,17 +67,57 @@ HLT
 
 
 
+# This is a function to copy a string from instruction memory to data RAM at
+# address 100.
+setupStringInMemory:
+LI U, 0
+LI V, 100
+LI M, 'H'
+INUV
+LI M, 'e'
+INUV
+LI M, 'l'
+INUV
+LI M, 'l'
+INUV
+LI M, 'o'
+INUV
+LI M, ','
+INUV
+LI M, ' '
+INUV
+LI M, 'W'
+INUV
+LI M, 'o'
+INUV
+LI M, 'r'
+INUV
+LI M, 'l'
+INUV
+LI M, 'd'
+INUV
+LI M, '!'
+INUV
+LI M, 10
+MOV X, G
+MOV Y, H
+JMP
+NOP
+NOP
 
+
+
+
+# This is a function which waits until the number of available bytes is greater
+# than zero and then returns to caller.
+# The return address is stored in the Link register upon entering the function.
 waitForInput:
-
-# Wait until the number of available bytes is greater than zero.
-loop:
 LI D, 6 # kSerialInterface
 LI Y, 1 # kStatusRegister
 MOV B, P
 LI A, 1
 CMP
-LXY loop
+LXY waitForInput
 JC
 NOP
 NOP

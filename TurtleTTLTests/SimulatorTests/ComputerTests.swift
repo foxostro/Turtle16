@@ -1105,4 +1105,73 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerH.value, 5)
         XCTAssertEqual(computer.currentState.registerX.value, 0) // Assert that instruction 6 was skipped.
     }
+    
+    func testBlockCopyIncrement() {
+        // We can construct a special instruction to aid in block copies from
+        // data RAM to to a peripheral destination. This could be used, for
+        // example, to accelerate copies from data RAM to video RAM.
+        // This instruction copies from one memory to the other,
+        // simultaneously increments the UV and XY registers.
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let ldd = 1
+        let lddControl = ControlWord().withCO(.active).withDI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
+        
+        let ldx = 2
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 3
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let ldu = 4
+        let lduControl = ControlWord().withCO(.active).withUI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldu, controlWord: lduControl)
+        
+        let ldv = 5
+        let ldvControl = ControlWord().withCO(.active).withVI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldv, controlWord: ldvControl)
+        
+        let blt = 6
+        let bltControl = ControlWord()
+            .withUVInc(.active)
+            .withXYInc(.active)
+            .withMO(.active)
+            .withPI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: blt, controlWord: bltControl)
+        
+        let hlt = 7
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop,  immediate: 0),
+            Instruction(opcode: ldd,  immediate: 6),
+            Instruction(opcode: ldx,  immediate: 0),
+            Instruction(opcode: ldy,  immediate: 255),
+            Instruction(opcode: ldu,  immediate: 0),
+            Instruction(opcode: ldv,  immediate: 255),
+            Instruction(opcode: blt,  immediate: 0),
+            Instruction(opcode: blt,  immediate: 0),
+            Instruction(opcode: blt,  immediate: 0),
+            Instruction(opcode: hlt,  immediate: 0)])
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerU.value, 1)
+        XCTAssertEqual(computer.currentState.registerV.value, 2)
+        XCTAssertEqual(computer.currentState.registerX.value, 1)
+        XCTAssertEqual(computer.currentState.registerY.value, 2)
+        XCTAssertEqual(computer.currentState.serialOutput, [0, 0, 0])
+    }
 }

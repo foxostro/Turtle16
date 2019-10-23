@@ -96,8 +96,11 @@ public class AssemblerParser: Parser {
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [JCToAddressNode(address: address.literal)]
-        }
-        throw operandTypeMismatchError(instruction)
+        } else {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
+                       error: zeroOperandsExpectedError(instruction))
+            return [JCNode()]
+       }
     }
     
     func consumeADD(_ instruction: TokenADD) throws -> [AbstractSyntaxTreeNode] {

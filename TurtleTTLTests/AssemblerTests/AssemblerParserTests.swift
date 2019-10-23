@@ -240,13 +240,14 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], JMPToAddressNode(address: 0))
     }
 
-    func testFailToParseJCWithZeroOperands() {
+    func testJCWithZeroOperandsDoesParse() {
         let parser = AssemblerParser(tokens: tokenize("JC"))
         parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `JC'")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], JCNode())
     }
 
     func testParseSucceedsWithJCWithUndeclaredLabel() {

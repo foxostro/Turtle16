@@ -135,6 +135,8 @@
 		6FF96102235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF96101235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift */; };
 		6FF96104235FED98002FFE24 /* LXYWithAddressNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF96103235FED98002FFE24 /* LXYWithAddressNode.swift */; };
 		6FF96106235FEE0B002FFE24 /* LXYWithAddressNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF96105235FEE0B002FFE24 /* LXYWithAddressNodeTests.swift */; };
+		6FF96108235FEF0C002FFE24 /* JCNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF96107235FEF0C002FFE24 /* JCNodeTests.swift */; };
+		6FF9610A235FEF51002FFE24 /* JCNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF96109235FEF51002FFE24 /* JCNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -333,6 +335,8 @@
 		6FF96101235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LXYWithLabelNodeTests.swift; sourceTree = "<group>"; };
 		6FF96103235FED98002FFE24 /* LXYWithAddressNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LXYWithAddressNode.swift; sourceTree = "<group>"; };
 		6FF96105235FEE0B002FFE24 /* LXYWithAddressNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LXYWithAddressNodeTests.swift; sourceTree = "<group>"; };
+		6FF96107235FEF0C002FFE24 /* JCNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCNodeTests.swift; sourceTree = "<group>"; };
+		6FF96109235FEF51002FFE24 /* JCNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -509,6 +513,7 @@
 				6FF960F9235FDCCD002FFE24 /* JALRNode.swift */,
 				6F088098230FADB500AB2339 /* JCToAddressNode.swift */,
 				6F088072230F5D7E00AB2339 /* JCToLabelNode.swift */,
+				6FF96109235FEF51002FFE24 /* JCNode.swift */,
 				6FF960FB235FDCF5002FFE24 /* JMPNode.swift */,
 				6F088096230FAA1E00AB2339 /* JMPToAddressNode.swift */,
 				6F088070230F5D7500AB2339 /* JMPToLabelNode.swift */,
@@ -534,6 +539,7 @@
 				6FF960F3235ECF7C002FFE24 /* JALRNodeTests.swift */,
 				6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */,
 				6F088088230F6E4800AB2339 /* JCToLabelNodeTests.swift */,
+				6FF96107235FEF0C002FFE24 /* JCNodeTests.swift */,
 				6FF960F5235FDC36002FFE24 /* JMPNodeTests.swift */,
 				6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */,
 				6F088086230F6E3E00AB2339 /* JMPToLabelNodeTests.swift */,
@@ -872,6 +878,7 @@
 				6FF960FC235FDCF6002FFE24 /* JMPNode.swift in Sources */,
 				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
 				6FF96104235FED98002FFE24 /* LXYWithAddressNode.swift in Sources */,
+				6FF9610A235FEF51002FFE24 /* JCNode.swift in Sources */,
 				6FE003B522F3D78B00221C4C /* Computer.swift in Sources */,
 				6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */,
 				6F5A0102231F645A003E7C7F /* TokenCMP.swift in Sources */,
@@ -960,6 +967,7 @@
 				6F0C180B23090063005B9E12 /* SerialInterfaceTests.swift in Sources */,
 				6F5A00E823184896003E7C7F /* PatcherTests.swift in Sources */,
 				6F08808B230F6E4F00AB2339 /* ADDNodeTests.swift in Sources */,
+				6FF96108235FEF0C002FFE24 /* JCNodeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

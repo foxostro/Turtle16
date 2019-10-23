@@ -621,4 +621,42 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors[1].line, 2)
         XCTAssertEqual(parser.errors[1].message, "register cannot be used as a destination: `C'")
     }
+    
+    func testFailToParseINUVWithOperands() {
+        let parser = AssemblerParser(tokens: tokenize("INUV 0x0000"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `INUV'")
+    }
+    
+    func testParseINUV() {
+        let parser = AssemblerParser(tokens: tokenize("INUV"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], INUVNode())
+    }
+    
+    func testFailToParseINXYWithOperands() {
+        let parser = AssemblerParser(tokens: tokenize("INUV 0x0000"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `INUV'")
+    }
+    
+    func testParseINXY() {
+        let parser = AssemblerParser(tokens: tokenize("INXY"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], INXYNode())
+    }
 }

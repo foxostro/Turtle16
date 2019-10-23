@@ -495,4 +495,30 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(error.line, nil)
         XCTAssertEqual(error.message, "foo.s:1: error: register cannot be used as a destination: `E'\nfoo.s:2: error: operand type mismatch: `MOV'\n2 errors generated\n")
     }
+    
+    func testINUV() {
+        let instructions = mustCompile("INUV")
+        
+        XCTAssertEqual(instructions.count, 2)
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        let microcodeGenerator = makeMicrocodeGenerator()
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.UVInc, .active)
+    }
+    
+    func testINXY() {
+        let instructions = mustCompile("INXY")
+        
+        XCTAssertEqual(instructions.count, 2)
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        let microcodeGenerator = makeMicrocodeGenerator()
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.XYInc, .active)
+    }
 }

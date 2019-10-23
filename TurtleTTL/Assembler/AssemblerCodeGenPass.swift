@@ -65,6 +65,14 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         self.codeGenerator.hlt()
     }
     
+    public func visit(node: INUVNode) throws {
+        self.codeGenerator.inuv()
+    }
+    
+    public func visit(node: INXYNode) throws {
+        self.codeGenerator.inxy()
+    }
+    
     public func visit(node: JALRNode) throws {
         self.codeGenerator.jalr()
     }

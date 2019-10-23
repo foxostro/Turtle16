@@ -85,6 +85,7 @@ public class MicrocodeGenerator: NSObject {
         alu()
         jmp()
         jc()
+        jalr()
     }
     
     public func nop() {
@@ -138,6 +139,13 @@ public class MicrocodeGenerator: NSObject {
         mapMnemonicToOpcode["ALU"] = opcode
         microcode = microcode.withStore(opcode: opcode,
                                         controlWord: ControlWord().outputEToBus().withFI(.active))
+    }
+    
+    public func jalr() {
+        let opcode = getNextOpcode()
+        mapMnemonicToOpcode["JALR"] = opcode
+        let controlWord = ControlWord().withJ(.active).withLinkIn(.active)
+        microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     public func jmp() {

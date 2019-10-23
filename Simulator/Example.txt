@@ -41,9 +41,26 @@ LI P, 'd'
 LI D, 6 # kSerialInterface
 LI P, '!'
 
-loop:
+beginningOfInputLoop:
+
+JALR waitForInput
+
+# Read a byte and echo it back.
+LI D, 6 # kSerialInterface
+LI Y, 0 # kIORegister
+MOV A, P
+MOV P, A
+
+JMP beginningOfInputLoop
+HLT
+
+
+
+
+waitForInput:
 
 # Wait until the number of available bytes is greater than zero.
+loop:
 LI D, 6 # kSerialInterface
 LI Y, 1 # kStatusRegister
 MOV B, P
@@ -51,10 +68,7 @@ LI A, 1
 CMP
 JC loop
 
-# Read a byte and echo it back.
-LI Y, 0 # kIORegister
-MOV A, P
-MOV P, A
-
-JMP loop
-HLT
+# Return from the function.
+MOV X, G
+MOV Y, H
+JMP

@@ -163,11 +163,37 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(error.message, "unexpected end of input")
     }
     
-    func testFailToCompileJMPWithZeroOperands() {
-        let errors = mustFailToCompile("JMP")
+    func testFailToCompileJALRWithUndeclaredLabel() {
+        let errors = mustFailToCompile("JALR label")
         let error = errors.first!
         XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "operand type mismatch: `JMP'")
+        XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
+    }
+    
+    func testJALRCompiles() {
+        let instructions = mustCompile("label:\nJALR label")
+        
+        XCTAssertEqual(instructions.count, 6)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // Load the resolved label address into XY.
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].immediate, 1)
+        
+        // The JALR instruction jumps to the address in the XY register pair.
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JALR")!))
+        
+        // JALR must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[4].opcode, nop)
+        XCTAssertEqual(instructions[5].opcode, nop)
     }
     
     func testFailToCompileJMPWithUndeclaredLabel() {
@@ -175,6 +201,26 @@ class AssemblerFrontEndTests: XCTestCase {
         let error = errors.first!
         XCTAssertEqual(error.line, 1)
         XCTAssertEqual(error.message, "unrecognized symbol name: `label'")
+    }
+    
+    func testJMPWithZeroOperandsDoesCompile() {
+        let instructions = mustCompile("JMP")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        
+        XCTAssertEqual(instructions.count, 4)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // A bare JMP will jump to whatever address is in XY.
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        
+        // JMP must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[2].opcode, nop)
+        XCTAssertEqual(instructions[3].opcode, nop)
     }
     
     func testJMPCompiles() {

@@ -126,6 +126,12 @@ public class CodeGenerator: NSObject {
         try! instruction(withMnemonic: "ALU", immediate: 0b010110)
     }
     
+    // Jump -- Jump to the address specified by the XY register pair, and load the link register
+    public func jalr() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JALR", immediate: 0)
+    }
+    
     // Jump -- Jump to the address specified by the XY register pair.
     public func jmp() {
         assert(isAssembling)

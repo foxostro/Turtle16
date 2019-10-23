@@ -18,6 +18,7 @@ public class AssemblerParser: Parser {
             Production(symbol: TokenNOP.self,        generator: { try self.consumeNOP($0 as! TokenNOP) }),
             Production(symbol: TokenCMP.self,        generator: { try self.consumeCMP($0 as! TokenCMP) }),
             Production(symbol: TokenHLT.self,        generator: { try self.consumeHLT($0 as! TokenHLT) }),
+            Production(symbol: TokenJALR.self,       generator: { try self.consumeJALR($0 as! TokenJALR) }),
             Production(symbol: TokenJMP.self,        generator: { try self.consumeJMP($0 as! TokenJMP) }),
             Production(symbol: TokenJC.self,         generator: { try self.consumeJC($0 as! TokenJC) }),
             Production(symbol: TokenADD.self,        generator: { try self.consumeADD($0 as! TokenADD) }),
@@ -47,6 +48,15 @@ public class AssemblerParser: Parser {
         return [HLTNode()]
     }
     
+    func consumeJALR(_ instruction: TokenJALR) throws -> [AbstractSyntaxTreeNode] {
+        if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
+                       error: operandTypeMismatchError(instruction))
+            return [JALRNode(token: identifier)]
+        }
+        throw operandTypeMismatchError(instruction)
+    }
+    
     func consumeJMP(_ instruction: TokenJMP) throws -> [AbstractSyntaxTreeNode] {
         if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
             try expect(types: [TokenNewline.self, TokenEOF.self],
@@ -56,8 +66,11 @@ public class AssemblerParser: Parser {
             try expect(types: [TokenNewline.self, TokenEOF.self],
                        error: operandTypeMismatchError(instruction))
             return [JMPToAddressNode(address: address.literal)]
+        } else {
+            try expect(types: [TokenNewline.self, TokenEOF.self],
+                       error: zeroOperandsExpectedError(instruction))
+            return [JMPNode()]
         }
-        throw operandTypeMismatchError(instruction)
     }
     
     func consumeJC(_ instruction: TokenJC) throws -> [AbstractSyntaxTreeNode] {

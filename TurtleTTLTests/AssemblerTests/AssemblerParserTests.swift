@@ -151,13 +151,33 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
 
-    func testFailToCompileJMPWithZeroOperands() {
-        let parser = AssemblerParser(tokens: tokenize("JMP"))
+    func testFailToCompileJALRWithZeroOperands() {
+        let parser = AssemblerParser(tokens: tokenize("JALR"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `JMP'")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `JALR'")
+    }
+
+    func testParseJALR() {
+        let parser = AssemblerParser(tokens: tokenize("JALR label"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], JALRNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+    }
+
+    func testJMPWithZeroOperandsDoesParse() {
+        let parser = AssemblerParser(tokens: tokenize("JMP"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], JMPNode())
     }
 
     func testParseSucceedsWithJMPWithUndeclaredLabel() {

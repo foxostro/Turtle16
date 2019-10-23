@@ -417,4 +417,26 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
         XCTAssertEqual(instructions[1].immediate, 0b010110)
     }
+    
+    func testINUV() {
+        let ast = AbstractSyntaxTreeNode(children: [INUVNode()])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        
+        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INUV")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+    }
+    
+    func testINXY() {
+        let ast = AbstractSyntaxTreeNode(children: [INXYNode()])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        
+        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INXY")!))
+        XCTAssertEqual(instructions[1].immediate, 0)
+    }
 }

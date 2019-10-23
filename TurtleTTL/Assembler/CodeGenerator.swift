@@ -78,6 +78,18 @@ public class CodeGenerator: NSObject {
         try! instruction(withMnemonic: "HLT", immediate: 0)
     }
     
+    // INUV -- Increment the UV register pair
+    public func inuv() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "INUV", immediate: 0)
+    }
+    
+    // INXY -- Increment the XY register pair
+    public func inxy() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "INXY", immediate: 0)
+    }
+    
     // Move -- Copy a value from one bus device to another.
     public func mov(_ destination: RegisterName, _ source: RegisterName, _ immediate: Int) throws {
         assert(isAssembling)

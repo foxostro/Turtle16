@@ -86,6 +86,8 @@ public class MicrocodeGenerator: NSObject {
         jmp()
         jc()
         jalr()
+        inuv()
+        inxy()
     }
     
     public func nop() {
@@ -164,6 +166,20 @@ public class MicrocodeGenerator: NSObject {
         microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: ControlWord())
         microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)
         microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: ControlWord())
+    }
+    
+    public func inuv() {
+        let opcode = getNextOpcode()
+        mapMnemonicToOpcode["INUV"] = opcode
+        let controlWord = ControlWord().withUVInc(.active)
+        microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
+    }
+    
+    public func inxy() {
+        let opcode = getNextOpcode()
+        mapMnemonicToOpcode["INXY"] = opcode
+        let controlWord = ControlWord().withXYInc(.active)
+        microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     func getNextOpcode() -> Int {

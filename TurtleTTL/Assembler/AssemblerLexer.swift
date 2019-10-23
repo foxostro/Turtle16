@@ -36,6 +36,12 @@ public class AssemblerLexer: Lexer {
             Rule(pattern: "HLT\\b") {
                 TokenHLT(lineNumber: self.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "INUV\\b") {
+                TokenINUV(lineNumber: self.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "INXY\\b") {
+                TokenINXY(lineNumber: self.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "JALR\\b") {
                 TokenJALR(lineNumber: self.lineNumber, lexeme: $0)
             },

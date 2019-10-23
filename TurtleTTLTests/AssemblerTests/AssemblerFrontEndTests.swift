@@ -199,7 +199,7 @@ class AssemblerFrontEndTests: XCTestCase {
         let instructions = mustCompile("JALR")
         let microcodeGenerator = makeMicrocodeGenerator()
         
-        XCTAssertEqual(instructions.count, 4)
+        XCTAssertEqual(instructions.count, 2)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -208,18 +208,13 @@ class AssemblerFrontEndTests: XCTestCase {
         
         // A bare JALR will conditionally jump to whatever address is in XY.
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JALR")!))
-        
-        // JALR must be followed by two NOPs. A jump does not clear the pipeline
-        // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[2].opcode, nop)
-        XCTAssertEqual(instructions[3].opcode, nop)
     }
     
     func testJMPWithZeroOperandsDoesCompile() {
         let instructions = mustCompile("JMP")
         let microcodeGenerator = makeMicrocodeGenerator()
         
-        XCTAssertEqual(instructions.count, 4)
+        XCTAssertEqual(instructions.count, 2)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -228,18 +223,13 @@ class AssemblerFrontEndTests: XCTestCase {
         
         // A bare JMP will jump to whatever address is in XY.
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
-        
-        // JMP must be followed by two NOPs. A jump does not clear the pipeline
-        // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[2].opcode, nop)
-        XCTAssertEqual(instructions[3].opcode, nop)
     }
     
     func testJCWithZeroOperandsDoesCompile() {
         let instructions = mustCompile("JC")
         let microcodeGenerator = makeMicrocodeGenerator()
         
-        XCTAssertEqual(instructions.count, 4)
+        XCTAssertEqual(instructions.count, 2)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -248,11 +238,6 @@ class AssemblerFrontEndTests: XCTestCase {
         
         // A bare JC will conditionally jump to whatever address is in XY.
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
-        
-        // JC must be followed by two NOPs. A jump does not clear the pipeline
-        // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[2].opcode, nop)
-        XCTAssertEqual(instructions[3].opcode, nop)
     }
     
     func testFailToCompileADDWithZeroOperands() {

@@ -307,11 +307,24 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[5].opcode, nop)
     }
     
-    func testFailToCompileJCWithZeroOperands() {
-        let errors = mustFailToCompile("JC")
-        let error = errors.first!
-        XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "operand type mismatch: `JC'")
+    func testJCWithZeroOperandsDoesCompile() {
+        let instructions = mustCompile("JC")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        
+        XCTAssertEqual(instructions.count, 4)
+        
+        // The first instruction in memory must be a NOP. Without this, CPU
+        // reset does not work.
+        let nop: UInt8 = 0
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        // A bare JC will conditionally jump to whatever address is in XY.
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        
+        // JC must be followed by two NOPs. A jump does not clear the pipeline
+        // so this is necessary to ensure correct operation.
+        XCTAssertEqual(instructions[2].opcode, nop)
+        XCTAssertEqual(instructions[3].opcode, nop)
     }
     
     func testFailToCompileJCWithUndeclaredLabel() {

@@ -44,7 +44,7 @@ LI P, '!'
 beginningOfInputLoop:
 
 LXY waitForInput
-JALR waitForInput
+JALR
 
 # Read a byte and echo it back.
 LI D, 6 # kSerialInterface

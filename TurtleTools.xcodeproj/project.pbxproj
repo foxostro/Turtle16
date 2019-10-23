@@ -11,8 +11,6 @@
 		6F08806B230F5CE800AB2339 /* NOPNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08806A230F5CE800AB2339 /* NOPNode.swift */; };
 		6F08806D230F5D5A00AB2339 /* CMPNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08806C230F5D5A00AB2339 /* CMPNode.swift */; };
 		6F08806F230F5D6600AB2339 /* HLTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08806E230F5D6600AB2339 /* HLTNode.swift */; };
-		6F088071230F5D7500AB2339 /* JMPToLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088070230F5D7500AB2339 /* JMPToLabelNode.swift */; };
-		6F088073230F5D7E00AB2339 /* JCToLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088072230F5D7E00AB2339 /* JCToLabelNode.swift */; };
 		6F088075230F5D8F00AB2339 /* ADDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* ADDNode.swift */; };
 		6F088077230F5D9400AB2339 /* LINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088076230F5D9400AB2339 /* LINode.swift */; };
 		6F088079230F5D9C00AB2339 /* MOVNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088078230F5D9C00AB2339 /* MOVNode.swift */; };
@@ -22,18 +20,12 @@
 		6F088081230F6E2500AB2339 /* NOPNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088080230F6E2500AB2339 /* NOPNodeTests.swift */; };
 		6F088083230F6E2D00AB2339 /* CMPNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088082230F6E2D00AB2339 /* CMPNodeTests.swift */; };
 		6F088085230F6E3700AB2339 /* HLTNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088084230F6E3700AB2339 /* HLTNodeTests.swift */; };
-		6F088087230F6E3E00AB2339 /* JMPToLabelNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088086230F6E3E00AB2339 /* JMPToLabelNodeTests.swift */; };
-		6F088089230F6E4800AB2339 /* JCToLabelNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088088230F6E4800AB2339 /* JCToLabelNodeTests.swift */; };
 		6F08808B230F6E4F00AB2339 /* ADDNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* ADDNodeTests.swift */; };
 		6F08808D230F6E5700AB2339 /* LINodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808C230F6E5700AB2339 /* LINodeTests.swift */; };
 		6F08808F230F6E5F00AB2339 /* MOVNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808E230F6E5F00AB2339 /* MOVNodeTests.swift */; };
 		6F088091230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */; };
 		6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */; };
 		6F088095230F864D00AB2339 /* AssemblerCodeGenPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */; };
-		6F088097230FAA1E00AB2339 /* JMPToAddressNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088096230FAA1E00AB2339 /* JMPToAddressNode.swift */; };
-		6F088099230FADB500AB2339 /* JCToAddressNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088098230FADB500AB2339 /* JCToAddressNode.swift */; };
-		6F08809B230FAE9000AB2339 /* JMPToAddressNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */; };
-		6F08809D230FAE9700AB2339 /* JCToAddressNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */; };
 		6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A0230FBDFF00AB2339 /* Token.swift */; };
 		6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6F0880A5230FD6CB00AB2339 /* StoreImmediateNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */; };
@@ -205,8 +197,6 @@
 		6F08806A230F5CE800AB2339 /* NOPNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOPNode.swift; sourceTree = "<group>"; };
 		6F08806C230F5D5A00AB2339 /* CMPNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMPNode.swift; sourceTree = "<group>"; };
 		6F08806E230F5D6600AB2339 /* HLTNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLTNode.swift; sourceTree = "<group>"; };
-		6F088070230F5D7500AB2339 /* JMPToLabelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JMPToLabelNode.swift; sourceTree = "<group>"; };
-		6F088072230F5D7E00AB2339 /* JCToLabelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCToLabelNode.swift; sourceTree = "<group>"; };
 		6F088074230F5D8F00AB2339 /* ADDNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADDNode.swift; sourceTree = "<group>"; };
 		6F088076230F5D9400AB2339 /* LINode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LINode.swift; sourceTree = "<group>"; };
 		6F088078230F5D9C00AB2339 /* MOVNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOVNode.swift; sourceTree = "<group>"; };
@@ -216,18 +206,12 @@
 		6F088080230F6E2500AB2339 /* NOPNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOPNodeTests.swift; sourceTree = "<group>"; };
 		6F088082230F6E2D00AB2339 /* CMPNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMPNodeTests.swift; sourceTree = "<group>"; };
 		6F088084230F6E3700AB2339 /* HLTNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLTNodeTests.swift; sourceTree = "<group>"; };
-		6F088086230F6E3E00AB2339 /* JMPToLabelNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JMPToLabelNodeTests.swift; sourceTree = "<group>"; };
-		6F088088230F6E4800AB2339 /* JCToLabelNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCToLabelNodeTests.swift; sourceTree = "<group>"; };
 		6F08808A230F6E4F00AB2339 /* ADDNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADDNodeTests.swift; sourceTree = "<group>"; };
 		6F08808C230F6E5700AB2339 /* LINodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LINodeTests.swift; sourceTree = "<group>"; };
 		6F08808E230F6E5F00AB2339 /* MOVNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOVNodeTests.swift; sourceTree = "<group>"; };
 		6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDeclarationNodeTests.swift; sourceTree = "<group>"; };
 		6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCodeGenPass.swift; sourceTree = "<group>"; };
 		6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCodeGenPassTests.swift; sourceTree = "<group>"; };
-		6F088096230FAA1E00AB2339 /* JMPToAddressNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JMPToAddressNode.swift; sourceTree = "<group>"; };
-		6F088098230FADB500AB2339 /* JCToAddressNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCToAddressNode.swift; sourceTree = "<group>"; };
-		6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JMPToAddressNodeTests.swift; sourceTree = "<group>"; };
-		6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCToAddressNodeTests.swift; sourceTree = "<group>"; };
 		6F0880A0230FBDFF00AB2339 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6F0880A2230FC09B00AB2339 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
 		6F0880A4230FD6CB00AB2339 /* StoreImmediateNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreImmediateNode.swift; sourceTree = "<group>"; };
@@ -511,12 +495,8 @@
 				6F08806C230F5D5A00AB2339 /* CMPNode.swift */,
 				6F08806E230F5D6600AB2339 /* HLTNode.swift */,
 				6FF960F9235FDCCD002FFE24 /* JALRNode.swift */,
-				6F088098230FADB500AB2339 /* JCToAddressNode.swift */,
-				6F088072230F5D7E00AB2339 /* JCToLabelNode.swift */,
 				6FF96109235FEF51002FFE24 /* JCNode.swift */,
 				6FF960FB235FDCF5002FFE24 /* JMPNode.swift */,
-				6F088096230FAA1E00AB2339 /* JMPToAddressNode.swift */,
-				6F088070230F5D7500AB2339 /* JMPToLabelNode.swift */,
 				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
 				6F088076230F5D9400AB2339 /* LINode.swift */,
 				6F0880A6230FD6D200AB2339 /* LoadNode.swift */,
@@ -537,12 +517,8 @@
 				6F088082230F6E2D00AB2339 /* CMPNodeTests.swift */,
 				6F088084230F6E3700AB2339 /* HLTNodeTests.swift */,
 				6FF960F3235ECF7C002FFE24 /* JALRNodeTests.swift */,
-				6F08809C230FAE9700AB2339 /* JCToAddressNodeTests.swift */,
-				6F088088230F6E4800AB2339 /* JCToLabelNodeTests.swift */,
 				6FF96107235FEF0C002FFE24 /* JCNodeTests.swift */,
 				6FF960F5235FDC36002FFE24 /* JMPNodeTests.swift */,
-				6F08809A230FAE9000AB2339 /* JMPToAddressNodeTests.swift */,
-				6F088086230F6E3E00AB2339 /* JMPToLabelNodeTests.swift */,
 				6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */,
 				6F08808C230F6E5700AB2339 /* LINodeTests.swift */,
 				6F0880AA230FD6F400AB2339 /* LoadNodeTests.swift */,
@@ -852,7 +828,6 @@
 				6F08806D230F5D5A00AB2339 /* CMPNode.swift in Sources */,
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
 				6F0880AF230FD8A800AB2339 /* StoreNode.swift in Sources */,
-				6F088073230F5D7E00AB2339 /* JCToLabelNode.swift in Sources */,
 				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
 				6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */,
 				6FF96100235FEB0D002FFE24 /* TokenLXY.swift in Sources */,
@@ -871,7 +846,6 @@
 				6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */,
 				6F5A0108231F6499003E7C7F /* TokenJC.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
-				6F088099230FADB500AB2339 /* JCToAddressNode.swift in Sources */,
 				6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */,
 				6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */,
 				6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */,
@@ -885,7 +859,6 @@
 				6F0880A5230FD6CB00AB2339 /* StoreImmediateNode.swift in Sources */,
 				6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */,
 				6F08806F230F5D6600AB2339 /* HLTNode.swift in Sources */,
-				6F088071230F5D7500AB2339 /* JMPToLabelNode.swift in Sources */,
 				6FF960FA235FDCCD002FFE24 /* JALRNode.swift in Sources */,
 				6FE003B422F3D78B00221C4C /* Logger.swift in Sources */,
 				6F37BA472305D903009754D3 /* Register.swift in Sources */,
@@ -914,7 +887,6 @@
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
 				6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */,
 				6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */,
-				6F088097230FAA1E00AB2339 /* JMPToAddressNode.swift in Sources */,
 				6F5A0114231F6503003E7C7F /* TokenIdentifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -928,14 +900,11 @@
 				6F5A013E232069FF003E7C7F /* ComputerExecutorTests.swift in Sources */,
 				6FE003C322F3D88800221C4C /* MicrocodeGeneratorTests.swift in Sources */,
 				6FF960F4235ECF7C002FFE24 /* JALRNodeTests.swift in Sources */,
-				6F08809B230FAE9000AB2339 /* JMPToAddressNodeTests.swift in Sources */,
 				6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */,
 				6F08807F230F6AEC00AB2339 /* AssemblerParserTests.swift in Sources */,
 				6FF96102235FEBD3002FFE24 /* LXYWithLabelNodeTests.swift in Sources */,
 				6F088091230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift in Sources */,
-				6F088087230F6E3E00AB2339 /* JMPToLabelNodeTests.swift in Sources */,
 				6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */,
-				6F088089230F6E4800AB2339 /* JCToLabelNodeTests.swift in Sources */,
 				6F08808D230F6E5700AB2339 /* LINodeTests.swift in Sources */,
 				6F0B0D042308688900478220 /* RegisterTests.swift in Sources */,
 				6F088095230F864D00AB2339 /* AssemblerCodeGenPassTests.swift in Sources */,
@@ -949,7 +918,6 @@
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,
 				6F088083230F6E2D00AB2339 /* CMPNodeTests.swift in Sources */,
-				6F08809D230FAE9700AB2339 /* JCToAddressNodeTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
 				6F0880A9230FD6EE00AB2339 /* StoreImmediateNodeTests.swift in Sources */,
 				6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */,

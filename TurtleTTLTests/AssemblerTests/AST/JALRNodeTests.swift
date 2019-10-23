@@ -11,13 +11,10 @@ import TurtleTTL
 
 public class JALRNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let label = TokenIdentifier(lineNumber: 1, lexeme: "label")
-        XCTAssertNotEqual(JALRNode(token: label), NOPNode())
+        XCTAssertNotEqual(JALRNode(), NOPNode())
     }
     
-    func testDoesNotEqualLabelWithDifferentIdentifier() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        let bar = TokenIdentifier(lineNumber: 2, lexeme: "bar")
-        XCTAssertNotEqual(JALRNode(token: foo), JALRNode(token: bar))
+    func testEqualsJALRNode() {
+        XCTAssertEqual(JALRNode(), JALRNode())
     }
 }

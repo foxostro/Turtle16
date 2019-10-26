@@ -84,7 +84,7 @@ public class MicrocodeGenerator: NSObject {
         mov()
         alu()
         jmp()
-        jc()
+        conditionalJump(mnemonic: "JC", condition: 0b1010)
         jalr()
         inuv()
         inxy()
@@ -165,15 +165,22 @@ public class MicrocodeGenerator: NSObject {
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
-    public func jc() {
-        // JC performs a jump when the carry flag is set.
+    public func conditionalJump(mnemonic: String, condition: UInt) {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["JC"] = opcode
+        mapMnemonicToOpcode[mnemonic] = opcode
         let controlWord = ControlWord().withJ(.active)
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord) // A Greater Than B
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: ControlWord()) // A Less Than B
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord) // ?
-        microcode = microcode.withStore(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: ControlWord()) // A Equal B
+        microcode = microcode.withStore(opcode: opcode,
+                                        carryFlag: 0, equalFlag: 0,
+                                        controlWord: (condition & 0b1000) != 0 ? controlWord : ControlWord())
+        microcode = microcode.withStore(opcode: opcode,
+                                        carryFlag: 1, equalFlag: 0,
+                                        controlWord: (condition & 0b0100) != 0 ? controlWord : ControlWord())
+        microcode = microcode.withStore(opcode: opcode,
+                                        carryFlag: 0, equalFlag: 1,
+                                        controlWord: (condition & 0b0010) != 0 ? controlWord : ControlWord())
+        microcode = microcode.withStore(opcode: opcode,
+                                        carryFlag: 1, equalFlag: 1,
+                                        controlWord: (condition & 0b0001) != 0 ? controlWord : ControlWord())
     }
     
     public func inuv() {

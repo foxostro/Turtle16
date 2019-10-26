@@ -53,7 +53,7 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testNop() {
-        let ast = AbstractSyntaxTreeNode(children: [NOPNode()])
+        let ast = AbstractSyntaxTreeNode(children: [InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: []))])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
@@ -61,15 +61,125 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testHlt() {
-        let ast = AbstractSyntaxTreeNode(children: [HLTNode()])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "HLT"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
         XCTAssertEqual(instructions[1].opcode, hlt)
     }
     
+    func testFailToCompileMOVWithNoOperands() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
+    }
+
+    func testFailToCompileMOVWithOneOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
+    }
+
+    func testFailToCompileMOVWithTooManyOperands() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
+                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
+    }
+
+    func testFailToCompileMOVWithNumberInFirstOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
+    }
+
+    func testFailToCompileMOVWithNumberInSecondOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
+    }
+
+    func testFailToCompileMOVWithInvalidDestinationRegisterE() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
+    }
+
+    func testFailToCompileMOVWithInvalidDestinationRegisterC() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
+    }
+
+    func testFailToCompileMOVWithInvalidSourceRegisterD() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a source: `D'")
+    }
+    
     func testMov() throws {
-        let ast = AbstractSyntaxTreeNode(children: [MOVNode(destination: .D, source: .A)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                            ]))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -81,8 +191,76 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(controlWord.DI, .active)
     }
     
+    func testFailToCompileLIWithNoOperands() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
+    }
+
+    func testFailToCompileLIWithOneOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
+    }
+
+    func testFailToCompileLIWhereDestinationIsANumber() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
+    }
+
+    func testFailToCompileLIWhereSourceIsARegister() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
+    }
+
+    func testFailToCompileLIWithTooManyOperands() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
+    }
+    
     func testLoadImmediate() {
-        let ast = AbstractSyntaxTreeNode(children: [LINode(destination: .D, immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
+                                TokenNumber(lineNumber: 1, lexeme: "42", literal: 42),
+                            ]))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -95,101 +273,46 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(controlWord.DI, .active)
     }
     
-    func testStoreToMemory() {
-        let ast = AbstractSyntaxTreeNode(children: [StoreNode(destinationAddress: aabb, source: .A)])
-        let instructions = mustCompile(ast)
-
-        XCTAssertEqual(instructions.count, 4)
-
-        // The first instruction in memory must be a NOP. Without this, CPU
-        // reset does not work.
-        XCTAssertEqual(instructions[0].opcode, nop)
-
-        // The next two instructions load an address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0xaa)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 0xbb)
-
-        // And an instructions to store the A register in memory
-        let opcode = UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV M, A")!)
-        XCTAssertEqual(instructions[3].opcode, opcode)
-    }
-
-    func testStoreToMemoryWithInvalidAddress() {
-        let ast = AbstractSyntaxTreeNode(children: [StoreNode(destinationAddress: tooLargeAddress, source: .A)])
-        let errors = mustFailToCompile(ast)
-        let error = errors.first!
-        XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
-    }
-    
-    func testStoreImmediateToMemoryWithInvalidAddress() {
-        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff), immediate: 0)])
-        let errors = mustFailToCompile(ast)
-        let error = errors.first!
-        XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
-    }
-    
-    func testStoreImmediateToMemoryWithImmediate() {
-        let ast = AbstractSyntaxTreeNode(children: [StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0), immediate: 0xffffffff)])
-        let errors = mustFailToCompile(ast)
-        let error = errors.first!
-        XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "Immediate is invalid: 0xffffffff")
-    }
-
-    func testLoadFromMemory() {
+    func testFailToCompileADDWithIdentifierOperand() {
         let ast = AbstractSyntaxTreeNode(children: [
-            StoreImmediateNode(destinationAddress: aabb, immediate: 42),
-            LoadNode(destination: .A, sourceAddress: aabb)])
-        let instructions = mustCompile(ast)
-
-        XCTAssertEqual(instructions.count, 7)
-
-        // The first instruction in memory must be a NOP. Without this, CPU
-        // reset does not work.
-        XCTAssertEqual(instructions[0].opcode, nop)
-
-        // The next two instructions load an address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0xaa)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 0xbb)
-
-        // And an instructions to store the immediate value 42 in memory
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV M, C")!))
-        XCTAssertEqual(instructions[3].immediate, 42)
-
-        // The next two instructions load an address into XY.
-        XCTAssertEqual(instructions[4].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[4].immediate, 0xaa)
-        XCTAssertEqual(instructions[5].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[5].immediate, 0xbb)
-
-        // And an instructions to store the A register in memory
-        XCTAssertEqual(instructions[6].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV A, M")!))
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
+                    parameters: ParameterListNode(parameters: [
+                        TokenIdentifier(lineNumber: 1, lexeme: "label")
+                    ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `ADD'")
     }
 
-    func testLoadFromMemoryWithNegativeAddress() {
-        let ast = AbstractSyntaxTreeNode(children: [LoadNode(destination: .A, sourceAddress: negativeAddress)])
+    func testFailToCompileADDWithInvalidDestinationRegisterE() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
+                    parameters: ParameterListNode(parameters: [
+                        TokenRegister(lineNumber: 1, lexeme: "E", literal: .E)
+                    ]))
+        ])
         let errors = mustFailToCompile(ast)
-        let error = errors.first!
-        XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
     }
 
-    func testLoadFromMemoryWithTooLargeAddress() {
-        let ast = AbstractSyntaxTreeNode(children: [LoadNode(destination: .A, sourceAddress: tooLargeAddress)])
+    func testFailToCompileADDWithInvalidDestinationRegisterC() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
+                    parameters: ParameterListNode(parameters: [
+                        TokenRegister(lineNumber: 1, lexeme: "C", literal: .C)
+                    ]))
+        ])
         let errors = mustFailToCompile(ast)
-        let error = errors.first!
-        XCTAssertEqual(error.line, 1)
-        XCTAssertEqual(error.message, "Address is invalid: 0xffffffff")
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
     }
     
     func testAdd() {
-        let ast = AbstractSyntaxTreeNode(children: [ADDNode(destination: .D)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "ADD"),
+                    parameters: ParameterListNode(parameters: [
+                        TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
+                    ]))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -207,10 +330,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     func testJmp() {
         let ast = AbstractSyntaxTreeNode(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            LXYWithLabelNode(token: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
-            JMPNode(),
-            NOPNode(),
-            NOPNode()])
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 2, lexeme: "foo")])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "JMP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 5, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -236,12 +363,18 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testForwardJmp() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            JMPNode(),
-            NOPNode(),
-            NOPNode(),
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
-            HLTNode()])
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 1, lexeme: "foo")])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 5, lexeme: "foo")),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 6, lexeme: "HLT"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 7)
@@ -270,10 +403,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmpToAddressZero() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithAddressNode(address: 0),
-            JMPNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let instructions = mustCompile(ast)
 
@@ -300,10 +437,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmpToAddressNegative() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithAddressNode(address: -1),
-            JMPNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -312,10 +453,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJmpToAddressTooLarge() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithAddressNode(address: 0x10000),
-            JMPNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0x10000", literal: 0x10000)])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -325,10 +470,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     func testJC() {
         let ast = AbstractSyntaxTreeNode(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            JCNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 2, lexeme: "foo")])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "JC"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 5, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -356,10 +505,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJCToAddressZero() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithAddressNode(address: 0),
-            JCNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -386,10 +539,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJCToAddressNegative() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithAddressNode(address: -1),
-            JCNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -398,10 +555,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func testJCToAddressTooLarge() {
         let ast = AbstractSyntaxTreeNode(children: [
-            LXYWithAddressNode(address: 0x10000),
-            JCNode(),
-            NOPNode(),
-            NOPNode()
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
+            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0x10000", literal: 0x10000)])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: [])),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
+                            parameters: ParameterListNode(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -409,7 +570,10 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testCMP() {
-        let ast = AbstractSyntaxTreeNode(children: [CMPNode()])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "CMP"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -424,7 +588,10 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testINUV() {
-        let ast = AbstractSyntaxTreeNode(children: [INUVNode()])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "INUV"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -435,7 +602,10 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func testINXY() {
-        let ast = AbstractSyntaxTreeNode(children: [INXYNode()])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "INXY"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)
@@ -445,8 +615,115 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(instructions[1].immediate, 0)
     }
     
+    func testFailToCompileBLTWithNoOperands() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: []))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToCompileBLTWithOneOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToCompileBLTWithTooManyOperands() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
+                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToCompileBLTWithNumberInFirstOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToCompileBLTWithNumberInSecondOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
+    }
+
+    func testFailToCompileBLTWithInvalidDestinationRegisterE() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
+    }
+
+    func testFailToCompileBLTWithInvalidDestinationRegisterC() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
+    }
+
+    func testFailToCompileBLTWithInvalidSourceRegisterD() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D)
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "register cannot be used as a source: `D'")
+    }
+    
     func testBLT() {
-        let ast = AbstractSyntaxTreeNode(children: [BLTNode(destination: .P, source: .M)])
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "P", literal: .P),
+                                TokenRegister(lineNumber: 1, lexeme: "M", literal: .M),
+                            ]))
+        ])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 2)

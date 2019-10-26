@@ -27,51 +27,6 @@ public class AssemblerLexer: Lexer {
             Rule(pattern: ":") {
                 TokenColon(lineNumber: self.lineNumber, lexeme: $0)
             },
-            Rule(pattern: "NOP\\b") {
-                TokenNOP(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "CMP\\b") {
-                TokenCMP(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "HLT\\b") {
-                TokenHLT(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "INUV\\b") {
-                TokenINUV(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "INXY\\b") {
-                TokenINXY(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "JALR\\b") {
-                TokenJALR(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "JMP\\b") {
-                TokenJMP(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "JC\\b") {
-                TokenJC(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "ADD\\b") {
-                TokenADD(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "LI\\b") {
-                TokenLI(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "MOV\\b") {
-                TokenMOV(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "BLT\\b") {
-                TokenBLT(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "STORE\\b") {
-                TokenSTORE(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "LOAD\\b") {
-                TokenLOAD(lineNumber: self.lineNumber, lexeme: $0)
-            },
-            Rule(pattern: "LXY\\b") {
-                TokenLXY(lineNumber: self.lineNumber, lexeme: $0)
-            },
             Rule(pattern: "A\\b") {
                 TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .A)
             },

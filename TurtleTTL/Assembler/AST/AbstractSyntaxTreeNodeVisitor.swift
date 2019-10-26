@@ -9,22 +9,6 @@
 import Cocoa
 
 public protocol AbstractSyntaxTreeNodeVisitor {
-    func visit(node: NOPNode) throws
-    func visit(node: CMPNode) throws
-    func visit(node: HLTNode) throws
-    func visit(node: INUVNode) throws
-    func visit(node: INXYNode) throws
-    func visit(node: LXYWithLabelNode) throws
-    func visit(node: LXYWithAddressNode) throws
-    func visit(node: JALRNode) throws
-    func visit(node: JMPNode) throws
-    func visit(node: JCNode) throws
-    func visit(node: ADDNode) throws
-    func visit(node: LINode) throws
-    func visit(node: MOVNode) throws
-    func visit(node: LoadNode) throws
-    func visit(node: StoreNode) throws
-    func visit(node: StoreImmediateNode) throws
+    func visit(node: InstructionNode) throws
     func visit(node: LabelDeclarationNode) throws
-    func visit(node: BLTNode) throws
 }

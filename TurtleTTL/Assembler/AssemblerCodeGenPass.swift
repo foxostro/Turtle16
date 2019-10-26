@@ -44,7 +44,11 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         patcherActions = []
         codeGenerator.begin()
         try root.iterate {
-            try $0.accept(visitor: self)
+            do {
+                try $0.accept(visitor: self)
+            } catch let error as AssemblerError {
+                errors.append(error)
+            }
         }
         codeGenerator.end()
         let patcher = Patcher(inputInstructions: codeGenerator.instructions,
@@ -53,56 +57,208 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         instructions = try patcher.patch()
     }
     
-    public func visit(node: NOPNode) throws {
-        self.codeGenerator.nop()
+    public func visit(node: InstructionNode) throws {
+        let instructions = [
+            "ADD"  : { try self.add(node) },
+            "BLT"  : { try self.blt(node) },
+            "CMP"  : { try self.cmp(node) },
+            "HLT"  : { try self.hlt(node) },
+            "INUV" : { try self.inuv(node) },
+            "INXY" : { try self.inxy(node) },
+            "JALR" : { try self.jalr(node) },
+            "JC"   : { try self.jc(node) },
+            "JMP"  : { try self.jmp(node) },
+            "LI"   : { try self.li(node) },
+            "LXY"  : { try self.lxy(node) },
+            "MOV"  : { try self.mov(node) },
+            "NOP"  : { try self.nop(node) }
+        ]
+        if let closure = instructions[node.instruction.lexeme] {
+            try closure()
+        } else {
+            throw unrecognizedInstructionError(node.instruction)
+        }
     }
     
-    public func visit(node: CMPNode) throws {
-        self.codeGenerator.cmp()
-    }
-    
-    public func visit(node: HLTNode) throws {
-        self.codeGenerator.hlt()
-    }
-    
-    public func visit(node: INUVNode) throws {
-        self.codeGenerator.inuv()
-    }
-    
-    public func visit(node: INXYNode) throws {
-        self.codeGenerator.inxy()
-    }
-    
-    public func visit(node: JALRNode) throws {
-        self.codeGenerator.jalr()
-    }
-    
-    public func visit(node: JMPNode) throws {
-        self.codeGenerator.jmp()
-    }
-    
-    public func visit(node: JCNode) throws {
-        self.codeGenerator.jc()
-    }
-    
-    public func visit(node: ADDNode) throws {
+    func add(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 1 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        guard let register = node.parameters.parameters.first as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
         try self.codeGenerator.add(node.destination)
     }
     
-    public func visit(node: LINode) throws {
-        try self.codeGenerator.li(node.destination, token: node.immediate)
+    func blt(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 2 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        guard let destination = node.parameters.parameters[0] as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        try expectRegisterCanBeUsedAsDestination(destination)
+        
+        guard let source = node.parameters.parameters[1] as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        try expectRegisterCanBeUsedAsSource(source)
+        
+        try self.codeGenerator.blt(destination.literal, source.literal)
     }
     
-    public func visit(node: LXYWithLabelNode) throws {
-        try self.setAddress(token: node.identifier)
+    func cmp(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.cmp()
     }
     
-    public func visit(node: LXYWithAddressNode) throws {
-        try self.setAddress(node.address)
+    func hlt(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.hlt()
     }
     
-    public func visit(node: MOVNode) throws {
-        try self.codeGenerator.mov(node.destination, node.source)
+    func inuv(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.inuv()
+    }
+    
+    func inxy(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.inxy()
+    }
+    
+    func jalr(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jalr()
+    }
+    
+    func jc(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jc()
+    }
+    
+    func jmp(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jmp()
+    }
+    
+    func li(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 2 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        guard let destination = node.parameters.parameters[0] as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        try expectRegisterCanBeUsedAsDestination(destination)
+        
+        guard let immediate = node.parameters.parameters[1] as? TokenNumber else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        try self.codeGenerator.li(node.destination, token: immediate)
+    }
+    
+    func lxy(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 1 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        let parameter = node.parameters.parameters.first!
+        
+        if let identifier = parameter as? TokenIdentifier {
+            try self.setAddress(token: identifier)
+        } else if let address = parameter as? TokenNumber {
+            try self.setAddress(address.literal)
+        } else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+    }
+    
+    func mov(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 2 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        guard let destination = node.parameters.parameters[0] as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        try expectRegisterCanBeUsedAsDestination(destination)
+        
+        guard let source = node.parameters.parameters[1] as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        try expectRegisterCanBeUsedAsSource(source)
+        
+        try self.codeGenerator.mov(destination.literal, source.literal)
+    }
+    
+    func nop(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.nop()
+    }
+    
+    func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
+        if register.literal == .E || register.literal == .C {
+            throw badDestinationError(register)
+        }
+    }
+    
+    func badDestinationError(_ register: TokenRegister) -> Error {
+        return AssemblerError(line: register.lineNumber,
+                              format: "register cannot be used as a destination: `%@'",
+                              register.lexeme)
+    }
+    
+    func expectRegisterCanBeUsedAsSource(_ register: TokenRegister) throws {
+        if register.literal == .D {
+            throw badSourceError(register)
+        }
+    }
+    
+    func badSourceError(_ register: TokenRegister) -> Error {
+        return AssemblerError(line: register.lineNumber,
+                              format: "register cannot be used as a source: `%@'",
+                              register.lexeme)
+    }
+    
+    func zeroOperandsExpectedError(_ instruction: Token) -> Error {
+        return AssemblerError(line: instruction.lineNumber,
+                              format: "instruction takes no operands: `%@'",
+                              instruction.lexeme)
+    }
+    
+    func operandTypeMismatchError(_ instruction: Token) -> Error {
+        return AssemblerError(line: instruction.lineNumber,
+                              format: "operand type mismatch: `%@'",
+                              instruction.lexeme)
+    }
+    
+    func unrecognizedInstructionError(_ instruction: Token) -> Error {
+        return AssemblerError(line: instruction.lineNumber,
+                              format: "no such instruction: `%@'",
+                              instruction.lexeme)
     }
     
     public func visit(node: LabelDeclarationNode) throws {
@@ -112,43 +268,6 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         } else {
             throw AssemblerError(line: node.identifier.lineNumber, format: "duplicate label: `%@'", name)
         }
-    }
-    
-    public func visit(node: LoadNode) throws {
-        let lineNumber = node.sourceAddress.lineNumber
-        let address = node.sourceAddress.literal
-        if(address < 0 || address > 0xffff) {
-            throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
-        }
-        try self.setAddress(address)
-        try self.codeGenerator.mov(node.destination, .M)
-    }
-    
-    public func visit(node: StoreNode) throws {
-        let lineNumber = node.destinationAddress.lineNumber
-        let address = node.destinationAddress.literal
-        if(address < 0 || address > 0xffff) {
-            throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
-        }
-        try self.setAddress(address)
-        try self.codeGenerator.mov(.M, node.source)
-    }
-    
-    public func visit(node: StoreImmediateNode) throws {
-        let lineNumber = node.destinationAddress.lineNumber
-        let address = node.destinationAddress.literal
-        if(address < 0 || address > 0xffff) {
-            throw AssemblerError(line: lineNumber, format: "Address is invalid: 0x%x", address)
-        }
-        if(node.immediate < 0 || node.immediate > 0xff) {
-            throw AssemblerError(line: lineNumber, format: "Immediate is invalid: 0x%x", node.immediate)
-        }
-        try self.setAddress(address)
-        try self.codeGenerator.instruction(withMnemonic: "MOV M, C", immediate: node.immediate)
-    }
-    
-    public func visit(node: BLTNode) throws {
-        try self.codeGenerator.blt(node.destination, node.source)
     }
     
     func setAddress(_ address: Int) throws {

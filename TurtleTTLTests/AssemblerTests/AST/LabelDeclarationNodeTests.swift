@@ -12,7 +12,7 @@ import TurtleTTL
 class LabelDeclarationNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let label = TokenIdentifier(lineNumber: 1, lexeme: "label")
-        XCTAssertNotEqual(LabelDeclarationNode(identifier: label), NOPNode())
+        XCTAssertNotEqual(LabelDeclarationNode(identifier: label), InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {

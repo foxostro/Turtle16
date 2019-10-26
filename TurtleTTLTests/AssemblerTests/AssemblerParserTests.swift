@@ -31,25 +31,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], NOPNode())
-    }
-
-    func testParsingBogusOpcodeYieldsError() {
-        let parser = AssemblerParser(tokens: tokenize("BOGUS"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "no such instruction: `BOGUS'")
-    }
-
-    func testParsingBogusOpcodeWithNewlineYieldsError() {
-        let parser = AssemblerParser(tokens: tokenize("BOGUS\n"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "no such instruction: `BOGUS'")
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
     }
 
     func testParseTwoNOPsYieldsTwoNOPNodes() {
@@ -58,35 +40,8 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], NOPNode())
-        XCTAssertEqual(ast.children[1], NOPNode())
-    }
-
-    func testNOPAcceptsNoOperands() {
-        let parser = AssemblerParser(tokens: tokenize("NOP $1\n"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `NOP'")
-    }
-
-    func testCMPParses() {
-        let parser = AssemblerParser(tokens: tokenize("CMP"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], CMPNode())
-    }
-
-    func testCMPAcceptsNoOperands() {
-        let parser = AssemblerParser(tokens: tokenize("CMP $1\n"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `CMP'")
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
+        XCTAssertEqual(ast.children[1], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
     }
 
     func testHLTParses() {
@@ -95,16 +50,9 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], HLTNode())
-    }
-
-    func testHLTAcceptsNoOperands() {
-        let parser = AssemblerParser(tokens: tokenize("HLT $1\n"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `HLT'")
+        XCTAssertEqual(ast.children[0],
+                       InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "HLT"),
+                                       parameters: ParameterListNode(parameters: [])))
     }
 
     func testLabelDeclaration() {
@@ -122,7 +70,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], NOPNode())
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
         XCTAssertEqual(ast.children[1], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "label")))
     }
 
@@ -134,15 +82,6 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
 
-    func testParseLabelNameIsAKeyword() {
-        let parser = AssemblerParser(tokens: tokenize("NOP:"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `NOP'")
-    }
-
     func testParseExtraneousColon() {
         let parser = AssemblerParser(tokens: tokenize(":"))
         parser.parse()
@@ -151,316 +90,18 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
 
-    func testFailToParseLXYWithZeroOperands() {
-        let parser = AssemblerParser(tokens: tokenize("LXY"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LXY'")
-    }
-
-    func testParseLXYWithLabel() {
-        let parser = AssemblerParser(tokens: tokenize("LXY label"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LXYWithLabelNode(token: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-    }
-
-    func testParseLXYWithAddress() {
-        let parser = AssemblerParser(tokens: tokenize("LXY 0"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LXYWithAddressNode(address: 0))
-    }
-
-    func testParseJALRWithZeroOperands() {
-        let parser = AssemblerParser(tokens: tokenize("JALR"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JALRNode())
-    }
-
-    func testFailToParseJALRWithLabelOperand() {
-        let parser = AssemblerParser(tokens: tokenize("JALR label"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JALR'")
-    }
-
-    func testFailToParseJALRWithAddressOperand() {
-        let parser = AssemblerParser(tokens: tokenize("JALR 0"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JALR'")
-    }
-
-    func testJMPWithZeroOperandsDoesParse() {
-        let parser = AssemblerParser(tokens: tokenize("JMP"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JMPNode())
-    }
-
-    func testFailToParseJMPWithLabelOperands() {
-        let parser = AssemblerParser(tokens: tokenize("JMP label"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JMP'")
-    }
-    
-    func testFailtToParseJMPWithAddressOperand() {
-        let parser = AssemblerParser(tokens: tokenize("JMP 0x0000"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JMP'")
-    }
-
-    func testJCWithZeroOperandsDoesParse() {
-        let parser = AssemblerParser(tokens: tokenize("JC"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], JCNode())
-    }
-
-    func testFailToParseJCWithLabelOperands() {
-        let parser = AssemblerParser(tokens: tokenize("JC label"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JC'")
-    }
-    
-    func testFailToParseJCWithAddressOperand() {
-        let parser = AssemblerParser(tokens: tokenize("JC 0x0000"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `JC'")
-    }
-
-    func testFailToParseADDWithZeroOperands() {
-        let parser = AssemblerParser(tokens: tokenize("ADD"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `ADD'")
-    }
-
-    func testFailToParseADDWithIdentifierOperand() {
-        let parser = AssemblerParser(tokens: tokenize("ADD label"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `ADD'")
-    }
-
-    func testParseADDWithRegisterOperand() {
-        let parser = AssemblerParser(tokens: tokenize("ADD D"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], ADDNode(destination: .D))
-    }
-
-    func testFailToParseADDWithInvalidDestinationRegisterE() {
-        let parser = AssemblerParser(tokens: tokenize("ADD E"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `E'")
-    }
-
-    func testFailToParseADDWithInvalidDestinationRegisterC() {
-        let parser = AssemblerParser(tokens: tokenize("ADD C"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `C'")
-    }
-
-    func testFailToParseLIWithNoOperands() {
-        let parser = AssemblerParser(tokens: tokenize("LI"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
-    func testFailToParseLIWithOneOperand() {
-        let parser = AssemblerParser(tokens: tokenize("LI $1"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
-    func testFailToParseLIWhichIsMissingTheCommaOperand() {
-        let parser = AssemblerParser(tokens: tokenize("LI A $1"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
-    func testFailToParseLIWithBadComma() {
-        let parser = AssemblerParser(tokens: tokenize("LI,"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
-    func testFailToParseLIWhereDestinationIsANumber() {
-        let parser = AssemblerParser(tokens: tokenize("LI $1, A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
-    func testFailToParseLIWhereSourceIsARegister() {
-        let parser = AssemblerParser(tokens: tokenize("LI B, A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
-    func testFailToParseLIWithTooManyOperands() {
-        let parser = AssemblerParser(tokens: tokenize("LI A, $1, B"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LI'")
-    }
-
     func testParseValidLI() {
         let parser = AssemblerParser(tokens: tokenize("LI D, 42"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LINode(destination: .D, immediate: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
-    }
-
-    func testLIParsesWithTooBigNumber() {
-        // It's the code generator which checks that the value is appropriate.
-        let parser = AssemblerParser(tokens: tokenize("LI D, 10000000"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LINode(destination: .D, immediate: TokenNumber(lineNumber: 1, lexeme: "10000000", literal: 10000000)))
-    }
-
-    func testFailToParseMOVWithNoOperands() {
-        let parser = AssemblerParser(tokens: tokenize("MOV"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
-
-    func testFailToParseMOVWithOneOperand() {
-        let parser = AssemblerParser(tokens: tokenize("MOV A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
-
-    func testFailToParseMOVWithTooManyOperands() {
-        let parser = AssemblerParser(tokens: tokenize("MOV A, B, C"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
-
-    func testFailToParseMOVWithNumberInFirstOperand() {
-        let parser = AssemblerParser(tokens: tokenize("MOV $1, A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
-
-    func testFailToParseMOVWithNumberInSecondOperand() {
-        let parser = AssemblerParser(tokens: tokenize("MOV A, $1"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
-
-    func testFailToParseMOVWithInvalidDestinationRegisterE() {
-        let parser = AssemblerParser(tokens: tokenize("MOV E, A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `E'")
-    }
-
-    func testFailToParseMOVWithInvalidDestinationRegisterC() {
-        let parser = AssemblerParser(tokens: tokenize("MOV C, A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `C'")
-    }
-
-    func testFailToParseMOVWithInvalidSourceRegisterD() {
-        let parser = AssemblerParser(tokens: tokenize("MOV A, D"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a source: `D'")
+        XCTAssertEqual(ast.children[0],
+                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                                       parameters: ParameterListNode(parameters: [
+                                        TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
+                                        TokenNumber(lineNumber: 1, lexeme: "42", literal: 42),
+                                       ])))
     }
 
     func testParseValidMOV() {
@@ -470,266 +111,48 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], MOVNode(destination: .D, source: .A))
+        XCTAssertEqual(ast.children[0],
+                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
+                                       parameters: ParameterListNode(parameters: [
+                                        TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
+                                        TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                                       ])))
     }
     
-    func testFailToParseStoreWithZeroOperands() {
-        let parser = AssemblerParser(tokens: tokenize("STORE"))
+    func testExtraneousComma() {
+        let parser = AssemblerParser(tokens: tokenize(","))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+    }
+    
+    func testParameterListMalformedByHavingOnlyComma() {
+        let parser = AssemblerParser(tokens: tokenize("MOV ,"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `STORE'")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
     }
     
-    func testFailToParseStoreWithTooFewArguments() {
-        let parser = AssemblerParser(tokens: tokenize("STORE $0"))
+    func testParameterListMalformedWithTrailingComma() {
+        let parser = AssemblerParser(tokens: tokenize("MOV A, B, C,"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `STORE'")
-    }
-    
-    func testFailToParseStoreWithTooManyArguments() {
-        let parser = AssemblerParser(tokens: tokenize("STORE $0, $0, $0"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `STORE'")
-    }
-    
-    func testFailToParseStoreWithBadTypeForDestination() {
-        let parser = AssemblerParser(tokens: tokenize("STORE A, 1"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `STORE'")
-    }
-    
-    func testFailToParseStoreWithBadTypeForSource() {
-        let parser = AssemblerParser(tokens: tokenize("STORE A, B"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `STORE'")
-    }
-    
-    func testFailToParseStoreWithInappropriateSourceRegister() {
-        let parser = AssemblerParser(tokens: tokenize("STORE 0, D"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a source: `D'")
-    }
-    
-    func testParseValidStore() {
-        let parser = AssemblerParser(tokens: tokenize("STORE 42, A"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], StoreNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42), source: .A))
-    }
-    
-    func testParseValidStoreImmediate() {
-        let parser = AssemblerParser(tokens: tokenize("STORE 1, 2"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], StoreImmediateNode(destinationAddress: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1), immediate: 2))
-    }
-    
-    func testFailToParseLoadWithZeroOperands() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LOAD'")
-    }
-    
-    func testFailToParseLoadWithTooFewArguments() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD $0"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LOAD'")
-    }
-    
-    func testFailToParseLoadWithTooManyArguments() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD $0, $0, $0"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LOAD'")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
     }
 
-    func testFailToParseLoadWithBadTypeForDestination() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD 1, 1"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LOAD'")
-    }
-
-    func testFailToParseLoadWithBadTypeForSource() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD A, A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `LOAD'")
-    }
-
-    func testFailToParseLoadWithInappropriateDestinationRegister() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD C, 0"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `C'")
-    }
-
-    func testParseValidLoad() {
-        let parser = AssemblerParser(tokens: tokenize("LOAD A, 42"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LoadNode(destination: .A, sourceAddress: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
-    }
-    
     func testMultipleErrorsParsingInstructions() {
-        let parser = AssemblerParser(tokens: tokenize("NOP $1\nLOAD C, 0\n"))
+        let parser = AssemblerParser(tokens: tokenize("MOV ,\nMOV A, B, C,\n"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors[0].line, 1)
-        XCTAssertEqual(parser.errors[0].message, "instruction takes no operands: `NOP'")
+        XCTAssertEqual(parser.errors[0].message, "operand type mismatch: `MOV'")
         XCTAssertEqual(parser.errors[1].line, 2)
-        XCTAssertEqual(parser.errors[1].message, "register cannot be used as a destination: `C'")
-    }
-    
-    func testFailToParseINUVWithOperands() {
-        let parser = AssemblerParser(tokens: tokenize("INUV 0x0000"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `INUV'")
-    }
-    
-    func testParseINUV() {
-        let parser = AssemblerParser(tokens: tokenize("INUV"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], INUVNode())
-    }
-    
-    func testFailToParseINXYWithOperands() {
-        let parser = AssemblerParser(tokens: tokenize("INUV 0x0000"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "instruction takes no operands: `INUV'")
-    }
-    
-    func testParseINXY() {
-        let parser = AssemblerParser(tokens: tokenize("INXY"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], INXYNode())
-    }
-    
-    func testFailToParseBLTWithNoOperands() {
-        let parser = AssemblerParser(tokens: tokenize("BLT"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
-    }
-
-    func testFailToParseBLTWithOneOperand() {
-        let parser = AssemblerParser(tokens: tokenize("BLT M"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
-    }
-
-    func testFailToParseBLTWithTooManyOperands() {
-        let parser = AssemblerParser(tokens: tokenize("BLT M, P, C"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
-    }
-
-    func testFailToParseBLTWithNumberInFirstOperand() {
-        let parser = AssemblerParser(tokens: tokenize("BLT $1, M"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
-    }
-
-    func testFailToParseBLTWithNumberInSecondOperand() {
-        let parser = AssemblerParser(tokens: tokenize("BLT M, $1"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `BLT'")
-    }
-
-    func testFailToParseBLTWithInvalidDestinationRegisterE() {
-        let parser = AssemblerParser(tokens: tokenize("BLT E, M"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a destination: `E'")
-    }
-
-    func testFailToParseBLTWithInvalidSourceRegisterD() {
-        let parser = AssemblerParser(tokens: tokenize("BLT A, D"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "register cannot be used as a source: `D'")
-    }
-
-    func testParseValidBLT() {
-        let parser = AssemblerParser(tokens: tokenize("BLT P, M"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], BLTNode(destination: .P, source: .M))
+        XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `MOV'")
     }
 }

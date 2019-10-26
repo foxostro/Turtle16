@@ -67,6 +67,13 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             "INXY" : { try self.inxy(node) },
             "JALR" : { try self.jalr(node) },
             "JC"   : { try self.jc(node) },
+            "JNC"  : { try self.jnc(node) },
+            "JE"   : { try self.je(node) },
+            "JNE"  : { try self.jne(node) },
+            "JG"   : { try self.jg(node) },
+            "JLE"  : { try self.jle(node) },
+            "JL"   : { try self.jl(node) },
+            "JGE"  : { try self.jge(node) },
             "JMP"  : { try self.jmp(node) },
             "LI"   : { try self.li(node) },
             "LXY"  : { try self.lxy(node) },
@@ -152,6 +159,55 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             throw zeroOperandsExpectedError(node.instruction)
         }
         self.codeGenerator.jc()
+    }
+    
+    func jnc(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jnc()
+    }
+    
+    func je(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.je()
+    }
+    
+    func jne(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jne()
+    }
+    
+    func jg(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jg()
+    }
+    
+    func jle(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jle()
+    }
+    
+    func jl(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jl()
+    }
+    
+    func jge(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.jge()
     }
     
     func jmp(_ node: InstructionNode) throws {

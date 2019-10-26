@@ -157,6 +157,41 @@ public class CodeGenerator: NSObject {
         try! instruction(withMnemonic: "JC", immediate: 0)
     }
     
+    public func jnc() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JNC", immediate: 0)
+    }
+    
+    public func je() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JE", immediate: 0)
+    }
+    
+    public func jne() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JNE", immediate: 0)
+    }
+    
+    public func jg() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JG", immediate: 0)
+    }
+    
+    public func jle() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JLE", immediate: 0)
+    }
+    
+    public func jl() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JL", immediate: 0)
+    }
+    
+    public func jge() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "JGE", immediate: 0)
+    }
+    
     // Bit Blit -- Copy a value from a peripheral to data RAM (or vice versa)
     // and increment the address registers for both the source and destination.
     public func blt(_ destination: RegisterName, _ source: RegisterName) throws {

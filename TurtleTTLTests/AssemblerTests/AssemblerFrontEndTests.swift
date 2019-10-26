@@ -486,4 +486,52 @@ class AssemblerFrontEndTests: XCTestCase {
         XCTAssertEqual(controlWord.PI,    .active)
         XCTAssertEqual(controlWord.MO,    .active)
     }
+    
+    func testJC() {
+        let instructions = mustCompile("JC")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+    }
+    
+    func testJNC() {
+        let instructions = mustCompile("JNC")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JNC")!))
+    }
+    
+    func testJE() {
+        let instructions = mustCompile("JE")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JE")!))
+    }
+    
+    func testJNE() {
+        let instructions = mustCompile("JNE")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JNE")!))
+    }
+    
+    func testJG() {
+        let instructions = mustCompile("JG")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JG")!))
+    }
+    
+    func testJLE() {
+        let instructions = mustCompile("JLE")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JLE")!))
+    }
+    
+    func testJL() {
+        let instructions = mustCompile("JL")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JL")!))
+    }
+    
+    func testJGE() {
+        let instructions = mustCompile("JGE")
+        let microcodeGenerator = makeMicrocodeGenerator()
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JGE")!))
+    }
 }

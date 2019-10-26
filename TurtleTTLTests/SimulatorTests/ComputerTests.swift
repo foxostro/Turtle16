@@ -1341,4 +1341,444 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerY.value, 2)
         XCTAssertEqual(computer.currentState.serialOutput, [0, 0, 0])
     }
+    
+    func testJE_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let cmp = 6
+        let cmpControl = ControlWord().withFI(.active).withCarryIn(.inactive)
+        instructionDecoder = instructionDecoder.withStore(opcode: cmp, controlWord: cmpControl)
+        
+        let je = 7
+        let jeControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: je, carryFlag:0, equalFlag:0, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: je, carryFlag:1, equalFlag:0, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: je, carryFlag:0, equalFlag:1, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: je, carryFlag:1, equalFlag:1, controlWord: jeControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: lda, immediate: 16),         // LDA 16
+            Instruction(opcode: ldb, immediate: 16),         // LDB 16
+            Instruction(opcode: cmp, immediate: 0b00000110), // CMP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode:  je, immediate: 0),          // JE 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testJNE_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let cmp = 6
+        let cmpControl = ControlWord().withFI(.active).withCarryIn(.inactive)
+        instructionDecoder = instructionDecoder.withStore(opcode: cmp, controlWord: cmpControl)
+        
+        let jne = 7
+        let jneControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jne, carryFlag:0, equalFlag:0, controlWord: jneControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jne, carryFlag:1, equalFlag:0, controlWord: jneControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jne, carryFlag:0, equalFlag:1, controlWord: jneControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jne, carryFlag:1, equalFlag:1, controlWord: nopControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: lda, immediate: 16),         // LDA 16
+            Instruction(opcode: ldb, immediate: 12),         // LDB 16
+            Instruction(opcode: cmp, immediate: 0b00000110), // CMP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: jne, immediate: 0),          // JNE 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testJG_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let cmp = 6
+        let cmpControl = ControlWord().withFI(.active).withCarryIn(.inactive)
+        instructionDecoder = instructionDecoder.withStore(opcode: cmp, controlWord: cmpControl)
+        
+        let jg = 7
+        let jgControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jg, carryFlag:0, equalFlag:0, controlWord: jgControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jg, carryFlag:1, equalFlag:0, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jg, carryFlag:0, equalFlag:1, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jg, carryFlag:1, equalFlag:1, controlWord: nopControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: lda, immediate: 16),         // LDA 16
+            Instruction(opcode: ldb, immediate: 12),         // LDB 12
+            Instruction(opcode: cmp, immediate: 0b00000110), // CMP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode:  jg, immediate: 0),          // JG 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testJLE_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let cmp = 6
+        let cmpControl = ControlWord().withFI(.active).withCarryIn(.inactive)
+        instructionDecoder = instructionDecoder.withStore(opcode: cmp, controlWord: cmpControl)
+        
+        let jle = 7
+        let jleControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jle, carryFlag:0, equalFlag:0, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jle, carryFlag:1, equalFlag:0, controlWord: jleControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jle, carryFlag:0, equalFlag:1, controlWord: jleControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jle, carryFlag:1, equalFlag:1, controlWord: jleControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: lda, immediate: 12),         // LDA 12
+            Instruction(opcode: ldb, immediate: 15),         // LDB 15
+            Instruction(opcode: cmp, immediate: 0b00000110), // CMP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: jle, immediate: 0),          // JLE 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testJL_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let cmp = 6
+        let cmpControl = ControlWord().withFI(.active).withCarryIn(.inactive)
+        instructionDecoder = instructionDecoder.withStore(opcode: cmp, controlWord: cmpControl)
+        
+        let jl = 7
+        let jlControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jl, carryFlag:0, equalFlag:0, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jl, carryFlag:1, equalFlag:0, controlWord: jlControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jl, carryFlag:0, equalFlag:1, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jl, carryFlag:1, equalFlag:1, controlWord: nopControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: lda, immediate: 0),          // LDA 0
+            Instruction(opcode: ldb, immediate: 1),          // LDB 1
+            Instruction(opcode: cmp, immediate: 0b00000110), // CMP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode:  jl, immediate: 0),          // JL 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testJGE_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+        let cmp = 6
+        let cmpControl = ControlWord().withFI(.active).withCarryIn(.inactive)
+        instructionDecoder = instructionDecoder.withStore(opcode: cmp, controlWord: cmpControl)
+        
+        let jge = 7
+        let jgeControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jge, carryFlag:0, equalFlag:0, controlWord: jgeControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jge, carryFlag:1, equalFlag:0, controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jge, carryFlag:0, equalFlag:1, controlWord: jgeControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jge, carryFlag:1, equalFlag:1, controlWord: jgeControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: lda, immediate: 1),          // LDA 5
+            Instruction(opcode: ldb, immediate: 0),          // LDB 5
+            Instruction(opcode: cmp, immediate: 0b00000110), // CMP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: jge, immediate: 0),          // JGE 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
+    
+    func testJNC_TakeTheJump() {
+        let computer = makeComputer()
+        
+        var instructionDecoder = InstructionDecoder()
+        
+        let nop = 0
+        let nopControl = ControlWord()
+        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
+        
+        let hlt = 1
+        let hltControl = ControlWord().withHLT(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
+        
+        let lda = 2
+        let ldaControl = ControlWord().withCO(.active).withAI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: lda, controlWord: ldaControl)
+        
+        let ldb = 3
+        let ldbControl = ControlWord().withCO(.active).withBI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldb, controlWord: ldbControl)
+        
+        let ldx = 4
+        let ldxControl = ControlWord().withCO(.active).withXI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
+        
+        let ldy = 5
+        let ldyControl = ControlWord().withCO(.active).withYI(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
+        
+         let alu = 6
+        let aluControl = ControlWord().withEO(.active).withFI(.active).withDI(.active).withCarryIn(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: alu, controlWord: aluControl)
+        
+        let jnc = 7
+        let jncControl = ControlWord().withJ(.active)
+        instructionDecoder = instructionDecoder.withStore(opcode: jnc,
+                                                          carryFlag:1,
+                                                          equalFlag:0,
+                                                          controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jnc,
+                                                          carryFlag:0,
+                                                          equalFlag:0,
+                                                          controlWord: jncControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jnc,
+                                                          carryFlag:1,
+                                                          equalFlag:1,
+                                                          controlWord: nopControl)
+        instructionDecoder = instructionDecoder.withStore(opcode: jnc,
+                                                          carryFlag:0,
+                                                          equalFlag:1,
+                                                          controlWord: jncControl)
+        
+        computer.provideMicrocode(microcode: instructionDecoder)
+        
+        computer.provideInstructions([
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 2),          // LDA 2
+            Instruction(opcode: ldb, immediate: 1),          // LDB 1
+            Instruction(opcode: ldx, immediate: 0),          // LDX 0
+            Instruction(opcode: ldy, immediate: 11),         // LDY 11
+            Instruction(opcode: alu, immediate: 0b00000110), // SUB
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: jnc, immediate: 0),          // JNC 11
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: nop, immediate: 0),          // NOP
+            Instruction(opcode: lda, immediate: 42),         // LDA 42
+            Instruction(opcode: hlt, immediate: 0)])         // HLT
+        
+        computer.execute()
+        
+        XCTAssertEqual(computer.currentState.registerD.value, 1)
+        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+    }
 }

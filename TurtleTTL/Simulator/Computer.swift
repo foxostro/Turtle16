@@ -289,7 +289,7 @@ public class Computer: NSObject {
                                                 withIntermediateDirectories: false,
                                                 attributes: [:])
         let roms = currentState.instructionDecoder.rom
-        for i in 0...roms.count {
+        for i in 0..<roms.count {
             let fileName = String(format: decoderRomFilenameFormat, i)
             let rom = roms[i].data
             try rom.write(to: to.appendingPathComponent(fileName))
@@ -298,7 +298,7 @@ public class Computer: NSObject {
     
     public func loadMicrocode(from: URL) throws {
         var roms = [Memory]()
-        for i in 0...currentState.instructionDecoder.rom.count {
+        for i in 0..<currentState.instructionDecoder.rom.count {
             let fileName = String(format: decoderRomFilenameFormat, i)
             let data = try Data(contentsOf: from.appendingPathComponent(fileName) as URL)
             let rom = Memory(withData: data)

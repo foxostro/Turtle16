@@ -333,7 +333,7 @@ class ComputerTests: XCTestCase {
         
         XCTAssertEqual(computer.describeALUResult(), "3")
         XCTAssertEqual(computer.describeBus(), "3")
-        XCTAssertEqual(computer.describeControlWord(), "11111011111111111111111110111110")
+        XCTAssertEqual(computer.describeControlWord(), "11111011111101111110111110111110")
         XCTAssertEqual(computer.describeControlSignals(), "{AI, EO, CarryIn}")
     }
     

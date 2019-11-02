@@ -144,14 +144,14 @@ public class ControlWord: NSObject {
                   withUO:        ((value & (1<<9))  != 0) ? .inactive : .active,
                   withVI:        ((value & (1<<10)) != 0) ? .inactive : .active,
                   withVO:        ((value & (1<<11)) != 0) ? .inactive : .active,
-                  withUVInc:     ((value & (1<<12)) != 0) ? .inactive : .active,
+                  withUVInc:     ((value & (1<<12)) != 0) ? .active : .inactive, // active-high, actually
                   withPI:        ((value & (1<<13)) != 0) ? .inactive : .active,
                   withPO:        ((value & (1<<14)) != 0) ? .inactive : .active,
                   withXI:        ((value & (1<<15)) != 0) ? .inactive : .active,
                   withXO:        ((value & (1<<16)) != 0) ? .inactive : .active,
                   withYI:        ((value & (1<<17)) != 0) ? .inactive : .active,
                   withYO:        ((value & (1<<18)) != 0) ? .inactive : .active,
-                  withXYInc:     ((value & (1<<19)) != 0) ? .inactive : .active,
+                  withXYInc:     ((value & (1<<19)) != 0) ? .active : .inactive, // active-high, actually
                   withMI:        ((value & (1<<20)) != 0) ? .inactive : .active,
                   withMO:        ((value & (1<<21)) != 0) ? .inactive : .active,
                   withLinkIn:    ((value & (1<<22)) != 0) ? .inactive : .active,
@@ -176,14 +176,14 @@ public class ControlWord: NSObject {
         result += (       UO == .inactive) ? (1<<9) : 0
         result += (       VI == .inactive) ? (1<<10) : 0
         result += (       VO == .inactive) ? (1<<11) : 0
-        result += (    UVInc == .inactive) ? (1<<12) : 0
+        result += (    UVInc == .active) ? (1<<12) : 0 // active-high, actually
         result += (       PI == .inactive) ? (1<<13) : 0
         result += (       PO == .inactive) ? (1<<14) : 0
         result += (       XI == .inactive) ? (1<<15) : 0
         result += (       XO == .inactive) ? (1<<16) : 0
         result += (       YI == .inactive) ? (1<<17) : 0
         result += (       YO == .inactive) ? (1<<18) : 0
-        result += (    XYInc == .inactive) ? (1<<19) : 0
+        result += (    XYInc == .active) ? (1<<19) : 0 // active-high, actually
         result += (       MI == .inactive) ? (1<<20) : 0
         result += (       MO == .inactive) ? (1<<21) : 0
         result += (   LinkIn == .inactive) ? (1<<22) : 0

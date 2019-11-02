@@ -17,7 +17,7 @@ class ControlWordTests: XCTestCase {
     
     func testModifyCOBit() {
         let controlWord = ControlWord().withCO(.active)
-        XCTAssertEqual(controlWord.unsignedIntegerValue, 0b11111111111111111111111111101111)
+        XCTAssertEqual(controlWord.unsignedIntegerValue, 0b11111111111101111110111111101111)
     }
     
     func testSettingContentsSetsHLTSignal() {
@@ -27,6 +27,6 @@ class ControlWordTests: XCTestCase {
     
     func testControlWordStringIsPaddedOutToLength() {
         let hlt = ControlWord().withHLT(.active)
-        XCTAssertEqual(hlt.stringValue, "01111111111111111111111111111111")
+        XCTAssertEqual(hlt.stringValue, "01111111111101111110111111111111")
     }
 }

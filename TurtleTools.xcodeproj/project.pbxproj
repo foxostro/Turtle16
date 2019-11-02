@@ -224,6 +224,7 @@
 		6F86EDC722ED179C00375A00 /* ComputerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerTests.swift; sourceTree = "<group>"; };
 		6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
 		6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriverTests.swift; sourceTree = "<group>"; };
+		6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TurtleAssembler.entitlements; sourceTree = "<group>"; };
 		6FB22E93235D4C8800F8654B /* ComputerStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStateTests.swift; sourceTree = "<group>"; };
 		6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterListNodeTests.swift; sourceTree = "<group>"; };
 		6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterListNode.swift; sourceTree = "<group>"; };
@@ -409,6 +410,7 @@
 		6FE003D922F3F4C600221C4C /* TurtleAssembler */ = {
 			isa = PBXGroup;
 			children = (
+				6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */,
 				6FE003DA22F3F4C600221C4C /* main.swift */,
 			);
 			path = TurtleAssembler;
@@ -964,10 +966,12 @@
 		6FE003DC22F3F4C600221C4C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TurtleAssembler/TurtleAssembler.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssembler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -976,10 +980,12 @@
 		6FE003DD22F3F4C600221C4C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TurtleAssembler/TurtleAssembler.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssembler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

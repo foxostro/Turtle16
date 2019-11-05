@@ -34,6 +34,8 @@ public class AssemblerCommandLineDriver: NSObject {
             try tryRun()
         } catch let error as AssemblerCommandLineDriverError {
             reportError(withMessage: error.message)
+        } catch let error as AssemblerError {
+            reportError(withMessage: error.message)
         } catch {
             reportError(withMessage: error.localizedDescription)
         }

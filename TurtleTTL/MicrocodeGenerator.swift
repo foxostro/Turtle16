@@ -89,7 +89,7 @@ public class MicrocodeGenerator: NSObject {
         conditionalJump(mnemonic:  "JE", condition: 0b0001)
         conditionalJump(mnemonic: "JNE", condition: 0b1110)
         conditionalJump(mnemonic:  "JG", condition: 0b1000)
-        conditionalJump(mnemonic: "JLE", condition: 0b0001)
+        conditionalJump(mnemonic: "JLE", condition: 0b0111)
         conditionalJump(mnemonic:  "JL", condition: 0b0100)
         conditionalJump(mnemonic: "JGE", condition: 0b1011)
         jalr()

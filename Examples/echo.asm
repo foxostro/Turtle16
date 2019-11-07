@@ -26,11 +26,11 @@ beginningOfInputLoop:
 
 waitForInput:
 LI Y, 1 # kStatusRegister
-MOV B, P
-LI A, 0
+MOV A, P
+LI B, 0
 CMP
 LXY waitForInput
-JC
+JE
 NOP
 NOP
 

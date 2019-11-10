@@ -34,6 +34,13 @@ public class ComputerState: NSObject {
     public let instructionROM: InstructionROM
     public let instructionDecoder: InstructionDecoder
     
+    // The serial device interface maintains some state of its own.
+    public enum SerialDeviceState { case Ready, Waiting }
+    public let serialDeviceState: SerialDeviceState
+    
+    // The serial interface device has a bit of memory too.
+    public let serialDeviceRAM: RAM
+    
     // This is input provided to TurtleTTL from the serial connection.
     // The serial interface module outputs these bytes to the bus.
     public let serialInput: [UInt8]
@@ -66,6 +73,8 @@ public class ComputerState: NSObject {
                   withLowerInstructionRAM: RAM(),
                   withInstructionROM: InstructionROM(),
                   withInstructionDecoder: InstructionDecoder(),
+                  withSerialDeviceState: .Waiting,
+                  withSerialDeviceRAM: RAM(withSize: 4096).withStore(value: 1, to: 0),
                   withSerialInput: [],
                   withSerialOutput: [])
     }
@@ -93,6 +102,8 @@ public class ComputerState: NSObject {
                          withLowerInstructionRAM lowerInstructionRAM: RAM,
                          withInstructionROM instructionROM: InstructionROM,
                          withInstructionDecoder instructionDecoder: InstructionDecoder,
+                         withSerialDeviceState serialDeviceState: SerialDeviceState,
+                         withSerialDeviceRAM serialDeviceRAM: RAM,
                          withSerialInput serialInput: [UInt8],
                          withSerialOutput serialOutput: [UInt8]) {
         self.bus = bus
@@ -118,6 +129,8 @@ public class ComputerState: NSObject {
         self.lowerInstructionRAM = lowerInstructionRAM
         self.instructionROM = instructionROM
         self.instructionDecoder = instructionDecoder
+        self.serialDeviceState = serialDeviceState
+        self.serialDeviceRAM = serialDeviceRAM
         self.serialInput = serialInput
         self.serialOutput = serialOutput
     }
@@ -146,6 +159,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -174,6 +189,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -202,6 +219,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -230,6 +249,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -258,6 +279,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -286,6 +309,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -314,6 +339,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -342,6 +369,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -370,6 +399,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -398,6 +429,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -426,6 +459,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -454,6 +489,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -482,6 +519,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -510,6 +549,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -538,6 +579,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -566,6 +609,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -594,6 +639,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -622,6 +669,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -650,6 +699,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -678,6 +729,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -706,6 +759,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -734,6 +789,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -762,6 +819,68 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
+                             withSerialInput: serialInput,
+                             withSerialOutput: serialOutput)
+    }
+    
+    public func withSerialDeviceState(_ serialDeviceState: SerialDeviceState) -> ComputerState {
+        return ComputerState(withBus: bus,
+                             withRegisterA: registerA,
+                             withRegisterB: registerB,
+                             withRegisterC: registerC,
+                             withRegisterD: registerD,
+                             withRegisterG: registerG,
+                             withRegisterH: registerH,
+                             withRegisterX: registerX,
+                             withRegisterY: registerY,
+                             withRegisterU: registerU,
+                             withRegisterV: registerV,
+                             withALUResult: aluResult,
+                             withALUFlags: aluFlags,
+                             withFlags: flags,
+                             withPC: pc,
+                             withPCIF: pc_if,
+                             withIFID: if_id,
+                             withControlWord: controlWord,
+                             withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
+                             withInstructionROM: instructionROM,
+                             withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
+                             withSerialInput: serialInput,
+                             withSerialOutput: serialOutput)
+    }
+    
+    public func withSerialDeviceRAM(_ serialDeviceRAM: RAM) -> ComputerState {
+        return ComputerState(withBus: bus,
+                             withRegisterA: registerA,
+                             withRegisterB: registerB,
+                             withRegisterC: registerC,
+                             withRegisterD: registerD,
+                             withRegisterG: registerG,
+                             withRegisterH: registerH,
+                             withRegisterX: registerX,
+                             withRegisterY: registerY,
+                             withRegisterU: registerU,
+                             withRegisterV: registerV,
+                             withALUResult: aluResult,
+                             withALUFlags: aluFlags,
+                             withFlags: flags,
+                             withPC: pc,
+                             withPCIF: pc_if,
+                             withIFID: if_id,
+                             withControlWord: controlWord,
+                             withDataRAM: dataRAM,
+                             withUpperInstructionRAM: upperInstructionRAM,
+                             withLowerInstructionRAM: lowerInstructionRAM,
+                             withInstructionROM: instructionROM,
+                             withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -790,6 +909,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }
@@ -818,6 +939,8 @@ public class ComputerState: NSObject {
                              withLowerInstructionRAM: lowerInstructionRAM,
                              withInstructionROM: instructionROM,
                              withInstructionDecoder: instructionDecoder,
+                             withSerialDeviceState: serialDeviceState,
+                             withSerialDeviceRAM: serialDeviceRAM,
                              withSerialInput: serialInput,
                              withSerialOutput: serialOutput)
     }

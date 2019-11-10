@@ -297,77 +297,96 @@ JNE
 NOP
 NOP
 
-HLT
-
 # #############################################################################
+# Wait until a character is available.
+wait_for_available_0:
 
-LI A, 'r'
-LXY serial_putc
-JALR
+LI D, 6 # kSerialInterface
+LI Y, 1 # kPortCommand
+LI P, 3 # kCommandAvail
+
+# Wait for the serial device finish. It needs our acknowledgement to continue.
+LI B, 1 # kStatusWaiting
+wait_for_available_1:
+LI X, 0
+LI Y, 0 # kPortStatus
+MOV A, P
+CMP
+LXY wait_for_available_1
+JNE
 NOP
 NOP
 
-# #############################################################################
+# Send acknowledgement.
+LI Y, 1 # kPortCommand
+LI P, 0 # kCommandAck
 
-LI A, 'e'
-LXY serial_putc
-JALR
+# Wait for the serial device to become ready again.
+LI B, 0 # kStatusReady
+wait_for_available_2:
+LI X, 0
+LI Y, 0 # kPortStatus
+MOV A, P
+CMP
+LXY wait_for_available_2
+JNE
 NOP
 NOP
 
-# #############################################################################
+# Get the number of available characters out of the data port.
+LI X, 0
+LI Y, 2 # kPortData
+MOV A, P
 
-LI A, 'a'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-# #############################################################################
-
-LI A, 'd'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-# #############################################################################
-
-LI A, 'y'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-# #############################################################################
-
-LI A, '.'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-# #############################################################################
-
-LI A, 10
-LXY serial_putc
-JALR
+# Loop if there are zero characters available.
+LI B, 0
+CMP
+LXY wait_for_available_0
+JE
 NOP
 NOP
 
 # #############################################################################
+# Get the character that is available.
 
-HLT
+LI D, 6 # kSerialInterface
+LI Y, 1 # kPortCommand
+LI P, 1 # kCommandRead
 
+# Wait for the serial device finish. It needs our acknowledgement to continue.
+LI B, 1 # kStatusWaiting
+get_character_0:
+LI X, 0
+LI Y, 0 # kPortStatus
+MOV A, P
+CMP
+LXY get_character_0
+JNE
+NOP
+NOP
 
+# Send acknowledgement.
+LI Y, 1 # kPortCommand
+LI P, 0 # kCommandAck
 
+# Wait for the serial device to become ready again.
+LI B, 0 # kStatusReady
+get_character_1:
+LI X, 0
+LI Y, 0 # kPortStatus
+MOV A, P
+CMP
+LXY get_character_1
+JNE
+NOP
+NOP
 
+# Get the character out of the data port.
+LI X, 0
+LI Y, 2 # kPortData
+MOV A, P
 
 # #############################################################################
-# Output a character through the serial interface device.
-# The character is passed in the A register.
-
-serial_putc:
 
 # Write the character into the data port.
 LI D, 6 # kSerialInterface
@@ -381,12 +400,12 @@ LI P, 2 # kCommandWrite
 
 # Wait for the serial device finish. It needs our acknowledgement to continue.
 LI B, 1 # kStatusWaiting
-serial_putc_0:
+echo_character_0:
 LI X, 0
 LI Y, 0 # kPortStatus
 MOV A, P
 CMP
-LXY serial_putc_0
+LXY echo_character_0
 JNE
 NOP
 NOP
@@ -397,19 +416,19 @@ LI P, 0 # kCommandAck
 
 # Wait for the serial device to become ready again.
 LI B, 0 # kStatusReady
-serial_putc_1:
+echo_character_1:
 LI X, 0
 LI Y, 0 # kPortStatus
 MOV A, P
 CMP
-LXY serial_putc_1
+LXY echo_character_1
 JNE
 NOP
 NOP
 
-# Return
-MOV X, G
-MOV Y, H
+# #############################################################################
+# Loop
+LXY wait_for_available_0
 JMP
 NOP
 NOP

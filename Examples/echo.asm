@@ -8,6 +8,7 @@
 # let kCommandRead = 1
 # let kCommandWrite = 2
 # let kCommandAvail = 3
+# let kCommandInit = 4
 
 LI A, 0
 LI B, 0
@@ -16,6 +17,42 @@ LI U, 0
 LI V, 0
 LI X, 0
 LI Y, 0
+
+# #############################################################################
+
+# Send the command to init.
+LI D, 6 # kSerialInterface
+LI X, 0
+LI Y, 1 # kPortCommand
+LI P, 4 # kCommandInit
+
+# Wait for the serial device finish. It needs our acknowledgement to continue.
+LI B, 1 # kStatusWaiting
+wait_for_init_0:
+LI X, 0
+LI Y, 0 # kPortStatus
+MOV A, P
+CMP
+LXY wait_for_init_0
+JNE
+NOP
+NOP
+
+# Send acknowledgement.
+LI Y, 1 # kPortCommand
+LI P, 0 # kCommandAck
+
+# Wait for the serial device to become ready again.
+LI B, 0 # kStatusReady
+wait_for_init_1:
+LI X, 0
+LI Y, 0 # kPortStatus
+MOV A, P
+CMP
+LXY wait_for_init_1
+JNE
+NOP
+NOP
 
 # #############################################################################
 

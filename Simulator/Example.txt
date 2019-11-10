@@ -10,6 +10,9 @@
 # let kCommandAvail = 3
 # let kCommandInit = 4
 
+# #############################################################################
+# Reset.
+
 LI A, 0
 LI B, 0
 LI D, 0
@@ -18,7 +21,90 @@ LI V, 0
 LI X, 0
 LI Y, 0
 
+LXY serial_init
+JALR
+NOP
+NOP
+
+
 # #############################################################################
+# Print a welcome message.
+
+LI A, 'r'
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+LI A, 'e'
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+LI A, 'a'
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+LI A, 'd'
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+LI A, 'y'
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+LI A, '.'
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+LI A, 10
+LXY serial_putc
+JALR
+NOP
+NOP
+
+
+# #############################################################################
+# Read characters from the serial interface and echo them back.
+
+loop:
+
+LXY serial_getc
+JALR
+NOP
+NOP
+
+LXY serial_putc
+JALR
+NOP
+NOP
+
+LXY loop
+JMP
+NOP
+NOP
+
+HLT # unreachable
+
+
+
+# #############################################################################
+serial_init:
 
 # Send the command to init.
 LI D, 6 # kSerialInterface
@@ -55,13 +141,22 @@ JNE
 NOP
 NOP
 
+MOV X, G
+MOV Y, H
+JMP
+NOP
+NOP
+
+
+
 # #############################################################################
+serial_putc:
 
 # Write the character into the data port.
 LI D, 6 # kSerialInterface
 LI X, 0
 LI Y, 2 # kPortData
-LI P, 'r'
+MOV P, A
 
 # Send the command to write.
 LI Y, 1 # kPortCommand
@@ -69,12 +164,12 @@ LI P, 2 # kCommandWrite
 
 # Wait for the serial device finish. It needs our acknowledgement to continue.
 LI B, 1 # kStatusWaiting
-wait_for_serial_write_0:
+serial_putc_0:
 LI X, 0
 LI Y, 0 # kPortStatus
 MOV A, P
 CMP
-LXY wait_for_serial_write_0
+LXY serial_putc_0
 JNE
 NOP
 NOP
@@ -86,263 +181,28 @@ LI P, 0 # kCommandAck
 
 # Wait for the serial device to become ready again.
 LI B, 0 # kStatusReady
-wait_for_serial_write_1:
+serial_putc_1:
 LI X, 0
 LI Y, 0 # kPortStatus
 MOV A, P
 CMP
-LXY wait_for_serial_write_1
+LXY serial_putc_1
 JNE
 NOP
 NOP
+
+MOV X, G
+MOV Y, H
+JMP
+NOP
+NOP
+
+
 
 # #############################################################################
+# Waits for a character to become available and then returns it in A.
+serial_getc:
 
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-LI P, 'e'
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_serial_write_2:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_2
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_serial_write_3:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_3
-JNE
-NOP
-NOP
-
-# #############################################################################
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-LI P, 'a'
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_serial_write_4:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_4
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_serial_write_5:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_5
-JNE
-NOP
-NOP
-
-# #############################################################################
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-LI P, 'd'
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_serial_write_6:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_6
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_serial_write_7:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_7
-JNE
-NOP
-NOP
-
-# #############################################################################
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-LI P, 'y'
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_serial_write_8:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_8
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_serial_write_9:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_9
-JNE
-NOP
-NOP
-
-# #############################################################################
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-LI P, '.'
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_serial_write_10:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_10
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_serial_write_11:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_11
-JNE
-NOP
-NOP
-
-# #############################################################################
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-LI P, 10
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_serial_write_12:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_12
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_serial_write_13:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_serial_write_13
-JNE
-NOP
-NOP
-
-# #############################################################################
 # Wait until a character is available.
 wait_for_available_0:
 
@@ -391,7 +251,6 @@ JE
 NOP
 NOP
 
-# #############################################################################
 # Get the character that is available.
 
 LI D, 6 # kSerialInterface
@@ -432,50 +291,10 @@ LI X, 0
 LI Y, 2 # kPortData
 MOV A, P
 
-# #############################################################################
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
-MOV P, A
-
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-echo_character_0:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY echo_character_0
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-echo_character_1:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY echo_character_1
-JNE
-NOP
-NOP
-
-# #############################################################################
-# Loop
-LXY wait_for_available_0
+MOV X, G
+MOV Y, H
 JMP
 NOP
 NOP
+
+# #############################################################################

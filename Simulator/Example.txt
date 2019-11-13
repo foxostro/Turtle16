@@ -16,15 +16,6 @@ NOP
 NOP
 
 
-
-# Showcase the BLT instruction by using it to printing "Hello, World!".
-# First, we copy some bytes from instruction memory to data RAM. Once that's
-# done, we use the BLT instruction to copy from Data RAM to serial I/O.
-# This isn't the most efficient way to get a literal string out to serial, but
-# it does showcase the accelerated bit blit operation we get from having self-
-# incrementing address registers and a separate bus for data RAM and peripheral
-# I/O.
-
 # First, setup a string in data RAM at address 100.
 LXY setupStringInMemory
 JALR
@@ -34,25 +25,38 @@ NOP
 # Second, setup the address registers to prepare for the copy.
 LI D, 6 # kSerialInterface
 LI X, 0
-LI Y, 0
+LI Y, 0 # kIORegister
 LI U, 0
 LI V, 100
 
-# Finally, use repeated invocations of the BLT instruction to perform the copy.
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
-BLT P, M
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
+MOV P, M
+INUV
 
 
 
@@ -70,7 +74,9 @@ NOP
 LI D, 6 # kSerialInterface
 LI Y, 0 # kIORegister
 MOV A, P
+NOP
 MOV P, A
+NOP
 
 LXY beginningOfInputLoop
 JMP

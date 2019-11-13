@@ -1,196 +1,117 @@
 # let kSerialInterface = 6
-# let kPortStatus = 0
-# let kPortCommand = 1
-# let kPortData = 2
-# let kStatusReady = 0
-# let kStatusWaiting = 1
-# let kCommandAck = 0
-# let kCommandRead = 1
-# let kCommandWrite = 2
-# let kCommandAvail = 3
-# let kCommandInit = 4
+# let kIORegister = 0
+# let kStatusRegister = 1
 
-# #############################################################################
-# Reset.
 
+# Increment the A register and count up from 0 to 42.
 LI A, 0
-LI B, 0
-LI D, 0
-LI U, 0
-LI V, 0
+countUpLoop:
+LI B, 1
+ADD A
+LI B, 42
+CMP
+LXY countUpLoop
+JNE
+NOP
+NOP
+
+
+
+# Showcase the BLT instruction by using it to printing "Hello, World!".
+# First, we copy some bytes from instruction memory to data RAM. Once that's
+# done, we use the BLT instruction to copy from Data RAM to serial I/O.
+# This isn't the most efficient way to get a literal string out to serial, but
+# it does showcase the accelerated bit blit operation we get from having self-
+# incrementing address registers and a separate bus for data RAM and peripheral
+# I/O.
+
+# First, setup a string in data RAM at address 100.
+LXY setupStringInMemory
+JALR
+NOP
+NOP
+
+# Second, setup the address registers to prepare for the copy.
+LI D, 6 # kSerialInterface
 LI X, 0
 LI Y, 0
+LI U, 0
+LI V, 100
 
-LXY serial_init
+# Finally, use repeated invocations of the BLT instruction to perform the copy.
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+BLT P, M
+
+
+
+# Now, we enter a loop where we wait for serial input and then echo it to
+# serial output.
+
+beginningOfInputLoop:
+
+LXY waitForInput
 JALR
 NOP
 NOP
 
-
-# #############################################################################
-# Print a welcome message.
-
-LI A, 'r'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-LI A, 'e'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-LI A, 'a'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-LI A, 'd'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-LI A, 'y'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-LI A, '.'
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-LI A, 10
-LXY serial_putc
-JALR
-NOP
-NOP
-
-
-# #############################################################################
-# Read characters from the serial interface and echo them back.
-
-loop:
-
-LXY serial_getc
-JALR
-NOP
-NOP
-
-LXY serial_putc
-JALR
-NOP
-NOP
-
-LXY loop
-JMP
-NOP
-NOP
-
-HLT # unreachable
-
-
-
-# #############################################################################
-serial_init:
-
-# Send the command to init.
+# Read a byte and echo it back.
 LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 4 # kCommandInit
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_init_0:
-LI X, 0
-LI Y, 0 # kPortStatus
+LI Y, 0 # kIORegister
 MOV A, P
-CMP
-LXY wait_for_init_0
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_init_1:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_init_1
-JNE
-NOP
-NOP
-
-MOV X, G
-MOV Y, H
-JMP
-NOP
-NOP
-
-
-
-# #############################################################################
-serial_putc:
-
-# Write the character into the data port.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 2 # kPortData
 MOV P, A
 
-# Send the command to write.
-LI Y, 1 # kPortCommand
-LI P, 2 # kCommandWrite
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-serial_putc_0:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY serial_putc_0
-JNE
+LXY beginningOfInputLoop
+JMP
 NOP
 NOP
+HLT
 
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
 
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-serial_putc_1:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY serial_putc_1
-JNE
-NOP
-NOP
 
+# This is a function to copy a string from instruction memory to data RAM at
+# address 100.
+setupStringInMemory:
+LI U, 0
+LI V, 100
+LI M, 'H'
+INUV
+LI M, 'e'
+INUV
+LI M, 'l'
+INUV
+LI M, 'l'
+INUV
+LI M, 'o'
+INUV
+LI M, ','
+INUV
+LI M, ' '
+INUV
+LI M, 'W'
+INUV
+LI M, 'o'
+INUV
+LI M, 'r'
+INUV
+LI M, 'l'
+INUV
+LI M, 'd'
+INUV
+LI M, '!'
+INUV
+LI M, 10
 MOV X, G
 MOV Y, H
 JMP
@@ -199,102 +120,24 @@ NOP
 
 
 
-# #############################################################################
-# Waits for a character to become available and then returns it in A.
-serial_getc:
 
-# Wait until a character is available.
-wait_for_available_0:
-
+# This is a function which waits until the number of available bytes is greater
+# than zero and then returns to caller.
+# The return address is stored in the Link register upon entering the function.
+waitForInput:
 LI D, 6 # kSerialInterface
-LI Y, 1 # kPortCommand
-LI P, 3 # kCommandAvail
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-wait_for_available_1:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
+LI Y, 1 # kStatusRegister
+MOV B, P
+LI A, 1
 CMP
-LXY wait_for_available_1
-JNE
+LXY waitForInput
+JC
 NOP
 NOP
 
-# Send acknowledgement.
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-wait_for_available_2:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY wait_for_available_2
-JNE
-NOP
-NOP
-
-# Get the number of available characters out of the data port.
-LI X, 0
-LI Y, 2 # kPortData
-MOV A, P
-
-# Loop if there are zero characters available.
-LI B, 0
-CMP
-LXY wait_for_available_0
-JE
-NOP
-NOP
-
-# Get the character that is available.
-
-LI D, 6 # kSerialInterface
-LI Y, 1 # kPortCommand
-LI P, 1 # kCommandRead
-
-# Wait for the serial device finish. It needs our acknowledgement to continue.
-LI B, 1 # kStatusWaiting
-get_character_0:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY get_character_0
-JNE
-NOP
-NOP
-
-# Send acknowledgement.
-LI X, 0
-LI Y, 1 # kPortCommand
-LI P, 0 # kCommandAck
-
-# Wait for the serial device to become ready again.
-LI B, 0 # kStatusReady
-get_character_1:
-LI X, 0
-LI Y, 0 # kPortStatus
-MOV A, P
-CMP
-LXY get_character_1
-JNE
-NOP
-NOP
-
-# Get the character out of the data port.
-LI X, 0
-LI Y, 2 # kPortData
-MOV A, P
-
+# Return from the function.
 MOV X, G
 MOV Y, H
 JMP
 NOP
 NOP
-
-# #############################################################################

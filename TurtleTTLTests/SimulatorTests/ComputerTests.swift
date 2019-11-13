@@ -1339,6 +1339,7 @@ class ComputerTests: XCTestCase {
         XCTAssertEqual(computer.currentState.registerV.value, 2)
         XCTAssertEqual(computer.currentState.registerX.value, 1)
         XCTAssertEqual(computer.currentState.registerY.value, 2)
+        XCTAssertEqual(computer.currentState.serialOutput, [0, 0, 0])
     }
     
     func testJE_TakeTheJump() {

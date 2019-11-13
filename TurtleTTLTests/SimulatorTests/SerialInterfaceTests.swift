@@ -15,7 +15,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(serial.name, "Serial")
     }
     
-    func disabled_testZeroBytesAvailableByDefault() {
+    func testZeroBytesAvailableByDefault() {
         let serial = SerialInterface()
         let state = ComputerState()
             .withBus(0xff)
@@ -27,7 +27,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(updatedState.bus.value, 0)
     }
     
-    func disabled_testAvailableBytesAfterProvidingZeroBytes() {
+    func testAvailableBytesAfterProvidingZeroBytes() {
         let serial = SerialInterface()
         let state = ComputerState()
             .withBus(0xff)
@@ -40,7 +40,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(updatedState.bus.value, 0)
     }
     
-    func disabled_testAvailableBytesAfterProvidingSomeBytes() {
+    func testAvailableBytesAfterProvidingSomeBytes() {
         let serial = SerialInterface()
         let state = ComputerState()
             .withBus(0xff)
@@ -53,7 +53,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(updatedState.bus.value, 3)
     }
     
-    func disabled_testLoadAByteFromSerial() {
+    func testLoadAByteFromSerial() {
         let serial = SerialInterface()
         let state = ComputerState()
             .withBus(0xff)
@@ -66,7 +66,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(updatedState.bus.value, 1)
     }
     
-    func disabled_testLoadAFewBytesFromSerial() {
+    func testLoadAFewBytesFromSerial() {
         let serial = SerialInterface()
         var state = ComputerState()
             .withBus(0xff)
@@ -84,7 +84,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(state.bus.value, 3)
     }
     
-    func disabled_testLoadYields255WhenNoBytesAreAvailable() {
+    func testLoadYields255WhenNoBytesAreAvailable() {
         let serial = SerialInterface()
         var state = ComputerState()
             .withBus(0xff)
@@ -95,7 +95,7 @@ class SerialInterfaceTests: XCTestCase {
         XCTAssertEqual(state.bus.value, 0xff)
     }
     
-    func disabled_testStoreAByteToSerial() {
+    func testStoreAByteToSerial() {
         let serial = SerialInterface()
         let state = ComputerState()
             .withBus(2)

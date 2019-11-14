@@ -1,6 +1,6 @@
 # let kSerialInterface = 6
 # let kIORegister = 0
-# let kStatusRegister = 2
+# let kControlRegister = 2
 
 LI A, 0
 LI B, 0
@@ -9,20 +9,51 @@ LI Y, 0
 LI U, 0
 LI V, 0
 
-LI D, 6 # kSerialInterface
-LI P, 'r'
+LXY serial_init
+JALR
 NOP
-LI P, 'e'
 NOP
-LI P, 'a'
+
+LI A, 'r'
+LXY serial_put
+JALR
 NOP
-LI P, 'd'
 NOP
-LI P, 'y'
+
+LI A, 'e'
+LXY serial_put
+JALR
 NOP
-LI P, '.'
 NOP
-LI P, 10
+
+LI A, 'a'
+LXY serial_put
+JALR
+NOP
+NOP
+
+LI A, 'd'
+LXY serial_put
+JALR
+NOP
+NOP
+
+LI A, 'y'
+LXY serial_put
+JALR
+NOP
+NOP
+
+LI A, '.'
+LXY serial_put
+JALR
+NOP
+NOP
+
+LI A, 10
+LXY serial_put
+JALR
+NOP
 NOP
 
 
@@ -32,8 +63,10 @@ NOP
 beginningOfInputLoop:
 
 waitForInput:
-LI Y, 2 # kStatusRegister
-MOV A, P
+LI A, 2 # kControlRegister
+LXY serial_get
+JALR
+NOP
 NOP
 LI B, 0
 CMP
@@ -43,13 +76,547 @@ NOP
 NOP
 
 # Read a byte and echo it back.
-LI Y, 0 # kIORegister
-MOV A, P
+LI A, 0 # kIORegister
+LXY serial_get
+JALR
 NOP
-MOV P, A
+NOP
+
+LXY serial_put
+JALR
+NOP
 NOP
 
 LXY beginningOfInputLoop
 JMP
 NOP
 NOP
+
+
+
+
+
+
+serial_init:
+
+MOV U, G
+MOV V, H
+
+LI A, 2 # kControlRegister
+LI A, 'r'
+
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+
+MOV X, U
+MOV Y, V
+JMP
+NOP
+NOP
+
+
+
+
+
+serial_put:
+
+MOV P, A # "A" holds the value to output...
+LI Y, 0 # kIORegister
+LI D, 6 # kSerialInterface
+
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+MOV P, A
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+
+MOV X, G
+MOV Y, H
+JMP
+NOP
+NOP
+
+
+serial_get:
+
+MOV Y, A # "A" holds the port on which to listen...
+LI D, 6 # kSerialInterface
+
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+MOV A, P
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+
+MOV X, G
+MOV Y, H
+JMP
+NOP
+NOP
+

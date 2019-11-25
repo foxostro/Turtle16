@@ -1,60 +1,87 @@
-# let kSerialInterface = 6
-# let kIORegister = 0
-# let kControlRegister = 2
-
 LI A, 0
 LI B, 0
+LI D, 0
 LI X, 0
 LI Y, 0
 LI U, 0
 LI V, 0
 
-LXY serial_init
-JALR
-NOP
-NOP
 
-LI A, 'r'
-LXY serial_put
-JALR
-NOP
-NOP
+# Reset the serial interface.
 
-LI A, 'e'
-LXY serial_put
-JALR
+LI Y, 0 # kCommandReset
+LI D, 6 # kSerialInterface
+LI P, 0 # Lower SCK
+LI P, 1 # Raise SCK
 NOP
-NOP
+MOV A, P # Store the status in A
+LI P, 0 # Lower SCK
 
-LI A, 'a'
-LXY serial_put
-JALR
-NOP
-NOP
 
-LI A, 'd'
-LXY serial_put
-JALR
-NOP
-NOP
 
-LI A, 'y'
-LXY serial_put
-JALR
+# Print a welcome message.
+LI Y, 1 # kCommandPutByte
+LI P, 1
 NOP
+LI P, 0
+LI Y, 'r'
+LI P, 1
 NOP
+LI P, 0
 
-LI A, '.'
-LXY serial_put
-JALR
+LI Y, 1 # kCommandPutByte
+LI P, 1
 NOP
+LI P, 0
+LI Y, 'e'
+LI P, 1
 NOP
+LI P, 0
 
-LI A, 10
-LXY serial_put
-JALR
+LI Y, 1 # kCommandPutByte
+LI P, 1
 NOP
+LI P, 0
+LI Y, 'a'
+LI P, 1
 NOP
+LI P, 0
+
+LI Y, 1 # kCommandPutByte
+LI P, 1
+NOP
+LI P, 0
+LI Y, 'd'
+LI P, 1
+NOP
+LI P, 0
+
+LI Y, 1 # kCommandPutByte
+LI P, 1
+NOP
+LI P, 0
+LI Y, 'y'
+LI P, 1
+NOP
+LI P, 0
+
+LI Y, 1 # kCommandPutByte
+LI P, 1
+NOP
+LI P, 0
+LI Y, '.'
+LI P, 1
+NOP
+LI P, 0
+
+LI Y, 1 # kCommandPutByte
+LI P, 1
+NOP
+LI P, 0
+LI Y, 10
+LI P, 1
+NOP
+LI P, 0
 
 
 # Now, we enter a loop where we wait for serial input and then echo it to
@@ -63,560 +90,42 @@ NOP
 beginningOfInputLoop:
 
 waitForInput:
-LI A, 2 # kControlRegister
-LXY serial_get
-JALR
+# Get the number of bytes available.
+LI Y, 3 # kCommandGetNumBytes
+LI P, 1 # Raise SCK
 NOP
-NOP
+MOV A, P # Store the return result in A
+LI P, 0 # Lower SCK
 LI B, 0
 CMP
 LXY waitForInput
 JE
 NOP
 NOP
-
-# Read a byte and echo it back.
-LI A, 0 # kIORegister
-LXY serial_get
-JALR
-NOP
 NOP
 
-LXY serial_put
-JALR
+# Read a byte.
+LI Y, 2 # kCommandGetByte
+LI P, 1 # Raise SCK
 NOP
+MOV A, P # Store the input byte in A
+LI P, 0 # Lower SCK
+
+# Echo it back.
+LI D, 6 # kSerialInterface
+LI Y, 1 # kCommandPutByte
+LI P, 1 # Raise SCK
 NOP
+MOV B, P # Store the status in B
+LI P, 0 # Lower SCK
+MOV Y, A # Copy the character into Y.
+LI P, 1 # Raise SCK
+NOP
+MOV A, P # Store the status in A
+LI P, 0 # Lower SCK
 
 LXY beginningOfInputLoop
 JMP
 NOP
 NOP
-
-
-
-
-
-
-serial_init:
-
-MOV U, G
-MOV V, H
-
-LI A, 2 # kControlRegister
-LI A, 'r'
-
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
 NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-
-MOV X, U
-MOV Y, V
-JMP
-NOP
-NOP
-
-
-
-
-
-serial_put:
-
-MOV P, A # "A" holds the value to output...
-LI Y, 0 # kIORegister
-LI D, 6 # kSerialInterface
-
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-MOV P, A
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-
-MOV X, G
-MOV Y, H
-JMP
-NOP
-NOP
-
-
-serial_get:
-
-MOV Y, A # "A" holds the port on which to listen...
-LI D, 6 # kSerialInterface
-
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-MOV A, P
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-NOP
-
-MOV X, G
-MOV Y, H
-JMP
-NOP
-NOP
-

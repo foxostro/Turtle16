@@ -28,7 +28,7 @@ LI P, 0 # Lower SCK
 
 # Get the number of bytes available
 LI A, 0
-LI Y, 3 # kCommandGetByte
+LI Y, 3 # kCommandGetNumBytes
 LI P, 1 # Raise SCK
 NOP
 MOV B, P

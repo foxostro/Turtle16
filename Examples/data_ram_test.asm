@@ -1,0 +1,6 @@
+LI A, 0
+LI U, 0
+LI V, 1
+LI M, 255
+MOV A, M
+HLT

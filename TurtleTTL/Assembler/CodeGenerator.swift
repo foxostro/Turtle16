@@ -138,6 +138,12 @@ public class CodeGenerator: NSObject {
         try! instruction(withMnemonic: "ALU", immediate: 0b0110)
     }
     
+    // Link -- Save the contents of PC to the Link register
+    public func link() {
+        assert(isAssembling)
+        try! instruction(withMnemonic: "LINK", immediate: 0)
+    }
+    
     // Jump -- Jump to the address specified by the XY register pair, and load the link register
     public func jalr() {
         assert(isAssembling)

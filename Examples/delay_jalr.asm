@@ -9,14 +9,16 @@ LI U, 0
 LI V, 0
 
 LXY delay65536
-JALR
+LINK
+JMP
 NOP
 NOP
 
 LI D, 255
 
 LXY delay65536
-JALR
+LINK
+JMP
 NOP
 NOP
 
@@ -48,6 +50,7 @@ NOP
 
 MOV X, G
 MOV Y, H
+INXY # Increment XY to get the real return address.
 JMP
 NOP
 NOP
@@ -73,7 +76,8 @@ LI U, 0
 LI V, 2
 MOV M, A
 LXY delay256
-JALR
+LINK
+JMP
 NOP
 NOP
 MOV A, M
@@ -95,6 +99,7 @@ LI V, 0
 MOV X, M
 LI V, 1
 MOV Y, M
+INXY # Increment XY to get the real return address.
 JMP
 NOP
 NOP

@@ -92,6 +92,7 @@ public class MicrocodeGenerator: NSObject {
         conditionalJump(mnemonic: "JLE", condition: 0b0111)
         conditionalJump(mnemonic:  "JL", condition: 0b0100)
         conditionalJump(mnemonic: "JGE", condition: 0b1011)
+        link()
         jalr()
         inuv()
         inxy()
@@ -156,6 +157,13 @@ public class MicrocodeGenerator: NSObject {
                                         controlWord: ControlWord()
                                             .withFI(.active)
                                             .withCarryIn(carry))
+    }
+    
+    public func link() {
+        let opcode = getNextOpcode()
+        mapMnemonicToOpcode["LINK"] = opcode
+        let controlWord = ControlWord().withLinkIn(.active)
+        microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     public func jalr() {

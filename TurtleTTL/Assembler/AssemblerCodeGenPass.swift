@@ -65,6 +65,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             "HLT"  : { try self.hlt(node) },
             "INUV" : { try self.inuv(node) },
             "INXY" : { try self.inxy(node) },
+            "LINK" : { try self.link(node) },
             "JALR" : { try self.jalr(node) },
             "JC"   : { try self.jc(node) },
             "JNC"  : { try self.jnc(node) },
@@ -145,6 +146,13 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             throw zeroOperandsExpectedError(node.instruction)
         }
         self.codeGenerator.inxy()
+    }
+    
+    func link(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 0 else {
+            throw zeroOperandsExpectedError(node.instruction)
+        }
+        self.codeGenerator.link()
     }
     
     func jalr(_ node: InstructionNode) throws {

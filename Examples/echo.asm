@@ -107,6 +107,14 @@ HLT # unreachable
 
 serial_init:
 
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
 LI D, 6 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 0 # Reset Command
@@ -122,9 +130,19 @@ LI Y, 1 # Data Port
 MOV A, P # Store the status in A
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
 
-MOV X, G
-MOV Y, H
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
 INXY # Must adjust the return address.
 JMP
 NOP
@@ -135,6 +153,14 @@ NOP
 
 
 serial_put:
+
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
 
 # The A register contains the character to output.
 # Copy it into memory at address 5.
@@ -148,7 +174,8 @@ LI P, 1 # Put Command
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-JALR
+LINK
+JMP
 NOP
 NOP
 LI Y, 0 # Control Port
@@ -160,14 +187,25 @@ MOV P, M # Retrieve the byte from address 5 and pass it to the serial device.
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-JALR
+LINK
+JMP
 NOP
 NOP
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
 
-MOV X, G
-MOV Y, H
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
 INXY # Must adjust the return address.
 JMP
 NOP
@@ -179,20 +217,46 @@ NOP
 
 serial_get:
 
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
 LI Y, 1 # Data Port
 LI P, 2 # "Get" Command
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-JALR
+LINK
+JMP
 NOP
 NOP
-MOV A, P # Store the input byte in "A".
+LI U, 0
+LI V, 5
+MOV M, P # Store the input byte in memory at address 5.
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
 
-MOV X, G
-MOV Y, H
+# Set the return value in "A".
+LI U, 0
+LI V, 5
+MOV A, M
+
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
 INXY # Must adjust the return address.
 JMP
 NOP
@@ -204,6 +268,14 @@ NOP
 
 serial_get_number_available_bytes:
 
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
 LI D, 6 # kSerialInterface
 LI Y, 1 # Data Port
 LI P, 3 # "Get Number of Bytes" Command
@@ -214,12 +286,29 @@ LINK
 JMP
 NOP
 NOP
-MOV A, P # Store the number of available bytes in "A"
+LI U, 0
+LI V, 5
+MOV M, P # Store the number of available bytes in memory at address 5.
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
 
-MOV X, G
-MOV Y, H
+# Set the return value in "A".
+LI U, 0
+LI V, 5
+MOV A, M
+
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
 INXY # Must adjust the return address.
 JMP
 NOP

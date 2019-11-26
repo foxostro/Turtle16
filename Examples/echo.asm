@@ -180,6 +180,10 @@ NOP
 NOP
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
 LI Y, 1 # Data Port
 LI U, 0
 LI V, 5

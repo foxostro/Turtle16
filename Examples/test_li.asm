@@ -1,0 +1,8 @@
+LI A, 1
+LI B, 2
+LI D, 3
+LI U, 4
+LI V, 5
+LI X, 6
+LI Y, 7
+HLT

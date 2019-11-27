@@ -1,0 +1,4 @@
+LI A, 1
+LI B, 1
+ADD D
+HLT

@@ -1,0 +1,8 @@
+LI A, 0xff
+MOV B, A
+MOV D, A
+MOV U, A
+MOV V, A
+MOV X, A
+MOV Y, A
+HLT

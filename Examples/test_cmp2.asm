@@ -1,0 +1,27 @@
+LI D, 1
+
+LI A, 0
+delay65536_0:
+MOV U, A
+LI A, 0
+delay256_0:
+LI B, 1
+ADD A
+LI B, 255
+CMP
+LXY delay256_0
+JNE
+NOP
+NOP
+MOV A, U
+LI B, 1
+ADD A
+LI B, 255
+CMP
+LXY delay65536_0
+JNE
+NOP
+NOP
+
+LI D, 255
+HLT

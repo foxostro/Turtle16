@@ -18,7 +18,8 @@ NOP
 
 # First, setup a string in data RAM at address 100.
 LXY setupStringInMemory
-JALR
+LINK
+JMP
 NOP
 NOP
 
@@ -66,7 +67,8 @@ INUV
 beginningOfInputLoop:
 
 LXY waitForInput
-JALR
+LINK
+JMP
 NOP
 NOP
 

@@ -30,9 +30,10 @@ class ComputerTests: XCTestCase {
     func testReset() {
         let computer = makeComputer()
         computer.reset()
-        XCTAssertEqual(computer.currentState.pc.value, 0)
-        XCTAssertEqual(computer.currentState.pc_if.value, 0)
-        XCTAssertEqual(computer.currentState.registerC.value, 0)
+        XCTAssertEqual(computer.pc.value, 0)
+        XCTAssertEqual(computer.pc_if.value, 0)
+        XCTAssertEqual(computer.registerC.value, 0)
+        XCTAssertEqual(computer.controlWord.unsignedIntegerValue, ControlWord().unsignedIntegerValue)
     }
     
     func testBasicExample() {
@@ -46,40 +47,39 @@ class ComputerTests: XCTestCase {
             .withStore(value: 0b0000000000000000, to: 0) // NOP
             .withStore(value: 0b0000000100000001, to: 1) // Set register A to immediate value 1.
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.reset()
         
         // Fetch the NOP, Decode Whatever, Execute Whatever
         computer.step()
         
-        XCTAssertEqual(computer.currentState.pc.value, 1)
-        XCTAssertEqual(computer.currentState.pc_if.value, 0)
-        XCTAssertEqual(computer.currentState.if_id.description, "{op=0b0, imm=0b0}")
-        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffffffff)
+        XCTAssertEqual(computer.pc.value, 1)
+        XCTAssertEqual(computer.pc_if.value, 0)
+        XCTAssertEqual(computer.if_id.description, "{op=0b0, imm=0b0}")
+        XCTAssertEqual(computer.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch the assignment to A, Decode the NOP, Execute Whatever
         computer.step()
         
-        XCTAssertEqual(computer.currentState.pc.value, 2)
-        XCTAssertEqual(computer.currentState.pc_if.value, 1)
-        XCTAssertEqual(computer.currentState.if_id.description, "{op=0b0, imm=0b0}")
-        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffffffff)
+        XCTAssertEqual(computer.pc.value, 2)
+        XCTAssertEqual(computer.pc_if.value, 1)
+        XCTAssertEqual(computer.if_id.description, "{op=0b0, imm=0b0}")
+        XCTAssertEqual(computer.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch whatever, Decode the assignment to A, Execute the NOP
         computer.step()
         
-        XCTAssertEqual(computer.currentState.pc.value, 3)
-        XCTAssertEqual(computer.currentState.pc_if.value, 2)
-        XCTAssertEqual(computer.currentState.if_id.description, "{op=0b1, imm=0b1}")
-        XCTAssertEqual(computer.currentState.controlWord.unsignedIntegerValue, 0xffffffff)
+        XCTAssertEqual(computer.pc.value, 3)
+        XCTAssertEqual(computer.pc_if.value, 2)
+        XCTAssertEqual(computer.if_id.description, "{op=0b1, imm=0b1}")
+        XCTAssertEqual(computer.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch whatever, Decode whatever, Execute the assignment to A.
-        XCTAssertEqual(computer.currentState.registerA.value, 0)
+        XCTAssertEqual(computer.registerA.value, 0)
         computer.step()
-        XCTAssertEqual(computer.currentState.registerA.value, 1)
+        XCTAssertEqual(computer.registerA.value, 1)
     }
     
     func testBasicAddition() {
@@ -113,13 +113,12 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
         instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 3)
+        XCTAssertEqual(computer.registerA.value, 3)
     }
     
     func testAddTwoOperands() {
@@ -154,13 +153,12 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
         instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerX.value, 4)
+        XCTAssertEqual(computer.registerX.value, 4)
     }
     
     func testCompareTwoOperands_Equal() {
@@ -195,14 +193,13 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
         instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.flags.carryFlag, 1)
-        XCTAssertEqual(computer.currentState.flags.equalFlag, 1)
+        XCTAssertEqual(computer.flags.carryFlag, 1)
+        XCTAssertEqual(computer.flags.equalFlag, 1)
     }
     
     func testCompareTwoOperands_GreaterThan() {
@@ -237,14 +234,13 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
         instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.flags.carryFlag, 0)
-        XCTAssertEqual(computer.currentState.flags.equalFlag, 0)
+        XCTAssertEqual(computer.flags.carryFlag, 0)
+        XCTAssertEqual(computer.flags.equalFlag, 0)
     }
     
     func testCompareTwoOperands_LessThan() {
@@ -279,14 +275,13 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
         instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.flags.carryFlag, 1)
-        XCTAssertEqual(computer.currentState.flags.equalFlag, 0)
+        XCTAssertEqual(computer.flags.carryFlag, 1)
+        XCTAssertEqual(computer.flags.equalFlag, 0)
     }
     
     func testDescribeALUResult() {
@@ -320,9 +315,8 @@ class ComputerTests: XCTestCase {
         instructionDecoder = instructionDecoder.withStore(opcode: 4, controlWord: hlt)
         instructionROM = instructionROM.withStore(opcode: 4, immediate: 0, to: 4)
         
-        computer.currentState = computer.currentState
-            .withInstructionDecoder(instructionDecoder)
-            .withInstructionROM(instructionROM)
+        computer.instructionDecoder = instructionDecoder
+        computer.instructionROM = instructionROM
         
         computer.step()
         computer.step()
@@ -373,9 +367,9 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerX.value, 42)
-        XCTAssertEqual(computer.currentState.registerY.value, 42)
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerX.value, 42)
+        XCTAssertEqual(computer.registerY.value, 42)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testReadWriteRegistersUV() {
@@ -414,9 +408,9 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerU.value, 42)
-        XCTAssertEqual(computer.currentState.registerV.value, 42)
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerU.value, 42)
+        XCTAssertEqual(computer.registerV.value, 42)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testReadWriteRegistersAB() {
@@ -455,7 +449,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerD.value, 42)
+        XCTAssertEqual(computer.registerD.value, 42)
     }
     
     func testRAMStoreLoad() {
@@ -499,7 +493,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testUnconditionalJump() {
@@ -546,7 +540,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 1)
+        XCTAssertEqual(computer.registerA.value, 1)
     }
     
     func testConditionalJumpOnCarry_DontTakeTheJump() {
@@ -619,8 +613,8 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerD.value, 1)
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerD.value, 1)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testConditionalJumpOnCarry_TakeTheJump() {
@@ -693,8 +687,8 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerD.value, 255)
-        XCTAssertEqual(computer.currentState.registerA.value, 1)
+        XCTAssertEqual(computer.registerD.value, 255)
+        XCTAssertEqual(computer.registerA.value, 1)
     }
     
     func testUpperInstructionRAMStoreLoad() {
@@ -748,7 +742,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testLowerInstructionRAMStoreLoad() {
@@ -802,7 +796,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testExecuteInInstructionRAM() {
@@ -868,7 +862,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerA.value, 42)
     }
     
     func testStoreLoadToPeripheralDeviceSevenDoesNothing() {
@@ -925,7 +919,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerA.value, 0)
+        XCTAssertEqual(computer.registerA.value, 0)
     }
     
     func disabled_too_slow_testSaveLoadMicrocode() {
@@ -944,19 +938,19 @@ class ComputerTests: XCTestCase {
         computer.provideMicrocode(microcode: instructionDecoder)
         
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
-        let oldDecoder = computer.currentState.instructionDecoder
+        let oldDecoder = computer.instructionDecoder
         try! computer.saveMicrocode(to: url)
         
         computer.provideMicrocode(microcode: InstructionDecoder())
         
         for i in 0...oldDecoder.rom.count {
-            XCTAssertNotEqual(oldDecoder.rom[i].data, computer.currentState.instructionDecoder.rom[i].data)
+            XCTAssertNotEqual(oldDecoder.rom[i].data, computer.instructionDecoder.rom[i].data)
         }
         
         try! computer.loadMicrocode(from: url)
         
         for i in 0...oldDecoder.rom.count {
-            XCTAssertEqual(oldDecoder.rom[i].data, computer.currentState.instructionDecoder.rom[i].data)
+            XCTAssertEqual(oldDecoder.rom[i].data, computer.instructionDecoder.rom[i].data)
         }
     }
     
@@ -980,7 +974,7 @@ class ComputerTests: XCTestCase {
             Instruction(opcode: hlt,   immediate: 0)])   // HLT
         
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
-        let oldProgram = computer.currentState.instructionROM
+        let oldProgram = computer.instructionROM
         try! computer.saveProgram(to: url)
         
         computer.provideInstructions([
@@ -989,12 +983,12 @@ class ComputerTests: XCTestCase {
             Instruction(opcode: nop,   immediate: 1),    // NOP
             Instruction(opcode: nop,   immediate: 1),    // NOP
             Instruction(opcode: hlt,   immediate: 1)])   // HLT
-        XCTAssertNotEqual(oldProgram.upperROM.data, computer.currentState.instructionROM.upperROM.data)
-        XCTAssertNotEqual(oldProgram.lowerROM.data, computer.currentState.instructionROM.lowerROM.data)
+        XCTAssertNotEqual(oldProgram.upperROM.data, computer.instructionROM.upperROM.data)
+        XCTAssertNotEqual(oldProgram.lowerROM.data, computer.instructionROM.lowerROM.data)
         
         try! computer.loadProgram(from: url)
-        XCTAssertEqual(oldProgram.upperROM.data, computer.currentState.instructionROM.upperROM.data)
-        XCTAssertEqual(oldProgram.lowerROM.data, computer.currentState.instructionROM.lowerROM.data)
+        XCTAssertEqual(oldProgram.upperROM.data, computer.instructionROM.upperROM.data)
+        XCTAssertEqual(oldProgram.lowerROM.data, computer.instructionROM.lowerROM.data)
     }
     
     func testModifyRegisterA_InvalidInput() {
@@ -1007,7 +1001,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterA(withString: "ff")
         XCTAssertEqual(computer.describeRegisterA(), "ff")
-        XCTAssertEqual(computer.currentState.registerA.value, 255)
+        XCTAssertEqual(computer.registerA.value, 255)
     }
     
     func testModifyRegisterB_InvalidInput() {
@@ -1020,7 +1014,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterB(withString: "ff")
         XCTAssertEqual(computer.describeRegisterB(), "ff")
-        XCTAssertEqual(computer.currentState.registerB.value, 255)
+        XCTAssertEqual(computer.registerB.value, 255)
     }
     
     func testModifyRegisterC_InvalidInput() {
@@ -1033,7 +1027,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterC(withString: "ff")
         XCTAssertEqual(computer.describeRegisterC(), "ff")
-        XCTAssertEqual(computer.currentState.registerC.value, 255)
+        XCTAssertEqual(computer.registerC.value, 255)
     }
     
     func testModifyRegisterD_InvalidInput() {
@@ -1046,7 +1040,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterD(withString: "ff")
         XCTAssertEqual(computer.describeRegisterD(), "ff")
-        XCTAssertEqual(computer.currentState.registerD.value, 255)
+        XCTAssertEqual(computer.registerD.value, 255)
     }
     
     func testModifyRegisterX_InvalidInput() {
@@ -1059,7 +1053,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterX(withString: "ff")
         XCTAssertEqual(computer.describeRegisterX(), "ff")
-        XCTAssertEqual(computer.currentState.registerX.value, 255)
+        XCTAssertEqual(computer.registerX.value, 255)
     }
     
     func testModifyRegisterY_InvalidInput() {
@@ -1072,7 +1066,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterY(withString: "ff")
         XCTAssertEqual(computer.describeRegisterY(), "ff")
-        XCTAssertEqual(computer.currentState.registerY.value, 255)
+        XCTAssertEqual(computer.registerY.value, 255)
     }
     
     func testModifyRegisterU_InvalidInput() {
@@ -1085,7 +1079,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterU(withString: "ff")
         XCTAssertEqual(computer.describeRegisterU(), "ff")
-        XCTAssertEqual(computer.currentState.registerU.value, 255)
+        XCTAssertEqual(computer.registerU.value, 255)
     }
     
     func testModifyRegisterV_InvalidInput() {
@@ -1098,7 +1092,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyRegisterV(withString: "ff")
         XCTAssertEqual(computer.describeRegisterV(), "ff")
-        XCTAssertEqual(computer.currentState.registerV.value, 255)
+        XCTAssertEqual(computer.registerV.value, 255)
     }
     
     func testModifyPC_InvalidInput() {
@@ -1111,7 +1105,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyPC(withString: "ff")
         XCTAssertEqual(computer.describePC(), "ff")
-        XCTAssertEqual(computer.currentState.pc.value, 255)
+        XCTAssertEqual(computer.pc.value, 255)
     }
     
     func testModifyPCIF_InvalidInput() {
@@ -1124,7 +1118,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyPCIF(withString: "ff")
         XCTAssertEqual(computer.describePCIF(), "ff")
-        XCTAssertEqual(computer.currentState.pc_if.value, 255)
+        XCTAssertEqual(computer.pc_if.value, 255)
     }
     
     func testModifyIFID_InvalidInput() {
@@ -1137,7 +1131,7 @@ class ComputerTests: XCTestCase {
         let computer = makeComputer()
         computer.modifyIFID(withString: "{op=0b11111111, imm=0b11111111}")
         XCTAssertEqual(computer.describeIFID(), "{op=0b11111111, imm=0b11111111}")
-        XCTAssertEqual(computer.currentState.if_id.value, 0xffff)
+        XCTAssertEqual(computer.if_id.value, 0xffff)
     }
     
     func testIncrementXY() {
@@ -1176,8 +1170,8 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerX.value, 0)
-        XCTAssertEqual(computer.currentState.registerY.value, 1)
+        XCTAssertEqual(computer.registerX.value, 0)
+        XCTAssertEqual(computer.registerY.value, 1)
     }
     
     func testIncrementUV() {
@@ -1216,8 +1210,8 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerU.value, 0)
-        XCTAssertEqual(computer.currentState.registerV.value, 1)
+        XCTAssertEqual(computer.registerU.value, 0)
+        XCTAssertEqual(computer.registerV.value, 1)
     }
     
     func testJALR() {
@@ -1268,78 +1262,9 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerG.value, 0)
-        XCTAssertEqual(computer.currentState.registerH.value, 5)
-        XCTAssertEqual(computer.currentState.registerX.value, 0) // Assert that instruction 6 was skipped.
-    }
-    
-    func testBlockCopyIncrement() {
-        // We can construct a special instruction to aid in block copies from
-        // data RAM to to a peripheral destination. This could be used, for
-        // example, to accelerate copies from data RAM to video RAM.
-        // This instruction copies from one memory to the other,
-        // simultaneously increments the UV and XY registers.
-        let computer = makeComputer()
-        
-        var instructionDecoder = InstructionDecoder()
-        
-        let nop = 0
-        let nopControl = ControlWord()
-        instructionDecoder = instructionDecoder.withStore(opcode: nop, controlWord: nopControl)
-        
-        let ldd = 1
-        let lddControl = ControlWord().withCO(.active).withDI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldd, controlWord: lddControl)
-        
-        let ldx = 2
-        let ldxControl = ControlWord().withCO(.active).withXI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldx, controlWord: ldxControl)
-        
-        let ldy = 3
-        let ldyControl = ControlWord().withCO(.active).withYI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldy, controlWord: ldyControl)
-        
-        let ldu = 4
-        let lduControl = ControlWord().withCO(.active).withUI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldu, controlWord: lduControl)
-        
-        let ldv = 5
-        let ldvControl = ControlWord().withCO(.active).withVI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: ldv, controlWord: ldvControl)
-        
-        let blt = 6
-        let bltControl = ControlWord()
-            .withUVInc(.active)
-            .withXYInc(.active)
-            .withMO(.active)
-            .withPI(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: blt, controlWord: bltControl)
-        
-        let hlt = 7
-        let hltControl = ControlWord().withHLT(.active)
-        instructionDecoder = instructionDecoder.withStore(opcode: hlt, controlWord: hltControl)
-        
-        computer.provideMicrocode(microcode: instructionDecoder)
-        
-        computer.provideInstructions([
-            Instruction(opcode: nop,  immediate: 0),
-            Instruction(opcode: ldd,  immediate: 6),
-            Instruction(opcode: ldx,  immediate: 0),
-            Instruction(opcode: ldy,  immediate: 255),
-            Instruction(opcode: ldu,  immediate: 0),
-            Instruction(opcode: ldv,  immediate: 255),
-            Instruction(opcode: blt,  immediate: 0),
-            Instruction(opcode: blt,  immediate: 0),
-            Instruction(opcode: blt,  immediate: 0),
-            Instruction(opcode: hlt,  immediate: 0)])
-        
-        computer.execute()
-        
-        XCTAssertEqual(computer.currentState.registerU.value, 1)
-        XCTAssertEqual(computer.currentState.registerV.value, 2)
-        XCTAssertEqual(computer.currentState.registerX.value, 1)
-        XCTAssertEqual(computer.currentState.registerY.value, 2)
-        XCTAssertEqual(computer.currentState.serialOutput, [0, 0, 0])
+        XCTAssertEqual(computer.registerG.value, 0)
+        XCTAssertEqual(computer.registerH.value, 7) // There's a hardware bug in Rev 1 where the Link register always loads from PC during a JALR instruction. As a result, the JALR instruction always latches the jump destination instead of the previous value of PC as intended.
+        XCTAssertEqual(computer.registerX.value, 0) // Assert that instruction 6 was skipped.
     }
     
     func testJE_TakeTheJump() {
@@ -1400,7 +1325,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertNotEqual(computer.registerA.value, 42)
     }
     
     func testJNE_TakeTheJump() {
@@ -1461,7 +1386,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertNotEqual(computer.registerA.value, 42)
     }
     
     func testJG_TakeTheJump() {
@@ -1522,7 +1447,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertNotEqual(computer.registerA.value, 42)
     }
     
     func testJLE_TakeTheJump() {
@@ -1583,7 +1508,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertNotEqual(computer.registerA.value, 42)
     }
     
     func testJL_TakeTheJump() {
@@ -1644,7 +1569,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertNotEqual(computer.registerA.value, 42)
     }
     
     func testJGE_TakeTheJump() {
@@ -1705,7 +1630,7 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertNotEqual(computer.registerA.value, 42)
     }
     
     func testJNC_TakeTheJump() {
@@ -1778,7 +1703,55 @@ class ComputerTests: XCTestCase {
         
         computer.execute()
         
-        XCTAssertEqual(computer.currentState.registerD.value, 1)
-        XCTAssertNotEqual(computer.currentState.registerA.value, 42)
+        XCTAssertEqual(computer.registerD.value, 1)
+        XCTAssertNotEqual(computer.registerA.value, 42)
+    }
+    
+    func testMethodToIncrementXY() {
+        let computer = Computer()
+        computer.incrementXY()
+        XCTAssertEqual(computer.registerX.value, 0)
+        XCTAssertEqual(computer.registerY.value, 1)
+    }
+    
+    func testMethodToIncrementXY_CarryFromYToX() {
+        let computer = Computer()
+        computer.registerY = Register(withValue: 255)
+        computer.incrementXY()
+        XCTAssertEqual(computer.registerX.value, 1)
+        XCTAssertEqual(computer.registerY.value, 0)
+    }
+    
+    func testMethodToIncrementXY_Overflow() {
+        let computer = Computer()
+        computer.registerX = Register(withValue: 255)
+        computer.registerY = Register(withValue: 255)
+        computer.incrementXY()
+        XCTAssertEqual(computer.registerX.value, 0)
+        XCTAssertEqual(computer.registerY.value, 0)
+    }
+    
+    func testMethodToIncrementUV() {
+        let computer = Computer()
+        computer.incrementUV()
+        XCTAssertEqual(computer.registerU.value, 0)
+        XCTAssertEqual(computer.registerV.value, 1)
+    }
+    
+    func testMethodToIncrementUV_CarryFromVToU() {
+        let computer = Computer()
+        computer.registerV = Register(withValue: 255)
+        computer.incrementUV()
+        XCTAssertEqual(computer.registerU.value, 1)
+        XCTAssertEqual(computer.registerV.value, 0)
+    }
+    
+    func testMethodToIncrementUV_Overflow() {
+        let computer = Computer()
+        computer.registerU = Register(withValue: 255)
+        computer.registerV = Register(withValue: 255)
+        computer.incrementUV()
+        XCTAssertEqual(computer.registerU.value, 0)
+        XCTAssertEqual(computer.registerV.value, 0)
     }
 }

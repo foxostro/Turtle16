@@ -12,6 +12,10 @@ import Cocoa
 public class ProgramCounter: NSObject {
     public let value: UInt16
     
+    public var integerValue: Int {
+        return Int(value)
+    }
+    
     public var stringValue: String {
         return String(value, radix: 16)
     }

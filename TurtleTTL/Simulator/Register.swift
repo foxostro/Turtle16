@@ -12,6 +12,10 @@ import Cocoa
 public class Register: NSObject {
     public let value: UInt8
     
+    public var integerValue: Int {
+        return Int(value)
+    }
+    
     public var stringValue: String {
         return String(value, radix: 16)
     }

@@ -10,276 +10,417 @@ import Cocoa
 
 // Simulates the behavior of the TurtleTTL hardware.
 public class Computer: NSObject {
-    public var currentState: ComputerState
-    public var logger:Logger? = nil
-    let peripherals: [PeripheralDeviceOperation]
+    public var bus = Register()
+    public var registerA = Register()
+    public var registerB = Register()
+    public var registerC = Register()
+    public var registerD = Register()
+    public var registerG = Register() // LinkHi
+    public var registerH = Register() // LinkLo
+    public var registerX = Register()
+    public var registerY = Register()
+    public var registerU = Register()
+    public var registerV = Register()
+    public var aluResult = Register()
+    public var aluFlags = Flags()
+    public var flags = Flags()
+    public var pc = ProgramCounter()
+    public var pc_if = ProgramCounter()
+    public var if_id = Instruction()
+    public var controlWord = ControlWord()
+    public var dataRAM = RAM()
+    public var upperInstructionRAM = RAM()
+    public var lowerInstructionRAM = RAM()
+    public var instructionROM = InstructionROM()
+    public var instructionDecoder = InstructionDecoder()
+    var internalLogger:Logger? = nil
+    public var logger:Logger? {
+        get {
+            return internalLogger
+        }
+        set(newLogger) {
+            internalLogger = newLogger
+            peripherals.logger = newLogger
+        }
+    }
+    var peripherals = ComputerPeripherals()
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
     
-    public override init() {
-        currentState = ComputerState()
-        peripherals = [PeripheralDeviceOperation(name: "Upper Instruction RAM",
-                               store: {(state: ComputerState) -> ComputerState in
-                                return state.withStoreToUpperInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
-                 },
-                               load: {(state: ComputerState) -> ComputerState in
-                                return state.withBus(state.upperInstructionRAM.load(from: state.valueOfXYPair()))
-                 }),
-                 PeripheralDeviceOperation(name: "Lower Instruction RAM",
-                               store: {(state: ComputerState) -> ComputerState in
-                                return state.withStoreToLowerInstructionRAM(value: state.bus.value, to: state.valueOfXYPair())
-                 },
-                               load: {(state: ComputerState) -> ComputerState in
-                                return state.withBus(state.lowerInstructionRAM.load(from: state.valueOfXYPair()))
-                 }),
-                 PeripheralDeviceOperation(),
-                 PeripheralDeviceOperation(),
-                 PeripheralDeviceOperation(),
-                 PeripheralDeviceOperation(),
-                 SerialInterface(),
-                 PeripheralDeviceOperation(),
-                 PeripheralDeviceOperation()]
-    }
-    
     public func reset() {
-        currentState = currentState.reset()
+        let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
+            self.upperInstructionRAM = self.upperInstructionRAM.withStore(value: value, to: address)
+        }
+        let loadUpperInstructionRAM = {(_ address: Int) -> UInt8 in
+             return self.upperInstructionRAM.load(from: address)
+        }
+        let storeLowerInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
+            self.lowerInstructionRAM = self.lowerInstructionRAM.withStore(value: value, to: address)
+        }
+        let loadLowerInstructionRAM = {(_ address: Int) -> UInt8 in
+            return self.lowerInstructionRAM.load(from: address)
+        }
+        peripherals.populate(storeUpperInstructionRAM,
+                             loadUpperInstructionRAM,
+                             storeLowerInstructionRAM,
+                             loadLowerInstructionRAM)
+        
+        bus = Register()
+        pc = ProgramCounter()
+        pc_if = ProgramCounter()
+        if_id = Instruction()
+        controlWord = ControlWord()
     }
     
     public func step() {
-        var updatedState = currentState
-        updatedState = doID(withState: updatedState)
-        updatedState = doIF(withState: updatedState)
-        updatedState = doPCIF(withState: updatedState)
-        updatedState = doALU(withState: updatedState)
-        updatedState = doEX(withState: updatedState)
-        currentState = updatedState
+        onControlClock()
+        onRegisterClock()
         logger?.append("-----")
     }
     
-    func doPCIF(withState currentState: ComputerState) -> ComputerState {
-        let pc_if = currentState.pc
-        logger?.append("PC/IF -> %@", pc_if)
-        return currentState.withPCIF(pc_if)
-    }
-    
-    func doIF(withState currentState: ComputerState) -> ComputerState {
-        let offset = 0x8000
-        let pc_if = Int(currentState.pc_if.value)
-        let if_id: Instruction
-        if pc_if < offset {
-            if_id = currentState.instructionROM.load(from: pc_if)
+    func onControlClock() {
+        doID()
+        doIF()
+        doPCIF()
+        doALU()
+        
+        bus = Register(withValue: 0) // The bus pulls down to zero if nothing asserts a value.
+        peripherals.resetControlSignals()
+        
+        logger?.append("Executing control word %@", controlWord)
+        
+        if (.active == controlWord.CO) {
+            outputRegisterC()
+        }
+        
+        if (.active == controlWord.YO) {
+            outputRegisterY()
+        }
+        
+        if (.active == controlWord.XO) {
+            outputRegisterX()
+        }
+        
+        if (.active == controlWord.PO) {
+            peripherals.activateSignalPO(registerD.integerValue)
+        }
+        
+        if (.active == controlWord.MO) {
+            outputDataRAM()
+        }
+        
+        if (.active == controlWord.VO) {
+            outputRegisterV()
+        }
+        
+        if (.active == controlWord.UO) {
+            outputRegisterU()
+        }
+        
+        if (.active == controlWord.EO) {
+            outputRegisterE()
+        }
+        
+        if (.active == controlWord.FI) {
+            latchFlagsRegister()
+        }
+        
+        if (.active == controlWord.AO) {
+            outputRegisterA()
+        }
+        
+        if (.active == controlWord.BO) {
+            outputRegisterB()
+        }
+        
+        if (.active == controlWord.LinkHiOut) {
+            outputRegisterG()
+        }
+        
+        if (.active == controlWord.LinkLoOut) {
+            outputRegisterH()
+        }
+        
+        if (.active == controlWord.XYInc) {
+            incrementXY()
+        }
+        
+        if (.active == controlWord.UVInc) {
+            incrementUV()
+        }
+        
+        if (.active == controlWord.J) {
+            doJump()
         } else {
-            let opcode = Int(currentState.upperInstructionRAM.load(from: pc_if - offset))
-            let immediate = Int(currentState.lowerInstructionRAM.load(from: pc_if - offset))
-            if_id = Instruction(opcode: opcode, immediate: immediate)
+            incrementPC()
         }
         
-        logger?.append("IF/ID -> %@", if_id)
-        return currentState.withIFID(if_id)
-    }
-    
-    func doID(withState currentState: ComputerState) -> ComputerState {
-        let registerC = currentState.if_id.immediate
-        let opcode = Int(currentState.if_id.opcode)
-        let decoder = currentState.instructionDecoder
-        let b = decoder.load(opcode: opcode,
-                             carryFlag: currentState.flags.carryFlag,
-                             equalFlag: currentState.flags.equalFlag)
-        let controlWord = ControlWord(withValue: UInt(b))
-        return currentState
-            .withRegisterC(registerC)
-            .withControlWord(controlWord)
-    }
-    
-    func doALU(withState currentState: ComputerState) -> ComputerState {
-        let a = currentState.registerA.value
-        let b = currentState.registerB.value
-        let c = currentState.registerC.value
-        let alu = ALU()
-        alu.s = (c & 0b1111)
-        alu.mode = Int(c & 0b10000) >> 4
-        alu.carryIn = (currentState.controlWord.CarryIn == .active) ? 0 : 1
-        alu.a = a
-        alu.b = b
-        alu.update()
-        let aluResult = alu.result
-        let aluFlags = Flags(alu.carryFlag, alu.equalFlag)
-        
-        if (.active==currentState.controlWord.EO || .active==currentState.controlWord.FI) {
-            logger?.append("ALU operation with s = 0b%@, carryIn = %x, mode = %x, a = 0x%x, b = 0x%x. This yields result = 0x%x, carryFlag = %x, equalFlag = %x", String(alu.s, radix: 2), alu.carryIn, alu.mode, alu.a, alu.b, alu.result, alu.carryFlag, alu.equalFlag)
-        }
-        
-        return currentState
-            .withALUResult(aluResult)
-            .withALUFlags(aluFlags)
-    }
-    
-    func doEX(withState oldState: ComputerState) -> ComputerState {
-        var state = oldState
-        
-        logger?.append("Executing control word %@", state.controlWord)
-        if (.active == state.controlWord.CO) {
-            let bus = state.registerC.value
-            state = state.withBus(bus)
-            logger?.append("CO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.YO) {
-            let bus = state.registerY.value
-            state = state.withBus(bus)
-            logger?.append("YO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.XO) {
-            let bus = state.registerX.value
-            state = state.withBus(bus)
-            logger?.append("XO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.PO) {
-            let currentPeripheral = peripherals[Int(state.registerD.value)]
-            var updatedState = state.withBus(0) // ensure bus is invalidated
-            updatedState = currentPeripheral.load(updatedState)
-            logger?.append("PO -- Load %@ from current peripheral, \"%@\", at address 0x%@",
-                           updatedState.bus,
-                           currentPeripheral.name,
-                           String(state.valueOfXYPair(), radix: 16))
-            state = updatedState
-        }
-        if (.active == state.controlWord.MO) {
-            var updatedState = state.withBus(0) // ensure bus is invalidated
-            updatedState = state.withBus(state.dataRAM.load(from: state.valueOfUVPair()))
-            logger?.append("MO -- Load %@ from Data RAM at address 0x%@",
-                           updatedState.bus,
-                           String(state.valueOfUVPair(), radix: 16))
-            state = updatedState
-        }
-        if (.active == state.controlWord.VO) {
-            let bus = state.registerV.value
-            state = state.withBus(bus)
-            logger?.append("VO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.UO) {
-            let bus = state.registerU.value
-            state = state.withBus(bus)
-            logger?.append("UO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.EO) {
-            let bus = state.aluResult.value
-            state = state.withBus(bus)
-            logger?.append("EO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.FI) {
-            let updatedState = state.withFlags(state.aluFlags)
-            logger?.append("FI -- flags changing from %@ to %@",
-                           state.flags, updatedState.flags)
-            state = updatedState
-        }
-        if (.active == state.controlWord.AO) {
-            let bus = state.registerA.value
-            state = state.withBus(bus)
-            logger?.append("AO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.BO) {
-            let bus = state.registerB.value
-            state = state.withBus(bus)
-            logger?.append("BO -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.LinkHiOut) {
-            let bus = state.registerG.value
-            state = state.withBus(bus)
-            logger?.append("LinkHiOut -- output %@ onto bus", state.bus)
-        }
-        if (.active == state.controlWord.LinkLoOut) {
-            let bus = state.registerH.value
-            state = state.withBus(bus)
-            logger?.append("LinkLoOut -- output %@ onto bus", state.bus)
-        }
-        
-        if (.active == state.controlWord.YI) {
-            logger?.append("YI -- input %@ from bus", state.bus)
-            state = state.withRegisterY(state.bus.value)
-        }
-        if (.active == state.controlWord.XI) {
-            logger?.append("XI -- input %@ from bus", state.bus)
-            state = state.withRegisterX(state.bus.value)
-        }
-        if (.active == state.controlWord.VI) {
-            logger?.append("VI -- input %@ from bus", state.bus)
-            state = state.withRegisterV(state.bus.value)
-        }
-        if (.active == state.controlWord.UI) {
-            logger?.append("UI -- input %@ from bus", state.bus)
-            state = state.withRegisterU(state.bus.value)
-        }
-        if (.active == state.controlWord.AI) {
-            logger?.append("AI -- input %@ from bus", state.bus)
-            state = state.withRegisterA(state.bus.value)
-        }
-        if (.active == state.controlWord.BI) {
-            logger?.append("BI -- input %@ from bus", state.bus)
-            state = state.withRegisterB(state.bus.value)
-        }
-        if (.active == state.controlWord.DI) {
-            state = state.withRegisterD(state.bus.value)
-            let currentPeripheral = peripherals[Int(state.registerD.value & 0b111)]
-            logger?.append("DI -- input %@ from bus. Selected peripheral is now \"%@\"",
-                           state.registerD, currentPeripheral.name)
-        }
-        if (.active == state.controlWord.PI) {
-            let currentPeripheral = peripherals[Int(state.registerD.value)]
-            logger?.append("PI -- Store %@ to current peripheral, \"%@\", at address 0x%@",
-                           state.bus,
-                           currentPeripheral.name,
-                           String(state.valueOfXYPair(), radix: 16))
-            state = currentPeripheral.store(state)
-        }
-        if (.active == state.controlWord.MI) {
-            logger?.append("MI -- Store %@ to Data RAM at address 0x%@",
-                           state.bus, String(state.valueOfUVPair(), radix: 16))
-            state = state.withStoreToDataRAM(value: state.bus.value, to: state.valueOfUVPair())
-        }
-        if (.active == state.controlWord.XYInc) {
-            state = state.incrementXY()
-            logger?.append("XYInc -- Increment XY register pair. New value is 0x%@",
-                           String(state.valueOfXYPair(), radix: 16))
-        }
-        if (.active == state.controlWord.UVInc) {
-            state = state.incrementUV()
-            logger?.append("XYInc -- Increment UV register pair. New value is 0x%@",
-                           String(state.valueOfUVPair(), radix: 16))
-        }
-        if (.active == state.controlWord.LinkIn) {
-            let pc = state.pc.value
-            let g = UInt8((pc >> 8) & 0xff)
-            let h = UInt8(pc & 0xff)
-            state = state.withRegisterG(g).withRegisterH(h)
-            logger?.append("LinkIn -- Setting the Link register with PC value of 0x%@",
-                           state.pc.stringValue)
-        }
-        if (.active == state.controlWord.J) {
-            let pc = ProgramCounter(withValue: UInt16(state.valueOfXYPair()))
-            state = state.withPC(pc)
-            logger?.append("J -- jump to %@", state.pc)
-        } else {
-            let pc = state.pc.increment()
-            state = state.withPC(pc)
-            logger?.append("PC -> %@", state.pc)
-        }
-        if (.active == state.controlWord.HLT) {
+        if (.active == controlWord.HLT) {
             logger?.append("HLT")
         }
         
-        return state
+        doPeripheralControlClock()
+    }
+    
+    func latchFlagsRegister() {
+        let prev = flags
+        flags = Flags(aluFlags.carryFlag, aluFlags.equalFlag)
+        logger?.append("FI -- flags changing from %@ to %@", prev, flags)
+    }
+    
+    func outputRegisterA() {
+        bus = Register(withValue: registerA.value)
+        logger?.append("AO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterB() {
+        bus = Register(withValue: registerB.value)
+        logger?.append("BO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterC() {
+        bus = Register(withValue: registerC.value)
+        logger?.append("CO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterE() {
+        bus = Register(withValue: aluResult.value)
+        logger?.append("EO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterG() {
+        bus = Register(withValue: registerG.value)
+        logger?.append("LinkHiOut -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterH() {
+        bus = Register(withValue: registerH.value)
+        logger?.append("LinkLoOut -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterX() {
+        bus = Register(withValue: registerX.value)
+        logger?.append("XO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterY() {
+        bus = Register(withValue: registerY.value)
+        logger?.append("YO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterU() {
+        bus = Register(withValue: registerU.value)
+        logger?.append("UO -- output %@ onto bus", bus)
+    }
+    
+    func outputRegisterV() {
+        bus = Register(withValue: registerV.value)
+        logger?.append("VO -- output %@ onto bus", bus)
+    }
+    
+    public func incrementXY() {
+        if registerY.value == 255 {
+            registerX = Register(withValue: registerX.value &+ 1)
+            registerY = Register(withValue: 0)
+        } else {
+            registerY = Register(withValue: registerY.value &+ 1)
+        }
+        logger?.append("XYInc -- Increment XY register pair. New value is 0x%@",
+                       String(valueOfXYPair(), radix: 16))
+    }
+
+    public func incrementUV() {
+        if registerV.value == 255 {
+            registerU = Register(withValue: registerU.value &+ 1)
+            registerV = Register(withValue: 0)
+        } else {
+            registerV = Register(withValue: registerV.value &+ 1)
+        }
+        logger?.append("XYInc -- Increment UV register pair. New value is 0x%@",
+                       String(valueOfUVPair(), radix: 16))
+    }
+    
+    func doJump() {
+        pc = ProgramCounter(withValue: UInt16(valueOfXYPair()))
+        logger?.append("J -- jump to %@", pc)
+    }
+    
+    func incrementPC() {
+        pc = pc.increment()
+        logger?.append("PC -> %@", pc)
+    }
+    
+    func outputDataRAM() {
+        bus = Register(withValue: dataRAM.load(from: valueOfUVPair()))
+        logger?.append("MO -- Load %@ from Data RAM at address 0x%@",
+                       bus, String(valueOfUVPair(), radix: 16))
+    }
+    
+    func doID() {
+        registerC = Register(withValue: if_id.immediate)
+        let opcode = Int(if_id.opcode)
+        let b = instructionDecoder.load(opcode: opcode,
+                                        carryFlag: flags.carryFlag,
+                                        equalFlag: flags.equalFlag)
+        controlWord = ControlWord(withValue: UInt(b))
+    }
+    
+    func doIF() {
+        let offset = 0x8000
+        if pc_if.value < offset {
+            if_id = instructionROM.load(from: pc_if.integerValue)
+        } else {
+            let opcode = Int(upperInstructionRAM.load(from: pc_if.integerValue - offset))
+            let immediate = Int(lowerInstructionRAM.load(from: pc_if.integerValue - offset))
+            if_id = Instruction(opcode: opcode, immediate: immediate)
+        }
+        logger?.append("IF/ID -> %@", if_id)
+    }
+    
+    func doPCIF() {
+        pc_if = ProgramCounter(withValue: pc.value)
+        logger?.append("PC/IF -> %@", pc_if)
+    }
+    
+    func doALU() {
+        let a = registerA.value
+        let b = registerB.value
+        let c = registerC.value
+        let alu = ALU()
+        alu.s = (c & 0b1111)
+        alu.mode = Int(c & 0b10000) >> 4
+        alu.carryIn = (controlWord.CarryIn == .active) ? 0 : 1
+        alu.a = a
+        alu.b = b
+        alu.update()
+        
+        if (.active==controlWord.EO || .active==controlWord.FI) {
+            logger?.append("ALU operation with s = 0b%@, carryIn = %x, mode = %x, a = 0x%x, b = 0x%x. This yields result = 0x%x, carryFlag = %x, equalFlag = %x", String(alu.s, radix: 2), alu.carryIn, alu.mode, alu.a, alu.b, alu.result, alu.carryFlag, alu.equalFlag)
+        }
+        
+        aluResult = Register(withValue: alu.result)
+        aluFlags = Flags(alu.carryFlag, alu.equalFlag)
+    }
+    
+    func doPeripheralControlClock() {
+        peripherals.bus = bus
+        peripherals.registerX = registerX
+        peripherals.registerY = registerY
+        peripherals.onControlClock()
+        bus = peripherals.bus
+    }
+    
+    func onRegisterClock() {
+        if (.active == controlWord.YI) {
+            inputRegisterY()
+        }
+        
+        if (.active == controlWord.XI) {
+            inputRegisterX()
+        }
+        
+        if (.active == controlWord.VI) {
+            inputRegisterV()
+        }
+        
+        if (.active == controlWord.UI) {
+            inputRegisterU()
+        }
+        
+        if (.active == controlWord.AI) {
+            inputRegisterA()
+        }
+        
+        if (.active == controlWord.BI) {
+            inputRegisterB()
+        }
+        
+        if (.active == controlWord.DI) {
+            inputRegisterD()
+        }
+        
+        if (.active == controlWord.PI) {
+            peripherals.activateSignalPI(registerD.integerValue)
+        }
+        
+        if (.active == controlWord.MI) {
+            inputDataRAM()
+        }
+        
+        if (.active == controlWord.LinkIn) {
+            inputLinkRegister()
+        }
+        
+        doPeripheralRegisterClock()
+    }
+    
+    func inputRegisterA() {
+        logger?.append("AI -- input %@ from bus", bus)
+        registerA = Register(withValue: bus.value)
+    }
+    
+    func inputRegisterB() {
+        logger?.append("BI -- input %@ from bus", bus)
+        registerB = Register(withValue: bus.value)
+    }
+    
+    func inputRegisterD() {
+        registerD = Register(withValue: bus.value)
+        let name = peripherals.getName(at: Int(registerD.value & 0b111))
+        logger?.append("DI -- input %@ from bus. Selected peripheral is now \"%@\"",
+                       registerD, name)
+    }
+    
+    func inputRegisterX() {
+        logger?.append("XI -- input %@ from bus", bus)
+        registerX = Register(withValue: bus.value)
+    }
+    
+    func inputRegisterY() {
+        logger?.append("YI -- input %@ from bus", bus)
+        registerY = Register(withValue: bus.value)
+    }
+    
+    func inputRegisterU() {
+        logger?.append("UI -- input %@ from bus", bus)
+        registerU = Register(withValue: bus.value)
+    }
+    
+    func inputRegisterV() {
+        logger?.append("VI -- input %@ from bus", bus)
+        registerV = Register(withValue: bus.value)
+    }
+    
+    func inputDataRAM() {
+        logger?.append("MI -- Store %@ to Data RAM at address 0x%@",
+                       bus, String(valueOfUVPair(), radix: 16))
+        dataRAM = dataRAM.withStore(value: bus.value, to:valueOfUVPair())
+    }
+    
+    func inputLinkRegister() {
+        registerG = Register(withValue: UInt8((pc.value >> 8) & 0xff))
+        registerH = Register(withValue: UInt8(pc.value & 0xff))
+        logger?.append("LinkIn -- Setting the Link register with PC value of 0x%@",
+                       pc.stringValue)
+    }
+    
+    fileprivate func doPeripheralRegisterClock() {
+        peripherals.bus = bus
+        peripherals.registerX = registerX
+        peripherals.registerY = registerY
+        peripherals.onRegisterClock()
     }
     
     public func execute() {
         reset()
-        while (.inactive == currentState.controlWord.HLT) {
+        while (.inactive == controlWord.HLT) {
             step()
         }
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
-        currentState = currentState.withStoreToInstructionROM(instructions: instructions)
+        instructionROM = instructionROM.withStore(instructions)
     }
     
     public func saveMicrocode(to: URL) throws {
@@ -288,7 +429,7 @@ public class Computer: NSObject {
         try FileManager.default.createDirectory(at: to,
                                                 withIntermediateDirectories: false,
                                                 attributes: [:])
-        let roms = currentState.instructionDecoder.rom
+        let roms = instructionDecoder.rom
         for i in 0..<roms.count {
             let fileName = String(format: decoderRomFilenameFormat, i)
             let rom = roms[i].data
@@ -298,7 +439,7 @@ public class Computer: NSObject {
     
     public func loadMicrocode(from: URL) throws {
         var roms = [Memory]()
-        for i in 0..<currentState.instructionDecoder.rom.count {
+        for i in 0..<instructionDecoder.rom.count {
             let fileName = String(format: decoderRomFilenameFormat, i)
             let data = try Data(contentsOf: from.appendingPathComponent(fileName) as URL)
             let rom = Memory(withData: data)
@@ -309,14 +450,14 @@ public class Computer: NSObject {
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
-        currentState = currentState.withInstructionDecoder(microcode)
+        instructionDecoder = microcode
     }
     
     public func saveProgram(to: URL) throws {
         // Use minipro on the command-line to flash the binary file to EEPROM:
         //   % minipro -p SST29EE010 -y -w ./file.bin
-        let lowerROM = currentState.instructionROM.lowerROM.data
-        let upperROM = currentState.instructionROM.upperROM.data
+        let lowerROM = instructionROM.lowerROM.data
+        let upperROM = instructionROM.upperROM.data
         
         try FileManager.default.createDirectory(at: to,
                                                 withIntermediateDirectories: true,
@@ -332,166 +473,168 @@ public class Computer: NSObject {
         let rom = InstructionROM(withUpperROM: Memory(withData: upperData),
                                  withLowerROM: Memory(withData: lowerData))
         
-        currentState = currentState.withInstructionROM(rom)
+        instructionROM = rom
     }
     
     public func modifyRegisterA(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterA(value)
+            registerA = Register(withValue: value)
         }
     }
     
     public func modifyRegisterB(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterB(value)
+            registerB = Register(withValue: value)
         }
     }
     
     public func modifyRegisterC(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterC(value)
+            registerC = Register(withValue: value)
         }
     }
     
     public func modifyRegisterD(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterD(value)
+            registerD = Register(withValue: value)
         }
     }
     
     public func modifyRegisterG(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterG(value)
+            registerG = Register(withValue: value)
         }
     }
     
     public func modifyRegisterH(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterH(value)
+            registerH = Register(withValue: value)
         }
     }
     
     public func modifyRegisterU(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterU(value)
+            registerU = Register(withValue: value)
         }
     }
     
     public func modifyRegisterV(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterV(value)
+            registerV = Register(withValue: value)
         }
     }
     
     public func modifyRegisterX(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterX(value)
+            registerX = Register(withValue: value)
         }
     }
     
     public func modifyRegisterY(withString s: String) {
         if let value = UInt8(s, radix: 16) {
-            currentState = currentState.withRegisterY(value)
+            registerY = Register(withValue: value)
         }
     }
     
     public func modifyPC(withString s: String) {
         if let value = ProgramCounter(withStringValue: s) {
-            currentState = currentState.withPC(value)
+            pc = value
         }
     }
     
     public func modifyPCIF(withString s: String) {
         if let value = ProgramCounter(withStringValue: s) {
-            currentState = currentState.withPCIF(value)
+            pc_if = value
         }
     }
     
     public func modifyIFID(withString s: String) {
         if let value = Instruction(s) {
-            currentState = currentState.withIFID(value)
+            if_id = value
         }
     }
     
     public func describeRegisterA() -> String {
-        return currentState.registerA.description
+        return registerA.description
     }
     
     public func describeRegisterB() -> String {
-        return currentState.registerB.description
+        return registerB.description
     }
     
     public func describeRegisterC() -> String {
-        return currentState.registerC.description
+        return registerC.description
     }
     
     public func describeRegisterD() -> String {
-        return currentState.registerD.description
+        return registerD.description
     }
     
     public func describeRegisterG() -> String {
-        return currentState.registerG.description
+        return registerG.description
     }
     
     public func describeRegisterH() -> String {
-        return currentState.registerH.description
+        return registerH.description
     }
     
     public func describeRegisterU() -> String {
-        return currentState.registerU.description
+        return registerU.description
     }
     
     public func describeRegisterV() -> String {
-        return currentState.registerV.description
+        return registerV.description
     }
     
     public func describeRegisterX() -> String {
-        return currentState.registerX.description
+        return registerX.description
     }
     
     public func describeRegisterY() -> String {
-        return currentState.registerY.description
+        return registerY.description
     }
     
     public func describeALUResult() -> String {
-        return currentState.aluResult.description
+        return aluResult.description
     }
     
     public func describeControlWord() -> String {
-        return currentState.controlWord.stringValue
+        return controlWord.stringValue
     }
     
     public func describeControlSignals() -> String {
-        return currentState.controlWord.description
+        return controlWord.description
     }
     
     public func describePC() -> String {
-        return currentState.pc.description
+        return pc.description
     }
     
     public func describePCIF() -> String {
-        return currentState.pc_if.description
+        return pc_if.description
     }
     
     public func describeIFID() -> String {
-        return currentState.if_id.description
+        return if_id.description
     }
     
     public func describeBus() -> String {
-        return currentState.bus.description
+        return bus.description
     }
     
     public func provideSerialInput(bytes: [UInt8]) {
-        var serialInput = currentState.serialInput
-        serialInput += bytes
-        currentState = currentState.withSerialInput(serialInput)
+        peripherals.getSerialInterface().provideSerialInput(bytes: bytes)
     }
     
     public func describeSerialOutput() -> String {
-        var result = ""
-        for byte in currentState.serialOutput {
-            result += String(bytes: [byte], encoding: .utf8) ?? "�"
-        }
-        return result
+        return peripherals.getSerialInterface().describeSerialOutput()
+    }
+    
+    func valueOfXYPair() -> Int {
+        return registerX.integerValue<<8 | registerY.integerValue
+    }
+
+    func valueOfUVPair() -> Int {
+        return registerU.integerValue<<8 | registerV.integerValue
     }
 }

@@ -10,8 +10,6 @@ import Cocoa
 
 // Represents a control word in the TurtleTTL hardware.
 public class ControlWord: NSObject {
-    public enum ControlSignal { case active, inactive }
-    
     // Signals have these names so they match the circuit schematics.
     public let AI: ControlSignal
     public let AO: ControlSignal

@@ -133,7 +133,7 @@ public class MicrocodeGenerator: NSObject {
         alu(base: "ALU", withCarry: .inactive)
     }
     
-    public func alu(base: String, withCarry carry: ControlWord.ControlSignal) {
+    public func alu(base: String, withCarry carry: ControlSignal) {
         for destination in DestinationRegister.allCases {
             var controlWord = ControlWord()
             controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
@@ -150,7 +150,7 @@ public class MicrocodeGenerator: NSObject {
     
     // The case of an ALU operation with no destination register.
     // Only updates the flags.
-    func aluNoDest(mnemonic: String, withCarry carry: ControlWord.ControlSignal) {
+    func aluNoDest(mnemonic: String, withCarry carry: ControlSignal) {
         let opcode = getNextOpcode()
         mapMnemonicToOpcode[mnemonic] = opcode
         microcode = microcode.withStore(opcode: opcode,

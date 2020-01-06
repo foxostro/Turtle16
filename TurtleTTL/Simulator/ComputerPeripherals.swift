@@ -84,6 +84,12 @@ class ComputerPeripherals: NSObject {
         }
     }
     
+    public func onPeripheralClock() {
+        for peripheral in peripherals {
+            peripheral.onPeripheralClock()
+        }
+    }
+    
     public func valueOfXYPair() -> Int {
         return registerX.integerValue<<8 | registerY.integerValue
     }

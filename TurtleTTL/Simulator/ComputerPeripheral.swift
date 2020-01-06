@@ -28,6 +28,10 @@ public class ComputerPeripheral: NSObject {
         // override in a subclass
     }
     
+    public func onPeripheralClock() {
+        // override in a subclass
+    }
+    
     public func valueOfXYPair() -> Int {
         return registerX.integerValue<<8 | registerY.integerValue
     }

@@ -184,6 +184,7 @@ LXY delay
 LINK
 JMP
 NOP
+NOP
 LI Y, 1 # Data Port
 LI U, 0
 LI V, 5

@@ -76,6 +76,7 @@ public class Computer: NSObject {
     public func step() {
         onControlClock()
         onRegisterClock()
+        peripherals.onPeripheralClock()
         logger?.append("-----")
     }
     

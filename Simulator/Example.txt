@@ -1,64 +1,66 @@
-# let kSerialInterface = 6
-# let kIORegister = 0
-# let kStatusRegister = 1
-
-
-# Increment the A register and count up from 0 to 42.
 LI A, 0
-countUpLoop:
-LI B, 1
-ADD A
-LI B, 42
-CMP
-LXY countUpLoop
-JNE
-NOP
-NOP
+LI B, 0
+LI D, 6 # The Serial Interface device
+LI X, 0
+LI Y, 0
+LI U, 0
+LI V, 0
 
 
-# First, setup a string in data RAM at address 100.
-LXY setupStringInMemory
+LXY serial_init
 LINK
 JMP
 NOP
 NOP
 
-# Second, setup the address registers to prepare for the copy.
-LI D, 6 # kSerialInterface
-LI X, 0
-LI Y, 0 # kIORegister
-LI U, 0
-LI V, 100
+LI A, 'r'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
 
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
-MOV P, M
-INUV
+LI A, 'e'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
 
+LI A, 'a'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 'd'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 'y'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, '.'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 10
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
 
 
 # Now, we enter a loop where we wait for serial input and then echo it to
@@ -66,62 +68,82 @@ INUV
 
 beginningOfInputLoop:
 
-LXY waitForInput
+waitForInput:
+LXY serial_get_number_available_bytes
 LINK
 JMP
 NOP
 NOP
+LI B, 0
+CMP
+LXY waitForInput
+JE
+NOP
+NOP
 
 # Read a byte and echo it back.
-LI D, 6 # kSerialInterface
-LI Y, 0 # kIORegister
-MOV A, P
+LXY serial_get
+LINK
+JMP # The return value is in "A".
 NOP
-MOV P, A
+NOP
+
+LXY serial_put # The parameter is in "A".
+LINK
+JMP
+NOP
 NOP
 
 LXY beginningOfInputLoop
 JMP
 NOP
 NOP
-HLT
+
+HLT # unreachable
 
 
 
-# This is a function to copy a string from instruction memory to data RAM at
-# address 100.
-setupStringInMemory:
+
+
+serial_init:
+
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
 LI U, 0
-LI V, 100
-LI M, 'H'
-INUV
-LI M, 'e'
-INUV
-LI M, 'l'
-INUV
-LI M, 'l'
-INUV
-LI M, 'o'
-INUV
-LI M, ','
-INUV
-LI M, ' '
-INUV
-LI M, 'W'
-INUV
-LI M, 'o'
-INUV
-LI M, 'r'
-INUV
-LI M, 'l'
-INUV
-LI M, 'd'
-INUV
-LI M, '!'
-INUV
-LI M, 10
-MOV X, G
-MOV Y, H
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
+LI D, 6 # The Serial Interface device
+LI Y, 1 # Data Port
+LI P, 0 # Reset Command
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 1 # Data Port
+MOV A, P # Store the status in A
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
+INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -129,23 +151,185 @@ NOP
 
 
 
-# This is a function which waits until the number of available bytes is greater
-# than zero and then returns to caller.
-# The return address is stored in the Link register upon entering the function.
-waitForInput:
-LI D, 6 # kSerialInterface
-LI Y, 1 # kStatusRegister
-MOV B, P
-LI A, 1
-CMP
-LXY waitForInput
-JC
+
+serial_put:
+
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
+# The A register contains the character to output.
+# Copy it into memory at address 5.
+LI U, 0
+LI V, 5
+MOV M, A
+
+LI D, 6 # The Serial Interface device
+LI Y, 1 # Data Port
+LI P, 1 # Put Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 1 # Data Port
+LI U, 0
+LI V, 5
+MOV P, M # Retrieve the byte from address 5 and pass it to the serial device.
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
 NOP
 NOP
 
-# Return from the function.
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
+INXY # Must adjust the return address.
+JMP
+NOP
+NOP
+
+
+
+
+
+serial_get:
+
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
+LI Y, 1 # Data Port
+LI P, 2 # "Get" Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI U, 0
+LI V, 5
+MOV M, P # Store the input byte in memory at address 5.
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+
+# Set the return value in "A".
+LI U, 0
+LI V, 5
+MOV A, M
+
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
+INXY # Must adjust the return address.
+JMP
+NOP
+NOP
+
+
+
+
+
+serial_get_number_available_bytes:
+
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
+LI D, 6 # kSerialInterface
+LI Y, 1 # Data Port
+LI P, 3 # "Get Number of Bytes" Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI U, 0
+LI V, 5
+MOV M, P # Store the number of available bytes in memory at address 5.
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+
+# Set the return value in "A".
+LI U, 0
+LI V, 5
+MOV A, M
+
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
+INXY # Must adjust the return address.
+JMP
+NOP
+NOP
+
+
+
+
+
+# We only require a single clock cycle delay in the Simulator.
+# However, this delay should be a few milliseconds on real hardware.
+delay:
+
 MOV X, G
 MOV Y, H
+INXY # Must adjust the return address.
 JMP
 NOP
 NOP

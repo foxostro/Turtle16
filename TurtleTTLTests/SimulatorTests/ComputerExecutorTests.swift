@@ -19,7 +19,7 @@ class ComputerExecutorTests: XCTestCase {
         return frontEnd.instructions
     }
     
-    func makeComputer() -> ComputerRev1 {
+    func makeComputer() -> Computer {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         

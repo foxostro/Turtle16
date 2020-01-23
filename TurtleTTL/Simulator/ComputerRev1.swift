@@ -9,7 +9,7 @@
 import Cocoa
 
 // Simulates the behavior of the TurtleTTL hardware.
-public class ComputerRev1: NSObject {
+public class ComputerRev1: NSObject, Computer {
     public var bus = Register()
     public var registerA = Register()
     public var registerB = Register()

@@ -10,7 +10,7 @@ import Cocoa
 
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
-    public var computer:ComputerRev1!
+    public var computer:Computer!
     public var onStep:()->Void = {}
     public var didStart:()->Void = {}
     public var didStop:()->Void = {}

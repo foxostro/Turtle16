@@ -1,5 +1,5 @@
 //
-//  ComputerTests.swift
+//  ComputerRev1Tests.swift
 //  SimulatorTests
 //
 //  Created by Andrew Fox on 7/27/19.
@@ -9,8 +9,8 @@
 import XCTest
 import TurtleTTL
 
-class ComputerTests: XCTestCase {
-    let isVerboseLogging = true
+class ComputerRev1Tests: XCTestCase {
+    let isVerboseLogging = false
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
@@ -21,8 +21,8 @@ class ComputerTests: XCTestCase {
         }
     }
     
-    func makeComputer() -> Computer {
-        let computer = Computer()
+    func makeComputer() -> ComputerRev1 {
+        let computer = ComputerRev1()
         computer.logger = isVerboseLogging ? ConsoleLogger() : nil
         return computer
     }
@@ -1708,14 +1708,14 @@ class ComputerTests: XCTestCase {
     }
     
     func testMethodToIncrementXY() {
-        let computer = Computer()
+        let computer = ComputerRev1()
         computer.incrementXY()
         XCTAssertEqual(computer.registerX.value, 0)
         XCTAssertEqual(computer.registerY.value, 1)
     }
     
     func testMethodToIncrementXY_CarryFromYToX() {
-        let computer = Computer()
+        let computer = ComputerRev1()
         computer.registerY = Register(withValue: 255)
         computer.incrementXY()
         XCTAssertEqual(computer.registerX.value, 1)
@@ -1723,7 +1723,7 @@ class ComputerTests: XCTestCase {
     }
     
     func testMethodToIncrementXY_Overflow() {
-        let computer = Computer()
+        let computer = ComputerRev1()
         computer.registerX = Register(withValue: 255)
         computer.registerY = Register(withValue: 255)
         computer.incrementXY()
@@ -1732,14 +1732,14 @@ class ComputerTests: XCTestCase {
     }
     
     func testMethodToIncrementUV() {
-        let computer = Computer()
+        let computer = ComputerRev1()
         computer.incrementUV()
         XCTAssertEqual(computer.registerU.value, 0)
         XCTAssertEqual(computer.registerV.value, 1)
     }
     
     func testMethodToIncrementUV_CarryFromVToU() {
-        let computer = Computer()
+        let computer = ComputerRev1()
         computer.registerV = Register(withValue: 255)
         computer.incrementUV()
         XCTAssertEqual(computer.registerU.value, 1)
@@ -1747,7 +1747,7 @@ class ComputerTests: XCTestCase {
     }
     
     func testMethodToIncrementUV_Overflow() {
-        let computer = Computer()
+        let computer = ComputerRev1()
         computer.registerU = Register(withValue: 255)
         computer.registerV = Register(withValue: 255)
         computer.incrementUV()

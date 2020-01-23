@@ -1,5 +1,5 @@
 //
-//  Computer.swift
+//  ComputerRev1.swift
 //  Simulator
 //
 //  Created by Andrew Fox on 7/27/19.
@@ -9,7 +9,7 @@
 import Cocoa
 
 // Simulates the behavior of the TurtleTTL hardware.
-public class Computer: NSObject {
+public class ComputerRev1: NSObject {
     public var bus = Register()
     public var registerA = Register()
     public var registerB = Register()

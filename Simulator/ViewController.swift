@@ -10,7 +10,7 @@ import Cocoa
 import TurtleTTL
 
 class ViewController: NSViewController {
-    @IBOutlet var computer:Computer!
+    @IBOutlet var computer:ComputerRev1!
     @IBOutlet var registerA:NSTextField!
     @IBOutlet var registerB:NSTextField!
     @IBOutlet var registerC:NSTextField!

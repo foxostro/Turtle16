@@ -45,7 +45,7 @@ class ViewController: NSViewController {
     
     func setupExecutor() {
         executor.computer = ComputerRev1()
-//        executor.logger = logger
+        disableEventLog()
         executor.provideMicrocode(microcode: microcodeGenerator.microcode)
         executor.provideInstructions(generateExampleProgram())
         
@@ -124,11 +124,21 @@ class ViewController: NSViewController {
     }
 
     @IBAction func step(_ sender: Any) {
+        enableEventLog()
         executor.step()
     }
     
     @IBAction func runOrStop(_ sender: Any) {
+        var shouldEnableEventLog = false
+        if stepButton.isEnabled {
+            disableEventLog()
+        } else {
+            shouldEnableEventLog = true
+        }
         executor.runOrStop()
+        if shouldEnableEventLog {
+            enableEventLog()
+        }
     }
     
     @IBAction func reset(_ sender: Any) {
@@ -238,5 +248,15 @@ class ViewController: NSViewController {
         let bytes = Array(serialInput.stringValue.appending("\n").utf8)
         executor.provideSerialInput(bytes: bytes)
         serialInput.stringValue = ""
+    }
+    
+    func disableEventLog() {
+        executor.logger = nil
+        eventLog.textColor = NSColor.disabledControlTextColor
+    }
+    
+    func enableEventLog() {
+        executor.logger = logger
+        eventLog.textColor = NSColor.controlTextColor
     }
 }

@@ -95,7 +95,7 @@ public class ComputerExecutor: NSObject {
             }
             semaGoSignal.signal()
         } else {
-           numberOfInstructionsRemaining = 0
+            numberOfInstructionsRemaining = 0
         }
     }
     

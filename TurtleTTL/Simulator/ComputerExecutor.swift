@@ -62,7 +62,7 @@ public class ComputerExecutor: NSObject, Computer {
     
     public var computer:Computer!
     public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in}
-    public var onUpdatedSerialOutput:(String)->Void = {_ in}
+    public var appendSerialOutput:(String)->Void = {_ in}
     public var didStart:()->Void = {}
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
@@ -101,7 +101,7 @@ public class ComputerExecutor: NSObject, Computer {
         isHalted = false
         isExecuting = false
         reset()
-        computer.onUpdatedSerialOutput = onUpdatedSerialOutput
+        computer.appendSerialOutput = appendSerialOutput
         
         timer = Timer.scheduledTimer(withTimeInterval: 0, repeats: true, block: {timer in
             self.tick()

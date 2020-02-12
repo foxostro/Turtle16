@@ -77,7 +77,7 @@ class ViewController: NSViewController {
             self.logger.clear()
         }
         
-        executor.beginTimer()
+        executor.start()
     }
     
     func generateExampleProgram() -> [Instruction] {

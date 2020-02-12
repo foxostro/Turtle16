@@ -9,55 +9,60 @@
 import Cocoa
 
 // Executes a simulation on a background thread.
-public class ComputerExecutor: NSObject, Computer {
+public class ComputerExecutor: NSObject {
     public var logger: Logger? {
         get {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
             return computer.logger
         }
         set(value) {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
             computer.logger = value
         }
     }
     
-    public var controlWord: ControlWord {
-        get {
-            return computer.controlWord
-        }
-        set(value) {
-            computer.controlWord = value
-        }
-    }
-    
     public func provideMicrocode(microcode: InstructionDecoder) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         computer.provideMicrocode(microcode: microcode)
     }
     
     public func loadMicrocode(from url: URL) throws {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         try computer.loadMicrocode(from: url)
     }
     
     public func saveMicrocode(to url: URL) throws {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         try computer.saveMicrocode(to: url)
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         computer.provideInstructions(instructions)
     }
     
     public func loadProgram(from url: URL) throws {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         try computer.loadProgram(from: url)
     }
     
     public func saveProgram(to url: URL) throws {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         try computer.saveProgram(to: url)
     }
     
     public func provideSerialInput(bytes: [UInt8]) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         computer.provideSerialInput(bytes: bytes)
-    }
-    
-    public var cpuState: CPUStateSnapshot {
-        return computer.cpuState
     }
     
     public var computer:Computer!
@@ -67,66 +72,98 @@ public class ComputerExecutor: NSObject, Computer {
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
     public var didReset:()->Void = {}
-    var timer: Timer? = nil
     
-    public var isExecuting = false {
-        didSet {
-            if (isExecuting) {
-                didStart()
-            } else {
-                didStop()
-            }
-        }
-    }
-    
-    public var isHalted = false {
-        didSet {
-            isExecuting = false
-            if (isHalted) {
-                didHalt()
-            }
-        }
-    }
+    var thread: Thread!
+    let semaCancellationComplete = DispatchSemaphore(value: 0)
+    let semaGoSignal = DispatchSemaphore(value: 0)
+    var numberOfInstructionsRemaining = 0
     
     public func step() {
-        computer.step()
-        onUpdatedCPUState(computer.cpuState)
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        numberOfInstructionsRemaining = 1
+        semaGoSignal.signal()
     }
     
     public func runOrStop() {
-        isExecuting = !isExecuting
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        if numberOfInstructionsRemaining == 0 {
+            numberOfInstructionsRemaining = -1
+            DispatchQueue.main.async {
+                self.didStart()
+            }
+            semaGoSignal.signal()
+        } else {
+           numberOfInstructionsRemaining = 0
+        }
     }
     
-    public func beginTimer() {
-        isHalted = false
-        isExecuting = false
+    public func start() {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
         reset()
-        computer.appendSerialOutput = appendSerialOutput
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 0, repeats: true, block: {timer in
-            self.tick()
+        computer.appendSerialOutput = {(aString: String) in
+            DispatchQueue.main.async {
+                self.appendSerialOutput(aString)
+            }
+        }
+        thread = Thread(block: {
+            self.run()
         })
+        thread.start()
+    }
+    
+    @objc func run() {
+        while !thread.isCancelled {
+            objc_sync_enter(self)
+            
+            if (numberOfInstructionsRemaining == 0) {
+                DispatchQueue.main.async {
+                    self.didStop()
+                }
+                objc_sync_exit(self)
+                semaGoSignal.wait()
+                objc_sync_enter(self)
+            }
+            else if (.active == computer.controlWord.HLT) {
+                DispatchQueue.main.async {
+                    self.didHalt()
+                }
+                objc_sync_exit(self)
+                semaGoSignal.wait()
+                objc_sync_enter(self)
+            }
+            else if numberOfInstructionsRemaining != 0 {
+                if numberOfInstructionsRemaining > 0 {
+                    numberOfInstructionsRemaining -= 1
+                }
+                computer.step()
+                let cpuState = self.computer.cpuState
+                DispatchQueue.main.async {
+                    self.onUpdatedCPUState(cpuState)
+                }
+            }
+            
+            objc_sync_exit(self)
+        }
+        semaCancellationComplete.signal()
     }
     
     public func shutdown() {
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    public func tick() {
-        if (.active == computer.controlWord.HLT) {
-            isHalted = true
-        }
-        
-        if (isExecuting) {
-            step()
-        }
+        thread.cancel()
+        semaCancellationComplete.wait()
     }
     
     public func reset() {
-        isHalted = false
-        isExecuting = false
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        numberOfInstructionsRemaining = 0
         computer.reset()
-        didReset()
+        let cpuState = computer.cpuState
+        DispatchQueue.main.async {
+            self.onUpdatedCPUState(cpuState)
+            self.didReset()
+        }
     }
 }

@@ -25,20 +25,6 @@ public protocol Computer {
     
     func provideSerialInput(bytes: [UInt8]) -> Void
     
-    func modifyRegisterA(withString s: String) -> Void
-    func modifyRegisterB(withString s: String) -> Void
-    func modifyRegisterC(withString s: String) -> Void
-    func modifyRegisterD(withString s: String) -> Void
-    func modifyRegisterG(withString s: String) -> Void
-    func modifyRegisterH(withString s: String) -> Void
-    func modifyRegisterU(withString s: String) -> Void
-    func modifyRegisterV(withString s: String) -> Void
-    func modifyRegisterX(withString s: String) -> Void
-    func modifyRegisterY(withString s: String) -> Void
-    func modifyPC(withString s: String) -> Void
-    func modifyPCIF(withString s: String) -> Void
-    func modifyIFID(withString s: String) -> Void
-    
     func describeRegisterA() -> String
     func describeRegisterB() -> String
     func describeRegisterC() -> String

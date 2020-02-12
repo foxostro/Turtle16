@@ -477,72 +477,25 @@ public class ComputerRev1: NSObject, Computer {
         instructionROM = rom
     }
     
-    public func describeRegisterA() -> String {
-        return registerA.description
-    }
-    
-    public func describeRegisterB() -> String {
-        return registerB.description
-    }
-    
-    public func describeRegisterC() -> String {
-        return registerC.description
-    }
-    
-    public func describeRegisterD() -> String {
-        return registerD.description
-    }
-    
-    public func describeRegisterG() -> String {
-        return registerG.description
-    }
-    
-    public func describeRegisterH() -> String {
-        return registerH.description
-    }
-    
-    public func describeRegisterU() -> String {
-        return registerU.description
-    }
-    
-    public func describeRegisterV() -> String {
-        return registerV.description
-    }
-    
-    public func describeRegisterX() -> String {
-        return registerX.description
-    }
-    
-    public func describeRegisterY() -> String {
-        return registerY.description
-    }
-    
-    public func describeALUResult() -> String {
-        return aluResult.description
-    }
-    
-    public func describeControlWord() -> String {
-        return controlWord.stringValue
-    }
-    
-    public func describeControlSignals() -> String {
-        return controlWord.description
-    }
-    
-    public func describePC() -> String {
-        return pc.description
-    }
-    
-    public func describePCIF() -> String {
-        return pc_if.description
-    }
-    
-    public func describeIFID() -> String {
-        return if_id.description
-    }
-    
-    public func describeBus() -> String {
-        return bus.description
+    public var cpuState: CPUStateSnapshot {
+        return CPUStateSnapshot(bus: bus,
+                                registerA: registerA,
+                                registerB: registerB,
+                                registerC: registerC,
+                                registerD: registerD,
+                                registerG: registerG, // LinkHi
+                                registerH: registerH, // LinkLo
+                                registerX: registerX,
+                                registerY: registerY,
+                                registerU: registerU,
+                                registerV: registerV,
+                                aluResult: aluResult,
+                                aluFlags: aluFlags,
+                                flags: flags,
+                                pc: pc,
+                                pc_if: pc_if,
+                                if_id: if_id,
+                                controlWord:controlWord)
     }
     
     public func provideSerialInput(bytes: [UInt8]) {

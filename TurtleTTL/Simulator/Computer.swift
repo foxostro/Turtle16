@@ -25,22 +25,7 @@ public protocol Computer {
     
     func provideSerialInput(bytes: [UInt8]) -> Void
     
-    func describeRegisterA() -> String
-    func describeRegisterB() -> String
-    func describeRegisterC() -> String
-    func describeRegisterD() -> String
-    func describeRegisterG() -> String
-    func describeRegisterH() -> String
-    func describeRegisterU() -> String
-    func describeRegisterV() -> String
-    func describeRegisterX() -> String
-    func describeRegisterY() -> String
-    func describePC() -> String
-    func describePCIF() -> String
-    func describeIFID() -> String
-    func describeBus() -> String
-    func describeALUResult() -> String
-    func describeControlWord() -> String
-    func describeControlSignals() -> String
+    var cpuState: CPUStateSnapshot { get }
+    
     func describeSerialOutput() -> String
 }

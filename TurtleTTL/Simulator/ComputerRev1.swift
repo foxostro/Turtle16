@@ -43,6 +43,14 @@ public class ComputerRev1: NSObject, Computer {
             peripherals.logger = newLogger
         }
     }
+    public var onUpdatedSerialOutput:(String)->Void {
+        get {
+            return peripherals.getSerialInterface().onUpdatedSerialOutput
+        }
+        set(fn) {
+            peripherals.getSerialInterface().onUpdatedSerialOutput = fn
+        }
+    }
     var peripherals = ComputerPeripherals()
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
@@ -500,10 +508,6 @@ public class ComputerRev1: NSObject, Computer {
     
     public func provideSerialInput(bytes: [UInt8]) {
         peripherals.getSerialInterface().provideSerialInput(bytes: bytes)
-    }
-    
-    public func describeSerialOutput() -> String {
-        return peripherals.getSerialInterface().describeSerialOutput()
     }
     
     func valueOfXYPair() -> Int {

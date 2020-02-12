@@ -17,16 +17,20 @@ class TextViewLogger: NSObject, Logger {
     }
     
     func append(_ format: String, _ args: CVarArg...) {
-        if let display = textView.textStorage?.mutableString {
-            let message = String(format:format, arguments:args)
-            display.append(message + "\n")
-            textView.scrollToEndOfDocument(self)
+        let line = String(format:format, arguments:args)
+        DispatchQueue.main.async {
+            if let textStorage = self.textView.textStorage {
+                textStorage.mutableString.append(line + "\n")
+                self.textView.scrollToEndOfDocument(self)
+            }
         }
     }
     
     func clear() {
-        if let display = textView.textStorage?.mutableString {
-            display.setString("")
+        DispatchQueue.main.async {
+            if let textStorage = self.textView.textStorage {
+                textStorage.mutableString.setString("")
+            }
         }
     }
 }

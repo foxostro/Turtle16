@@ -9,6 +9,8 @@
 import Cocoa
 
 public class SerialInterfacePeripheral: ComputerPeripheral {
+    public var onUpdatedSerialOutput:(String)->Void = {_ in}
+    
     public let kDataRegister: UInt16 = 1
     public let kControlRegister: UInt16 = 0
     
@@ -181,6 +183,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
     
     func doStateWaiting(mosi: UInt8) -> UInt8 {
         serialOutput.append(mosi)
+        onUpdatedSerialOutput(describeSerialOutput())
         outputBuffer = kStatusSuccess
         return kStateIdle
     }

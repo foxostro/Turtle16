@@ -49,8 +49,12 @@ class ViewController: NSViewController {
         executor.provideMicrocode(microcode: microcodeGenerator.microcode)
         executor.provideInstructions(generateExampleProgram())
         
-        executor.onStep = {
-            self.refresh()
+        executor.onUpdatedCPUState = {(cpuState: CPUStateSnapshot) -> Void in
+            self.updateCPUState(cpuState)
+        }
+        
+        executor.onUpdatedSerialOutput = {(aString: String) -> Void in
+            self.updateSerialOutput(aString)
         }
         
         executor.didStart = {
@@ -71,7 +75,6 @@ class ViewController: NSViewController {
             self.stepButton.isEnabled = true
             self.runButton.isEnabled = true
             self.logger.clear()
-            self.refresh()
         }
         
         executor.beginTimer()
@@ -131,10 +134,8 @@ class ViewController: NSViewController {
     @IBAction func reset(_ sender: Any) {
         executor.reset()
     }
-    
-    func refresh() {
-        let cpuState = executor.cpuState
         
+    func updateCPUState(_ cpuState: CPUStateSnapshot) {
         registerA.stringValue = cpuState.registerA.description
         registerB.stringValue = cpuState.registerB.description
         registerC.stringValue = cpuState.registerC.description
@@ -151,9 +152,11 @@ class ViewController: NSViewController {
         programCounter.stringValue = cpuState.pc.description
         if_id.stringValue = cpuState.if_id.description
         bus.stringValue = cpuState.bus.description
+    }
         
+    func updateSerialOutput(_ aString: String) {
         if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
-            serialOutputDisplay.setString(executor.describeSerialOutput())
+            serialOutputDisplay.setString(aString)
             serialOutput.scrollToEndOfDocument(self)
         }
     }

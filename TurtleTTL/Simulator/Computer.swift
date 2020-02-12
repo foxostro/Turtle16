@@ -11,6 +11,7 @@ import Cocoa
 public protocol Computer {
     var logger: Logger? { get set }
     var controlWord: ControlWord { get set }
+    var cpuState: CPUStateSnapshot { get }
     
     func step() -> Void
     func reset() -> Void
@@ -25,7 +26,5 @@ public protocol Computer {
     
     func provideSerialInput(bytes: [UInt8]) -> Void
     
-    var cpuState: CPUStateSnapshot { get }
-    
-    func describeSerialOutput() -> String
+    var onUpdatedSerialOutput:(String)->Void { get set }
 }

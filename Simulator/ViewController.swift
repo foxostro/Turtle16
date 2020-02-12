@@ -133,22 +133,24 @@ class ViewController: NSViewController {
     }
     
     func refresh() {
-        registerA.stringValue = executor.describeRegisterA()
-        registerB.stringValue = executor.describeRegisterB()
-        registerC.stringValue = executor.describeRegisterC()
-        registerD.stringValue = executor.describeRegisterD()
-        registerG.stringValue = executor.describeRegisterG()
-        registerH.stringValue = executor.describeRegisterH()
-        registerU.stringValue = executor.describeRegisterU()
-        registerV.stringValue = executor.describeRegisterV()
-        registerX.stringValue = executor.describeRegisterX()
-        registerY.stringValue = executor.describeRegisterY()
-        aluResult.stringValue = executor.describeALUResult()
-        controlWord.stringValue = executor.describeControlWord()
-        controlSignals.stringValue = executor.describeControlSignals()
-        programCounter.stringValue = executor.describePC()
-        if_id.stringValue = executor.describeIFID()
-        bus.stringValue = executor.describeBus()
+        let cpuState = executor.cpuState
+        
+        registerA.stringValue = cpuState.registerA.description
+        registerB.stringValue = cpuState.registerB.description
+        registerC.stringValue = cpuState.registerC.description
+        registerD.stringValue = cpuState.registerD.description
+        registerG.stringValue = cpuState.registerG.description
+        registerH.stringValue = cpuState.registerH.description
+        registerU.stringValue = cpuState.registerU.description
+        registerV.stringValue = cpuState.registerV.description
+        registerX.stringValue = cpuState.registerX.description
+        registerY.stringValue = cpuState.registerY.description
+        aluResult.stringValue = cpuState.aluResult.description
+        controlWord.stringValue = cpuState.controlWord.stringValue
+        controlSignals.stringValue = cpuState.controlWord.description
+        programCounter.stringValue = cpuState.pc.description
+        if_id.stringValue = cpuState.if_id.description
+        bus.stringValue = cpuState.bus.description
         
         if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
             serialOutputDisplay.setString(executor.describeSerialOutput())

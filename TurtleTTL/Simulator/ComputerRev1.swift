@@ -43,12 +43,12 @@ public class ComputerRev1: NSObject, Computer {
             peripherals.logger = newLogger
         }
     }
-    public var onUpdatedSerialOutput:(String)->Void {
+    public var appendSerialOutput:(String)->Void {
         get {
-            return peripherals.getSerialInterface().onUpdatedSerialOutput
+            return peripherals.getSerialInterface().appendSerialOutput
         }
         set(fn) {
-            peripherals.getSerialInterface().onUpdatedSerialOutput = fn
+            peripherals.getSerialInterface().appendSerialOutput = fn
         }
     }
     var peripherals = ComputerPeripherals()

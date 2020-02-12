@@ -9,7 +9,7 @@
 import Cocoa
 
 public class SerialInterfacePeripheral: ComputerPeripheral {
-    public var onUpdatedSerialOutput:(String)->Void = {_ in}
+    public var appendSerialOutput:(String)->Void = {_ in}
     
     public let kDataRegister: UInt16 = 1
     public let kControlRegister: UInt16 = 0
@@ -49,14 +49,6 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
     
     public func provideSerialInput(bytes: [UInt8]) {
         serialInput += bytes
-    }
-    
-    public func describeSerialOutput() -> String {
-        var result = ""
-        for byte in serialOutput {
-            result += String(bytes: [byte], encoding: .utf8) ?? "�"
-        }
-        return result
     }
 
     public init() {
@@ -183,7 +175,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
     
     func doStateWaiting(mosi: UInt8) -> UInt8 {
         serialOutput.append(mosi)
-        onUpdatedSerialOutput(describeSerialOutput())
+        appendSerialOutput(String(bytes: [mosi], encoding: .utf8) ?? "�")
         outputBuffer = kStatusSuccess
         return kStateIdle
     }

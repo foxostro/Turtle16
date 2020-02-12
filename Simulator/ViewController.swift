@@ -45,7 +45,7 @@ class ViewController: NSViewController {
     
     func setupExecutor() {
         executor.computer = ComputerRev1()
-        executor.logger = logger
+//        executor.logger = logger
         executor.provideMicrocode(microcode: microcodeGenerator.microcode)
         executor.provideInstructions(generateExampleProgram())
         
@@ -132,6 +132,9 @@ class ViewController: NSViewController {
     }
     
     @IBAction func reset(_ sender: Any) {
+        if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
+            serialOutputDisplay.setString("")
+        }
         executor.reset()
     }
         

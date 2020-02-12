@@ -103,11 +103,6 @@ public class ComputerExecutor: NSObject {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
         reset()
-        computer.appendSerialOutput = {(aString: String) in
-            DispatchQueue.main.async {
-                self.appendSerialOutput(aString)
-            }
-        }
         thread = Thread(block: {
             self.run()
         })
@@ -159,6 +154,11 @@ public class ComputerExecutor: NSObject {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
         numberOfInstructionsRemaining = 0
+        computer.appendSerialOutput = {(aString: String) in
+            DispatchQueue.main.async {
+                self.appendSerialOutput(aString)
+            }
+        }
         computer.reset()
         let cpuState = computer.cpuState
         DispatchQueue.main.async {

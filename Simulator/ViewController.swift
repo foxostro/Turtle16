@@ -10,7 +10,6 @@ import Cocoa
 import TurtleTTL
 
 class ViewController: NSViewController {
-    var computer:Computer! = ComputerRev1()
     @IBOutlet var registerA:NSTextField!
     @IBOutlet var registerB:NSTextField!
     @IBOutlet var registerC:NSTextField!
@@ -39,16 +38,43 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupLogger()
+        logger = TextViewLogger(textView: eventLog)
         microcodeGenerator.generate()
-        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.provideInstructions(generateExampleProgram())
         setupExecutor()
     }
     
-    func setupLogger() {
-        logger = TextViewLogger(textView: eventLog)
-        computer.logger = logger
+    func setupExecutor() {
+        executor.computer = ComputerRev1()
+        executor.logger = logger
+        executor.provideMicrocode(microcode: microcodeGenerator.microcode)
+        executor.provideInstructions(generateExampleProgram())
+        
+        executor.onStep = {
+            self.refresh()
+        }
+        
+        executor.didStart = {
+            self.makeStopButtonAvailable()
+        }
+        
+        executor.didStop = {
+            self.makeRunButtonAvailable()
+        }
+        
+        executor.didHalt = {
+            self.stepButton.isEnabled = false
+            self.runButton.isEnabled = false
+        }
+        
+        executor.didReset = {
+            self.makeRunButtonAvailable()
+            self.stepButton.isEnabled = true
+            self.runButton.isEnabled = true
+            self.logger.clear()
+            self.refresh()
+        }
+        
+        executor.beginTimer()
     }
     
     func generateExampleProgram() -> [Instruction] {
@@ -80,33 +106,6 @@ class ViewController: NSViewController {
         return ""
     }
     
-    func setupExecutor() {
-        executor.computer = computer
-        
-        executor.onStep = {
-            self.refresh()
-        }
-        executor.didStart = {
-            self.makeStopButtonAvailable()
-        }
-        executor.didStop = {
-            self.makeRunButtonAvailable()
-        }
-        executor.didHalt = {
-            self.stepButton.isEnabled = false
-            self.runButton.isEnabled = false
-        }
-        executor.didReset = {
-            self.makeRunButtonAvailable()
-            self.stepButton.isEnabled = true
-            self.runButton.isEnabled = true
-            self.logger.clear()
-            self.refresh()
-        }
-        
-        executor.beginTimer()
-    }
-    
     func makeRunButtonAvailable() {
         stepButton.isEnabled = true
         runButton.title = "Run"
@@ -134,25 +133,25 @@ class ViewController: NSViewController {
     }
     
     func refresh() {
-        registerA.stringValue = computer.describeRegisterA()
-        registerB.stringValue = computer.describeRegisterB()
-        registerC.stringValue = computer.describeRegisterC()
-        registerD.stringValue = computer.describeRegisterD()
-        registerG.stringValue = computer.describeRegisterG()
-        registerH.stringValue = computer.describeRegisterH()
-        registerU.stringValue = computer.describeRegisterU()
-        registerV.stringValue = computer.describeRegisterV()
-        registerX.stringValue = computer.describeRegisterX()
-        registerY.stringValue = computer.describeRegisterY()
-        aluResult.stringValue = computer.describeALUResult()
-        controlWord.stringValue = computer.describeControlWord()
-        controlSignals.stringValue = computer.describeControlSignals()
-        programCounter.stringValue = computer.describePC()
-        if_id.stringValue = computer.describeIFID()
-        bus.stringValue = computer.describeBus()
+        registerA.stringValue = executor.describeRegisterA()
+        registerB.stringValue = executor.describeRegisterB()
+        registerC.stringValue = executor.describeRegisterC()
+        registerD.stringValue = executor.describeRegisterD()
+        registerG.stringValue = executor.describeRegisterG()
+        registerH.stringValue = executor.describeRegisterH()
+        registerU.stringValue = executor.describeRegisterU()
+        registerV.stringValue = executor.describeRegisterV()
+        registerX.stringValue = executor.describeRegisterX()
+        registerY.stringValue = executor.describeRegisterY()
+        aluResult.stringValue = executor.describeALUResult()
+        controlWord.stringValue = executor.describeControlWord()
+        controlSignals.stringValue = executor.describeControlSignals()
+        programCounter.stringValue = executor.describePC()
+        if_id.stringValue = executor.describeIFID()
+        bus.stringValue = executor.describeBus()
         
         if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
-            serialOutputDisplay.setString(computer.describeSerialOutput())
+            serialOutputDisplay.setString(executor.describeSerialOutput())
             serialOutput.scrollToEndOfDocument(self)
         }
     }
@@ -166,7 +165,7 @@ class ViewController: NSViewController {
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
                     do {
-                        try self.computer.saveMicrocode(to: url)
+                        try self.executor.saveMicrocode(to: url)
                     } catch {
                         NSAlert(error: error).runModal()
                     }
@@ -183,7 +182,7 @@ class ViewController: NSViewController {
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
                     do {
-                        try self.computer.loadMicrocode(from: url)
+                        try self.executor.loadMicrocode(from: url)
                     } catch {
                         NSAlert(error: error).runModal()
                     }
@@ -201,7 +200,7 @@ class ViewController: NSViewController {
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
                     do {
-                        try self.computer.saveProgram(to: url)
+                        try self.executor.saveProgram(to: url)
                     } catch {
                         NSAlert(error: error).runModal()
                     }
@@ -218,7 +217,7 @@ class ViewController: NSViewController {
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
                     do {
-                        try self.computer.loadProgram(from: url)
+                        try self.executor.loadProgram(from: url)
                     } catch {
                         NSAlert(error: error).runModal()
                     }
@@ -229,7 +228,7 @@ class ViewController: NSViewController {
     
     @IBAction func provideSerialInput(sender: Any?) {
         let bytes = Array(serialInput.stringValue.appending("\n").utf8)
-        computer.provideSerialInput(bytes: bytes)
+        executor.provideSerialInput(bytes: bytes)
         serialInput.stringValue = ""
     }
 }

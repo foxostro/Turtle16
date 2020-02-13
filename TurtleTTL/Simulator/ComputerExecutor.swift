@@ -34,7 +34,7 @@ class ThrottledQueue {
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
     let cpuUpdateQueue: ThrottledQueue
-//    let serialOutputUpdateQueue: ThrottledQueue
+    let serialOutputUpdateQueue: ThrottledQueue
     
     public var logger: Logger? {
         get {
@@ -50,8 +50,8 @@ public class ComputerExecutor: NSObject {
     }
     
     public override init() {
-        cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 0.1)
-//        serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 0.1)
+        cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
+        serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
@@ -98,7 +98,7 @@ public class ComputerExecutor: NSObject {
     
     public var computer:Computer!
     public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in}
-    public var appendSerialOutput:(String)->Void = {_ in}
+    public var didUpdateSerialOutput:(String)->Void = {_ in}
     public var didStart:()->Void = {}
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
@@ -174,9 +174,9 @@ public class ComputerExecutor: NSObject {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
         numberOfInstructionsRemaining = 0
-        computer.appendSerialOutput = {(aString: String) in
-            DispatchQueue.main.async {
-                self.appendSerialOutput(aString)
+        computer.didUpdateSerialOutput = {(aString: String) in
+            self.serialOutputUpdateQueue.async {
+                self.didUpdateSerialOutput(aString)
             }
         }
         computer.reset()

@@ -25,5 +25,5 @@ public protocol Computer {
     
     func provideSerialInput(bytes: [UInt8]) -> Void
     
-    var appendSerialOutput:(String)->Void { get set }
+    var didUpdateSerialOutput:(String)->Void { get set }
 }

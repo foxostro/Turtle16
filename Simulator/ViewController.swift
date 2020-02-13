@@ -53,8 +53,8 @@ class ViewController: NSViewController {
             self.updateCPUState(cpuState)
         }
         
-        executor.appendSerialOutput = {(aString: String) -> Void in
-            self.appendSerialOutput(aString)
+        executor.didUpdateSerialOutput = {(aString: String) -> Void in
+            self.didUpdateSerialOutput(aString)
         }
         
         executor.didStart = {
@@ -167,9 +167,9 @@ class ViewController: NSViewController {
         bus.stringValue = cpuState.bus.description
     }
         
-    func appendSerialOutput(_ aString: String) {
+    func didUpdateSerialOutput(_ aString: String) {
         if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
-            serialOutputDisplay.append(aString)
+            serialOutputDisplay.setString(aString)
             serialOutput.scrollToEndOfDocument(self)
         }
     }

@@ -43,7 +43,7 @@ public class ComputerRev1: NSObject, Computer {
             peripherals.logger = newLogger
         }
     }
-    public var appendSerialOutput:(String)->Void = {_ in}
+    public var didUpdateSerialOutput:(String)->Void = {_ in}
     var peripherals = ComputerPeripherals()
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
@@ -66,7 +66,7 @@ public class ComputerRev1: NSObject, Computer {
                              loadUpperInstructionRAM,
                              storeLowerInstructionRAM,
                              loadLowerInstructionRAM)
-        peripherals.getSerialInterface().appendSerialOutput = appendSerialOutput
+        peripherals.getSerialInterface().didUpdateSerialOutput = didUpdateSerialOutput
         
         bus = Register()
         pc = ProgramCounter()

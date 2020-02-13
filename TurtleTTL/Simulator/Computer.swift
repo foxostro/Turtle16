@@ -10,7 +10,6 @@ import Cocoa
 
 public protocol Computer {
     var logger: Logger? { get set }
-    var controlWord: ControlWord { get set }
     var cpuState: CPUStateSnapshot { get }
     
     func step() -> Void

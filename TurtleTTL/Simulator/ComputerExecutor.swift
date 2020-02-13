@@ -8,8 +8,34 @@
 
 import Cocoa
 
+class ThrottledQueue {
+    let queue: DispatchQueue
+    let maxInterval: Double
+    
+    var job: DispatchWorkItem = DispatchWorkItem(block: {})
+    var previousRun: Date = Date.distantPast
+    
+    init(queue: DispatchQueue, maxInterval: Double) {
+        self.queue = queue
+        self.maxInterval = maxInterval
+    }
+    
+    func async(block: @escaping () -> ()) {
+        job.cancel()
+        job = DispatchWorkItem(){ [weak self] in
+            self?.previousRun = Date()
+            block()
+        }
+        let delay = Date().timeIntervalSince(previousRun) > maxInterval ? 0 : maxInterval
+        queue.asyncAfter(deadline: .now() + Double(delay), execute: job)
+    }
+}
+
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
+    let cpuUpdateQueue: ThrottledQueue
+//    let serialOutputUpdateQueue: ThrottledQueue
+    
     public var logger: Logger? {
         get {
             objc_sync_enter(self)
@@ -21,6 +47,11 @@ public class ComputerExecutor: NSObject {
             defer { objc_sync_exit(self) }
             computer.logger = value
         }
+    }
+    
+    public override init() {
+        cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 0.1)
+//        serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 0.1)
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
@@ -90,9 +121,7 @@ public class ComputerExecutor: NSObject {
         defer { objc_sync_exit(self) }
         if numberOfInstructionsRemaining == 0 {
             numberOfInstructionsRemaining = -1
-            DispatchQueue.main.async {
-                self.didStart()
-            }
+            notifyDidStart()
             semaGoSignal.signal()
         } else {
             numberOfInstructionsRemaining = 0
@@ -103,20 +132,16 @@ public class ComputerExecutor: NSObject {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
         reset()
-        thread = Thread(block: {
-            self.run()
-        })
+        thread = Thread(block: { self.run() })
         thread.start()
     }
     
-    @objc func run() {
+    func run() {
         while !thread.isCancelled {
             objc_sync_enter(self)
             
             if (numberOfInstructionsRemaining == 0) {
-                DispatchQueue.main.async {
-                    self.didStop()
-                }
+                notifyDidStop()
                 objc_sync_exit(self)
                 semaGoSignal.wait()
                 objc_sync_enter(self)
@@ -126,14 +151,9 @@ public class ComputerExecutor: NSObject {
                     numberOfInstructionsRemaining -= 1
                 }
                 computer.step()
-                let cpuState = self.computer.cpuState
-                DispatchQueue.main.async {
-                    self.onUpdatedCPUState(cpuState)
-                }
+                let cpuState = publishCPUStateSnapshot()
                 if (.active == cpuState.controlWord.HLT) {
-                    DispatchQueue.main.async {
-                        self.didHalt()
-                    }
+                    notifyDidHalt()
                     objc_sync_exit(self)
                     semaGoSignal.wait()
                     objc_sync_enter(self)
@@ -160,10 +180,39 @@ public class ComputerExecutor: NSObject {
             }
         }
         computer.reset()
-        let cpuState = computer.cpuState
+        publishCPUStateSnapshot()
+        notifyDidReset()
+    }
+    
+    func notifyDidStart() {
         DispatchQueue.main.async {
-            self.onUpdatedCPUState(cpuState)
+            self.didStart()
+        }
+    }
+    
+    func notifyDidStop() {
+        DispatchQueue.main.async {
+            self.didStop()
+        }
+    }
+    
+    func notifyDidHalt() {
+        DispatchQueue.main.async {
+            self.didHalt()
+        }
+    }
+    
+    func notifyDidReset() {
+        DispatchQueue.main.async {
             self.didReset()
         }
+    }
+    
+    @discardableResult func publishCPUStateSnapshot() -> CPUStateSnapshot {
+        let cpuState = computer.cpuState
+        cpuUpdateQueue.async {
+            self.onUpdatedCPUState(cpuState)
+        }
+        return cpuState
     }
 }

@@ -121,14 +121,6 @@ public class ComputerExecutor: NSObject {
                 semaGoSignal.wait()
                 objc_sync_enter(self)
             }
-            else if (.active == computer.controlWord.HLT) {
-                DispatchQueue.main.async {
-                    self.didHalt()
-                }
-                objc_sync_exit(self)
-                semaGoSignal.wait()
-                objc_sync_enter(self)
-            }
             else if numberOfInstructionsRemaining != 0 {
                 if numberOfInstructionsRemaining > 0 {
                     numberOfInstructionsRemaining -= 1
@@ -137,6 +129,14 @@ public class ComputerExecutor: NSObject {
                 let cpuState = self.computer.cpuState
                 DispatchQueue.main.async {
                     self.onUpdatedCPUState(cpuState)
+                }
+                if (.active == cpuState.controlWord.HLT) {
+                    DispatchQueue.main.async {
+                        self.didHalt()
+                    }
+                    objc_sync_exit(self)
+                    semaGoSignal.wait()
+                    objc_sync_enter(self)
                 }
             }
             

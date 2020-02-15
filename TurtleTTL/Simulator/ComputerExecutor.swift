@@ -8,29 +8,6 @@
 
 import Cocoa
 
-class ThrottledQueue {
-    let queue: DispatchQueue
-    let maxInterval: Double
-    
-    var job: DispatchWorkItem = DispatchWorkItem(block: {})
-    var previousRun: Date = Date.distantPast
-    
-    init(queue: DispatchQueue, maxInterval: Double) {
-        self.queue = queue
-        self.maxInterval = maxInterval
-    }
-    
-    func async(block: @escaping () -> ()) {
-        job.cancel()
-        job = DispatchWorkItem(){ [weak self] in
-            self?.previousRun = Date()
-            block()
-        }
-        let delay = Date().timeIntervalSince(previousRun) > maxInterval ? 0 : maxInterval
-        queue.asyncAfter(deadline: .now() + Double(delay), execute: job)
-    }
-}
-
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
     let cpuUpdateQueue: ThrottledQueue

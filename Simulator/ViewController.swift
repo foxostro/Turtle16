@@ -79,7 +79,7 @@ class ViewController: NSViewController {
             this.logger.clear()
         }
         
-        executor.start()
+        executor.reset()
     }
     
     func generateExampleProgram() -> [Instruction] {

@@ -74,8 +74,8 @@ public class ComputerExecutor: NSObject {
     }
     
     public var computer:Computer!
-    public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in}
-    public var didUpdateSerialOutput:(String)->Void = {_ in}
+    public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in} // TODO: Use Swift Combine to publish changing CPU states
+    public var didUpdateSerialOutput:(String)->Void = {_ in} // TODO: Use Swift Combine to publish changing serial output
     public var didStart:()->Void = {}
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
@@ -84,7 +84,30 @@ public class ComputerExecutor: NSObject {
     var thread: Thread!
     let semaCancellationComplete = DispatchSemaphore(value: 0)
     let semaGoSignal = DispatchSemaphore(value: 0)
-    var numberOfInstructionsRemaining = 0
+    var _numberOfInstructionsRemaining = 0
+    
+    public var numberOfInstructionsRemaining: Int {
+        get {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+            return _numberOfInstructionsRemaining
+        }
+        set(value) {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+            _numberOfInstructionsRemaining = value
+        }
+    }
+    
+    public var isExecuting: Bool {
+        return numberOfInstructionsRemaining > 0
+    }
+    
+    public var isHalted: Bool {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        return .active == computer.cpuState.controlWord.HLT
+    }
     
     public func step() {
         objc_sync_enter(self)
@@ -151,9 +174,10 @@ public class ComputerExecutor: NSObject {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
         numberOfInstructionsRemaining = 0
-        computer.didUpdateSerialOutput = {(aString: String) in
-            self.serialOutputUpdateQueue.async {
-                self.didUpdateSerialOutput(aString)
+        computer.didUpdateSerialOutput = {[weak self] (aString: String) in
+            guard let this = self else { return }
+            this.serialOutputUpdateQueue.async {
+                this.didUpdateSerialOutput(aString)
             }
         }
         computer.reset()

@@ -325,10 +325,10 @@ class ComputerRev1Tests: XCTestCase {
         computer.step()
         computer.step()
         
-        XCTAssertEqual(computer.describeALUResult(), "3")
-        XCTAssertEqual(computer.describeBus(), "3")
-        XCTAssertEqual(computer.describeControlWord(), "11111011111101111110111110111110")
-        XCTAssertEqual(computer.describeControlSignals(), "{AI, EO, CarryIn}")
+        XCTAssertEqual(computer.cpuState.aluResult.value, 3)
+        XCTAssertEqual(computer.cpuState.bus.value, 3)
+        XCTAssertEqual(computer.cpuState.controlWord.stringValue, "11111011111101111110111110111110")
+        XCTAssertEqual(computer.cpuState.controlWord.description, "{AI, EO, CarryIn}")
     }
     
     func testReadWriteRegistersXY() {
@@ -989,149 +989,6 @@ class ComputerRev1Tests: XCTestCase {
         try! computer.loadProgram(from: url)
         XCTAssertEqual(oldProgram.upperROM.data, computer.instructionROM.upperROM.data)
         XCTAssertEqual(oldProgram.lowerROM.data, computer.instructionROM.lowerROM.data)
-    }
-    
-    func testModifyRegisterA_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterA(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterA(), "0")
-    }
-    
-    func testModifyRegisterA() {
-        let computer = makeComputer()
-        computer.modifyRegisterA(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterA(), "ff")
-        XCTAssertEqual(computer.registerA.value, 255)
-    }
-    
-    func testModifyRegisterB_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterB(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterB(), "0")
-    }
-    
-    func testModifyRegisterB() {
-        let computer = makeComputer()
-        computer.modifyRegisterB(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterB(), "ff")
-        XCTAssertEqual(computer.registerB.value, 255)
-    }
-    
-    func testModifyRegisterC_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterB(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterC(), "0")
-    }
-    
-    func testModifyRegisterC() {
-        let computer = makeComputer()
-        computer.modifyRegisterC(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterC(), "ff")
-        XCTAssertEqual(computer.registerC.value, 255)
-    }
-    
-    func testModifyRegisterD_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterD(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterD(), "0")
-    }
-    
-    func testModifyRegisterD() {
-        let computer = makeComputer()
-        computer.modifyRegisterD(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterD(), "ff")
-        XCTAssertEqual(computer.registerD.value, 255)
-    }
-    
-    func testModifyRegisterX_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterX(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterX(), "0")
-    }
-    
-    func testModifyRegisterX() {
-        let computer = makeComputer()
-        computer.modifyRegisterX(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterX(), "ff")
-        XCTAssertEqual(computer.registerX.value, 255)
-    }
-    
-    func testModifyRegisterY_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterY(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterY(), "0")
-    }
-    
-    func testModifyRegisterY() {
-        let computer = makeComputer()
-        computer.modifyRegisterY(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterY(), "ff")
-        XCTAssertEqual(computer.registerY.value, 255)
-    }
-    
-    func testModifyRegisterU_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterU(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterU(), "0")
-    }
-    
-    func testModifyRegisterU() {
-        let computer = makeComputer()
-        computer.modifyRegisterU(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterU(), "ff")
-        XCTAssertEqual(computer.registerU.value, 255)
-    }
-    
-    func testModifyRegisterV_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyRegisterV(withString: "foo")
-        XCTAssertEqual(computer.describeRegisterV(), "0")
-    }
-    
-    func testModifyRegisterV() {
-        let computer = makeComputer()
-        computer.modifyRegisterV(withString: "ff")
-        XCTAssertEqual(computer.describeRegisterV(), "ff")
-        XCTAssertEqual(computer.registerV.value, 255)
-    }
-    
-    func testModifyPC_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyPC(withString: "foo")
-        XCTAssertEqual(computer.describePC(), "0")
-    }
-    
-    func testModifyPC() {
-        let computer = makeComputer()
-        computer.modifyPC(withString: "ff")
-        XCTAssertEqual(computer.describePC(), "ff")
-        XCTAssertEqual(computer.pc.value, 255)
-    }
-    
-    func testModifyPCIF_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyPCIF(withString: "foo")
-        XCTAssertEqual(computer.describePCIF(), "0")
-    }
-    
-    func testModifyPCIF() {
-        let computer = makeComputer()
-        computer.modifyPCIF(withString: "ff")
-        XCTAssertEqual(computer.describePCIF(), "ff")
-        XCTAssertEqual(computer.pc_if.value, 255)
-    }
-    
-    func testModifyIFID_InvalidInput() {
-        let computer = makeComputer()
-        computer.modifyIFID(withString: "foo")
-        XCTAssertEqual(computer.describeIFID(), "{op=0b0, imm=0b0}")
-    }
-    
-    func testModifyIFID() {
-        let computer = makeComputer()
-        computer.modifyIFID(withString: "{op=0b11111111, imm=0b11111111}")
-        XCTAssertEqual(computer.describeIFID(), "{op=0b11111111, imm=0b11111111}")
-        XCTAssertEqual(computer.if_id.value, 0xffff)
     }
     
     func testIncrementXY() {

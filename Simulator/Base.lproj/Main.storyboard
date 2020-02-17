@@ -717,7 +717,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="345" height="552"/>
                                         <subviews>
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="12" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fA8-N3-gSy" userLabel="Controls">
-                                                <rect key="frame" x="0.0" y="531" width="202" height="21"/>
+                                                <rect key="frame" x="0.0" y="531" width="250" height="21"/>
                                                 <subviews>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zy6-ZW-ecc">
                                                         <rect key="frame" x="-6" y="-7" width="75" height="32"/>
@@ -754,13 +754,26 @@
                                                             <action selector="runOrStop:" target="XfG-lQ-9wD" id="b6i-h2-xL2"/>
                                                         </connections>
                                                     </button>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oH4-am-aYM">
+                                                        <rect key="frame" x="212" y="3" width="40" height="16"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="IPS: 0" id="Ptl-LB-3vH">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="oH4-am-aYM" firstAttribute="firstBaseline" secondItem="uxN-1E-3li" secondAttribute="firstBaseline" id="YWL-kU-He9"/>
+                                                </constraints>
                                                 <visibilityPriorities>
+                                                    <integer value="1000"/>
                                                     <integer value="1000"/>
                                                     <integer value="1000"/>
                                                     <integer value="1000"/>
                                                 </visibilityPriorities>
                                                 <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
                                                     <real value="3.4028234663852886e+38"/>
                                                     <real value="3.4028234663852886e+38"/>
                                                     <real value="3.4028234663852886e+38"/>
@@ -1583,6 +1596,7 @@
                         <outlet property="controlWord" destination="M56-FV-JO5" id="pmQ-56-xIN"/>
                         <outlet property="eventLog" destination="u5j-2x-nqt" id="EpM-Br-Vx9"/>
                         <outlet property="if_id" destination="vSK-HH-WZE" id="y4D-58-PVS"/>
+                        <outlet property="ipsLabel" destination="oH4-am-aYM" id="ImA-rx-6px"/>
                         <outlet property="pc_if" destination="k1n-Bh-mty" id="Ndx-jv-axH"/>
                         <outlet property="programCounter" destination="HZa-7m-8a9" id="sja-gN-iGT"/>
                         <outlet property="registerA" destination="UNs-X6-Nip" id="LJg-lN-KGj"/>

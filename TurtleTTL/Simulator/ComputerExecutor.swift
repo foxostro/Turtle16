@@ -115,6 +115,21 @@ public class ComputerExecutor: NSObject {
         }
     }
     
+    public var onUpdatedIPS:(Double)->Void {
+        get {
+            var result:(Double)->Void = {_ in}
+            queue.sync {
+                result = unlockedExecutor.onUpdatedIPS
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.onUpdatedIPS = value
+            }
+        }
+    }
+    
     public var didStart:()->Void {
         get {
             var result:()->Void = {}
@@ -213,6 +228,7 @@ public class ComputerExecutor: NSObject {
     public func step() {
         queue.sync {
             unlockedExecutor.step()
+            runForABit()
         }
     }
     

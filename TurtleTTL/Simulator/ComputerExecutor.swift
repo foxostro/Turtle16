@@ -10,210 +10,232 @@ import Cocoa
 
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
-    let cpuUpdateQueue: ThrottledQueue
-    let serialOutputUpdateQueue: ThrottledQueue
-    
-    public var logger: Logger? {
-        get {
-            objc_sync_enter(self)
-            defer { objc_sync_exit(self) }
-            return computer.logger
-        }
-        set(value) {
-            objc_sync_enter(self)
-            defer { objc_sync_exit(self) }
-            computer.logger = value
-        }
-    }
-    
-    public override init() {
-        cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
-        serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
-    }
+    let unlockedExecutor = UnlockedComputerExecutor()
+    let queue = DispatchQueue(label: "com.foxostro.ComputerExecutor")
     
     public func provideMicrocode(microcode: InstructionDecoder) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        computer.provideMicrocode(microcode: microcode)
+        queue.sync {
+            unlockedExecutor.provideMicrocode(microcode: microcode)
+        }
     }
     
     public func loadMicrocode(from url: URL) throws {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        try computer.loadMicrocode(from: url)
+        try queue.sync {
+            try unlockedExecutor.loadMicrocode(from: url)
+        }
     }
     
     public func saveMicrocode(to url: URL) throws {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        try computer.saveMicrocode(to: url)
+        try queue.sync {
+            try unlockedExecutor.saveMicrocode(to: url)
+        }
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        computer.provideInstructions(instructions)
+        queue.sync {
+            unlockedExecutor.provideInstructions(instructions)
+        }
     }
     
     public func loadProgram(from url: URL) throws {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        try computer.loadProgram(from: url)
+        try queue.sync {
+            try unlockedExecutor.loadProgram(from: url)
+        }
     }
     
     public func saveProgram(to url: URL) throws {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        try computer.saveProgram(to: url)
+        try queue.sync {
+            try unlockedExecutor.saveProgram(to: url)
+        }
     }
     
     public func provideSerialInput(bytes: [UInt8]) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        computer.provideSerialInput(bytes: bytes)
+        queue.sync {
+            unlockedExecutor.provideSerialInput(bytes: bytes)
+        }
     }
     
-    public var computer:Computer!
-    public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in} // TODO: Use Swift Combine to publish changing CPU states
-    public var didUpdateSerialOutput:(String)->Void = {_ in} // TODO: Use Swift Combine to publish changing serial output
-    public var didStart:()->Void = {}
-    public var didStop:()->Void = {}
-    public var didHalt:()->Void = {}
-    public var didReset:()->Void = {}
+    public var logger: Logger? {
+        get {
+            var result: Logger? = nil
+            queue.sync {
+                result = unlockedExecutor.logger
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.logger = value
+            }
+        }
+    }
     
-    var thread: Thread!
-    let semaCancellationComplete = DispatchSemaphore(value: 0)
-    let semaGoSignal = DispatchSemaphore(value: 0)
-    var _numberOfInstructionsRemaining = 0
+    public var computer:Computer! {
+        get {
+            var result: Computer? = nil
+            queue.sync {
+                result = unlockedExecutor.computer
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.computer = value
+            }
+        }
+    }
+    
+    public var onUpdatedCPUState:(CPUStateSnapshot)->Void {
+        get {
+            var result:(CPUStateSnapshot)->Void = {_ in}
+            queue.sync {
+                result = unlockedExecutor.onUpdatedCPUState
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.onUpdatedCPUState = value
+            }
+        }
+    }
+
+    public var didUpdateSerialOutput:(String)->Void {
+        get {
+           var result:(String)->Void = {_ in}
+           queue.sync {
+               result = unlockedExecutor.didUpdateSerialOutput
+           }
+           return result
+        }
+        set(value) {
+           queue.sync {
+               self.unlockedExecutor.didUpdateSerialOutput = value
+           }
+        }
+    }
+    
+    public var didStart:()->Void {
+        get {
+            var result:()->Void = {}
+            queue.sync {
+                result = unlockedExecutor.didStart
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.didStart = value
+            }
+        }
+    }
+    
+    public var didStop:()->Void {
+        get {
+            var result:()->Void = {}
+            queue.sync {
+                result = unlockedExecutor.didStop
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.didStop = value
+            }
+        }
+    }
+    
+    public var didHalt:()->Void {
+        get {
+            var result:()->Void = {}
+            queue.sync {
+                result = unlockedExecutor.didHalt
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.didHalt = value
+            }
+        }
+    }
+    
+    public var didReset:()->Void {
+        get {
+            var result:()->Void = {}
+            queue.sync {
+                result = unlockedExecutor.didReset
+            }
+            return result
+        }
+        set(value) {
+            queue.sync {
+                self.unlockedExecutor.didReset = value
+            }
+        }
+    }
     
     public var numberOfInstructionsRemaining: Int {
         get {
-            objc_sync_enter(self)
-            defer { objc_sync_exit(self) }
-            return _numberOfInstructionsRemaining
+            var result = 0
+            queue.sync {
+                result = unlockedExecutor.numberOfInstructionsRemaining
+            }
+            return result
         }
         set(value) {
-            objc_sync_enter(self)
-            defer { objc_sync_exit(self) }
-            _numberOfInstructionsRemaining = value
+            queue.sync {
+                self.unlockedExecutor.numberOfInstructionsRemaining = value
+            }
         }
     }
     
     public var isExecuting: Bool {
-        return numberOfInstructionsRemaining > 0
+        get {
+            var result = false
+            queue.sync {
+                result = unlockedExecutor.isExecuting
+            }
+            return result
+        }
     }
     
     public var isHalted: Bool {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        return .active == computer.cpuState.controlWord.HLT
+        get {
+            var result = false
+            queue.sync {
+                result = unlockedExecutor.isHalted
+            }
+            return result
+        }
     }
     
     public func step() {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        numberOfInstructionsRemaining = 1
-        semaGoSignal.signal()
+        queue.sync {
+            unlockedExecutor.step()
+        }
     }
     
     public func runOrStop() {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        if numberOfInstructionsRemaining == 0 {
-            numberOfInstructionsRemaining = -1
-            notifyDidStart()
-            semaGoSignal.signal()
-        } else {
-            numberOfInstructionsRemaining = 0
+        queue.sync {
+            unlockedExecutor.runOrStop()
+            runForABit()
         }
     }
     
-    public func start() {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        reset()
-        thread = Thread(block: { self.run() })
-        thread.start()
-    }
-    
-    func run() {
-        while !thread.isCancelled {
-            objc_sync_enter(self)
-            
-            if (numberOfInstructionsRemaining == 0) {
-                notifyDidStop()
-                objc_sync_exit(self)
-                semaGoSignal.wait()
-                objc_sync_enter(self)
+    func runForABit() {
+        queue.async { [weak self] in
+            guard let this = self else { return }
+            if this.unlockedExecutor.isExecuting && !this.unlockedExecutor.isHalted {
+                this.unlockedExecutor.runForABit()
+                this.runForABit()
             }
-            else if numberOfInstructionsRemaining != 0 {
-                if numberOfInstructionsRemaining > 0 {
-                    numberOfInstructionsRemaining -= 1
-                }
-                computer.step()
-                let cpuState = publishCPUStateSnapshot()
-                if (.active == cpuState.controlWord.HLT) {
-                    notifyDidHalt()
-                    objc_sync_exit(self)
-                    semaGoSignal.wait()
-                    objc_sync_enter(self)
-                }
-            }
-            
-            objc_sync_exit(self)
         }
-        semaCancellationComplete.signal()
-    }
-    
-    public func shutdown() {
-        thread.cancel()
-        semaCancellationComplete.wait()
     }
     
     public func reset() {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        numberOfInstructionsRemaining = 0
-        computer.didUpdateSerialOutput = {[weak self] (aString: String) in
-            guard let this = self else { return }
-            this.serialOutputUpdateQueue.async {
-                this.didUpdateSerialOutput(aString)
-            }
+        queue.sync {
+            unlockedExecutor.reset()
         }
-        computer.reset()
-        publishCPUStateSnapshot()
-        notifyDidReset()
-    }
-    
-    func notifyDidStart() {
-        DispatchQueue.main.async {
-            self.didStart()
-        }
-    }
-    
-    func notifyDidStop() {
-        DispatchQueue.main.async {
-            self.didStop()
-        }
-    }
-    
-    func notifyDidHalt() {
-        DispatchQueue.main.async {
-            self.didHalt()
-        }
-    }
-    
-    func notifyDidReset() {
-        DispatchQueue.main.async {
-            self.didReset()
-        }
-    }
-    
-    @discardableResult func publishCPUStateSnapshot() -> CPUStateSnapshot {
-        let cpuState = computer.cpuState
-        cpuUpdateQueue.async {
-            self.onUpdatedCPUState(cpuState)
-        }
-        return cpuState
     }
 }

@@ -48,13 +48,13 @@ class ComputerExecutorTests: XCTestCase {
     
     func testStartStopHaltCallbacksAreCalledAsExpected() {
         let executor = makeExecutor()
-        executor.start()
         let semaphore = DispatchSemaphore(value: 0)
         var numberOfTimesCPUStateWasPublished = 0
         var didStart = false
         var didStop = false
         var didHalt = false
         var didReset = false
+        
         executor.didReset = {
             didReset = true
         }
@@ -71,7 +71,10 @@ class ComputerExecutorTests: XCTestCase {
             didHalt = true
             semaphore.signal()
         }
+        
+        executor.reset()
         executor.runOrStop()
+        
         while .success != semaphore.wait(timeout: DispatchTime.now()) {
             RunLoop.main.run(mode: .default, before: Date())
         }
@@ -93,14 +96,12 @@ class ComputerExecutorTests: XCTestCase {
         // Computer agrees that is in the special halted state.
         XCTAssertTrue(executor.isHalted)
         
-        // We expect CPU state to be published when the computer resets and when
-        // execution halts. It may be published more times than this, e.g.,
-        // it may be published after each emulated instruction.
-        XCTAssertGreaterThanOrEqual(numberOfTimesCPUStateWasPublished, 2)
+        // We expect CPU state to be published at least once. These messages are
+        // throttled and so we may not receive notifications every time state
+        // actually changes.
+        XCTAssertGreaterThanOrEqual(numberOfTimesCPUStateWasPublished, 1)
         
         // Computer background thread is not executing now.
         XCTAssertFalse(executor.isExecuting)
-        
-        executor.shutdown()
     }
 }

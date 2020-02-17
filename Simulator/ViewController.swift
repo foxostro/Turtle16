@@ -32,6 +32,7 @@ class ViewController: NSViewController {
     @IBOutlet var eventLog:NSTextView!
     @IBOutlet var serialInput:NSTextField!
     @IBOutlet var serialOutput:NSTextView!
+    @IBOutlet var ipsLabel:NSTextField!
     var logger:TextViewLogger!
     let executor = ComputerExecutor()
     let microcodeGenerator = MicrocodeGenerator()
@@ -55,6 +56,10 @@ class ViewController: NSViewController {
         
         executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
             self?.didUpdateSerialOutput(aString)
+        }
+        
+        executor.onUpdatedIPS = {[weak self](ips: Double) -> Void in
+            self?.updateIPS(ips)
         }
         
         executor.didStart = {[weak self] in
@@ -167,6 +172,10 @@ class ViewController: NSViewController {
         programCounter.stringValue = cpuState.pc.description
         if_id.stringValue = cpuState.if_id.description
         bus.stringValue = cpuState.bus.description
+    }
+        
+    func updateIPS(_ ips: Double) {
+        ipsLabel.stringValue = String(format: "IPS: %.0f", ips)
     }
         
     func didUpdateSerialOutput(_ aString: String) {

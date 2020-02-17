@@ -11,7 +11,9 @@ import Cocoa
 class UnlockedComputerExecutor: NSObject {
     let cpuUpdateQueue: ThrottledQueue
     let serialOutputUpdateQueue: ThrottledQueue
+    let ipsUpdateQueue: ThrottledQueue
     let notificationQueue = DispatchQueue.main
+    let stopwatch = ComputerStopwatch()
     
     public var logger: Logger? {
         get {
@@ -25,6 +27,7 @@ class UnlockedComputerExecutor: NSObject {
     public override init() {
         cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
         serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
+        ipsUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0)
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
@@ -58,12 +61,24 @@ class UnlockedComputerExecutor: NSObject {
     public var computer:Computer!
     public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in}
     public var didUpdateSerialOutput:(String)->Void = {_ in}
+    public var onUpdatedIPS:(Double)->Void = {_ in}
     public var didStart:()->Void = {}
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
     public var didReset:()->Void = {}
     
-    public var numberOfInstructionsRemaining = 0
+    var _numberOfInstructionsRemaining = 0
+    public var numberOfInstructionsRemaining: Int {
+        get {
+            return _numberOfInstructionsRemaining
+        }
+        set(value) {
+            if _numberOfInstructionsRemaining != 0 && value == 0 {
+                notifyDidStop()
+            }
+            _numberOfInstructionsRemaining = value
+        }
+    }
     
     public var isExecuting: Bool {
         return numberOfInstructionsRemaining != 0
@@ -74,7 +89,12 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     public func step() {
-        numberOfInstructionsRemaining = 1
+        if numberOfInstructionsRemaining == 0 {
+            numberOfInstructionsRemaining = 1
+            notifyDidStart()
+        } else {
+            numberOfInstructionsRemaining = 0
+        }
     }
     
     public func runOrStop() {
@@ -87,22 +107,23 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     func runForABit() {
-        if numberOfInstructionsRemaining == 0 {
-            return
-        }
-        if numberOfInstructionsRemaining > 0 {
-            numberOfInstructionsRemaining -= 1
-        }
-        computer.step()
-        let cpuState = computer.cpuState
-        publish(cpuState: cpuState)
-        if (.active == cpuState.controlWord.HLT) {
-            numberOfInstructionsRemaining = 0
-            notifyDidStop()
-            notifyDidHalt()
-        }
-        else if (numberOfInstructionsRemaining == 0) {
-            notifyDidStop()
+        if numberOfInstructionsRemaining != 0 {
+            if numberOfInstructionsRemaining > 0 {
+                numberOfInstructionsRemaining -= 1
+            }
+            computer.step()
+            stopwatch.retireInstructions(1)
+            publish(ips: stopwatch.measure())
+            let cpuState = computer.cpuState
+            publish(cpuState: cpuState)
+            if (.active == cpuState.controlWord.HLT) {
+                numberOfInstructionsRemaining = 0
+                notifyDidStop()
+                notifyDidHalt()
+            }
+            else if (numberOfInstructionsRemaining == 0) {
+                notifyDidStop()
+            }
         }
     }
     
@@ -146,6 +167,12 @@ class UnlockedComputerExecutor: NSObject {
     func publish(cpuState: CPUStateSnapshot) {
         cpuUpdateQueue.async {
             self.onUpdatedCPUState(cpuState)
+        }
+    }
+    
+    func publish(ips: Double) {
+        ipsUpdateQueue.async {
+            self.onUpdatedIPS(ips)
         }
     }
 }

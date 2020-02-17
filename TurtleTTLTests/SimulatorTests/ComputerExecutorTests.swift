@@ -41,12 +41,6 @@ class ComputerExecutorTests: XCTestCase {
         XCTAssertFalse(executor.isExecuting)
     }
     
-    func testToggleExecution() {
-        let executor = makeExecutor()
-        executor.runOrStop()
-        XCTAssertTrue(executor.isExecuting)
-    }
-    
     func testNotHaltedAtFirst() {
         let executor = makeExecutor()
         XCTAssertFalse(executor.isHalted)
@@ -54,9 +48,9 @@ class ComputerExecutorTests: XCTestCase {
     
     func testStartStopHaltCallbacksAreCalledAsExpected() {
         let executor = makeExecutor()
-        executor.beginTimer()
+        executor.start()
         let semaphore = DispatchSemaphore(value: 0)
-        var numberOfSteps = 0
+        var numberOfTimesCPUStateWasPublished = 0
         var didStart = false
         var didStop = false
         var didHalt = false
@@ -67,8 +61,8 @@ class ComputerExecutorTests: XCTestCase {
         executor.didStart = {
             didStart = true
         }
-        executor.onStep = {
-            numberOfSteps += 1
+        executor.onUpdatedCPUState = { _ in
+            numberOfTimesCPUStateWasPublished += 1
         }
         executor.didStop = {
             didStop = true
@@ -81,13 +75,32 @@ class ComputerExecutorTests: XCTestCase {
         while .success != semaphore.wait(timeout: DispatchTime.now()) {
             RunLoop.main.run(mode: .default, before: Date())
         }
-        executor.shutdown()
-        XCTAssertFalse(didReset)
+        
+        // Resets once at start.
+        XCTAssertTrue(didReset)
+        
+        // Starts when runOrStop() is called.
         XCTAssertTrue(didStart)
+        
+        // Computer stops executing instructions when it encounters the
+        // HLT instruction.
         XCTAssertTrue(didStop)
+        
+        // Halts when it encounters the HLT instruction. This is a special state
+        // which prevents the clock from ticking again.
         XCTAssertTrue(didHalt)
-        XCTAssertEqual(numberOfSteps, 5) // two coded instructions plus setting up the pipeline
-        XCTAssertFalse(executor.isExecuting)
+        
+        // Computer agrees that is in the special halted state.
         XCTAssertTrue(executor.isHalted)
+        
+        // We expect CPU state to be published when the computer resets and when
+        // execution halts. It may be published more times than this, e.g.,
+        // it may be published after each emulated instruction.
+        XCTAssertGreaterThanOrEqual(numberOfTimesCPUStateWasPublished, 2)
+        
+        // Computer background thread is not executing now.
+        XCTAssertFalse(executor.isExecuting)
+        
+        executor.shutdown()
     }
 }

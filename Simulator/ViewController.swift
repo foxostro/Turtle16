@@ -53,28 +53,30 @@ class ViewController: NSViewController {
             self.updateCPUState(cpuState)
         }
         
-        executor.didUpdateSerialOutput = {(aString: String) -> Void in
-            self.didUpdateSerialOutput(aString)
+        executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
+            self?.didUpdateSerialOutput(aString)
         }
         
-        executor.didStart = {
-            self.makeStopButtonAvailable()
+        executor.didStart = {[weak self] in
+            self?.makeStopButtonAvailable()
         }
         
-        executor.didStop = {
-            self.makeRunButtonAvailable()
+        executor.didStop = {[weak self] in
+            self?.makeRunButtonAvailable()
         }
         
-        executor.didHalt = {
-            self.stepButton.isEnabled = false
-            self.runButton.isEnabled = false
+        executor.didHalt = {[weak self] in
+            guard let this = self else { return }
+            this.stepButton.isEnabled = false
+            this.runButton.isEnabled = false
         }
         
-        executor.didReset = {
-            self.makeRunButtonAvailable()
-            self.stepButton.isEnabled = true
-            self.runButton.isEnabled = true
-            self.logger.clear()
+        executor.didReset = {[weak self] in
+            guard let this = self else { return }
+            this.makeRunButtonAvailable()
+            this.stepButton.isEnabled = true
+            this.runButton.isEnabled = true
+            this.logger.clear()
         }
         
         executor.start()

@@ -9,7 +9,7 @@
 import Cocoa
 
 class ComputerStopwatch: NSObject {
-    var instructionRetired = 0
+    var instructionRetired: Int32 = 0
     var beginningOfPeriod = Date.distantPast
     
     public func reset() {
@@ -18,7 +18,7 @@ class ComputerStopwatch: NSObject {
     }
     
     public func retireInstructions(_ numberOfInstructions: Int) {
-        instructionRetired += numberOfInstructions
+        OSAtomicAdd32Barrier(Int32(numberOfInstructions), &instructionRetired)
     }
     
     public func measure() -> Double {

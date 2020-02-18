@@ -73,7 +73,7 @@ class UnlockedComputerExecutor: NSObject {
             return _numberOfInstructionsRemaining
         }
         set(value) {
-            if _numberOfInstructionsRemaining != 0 && value == 0 {
+            if _numberOfInstructionsRemaining > 0 && value == 0 {
                 notifyDidStop()
             }
             _numberOfInstructionsRemaining = value
@@ -81,7 +81,7 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     public var isExecuting: Bool {
-        return numberOfInstructionsRemaining != 0
+        return numberOfInstructionsRemaining > 0
     }
     
     public var isHalted: Bool {
@@ -99,7 +99,7 @@ class UnlockedComputerExecutor: NSObject {
     
     public func runOrStop() {
         if numberOfInstructionsRemaining == 0 {
-            numberOfInstructionsRemaining = -1
+            numberOfInstructionsRemaining = Int.max
             notifyDidStart()
         } else {
             numberOfInstructionsRemaining = 0
@@ -107,16 +107,14 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     func runForABit() {
-        if numberOfInstructionsRemaining != 0 {
-            if numberOfInstructionsRemaining > 0 {
+        var numberOfInstructionsRetired = 0
+        if numberOfInstructionsRemaining > 0 {
+            if numberOfInstructionsRemaining != Int.max {
                 numberOfInstructionsRemaining -= 1
             }
             computer.step()
-            stopwatch.retireInstructions(1)
-            publish(ips: stopwatch.measure())
-            let cpuState = computer.cpuState
-            publish(cpuState: cpuState)
-            if (.active == cpuState.controlWord.HLT) {
+            numberOfInstructionsRetired += 1
+            if (.active == computer.cpuState.controlWord.HLT) {
                 numberOfInstructionsRemaining = 0
                 notifyDidStop()
                 notifyDidHalt()
@@ -125,6 +123,8 @@ class UnlockedComputerExecutor: NSObject {
                 notifyDidStop()
             }
         }
+        stopwatch.retireInstructions(numberOfInstructionsRetired)
+        publish(ips: stopwatch.measure())
     }
     
     public func reset() {
@@ -141,38 +141,40 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     func notifyDidStart() {
-        notificationQueue.async {
-            self.didStart()
+        notificationQueue.async { [weak self] in
+            self?.didStart()
         }
     }
     
     func notifyDidStop() {
-        notificationQueue.async {
-            self.didStop()
+        notificationQueue.async { [weak self] in
+            guard let this = self else { return }
+            this.publish(cpuState: this.computer.cpuState)
+            this.didStop()
         }
     }
     
     func notifyDidHalt() {
-        notificationQueue.async {
-            self.didHalt()
+        notificationQueue.async { [weak self] in
+            self?.didHalt()
         }
     }
     
     func notifyDidReset() {
-        notificationQueue.async {
-            self.didReset()
+        notificationQueue.async { [weak self] in
+            self?.didReset()
         }
     }
     
     func publish(cpuState: CPUStateSnapshot) {
-        cpuUpdateQueue.async {
-            self.onUpdatedCPUState(cpuState)
+        cpuUpdateQueue.async { [weak self] in
+            self?.onUpdatedCPUState(cpuState)
         }
     }
     
     func publish(ips: Double) {
-        ipsUpdateQueue.async {
-            self.onUpdatedIPS(ips)
+        ipsUpdateQueue.async { [weak self] in
+            self?.onUpdatedIPS(ips)
         }
     }
 }

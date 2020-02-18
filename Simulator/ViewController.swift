@@ -39,14 +39,25 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupInstructionsPerSecondLabel()
         logger = TextViewLogger(textView: eventLog)
         microcodeGenerator.generate()
         setupExecutor()
     }
     
+    func setupInstructionsPerSecondLabel() {
+        let formatter = NumberFormatter()
+        formatter.roundingIncrement = 1
+        formatter.usesGroupingSeparator = true
+        formatter.groupingSize = 3
+        formatter.groupingSeparator = ","
+        ipsLabel.formatter = formatter
+    }
+    
     func setupExecutor() {
         executor.computer = ComputerRev1()
         disableEventLog()
+        disableCPUStateUpdate()
         executor.provideMicrocode(microcode: microcodeGenerator.microcode)
         executor.provideInstructions(generateExampleProgram())
         
@@ -132,6 +143,7 @@ class ViewController: NSViewController {
 
     @IBAction func step(_ sender: Any) {
         enableEventLog()
+        enableCPUStateUpdate()
         executor.step()
     }
     
@@ -139,12 +151,14 @@ class ViewController: NSViewController {
         var shouldEnableEventLog = false
         if stepButton.isEnabled {
             disableEventLog()
+            disableCPUStateUpdate()
         } else {
             shouldEnableEventLog = true
         }
         executor.runOrStop()
         if shouldEnableEventLog {
             enableEventLog()
+            enableCPUStateUpdate()
         }
     }
     
@@ -175,7 +189,7 @@ class ViewController: NSViewController {
     }
         
     func updateIPS(_ ips: Double) {
-        ipsLabel.stringValue = String(format: "IPS: %.0f", ips)
+        ipsLabel.objectValue = ips
     }
         
     func didUpdateSerialOutput(_ aString: String) {
@@ -269,5 +283,32 @@ class ViewController: NSViewController {
     func enableEventLog() {
         executor.logger = logger
         eventLog.textColor = NSColor.controlTextColor
+    }
+    
+    func disableCPUStateUpdate() {
+        setCPUStateTextColor(NSColor.disabledControlTextColor)
+    }
+    
+    func enableCPUStateUpdate() {
+        setCPUStateTextColor(NSColor.controlTextColor)
+    }
+    
+    func setCPUStateTextColor(_ color: NSColor) {
+        registerA.textColor = color
+        registerB.textColor = color
+        registerC.textColor = color
+        registerD.textColor = color
+        registerG.textColor = color
+        registerH.textColor = color
+        registerU.textColor = color
+        registerV.textColor = color
+        registerX.textColor = color
+        registerY.textColor = color
+        aluResult.textColor = color
+        controlWord.textColor = color
+        controlSignals.textColor = color
+        programCounter.textColor = color
+        if_id.textColor = color
+        bus.textColor = color
     }
 }

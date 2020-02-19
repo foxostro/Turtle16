@@ -9,7 +9,6 @@
 import Cocoa
 
 class UnlockedComputerExecutor: NSObject {
-    let cpuUpdateQueue: ThrottledQueue
     let notificationQueue = DispatchQueue.main
     let stopwatch = ComputerStopwatch()
     
@@ -22,8 +21,8 @@ class UnlockedComputerExecutor: NSObject {
         }
     }
     
-    public override init() {
-        cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
+    public var cpuState: CPUStateSnapshot {
+        return computer.cpuState
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
@@ -55,7 +54,6 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     public var computer:Computer!
-    public var onUpdatedCPUState:(CPUStateSnapshot)->Void = {_ in}
     public var didUpdateSerialOutput:(String)->Void = {_ in}
     public var onUpdatedIPS:(Double)->Void = {_ in}
     public var didStart:()->Void = {}
@@ -135,7 +133,6 @@ class UnlockedComputerExecutor: NSObject {
             }
         }
         computer.reset()
-        publish(cpuState: computer.cpuState)
         notifyDidReset()
     }
     
@@ -147,9 +144,7 @@ class UnlockedComputerExecutor: NSObject {
     
     func notifyDidStop() {
         notificationQueue.async { [weak self] in
-            guard let this = self else { return }
-            this.publish(cpuState: this.computer.cpuState)
-            this.didStop()
+            self?.didStop()
         }
     }
     
@@ -162,12 +157,6 @@ class UnlockedComputerExecutor: NSObject {
     func notifyDidReset() {
         notificationQueue.async { [weak self] in
             self?.didReset()
-        }
-    }
-    
-    func publish(cpuState: CPUStateSnapshot) {
-        cpuUpdateQueue.async { [weak self] in
-            self?.onUpdatedCPUState(cpuState)
         }
     }
     

@@ -11,7 +11,6 @@ import Cocoa
 class UnlockedComputerExecutor: NSObject {
     let cpuUpdateQueue: ThrottledQueue
     let serialOutputUpdateQueue: ThrottledQueue
-    let ipsUpdateQueue: ThrottledQueue
     let notificationQueue = DispatchQueue.main
     let stopwatch = ComputerStopwatch()
     
@@ -27,7 +26,6 @@ class UnlockedComputerExecutor: NSObject {
     public override init() {
         cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
         serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
-        ipsUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0)
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
@@ -107,24 +105,27 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     func runForABit() {
-        var numberOfInstructionsRetired = 0
-        if numberOfInstructionsRemaining > 0 {
-            if numberOfInstructionsRemaining != Int.max {
-                numberOfInstructionsRemaining -= 1
-            }
-            computer.step()
-            numberOfInstructionsRetired += 1
-            if (.active == computer.cpuState.controlWord.HLT) {
-                numberOfInstructionsRemaining = 0
-                notifyDidStop()
-                notifyDidHalt()
-            }
-            else if (numberOfInstructionsRemaining == 0) {
-                notifyDidStop()
-            }
+        guard numberOfInstructionsRemaining > 0 else { return }
+        
+        if numberOfInstructionsRemaining != Int.max {
+            numberOfInstructionsRemaining -= 1
         }
-        stopwatch.retireInstructions(numberOfInstructionsRetired)
-        publish(ips: stopwatch.measure())
+        
+        computer.step()
+        stopwatch.retireInstructions(count: 1)
+        
+        stopwatch.tick {
+            publish(ips: $0)
+        }
+        
+        if (.active == computer.cpuState.controlWord.HLT) {
+            numberOfInstructionsRemaining = 0
+            notifyDidStop()
+            notifyDidHalt()
+        }
+        else if (numberOfInstructionsRemaining == 0) {
+            notifyDidStop()
+        }
     }
     
     public func reset() {
@@ -173,7 +174,7 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     func publish(ips: Double) {
-        ipsUpdateQueue.async { [weak self] in
+        notificationQueue.async { [weak self] in
             self?.onUpdatedIPS(ips)
         }
     }

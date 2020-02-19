@@ -8,23 +8,23 @@
 
 import Cocoa
 
-class ComputerStopwatch: NSObject {
-    var instructionRetired: Int32 = 0
-    var beginningOfPeriod = Date.distantPast
+final class ComputerStopwatch: NSObject {
+    var numberOfInstructionRetired = 0
+    var beginningOfPeriod: CFAbsoluteTime = 0
+    let updateInterval = 1.0
     
-    public func reset() {
-        instructionRetired = 0
-        beginningOfPeriod = Date()
+    public func retireInstructions(count: Int) {
+        numberOfInstructionRetired += count
     }
     
-    public func retireInstructions(_ numberOfInstructions: Int) {
-        OSAtomicAdd32Barrier(Int32(numberOfInstructions), &instructionRetired)
-    }
-    
-    public func measure() -> Double {
-        let elapsedTime = Date().timeIntervalSince(beginningOfPeriod)
-        let ips = Double(instructionRetired) / elapsedTime
-        reset()
-        return ips
+    public func tick(block: (Double)->Void) {
+        let currentTime = CFAbsoluteTimeGetCurrent()
+        let elapsedTime = currentTime - beginningOfPeriod
+        if elapsedTime > updateInterval {
+            let ips = Double(numberOfInstructionRetired) / elapsedTime
+            block(ips)
+            numberOfInstructionRetired = 0
+            beginningOfPeriod = currentTime
+        }
     }
 }

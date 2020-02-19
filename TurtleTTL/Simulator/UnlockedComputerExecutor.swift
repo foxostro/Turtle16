@@ -10,7 +10,6 @@ import Cocoa
 
 class UnlockedComputerExecutor: NSObject {
     let cpuUpdateQueue: ThrottledQueue
-    let serialOutputUpdateQueue: ThrottledQueue
     let notificationQueue = DispatchQueue.main
     let stopwatch = ComputerStopwatch()
     
@@ -25,7 +24,6 @@ class UnlockedComputerExecutor: NSObject {
     
     public override init() {
         cpuUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
-        serialOutputUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
     }
     
     public func provideMicrocode(microcode: InstructionDecoder) {
@@ -132,7 +130,7 @@ class UnlockedComputerExecutor: NSObject {
         numberOfInstructionsRemaining = 0
         computer.didUpdateSerialOutput = {[weak self] (aString: String) in
             guard let this = self else { return }
-            this.serialOutputUpdateQueue.async {
+            this.notificationQueue.async {
                 this.didUpdateSerialOutput(aString)
             }
         }

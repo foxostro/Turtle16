@@ -91,6 +91,7 @@ class ViewController: NSViewController {
             this.stepButton.isEnabled = true
             this.runButton.isEnabled = true
             this.logger.clear()
+            this.updateCPUState(this.executor.cpuState)
         }
         
         executor.reset()

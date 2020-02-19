@@ -84,21 +84,6 @@ public class ComputerExecutor: NSObject {
             }
         }
     }
-    
-    public var onUpdatedCPUState:(CPUStateSnapshot)->Void {
-        get {
-            var result:(CPUStateSnapshot)->Void = {_ in}
-            queue.sync {
-                result = unlockedExecutor.onUpdatedCPUState
-            }
-            return result
-        }
-        set(value) {
-            queue.sync {
-                self.unlockedExecutor.onUpdatedCPUState = value
-            }
-        }
-    }
 
     public var didUpdateSerialOutput:(String)->Void {
         get {
@@ -253,5 +238,13 @@ public class ComputerExecutor: NSObject {
         queue.sync {
             unlockedExecutor.reset()
         }
+    }
+    
+    public var cpuState: CPUStateSnapshot {
+        var cpuState: CPUStateSnapshot? = nil
+        queue.sync {
+            cpuState = unlockedExecutor.cpuState
+        }
+        return cpuState!
     }
 }

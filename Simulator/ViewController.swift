@@ -61,10 +61,6 @@ class ViewController: NSViewController {
         executor.provideMicrocode(microcode: microcodeGenerator.microcode)
         executor.provideInstructions(generateExampleProgram())
         
-        executor.onUpdatedCPUState = {(cpuState: CPUStateSnapshot) -> Void in
-            self.updateCPUState(cpuState)
-        }
-        
         executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
             self?.didUpdateSerialOutput(aString)
         }
@@ -78,7 +74,9 @@ class ViewController: NSViewController {
         }
         
         executor.didStop = {[weak self] in
-            self?.makeRunButtonAvailable()
+            guard let this = self else { return }
+            this.updateCPUState(this.executor.cpuState)
+            this.makeRunButtonAvailable()
         }
         
         executor.didHalt = {[weak self] in

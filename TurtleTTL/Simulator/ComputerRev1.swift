@@ -75,6 +75,12 @@ public class ComputerRev1: NSObject, Computer {
         controlWord = ControlWord()
     }
     
+    public func runUntilHalted() {
+        while .inactive == cpuState.controlWord.HLT {
+            step()
+        }
+    }
+    
     public func step() {
         onControlClock()
         onRegisterClock()

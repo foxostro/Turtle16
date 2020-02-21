@@ -386,9 +386,6 @@
 				6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */,
 				6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */,
 				6F86EDC522ED113800375A00 /* ComputerRev1.swift */,
-				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
-				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
-				6F6A023C23FF7204003876BD /* Trace.swift */,
 				6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */,
 				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
 				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
@@ -403,6 +400,9 @@
 				6F37BA462305D903009754D3 /* Register.swift */,
 				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
 				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
+				6F6A023C23FF7204003876BD /* Trace.swift */,
+				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
+				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
 				6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */,
 			);
 			path = Simulator;

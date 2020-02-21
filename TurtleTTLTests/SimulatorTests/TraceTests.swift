@@ -61,7 +61,6 @@ class TraceTests: XCTestCase {
 0x0000:\tNOP
 guard:\tflags={carryFlag: 1, equalFlag: 1}, traceExitingPC=0x0001
 guard:\taddress=0xffff, traceExitingPC=0x0001
-
 """)
     }
 }

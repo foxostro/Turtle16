@@ -48,6 +48,7 @@ public class ComputerRev1: NSObject, Computer {
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
+    let profiler = TraceProfiler()
     
     public func reset() {
         let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
@@ -251,8 +252,20 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     func doJump() {
-        pc = ProgramCounter(withValue: UInt16(valueOfXYPair()))
+        let oldPC = pc.value
+        let newPC = UInt16(valueOfXYPair())
+        recordBackwardJumps(newPC, oldPC)
+        pc = ProgramCounter(withValue: newPC)
         logger?.append("J -- jump to %@", pc)
+    }
+    
+    func recordBackwardJumps(_ newPC: UInt16, _ oldPC: UInt16) {
+        if newPC < oldPC {
+            let hasBecomeHot = profiler.hit(pc: newPC)
+            if hasBecomeHot {
+                logger?.append("Jump destination \(newPC) has become hot.")
+            }
+        }
     }
     
     func incrementPC() {

@@ -25,5 +25,16 @@ public class Flags: NSObject {
         self.carryFlag = carryFlag
         self.equalFlag = equalFlag
     }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        if let rhs = rhs as? Flags {
+            return self == rhs
+        } else {
+            return false
+        }
+    }
 }
 
+public func ==(lhs: Flags, rhs: Flags) -> Bool {
+    return (lhs.equalFlag == rhs.equalFlag) && (lhs.carryFlag == rhs.carryFlag)
+}

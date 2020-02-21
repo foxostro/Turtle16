@@ -46,7 +46,11 @@ public class AssemblerFrontEnd: NSObject {
             return
         }
         
-        instructions = compiler.instructions
+        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+        
+        for instruction in compiler.instructions {
+            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
+        }
     }
     
     public func makeOmnibusError(fileName: String?, errors: [AssemblerError]) -> AssemblerError {

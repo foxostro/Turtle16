@@ -16,11 +16,11 @@ class TraceRecorderTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    func assemble(_ text: String) -> [Instruction] {
+    fileprivate func assemble(_ text: String) -> [Instruction] {
         return  try! tryAssemble(text: text)
     }
     
-    func tryAssemble(text: String) throws -> [Instruction] {
+    fileprivate func tryAssemble(text: String) throws -> [Instruction] {
         let assembler = AssemblerFrontEnd()
         assembler.compile(text)
         if assembler.hasError {
@@ -32,13 +32,17 @@ class TraceRecorderTests: XCTestCase {
     
     func testAppendInstruction() {
         let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
-        recorder.record(pc: 0, instruction: Instruction())
+        recorder.record(pc: 0, instruction: makeNOP())
         XCTAssertEqual(recorder.trace.elements.count, 1)
         XCTAssertEqual(recorder.trace.description, """
 0x0000:\tNOP
 """)
         
         XCTAssertEqual(recorder.state, .recording)
+    }
+    
+    fileprivate func makeNOP() -> Instruction {
+        return Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
     }
     
     func testRecordTraceWithoutGuards() {

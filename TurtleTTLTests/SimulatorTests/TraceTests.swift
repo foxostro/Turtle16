@@ -54,7 +54,7 @@ class TraceTests: XCTestCase {
     
     func testLogTrace() {
         let trace = Trace()
-        trace.append(pc:0, instruction: Instruction())
+        trace.append(pc:0, instruction: makeNOP())
         trace.appendGuard(pc:1, flags: Flags(1, 1))
         trace.appendGuard(pc:1, address: 0xFFFF)
         XCTAssertEqual(trace.description, """
@@ -62,5 +62,9 @@ class TraceTests: XCTestCase {
 guard:\tflags={carryFlag: 1, equalFlag: 1}, traceExitingPC=0x0001
 guard:\taddress=0xffff, traceExitingPC=0x0001
 """)
+    }
+    
+    fileprivate func makeNOP() -> Instruction {
+        return Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
     }
 }

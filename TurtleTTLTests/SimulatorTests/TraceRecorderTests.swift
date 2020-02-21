@@ -33,7 +33,8 @@ class TraceRecorderTests: XCTestCase {
     
     func testAppendInstruction() {
         let recorder = TraceRecorder()
-        recorder.record(instruction: Instruction(),
+        recorder.record(pc: 0,
+                        instruction: Instruction(),
                         stateBefore: makeDefaultSnapshot(),
                         stateAfter: makeDefaultSnapshot())
         XCTAssertEqual(recorder.trace.elements.count, 1)

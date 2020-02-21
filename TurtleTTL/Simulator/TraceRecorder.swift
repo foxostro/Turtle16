@@ -11,9 +11,10 @@ import Cocoa
 public class TraceRecorder: NSObject {
     public let trace = Trace()
     
-    public func record(instruction: Instruction,
+    public func record(pc: UInt16,
+                       instruction: Instruction,
                        stateBefore: CPUStateSnapshot,
                        stateAfter: CPUStateSnapshot) {
-        trace.append(instruction: instruction)
+        trace.append(pc: pc, instruction: instruction)
     }
 }

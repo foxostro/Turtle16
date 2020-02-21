@@ -45,6 +45,7 @@ public class Trace: NSObject {
             }
             result += "\n"
         }
+        result.removeLast()
         return result
     }
 }

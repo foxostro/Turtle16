@@ -61,4 +61,46 @@ class InstructionFormatterTests: XCTestCase {
         let result = formatter.format(instruction: assemble("CMP"))
         XCTAssertEqual(result, "CMP")
     }
+    
+    func testFormatLIA() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI A, 1"))
+        XCTAssertEqual(result, "LI A, 1")
+    }
+    
+    func testFormatLIB() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI B, 1"))
+        XCTAssertEqual(result, "LI B, 1")
+    }
+    
+    func testFormatLID() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI D, 1"))
+        XCTAssertEqual(result, "LI D, 1")
+    }
+    
+    func testFormatLIX() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI X, 1"))
+        XCTAssertEqual(result, "LI X, 1")
+    }
+    
+    func testFormatLIY() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI Y, 1"))
+        XCTAssertEqual(result, "LI Y, 1")
+    }
+    
+    func testFormatLIU() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI U, 1"))
+        XCTAssertEqual(result, "LI U, 1")
+    }
+    
+    func testFormatLIV() {
+        let formatter = InstructionFormatter()
+        let result = formatter.format(instruction: assemble("LI V, 1"))
+        XCTAssertEqual(result, "LI V, 1")
+    }
 }

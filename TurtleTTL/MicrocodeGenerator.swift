@@ -12,6 +12,7 @@ import Cocoa
 public class MicrocodeGenerator: NSObject {
     public var microcode = InstructionDecoder()
     var mapMnemonicToOpcode = [String:Int]()
+    var mapOpcodeToMnemonic = [Int:String]()
     var nextOpcode = 0
     
     // Registers which can output a value to the bus.
@@ -99,15 +100,20 @@ public class MicrocodeGenerator: NSObject {
         blt()
     }
     
+    func record(mnemonic: String, opcode: Int) {
+        mapMnemonicToOpcode[mnemonic] = opcode
+        mapOpcodeToMnemonic[opcode] = mnemonic
+    }
+    
     public func nop() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["NOP"] = opcode
+        record(mnemonic: "NOP", opcode: opcode)
         microcode = microcode.withStore(opcode: opcode, controlWord: ControlWord())
     }
     
     public func hlt() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["HLT"] = opcode
+        record(mnemonic: "HLT", opcode: opcode)
         let controlWord = ControlWord().withHLT(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
@@ -122,7 +128,7 @@ public class MicrocodeGenerator: NSObject {
                                       String(describing: destination),
                                       String(describing: source))
                 let opcode = getNextOpcode()
-                mapMnemonicToOpcode[mnemonic] = opcode
+                record(mnemonic: mnemonic, opcode: opcode)
                 microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
             }
         }
@@ -141,7 +147,7 @@ public class MicrocodeGenerator: NSObject {
             controlWord = controlWord.withFI(.active).withCarryIn(carry)
             let mnemonic = String(format: "%@ %@", base, String(describing: destination))
             let opcode = getNextOpcode()
-            mapMnemonicToOpcode[mnemonic] = opcode
+            record(mnemonic: mnemonic, opcode: opcode)
             microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
         }
         
@@ -152,7 +158,7 @@ public class MicrocodeGenerator: NSObject {
     // Only updates the flags.
     func aluNoDest(mnemonic: String, withCarry carry: ControlSignal) {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode[mnemonic] = opcode
+        record(mnemonic: mnemonic, opcode: opcode)
         microcode = microcode.withStore(opcode: opcode,
                                         controlWord: ControlWord()
                                             .withFI(.active)
@@ -161,28 +167,28 @@ public class MicrocodeGenerator: NSObject {
     
     public func link() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["LINK"] = opcode
+        record(mnemonic: "LINK", opcode: opcode)
         let controlWord = ControlWord().withLinkIn(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     public func jalr() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["JALR"] = opcode
+        record(mnemonic: "JALR", opcode: opcode)
         let controlWord = ControlWord().withJ(.active).withLinkIn(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     public func jmp() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["JMP"] = opcode
+        record(mnemonic: "JMP", opcode: opcode)
         let controlWord = ControlWord().withJ(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     public func conditionalJump(mnemonic: String, condition: UInt) {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode[mnemonic] = opcode
+        record(mnemonic: mnemonic, opcode: opcode)
         let controlWord = ControlWord().withJ(.active)
         microcode = microcode.withStore(opcode: opcode,
                                         carryFlag: 0, equalFlag: 0,
@@ -200,14 +206,14 @@ public class MicrocodeGenerator: NSObject {
     
     public func inuv() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["INUV"] = opcode
+        record(mnemonic: "INUV", opcode: opcode)
         let controlWord = ControlWord().withUVInc(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
     
     public func inxy() {
         let opcode = getNextOpcode()
-        mapMnemonicToOpcode["INXY"] = opcode
+        record(mnemonic: "INXY", opcode: opcode)
         let controlWord = ControlWord().withXYInc(.active)
         microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
     }
@@ -222,7 +228,7 @@ public class MicrocodeGenerator: NSObject {
                                       String(describing: destination),
                                       String(describing: source))
                 let opcode = getNextOpcode()
-                mapMnemonicToOpcode[mnemonic] = opcode
+                record(mnemonic: mnemonic, opcode: opcode)
                 microcode = microcode.withStore(opcode: opcode, controlWord: controlWord)
             }
         }
@@ -237,5 +243,9 @@ public class MicrocodeGenerator: NSObject {
     
     public func getOpcode(withMnemonic mnemonic: String) -> Int? {
         return mapMnemonicToOpcode[mnemonic]
+    }
+    
+    public func getMnemonic(withOpcode opcode: Int) -> String? {
+        return mapOpcodeToMnemonic[opcode]
     }
 }

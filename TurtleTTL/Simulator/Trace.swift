@@ -9,6 +9,8 @@
 import Cocoa
 
 public class Trace: NSObject {
+    let formatter = InstructionFormatter()
+    
     public enum Element {
         case instruction(Instruction)
         case guardFlags(Flags)
@@ -27,5 +29,21 @@ public class Trace: NSObject {
     
     public func appendGuard(address: UInt16) {
         elements.append(.guardAddress(address))
+    }
+    
+    public override var description: String {
+        var result = ""
+        for el in elements {
+            switch el {
+            case .instruction(let ins):
+                result += formatter.format(instruction: ins)
+            case .guardFlags(let flags):
+                result += "guard<flags=\(flags)>"
+            case .guardAddress(let address):
+                result += "guard<address=0x" + String(address, radix: 16) + ">"
+            }
+            result += "\n"
+        }
+        return result
     }
 }

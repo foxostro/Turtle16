@@ -14,13 +14,6 @@ class ComputerRev1Tests: XCTestCase {
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
-    class ConsoleLogger: NSObject, Logger {
-        func append(_ format: String, _ args: CVarArg...) {
-            let message = String(format:format, arguments:args)
-            NSLog(message)
-        }
-    }
-    
     func makeComputer() -> ComputerRev1 {
         let computer = ComputerRev1()
         computer.logger = isVerboseLogging ? ConsoleLogger() : nil

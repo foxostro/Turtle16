@@ -48,4 +48,17 @@ class TraceTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func testLogTrace() {
+        let trace = Trace()
+        trace.append(instruction: Instruction())
+        trace.appendGuard(flags: Flags(1, 1))
+        trace.appendGuard(address: 0xFFFF)
+        XCTAssertEqual(trace.description, """
+NOP
+guard<flags={carryFlag: 1, equalFlag: 1}>
+guard<address=0xffff>
+
+""")
+    }
 }

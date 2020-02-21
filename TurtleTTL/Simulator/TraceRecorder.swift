@@ -23,17 +23,10 @@ public class TraceRecorder: NSObject {
     }
     
     public func record(pc: UInt16, instruction: Instruction) {
-        trace.append(pc: pc, instruction: instruction)
-        if doesHalt(instruction) {
+        if instruction.disassembly == "HLT" {
             state = .abandoned
+        } else {
+            trace.append(pc: pc, instruction: instruction)
         }
-    }
-    
-    fileprivate func doesHalt(_ instruction: Instruction) -> Bool {
-        return .active == getControlWord(instruction).HLT
-    }
-    
-    fileprivate func getControlWord(_ instruction: Instruction) -> ControlWord {
-        return ControlWord(withValue: UInt(microcodeGenerator.microcode.load(from: Int(instruction.opcode))))
     }
 }

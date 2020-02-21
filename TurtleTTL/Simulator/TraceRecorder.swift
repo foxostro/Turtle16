@@ -22,11 +22,16 @@ public class TraceRecorder: NSObject {
         self.microcodeGenerator = microcodeGenerator
     }
     
-    public func record(pc: UInt16, instruction: Instruction) {
+    public func record(instruction: Instruction,
+                       stateBefore: CPUStateSnapshot,
+                       stateAfter: CPUStateSnapshot) {
         if instruction.disassembly == "HLT" {
             state = .abandoned
+        } else if instruction.disassembly == "JMP" {
+            let xy: UInt16 = UInt16(stateAfter.registerX.integerValue<<8 | stateAfter.registerY.integerValue)
+            trace.appendGuard(pc: stateBefore.pc.value, address: xy)
         } else {
-            trace.append(pc: pc, instruction: instruction)
+            trace.append(pc: stateBefore.pc.value, instruction: instruction)
         }
     }
 }

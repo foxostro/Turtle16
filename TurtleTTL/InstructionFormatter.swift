@@ -52,4 +52,10 @@ public class InstructionFormatter: NSObject {
         
         return mnemonic
     }
+    
+    public func makeInstructionWithDisassembly(instruction: Instruction) -> Instruction {
+        return Instruction(opcode: instruction.opcode,
+                           immediate: instruction.immediate,
+                           disassembly: format(instruction: instruction))
+    }
 }

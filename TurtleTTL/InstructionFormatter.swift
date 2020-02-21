@@ -9,10 +9,16 @@
 import Cocoa
 
 public class InstructionFormatter: NSObject {
-    let microcodeGenerator = MicrocodeGenerator()
+    let microcodeGenerator: MicrocodeGenerator
     
-    public override init() {
+    public override convenience init() {
+        let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
+        self.init(microcodeGenerator: microcodeGenerator)
+    }
+    
+    public init(microcodeGenerator: MicrocodeGenerator) {
+        self.microcodeGenerator = microcodeGenerator
     }
     
     public func format(instruction: Instruction) -> String {

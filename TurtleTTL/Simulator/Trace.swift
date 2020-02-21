@@ -9,7 +9,6 @@
 import Cocoa
 
 public class Trace: NSObject {
-    static let formatter = InstructionFormatter()
     public typealias PC = UInt16
     
     public enum Element {
@@ -37,7 +36,7 @@ public class Trace: NSObject {
         for el in elements {
             switch el {
             case .instruction(let pc, let ins):
-                result += String(format: "0x%04x:\t%@", pc, Trace.formatter.format(instruction: ins))
+                result += String(format: "0x%04x:\t%@", pc, ins)
             case .guardFlags(let pc, let flags):
                 result += String(format: "guard:\tflags=%@, traceExitingPC=0x%04x", flags, pc)
             case .guardAddress(let pc, let address):

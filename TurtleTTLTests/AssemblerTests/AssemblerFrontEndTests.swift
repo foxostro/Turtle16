@@ -534,4 +534,9 @@ class AssemblerFrontEndTests: XCTestCase {
         let microcodeGenerator = makeMicrocodeGenerator()
         XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JGE")!))
     }
+    
+    func testCompiledInstructionsIncludeDisassembly() {
+        let instructions = mustCompile("NOP")
+        XCTAssertEqual(instructions[1].disassembly, "NOP")
+    }
 }

@@ -9,38 +9,39 @@
 import Cocoa
 
 public class Trace: NSObject {
-    let formatter = InstructionFormatter()
+    static let formatter = InstructionFormatter()
+    public typealias PC = UInt16
     
     public enum Element {
-        case instruction(Instruction)
-        case guardFlags(Flags)
-        case guardAddress(UInt16)
+        case instruction(PC, Instruction)
+        case guardFlags(PC, Flags)
+        case guardAddress(PC, UInt16)
     }
     
     public private(set) var elements: [Element] = []
     
-    public func append(instruction: Instruction) {
-        elements.append(.instruction(instruction))
+    public func append(pc: PC, instruction: Instruction) {
+        elements.append(.instruction(pc, instruction))
     }
     
-    public func appendGuard(flags: Flags) {
-        elements.append(.guardFlags(flags))
+    public func appendGuard(pc: PC, flags: Flags) {
+        elements.append(.guardFlags(pc, flags))
     }
     
-    public func appendGuard(address: UInt16) {
-        elements.append(.guardAddress(address))
+    public func appendGuard(pc: PC, address: UInt16) {
+        elements.append(.guardAddress(pc, address))
     }
     
     public override var description: String {
         var result = ""
         for el in elements {
             switch el {
-            case .instruction(let ins):
-                result += formatter.format(instruction: ins)
-            case .guardFlags(let flags):
-                result += "guard<flags=\(flags)>"
-            case .guardAddress(let address):
-                result += "guard<address=0x" + String(address, radix: 16) + ">"
+            case .instruction(let pc, let ins):
+                result += String(format: "0x%04x:\t%@", pc, Trace.formatter.format(instruction: ins))
+            case .guardFlags(let pc, let flags):
+                result += String(format: "guard:\tflags=%@, traceExitingPC=0x%04x", flags, pc)
+            case .guardAddress(let pc, let address):
+                result += String(format: "guard:\taddress=0x%04x, traceExitingPC=0x%04x", address, pc)
             }
             result += "\n"
         }

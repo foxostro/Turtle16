@@ -62,4 +62,9 @@ class InstructionTests: XCTestCase {
     func testInstructionTestsNotEqualAgainstDifferentObject() {
         XCTAssertNotEqual([Instruction() as NSObject], [1 as NSObject])
     }
+    
+    func testInstructionWithProvidedDisassembly() {
+        XCTAssertEqual(Instruction("{op=0b0, imm=0b0}"),
+                       Instruction(opcode: 0, immediate: 0, disassembly: "NOP"))
+    }
 }

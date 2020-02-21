@@ -9,26 +9,33 @@
 import Cocoa
 
 // An instruction loaded from instruction memory.
-// Each isntruction is a sixteen bit value composed of an eight-bit opcode and
+// Each instruction is a sixteen bit value composed of an eight-bit opcode and
 // an eight-bit immediate value.
 public class Instruction: NSObject {
     public let opcode: UInt8
     public let immediate: UInt8
+    public let disassembly: String
     
-    public override init() {
-        opcode = 0
-        immediate = 0
-        super.init()
+    public static func makeBasicDescription(opcode: UInt8, immediate: UInt8) -> String {
+        return String(format: "{op=0b%@, imm=0b%@}",
+                      String(opcode, radix: 2),
+                      String(immediate, radix: 2))
     }
     
-    public init(opcode: UInt8, immediate: UInt8) {
+    public override convenience init() {
+        self.init(opcode: 0, immediate: 0)
+    }
+    
+    public convenience init(opcode: Int, immediate: Int, disassembly: String? = nil) {
+        self.init(opcode: UInt8(opcode),
+                  immediate: UInt8(immediate),
+                  disassembly: disassembly)
+    }
+    
+    public init(opcode: UInt8, immediate: UInt8, disassembly: String? = nil) {
         self.opcode = opcode
         self.immediate = immediate
-    }
-    
-    public init(opcode: Int, immediate: Int) {
-        self.opcode = UInt8(opcode)
-        self.immediate = UInt8(immediate)
+        self.disassembly = disassembly ?? Instruction.makeBasicDescription(opcode: opcode, immediate: immediate)
     }
     
     public init?(_ stringValue: String) {
@@ -55,6 +62,8 @@ public class Instruction: NSObject {
         } else {
             return nil
         }
+        
+        self.disassembly = stringValue
     }
     
     public var value:UInt16 {
@@ -62,9 +71,7 @@ public class Instruction: NSObject {
     }
     
     public override var description: String {
-        return String(format: "{op=0b%@, imm=0b%@}",
-                      String(opcode, radix: 2),
-                      String(immediate, radix: 2))
+        return disassembly
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

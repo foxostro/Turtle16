@@ -17,18 +17,39 @@ public class InstructionFormatter: NSObject {
     
     public func format(instruction: Instruction) -> String {
         let maybeMnemonic = microcodeGenerator.getMnemonic(withOpcode: Int(instruction.opcode))
-        guard var mnemonic = maybeMnemonic else { return "UNKNOWN" }
+        guard let mnemonic = maybeMnemonic else { return "UNKNOWN" }
         if mnemonic.hasPrefix("ALU") {
             switch instruction.immediate {
             case 0b0110:
                 return "CMP"
             case 0b1001:
-                mnemonic = "ADD" + mnemonic.dropFirst(3)
-                return mnemonic
+                return "ADD" + mnemonic.dropFirst(3)
             default:
                 return mnemonic
             }
         }
+        else if mnemonic == "MOV A, C" {
+            return "LI A, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV B, C" {
+            return "LI B, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV D, C" {
+            return "LI D, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV X, C" {
+            return "LI X, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV Y, C" {
+            return "LI Y, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV U, C" {
+            return "LI U, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV V, C" {
+            return "LI V, \(instruction.immediate)"
+        }
+        
         return mnemonic
     }
 }

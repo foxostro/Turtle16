@@ -56,6 +56,8 @@
 		6F6A023B23FF7024003876BD /* TraceRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */; };
 		6F6A023D23FF7204003876BD /* Trace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023C23FF7204003876BD /* Trace.swift */; };
 		6F6A024123FF7225003876BD /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024023FF7225003876BD /* TraceTests.swift */; };
+		6F6A024323FF7926003876BD /* InstructionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024223FF7926003876BD /* InstructionFormatter.swift */; };
+		6F6A024523FF7931003876BD /* InstructionFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */; };
 		6F78DA3D23D947F4000ACA88 /* Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F78DA3C23D947F4000ACA88 /* Computer.swift */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F7E7FB623BEAADE00647482 /* ComputerPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */; };
@@ -231,6 +233,8 @@
 		6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceRecorderTests.swift; sourceTree = "<group>"; };
 		6F6A023C23FF7204003876BD /* Trace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trace.swift; sourceTree = "<group>"; };
 		6F6A024023FF7225003876BD /* TraceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceTests.swift; sourceTree = "<group>"; };
+		6F6A024223FF7926003876BD /* InstructionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionFormatter.swift; sourceTree = "<group>"; };
+		6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionFormatterTests.swift; sourceTree = "<group>"; };
 		6F78DA3C23D947F4000ACA88 /* Computer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computer.swift; sourceTree = "<group>"; };
 		6F790AE822EEDD1900B38267 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewLogger.swift; sourceTree = "<group>"; };
@@ -456,6 +460,7 @@
 				6F5A0138231F7C77003E7C7F /* Simulator */,
 				6FE0038B22F3D75E00221C4C /* Info.plist */,
 				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
+				6F6A024223FF7926003876BD /* InstructionFormatter.swift */,
 				6F790AE822EEDD1900B38267 /* Logger.swift */,
 				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
 				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
@@ -470,6 +475,7 @@
 				6F5A013A231F7CCC003E7C7F /* SimulatorTests */,
 				6FE0039922F3D75E00221C4C /* Info.plist */,
 				6F37BA442305B559009754D3 /* InstructionTests.swift */,
+				6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */,
 				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
 			);
 			path = TurtleTTLTests;
@@ -855,6 +861,7 @@
 				6FE003B722F3D78B00221C4C /* Flags.swift in Sources */,
 				6F615171230CAF4A00282B12 /* AssemblerLexer.swift in Sources */,
 				6F088069230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift in Sources */,
+				6F6A024323FF7926003876BD /* InstructionFormatter.swift in Sources */,
 				6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */,
 				6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */,
 				6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */,
@@ -892,6 +899,7 @@
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,
 				6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */,
+				6F6A024523FF7931003876BD /* InstructionFormatterTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
 				6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */,
 				6FE003C422F3D88800221C4C /* ControlWordTests.swift in Sources */,

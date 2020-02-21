@@ -26,24 +26,45 @@ public struct CPUStateSnapshot {
     public var if_id: Instruction
     public var controlWord: ControlWord
     
+    public init() {
+        bus = Register()
+        registerA = Register()
+        registerB = Register()
+        registerC = Register()
+        registerD = Register()
+        registerG = Register()
+        registerH = Register()
+        registerX = Register()
+        registerY = Register()
+        registerU = Register()
+        registerV = Register()
+        aluResult = Register()
+        aluFlags = Flags()
+        flags = Flags()
+        pc = ProgramCounter()
+        pc_if = ProgramCounter()
+        if_id = Instruction()
+        controlWord = ControlWord()
+    }
+    
     public init(bus: Register,
-         registerA: Register,
-         registerB: Register,
-         registerC: Register,
-         registerD: Register,
-         registerG: Register,
-         registerH: Register,
-         registerX: Register,
-         registerY: Register,
-         registerU: Register,
-         registerV: Register,
-         aluResult: Register,
-         aluFlags: Flags,
-         flags: Flags,
-         pc: ProgramCounter,
-         pc_if: ProgramCounter,
-         if_id: Instruction,
-         controlWord: ControlWord) {
+                registerA: Register,
+                registerB: Register,
+                registerC: Register,
+                registerD: Register,
+                registerG: Register,
+                registerH: Register,
+                registerX: Register,
+                registerY: Register,
+                registerU: Register,
+                registerV: Register,
+                aluResult: Register,
+                aluFlags: Flags,
+                flags: Flags,
+                pc: ProgramCounter,
+                pc_if: ProgramCounter,
+                if_id: Instruction,
+                controlWord: ControlWord) {
         self.bus = bus
         self.registerA = registerA
         self.registerB = registerB

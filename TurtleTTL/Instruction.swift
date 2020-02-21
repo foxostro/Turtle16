@@ -14,13 +14,7 @@ import Cocoa
 public class Instruction: NSObject {
     public let opcode: UInt8
     public let immediate: UInt8
-    public let disassembly: String
-    
-    public static func makeBasicDescription(opcode: UInt8, immediate: UInt8) -> String {
-        return String(format: "{op=0b%@, imm=0b%@}",
-                      String(opcode, radix: 2),
-                      String(immediate, radix: 2))
-    }
+    public let disassembly: String?
     
     public override convenience init() {
         self.init(opcode: 0, immediate: 0)
@@ -35,7 +29,7 @@ public class Instruction: NSObject {
     public init(opcode: UInt8, immediate: UInt8, disassembly: String? = nil) {
         self.opcode = opcode
         self.immediate = immediate
-        self.disassembly = disassembly ?? Instruction.makeBasicDescription(opcode: opcode, immediate: immediate)
+        self.disassembly = disassembly
     }
     
     public init?(_ stringValue: String) {
@@ -63,7 +57,7 @@ public class Instruction: NSObject {
             return nil
         }
         
-        self.disassembly = stringValue
+        self.disassembly = nil
     }
     
     public var value:UInt16 {
@@ -71,7 +65,13 @@ public class Instruction: NSObject {
     }
     
     public override var description: String {
-        return disassembly
+        return disassembly ?? Instruction.makeBasicDescription(opcode: opcode, immediate: immediate)
+    }
+    
+    fileprivate static func makeBasicDescription(opcode: UInt8, immediate: UInt8) -> String {
+        return String(format: "{op=0b%@, imm=0b%@}",
+                      String(opcode, radix: 2),
+                      String(immediate, radix: 2))
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

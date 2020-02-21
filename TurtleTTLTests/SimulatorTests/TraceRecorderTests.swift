@@ -45,7 +45,7 @@ class TraceRecorderTests: XCTestCase {
         return Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
     }
     
-    func testRecordTraceWithoutGuards() {
+    func testRecordTraceThatAbortsOnHLT() {
         let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         recordTraceForProgram(recorder, """
 NOP
@@ -58,7 +58,6 @@ HLT
 0x0001:\tNOP
 0x0002:\tMOV A, B
 0x0003:\tLI A, 100
-0x0004:\tHLT
 """)
         
         XCTAssertEqual(recorder.state, .abandoned)

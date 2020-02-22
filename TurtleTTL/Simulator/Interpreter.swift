@@ -44,11 +44,8 @@ public class Interpreter: NSObject {
         doIF()
         doPCIF()
         
-        if (.active == cpuState.controlWord.J) {
-            doJump()
-        } else {
-            incrementPC()
-        }
+        handleControlSignalUVInc()
+        handleControlSignalJ()
     }
     
     func doID() {
@@ -68,11 +65,26 @@ public class Interpreter: NSObject {
         cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
     }
     
-    func doJump() {
-        cpuState.pc = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
+    fileprivate func handleControlSignalUVInc() {
+        if (.active == cpuState.controlWord.UVInc) {
+            incrementUV()
+        }
+    }
+
+    fileprivate func incrementUV() {
+        if cpuState.registerV.value == 255 {
+            cpuState.registerU = Register(withValue: cpuState.registerU.value &+ 1)
+            cpuState.registerV = Register(withValue: 0)
+        } else {
+            cpuState.registerV = Register(withValue: cpuState.registerV.value &+ 1)
+        }
     }
     
-    func incrementPC() {
-        cpuState.pc = cpuState.pc.increment()
+    fileprivate func handleControlSignalJ() {
+        if (.active == cpuState.controlWord.J) {
+            cpuState.pc = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
+        } else {
+            cpuState.pc = cpuState.pc.increment()
+        }
     }
 }

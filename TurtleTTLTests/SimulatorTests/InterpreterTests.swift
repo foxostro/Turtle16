@@ -110,7 +110,7 @@ class InterpreterTests: XCTestCase {
     }
     
     func testJMP() {
-        // Jump sets the program counter to the valuie of the XY register.
+        // Jump sets the program counter to the value of the XY register.
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerX = Register(withValue: 0xff)
         interpreter.cpuState.registerY = Register(withValue: 0xff)
@@ -123,5 +123,21 @@ class InterpreterTests: XCTestCase {
         interpreter.step()
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0xffff)
+    }
+    
+    func testINUV() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerU = Register(withValue: 0xfe)
+        interpreter.cpuState.registerV = Register(withValue: 0xff)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("INUV"))
+        interpreter.delegate = delegate
+        
+        interpreter.step()
+        interpreter.step()
+        interpreter.step()
+        
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 0xff)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 0x00)
     }
 }

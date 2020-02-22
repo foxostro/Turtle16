@@ -10,24 +10,7 @@ import Cocoa
 
 // Simulates the behavior of the TurtleTTL hardware.
 public class ComputerRev1: NSObject, Computer {
-    public var bus = Register()
-    public var registerA = Register()
-    public var registerB = Register()
-    public var registerC = Register()
-    public var registerD = Register()
-    public var registerG = Register() // LinkHi
-    public var registerH = Register() // LinkLo
-    public var registerX = Register()
-    public var registerY = Register()
-    public var registerU = Register()
-    public var registerV = Register()
-    public var aluResult = Register()
-    public var aluFlags = Flags()
-    public var flags = Flags()
-    public var pc = ProgramCounter()
-    public var pc_if = ProgramCounter()
-    public var if_id = Instruction()
-    public var controlWord = ControlWord()
+    public let cpuState = CPUStateSnapshot()
     public var dataRAM = RAM()
     public var upperInstructionRAM = RAM()
     public var lowerInstructionRAM = RAM()
@@ -69,11 +52,11 @@ public class ComputerRev1: NSObject, Computer {
                              loadLowerInstructionRAM)
         peripherals.getSerialInterface().didUpdateSerialOutput = didUpdateSerialOutput
         
-        bus = Register()
-        pc = ProgramCounter()
-        pc_if = ProgramCounter()
-        if_id = Instruction()
-        controlWord = ControlWord()
+        cpuState.bus = Register()
+        cpuState.pc = ProgramCounter()
+        cpuState.pc_if = ProgramCounter()
+        cpuState.if_id = Instruction()
+        cpuState.controlWord = ControlWord()
     }
     
     public func runUntilHalted() {
@@ -95,78 +78,78 @@ public class ComputerRev1: NSObject, Computer {
         doPCIF()
         doALU()
         
-        bus = Register(withValue: 0) // The bus pulls down to zero if nothing asserts a value.
+        cpuState.bus = Register(withValue: 0) // The bus pulls down to zero if nothing asserts a value.
         peripherals.resetControlSignals()
         
-        logger?.append("Executing control word %@", controlWord)
+        logger?.append("Executing control word %@", cpuState.controlWord)
         
-        if (.active == controlWord.CO) {
+        if (.active == cpuState.controlWord.CO) {
             outputRegisterC()
         }
         
-        if (.active == controlWord.YO) {
+        if (.active == cpuState.controlWord.YO) {
             outputRegisterY()
         }
         
-        if (.active == controlWord.XO) {
+        if (.active == cpuState.controlWord.XO) {
             outputRegisterX()
         }
         
-        if (.active == controlWord.PO) {
-            peripherals.activateSignalPO(registerD.integerValue)
+        if (.active == cpuState.controlWord.PO) {
+            peripherals.activateSignalPO(cpuState.registerD.integerValue)
         }
         
-        if (.active == controlWord.MO) {
+        if (.active == cpuState.controlWord.MO) {
             outputDataRAM()
         }
         
-        if (.active == controlWord.VO) {
+        if (.active == cpuState.controlWord.VO) {
             outputRegisterV()
         }
         
-        if (.active == controlWord.UO) {
+        if (.active == cpuState.controlWord.UO) {
             outputRegisterU()
         }
         
-        if (.active == controlWord.EO) {
+        if (.active == cpuState.controlWord.EO) {
             outputRegisterE()
         }
         
-        if (.active == controlWord.FI) {
+        if (.active == cpuState.controlWord.FI) {
             latchFlagsRegister()
         }
         
-        if (.active == controlWord.AO) {
+        if (.active == cpuState.controlWord.AO) {
             outputRegisterA()
         }
         
-        if (.active == controlWord.BO) {
+        if (.active == cpuState.controlWord.BO) {
             outputRegisterB()
         }
         
-        if (.active == controlWord.LinkHiOut) {
+        if (.active == cpuState.controlWord.LinkHiOut) {
             outputRegisterG()
         }
         
-        if (.active == controlWord.LinkLoOut) {
+        if (.active == cpuState.controlWord.LinkLoOut) {
             outputRegisterH()
         }
         
-        if (.active == controlWord.XYInc) {
+        if (.active == cpuState.controlWord.XYInc) {
             incrementXY()
         }
         
-        if (.active == controlWord.UVInc) {
+        if (.active == cpuState.controlWord.UVInc) {
             incrementUV()
         }
         
-        if (.active == controlWord.J) {
+        if (.active == cpuState.controlWord.J) {
             doJump()
         } else {
             incrementPC()
         }
         
-        if (.active == controlWord.HLT) {
+        if (.active == cpuState.controlWord.HLT) {
             logger?.append("HLT")
         }
         
@@ -174,89 +157,89 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     func latchFlagsRegister() {
-        let prev = flags
-        flags = Flags(aluFlags.carryFlag, aluFlags.equalFlag)
-        logger?.append("FI -- flags changing from %@ to %@", prev, flags)
+        let prev = cpuState.flags
+        cpuState.flags = Flags(cpuState.aluFlags.carryFlag, cpuState.aluFlags.equalFlag)
+        logger?.append("FI -- flags changing from %@ to %@", prev, cpuState.flags)
     }
     
     func outputRegisterA() {
-        bus = Register(withValue: registerA.value)
-        logger?.append("AO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerA.value)
+        logger?.append("AO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterB() {
-        bus = Register(withValue: registerB.value)
-        logger?.append("BO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerB.value)
+        logger?.append("BO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterC() {
-        bus = Register(withValue: registerC.value)
-        logger?.append("CO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerC.value)
+        logger?.append("CO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterE() {
-        bus = Register(withValue: aluResult.value)
-        logger?.append("EO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.aluResult.value)
+        logger?.append("EO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterG() {
-        bus = Register(withValue: registerG.value)
-        logger?.append("LinkHiOut -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerG.value)
+        logger?.append("LinkHiOut -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterH() {
-        bus = Register(withValue: registerH.value)
-        logger?.append("LinkLoOut -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerH.value)
+        logger?.append("LinkLoOut -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterX() {
-        bus = Register(withValue: registerX.value)
-        logger?.append("XO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerX.value)
+        logger?.append("XO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterY() {
-        bus = Register(withValue: registerY.value)
-        logger?.append("YO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerY.value)
+        logger?.append("YO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterU() {
-        bus = Register(withValue: registerU.value)
-        logger?.append("UO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerU.value)
+        logger?.append("UO -- output %@ onto bus", cpuState.bus)
     }
     
     func outputRegisterV() {
-        bus = Register(withValue: registerV.value)
-        logger?.append("VO -- output %@ onto bus", bus)
+        cpuState.bus = Register(withValue: cpuState.registerV.value)
+        logger?.append("VO -- output %@ onto bus", cpuState.bus)
     }
     
     public func incrementXY() {
-        if registerY.value == 255 {
-            registerX = Register(withValue: registerX.value &+ 1)
-            registerY = Register(withValue: 0)
+        if cpuState.registerY.value == 255 {
+            cpuState.registerX = Register(withValue: cpuState.registerX.value &+ 1)
+            cpuState.registerY = Register(withValue: 0)
         } else {
-            registerY = Register(withValue: registerY.value &+ 1)
+            cpuState.registerY = Register(withValue: cpuState.registerY.value &+ 1)
         }
         logger?.append("XYInc -- Increment XY register pair. New value is 0x%@",
                        String(valueOfXYPair(), radix: 16))
     }
 
     public func incrementUV() {
-        if registerV.value == 255 {
-            registerU = Register(withValue: registerU.value &+ 1)
-            registerV = Register(withValue: 0)
+        if cpuState.registerV.value == 255 {
+            cpuState.registerU = Register(withValue: cpuState.registerU.value &+ 1)
+            cpuState.registerV = Register(withValue: 0)
         } else {
-            registerV = Register(withValue: registerV.value &+ 1)
+            cpuState.registerV = Register(withValue: cpuState.registerV.value &+ 1)
         }
         logger?.append("XYInc -- Increment UV register pair. New value is 0x%@",
                        String(valueOfUVPair(), radix: 16))
     }
     
     func doJump() {
-        let oldPC = pc.value
+        let oldPC = cpuState.pc.value
         let newPC = UInt16(valueOfXYPair())
         recordBackwardJumps(newPC, oldPC)
-        pc = ProgramCounter(withValue: newPC)
-        logger?.append("J -- jump to %@", pc)
+        cpuState.pc = ProgramCounter(withValue: newPC)
+        logger?.append("J -- jump to %@", cpuState.pc)
     }
     
     func recordBackwardJumps(_ newPC: UInt16, _ oldPC: UInt16) {
@@ -269,108 +252,108 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     func incrementPC() {
-        pc = pc.increment()
-        logger?.append("PC -> %@", pc)
+        cpuState.pc = cpuState.pc.increment()
+        logger?.append("PC -> %@", cpuState.pc)
     }
     
     func outputDataRAM() {
-        bus = Register(withValue: dataRAM.load(from: valueOfUVPair()))
+        cpuState.bus = Register(withValue: dataRAM.load(from: valueOfUVPair()))
         logger?.append("MO -- Load %@ from Data RAM at address 0x%@",
-                       bus, String(valueOfUVPair(), radix: 16))
+                       cpuState.bus, String(valueOfUVPair(), radix: 16))
     }
     
     func doID() {
-        registerC = Register(withValue: if_id.immediate)
-        let opcode = Int(if_id.opcode)
+        cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
+        let opcode = Int(cpuState.if_id.opcode)
         let b = instructionDecoder.load(opcode: opcode,
-                                        carryFlag: flags.carryFlag,
-                                        equalFlag: flags.equalFlag)
-        controlWord = ControlWord(withValue: UInt(b))
+                                        carryFlag: cpuState.flags.carryFlag,
+                                        equalFlag: cpuState.flags.equalFlag)
+        cpuState.controlWord = ControlWord(withValue: UInt(b))
     }
     
     func doIF() {
         let offset = 0x8000
-        if pc_if.value < offset {
-            if_id = instructionROM.load(from: pc_if.integerValue)
+        if cpuState.pc_if.value < offset {
+            cpuState.if_id = instructionROM.load(from: cpuState.pc_if.integerValue)
         } else {
-            let opcode = Int(upperInstructionRAM.load(from: pc_if.integerValue - offset))
-            let immediate = Int(lowerInstructionRAM.load(from: pc_if.integerValue - offset))
-            if_id = Instruction(opcode: opcode, immediate: immediate)
+            let opcode = Int(upperInstructionRAM.load(from: cpuState.pc_if.integerValue - offset))
+            let immediate = Int(lowerInstructionRAM.load(from: cpuState.pc_if.integerValue - offset))
+            cpuState.if_id = Instruction(opcode: opcode, immediate: immediate)
         }
-        logger?.append("IF/ID -> %@", if_id)
+        logger?.append("IF/ID -> %@", cpuState.if_id)
     }
     
     func doPCIF() {
-        pc_if = ProgramCounter(withValue: pc.value)
-        logger?.append("PC/IF -> %@", pc_if)
+        cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
+        logger?.append("PC/IF -> %@", cpuState.pc_if)
     }
     
     func doALU() {
-        let a = registerA.value
-        let b = registerB.value
-        let c = registerC.value
+        let a = cpuState.registerA.value
+        let b = cpuState.registerB.value
+        let c = cpuState.registerC.value
         let alu = ALU()
         alu.s = (c & 0b1111)
         alu.mode = Int(c & 0b10000) >> 4
-        alu.carryIn = (controlWord.CarryIn == .active) ? 0 : 1
+        alu.carryIn = (cpuState.controlWord.CarryIn == .active) ? 0 : 1
         alu.a = a
         alu.b = b
         alu.update()
         
-        if (.active==controlWord.EO || .active==controlWord.FI) {
+        if (.active==cpuState.controlWord.EO || .active==cpuState.controlWord.FI) {
             logger?.append("ALU operation with s = 0b%@, carryIn = %x, mode = %x, a = 0x%x, b = 0x%x. This yields result = 0x%x, carryFlag = %x, equalFlag = %x", String(alu.s, radix: 2), alu.carryIn, alu.mode, alu.a, alu.b, alu.result, alu.carryFlag, alu.equalFlag)
         }
         
-        aluResult = Register(withValue: alu.result)
-        aluFlags = Flags(alu.carryFlag, alu.equalFlag)
+        cpuState.aluResult = Register(withValue: alu.result)
+        cpuState.aluFlags = Flags(alu.carryFlag, alu.equalFlag)
     }
     
     func doPeripheralControlClock() {
-        peripherals.bus = bus
-        peripherals.registerX = registerX
-        peripherals.registerY = registerY
+        peripherals.bus = cpuState.bus
+        peripherals.registerX = cpuState.registerX
+        peripherals.registerY = cpuState.registerY
         peripherals.onControlClock()
-        bus = peripherals.bus
+        cpuState.bus = peripherals.bus
     }
     
     func onRegisterClock() {
-        if (.active == controlWord.YI) {
+        if (.active == cpuState.controlWord.YI) {
             inputRegisterY()
         }
         
-        if (.active == controlWord.XI) {
+        if (.active == cpuState.controlWord.XI) {
             inputRegisterX()
         }
         
-        if (.active == controlWord.VI) {
+        if (.active == cpuState.controlWord.VI) {
             inputRegisterV()
         }
         
-        if (.active == controlWord.UI) {
+        if (.active == cpuState.controlWord.UI) {
             inputRegisterU()
         }
         
-        if (.active == controlWord.AI) {
+        if (.active == cpuState.controlWord.AI) {
             inputRegisterA()
         }
         
-        if (.active == controlWord.BI) {
+        if (.active == cpuState.controlWord.BI) {
             inputRegisterB()
         }
         
-        if (.active == controlWord.DI) {
+        if (.active == cpuState.controlWord.DI) {
             inputRegisterD()
         }
         
-        if (.active == controlWord.PI) {
-            peripherals.activateSignalPI(registerD.integerValue)
+        if (.active == cpuState.controlWord.PI) {
+            peripherals.activateSignalPI(cpuState.registerD.integerValue)
         }
         
-        if (.active == controlWord.MI) {
+        if (.active == cpuState.controlWord.MI) {
             inputDataRAM()
         }
         
-        if (.active == controlWord.LinkIn) {
+        if (.active == cpuState.controlWord.LinkIn) {
             inputLinkRegister()
         }
         
@@ -378,65 +361,65 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     func inputRegisterA() {
-        logger?.append("AI -- input %@ from bus", bus)
-        registerA = Register(withValue: bus.value)
+        logger?.append("AI -- input %@ from bus", cpuState.bus)
+        cpuState.registerA = Register(withValue: cpuState.bus.value)
     }
     
     func inputRegisterB() {
-        logger?.append("BI -- input %@ from bus", bus)
-        registerB = Register(withValue: bus.value)
+        logger?.append("BI -- input %@ from bus", cpuState.bus)
+        cpuState.registerB = Register(withValue: cpuState.bus.value)
     }
     
     func inputRegisterD() {
-        registerD = Register(withValue: bus.value)
-        let name = peripherals.getName(at: Int(registerD.value & 0b111))
+        cpuState.registerD = Register(withValue: cpuState.bus.value)
+        let name = peripherals.getName(at: Int(cpuState.registerD.value & 0b111))
         logger?.append("DI -- input %@ from bus. Selected peripheral is now \"%@\"",
-                       registerD, name)
+                       cpuState.registerD, name)
     }
     
     func inputRegisterX() {
-        logger?.append("XI -- input %@ from bus", bus)
-        registerX = Register(withValue: bus.value)
+        logger?.append("XI -- input %@ from bus", cpuState.bus)
+        cpuState.registerX = Register(withValue: cpuState.bus.value)
     }
     
     func inputRegisterY() {
-        logger?.append("YI -- input %@ from bus", bus)
-        registerY = Register(withValue: bus.value)
+        logger?.append("YI -- input %@ from bus", cpuState.bus)
+        cpuState.registerY = Register(withValue: cpuState.bus.value)
     }
     
     func inputRegisterU() {
-        logger?.append("UI -- input %@ from bus", bus)
-        registerU = Register(withValue: bus.value)
+        logger?.append("UI -- input %@ from bus", cpuState.bus)
+        cpuState.registerU = Register(withValue: cpuState.bus.value)
     }
     
     func inputRegisterV() {
-        logger?.append("VI -- input %@ from bus", bus)
-        registerV = Register(withValue: bus.value)
+        logger?.append("VI -- input %@ from bus", cpuState.bus)
+        cpuState.registerV = Register(withValue: cpuState.bus.value)
     }
     
     func inputDataRAM() {
         logger?.append("MI -- Store %@ to Data RAM at address 0x%@",
-                       bus, String(valueOfUVPair(), radix: 16))
-        dataRAM = dataRAM.withStore(value: bus.value, to:valueOfUVPair())
+                       cpuState.bus, String(valueOfUVPair(), radix: 16))
+        dataRAM = dataRAM.withStore(value: cpuState.bus.value, to:valueOfUVPair())
     }
     
     func inputLinkRegister() {
-        registerG = Register(withValue: UInt8((pc.value >> 8) & 0xff))
-        registerH = Register(withValue: UInt8(pc.value & 0xff))
+        cpuState.registerG = Register(withValue: UInt8((cpuState.pc.value >> 8) & 0xff))
+        cpuState.registerH = Register(withValue: UInt8(cpuState.pc.value & 0xff))
         logger?.append("LinkIn -- Setting the Link register with PC value of 0x%@",
-                       pc.stringValue)
+                       cpuState.pc.stringValue)
     }
     
     fileprivate func doPeripheralRegisterClock() {
-        peripherals.bus = bus
-        peripherals.registerX = registerX
-        peripherals.registerY = registerY
+        peripherals.bus = cpuState.bus
+        peripherals.registerX = cpuState.registerX
+        peripherals.registerY = cpuState.registerY
         peripherals.onRegisterClock()
     }
     
     public func execute() {
         reset()
-        while (.inactive == controlWord.HLT) {
+        while (.inactive == cpuState.controlWord.HLT) {
             step()
         }
     }
@@ -498,36 +481,15 @@ public class ComputerRev1: NSObject, Computer {
         instructionROM = rom
     }
     
-    public var cpuState: CPUStateSnapshot {
-        return CPUStateSnapshot(bus: bus,
-                                registerA: registerA,
-                                registerB: registerB,
-                                registerC: registerC,
-                                registerD: registerD,
-                                registerG: registerG, // LinkHi
-                                registerH: registerH, // LinkLo
-                                registerX: registerX,
-                                registerY: registerY,
-                                registerU: registerU,
-                                registerV: registerV,
-                                aluResult: aluResult,
-                                aluFlags: aluFlags,
-                                flags: flags,
-                                pc: pc,
-                                pc_if: pc_if,
-                                if_id: if_id,
-                                controlWord:controlWord)
-    }
-    
     public func provideSerialInput(bytes: [UInt8]) {
         peripherals.getSerialInterface().provideSerialInput(bytes: bytes)
     }
     
     func valueOfXYPair() -> Int {
-        return registerX.integerValue<<8 | registerY.integerValue
+        return cpuState.registerX.integerValue<<8 | cpuState.registerY.integerValue
     }
 
     func valueOfUVPair() -> Int {
-        return registerU.integerValue<<8 | registerV.integerValue
+        return cpuState.registerU.integerValue<<8 | cpuState.registerV.integerValue
     }
 }

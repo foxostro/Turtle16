@@ -94,4 +94,18 @@ class InterpreterTests: XCTestCase {
         XCTAssertEqual(.active, interpreter.cpuState.controlWord.HLT)
         XCTAssertEqual(3, interpreter.cpuState.pc.value)
     }
+    
+    func testInstructionImmediateValueGoesToRegisterC() {
+        // The instruction immediate value ends up in register C when the
+        // instruction executes.
+        let interpreter = makeInterpreter()
+        let delegate = TestInterpreterDelegate(instructions: assemble("LI A, 42"))
+        interpreter.delegate = delegate
+        
+        interpreter.step()
+        interpreter.step()
+        interpreter.step()
+        
+        XCTAssertEqual(interpreter.cpuState.registerC.value, 42)
+    }
 }

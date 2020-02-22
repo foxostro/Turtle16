@@ -37,6 +37,7 @@ public class Interpreter: NSObject {
     // Emulates one hardware clock tick.
     public func step() {
         onControlClock()
+        onRegisterClock()
     }
     
     fileprivate func onControlClock() {
@@ -44,6 +45,22 @@ public class Interpreter: NSObject {
         doIF()
         doPCIF()
         
+        cpuState.bus = Register(withValue: 0) // The bus pulls down to zero if nothing asserts a value.
+        
+        handleControlSignalCO()
+        handleControlSignalYO()
+        handleControlSignalXO()
+        handleControlSignalPO()
+        handleControlSignalMO()
+        handleControlSignalVO()
+        handleControlSignalUO()
+        handleControlSignalEO()
+        handleControlSignalFI()
+        handleControlSignalAO()
+        handleControlSignalBO()
+        handleControlSignalLinkHiOut()
+        handleControlSignalLinkLoOut()
+        handleControlSignalXYInc()
         handleControlSignalUVInc()
         handleControlSignalJ()
     }
@@ -63,6 +80,99 @@ public class Interpreter: NSObject {
     
     func doPCIF() {
         cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
+    }
+    
+    fileprivate func handleControlSignalCO() {
+        if (.active == cpuState.controlWord.CO) {
+            cpuState.bus = Register(withValue: cpuState.registerC.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalYO() {
+        if (.active == cpuState.controlWord.YO) {
+            cpuState.bus = Register(withValue: cpuState.registerY.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalXO() {
+        if (.active == cpuState.controlWord.XO) {
+            cpuState.bus = Register(withValue: cpuState.registerX.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalPO() {
+//        if (.active == cpuState.controlWord.PO) {
+//            peripherals.activateSignalPO(cpuState.registerD.integerValue)
+//        }
+    }
+    
+    fileprivate func handleControlSignalMO() {
+//        if (.active == cpuState.controlWord.MO) {
+//            outputDataRAM()
+//        }
+    }
+    
+    fileprivate func handleControlSignalVO() {
+        if (.active == cpuState.controlWord.VO) {
+            cpuState.bus = Register(withValue: cpuState.registerV.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalUO() {
+        if (.active == cpuState.controlWord.UO) {
+            cpuState.bus = Register(withValue: cpuState.registerU.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalEO() {
+//        if (.active == cpuState.controlWord.EO) {
+//            cpuState.bus = Register(withValue: cpuState.aluResult.value)
+//        }
+    }
+    
+    fileprivate func handleControlSignalFI() {
+//        if (.active == cpuState.controlWord.FI) {
+//            cpuState.flags = Flags(cpuState.aluFlags.carryFlag, cpuState.aluFlags.equalFlag)
+//        }
+    }
+    
+    fileprivate func handleControlSignalAO() {
+        if (.active == cpuState.controlWord.AO) {
+            cpuState.bus = Register(withValue: cpuState.registerA.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalBO() {
+        if (.active == cpuState.controlWord.BO) {
+            cpuState.bus = Register(withValue: cpuState.registerB.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalLinkHiOut() {
+        if (.active == cpuState.controlWord.LinkHiOut) {
+            cpuState.bus = Register(withValue: cpuState.registerG.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalLinkLoOut() {
+        if (.active == cpuState.controlWord.LinkLoOut) {
+            cpuState.bus = Register(withValue: cpuState.registerH.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalXYInc() {
+        if (.active == cpuState.controlWord.XYInc) {
+            incrementXY()
+        }
+    }
+
+    fileprivate func incrementXY() {
+        if cpuState.registerY.value == 255 {
+            cpuState.registerX = Register(withValue: cpuState.registerX.value &+ 1)
+            cpuState.registerY = Register(withValue: 0)
+        } else {
+            cpuState.registerY = Register(withValue: cpuState.registerY.value &+ 1)
+        }
     }
     
     fileprivate func handleControlSignalUVInc() {
@@ -86,5 +196,78 @@ public class Interpreter: NSObject {
         } else {
             cpuState.pc = cpuState.pc.increment()
         }
+    }
+    
+    func onRegisterClock() {
+        handleControlSignalYI()
+        handleControlSignalXI()
+        handleControlSignalVI()
+        handleControlSignalUI()
+        handleControlSignalAI()
+        handleControlSignalBI()
+        handleControlSignalDI()
+        handleControlSignalPI()
+        handleControlSignalMI()
+        handleControlSignalLinkIn()
+    }
+    
+    fileprivate func handleControlSignalYI() {
+        if (.active == cpuState.controlWord.YI) {
+            cpuState.registerY = Register(withValue: cpuState.bus.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalXI() {
+        if (.active == cpuState.controlWord.XI) {
+            cpuState.registerX = Register(withValue: cpuState.bus.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalVI() {
+        if (.active == cpuState.controlWord.VI) {
+            cpuState.registerV = Register(withValue: cpuState.bus.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalUI() {
+        if (.active == cpuState.controlWord.UI) {
+            cpuState.registerU = Register(withValue: cpuState.bus.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalAI() {
+        if (.active == cpuState.controlWord.AI) {
+            cpuState.registerA = Register(withValue: cpuState.bus.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalBI() {
+        if (.active == cpuState.controlWord.BI) {
+            cpuState.registerB = Register(withValue: cpuState.bus.value)
+        }
+    }
+    
+    fileprivate func handleControlSignalDI() {
+        if (.active == cpuState.controlWord.DI) {
+            cpuState.registerD = Register(withValue: cpuState.bus.value)
+        }
+    }
+        
+    fileprivate func handleControlSignalPI() {
+//        if (.active == cpuState.controlWord.PI) {
+//            peripherals.activateSignalPI(cpuState.registerD.integerValue)
+//        }
+    }
+    
+    fileprivate func handleControlSignalMI() {
+//        if (.active == cpuState.controlWord.MI) {
+//            inputDataRAM()
+//        }
+    }
+ 
+    fileprivate func handleControlSignalLinkIn() {
+//        if (.active == cpuState.controlWord.LinkIn) {
+//            inputLinkRegister()
+//        }
     }
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public struct CPUStateSnapshot {
+public class CPUStateSnapshot {
     public var bus: Register
     public var registerA: Register
     public var registerB: Register

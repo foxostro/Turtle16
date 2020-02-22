@@ -43,7 +43,12 @@ public class Interpreter: NSObject {
         doID()
         doIF()
         doPCIF()
-        incrementPC()
+        
+        if (.active == cpuState.controlWord.J) {
+            doJump()
+        } else {
+            incrementPC()
+        }
     }
     
     func doID() {
@@ -61,6 +66,10 @@ public class Interpreter: NSObject {
     
     func doPCIF() {
         cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
+    }
+    
+    func doJump() {
+        cpuState.pc = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
     }
     
     func incrementPC() {

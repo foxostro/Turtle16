@@ -137,6 +137,22 @@ class InterpreterTests: XCTestCase {
     
     func testINUV() {
         let interpreter = makeInterpreter()
+        interpreter.cpuState.registerU = Register(withValue: 0)
+        interpreter.cpuState.registerV = Register(withValue: 0)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("INUV"))
+        interpreter.delegate = delegate
+        
+        interpreter.step()
+        interpreter.step()
+        interpreter.step()
+        
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 0)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 1)
+    }
+    
+    func testINUV_WithOverflow() {
+        let interpreter = makeInterpreter()
         interpreter.cpuState.registerU = Register(withValue: 0xfe)
         interpreter.cpuState.registerV = Register(withValue: 0xff)
         
@@ -152,6 +168,22 @@ class InterpreterTests: XCTestCase {
     }
     
     func testINXY() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerX = Register(withValue: 0)
+        interpreter.cpuState.registerY = Register(withValue: 0)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("INXY"))
+        interpreter.delegate = delegate
+        
+        interpreter.step()
+        interpreter.step()
+        interpreter.step()
+        
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 0)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 1)
+    }
+    
+    func testINXY_WithOverflow() {
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerX = Register(withValue: 0xfe)
         interpreter.cpuState.registerY = Register(withValue: 0xff)

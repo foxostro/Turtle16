@@ -113,6 +113,14 @@ public class CPUStateSnapshot: NSObject {
             return false
         }
     }
+    
+    public func valueOfXYPair() -> Int {
+        return registerX.integerValue<<8 | registerY.integerValue
+    }
+
+    public func valueOfUVPair() -> Int {
+        return registerU.integerValue<<8 | registerV.integerValue
+    }
 }
 
 public func ==(lhs: CPUStateSnapshot, rhs: CPUStateSnapshot) -> Bool {

@@ -39,4 +39,16 @@ public class Register: NSObject {
             return nil
         }
     }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        if let rhs = rhs as? Register {
+            return self == rhs
+        } else {
+            return false
+        }
+    }
+}
+
+public func ==(lhs: Register, rhs: Register) -> Bool {
+    return lhs.value == rhs.value
 }

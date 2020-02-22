@@ -1812,4 +1812,16 @@ public class ControlWord: NSObject {
                            withCarryIn: CarryIn,
                            withHLT: HLT)
     }
+
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        if let rhs = rhs as? ControlWord {
+            return self == rhs
+        } else {
+            return false
+        }
+    }
+}
+
+public func ==(lhs: ControlWord, rhs: ControlWord) -> Bool {
+    return lhs.unsignedIntegerValue == rhs.unsignedIntegerValue
 }

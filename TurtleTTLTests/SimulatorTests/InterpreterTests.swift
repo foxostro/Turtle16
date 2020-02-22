@@ -32,6 +32,10 @@ class InterpreterTests: XCTestCase {
             let theStore = (value, address)
             stores.append(theStore)
         }
+        
+        func loadFromRAM(at address: Int) -> UInt8 {
+            return 42
+        }
     }
     
     fileprivate func assemble(_ text: String) -> [Instruction] {
@@ -417,5 +421,20 @@ LI M, 42
         let theStore = delegate.stores[0]
         XCTAssertEqual(theStore.0, 42)
         XCTAssertEqual(theStore.1, 0xffff)
+    }
+    
+    func testLoadFromRAM() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+LI U, 0
+LI V, 0
+MOV A, M
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
     }
 }

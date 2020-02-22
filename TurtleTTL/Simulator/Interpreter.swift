@@ -47,7 +47,7 @@ public class Interpreter: NSObject {
     }
     
     func doID() {
-//        cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
+        cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
         let opcode = Int(cpuState.if_id.opcode)
         let b = instructionDecoder.load(opcode: opcode,
                                         carryFlag: cpuState.flags.carryFlag,

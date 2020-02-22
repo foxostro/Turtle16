@@ -140,4 +140,241 @@ class InterpreterTests: XCTestCase {
         XCTAssertEqual(interpreter.cpuState.registerU.value, 0xff)
         XCTAssertEqual(interpreter.cpuState.registerV.value, 0x00)
     }
+    
+    func testINXY() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerX = Register(withValue: 0xfe)
+        interpreter.cpuState.registerY = Register(withValue: 0xff)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("INXY"))
+        interpreter.delegate = delegate
+        
+        interpreter.step()
+        interpreter.step()
+        interpreter.step()
+        
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 0xff)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 0x00)
+    }
+    
+    func testLinkLoOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerH = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, H
+MOV B, H
+MOV D, H
+MOV X, H
+MOV Y, H
+MOV U, H
+MOV V, H
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testLinkHiOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerG = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, G
+MOV B, G
+MOV D, G
+MOV X, G
+MOV Y, G
+MOV U, G
+MOV V, G
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testBOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerB = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, B
+MOV D, B
+MOV X, B
+MOV Y, B
+MOV U, B
+MOV V, B
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testAOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV B, A
+MOV D, A
+MOV X, A
+MOV Y, A
+MOV U, A
+MOV V, A
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testUOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerU = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, U
+MOV B, U
+MOV D, U
+MOV X, U
+MOV Y, U
+MOV V, U
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testVOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerV = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, V
+MOV B, V
+MOV D, V
+MOV X, V
+MOV Y, V
+MOV U, V
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+    }
+    
+    func testXOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerX = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, X
+MOV B, X
+MOV D, X
+MOV Y, X
+MOV U, X
+MOV V, X
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testYOut() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerY = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+MOV A, Y
+MOV B, Y
+MOV D, Y
+MOV X, Y
+MOV U, Y
+MOV V, Y
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
+    
+    func testLI() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+LI A, 42
+LI B, 42
+LI D, 42
+LI X, 42
+LI Y, 42
+LI U, 42
+LI V, 42
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...9 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerX.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerY.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
+        XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
+    }
 }

@@ -13,6 +13,7 @@ class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
         let nop = Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
         
+        var stores: [(UInt8, Int)] = []
         var instructions: [Instruction]
         
         init(instructions: [Instruction]) {
@@ -25,6 +26,11 @@ class InterpreterTests: XCTestCase {
             } else {
                 return instructions.removeFirst()
             }
+        }
+        
+        func storeToRAM(value: UInt8, at address: Int) {
+            let theStore = (value, address)
+            stores.append(theStore)
         }
     }
     
@@ -393,5 +399,23 @@ LINK
         
         XCTAssertEqual(interpreter.cpuState.registerG.value, 0)
         XCTAssertEqual(interpreter.cpuState.registerH.value, 4)
+    }
+    
+    func testStoreToRAM() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+LI U, 0xff
+LI V, 0xff
+LI M, 42
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(delegate.stores.count, 1)
+        let theStore = delegate.stores[0]
+        XCTAssertEqual(theStore.0, 42)
+        XCTAssertEqual(theStore.1, 0xffff)
     }
 }

@@ -10,6 +10,7 @@ import Cocoa
 
 public protocol InterpreterDelegate: NSObject {
     func fetchInstruction(from: ProgramCounter) -> Instruction
+    func storeToRAM(value: UInt8, at: Int)
 }
 
 // Interpreter for revision one of the computer hardware.
@@ -260,9 +261,10 @@ public class Interpreter: NSObject {
     }
     
     fileprivate func handleControlSignalMI() {
-//        if (.active == cpuState.controlWord.MI) {
-//            inputDataRAM()
-//        }
+        if (.active == cpuState.controlWord.MI) {
+            delegate?.storeToRAM(value: cpuState.bus.value,
+                                 at: cpuState.valueOfUVPair())
+        }
     }
  
     fileprivate func handleControlSignalLinkIn() {

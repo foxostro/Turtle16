@@ -146,6 +146,142 @@ class InterpreterTests: XCTestCase {
         XCTAssertEqual(interpreter.cpuState.pc.value, 0xffff)
     }
     
+    func testJC() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 255)
+        interpreter.cpuState.registerB = Register(withValue: 1)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+ADD D
+NOP
+JC
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJNC() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 254)
+        interpreter.cpuState.registerB = Register(withValue: 1)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+ADD D
+NOP
+JNC
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJE() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 42)
+        interpreter.cpuState.registerB = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+CMP
+NOP
+JE
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJNE() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 42)
+        interpreter.cpuState.registerB = Register(withValue: 0)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+CMP
+NOP
+JNE
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJG() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 42)
+        interpreter.cpuState.registerB = Register(withValue: 0)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+CMP
+NOP
+JG
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJLE() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 42)
+        interpreter.cpuState.registerB = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+CMP
+NOP
+JLE
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJL() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 41)
+        interpreter.cpuState.registerB = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+CMP
+NOP
+JL
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
+    func testJGE() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 42)
+        interpreter.cpuState.registerB = Register(withValue: 42)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+CMP
+NOP
+JGE
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+    }
+    
     func testINUV() {
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerU = Register(withValue: 0)

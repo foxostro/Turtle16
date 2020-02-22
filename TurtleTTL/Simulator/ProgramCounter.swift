@@ -43,4 +43,16 @@ public class ProgramCounter: NSObject {
     public func increment() -> ProgramCounter {
         return ProgramCounter(withValue: value &+ 1)
     }
+
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        if let rhs = rhs as? ProgramCounter {
+            return self == rhs
+        } else {
+            return false
+        }
+    }
+}
+
+public func ==(lhs: ProgramCounter, rhs: ProgramCounter) -> Bool {
+    return lhs.value == rhs.value
 }

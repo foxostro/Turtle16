@@ -65,12 +65,13 @@ HLT
     
     func recordTraceForProgram(_ recorder: TraceRecorder, _ text: String) {
         let instructions = assemble(text)
-        var pc: UInt16 = 0
+        let cpuState = CPUStateSnapshot()
         for instruction in instructions {
+            let prevCpuState = cpuState.copy() as! CPUStateSnapshot
+            cpuState.pc = cpuState.pc.increment()
             recorder.record(instruction: instruction,
-                            stateBefore: CPUStateSnapshot(), // FIXME: fake state changes here
-                            stateAfter: CPUStateSnapshot())
-            pc += 1
+                            stateBefore: prevCpuState, // FIXME: These are fake state changes.
+                            stateAfter: cpuState)
         }
     }
     

@@ -12,6 +12,8 @@ public protocol InterpreterDelegate: NSObject {
     func fetchInstruction(from: ProgramCounter) -> Instruction
     func storeToRAM(value: UInt8, at: Int)
     func loadFromRAM(at: Int) -> UInt8
+    func storeToPeripheral(value: UInt8, at: Int)
+    func loadFromPeripheral(at: Int) -> UInt8
 }
 
 // Interpreter for revision one of the computer hardware.
@@ -103,9 +105,10 @@ public class Interpreter: NSObject {
     }
     
     fileprivate func handleControlSignalPO() {
-//        if (.active == cpuState.controlWord.PO) {
-//            peripherals.activateSignalPO(cpuState.registerD.integerValue)
-//        }
+        if (.active == cpuState.controlWord.PO) {
+            let value = delegate?.loadFromPeripheral(at: cpuState.valueOfXYPair()) ?? 0
+            cpuState.bus = Register(withValue: value)
+        }
     }
     
     fileprivate func handleControlSignalMO() {
@@ -257,9 +260,10 @@ public class Interpreter: NSObject {
     }
         
     fileprivate func handleControlSignalPI() {
-//        if (.active == cpuState.controlWord.PI) {
-//            peripherals.activateSignalPI(cpuState.registerD.integerValue)
-//        }
+        if (.active == cpuState.controlWord.PI) {
+            delegate?.storeToPeripheral(value: cpuState.bus.value,
+                                        at: cpuState.valueOfXYPair())
+        }
     }
     
     fileprivate func handleControlSignalMI() {

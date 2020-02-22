@@ -13,7 +13,8 @@ class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
         let nop = Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
         
-        var stores: [(UInt8, Int)] = []
+        var storesToRAM: [(UInt8, Int)] = []
+        var storesToPeripherals: [(UInt8, Int)] = []
         var instructions: [Instruction]
         
         init(instructions: [Instruction]) {
@@ -30,12 +31,21 @@ class InterpreterTests: XCTestCase {
         
         func storeToRAM(value: UInt8, at address: Int) {
             let theStore = (value, address)
-            stores.append(theStore)
+            storesToRAM.append(theStore)
         }
         
         func loadFromRAM(at address: Int) -> UInt8 {
             return 42
         }
+        
+        func storeToPeripheral(value: UInt8, at address: Int) {
+            let theStore = (value, address)
+            storesToPeripherals.append(theStore)
+        }
+        
+        func loadFromPeripheral(at address: Int) -> UInt8 {
+           return 0xff
+       }
     }
     
     fileprivate func assemble(_ text: String) -> [Instruction] {
@@ -449,8 +459,8 @@ LI M, 42
         
         for _ in 1...5 { interpreter.step() }
         
-        XCTAssertEqual(delegate.stores.count, 1)
-        let theStore = delegate.stores[0]
+        XCTAssertEqual(delegate.storesToRAM.count, 1)
+        let theStore = delegate.storesToRAM[0]
         XCTAssertEqual(theStore.0, 42)
         XCTAssertEqual(theStore.1, 0xffff)
     }
@@ -468,5 +478,38 @@ MOV A, M
         for _ in 1...5 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+    }
+    
+    func testStoreToPeripheral() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+LI X, 0xff
+LI Y, 0xff
+LI P, 42
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(delegate.storesToPeripherals.count, 1)
+        let theStore = delegate.storesToPeripherals[0]
+        XCTAssertEqual(theStore.0, 42)
+        XCTAssertEqual(theStore.1, 0xffff)
+    }
+    
+    func testLoadFromPeripheral() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+LI X, 0xff
+LI Y, 0xff
+MOV A, P
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...5 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 0xff)
     }
 }

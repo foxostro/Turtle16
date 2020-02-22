@@ -377,4 +377,21 @@ LI V, 42
         XCTAssertEqual(interpreter.cpuState.registerU.value, 42)
         XCTAssertEqual(interpreter.cpuState.registerV.value, 42)
     }
+    
+    func testLINK() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerG = Register(withValue: 0xff)
+        interpreter.cpuState.registerH = Register(withValue: 0xff)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+NOP
+LINK
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...4 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerG.value, 0)
+        XCTAssertEqual(interpreter.cpuState.registerH.value, 4)
+    }
 }

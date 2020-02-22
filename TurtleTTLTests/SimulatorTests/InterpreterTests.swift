@@ -75,6 +75,7 @@ class InterpreterTests: XCTestCase {
         let expectedFinalState = CPUStateSnapshot()
         expectedFinalState.pc = ProgramCounter(withValue: 3)
         expectedFinalState.pc_if = ProgramCounter(withValue: 2)
+        expectedFinalState.aluFlags = Flags(1, 0) // Changes every tick according to the values of A and B.
         
         let interpreter = makeInterpreter()
         let delegate = TestInterpreterDelegate(instructions: assemble("NOP"))
@@ -511,5 +512,35 @@ MOV A, P
         for _ in 1...5 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.registerA.value, 0xff)
+    }
+    
+    func testADD() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 0xff)
+        interpreter.cpuState.registerB = Register(withValue: 1)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("ADD D"))
+        interpreter.delegate = delegate
+        
+        for _ in 1...3 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 0)
+        XCTAssertEqual(interpreter.cpuState.flags.carryFlag, 0)
+        XCTAssertEqual(interpreter.cpuState.flags.equalFlag, 0)
+    }
+    
+    func testCMP() {
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerA = Register(withValue: 1)
+        interpreter.cpuState.registerB = Register(withValue: 0)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("CMP"))
+        interpreter.delegate = delegate
+        
+        for _ in 1...3 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 0)
+        XCTAssertEqual(interpreter.cpuState.flags.carryFlag, 0)
+        XCTAssertEqual(interpreter.cpuState.flags.equalFlag, 0)
     }
 }

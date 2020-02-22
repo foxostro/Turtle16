@@ -21,6 +21,7 @@ public class Interpreter: NSObject {
     public weak var delegate: InterpreterDelegate? = nil
     public let cpuState: CPUStateSnapshot
     let instructionDecoder: InstructionDecoder
+    let alu = ALU()
     
     public init(cpuState: CPUStateSnapshot,
                 instructionDecoder: InstructionDecoder) {
@@ -48,6 +49,7 @@ public class Interpreter: NSObject {
         doID()
         doIF()
         doPCIF()
+        doALU()
         
         cpuState.bus = Register(withValue: 0) // The bus pulls down to zero if nothing asserts a value.
         
@@ -84,6 +86,21 @@ public class Interpreter: NSObject {
     
     func doPCIF() {
         cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
+    }
+    
+    func doALU() {
+        let a = cpuState.registerA.value
+        let b = cpuState.registerB.value
+        let c = cpuState.registerC.value
+        alu.s = (c & 0b1111)
+        alu.mode = Int(c & 0b10000) >> 4
+        alu.carryIn = (cpuState.controlWord.CarryIn == .active) ? 0 : 1
+        alu.a = a
+        alu.b = b
+        alu.update()
+        
+        cpuState.aluResult = Register(withValue: alu.result)
+        cpuState.aluFlags = Flags(alu.carryFlag, alu.equalFlag)
     }
     
     fileprivate func handleControlSignalCO() {
@@ -131,15 +148,15 @@ public class Interpreter: NSObject {
     }
     
     fileprivate func handleControlSignalEO() {
-//        if (.active == cpuState.controlWord.EO) {
-//            cpuState.bus = Register(withValue: cpuState.aluResult.value)
-//        }
+        if (.active == cpuState.controlWord.EO) {
+            cpuState.bus = Register(withValue: cpuState.aluResult.value)
+        }
     }
     
     fileprivate func handleControlSignalFI() {
-//        if (.active == cpuState.controlWord.FI) {
-//            cpuState.flags = Flags(cpuState.aluFlags.carryFlag, cpuState.aluFlags.equalFlag)
-//        }
+        if (.active == cpuState.controlWord.FI) {
+            cpuState.flags = Flags(cpuState.aluFlags.carryFlag, cpuState.aluFlags.equalFlag)
+        }
     }
     
     fileprivate func handleControlSignalAO() {

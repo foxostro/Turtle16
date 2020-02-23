@@ -15,6 +15,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     public var upperInstructionRAM = RAM()
     public var lowerInstructionRAM = RAM()
     public var instructionROM = InstructionROM()
+    
     public var instructionDecoder: InstructionDecoder {
         get {
             return interpreter.instructionDecoder
@@ -23,6 +24,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
             interpreter.instructionDecoder = microcode
         }
     }
+    
     var internalLogger:Logger? = nil
     public var logger:Logger? {
         get {
@@ -33,7 +35,17 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
             peripherals.logger = newLogger
         }
     }
-    public var didUpdateSerialOutput:(String)->Void = {_ in}
+    
+    var internaDidUpdateSerialOutput:(String)->Void = {_ in}
+    public var didUpdateSerialOutput:(String)->Void {
+        get {
+            return internaDidUpdateSerialOutput
+        }
+        set(value) {
+            peripherals.getSerialInterface().didUpdateSerialOutput = value
+        }
+    }
+    
     var peripherals = ComputerPeripherals()
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
@@ -78,10 +90,65 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     }
     
     public func step() {
+        let prevState = (logger != nil) ? (cpuState.copy() as! CPUStateSnapshot) : cpuState
         peripherals.resetControlSignals()
         interpreter.step()
         peripherals.onPeripheralClock()
-        logger?.append("-----")
+        if let logger = logger {
+            logCPUStateChanges(logger: logger, prevState: prevState, nextState: cpuState)
+            logger.append("-----")
+        }
+    }
+    
+    fileprivate func logCPUStateChanges(logger: Logger,
+                                        prevState: CPUStateSnapshot,
+                                        nextState: CPUStateSnapshot) {
+        if prevState.pc != nextState.pc {
+            logger.append("pc: 0x%04x --> 0x%04x", prevState.pc.value, nextState.pc.value)
+        }
+        if prevState.pc_if != nextState.pc_if {
+            logger.append("pc_if: 0x%04x --> 0x%04x", prevState.pc_if.value, nextState.pc_if.value)
+        }
+        if prevState.if_id != nextState.if_id {
+            logger.append("if_id: %@ --> %@", prevState.if_id, nextState.if_id)
+        }
+        if prevState.controlWord != nextState.controlWord {
+            logger.append("controlWord: 0x%04x --> 0x%04x", prevState.controlWord.unsignedIntegerValue, nextState.controlWord.unsignedIntegerValue)
+            logger.append("controlSignals: %@ --> %@", prevState.controlWord, nextState.controlWord)
+        }
+        if prevState.registerA != nextState.registerA {
+            logger.append("registerA: 0x%02x --> 0x%02x", prevState.registerA.value, nextState.registerA.value)
+        }
+        if prevState.registerB != nextState.registerB {
+            logger.append("registerB: 0x%02x --> 0x%02x", prevState.registerB.value, nextState.registerB.value)
+        }
+        if prevState.registerC != nextState.registerC {
+            logger.append("registerC: 0x%02x --> 0x%02x", prevState.registerC.value, nextState.registerC.value)
+        }
+        if prevState.registerD != nextState.registerD {
+            logger.append("registerD: 0x%02x --> 0x%02x", prevState.registerD.value, nextState.registerD.value)
+        }
+        if prevState.registerG != nextState.registerG {
+            logger.append("registerG: 0x%02x --> 0x%02x", prevState.registerG.value, nextState.registerG.value)
+        }
+        if prevState.registerH != nextState.registerH {
+            logger.append("registerH: 0x%02x --> 0x%02x", prevState.registerH.value, nextState.registerH.value)
+        }
+        if prevState.registerX != nextState.registerX {
+            logger.append("registerX: 0x%02x --> 0x%02x", prevState.registerX.value, nextState.registerX.value)
+        }
+        if prevState.registerY != nextState.registerY {
+            logger.append("registerY: 0x%02x --> 0x%02x", prevState.registerY.value, nextState.registerY.value)
+        }
+        if prevState.registerU != nextState.registerU {
+            logger.append("registerU: 0x%02x --> 0x%02x", prevState.registerU.value, nextState.registerU.value)
+        }
+        if prevState.registerV != nextState.registerV {
+            logger.append("registerV: 0x%02x --> 0x%02x", prevState.registerV.value, nextState.registerV.value)
+        }
+        if prevState.flags != nextState.flags {
+            logger.append("flags: %@ --> %@", prevState.flags, nextState.flags)
+        }
     }
     
     public func didTickControlClock() {

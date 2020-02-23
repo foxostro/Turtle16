@@ -11,12 +11,6 @@ import Cocoa
 public class TraceRecorder: NSObject {
     let microcodeGenerator: MicrocodeGenerator
     public let trace = Trace()
-    public enum State {
-        case recording
-        case complete
-        case abandoned
-    }
-    public private(set) var state: State = .recording
     
     public init(microcodeGenerator: MicrocodeGenerator) {
         self.microcodeGenerator = microcodeGenerator
@@ -25,11 +19,8 @@ public class TraceRecorder: NSObject {
     public func record(instruction: Instruction,
                        stateBefore: CPUStateSnapshot,
                        stateAfter: CPUStateSnapshot) {
-        if instruction.disassembly == "HLT" {
-            state = .abandoned
-        } else if instruction.disassembly == "JMP" {
-            let xy: UInt16 = UInt16(stateAfter.registerX.integerValue<<8 | stateAfter.registerY.integerValue)
-            trace.appendGuard(pc: stateBefore.pc.value, address: xy)
+        if instruction.disassembly == "JMP" {
+            trace.appendGuard(pc: stateBefore.pc.value, address: UInt16(stateAfter.valueOfXYPair()))
         } else {
             trace.append(pc: stateBefore.pc.value, instruction: instruction)
         }

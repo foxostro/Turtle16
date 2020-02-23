@@ -39,6 +39,13 @@ public class Interpreter: NSObject {
     public var instructionDecoder: InstructionDecoder
     let alu = ALU()
     
+    public override convenience init() {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        self.init(cpuState: CPUStateSnapshot(),
+                  instructionDecoder: microcodeGenerator.microcode)
+    }
+    
     public init(cpuState: CPUStateSnapshot,
                 instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
@@ -99,7 +106,7 @@ public class Interpreter: NSObject {
     }
     
     func doIF() {
-        cpuState.if_id = delegate?.fetchInstruction(from: cpuState.pc_if) ?? Instruction()
+        cpuState.if_id = delegate!.fetchInstruction(from: cpuState.pc_if)
     }
     
     func doPCIF() {

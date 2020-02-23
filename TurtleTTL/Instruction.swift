@@ -17,7 +17,7 @@ public class Instruction: NSObject {
     public let disassembly: String?
     
     public override convenience init() {
-        self.init(opcode: 0, immediate: 0)
+        self.init(opcode: 0, immediate: 0, disassembly: "NOP")
     }
     
     public convenience init(opcode: Int, immediate: Int, disassembly: String? = nil) {

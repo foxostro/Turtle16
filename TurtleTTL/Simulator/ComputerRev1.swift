@@ -15,6 +15,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     public var upperInstructionRAM = RAM()
     public var lowerInstructionRAM = RAM()
     public var instructionROM = InstructionROM()
+    let instructionFormatter = InstructionFormatter()
     
     public var instructionDecoder: InstructionDecoder {
         get {
@@ -181,7 +182,8 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         let offset = 0x8000
         let instruction: Instruction
         if pc.value < offset {
-            instruction = instructionROM.load(from: cpuState.pc_if.integerValue)
+            let ins = instructionROM.load(from: cpuState.pc_if.integerValue)
+            instruction = instructionFormatter.makeInstructionWithDisassembly(instruction: ins)
         } else {
             let opcode = Int(upperInstructionRAM.load(from: pc.integerValue - offset))
             let immediate = Int(lowerInstructionRAM.load(from: pc.integerValue - offset))

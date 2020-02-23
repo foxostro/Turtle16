@@ -20,9 +20,8 @@ public protocol InterpreterDelegate: NSObject {
     func willJump(from: ProgramCounter, to: ProgramCounter)
     
     // The peripheral device will directly read and modify CPU state.
-    // TODO: storeToPeripheral() and loadFromPeripheral() could use a better API
-    func storeToPeripheral(cpuState: CPUStateSnapshot)
-    func loadFromPeripheral(cpuState: CPUStateSnapshot)
+    func activateSignalPO(_ index: Int)
+    func activateSignalPI(_ index: Int)
     
     // The following two delegate methods are called after handling each of the
     // two CPU clocks.
@@ -148,13 +147,13 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalPO() {
         if (.active == cpuState.controlWord.PO) {
-            delegate?.loadFromPeripheral(cpuState: cpuState)
+            delegate?.activateSignalPO(cpuState.registerD.integerValue)
         }
     }
     
     fileprivate func handleControlSignalMO() {
         if (.active == cpuState.controlWord.MO) {
-            let value = delegate?.loadFromRAM(at: cpuState.valueOfUVPair()) ?? 0
+            let value = delegate!.loadFromRAM(at: cpuState.valueOfUVPair())
             cpuState.bus = Register(withValue: value)
         }
     }
@@ -304,7 +303,7 @@ public class Interpreter: NSObject {
         
     fileprivate func handleControlSignalPI() {
         if (.active == cpuState.controlWord.PI) {
-            delegate?.storeToPeripheral(cpuState: cpuState)
+            delegate?.activateSignalPI(cpuState.registerD.integerValue)
         }
     }
     

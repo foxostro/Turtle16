@@ -30,8 +30,8 @@ class TraceRecorderTests: XCTestCase {
         func storeToRAM(value: UInt8, at address: Int) {}
         func loadFromRAM(at address: Int) -> UInt8 { return 0 }
         func willJump(from: ProgramCounter, to: ProgramCounter) {}
-        func storeToPeripheral(cpuState: CPUStateSnapshot) {}
-        func loadFromPeripheral(cpuState: CPUStateSnapshot) {}
+        func activateSignalPO(_ index: Int) {}
+        func activateSignalPI(_ index: Int) {}
         func didTickControlClock() {}
         func didTickRegisterClock() {}
     }

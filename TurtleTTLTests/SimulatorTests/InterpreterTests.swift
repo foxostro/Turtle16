@@ -11,11 +11,10 @@ import TurtleTTL
 
 class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
-        let nop = Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
-        
         var jumps: [(ProgramCounter, ProgramCounter)] = []
         var storesToRAM: [(UInt8, Int)] = []
-        var storesToPeripherals: [(UInt8, Int)] = []
+        var signalsPO: [ControlSignal] = [.inactive, .inactive, .inactive, .inactive, .inactive, .inactive, .inactive]
+        var signalsPI: [ControlSignal] = [.inactive, .inactive, .inactive, .inactive, .inactive, .inactive, .inactive]
         var instructions: [Instruction]
         
         init(instructions: [Instruction]) {
@@ -33,7 +32,7 @@ class InterpreterTests: XCTestCase {
         
         func fetchInstruction(from: ProgramCounter) -> Instruction {
             if instructions.isEmpty {
-                return nop
+                return Instruction()
             } else {
                 return instructions.removeFirst()
             }
@@ -43,22 +42,16 @@ class InterpreterTests: XCTestCase {
             jumps.append((from, to))
         }
         
-        func storeToPeripheral(cpuState: CPUStateSnapshot) {
-            let theStore = (cpuState.bus.value, cpuState.valueOfXYPair())
-            storesToPeripherals.append(theStore)
+        func activateSignalPO(_ index: Int) {
+            signalsPO[index] = .active
         }
         
-        func loadFromPeripheral(cpuState: CPUStateSnapshot) {
-            cpuState.bus = Register(withValue: 0xff)
+        func activateSignalPI(_ index: Int) {
+            signalsPI[index] = .active
         }
         
-        func didTickControlClock() {
-            // do nothing
-        }
-        
-        func didTickRegisterClock() {
-            // do nothing
-        }
+        func didTickControlClock() {}
+        func didTickRegisterClock() {}
     }
     
     fileprivate func assemble(_ text: String) -> [Instruction] {
@@ -648,10 +641,7 @@ LI P, 42
         
         for _ in 1...5 { interpreter.step() }
         
-        XCTAssertEqual(delegate.storesToPeripherals.count, 1)
-        let theStore = delegate.storesToPeripherals[0]
-        XCTAssertEqual(theStore.0, 42)
-        XCTAssertEqual(theStore.1, 0xffff)
+        XCTAssertEqual(delegate.signalsPI[0], .active)
     }
     
     func testLoadFromPeripheral() {
@@ -666,7 +656,7 @@ MOV A, P
         
         for _ in 1...5 { interpreter.step() }
         
-        XCTAssertEqual(interpreter.cpuState.registerA.value, 0xff)
+        XCTAssertEqual(delegate.signalsPO[0], .active)
     }
     
     func testADD() {

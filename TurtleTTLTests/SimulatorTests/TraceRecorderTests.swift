@@ -102,4 +102,38 @@ guard:\taddress=0x0100, traceExitingPC=0x0004
 0x0101:\tHLT
 """)
     }
+    
+    func testRecordTraceWithConditionalForwardJump() {
+        let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
+        recordTraceForProgram(recorder, """
+LI X, 1
+LI Y, 0
+LI A, 1
+LI B, 1
+CMP
+NOP
+JE
+LI D, 2
+HLT
+""")
+        
+        // When recording a conditional jump, TraceRecorder will insert a guard
+        // to assert the values of the flags are as expected. Also, as with an
+        // unconditional jump, the jump destination is a computed value which
+        // must be asserted with a guard condition.
+        XCTAssertEqual(recorder.trace.description, """
+0x0000:\tNOP
+0x0001:\tNOP
+0x0002:\tLI X, 1
+0x0003:\tLI Y, 0
+0x0004:\tLI A, 1
+0x0005:\tLI B, 1
+0x0006:\tCMP
+0x0007:\tNOP
+guard:\tflags={carryFlag: 1, equalFlag: 1}, traceExitingPC=0x0008
+guard:\taddress=0x0100, traceExitingPC=0x0008
+0x0100:\tLI D, 2
+0x0101:\tHLT
+""")
+    }
 }

@@ -109,7 +109,7 @@ class ComputerRev1Tests: XCTestCase {
         computer.instructionDecoder = instructionDecoder
         computer.instructionROM = instructionROM
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 3)
     }
@@ -149,7 +149,7 @@ class ComputerRev1Tests: XCTestCase {
         computer.instructionDecoder = instructionDecoder
         computer.instructionROM = instructionROM
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerX.value, 4)
     }
@@ -189,7 +189,7 @@ class ComputerRev1Tests: XCTestCase {
         computer.instructionDecoder = instructionDecoder
         computer.instructionROM = instructionROM
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
         XCTAssertEqual(computer.cpuState.flags.equalFlag, 1)
@@ -230,7 +230,7 @@ class ComputerRev1Tests: XCTestCase {
         computer.instructionDecoder = instructionDecoder
         computer.instructionROM = instructionROM
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.flags.carryFlag, 0)
         XCTAssertEqual(computer.cpuState.flags.equalFlag, 0)
@@ -271,7 +271,7 @@ class ComputerRev1Tests: XCTestCase {
         computer.instructionDecoder = instructionDecoder
         computer.instructionROM = instructionROM
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
         XCTAssertEqual(computer.cpuState.flags.equalFlag, 0)
@@ -358,7 +358,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: movay, immediate: 0),
             Instruction(opcode: hlt, immediate: 0)])
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerX.value, 42)
         XCTAssertEqual(computer.cpuState.registerY.value, 42)
@@ -399,7 +399,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: movav, immediate: 0),
             Instruction(opcode: hlt, immediate: 0)])
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerU.value, 42)
         XCTAssertEqual(computer.cpuState.registerV.value, 42)
@@ -440,7 +440,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: movdb, immediate: 0),
             Instruction(opcode: hlt, immediate: 0)])
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerD.value, 42)
     }
@@ -484,7 +484,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: load,  immediate: 0),        // LOAD A
             Instruction(opcode: hlt,   immediate: 0)])       // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 42)
     }
@@ -531,7 +531,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 2),  // LDA $2
             Instruction(opcode: hlt, immediate: 0)]) // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
     }
@@ -604,7 +604,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA $42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerD.value, 1)
         XCTAssertEqual(computer.cpuState.registerA.value, 42)
@@ -678,7 +678,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA $42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerD.value, 255)
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
@@ -733,7 +733,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: load,  immediate: 0),    // LOAD A
             Instruction(opcode: hlt,   immediate: 0)])   // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 42)
     }
@@ -787,7 +787,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: load,  immediate: 0),    // LOAD A
             Instruction(opcode: hlt,   immediate: 0)])   // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 42)
     }
@@ -853,7 +853,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda,   immediate: 1),    // LDA $1
             Instruction(opcode: hlt,   immediate: 0)])   // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 42)
     }
@@ -910,7 +910,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: load,  immediate: 0),    // LOAD A
             Instruction(opcode: hlt,   immediate: 0)])   // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
@@ -1018,7 +1018,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: inc, immediate: 0),
             Instruction(opcode: hlt, immediate: 0)])
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerX.value, 0)
         XCTAssertEqual(computer.cpuState.registerY.value, 1)
@@ -1058,7 +1058,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: inc, immediate: 0),
             Instruction(opcode: hlt, immediate: 0)])
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerU.value, 0)
         XCTAssertEqual(computer.cpuState.registerV.value, 1)
@@ -1110,7 +1110,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: hlt,  immediate: 0),    // 8
             Instruction(opcode: hlt,  immediate: 0)])   // 9
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerG.value, 0)
         XCTAssertEqual(computer.cpuState.registerH.value, 7) // There's a hardware bug in Rev 1 where the Link register always loads from PC during a JALR instruction. As a result, the JALR instruction always latches the jump destination instead of the previous value of PC as intended.
@@ -1173,7 +1173,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
@@ -1234,7 +1234,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
@@ -1295,7 +1295,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
@@ -1356,7 +1356,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
@@ -1417,7 +1417,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
@@ -1478,7 +1478,7 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
@@ -1551,57 +1551,9 @@ class ComputerRev1Tests: XCTestCase {
             Instruction(opcode: lda, immediate: 42),         // LDA 42
             Instruction(opcode: hlt, immediate: 0)])         // HLT
         
-        computer.execute()
+        computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerD.value, 1)
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
-    }
-    
-    func testMethodToIncrementXY() {
-        let computer = ComputerRev1()
-        computer.incrementXY()
-        XCTAssertEqual(computer.cpuState.registerX.value, 0)
-        XCTAssertEqual(computer.cpuState.registerY.value, 1)
-    }
-    
-    func testMethodToIncrementXY_CarryFromYToX() {
-        let computer = ComputerRev1()
-        computer.cpuState.registerY = Register(withValue: 255)
-        computer.incrementXY()
-        XCTAssertEqual(computer.cpuState.registerX.value, 1)
-        XCTAssertEqual(computer.cpuState.registerY.value, 0)
-    }
-    
-    func testMethodToIncrementXY_Overflow() {
-        let computer = ComputerRev1()
-        computer.cpuState.registerX = Register(withValue: 255)
-        computer.cpuState.registerY = Register(withValue: 255)
-        computer.incrementXY()
-        XCTAssertEqual(computer.cpuState.registerX.value, 0)
-        XCTAssertEqual(computer.cpuState.registerY.value, 0)
-    }
-    
-    func testMethodToIncrementUV() {
-        let computer = ComputerRev1()
-        computer.incrementUV()
-        XCTAssertEqual(computer.cpuState.registerU.value, 0)
-        XCTAssertEqual(computer.cpuState.registerV.value, 1)
-    }
-    
-    func testMethodToIncrementUV_CarryFromVToU() {
-        let computer = ComputerRev1()
-        computer.cpuState.registerV = Register(withValue: 255)
-        computer.incrementUV()
-        XCTAssertEqual(computer.cpuState.registerU.value, 1)
-        XCTAssertEqual(computer.cpuState.registerV.value, 0)
-    }
-    
-    func testMethodToIncrementUV_Overflow() {
-        let computer = ComputerRev1()
-        computer.cpuState.registerU = Register(withValue: 255)
-        computer.cpuState.registerV = Register(withValue: 255)
-        computer.incrementUV()
-        XCTAssertEqual(computer.cpuState.registerU.value, 0)
-        XCTAssertEqual(computer.cpuState.registerV.value, 0)
     }
 }

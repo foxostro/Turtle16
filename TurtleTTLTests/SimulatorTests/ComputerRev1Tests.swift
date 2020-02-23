@@ -14,6 +14,20 @@ class ComputerRev1Tests: XCTestCase {
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
+    fileprivate func assemble(_ text: String) -> [Instruction] {
+        return try! tryAssemble(text)
+    }
+
+    fileprivate func tryAssemble(_ text: String) throws -> [Instruction] {
+        let assembler = AssemblerFrontEnd()
+        assembler.compile(text)
+        if assembler.hasError {
+            let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
+            throw error
+        }
+        return assembler.instructions
+    }
+    
     func makeComputer() -> ComputerRev1 {
         let computer = ComputerRev1()
         computer.logger = isVerboseLogging ? ConsoleLogger() : nil
@@ -1555,5 +1569,72 @@ class ComputerRev1Tests: XCTestCase {
         
         XCTAssertEqual(computer.cpuState.registerD.value, 1)
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
+    }
+    
+    func testSerialOutput() {
+        let computer = makeComputer()
+        
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
+        
+        var serialOutput = ""
+        computer.didUpdateSerialOutput = {
+            serialOutput += $0
+        }
+        computer.provideInstructions(assemble("""
+LI D, 6 # The Serial Interface device
+LI Y, 1 # Data Port
+LI P, 1 # Put Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+NOP # delay
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+NOP # delay
+LI Y, 1 # Data Port
+LI P, 65 # Output 'A' through the serial interface device
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+NOP # delay
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+NOP # delay
+HLT
+"""))
+        computer.runUntilHalted()
+        XCTAssertEqual(serialOutput, "A")
+    }
+    
+    func testSerialInput() {
+        let computer = makeComputer()
+        
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
+        
+        var serialOutput = ""
+        computer.didUpdateSerialOutput = {
+            serialOutput += $0
+        }
+        
+        computer.provideSerialInput(bytes: [65])
+        
+        computer.provideInstructions(assemble("""
+LI D, 6 # The Serial Interface device
+LI Y, 1 # Data Port
+LI P, 2 # "Get" Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+NOP # delay
+MOV A, P # Store the input byte in register A
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+NOP # delay
+HLT
+"""))
+        computer.runUntilHalted()
+        
+        XCTAssertEqual(computer.cpuState.registerA.value, 65)
     }
 }

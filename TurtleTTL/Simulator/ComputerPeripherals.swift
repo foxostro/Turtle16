@@ -76,10 +76,10 @@ class ComputerPeripherals: NSObject {
             peripheral.registerY = registerY
             peripheral.onRegisterClock()
             if peripheral.PI == .active {
-                logger?.append("PI -- Peripheral \"%@\" inputs %@ from bus at address 0x%@",
+                logger?.append("PI -- Peripheral \"%@\" inputs %02x from bus at address 0x%04x",
                                peripheral.name,
-                               bus,
-                               String(valueOfXYPair(), radix: 16))
+                               bus.value,
+                               valueOfXYPair())
             }
         }
     }

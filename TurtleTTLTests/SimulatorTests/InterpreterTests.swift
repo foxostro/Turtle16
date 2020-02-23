@@ -13,20 +13,13 @@ class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
         let nop = Instruction(opcode: 0, immediate: 0, disassembly: "NOP")
         
+        var jumps: [(ProgramCounter, ProgramCounter)] = []
         var storesToRAM: [(UInt8, Int)] = []
         var storesToPeripherals: [(UInt8, Int)] = []
         var instructions: [Instruction]
         
         init(instructions: [Instruction]) {
             self.instructions = instructions
-        }
-        
-        func fetchInstruction(from: ProgramCounter) -> Instruction {
-            if instructions.isEmpty {
-                return nop
-            } else {
-                return instructions.removeFirst()
-            }
         }
         
         func storeToRAM(value: UInt8, at address: Int) {
@@ -38,14 +31,34 @@ class InterpreterTests: XCTestCase {
             return 42
         }
         
-        func storeToPeripheral(value: UInt8, at address: Int) {
-            let theStore = (value, address)
+        func fetchInstruction(from: ProgramCounter) -> Instruction {
+            if instructions.isEmpty {
+                return nop
+            } else {
+                return instructions.removeFirst()
+            }
+        }
+        
+        func willJump(from: ProgramCounter, to: ProgramCounter) {
+            jumps.append((from, to))
+        }
+        
+        func storeToPeripheral(cpuState: CPUStateSnapshot) {
+            let theStore = (cpuState.bus.value, cpuState.valueOfXYPair())
             storesToPeripherals.append(theStore)
         }
         
-        func loadFromPeripheral(at address: Int) -> UInt8 {
-           return 0xff
-       }
+        func loadFromPeripheral(cpuState: CPUStateSnapshot) {
+            cpuState.bus = Register(withValue: 0xff)
+        }
+        
+        func didTickControlClock() {
+            // do nothing
+        }
+        
+        func didTickRegisterClock() {
+            // do nothing
+        }
     }
     
     fileprivate func assemble(_ text: String) -> [Instruction] {
@@ -69,6 +82,9 @@ class InterpreterTests: XCTestCase {
         interpreter.reset()
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
         XCTAssertEqual(cpuState.pc.value, 0)
+        XCTAssertEqual(cpuState.pc_if.value, 0)
+        XCTAssertEqual(cpuState.registerC.value, 0)
+        XCTAssertEqual(cpuState.controlWord.unsignedIntegerValue, ControlWord().unsignedIntegerValue)
     }
     
     func testInterpretNOP() {
@@ -144,6 +160,9 @@ class InterpreterTests: XCTestCase {
         interpreter.step()
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0xffff)
+        XCTAssertEqual(delegate.jumps.count, 1)
+        XCTAssertEqual(delegate.jumps[0].0, ProgramCounter(withValue: 2))
+        XCTAssertEqual(delegate.jumps[0].1, ProgramCounter(withValue: 0xffff))
     }
     
     func testJC() {
@@ -678,5 +697,24 @@ MOV A, P
         XCTAssertEqual(interpreter.cpuState.registerD.value, 0)
         XCTAssertEqual(interpreter.cpuState.flags.carryFlag, 0)
         XCTAssertEqual(interpreter.cpuState.flags.equalFlag, 0)
+    }
+    
+    func testBasicAddition() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("""
+LI A, 1
+LI B, 2
+ADD D
+HLT
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...6 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 1)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 2)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 3)
+        XCTAssertEqual(interpreter.cpuState.controlWord.HLT, .active)
     }
 }

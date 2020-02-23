@@ -9,18 +9,34 @@
 import Cocoa
 
 public protocol InterpreterDelegate: NSObject {
-    func fetchInstruction(from: ProgramCounter) -> Instruction
     func storeToRAM(value: UInt8, at: Int)
     func loadFromRAM(at: Int) -> UInt8
-    func storeToPeripheral(value: UInt8, at: Int)
-    func loadFromPeripheral(at: Int) -> UInt8
+    
+    // Fetch an instruction for the IF stage. This may fetch from instruction
+    // RAM, or from some other source.
+    func fetchInstruction(from: ProgramCounter) -> Instruction
+    
+    // Called immediately before executing a jump.
+    func willJump(from: ProgramCounter, to: ProgramCounter)
+    
+    // The peripheral device will directly read and modify CPU state.
+    // TODO: storeToPeripheral() and loadFromPeripheral() could use a better API
+    func storeToPeripheral(cpuState: CPUStateSnapshot)
+    func loadFromPeripheral(cpuState: CPUStateSnapshot)
+    
+    // The following two delegate methods are called after handling each of the
+    // two CPU clocks.
+    // Peripheral devices must perform specific actions on specific clock pulses
+    // and these calls permit that fine granularity of emulation.
+    func didTickControlClock()
+    func didTickRegisterClock()
 }
 
 // Interpreter for revision one of the computer hardware.
 public class Interpreter: NSObject {
     public weak var delegate: InterpreterDelegate? = nil
     public let cpuState: CPUStateSnapshot
-    let instructionDecoder: InstructionDecoder
+    public var instructionDecoder: InstructionDecoder
     let alu = ALU()
     
     public init(cpuState: CPUStateSnapshot,
@@ -42,7 +58,9 @@ public class Interpreter: NSObject {
     // Emulates one hardware clock tick.
     public func step() {
         onControlClock()
+        delegate?.didTickControlClock()
         onRegisterClock()
+        delegate?.didTickRegisterClock()
     }
     
     fileprivate func onControlClock() {
@@ -123,8 +141,7 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalPO() {
         if (.active == cpuState.controlWord.PO) {
-            let value = delegate?.loadFromPeripheral(at: cpuState.valueOfXYPair()) ?? 0
-            cpuState.bus = Register(withValue: value)
+            delegate?.loadFromPeripheral(cpuState: cpuState)
         }
     }
     
@@ -215,7 +232,9 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalJ() {
         if (.active == cpuState.controlWord.J) {
-            cpuState.pc = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
+            let dst = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
+            delegate?.willJump(from: cpuState.pc, to: dst)
+            cpuState.pc = dst
         } else {
             cpuState.pc = cpuState.pc.increment()
         }
@@ -278,8 +297,7 @@ public class Interpreter: NSObject {
         
     fileprivate func handleControlSignalPI() {
         if (.active == cpuState.controlWord.PI) {
-            delegate?.storeToPeripheral(value: cpuState.bus.value,
-                                        at: cpuState.valueOfXYPair())
+            delegate?.storeToPeripheral(cpuState: cpuState)
         }
     }
     

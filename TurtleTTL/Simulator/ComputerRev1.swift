@@ -202,12 +202,12 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         return value
     }
     
-    public func storeToPeripheral(cpuState state: CPUStateSnapshot) {
-        peripherals.activateSignalPI(state.registerD.integerValue)
+    public func activateSignalPO(_ index: Int) {
+        peripherals.activateSignalPO(cpuState.registerD.integerValue)
     }
     
-    public func loadFromPeripheral(cpuState state: CPUStateSnapshot) {
-        peripherals.activateSignalPO(state.registerD.integerValue)
+    public func activateSignalPI(_ index: Int) {
+        peripherals.activateSignalPI(cpuState.registerD.integerValue)
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {

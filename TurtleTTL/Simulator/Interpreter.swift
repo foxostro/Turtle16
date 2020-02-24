@@ -15,37 +15,28 @@ public protocol InterpreterDelegate: NSObject {
     // Fetch an instruction for the IF stage. This may fetch from instruction
     // RAM, or from some other source.
     func fetchInstruction(from: ProgramCounter) -> Instruction
-    
-    // The peripheral device will directly read and modify CPU state.
-    func activateSignalPO(_ index: Int)
-    func activateSignalPI(_ index: Int)
-    
-    // The following two delegate methods are called after handling each of the
-    // two CPU clocks.
-    // Peripheral devices must perform specific actions on specific clock pulses
-    // and these calls permit that fine granularity of emulation.
-    func didTickControlClock()
-    func didTickRegisterClock()
 }
 
 // Interpreter for revision one of the computer hardware.
 public class Interpreter: NSObject {
     public weak var delegate: InterpreterDelegate? = nil
     public let cpuState: CPUStateSnapshot
-    public var instructionDecoder: InstructionDecoder
+    public var instructionDecoder = InstructionDecoder()
+    public var peripherals: ComputerPeripherals
     let alu = ALU()
     
     public override convenience init() {
+        self.init(cpuState: CPUStateSnapshot(),
+                  peripherals: ComputerPeripherals())
+        
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        self.init(cpuState: CPUStateSnapshot(),
-                  instructionDecoder: microcodeGenerator.microcode)
+        self.instructionDecoder = microcodeGenerator.microcode
     }
     
-    public init(cpuState: CPUStateSnapshot,
-                instructionDecoder: InstructionDecoder) {
+    public init(cpuState: CPUStateSnapshot, peripherals: ComputerPeripherals) {
         self.cpuState = cpuState
-        self.instructionDecoder = instructionDecoder
+        self.peripherals = peripherals
     }
 
     // This method duplicates the functionality of the hardware reset button.
@@ -60,10 +51,27 @@ public class Interpreter: NSObject {
     
     // Emulates one hardware clock tick.
     public func step() {
+        peripherals.resetControlSignals()
         onControlClock()
-        delegate?.didTickControlClock()
+        tickPeripheralControlClock()
         onRegisterClock()
-        delegate?.didTickRegisterClock()
+        tickPeripheralRegisterClock()
+        peripherals.onPeripheralClock()
+    }
+    
+    fileprivate func tickPeripheralControlClock() {
+        peripherals.bus = cpuState.bus
+        peripherals.registerX = cpuState.registerX
+        peripherals.registerY = cpuState.registerY
+        peripherals.onControlClock()
+        cpuState.bus = peripherals.bus
+    }
+    
+    fileprivate func tickPeripheralRegisterClock() {
+        peripherals.bus = cpuState.bus
+        peripherals.registerX = cpuState.registerX
+        peripherals.registerY = cpuState.registerY
+        peripherals.onRegisterClock()
     }
     
     fileprivate func onControlClock() {
@@ -92,7 +100,7 @@ public class Interpreter: NSObject {
         handleControlSignalJ()
     }
     
-    func doID() {
+    fileprivate func doID() {
         cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
         let opcode = Int(cpuState.if_id.opcode)
         let b = instructionDecoder.load(opcode: opcode,
@@ -101,15 +109,15 @@ public class Interpreter: NSObject {
         cpuState.controlWord = ControlWord(withValue: UInt(b))
     }
     
-    func doIF() {
+    fileprivate func doIF() {
         cpuState.if_id = delegate!.fetchInstruction(from: cpuState.pc_if)
     }
     
-    func doPCIF() {
+    fileprivate func doPCIF() {
         cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
     }
     
-    func doALU() {
+    fileprivate func doALU() {
         let a = cpuState.registerA.value
         let b = cpuState.registerB.value
         let c = cpuState.registerC.value
@@ -144,7 +152,7 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalPO() {
         if (.active == cpuState.controlWord.PO) {
-            delegate?.activateSignalPO(cpuState.registerD.integerValue)
+            peripherals.activateSignalPO(cpuState.registerD.integerValue)
         }
     }
     
@@ -298,7 +306,7 @@ public class Interpreter: NSObject {
         
     fileprivate func handleControlSignalPI() {
         if (.active == cpuState.controlWord.PI) {
-            delegate?.activateSignalPI(cpuState.registerD.integerValue)
+            peripherals.activateSignalPI(cpuState.registerD.integerValue)
         }
     }
     

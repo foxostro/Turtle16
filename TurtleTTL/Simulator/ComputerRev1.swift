@@ -51,13 +51,13 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
     let instructionFormatter = InstructionFormatter()
     let interpreter: Interpreter
-    var peripherals = ComputerPeripherals()
+    let peripherals = ComputerPeripherals()
     let profiler = TraceProfiler()
     let traceCache = NSCache<ProgramCounter, Trace>()
     var traceRecorder: TraceRecorder? = nil
     
     public override init() {
-        interpreter = Interpreter(cpuState: cpuState, instructionDecoder: InstructionDecoder())
+        interpreter = Interpreter(cpuState: cpuState, peripherals: peripherals)
         
         super.init()
         
@@ -98,9 +98,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         
         enforceTraceRecorderPolicy(prevState)
         
-        peripherals.resetControlSignals()
         interpreter.step()
-        peripherals.onPeripheralClock()
         
         // Log changes in the state.
         if let logger = logger {
@@ -206,21 +204,6 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         }
     }
     
-    public func didTickControlClock() {
-        peripherals.bus = cpuState.bus
-        peripherals.registerX = cpuState.registerX
-        peripherals.registerY = cpuState.registerY
-        peripherals.onControlClock()
-        cpuState.bus = peripherals.bus
-    }
-    
-    public func didTickRegisterClock() {
-        peripherals.bus = cpuState.bus
-        peripherals.registerX = cpuState.registerX
-        peripherals.registerY = cpuState.registerY
-        peripherals.onRegisterClock()
-    }
-    
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
         let offset = 0x8000
         
@@ -252,14 +235,6 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         let value = dataRAM.load(from: address)
         logger?.append("Load from Data RAM at address 0x%04x -> 0x%02x", address, value)
         return value
-    }
-    
-    public func activateSignalPO(_ index: Int) {
-        peripherals.activateSignalPO(cpuState.registerD.integerValue)
-    }
-    
-    public func activateSignalPI(_ index: Int) {
-        peripherals.activateSignalPI(cpuState.registerD.integerValue)
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {

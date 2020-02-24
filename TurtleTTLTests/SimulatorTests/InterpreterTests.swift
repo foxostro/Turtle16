@@ -12,8 +12,6 @@ import TurtleTTL
 class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
         var storesToRAM: [(UInt8, Int)] = []
-        var signalsPO: [ControlSignal] = [.inactive, .inactive, .inactive, .inactive, .inactive, .inactive, .inactive]
-        var signalsPI: [ControlSignal] = [.inactive, .inactive, .inactive, .inactive, .inactive, .inactive, .inactive]
         var instructions: [Instruction]
         
         init(instructions: [Instruction]) {
@@ -36,17 +34,6 @@ class InterpreterTests: XCTestCase {
                 return instructions.removeFirst()
             }
         }
-        
-        func activateSignalPO(_ index: Int) {
-            signalsPO[index] = .active
-        }
-        
-        func activateSignalPI(_ index: Int) {
-            signalsPI[index] = .active
-        }
-        
-        func didTickControlClock() {}
-        func didTickRegisterClock() {}
     }
     
     fileprivate func assemble(_ text: String) -> [Instruction] {
@@ -64,15 +51,14 @@ class InterpreterTests: XCTestCase {
     }
     
     func testReset() {
-        let cpuState = CPUStateSnapshot()
-        cpuState.pc = ProgramCounter(withValue: 1)
-        let interpreter = makeInterpreter(cpuState: cpuState)
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.pc = ProgramCounter(withValue: 1)
         interpreter.reset()
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
-        XCTAssertEqual(cpuState.pc.value, 0)
-        XCTAssertEqual(cpuState.pc_if.value, 0)
-        XCTAssertEqual(cpuState.registerC.value, 0)
-        XCTAssertEqual(cpuState.controlWord.unsignedIntegerValue, ControlWord().unsignedIntegerValue)
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0)
+        XCTAssertEqual(interpreter.cpuState.pc_if.value, 0)
+        XCTAssertEqual(interpreter.cpuState.registerC.value, 0)
+        XCTAssertEqual(interpreter.cpuState.controlWord, ControlWord())
     }
     
     func testInterpretNOP() {
@@ -93,12 +79,42 @@ class InterpreterTests: XCTestCase {
     }
     
     fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
+        let interpreter = Interpreter(cpuState: cpuState,
+                                      peripherals: ComputerPeripherals())
+        
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        let instructionDecoder = microcodeGenerator.microcode
-        let interpreter = Interpreter(cpuState: cpuState,
-                                      instructionDecoder: instructionDecoder)
+        interpreter.instructionDecoder = microcodeGenerator.microcode
+        
+        interpreter.peripherals.peripherals = [MockComputerPeripheral(),
+                                               MockComputerPeripheral(),
+                                               MockComputerPeripheral(),
+                                               MockComputerPeripheral(),
+                                               MockComputerPeripheral(),
+                                               MockComputerPeripheral()]
+        
         return interpreter
+    }
+    
+    class MockComputerPeripheral: ComputerPeripheral {
+        public var storesToPeripheral: [UInt8] = []
+        public var loadsFromPeripheral: [UInt8] = []
+        
+        public init() {
+            super.init(name: "Mock")
+        }
+        
+        public override func onRegisterClock() {
+            if (PI == .active) {
+                storesToPeripheral.append(bus.value)
+            }
+        }
+        
+        public override func onControlClock() {
+            if (PO == .active) {
+                bus = Register(withValue: loadsFromPeripheral.removeFirst())
+            }
+        }
     }
     
     func testInterpretHLT_EnsureThreeClockPipelineLatency() {
@@ -623,22 +639,23 @@ MOV A, M
     
     func testStoreToPeripheral() {
         let interpreter = makeInterpreter()
-        
+        let peripheral = interpreter.peripherals.peripherals[0] as! MockComputerPeripheral
         let delegate = TestInterpreterDelegate(instructions: assemble("""
 LI X, 0xff
 LI Y, 0xff
-LI P, 42
+LI P, 13
 """))
         interpreter.delegate = delegate
         
         for _ in 1...5 { interpreter.step() }
         
-        XCTAssertEqual(delegate.signalsPI[0], .active)
+        XCTAssertEqual(peripheral.storesToPeripheral, [13])
     }
     
     func testLoadFromPeripheral() {
         let interpreter = makeInterpreter()
-        
+        let peripheral = interpreter.peripherals.peripherals[0] as! MockComputerPeripheral
+        peripheral.loadsFromPeripheral = [42]
         let delegate = TestInterpreterDelegate(instructions: assemble("""
 LI X, 0xff
 LI Y, 0xff
@@ -648,7 +665,7 @@ MOV A, P
         
         for _ in 1...5 { interpreter.step() }
         
-        XCTAssertEqual(delegate.signalsPO[0], .active)
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
     }
     
     func testADD() {

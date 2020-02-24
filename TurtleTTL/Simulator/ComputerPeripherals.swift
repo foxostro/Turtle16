@@ -8,12 +8,17 @@
 
 import Cocoa
 
-class ComputerPeripherals: NSObject {
+public class ComputerPeripherals: NSObject {
     public var logger:Logger? = nil
     public var bus = Register()
     public var registerX = Register()
     public var registerY = Register()
-    var peripherals: [ComputerPeripheral] = []
+    public var peripherals: [ComputerPeripheral] = [ComputerPeripheral(),
+                                                    ComputerPeripheral(),
+                                                    ComputerPeripheral(),
+                                                    ComputerPeripheral(),
+                                                    ComputerPeripheral(),
+                                                    ComputerPeripheral()]
     
     public func populate(_ storeUpperInstructionRAM: @escaping (_ value: UInt8, _ address: Int) -> Void,
                          _ loadUpperInstructionRAM: @escaping (_ address: Int) -> UInt8,

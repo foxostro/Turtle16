@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class ComputerPeripheral: NSObject {
+open class ComputerPeripheral: NSObject {
     public let name: String
     public var bus = Register()
     public var registerX = Register()
@@ -20,15 +20,15 @@ public class ComputerPeripheral: NSObject {
         self.name = name
     }
     
-    public func onControlClock() {
+    open func onControlClock() {
         // override in a subclass
     }
     
-    public func onRegisterClock() {
+    open func onRegisterClock() {
         // override in a subclass
     }
     
-    public func onPeripheralClock() {
+    open func onPeripheralClock() {
         // override in a subclass
     }
     

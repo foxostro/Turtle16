@@ -17,27 +17,15 @@ public class ProgramCounter: NSObject {
     }
     
     public var stringValue: String {
-        return String(value, radix: 16)
+        return String(format: "0x%04x", value)
     }
     
     public override var description: String {
         return stringValue
     }
     
-    public required init(withValue value: UInt16) {
+    public required init(withValue value: UInt16 = 0) {
         self.value = value
-    }
-    
-    public convenience override init() {
-        self.init(withValue: 0)
-    }
-    
-    public convenience init?(withStringValue stringValue: String) {
-        if let value = UInt16(stringValue, radix: 16) {
-            self.init(withValue: value)
-        } else {
-            return nil
-        }
     }
     
     public func increment() -> ProgramCounter {

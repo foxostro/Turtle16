@@ -17,27 +17,15 @@ public class Register: NSObject {
     }
     
     public var stringValue: String {
-        return String(value, radix: 16)
+        return String(format: "0x%02x", value)
     }
     
     public override var description: String {
         return stringValue
     }
     
-    public required init(withValue value: UInt8) {
+    public required init(withValue value: UInt8 = 0) {
         self.value = value
-    }
-    
-    public convenience override init() {
-        self.init(withValue: 0)
-    }
-    
-    public convenience init?(withStringValue stringValue: String) {
-        if let value = UInt8(stringValue, radix: 16) {
-            self.init(withValue: value)
-        } else {
-            return nil
-        }
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

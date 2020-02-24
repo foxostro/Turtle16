@@ -11,7 +11,6 @@ import TurtleTTL
 
 class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
-        var jumps: [(ProgramCounter, ProgramCounter)] = []
         var storesToRAM: [(UInt8, Int)] = []
         var signalsPO: [ControlSignal] = [.inactive, .inactive, .inactive, .inactive, .inactive, .inactive, .inactive]
         var signalsPI: [ControlSignal] = [.inactive, .inactive, .inactive, .inactive, .inactive, .inactive, .inactive]
@@ -36,10 +35,6 @@ class InterpreterTests: XCTestCase {
             } else {
                 return instructions.removeFirst()
             }
-        }
-        
-        func willJump(from: ProgramCounter, to: ProgramCounter) {
-            jumps.append((from, to))
         }
         
         func activateSignalPO(_ index: Int) {
@@ -153,9 +148,6 @@ class InterpreterTests: XCTestCase {
         interpreter.step()
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0xffff)
-        XCTAssertEqual(delegate.jumps.count, 1)
-        XCTAssertEqual(delegate.jumps[0].0, ProgramCounter(withValue: 2))
-        XCTAssertEqual(delegate.jumps[0].1, ProgramCounter(withValue: 0xffff))
     }
     
     func testJC() {

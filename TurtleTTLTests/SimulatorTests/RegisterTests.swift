@@ -10,23 +10,7 @@ import XCTest
 import TurtleTTL
 
 class RegisterTests: XCTestCase {
-    func testInitWithEmptyString() {
-        let r = Register(withStringValue: "")
-        XCTAssertEqual(r, nil)
-    }
-    
-    func testInitWithValidString() {
-        let r = Register(withStringValue: "1")
-        XCTAssertEqual(r?.value, 1)
-    }
-    
-    func testInitWithStringNegative() {
-        let r = Register(withStringValue: "-1")
-        XCTAssertEqual(r, nil)
-    }
-    
-    func testInitWithStringTooBig() {
-        let r = Register(withStringValue: "256")
-        XCTAssertEqual(r, nil)
+    func testDescriptionIsFourDigitHex() {
+        XCTAssertEqual(Register(withValue: 0xa).description, "0x0a")
     }
 }

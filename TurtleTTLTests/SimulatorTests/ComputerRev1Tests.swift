@@ -64,7 +64,7 @@ class ComputerRev1Tests: XCTestCase {
         
         XCTAssertEqual(computer.cpuState.pc.value, 1)
         XCTAssertEqual(computer.cpuState.pc_if.value, 0)
-        XCTAssertEqual(computer.cpuState.if_id.description, "{op=0b0, imm=0b0}")
+        XCTAssertEqual(computer.cpuState.if_id.description, "NOP")
         XCTAssertEqual(computer.cpuState.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch the assignment to A, Decode the NOP, Execute Whatever
@@ -72,7 +72,7 @@ class ComputerRev1Tests: XCTestCase {
         
         XCTAssertEqual(computer.cpuState.pc.value, 2)
         XCTAssertEqual(computer.cpuState.pc_if.value, 1)
-        XCTAssertEqual(computer.cpuState.if_id.description, "{op=0b0, imm=0b0}")
+        XCTAssertEqual(computer.cpuState.if_id.description, "NOP")
         XCTAssertEqual(computer.cpuState.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch whatever, Decode the assignment to A, Execute the NOP
@@ -80,7 +80,7 @@ class ComputerRev1Tests: XCTestCase {
         
         XCTAssertEqual(computer.cpuState.pc.value, 3)
         XCTAssertEqual(computer.cpuState.pc_if.value, 2)
-        XCTAssertEqual(computer.cpuState.if_id.description, "{op=0b1, imm=0b1}")
+        XCTAssertEqual(computer.cpuState.if_id.description, "HLT")
         XCTAssertEqual(computer.cpuState.controlWord.unsignedIntegerValue, 0xffffffff)
         
         // Fetch whatever, Decode whatever, Execute the assignment to A.

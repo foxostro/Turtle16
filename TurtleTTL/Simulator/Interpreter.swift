@@ -16,9 +16,6 @@ public protocol InterpreterDelegate: NSObject {
     // RAM, or from some other source.
     func fetchInstruction(from: ProgramCounter) -> Instruction
     
-    // Called immediately before executing a jump.
-    func willJump(from: ProgramCounter, to: ProgramCounter)
-    
     // The peripheral device will directly read and modify CPU state.
     func activateSignalPO(_ index: Int)
     func activateSignalPI(_ index: Int)
@@ -238,9 +235,7 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalJ() {
         if (.active == cpuState.controlWord.J) {
-            let dst = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
-            delegate?.willJump(from: cpuState.pc, to: dst)
-            cpuState.pc = dst
+            cpuState.pc = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
         } else {
             cpuState.pc = cpuState.pc.increment()
         }

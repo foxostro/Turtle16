@@ -15,7 +15,6 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     public var upperInstructionRAM = RAM()
     public var lowerInstructionRAM = RAM()
     public var instructionROM = InstructionROM()
-    let instructionFormatter = InstructionFormatter()
     
     public var instructionDecoder: InstructionDecoder {
         get {
@@ -47,12 +46,15 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         }
     }
     
-    var peripherals = ComputerPeripherals()
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
+    let instructionFormatter = InstructionFormatter()
+    let interpreter: Interpreter
+    var peripherals = ComputerPeripherals()
     let profiler = TraceProfiler()
-    public let interpreter: Interpreter
+    let traceCache = NSCache<ProgramCounter, Trace>()
+    var traceRecorder: TraceRecorder? = nil
     
     public override init() {
         interpreter = Interpreter(cpuState: cpuState, instructionDecoder: InstructionDecoder())
@@ -91,13 +93,65 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     }
     
     public func step() {
-        let prevState = (logger != nil) ? (cpuState.copy() as! CPUStateSnapshot) : cpuState
+        // TODO: Is it a problem to allocate a state object every tick?
+        let prevState = cpuState.copy() as! CPUStateSnapshot
+        
+        enforceTraceRecorderPolicy(prevState)
+        
         peripherals.resetControlSignals()
         interpreter.step()
         peripherals.onPeripheralClock()
+        
+        // Log changes in the state.
         if let logger = logger {
-            logCPUStateChanges(logger: logger, prevState: prevState, nextState: cpuState)
-            logger.append("-----")
+            logCPUStateChanges(logger: logger,
+                               prevState: prevState,
+                               nextState: cpuState)
+        }
+        
+        // Record backwards jumps.
+        let oldPC = prevState.pc.value
+        let newPC = cpuState.pc.value
+        if newPC < oldPC {
+            let hasBecomeHot = profiler.hit(pc: newPC)
+            if hasBecomeHot {
+                logger?.append("Jump destination \(cpuState.pc) has become hot.")
+            }
+        }
+        
+        // Update the trace if we're recording one now.
+        traceRecorder?.record(instruction: prevState.if_id,
+                              stateBefore: prevState,
+                              stateAfter: cpuState)
+        
+        logger?.append("-----")
+    }
+    
+    fileprivate func enforceTraceRecorderPolicy(_ prevState: CPUStateSnapshot) {
+        let pc = prevState.if_id.pc
+        
+        // If the instruction is hot then check to see if we have a
+        // corresponding trace. If so then execute that. Else, begin recording.
+        if let traceRecorder = traceRecorder {
+            if traceRecorder.trace.pc! == pc || traceCache.doesContain(pc) {
+                // The next instruction corresponds to an existing trace.
+                // So, this is a good point to finish the current trace.
+                let trace = traceRecorder.trace
+                traceCache.setObject(trace, forKey: trace.pc!)
+                self.traceRecorder = nil
+                logger?.append("Finished recording trace for pc=\(trace.pc!):\n\(trace)", trace.pc!, trace)
+            }
+        }
+        
+        if let trace = traceCache.object(forKey: pc) {
+            // We have a trace for the next instruction and we should
+            // execute that now.
+            logger?.append("TODO: we should execute the cached trace for pc=\(pc):\n\(trace)")
+        } else if (traceRecorder == nil) && profiler.isHot(pc: pc.value) {
+            // The instruction is hot but we don't have a trace for it.
+            // Begin recording now.
+            traceRecorder = TraceRecorder()
+            logger?.append("Beginning trace recording for for pc=\(pc)")
         }
     }
     
@@ -167,28 +221,24 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         peripherals.onRegisterClock()
     }
     
-    public func willJump(from: ProgramCounter, to: ProgramCounter) {
-        let oldPC = from.value
-        let newPC = to.value
-        if newPC < oldPC {
-            let hasBecomeHot = profiler.hit(pc: newPC)
-            if hasBecomeHot {
-                logger?.append("Jump destination \(newPC) has become hot.")
-            }
-        }
-    }
-    
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
         let offset = 0x8000
-        let instruction: Instruction
+        
+        let temp: Instruction
         if pc.value < offset {
-            let ins = instructionROM.load(from: cpuState.pc_if.integerValue)
-            instruction = instructionFormatter.makeInstructionWithDisassembly(instruction: ins)
+            temp = instructionROM.load(from: cpuState.pc_if.integerValue)
         } else {
             let opcode = Int(upperInstructionRAM.load(from: pc.integerValue - offset))
             let immediate = Int(lowerInstructionRAM.load(from: pc.integerValue - offset))
-            instruction = Instruction(opcode: opcode, immediate: immediate)
+            temp = Instruction(opcode: opcode, immediate: immediate)
         }
+
+        let disassembly = instructionFormatter.format(instruction: temp)
+        let instruction = Instruction(opcode: temp.opcode,
+                                      immediate: temp.immediate,
+                                      disassembly: disassembly,
+                                      pc: pc)
+        
         logger?.append("Fetched instruction from memory -> %@", instruction)
         return instruction
     }

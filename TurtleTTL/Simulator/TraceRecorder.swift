@@ -9,23 +9,19 @@
 import Cocoa
 
 public class TraceRecorder: NSObject {
-    let microcodeGenerator: MicrocodeGenerator
     public let trace = Trace()
-    
-    public init(microcodeGenerator: MicrocodeGenerator) {
-        self.microcodeGenerator = microcodeGenerator
-    }
     
     public func record(instruction: Instruction,
                        stateBefore: CPUStateSnapshot,
                        stateAfter: CPUStateSnapshot) {
+        let pc = instruction.pc
         if isUnconditionalJump(instruction) {
-            trace.appendGuard(pc: stateBefore.pc.value, address: UInt16(stateAfter.valueOfXYPair()))
+            trace.appendGuard(pc: pc, address: Trace.Address(stateAfter.valueOfXYPair()))
         } else if isConditionalJump(instruction) {
-            trace.appendGuard(pc: stateBefore.pc.value, flags: stateBefore.flags)
-            trace.appendGuard(pc: stateBefore.pc.value, address: UInt16(stateAfter.valueOfXYPair()))
+            trace.appendGuard(pc: pc, flags: stateBefore.flags)
+            trace.appendGuard(pc: pc, address: Trace.Address(stateAfter.valueOfXYPair()))
         } else {
-            trace.append(pc: stateBefore.pc.value, instruction: instruction)
+            trace.append(pc: pc, instruction: instruction)
         }
     }
     

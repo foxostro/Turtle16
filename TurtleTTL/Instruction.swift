@@ -15,21 +15,33 @@ public class Instruction: NSObject {
     public let opcode: UInt8
     public let immediate: UInt8
     public let disassembly: String?
+    public let pc: ProgramCounter
     
     public override convenience init() {
-        self.init(opcode: 0, immediate: 0, disassembly: "NOP")
+        self.init(opcode: 0,
+                  immediate: 0,
+                  disassembly: "NOP",
+                  pc: ProgramCounter(withValue: 0))
     }
     
-    public convenience init(opcode: Int, immediate: Int, disassembly: String? = nil) {
+    public convenience init(opcode: Int,
+                            immediate: Int,
+                            disassembly:String? = nil,
+                            pc: ProgramCounter = ProgramCounter(withValue: 0)) {
         self.init(opcode: UInt8(opcode),
                   immediate: UInt8(immediate),
-                  disassembly: disassembly)
+                  disassembly: disassembly,
+                  pc: pc)
     }
     
-    public init(opcode: UInt8, immediate: UInt8, disassembly: String? = nil) {
+    public init(opcode: UInt8,
+                immediate: UInt8,
+                disassembly: String? = nil,
+                pc: ProgramCounter = ProgramCounter(withValue: 0)) {
         self.opcode = opcode
         self.immediate = immediate
         self.disassembly = disassembly
+        self.pc = pc
     }
     
     public init?(_ stringValue: String) {
@@ -58,6 +70,7 @@ public class Instruction: NSObject {
         }
         
         self.disassembly = nil
+        self.pc = ProgramCounter(withValue: 0)
     }
     
     public var value:UInt16 {
@@ -80,6 +93,13 @@ public class Instruction: NSObject {
         } else {
             return false
         }
+    }
+    
+    public func withProgramCounter(_ pc: ProgramCounter) -> Instruction {
+        return Instruction(opcode: opcode,
+                           immediate: immediate,
+                           disassembly: disassembly,
+                           pc: pc)
     }
 }
 

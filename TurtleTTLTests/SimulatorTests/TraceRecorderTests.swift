@@ -20,16 +20,12 @@ class TraceRecorderTests: XCTestCase {
         }
         
         func fetchInstruction(from: ProgramCounter) -> Instruction {
-            if instructions.isEmpty {
-                return Instruction()
-            } else {
-                return instructions.removeFirst()
-            }
+            let instruction = instructions.isEmpty ? Instruction() : instructions.removeFirst()
+            return instruction.withProgramCounter(from)
         }
         
         func storeToRAM(value: UInt8, at address: Int) {}
         func loadFromRAM(at address: Int) -> UInt8 { return 0 }
-        func willJump(from: ProgramCounter, to: ProgramCounter) {}
         func activateSignalPO(_ index: Int) {}
         func activateSignalPI(_ index: Int) {}
         func didTickControlClock() {}
@@ -69,7 +65,7 @@ class TraceRecorderTests: XCTestCase {
     }
     
     func testAppendInstruction() {
-        let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
+        let recorder = TraceRecorder()
         recorder.record(instruction: Instruction(), stateBefore: CPUStateSnapshot(), stateAfter: CPUStateSnapshot())
         XCTAssertEqual(recorder.trace.elements.count, 1)
         XCTAssertEqual(recorder.trace.description, """
@@ -78,11 +74,13 @@ class TraceRecorderTests: XCTestCase {
     }
     
     func testRecordTraceWithAForwardJump() {
-        let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
+        let recorder = TraceRecorder()
         recordTraceForProgram(recorder, """
 LI X, 1
 LI Y, 0
 JMP
+NOP # branch delay slot
+NOP # branch delay slot
 LI A, 2
 HLT
 """)
@@ -94,17 +92,19 @@ HLT
         // trace continues recording instructions at the following PC.
         XCTAssertEqual(recorder.trace.description, """
 0x0000:\tNOP
-0x0001:\tNOP
-0x0002:\tLI X, 1
-0x0003:\tLI Y, 0
-guard:\taddress=0x0100, traceExitingPC=0x0004
+0x0000:\tNOP
+0x0000:\tLI X, 1
+0x0001:\tLI Y, 0
+guard:\taddress=0x0100, traceExitingPC=0x0002
+0x0003:\tNOP
+0x0004:\tNOP
 0x0100:\tLI A, 2
 0x0101:\tHLT
 """)
     }
     
     func testRecordTraceWithConditionalForwardJump() {
-        let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
+        let recorder = TraceRecorder()
         recordTraceForProgram(recorder, """
 LI X, 1
 LI Y, 0
@@ -113,6 +113,8 @@ LI B, 1
 CMP
 NOP
 JE
+NOP # branch delay slot
+NOP # branch delay slot
 LI D, 2
 HLT
 """)
@@ -123,15 +125,17 @@ HLT
         // must be asserted with a guard condition.
         XCTAssertEqual(recorder.trace.description, """
 0x0000:\tNOP
-0x0001:\tNOP
-0x0002:\tLI X, 1
-0x0003:\tLI Y, 0
-0x0004:\tLI A, 1
-0x0005:\tLI B, 1
-0x0006:\tCMP
+0x0000:\tNOP
+0x0000:\tLI X, 1
+0x0001:\tLI Y, 0
+0x0002:\tLI A, 1
+0x0003:\tLI B, 1
+0x0004:\tCMP
+0x0005:\tNOP
+guard:\tflags={carryFlag: 1, equalFlag: 1}, traceExitingPC=0x0006
+guard:\taddress=0x0100, traceExitingPC=0x0006
 0x0007:\tNOP
-guard:\tflags={carryFlag: 1, equalFlag: 1}, traceExitingPC=0x0008
-guard:\taddress=0x0100, traceExitingPC=0x0008
+0x0008:\tNOP
 0x0100:\tLI D, 2
 0x0101:\tHLT
 """)

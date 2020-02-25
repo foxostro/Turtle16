@@ -55,6 +55,12 @@ public class InstructionFormatter: NSObject {
         else if mnemonic == "MOV V, C" {
             return "LI V, \(instruction.immediate)"
         }
+        else if mnemonic == "MOV M, C" {
+            return "LI M, \(instruction.immediate)"
+        }
+        else if mnemonic == "MOV P, C" {
+            return "LI P, \(instruction.immediate)"
+        }
         
         return mnemonic
     }

@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class ComputerRev1Tests: XCTestCase {
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
@@ -19,8 +19,12 @@ class ComputerRev1Tests: XCTestCase {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.logger = isVerboseLogging ? ConsoleLogger() : nil
+        computer.logger = makeLogger()
         return computer
+    }
+    
+    fileprivate func makeLogger() -> Logger {
+        return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
     func testReset() {

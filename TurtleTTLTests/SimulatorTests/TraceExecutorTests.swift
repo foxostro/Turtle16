@@ -12,10 +12,6 @@ import TurtleTTL
 class TraceExecutorTests: XCTestCase {
     let isVerboseLogging = false
     
-    public class NullLogger: NSObject, Logger {
-        public func append(_ format: String, _ args: CVarArg...) {}
-    }
-    
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }

@@ -14,20 +14,6 @@ class ComputerRev1Tests: XCTestCase {
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
-    fileprivate func assemble(_ text: String) -> [Instruction] {
-        return try! tryAssemble(text)
-    }
-
-    fileprivate func tryAssemble(_ text: String) throws -> [Instruction] {
-        let assembler = AssemblerFrontEnd()
-        assembler.compile(text)
-        if assembler.hasError {
-            let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
-            throw error
-        }
-        return assembler.instructions
-    }
-    
     func makeComputer() -> ComputerRev1 {
         let computer = ComputerRev1()
         let microcodeGenerator = MicrocodeGenerator()
@@ -53,7 +39,7 @@ class ComputerRev1Tests: XCTestCase {
         computer.didUpdateSerialOutput = {
             serialOutput += $0
         }
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 LI D, 6 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 1 # Put Command
@@ -87,7 +73,7 @@ HLT
         
         computer.provideSerialInput(bytes: [65])
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 LI D, 6 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 2 # "Get" Command
@@ -109,7 +95,7 @@ HLT
         let n: UInt8 = 10
         let computer = makeComputer()
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 LXY loop
 LI A, 0
 loop:
@@ -131,7 +117,7 @@ HLT
     func testFibonacci() {
         let computer = makeComputer()
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 # ram[0x0000] --> Fn_1
 # ram[0x0001] --> Fn_2
 # ram[0x0002] --> Fn
@@ -217,7 +203,7 @@ HLT
         // in the expected position in the program, after the delay slots.
         let computer = makeComputer()
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 LI A, 100
 LI B, 1
 LXY fn
@@ -246,7 +232,7 @@ NOP
     func testSerialGetNumberOfBytes() {
         let computer = makeComputer()
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 LI D, 6 # kSerialInterface
 LI Y, 1 # Data Port
 LI P, 3 # "Get Number of Bytes" Command
@@ -269,7 +255,7 @@ HLT
     func testSerialOutputDemo() {
         let computer = makeComputer()
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 LI A, 0
 LI B, 0
 LI D, 6 # The Serial Interface device
@@ -428,7 +414,7 @@ ready.
     func disabled_testSerialInputDemo() {
         let computer = makeComputer()
         
-        computer.provideInstructions(assemble("""
+        computer.provideInstructions(TraceUtils.assemble("""
 beginningOfInputLoop:
 
 LXY serial_get_number_available_bytes

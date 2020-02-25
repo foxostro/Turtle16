@@ -12,6 +12,10 @@ import TurtleTTL
 class TraceInterpreterTests: XCTestCase {
     let isVerboseLogging = false
     
+    public class NullLogger: NSObject, Logger {
+        public func append(_ format: String, _ args: CVarArg...) {}
+    }
+    
     fileprivate func makeTraceInterpreter(cpuState: CPUStateSnapshot, program: String) -> TraceInterpreter {
         let trace = TraceUtils.recordTraceForProgram(program)
         let microcodeGenerator = MicrocodeGenerator()
@@ -20,7 +24,7 @@ class TraceInterpreterTests: XCTestCase {
                                                 peripherals: ComputerPeripherals(),
                                                 instructionDecoder: microcodeGenerator.microcode,
                                                 trace: trace)
-        traceInterpreter.logger = isVerboseLogging ? ConsoleLogger() : nil
+        traceInterpreter.logger = isVerboseLogging ? ConsoleLogger() : NullLogger()
         return traceInterpreter
     }
     

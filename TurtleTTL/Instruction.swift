@@ -19,7 +19,6 @@ public class Instruction: NSObject {
     public let guardFail: Bool?
     public let guardFlags: Flags?
     public let guardAddress: UInt16?
-    public let traceExitingPC: ProgramCounter?
     
     public static func makeNOP() -> Instruction {
         return makeNOP(pc: ProgramCounter(withValue: 0))
@@ -32,8 +31,7 @@ public class Instruction: NSObject {
                            pc: pc,
                            guardFail: nil,
                            guardFlags: nil,
-                           guardAddress: nil,
-                           traceExitingPC: nil)
+                           guardAddress: nil)
     }
     
     public init(opcode: UInt8,
@@ -42,8 +40,7 @@ public class Instruction: NSObject {
                 pc: ProgramCounter = ProgramCounter(withValue: 0),
                 guardFail: Bool? = nil,
                 guardFlags: Flags? = nil,
-                guardAddress: UInt16? = nil,
-                traceExitingPC: ProgramCounter? = nil) {
+                guardAddress: UInt16? = nil) {
         self.opcode = opcode
         self.immediate = immediate
         self.disassembly = disassembly
@@ -51,7 +48,6 @@ public class Instruction: NSObject {
         self.guardFail = guardFail
         self.guardFlags = guardFlags
         self.guardAddress = guardAddress
-        self.traceExitingPC = traceExitingPC
     }
     
     public init(opcode: Int,
@@ -60,8 +56,7 @@ public class Instruction: NSObject {
                 pc: ProgramCounter = ProgramCounter(withValue: 0),
                 guardFail: Bool? = nil,
                 guardFlags: Flags? = nil,
-                guardAddress: UInt16? = nil,
-                traceExitingPC: ProgramCounter? = nil) {
+                guardAddress: UInt16? = nil) {
         self.opcode = UInt8(opcode)
         self.immediate = UInt8(immediate)
         self.disassembly = disassembly
@@ -69,7 +64,6 @@ public class Instruction: NSObject {
         self.guardFail = guardFail
         self.guardFlags = guardFlags
         self.guardAddress = guardAddress
-        self.traceExitingPC = traceExitingPC
     }
     
     public init?(_ stringValue: String) {
@@ -102,7 +96,6 @@ public class Instruction: NSObject {
         self.guardFail = nil
         self.guardFlags = nil
         self.guardAddress = nil
-        self.traceExitingPC = nil
     }
     
     public var value:UInt16 {
@@ -134,8 +127,7 @@ public class Instruction: NSObject {
                            pc: pc,
                            guardFail: guardFail,
                            guardFlags: guardFlags,
-                           guardAddress: guardAddress,
-                           traceExitingPC: traceExitingPC)
+                           guardAddress: guardAddress)
     }
 }
 

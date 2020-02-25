@@ -21,22 +21,22 @@ public protocol InterpreterDelegate: NSObject {
 public class Interpreter: NSObject {
     public weak var delegate: InterpreterDelegate? = nil
     public let cpuState: CPUStateSnapshot
-    public var instructionDecoder = InstructionDecoder()
+    public var instructionDecoder: InstructionDecoder
     public var peripherals: ComputerPeripherals
     let alu = ALU()
     
     public override convenience init() {
         self.init(cpuState: CPUStateSnapshot(),
                   peripherals: ComputerPeripherals())
-        
-        let microcodeGenerator = MicrocodeGenerator()
-        microcodeGenerator.generate()
-        self.instructionDecoder = microcodeGenerator.microcode
     }
     
     public init(cpuState: CPUStateSnapshot, peripherals: ComputerPeripherals) {
         self.cpuState = cpuState
         self.peripherals = peripherals
+        
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        self.instructionDecoder = microcodeGenerator.microcode
     }
 
     // This method duplicates the functionality of the hardware reset button.

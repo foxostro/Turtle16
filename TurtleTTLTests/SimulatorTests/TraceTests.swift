@@ -76,4 +76,11 @@ class TraceTests: XCTestCase {
         XCTAssertNotEqual([traceA], [traceB])
         XCTAssertNotEqual([traceA as NSObject], [1 as NSObject])
     }
+        
+    func testTraceFinalPC() {
+        let trace = Trace()
+        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0x0100)))
+        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0x0101)))
+        XCTAssertEqual(trace.finalPC, ProgramCounter(withValue: 0x0101))
+    }
 }

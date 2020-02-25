@@ -52,4 +52,10 @@ class TraceTests: XCTestCase {
 0x0001: NOP ; guardAddress=0xffff ; guardFlags={carryFlag: 1, equalFlag: 1}
 """)
     }
+        
+    func testTraceRecordsInitialProgramCounter() {
+        let trace = Trace()
+        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0xffff)))
+        XCTAssertEqual(trace.pc, ProgramCounter(withValue: 0xffff))
+    }
 }

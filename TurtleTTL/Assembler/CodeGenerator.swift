@@ -43,7 +43,7 @@ public class CodeGenerator: NSObject {
         }
         let maybeOpcode = microcodeGenerator.getOpcode(withMnemonic: mnemonic)
         if let opcode = maybeOpcode {
-            let inst = Instruction(opcode: opcode, immediate: immediate)
+            let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
             throw AssemblerError(format: "unrecognized mnemonic: `%@'", mnemonic)
@@ -59,7 +59,7 @@ public class CodeGenerator: NSObject {
         }
         let maybeOpcode = microcodeGenerator.getOpcode(withMnemonic: mnemonic)
         if let opcode = maybeOpcode {
-            let inst = Instruction(opcode: opcode, immediate: immediate)
+            let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
             throw AssemblerError(line: immediateToken.lineNumber, format: "unrecognized mnemonic: `%@'", mnemonic)

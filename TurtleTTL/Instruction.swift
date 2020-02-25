@@ -16,32 +16,60 @@ public class Instruction: NSObject {
     public let immediate: UInt8
     public let disassembly: String?
     public let pc: ProgramCounter
+    public let guardFail: Bool?
+    public let guardFlags: Flags?
+    public let guardAddress: UInt16?
+    public let traceExitingPC: ProgramCounter?
     
-    public override convenience init() {
-        self.init(opcode: 0,
-                  immediate: 0,
-                  disassembly: "NOP",
-                  pc: ProgramCounter(withValue: 0))
+    public static func makeNOP() -> Instruction {
+        return makeNOP(pc: ProgramCounter(withValue: 0))
     }
     
-    public convenience init(opcode: Int,
-                            immediate: Int,
-                            disassembly:String? = nil,
-                            pc: ProgramCounter = ProgramCounter(withValue: 0)) {
-        self.init(opcode: UInt8(opcode),
-                  immediate: UInt8(immediate),
-                  disassembly: disassembly,
-                  pc: pc)
+    public static func makeNOP(pc: ProgramCounter) -> Instruction {
+        return Instruction(opcode: 0,
+                           immediate: 0,
+                           disassembly: "NOP",
+                           pc: pc,
+                           guardFail: nil,
+                           guardFlags: nil,
+                           guardAddress: nil,
+                           traceExitingPC: nil)
     }
     
     public init(opcode: UInt8,
                 immediate: UInt8,
-                disassembly: String? = nil,
-                pc: ProgramCounter = ProgramCounter(withValue: 0)) {
+                disassembly:String? = nil,
+                pc: ProgramCounter = ProgramCounter(withValue: 0),
+                guardFail: Bool? = nil,
+                guardFlags: Flags? = nil,
+                guardAddress: UInt16? = nil,
+                traceExitingPC: ProgramCounter? = nil) {
         self.opcode = opcode
         self.immediate = immediate
         self.disassembly = disassembly
         self.pc = pc
+        self.guardFail = guardFail
+        self.guardFlags = guardFlags
+        self.guardAddress = guardAddress
+        self.traceExitingPC = traceExitingPC
+    }
+    
+    public init(opcode: Int,
+                immediate: Int,
+                disassembly:String? = nil,
+                pc: ProgramCounter = ProgramCounter(withValue: 0),
+                guardFail: Bool? = nil,
+                guardFlags: Flags? = nil,
+                guardAddress: UInt16? = nil,
+                traceExitingPC: ProgramCounter? = nil) {
+        self.opcode = UInt8(opcode)
+        self.immediate = UInt8(immediate)
+        self.disassembly = disassembly
+        self.pc = pc
+        self.guardFail = guardFail
+        self.guardFlags = guardFlags
+        self.guardAddress = guardAddress
+        self.traceExitingPC = traceExitingPC
     }
     
     public init?(_ stringValue: String) {
@@ -71,6 +99,10 @@ public class Instruction: NSObject {
         
         self.disassembly = nil
         self.pc = ProgramCounter(withValue: 0)
+        self.guardFail = nil
+        self.guardFlags = nil
+        self.guardAddress = nil
+        self.traceExitingPC = nil
     }
     
     public var value:UInt16 {
@@ -99,7 +131,11 @@ public class Instruction: NSObject {
         return Instruction(opcode: opcode,
                            immediate: immediate,
                            disassembly: disassembly,
-                           pc: pc)
+                           pc: pc,
+                           guardFail: guardFail,
+                           guardFlags: guardFlags,
+                           guardAddress: guardAddress,
+                           traceExitingPC: traceExitingPC)
     }
 }
 

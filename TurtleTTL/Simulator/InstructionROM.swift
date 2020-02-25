@@ -73,7 +73,7 @@ public class InstructionROM: NSObject {
     }
     
     public func load(from address: Int) -> Instruction {
-        return Instruction(opcode: Int(upperROM.load(from: address)),
-                           immediate: Int(lowerROM.load(from: address)))
+        return Instruction(opcode: upperROM.load(from: address),
+                           immediate: lowerROM.load(from: address))
     }
 }

@@ -11,7 +11,7 @@ import TurtleTTL
 
 class InstructionTests: XCTestCase {
     func testInit_1() {
-        let instruction = Instruction()
+        let instruction = Instruction.makeNOP()
         XCTAssertEqual(instruction.opcode, 0)
         XCTAssertEqual(instruction.immediate, 0)
     }
@@ -51,16 +51,16 @@ class InstructionTests: XCTestCase {
     }
     
     func testTwoDefaultInitInstructionsAreEqual() {
-        XCTAssertTrue(Instruction() == Instruction())
-        XCTAssertEqual(Instruction(), Instruction())
+        XCTAssertTrue(Instruction.makeNOP() == Instruction.makeNOP())
+        XCTAssertEqual(Instruction.makeNOP(), Instruction.makeNOP())
     }
     
     func testDifferentInstructionsTestNotEqual() {
-        XCTAssertNotEqual(Instruction(), Instruction(opcode: 1, immediate: 2))
+        XCTAssertNotEqual(Instruction.makeNOP(), Instruction(opcode: 1, immediate: 2))
     }
     
     func testInstructionTestsNotEqualAgainstDifferentObject() {
-        XCTAssertNotEqual([Instruction() as NSObject], [1 as NSObject])
+        XCTAssertNotEqual([Instruction.makeNOP() as NSObject], [1 as NSObject])
     }
     
     func testInstructionWithProvidedDisassembly() {

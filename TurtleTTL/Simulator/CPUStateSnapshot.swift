@@ -43,7 +43,7 @@ public class CPUStateSnapshot: NSObject {
         flags = Flags()
         pc = ProgramCounter()
         pc_if = ProgramCounter()
-        if_id = Instruction()
+        if_id = Instruction.makeNOP()
         controlWord = ControlWord()
     }
     

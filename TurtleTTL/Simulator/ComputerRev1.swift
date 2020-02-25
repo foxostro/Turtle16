@@ -213,7 +213,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         } else {
             let opcode = Int(upperInstructionRAM.load(from: pc.integerValue - offset))
             let immediate = Int(lowerInstructionRAM.load(from: pc.integerValue - offset))
-            temp = Instruction(opcode: opcode, immediate: immediate)
+            temp = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
         }
 
         let disassembly = instructionFormatter.format(instruction: temp)

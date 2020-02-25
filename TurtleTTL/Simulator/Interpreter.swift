@@ -45,7 +45,7 @@ public class Interpreter: NSObject {
         cpuState.bus = Register()
         cpuState.pc = ProgramCounter()
         cpuState.pc_if = ProgramCounter()
-        cpuState.if_id = Instruction()
+        cpuState.if_id = Instruction.makeNOP()
         cpuState.controlWord = ControlWord()
     }
     

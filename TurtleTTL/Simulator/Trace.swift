@@ -68,4 +68,15 @@ public class Trace: NSObject {
         result.removeLast()
         return result
     }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        if let rhs = rhs as? Trace {
+            return self == rhs
+        }
+        return false
+    }
+}
+
+public func ==(lhs: Trace, rhs: Trace) -> Bool {
+    return lhs.instructions == rhs.instructions
 }

@@ -36,7 +36,7 @@ public class TraceUtils: NSObject {
         func didTickRegisterClock() {}
     }
     
-    fileprivate static func assemble(_ text: String) -> [Instruction] {
+    public static func assemble(_ text: String) -> [Instruction] {
         return  try! tryAssemble(text: text)
     }
     

@@ -111,6 +111,8 @@
 		6FE0465624039845001461C4 /* TraceInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465524039845001461C4 /* TraceInterpreter.swift */; };
 		6FE0465824039916001461C4 /* TraceInterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465724039916001461C4 /* TraceInterpreterTests.swift */; };
 		6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE046592403A857001461C4 /* TraceUtils.swift */; };
+		6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465B2404EC78001461C4 /* TraceExecutor.swift */; };
+		6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */; };
 		6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
 		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
@@ -295,6 +297,8 @@
 		6FE0465524039845001461C4 /* TraceInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceInterpreter.swift; sourceTree = "<group>"; };
 		6FE0465724039916001461C4 /* TraceInterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceInterpreterTests.swift; sourceTree = "<group>"; };
 		6FE046592403A857001461C4 /* TraceUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceUtils.swift; sourceTree = "<group>"; };
+		6FE0465B2404EC78001461C4 /* TraceExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceExecutor.swift; sourceTree = "<group>"; };
+		6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceExecutorTests.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FF1995322ECB36F00C255A2 /* Simulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FF1995622ECB36F00C255A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -412,6 +416,7 @@
 				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
 				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
 				6F6A023C23FF7204003876BD /* Trace.swift */,
+				6FE0465B2404EC78001461C4 /* TraceExecutor.swift */,
 				6FE0465524039845001461C4 /* TraceInterpreter.swift */,
 				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
 				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
@@ -453,6 +458,7 @@
 				6F86EDA622ECB99500375A00 /* RAMTests.swift */,
 				6F0B0D032308688900478220 /* RegisterTests.swift */,
 				6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */,
+				6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */,
 				6FE0465724039916001461C4 /* TraceInterpreterTests.swift */,
 				6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */,
 				6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */,
@@ -862,6 +868,7 @@
 				6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */,
 				6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */,
 				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
+				6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */,
 				6FE003B522F3D78B00221C4C /* ComputerRev1.swift in Sources */,
 				6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */,
 				6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */,
@@ -919,6 +926,7 @@
 				6F5A0116231F721B003E7C7F /* TokenEOFTests.swift in Sources */,
 				6F615179230CB56E00282B12 /* LexerTests.swift in Sources */,
 				6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */,
+				6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */,
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6FE0465824039916001461C4 /* TraceInterpreterTests.swift in Sources */,
 				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,

@@ -9,48 +9,60 @@
 import Cocoa
 
 public class Trace: NSObject {
-    public typealias Address = UInt16
-    public enum Element {
-        case instruction(ProgramCounter, Instruction)
-        case guardFlags(ProgramCounter, Flags)
-        case guardAddress(ProgramCounter, Address)
+    public private(set) var instructions: [Instruction] = []
+    public var pc: ProgramCounter? {
+        return instructions.first?.pc
     }
     
-    public private(set) var pc: ProgramCounter? = nil
-    public private(set) var elements: [Element] = []
-    
-    public func append(pc: ProgramCounter, instruction: Instruction) {
-        if elements.isEmpty {
-            self.pc = pc
-        }
-        elements.append(.instruction(pc, instruction))
+    public func append(instruction: Instruction) {
+        instructions.append(instruction)
     }
     
-    public func appendGuard(pc: ProgramCounter, flags: Flags) {
-        if elements.isEmpty {
-            self.pc = pc
-        }
-        elements.append(.guardFlags(pc, flags))
+    public func appendGuard(pc: ProgramCounter, fail: Bool) {
+        append(instruction: Instruction(opcode: 0,
+                                        immediate: 0,
+                                        disassembly: "NOP",
+                                        pc: pc,
+                                        guardFail: fail))
     }
     
-    public func appendGuard(pc: ProgramCounter, address: Address) {
-        if elements.isEmpty {
-            self.pc = pc
-        }
-        elements.append(.guardAddress(pc, address))
+    public func appendGuard(pc: ProgramCounter,
+                            flags: Flags,
+                            address: UInt16) {
+        append(instruction: Instruction(opcode: 0,
+                                        immediate: 0,
+                                        disassembly: "NOP",
+                                        pc: pc,
+                                        guardFlags: flags,
+                                        guardAddress: address))
+    }
+    
+    public func appendGuard(pc: ProgramCounter, address: UInt16) {
+        append(instruction: Instruction(opcode: 0,
+                                        immediate: 0,
+                                        disassembly: "NOP",
+                                        pc: pc,
+                                        guardFlags: nil,
+                                        guardAddress: address))
     }
     
     public override var description: String {
         var result = ""
-        for el in elements {
-            switch el {
-            case .instruction(let pc, let ins):
-                result += String(format: "0x%04x:\t%@", pc.value, ins)
-            case .guardFlags(let pc, let flags):
-                result += String(format: "guard:\tflags=%@, traceExitingPC=0x%04x", flags, pc.value)
-            case .guardAddress(let pc, let address):
-                result += String(format: "guard:\taddress=0x%04x, traceExitingPC=0x%04x", address, pc.value)
+        for ins in instructions {
+            result += "\(ins.pc): \(ins)"
+            
+            if let guardFail = ins.guardFail {
+                result += " ; guardFail=\(guardFail)"
             }
+            
+            if let address = ins.guardAddress {
+                result += String(format: " ; guardAddress=0x%04x", address)
+            }
+            
+            if let flags = ins.guardFlags {
+                result += String(format: " ; guardFlags=\(flags)")
+            }
+            
             result += "\n"
         }
         result.removeLast()

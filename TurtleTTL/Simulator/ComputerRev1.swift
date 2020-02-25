@@ -119,8 +119,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         
         // Update the trace if we're recording one now.
         traceRecorder?.record(instruction: prevState.if_id,
-                              stateBefore: prevState,
-                              stateAfter: cpuState)
+                              stateBefore: prevState)
         
         logger?.append("-----")
     }

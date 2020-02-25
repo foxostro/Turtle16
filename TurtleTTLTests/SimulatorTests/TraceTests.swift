@@ -47,9 +47,11 @@ class TraceTests: XCTestCase {
         let trace = Trace()
         trace.append(instruction: Instruction.makeNOP())
         trace.appendGuard(pc: ProgramCounter(withValue: 1), flags: Flags(1, 1), address: 0xFFFF)
+        trace.appendGuard(pc: ProgramCounter(withValue: 1), fail: true)
         XCTAssertEqual(trace.description, """
 0x0000: NOP
 0x0001: NOP ; guardAddress=0xffff ; guardFlags={carryFlag: 1, equalFlag: 1}
+0x0001: NOP ; guardFail=true
 """)
     }
         

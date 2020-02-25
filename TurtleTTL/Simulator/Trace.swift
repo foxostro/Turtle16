@@ -69,6 +69,10 @@ public class Trace: NSObject {
         return result
     }
     
+    public var finalPC: ProgramCounter? {
+        return instructions.last?.pc
+    }
+    
     public override func copy() -> Any {
         let theCopy = Trace()
         theCopy.instructions = instructions

@@ -58,4 +58,22 @@ class TraceTests: XCTestCase {
         trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0xffff)))
         XCTAssertEqual(trace.pc, ProgramCounter(withValue: 0xffff))
     }
+        
+    func testCopyIsTheSame() {
+        let traceA = Trace()
+        traceA.append(instruction: Instruction.makeNOP())
+        traceA.appendGuard(pc: ProgramCounter(withValue: 1), flags: Flags(1, 1), address: 0xFFFF)
+        let traceB = traceA.copy() as! Trace
+        XCTAssertEqual(traceA, traceB)
+    }
+        
+    func testDifferentTracesAreNotEqual() {
+        let traceA = Trace()
+        traceA.append(instruction: Instruction.makeNOP())
+        traceA.appendGuard(pc: ProgramCounter(withValue: 1), flags: Flags(1, 1), address: 0xFFFF)
+        let traceB = Trace()
+        XCTAssertNotEqual(traceA, traceB)
+        XCTAssertNotEqual([traceA], [traceB])
+        XCTAssertNotEqual([traceA as NSObject], [1 as NSObject])
+    }
 }

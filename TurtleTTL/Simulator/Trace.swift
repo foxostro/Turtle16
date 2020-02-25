@@ -69,6 +69,12 @@ public class Trace: NSObject {
         return result
     }
     
+    public override func copy() -> Any {
+        let theCopy = Trace()
+        theCopy.instructions = instructions
+        return theCopy
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         if let rhs = rhs as? Trace {
             return self == rhs

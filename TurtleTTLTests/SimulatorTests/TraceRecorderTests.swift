@@ -20,7 +20,7 @@ class TraceRecorderTests: XCTestCase {
         }
         
         func fetchInstruction(from: ProgramCounter) -> Instruction {
-            let instruction = instructions.isEmpty ? Instruction() : instructions.removeFirst()
+            let instruction = instructions.isEmpty ? Instruction.makeNOP() : instructions.removeFirst()
             return instruction.withProgramCounter(from)
         }
         
@@ -66,7 +66,7 @@ class TraceRecorderTests: XCTestCase {
     
     func testAppendInstruction() {
         let recorder = TraceRecorder()
-        recorder.record(instruction: Instruction(), stateBefore: CPUStateSnapshot(), stateAfter: CPUStateSnapshot())
+        recorder.record(instruction: Instruction.makeNOP(), stateBefore: CPUStateSnapshot(), stateAfter: CPUStateSnapshot())
         XCTAssertEqual(recorder.trace.elements.count, 1)
         XCTAssertEqual(recorder.trace.description, """
 0x0000:\tNOP

@@ -34,7 +34,7 @@ class InstructionFormatterTests: XCTestCase {
     }
     
     func testFormatNOP() {
-        let result = formatter.format(instruction: Instruction())
+        let result = formatter.format(instruction: Instruction.makeNOP())
         XCTAssertEqual(result, "NOP")
     }
     

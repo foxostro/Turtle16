@@ -29,7 +29,7 @@ class InterpreterTests: XCTestCase {
         
         func fetchInstruction(from: ProgramCounter) -> Instruction {
             if instructions.isEmpty {
-                return Instruction()
+                return Instruction.makeNOP()
             } else {
                 return instructions.removeFirst()
             }

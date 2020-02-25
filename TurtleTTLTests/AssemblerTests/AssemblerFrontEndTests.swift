@@ -31,7 +31,7 @@ class AssemblerFrontEndTests: XCTestCase {
     func testCompileEmptyProgramYieldsNOP() {
         let instructions = mustCompile("")
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(instructions[0], Instruction.makeNOP())
     }
     
     // As a hardware requirement, every program has an implicit NOP as the first
@@ -40,8 +40,8 @@ class AssemblerFrontEndTests: XCTestCase {
     func testCompileASingleNOPYieldsTwoNOPs() {
         let instructions = mustCompile("NOP")
         XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0], Instruction())
-        XCTAssertEqual(instructions[1], Instruction())
+        XCTAssertEqual(instructions[0], Instruction.makeNOP())
+        XCTAssertEqual(instructions[1], Instruction.makeNOP())
     }
     
     func testCompileFailsDuringLexingDueToInvalidCharacter() {
@@ -68,28 +68,28 @@ class AssemblerFrontEndTests: XCTestCase {
     func testCompileTwoNOPsYieldsProgramWithThreeNOPs() {
         let instructions = mustCompile("NOP\nNOP\n")
         XCTAssertEqual(instructions.count, 3)
-        XCTAssertEqual(instructions[0], Instruction())
-        XCTAssertEqual(instructions[1], Instruction())
-        XCTAssertEqual(instructions[2], Instruction())
+        XCTAssertEqual(instructions[0], Instruction.makeNOP())
+        XCTAssertEqual(instructions[1], Instruction.makeNOP())
+        XCTAssertEqual(instructions[2], Instruction.makeNOP())
     }
     
     func testCompilerIgnoresComments() {
         let instructions = mustCompile("// comment")
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(instructions[0], Instruction.makeNOP())
     }
     
     func testCompilerIgnoresCommentsAfterOpcodesToo() {
         let instructions = mustCompile("NOP  // do nothing\n")
         XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0], Instruction())
-        XCTAssertEqual(instructions[1], Instruction())
+        XCTAssertEqual(instructions[0], Instruction.makeNOP())
+        XCTAssertEqual(instructions[1], Instruction.makeNOP())
     }
     
     func testCompilerIgnoresHashCommentsToo() {
         let instructions = mustCompile("# comment")
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction())
+        XCTAssertEqual(instructions[0], Instruction.makeNOP())
     }
     
     func testNOPAcceptsNoOperands() {
@@ -103,8 +103,8 @@ class AssemblerFrontEndTests: XCTestCase {
         let instructions = mustCompile("CMP")
         XCTAssertEqual(instructions.count, 2)
         
-        let cmpOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "ALU")!
-        let kALUControlForCMP = 0b0110
+        let cmpOpcode: UInt8 = UInt8(makeMicrocodeGenerator().getOpcode(withMnemonic: "ALU")!)
+        let kALUControlForCMP: UInt8 = 0b0110
         let cmpInstruction = Instruction(opcode: cmpOpcode, immediate: kALUControlForCMP)
         XCTAssertEqual(instructions[1], cmpInstruction)
     }
@@ -126,7 +126,7 @@ class AssemblerFrontEndTests: XCTestCase {
         let instructions = mustCompile("HLT")
         XCTAssertEqual(instructions.count, 2)
         
-        let hltOpcode = makeMicrocodeGenerator().getOpcode(withMnemonic: "HLT")!
+        let hltOpcode: UInt8 = UInt8(makeMicrocodeGenerator().getOpcode(withMnemonic: "HLT")!)
         let hltInstruction = Instruction(opcode: hltOpcode, immediate: 0)
         XCTAssertEqual(instructions[1], hltInstruction)
     }

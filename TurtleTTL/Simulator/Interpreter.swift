@@ -38,6 +38,14 @@ public class Interpreter: NSObject {
         microcodeGenerator.generate()
         self.instructionDecoder = microcodeGenerator.microcode
     }
+    
+    public init(cpuState: CPUStateSnapshot,
+                peripherals: ComputerPeripherals,
+                instructionDecoder: InstructionDecoder) {
+        self.cpuState = cpuState
+        self.peripherals = peripherals
+        self.instructionDecoder = instructionDecoder
+    }
 
     // This method duplicates the functionality of the hardware reset button.
     // The pipeline is flushed and the program counter is reset to zero.

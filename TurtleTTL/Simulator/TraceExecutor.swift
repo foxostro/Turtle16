@@ -17,11 +17,26 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     var instructions: [Instruction] = []
     var countInstructionsPastTheEnd = 0
     
-    public init(cpuState: CPUStateSnapshot, trace: Trace) {
+    public convenience init(trace: Trace, cpuState: CPUStateSnapshot) {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        
+        self.init(trace: trace,
+                  cpuState: cpuState,
+                  peripherals: ComputerPeripherals(),
+                  instructionDecoder: microcodeGenerator.microcode)
+    }
+    
+    public init(trace: Trace,
+                cpuState: CPUStateSnapshot,
+                peripherals: ComputerPeripherals,
+                instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
         self.trace = trace.copy() as! Trace
         
-        interpreter = Interpreter(cpuState: cpuState, peripherals: ComputerPeripherals())
+        interpreter = Interpreter(cpuState: cpuState,
+                                  peripherals: peripherals,
+                                  instructionDecoder: instructionDecoder)
         
         super.init()
         

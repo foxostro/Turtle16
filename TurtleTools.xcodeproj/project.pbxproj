@@ -108,6 +108,8 @@
 		6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */; };
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE003DB22F3F4C600221C4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003DA22F3F4C600221C4C /* main.swift */; };
+		6FE0465624039845001461C4 /* TraceInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465524039845001461C4 /* TraceInterpreter.swift */; };
+		6FE0465824039916001461C4 /* TraceInterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465724039916001461C4 /* TraceInterpreterTests.swift */; };
 		6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE046592403A857001461C4 /* TraceUtils.swift */; };
 		6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
@@ -290,6 +292,8 @@
 		6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerTests.swift; sourceTree = "<group>"; };
 		6FE003D822F3F4C600221C4C /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FE003DA22F3F4C600221C4C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		6FE0465524039845001461C4 /* TraceInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceInterpreter.swift; sourceTree = "<group>"; };
+		6FE0465724039916001461C4 /* TraceInterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceInterpreterTests.swift; sourceTree = "<group>"; };
 		6FE046592403A857001461C4 /* TraceUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceUtils.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FF1995322ECB36F00C255A2 /* Simulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -408,6 +412,7 @@
 				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
 				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
 				6F6A023C23FF7204003876BD /* Trace.swift */,
+				6FE0465524039845001461C4 /* TraceInterpreter.swift */,
 				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
 				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
 				6FE046592403A857001461C4 /* TraceUtils.swift */,
@@ -448,6 +453,7 @@
 				6F86EDA622ECB99500375A00 /* RAMTests.swift */,
 				6F0B0D032308688900478220 /* RegisterTests.swift */,
 				6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */,
+				6FE0465724039916001461C4 /* TraceInterpreterTests.swift */,
 				6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */,
 				6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */,
 				6F6A024023FF7225003876BD /* TraceTests.swift */,
@@ -887,6 +893,7 @@
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
 				6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */,
 				6F7E7FBE23BEB77A00647482 /* ComputerPeripherals.swift in Sources */,
+				6FE0465624039845001461C4 /* TraceInterpreter.swift in Sources */,
 				6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */,
 				6F7E7FBC23BEAC4D00647482 /* InstructionRAMPeripheral.swift in Sources */,
 				6F5A0114231F6503003E7C7F /* TokenIdentifier.swift in Sources */,
@@ -913,6 +920,7 @@
 				6F615179230CB56E00282B12 /* LexerTests.swift in Sources */,
 				6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */,
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
+				6FE0465824039916001461C4 /* TraceInterpreterTests.swift in Sources */,
 				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,
 				6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */,
 				6F6A024523FF7931003876BD /* InstructionFormatterTests.swift in Sources */,

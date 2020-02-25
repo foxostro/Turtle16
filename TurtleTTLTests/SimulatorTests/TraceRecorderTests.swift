@@ -10,72 +10,37 @@ import XCTest
 import TurtleTTL
 
 class TraceRecorderTests: XCTestCase {
-    let microcodeGenerator = MicrocodeGenerator()
-    
-    class InstructionFeed : NSObject, InterpreterDelegate {
-        var instructions: [Instruction]
-        
-        init(instructions: [Instruction]) {
-            self.instructions = instructions
-        }
-        
-        func fetchInstruction(from: ProgramCounter) -> Instruction {
-            let instruction = instructions.isEmpty ? Instruction.makeNOP() : instructions.removeFirst()
-            return instruction.withProgramCounter(from)
-        }
-        
-        func storeToRAM(value: UInt8, at address: Int) {}
-        func loadFromRAM(at address: Int) -> UInt8 { return 0 }
-        func activateSignalPO(_ index: Int) {}
-        func activateSignalPI(_ index: Int) {}
-        func didTickControlClock() {}
-        func didTickRegisterClock() {}
-    }
-    
-    fileprivate func assemble(_ text: String) -> [Instruction] {
-        return  try! tryAssemble(text: text)
-    }
-    
-    fileprivate func tryAssemble(text: String) throws -> [Instruction] {
-        let assembler = AssemblerFrontEnd()
-        assembler.compile(text)
-        if assembler.hasError {
-            let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
-            throw error
-        }
-        return assembler.instructions
-    }
-    
-    fileprivate func recordTraceForProgram(_ recorder: TraceRecorder, _ text: String) {
-        let feed = InstructionFeed(instructions: assemble(text))
-        let interpreter = Interpreter()
-        interpreter.delegate = feed
-        while interpreter.cpuState.controlWord.HLT == .inactive {
-            let prevCpuState = interpreter.cpuState.copy() as! CPUStateSnapshot
-            let instruction = prevCpuState.if_id
-            interpreter.step()
-            recorder.record(instruction: instruction,
-                            stateBefore: prevCpuState,
-                            stateAfter: interpreter.cpuState)
-        }
-    }
-    
-    override func setUp() {
-        microcodeGenerator.generate()
-    }
-    
     func testAppendInstruction() {
         let recorder = TraceRecorder()
-        recorder.record(instruction: Instruction.makeNOP(), stateBefore: CPUStateSnapshot(), stateAfter: CPUStateSnapshot())
-        XCTAssertEqual(recorder.trace.elements.count, 1)
+        recorder.record(instruction: Instruction.makeNOP(),
+                        stateBefore: CPUStateSnapshot())
+        XCTAssertEqual(recorder.trace.instructions.count, 1)
         XCTAssertEqual(recorder.trace.description, """
-0x0000:\tNOP
+0x0000: NOP
+""")
+    }
+    
+    func testRecordTraceIncludesPipelineFlushes() {
+        let trace = TraceUtils.recordTraceForProgram("""
+HLT
+""")
+        
+        // When we record a trace we must include pipeline flushes at the
+        // beginning and end of the trace.
+        XCTAssertEqual(trace.description, """
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP
+0x0000: HLT
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP ; guardFail=true
 """)
     }
     
     func testRecordTraceWithAForwardJump() {
-        let recorder = TraceRecorder()
-        recordTraceForProgram(recorder, """
+        let trace = TraceUtils.recordTraceForProgram("""
 LI X, 1
 LI Y, 0
 JMP
@@ -90,22 +55,26 @@ HLT
         // the program. The trace will assert the jump destination is as
         // expected, but the jump instruction itself is not present. Then, the
         // trace continues recording instructions at the following PC.
-        XCTAssertEqual(recorder.trace.description, """
-0x0000:\tNOP
-0x0000:\tNOP
-0x0000:\tLI X, 1
-0x0001:\tLI Y, 0
-guard:\taddress=0x0100, traceExitingPC=0x0002
-0x0003:\tNOP
-0x0004:\tNOP
-0x0100:\tLI A, 2
-0x0101:\tHLT
+        XCTAssertEqual(trace.description, """
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP
+0x0000: LI X, 1
+0x0001: LI Y, 0
+0x0002: NOP ; guardAddress=0x0100
+0x0003: NOP
+0x0004: NOP
+0x0100: LI A, 2
+0x0101: HLT
+0x0101: NOP
+0x0101: NOP
+0x0101: NOP ; guardFail=true
 """)
     }
     
     func testRecordTraceWithConditionalForwardJump() {
-        let recorder = TraceRecorder()
-        recordTraceForProgram(recorder, """
+        let trace = TraceUtils.recordTraceForProgram("""
 LI X, 1
 LI Y, 0
 LI A, 1
@@ -123,21 +92,25 @@ HLT
         // to assert the values of the flags are as expected. Also, as with an
         // unconditional jump, the jump destination is a computed value which
         // must be asserted with a guard condition.
-        XCTAssertEqual(recorder.trace.description, """
-0x0000:\tNOP
-0x0000:\tNOP
-0x0000:\tLI X, 1
-0x0001:\tLI Y, 0
-0x0002:\tLI A, 1
-0x0003:\tLI B, 1
-0x0004:\tCMP
-0x0005:\tNOP
-guard:\tflags={carryFlag: 1, equalFlag: 1}, traceExitingPC=0x0006
-guard:\taddress=0x0100, traceExitingPC=0x0006
-0x0007:\tNOP
-0x0008:\tNOP
-0x0100:\tLI D, 2
-0x0101:\tHLT
+        XCTAssertEqual(trace.description, """
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP
+0x0000: NOP
+0x0000: LI X, 1
+0x0001: LI Y, 0
+0x0002: LI A, 1
+0x0003: LI B, 1
+0x0004: CMP
+0x0005: NOP
+0x0006: NOP ; guardAddress=0x0100 ; guardFlags={carryFlag: 1, equalFlag: 1}
+0x0007: NOP
+0x0008: NOP
+0x0100: LI D, 2
+0x0101: HLT
+0x0101: NOP
+0x0101: NOP
+0x0101: NOP ; guardFail=true
 """)
     }
 }

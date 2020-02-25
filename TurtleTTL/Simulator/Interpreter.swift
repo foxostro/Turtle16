@@ -312,7 +312,7 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalMI() {
         if (.active == cpuState.controlWord.MI) {
-            delegate?.storeToRAM(value: cpuState.bus.value,
+            delegate!.storeToRAM(value: cpuState.bus.value,
                                  at: cpuState.valueOfUVPair())
         }
     }

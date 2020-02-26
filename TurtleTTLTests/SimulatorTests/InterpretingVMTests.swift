@@ -43,19 +43,6 @@ class InterpretingVMTests: XCTestCase {
         XCTAssertEqual(vm.cpuState.controlWord.HLT, .active)
     }
     
-    func testReset() {
-        let vm = makeVM(program: "HLT")
-        vm.runUntilHalted() // Run the program to cause a change in VM state.
-        
-        // Emulate a hardware reset.
-        vm.reset()
-        
-        XCTAssertEqual(vm.cpuState.pc.value, 0)
-        XCTAssertEqual(vm.cpuState.pc_if.value, 0)
-        XCTAssertEqual(vm.cpuState.registerC.value, 0)
-        XCTAssertEqual(vm.cpuState.controlWord.unsignedIntegerValue, ControlWord().unsignedIntegerValue)
-    }
-    
     func testExecuteFromInstructionRAM() {
         let vm = makeVM(program: """
 LI X, 0x80

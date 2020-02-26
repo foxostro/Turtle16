@@ -6,25 +6,80 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import Foundation
 
-public protocol VirtualMachine: NSObject {
-    var cpuState: CPUStateSnapshot { get }
-    var instructionDecoder: InstructionDecoder { get }
-    var peripherals: ComputerPeripherals { get }
-    var dataRAM: RAM { get }
-    var instructionROM: InstructionROM { get }
-    var upperInstructionRAM: RAM { get }
-    var lowerInstructionRAM: RAM { get }
-    var logger:Logger? { get set }
+public class VirtualMachine: NSObject, InterpreterDelegate {
+    public let cpuState: CPUStateSnapshot
+    public let instructionDecoder: InstructionDecoder
+    public let peripherals: ComputerPeripherals
+    public let dataRAM: RAM
+    public let instructionROM: InstructionROM
+    public let upperInstructionRAM: RAM
+    public let lowerInstructionRAM: RAM
+    public let instructionFormatter: InstructionFormatter
+    public var logger:Logger? = nil
+    
+    public init(cpuState: CPUStateSnapshot,
+                microcodeGenerator: MicrocodeGenerator,
+                peripherals: ComputerPeripherals,
+                dataRAM: RAM,
+                instructionROM: InstructionROM,
+                upperInstructionRAM: RAM,
+                lowerInstructionRAM: RAM) {
+        self.cpuState = cpuState
+        instructionDecoder = microcodeGenerator.microcode
+        self.peripherals = peripherals
+        self.dataRAM = dataRAM
+        self.instructionROM = instructionROM
+        self.upperInstructionRAM = upperInstructionRAM
+        self.lowerInstructionRAM = lowerInstructionRAM
+        instructionFormatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+    }
     
     // This method duplicates the functionality of the hardware reset button.
     // The pipeline is flushed and the program counter is reset to zero.
-    func reset()
+    public func reset() {
+        logger?.append("VM: reset")
+        cpuState.bus = Register()
+        cpuState.pc = ProgramCounter()
+        cpuState.pc_if = ProgramCounter()
+        cpuState.if_id = Instruction.makeNOP()
+        cpuState.controlWord = ControlWord()
+        cpuState.registerC = Register(withValue: 0)
+    }
     
     // Emulates one hardware clock tick.
-    func step()
+    public func step() {
+        assert(false) // override in a subclass
+    }
     
     // Runs the VM until the CPU is halted via the HLT instruction.
-    func runUntilHalted()
+    public func runUntilHalted() {
+        logger?.append("VM: runUntilHalted")
+        while .inactive == cpuState.controlWord.HLT {
+            step()
+        }
+    }
+    
+    public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
+        let offset = 0x8000
+        
+        let temp: Instruction
+        if pc.value < offset {
+            temp = instructionROM.load(from: pc.integerValue)
+        } else {
+            let opcode = upperInstructionRAM.load(from: pc.integerValue - offset)
+            let immediate = lowerInstructionRAM.load(from: pc.integerValue - offset)
+            temp = Instruction(opcode: opcode, immediate: immediate)
+        }
+
+        let disassembly = instructionFormatter.format(instruction: temp)
+        let instruction = Instruction(opcode: temp.opcode,
+                                      immediate: temp.immediate,
+                                      disassembly: disassembly,
+                                      pc: pc)
+        
+        logger?.append("VM: Fetched instruction from memory at \(pc) -> \(instruction)")
+        return instruction
+    }
 }

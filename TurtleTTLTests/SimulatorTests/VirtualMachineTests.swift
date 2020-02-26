@@ -12,10 +12,6 @@ import TurtleTTL
 class VirtualMachineTests: XCTestCase {
     let isVerboseLogging = false
     
-    fileprivate func makeInstructionROM(program: String) -> InstructionROM {
-        return InstructionROM().withStore(TraceUtils.assemble(program))
-    }
-    
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
@@ -27,7 +23,7 @@ class VirtualMachineTests: XCTestCase {
                                 instructionDecoder: microcodeGenerator.microcode,
                                 peripherals: ComputerPeripherals(),
                                 dataRAM: RAM(),
-                                instructionROM: makeInstructionROM(program: program),
+                                instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
                                 upperInstructionRAM: RAM(),
                                 lowerInstructionRAM: RAM())
         vm.logger = makeLogger()

@@ -65,7 +65,9 @@ public class Trace: NSObject {
             
             result += "\n"
         }
-        result.removeLast()
+        if result.count > 0 {
+            result.removeLast()
+        }
         return result
     }
     

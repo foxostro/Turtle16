@@ -65,7 +65,7 @@ HLT
         XCTAssertFalse(vm.profiler.isHot(pc: 0x0001))
     }
     
-    func testProfilerRecordsHotBackwardsJumps() {
+    func testTracesAreRecordedForHotLoops() {
         let vm = makeVM(program: """
 LXY loop
 LI B, 1
@@ -80,5 +80,13 @@ HLT
         vm.runUntilHalted()
         
         XCTAssertTrue(vm.profiler.isHot(pc: 0x0004))
+        XCTAssertTrue(vm.traceCache[0x0004] != nil)
+        XCTAssertEqual(vm.traceCache[0x0004]!.description, """
+0x0004: ADD A
+0x0005: NOP
+0x0006: NOP ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
+0x0007: NOP
+0x0008: NOP
+""")
     }
 }

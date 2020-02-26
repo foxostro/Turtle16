@@ -41,7 +41,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     // This method duplicates the functionality of the hardware reset button.
     // The pipeline is flushed and the program counter is reset to zero.
     public func reset() {
-        logger?.append("VM: reset")
+        logger?.append("\(String(describing: type(of: self))): reset")
         cpuState.bus = Register()
         cpuState.pc = ProgramCounter()
         cpuState.pc_if = ProgramCounter()
@@ -57,7 +57,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     
     // Runs the VM until the CPU is halted via the HLT instruction.
     public func runUntilHalted() {
-        logger?.append("VM: runUntilHalted")
+        logger?.append("\(String(describing: type(of: self))): runUntilHalted")
         while .inactive == cpuState.controlWord.HLT {
             step()
         }
@@ -81,7 +81,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
                                       disassembly: disassembly,
                                       pc: pc)
         
-        logger?.append("VM: Fetched instruction from memory at \(pc) -> \(instruction)")
+        logger?.append("\(String(describing: type(of: self))): Fetched instruction from memory at \(pc) -> \(instruction)")
         return instruction
     }
 }

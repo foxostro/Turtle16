@@ -11,21 +11,6 @@ import Cocoa
 public class TraceRecorder: NSObject {
     public let trace = Trace()
     
-    public func recordPrologue(pc: ProgramCounter) {
-        recordPipelineFlush(pc: pc)
-    }
-    
-    public func recordEpilogue(pc: ProgramCounter) {
-        recordPipelineFlush(pc: pc)
-        trace.appendGuard(pc: pc, fail: true)
-    }
-    
-    fileprivate func recordPipelineFlush(pc: ProgramCounter) {
-        // Record two NOPs to ensure the pipeline drains.
-        trace.append(instruction: Instruction.makeNOP(pc: pc))
-        trace.append(instruction: Instruction.makeNOP(pc: pc))
-    }
-    
     public func record(instruction: Instruction, stateBefore: CPUStateSnapshot) {
         let pc = instruction.pc
         let flags = stateBefore.flags

@@ -73,21 +73,17 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             let prevState = cpuState.copy() as! CPUStateSnapshot
             let upcomingInstruction = prevState.if_id
             
-            if upcomingInstruction.guardFail == true {
+            logger?.append("upcomingInstruction: \(upcomingInstruction.pc): \(upcomingInstruction)")
+            
+            if shouldBail(upcomingInstruction) {
                 jumpAndFlushPipeline(pc: upcomingInstruction.pc)
+                if let logger = logger {
+                    CPUStateSnapshot.logChanges(logger: logger,
+                                                prevState: prevState,
+                                                nextState: cpuState)
+                }
+                logger?.append("-----")
                 break
-            }
-            if let guardAddress = upcomingInstruction.guardAddress {
-                if guardAddress != cpuState.valueOfXYPair() {
-                    jumpAndFlushPipeline(pc: upcomingInstruction.pc)
-                    break
-                }
-            }
-            if let guardFlags = upcomingInstruction.guardFlags {
-                if guardFlags != cpuState.flags {
-                    jumpAndFlushPipeline(pc: upcomingInstruction.pc)
-                    break
-                }
             }
             
             interpreter.step()
@@ -101,7 +97,28 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         }
     }
     
+    fileprivate func shouldBail(_ upcomingInstruction: Instruction) -> Bool {
+        if upcomingInstruction.guardFail == true {
+            logger?.append("shouldBail: guardFail=\(upcomingInstruction.guardFail!)")
+            return true
+        }
+        if let guardAddress = upcomingInstruction.guardAddress {
+            if guardAddress != cpuState.valueOfXYPair() {
+                logger?.append("shouldBail: address=0x%04x ; guardAddress=0x%04x", cpuState.valueOfXYPair(), guardAddress)
+                return true
+            }
+        }
+        if let guardFlags = upcomingInstruction.guardFlags {
+            if guardFlags != cpuState.flags {
+                logger?.append("shouldBail: flags=\(cpuState.flags) ; guardFlags=\(guardFlags)")
+                return true
+            }
+        }
+        return false
+    }
+    
     fileprivate func jumpAndFlushPipeline(pc: ProgramCounter) {
+        logger?.append("jumpAndFlushPipeline: \(pc)")
         cpuState.pc = pc
         cpuState.pc_if = ProgramCounter()
         cpuState.if_id = Instruction.makeNOP()

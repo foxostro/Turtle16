@@ -80,7 +80,8 @@ class InterpreterTests: XCTestCase {
     
     fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
         let interpreter = Interpreter(cpuState: cpuState,
-                                      peripherals: ComputerPeripherals())
+                                      peripherals: ComputerPeripherals(),
+                                      dataRAM: RAM())
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -616,14 +617,12 @@ LI M, 42
         
         for _ in 1...5 { interpreter.step() }
         
-        XCTAssertEqual(delegate.storesToRAM.count, 1)
-        let theStore = delegate.storesToRAM[0]
-        XCTAssertEqual(theStore.0, 42)
-        XCTAssertEqual(theStore.1, 0xffff)
+        XCTAssertEqual(interpreter.dataRAM.load(from: 0xffff), 42)
     }
     
     func testLoadFromRAM() {
         let interpreter = makeInterpreter()
+        interpreter.dataRAM.store(value: 42, to: 0x0000)
         
         let delegate = TestInterpreterDelegate(instructions: assemble("""
 LI U, 0

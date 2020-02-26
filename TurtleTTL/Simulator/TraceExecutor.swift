@@ -18,24 +18,37 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     var countInstructionsPastTheEnd = 0
     
     public convenience init(trace: Trace, cpuState: CPUStateSnapshot) {
+        self.init(trace: trace,
+                  cpuState: cpuState,
+                  peripherals: ComputerPeripherals(),
+                  dataRAM: RAM())
+    }
+    
+    public convenience init(trace: Trace,
+                            cpuState: CPUStateSnapshot,
+                            peripherals: ComputerPeripherals,
+                            dataRAM: RAM) {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         
         self.init(trace: trace,
                   cpuState: cpuState,
-                  peripherals: ComputerPeripherals(),
+                  peripherals: peripherals,
+                  dataRAM: dataRAM,
                   instructionDecoder: microcodeGenerator.microcode)
     }
     
     public init(trace: Trace,
                 cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
+                dataRAM: RAM,
                 instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
         self.trace = trace.copy() as! Trace
         
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
+                                  dataRAM: dataRAM,
                                   instructionDecoder: instructionDecoder)
         
         super.init()
@@ -122,14 +135,6 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         cpuState.pc = pc
         cpuState.pc_if = ProgramCounter()
         cpuState.if_id = Instruction.makeNOP()
-    }
-    
-    public func storeToRAM(value: UInt8, at address: Int) {
-        delegate!.storeToRAM(value: value, at: address)
-    }
-    
-    public func loadFromRAM(at address: Int) -> UInt8 {
-        return delegate!.loadFromRAM(at: address)
     }
     
     public func fetchInstruction(from: ProgramCounter) -> Instruction {

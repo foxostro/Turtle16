@@ -33,10 +33,10 @@ public class Memory: NSObject {
         self.contents = contents
     }
     
-    public func withStore(value: UInt8, to address: Int) -> RAM {
+    public func withStore(value: UInt8, to address: Int) -> Memory {
         var updatedContents = self.contents
         updatedContents[address] = value
-        return RAM(withContents: updatedContents)
+        return Memory(withContents: updatedContents)
     }
     
     public func load(from address: Int) -> UInt8 {

@@ -57,20 +57,22 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     var traceRecorder: TraceRecorder? = nil
     
     public override init() {
-        interpreter = Interpreter(cpuState: cpuState, peripherals: peripherals)
+        interpreter = Interpreter(cpuState: cpuState,
+                                  peripherals: peripherals,
+                                  dataRAM: dataRAM)
         
         super.init()
         
         interpreter.delegate = self
         
         let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
-            self.upperInstructionRAM = self.upperInstructionRAM.withStore(value: value, to: address)
+            self.upperInstructionRAM.store(value: value, to: address)
         }
         let loadUpperInstructionRAM = {(_ address: Int) -> UInt8 in
              return self.upperInstructionRAM.load(from: address)
         }
         let storeLowerInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
-            self.lowerInstructionRAM = self.lowerInstructionRAM.withStore(value: value, to: address)
+            self.lowerInstructionRAM.store(value: value, to: address)
         }
         let loadLowerInstructionRAM = {(_ address: Int) -> UInt8 in
             return self.lowerInstructionRAM.load(from: address)
@@ -165,6 +167,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         let executor = TraceExecutor(trace: trace,
                                      cpuState: cpuState,
                                      peripherals: peripherals,
+                                     dataRAM: dataRAM,
                                      instructionDecoder: instructionDecoder)
         executor.logger = logger
         executor.delegate = self
@@ -191,17 +194,6 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         
         logger?.append("Fetched instruction from memory -> %@", instruction)
         return instruction
-    }
-    
-    public func storeToRAM(value: UInt8, at address: Int) {
-        logger?.append("Store 0x%02x to Data RAM at address 0x%04x", value, address)
-        dataRAM = dataRAM.withStore(value: value, to: address)
-    }
-    
-    public func loadFromRAM(at address: Int) -> UInt8 {
-        let value = dataRAM.load(from: address)
-        logger?.append("Load from Data RAM at address 0x%04x -> 0x%02x", address, value)
-        return value
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {

@@ -24,7 +24,7 @@ class InterpretingVMTests: XCTestCase {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let vm = InterpretingVM(cpuState: CPUStateSnapshot(),
-                                microcodeGenerator: microcodeGenerator,
+                                instructionDecoder: microcodeGenerator.microcode,
                                 peripherals: ComputerPeripherals(),
                                 dataRAM: RAM(),
                                 instructionROM: makeInstructionROM(program: program),

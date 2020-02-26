@@ -171,27 +171,6 @@ JE
         XCTAssertEqual(cpuState.pc.value, 0x0005)
     }
     
-    class InterpreterDelegateProvidingRAM: NSObject, InterpreterDelegate {
-        public var dataRAM = RAM()
-        public var logger: Logger? = nil
-        
-        func fetchInstruction(from: ProgramCounter) -> Instruction {
-            assert(false)
-            return Instruction.makeNOP()
-        }
-        
-        public func storeToRAM(value: UInt8, at address: Int) {
-            logger?.append("Store 0x%02x to Data RAM at address 0x%04x", value, address)
-            dataRAM = dataRAM.withStore(value: value, to: address)
-        }
-        
-        public func loadFromRAM(at address: Int) -> UInt8 {
-            let value = dataRAM.load(from: address)
-            logger?.append("Load from Data RAM at address 0x%04x -> 0x%02x", address, value)
-            return value
-        }
-    }
-    
     func testRunTraceWhichAccessesRAM() {
         let trace = TraceUtils.recordTraceForProgram("""
 loop:
@@ -206,15 +185,18 @@ LXY loop
 JE
 """)
         let cpuState = CPUStateSnapshot()
+        let dataRAM = RAM()
         
-        let executor = TraceExecutor(trace: trace, cpuState: cpuState)
+        let executor = TraceExecutor(trace: trace,
+                                     cpuState: cpuState,
+                                     peripherals: ComputerPeripherals(),
+                                     dataRAM: dataRAM)
         executor.logger = makeLogger()
         
         // The trace will fail the flags guard because the value of A retrieved
         // from memory address 0x0000 will be different than that observed
         // during the original recording of the trace.
-        executor.delegate = InterpreterDelegateProvidingRAM()
-        executor.delegate?.storeToRAM(value: 2, at: 0x0000)
+        dataRAM.store(value: 2, to: 0x0000)
         
         executor.run()
         

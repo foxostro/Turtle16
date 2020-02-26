@@ -9,9 +9,6 @@
 import Cocoa
 
 public protocol InterpreterDelegate: NSObject {
-    func storeToRAM(value: UInt8, at: Int)
-    func loadFromRAM(at: Int) -> UInt8
-    
     // Fetch an instruction for the IF stage. This may fetch from instruction
     // RAM, or from some other source.
     func fetchInstruction(from: ProgramCounter) -> Instruction
@@ -23,16 +20,21 @@ public class Interpreter: NSObject {
     public let cpuState: CPUStateSnapshot
     public var instructionDecoder: InstructionDecoder
     public var peripherals: ComputerPeripherals
+    public var dataRAM: RAM
     let alu = ALU()
     
     public override convenience init() {
         self.init(cpuState: CPUStateSnapshot(),
-                  peripherals: ComputerPeripherals())
+                  peripherals: ComputerPeripherals(),
+                  dataRAM: RAM())
     }
     
-    public init(cpuState: CPUStateSnapshot, peripherals: ComputerPeripherals) {
+    public init(cpuState: CPUStateSnapshot,
+                peripherals: ComputerPeripherals,
+                dataRAM: RAM) {
         self.cpuState = cpuState
         self.peripherals = peripherals
+        self.dataRAM = dataRAM
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -41,8 +43,10 @@ public class Interpreter: NSObject {
     
     public init(cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
+                dataRAM: RAM,
                 instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
+        self.dataRAM = dataRAM
         self.peripherals = peripherals
         self.instructionDecoder = instructionDecoder
     }
@@ -166,7 +170,7 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalMO() {
         if (.active == cpuState.controlWord.MO) {
-            let value = delegate!.loadFromRAM(at: cpuState.valueOfUVPair())
+            let value = dataRAM.load(from: cpuState.valueOfUVPair())
             cpuState.bus = Register(withValue: value)
         }
     }
@@ -320,8 +324,8 @@ public class Interpreter: NSObject {
     
     fileprivate func handleControlSignalMI() {
         if (.active == cpuState.controlWord.MI) {
-            delegate!.storeToRAM(value: cpuState.bus.value,
-                                 at: cpuState.valueOfUVPair())
+            dataRAM.store(value: cpuState.bus.value,
+                          to: cpuState.valueOfUVPair())
         }
     }
  

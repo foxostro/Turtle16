@@ -256,7 +256,7 @@ HLT
         XCTAssertEqual(computer.cpuState.registerA.value, 5)
     }
     
-    func DISABLED_testSerialOutputDemo() { // TODO: Fix testSerialOutputDemo
+    func testSerialOutputDemo() {
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""
@@ -415,7 +415,7 @@ ready.
 """)
     }
     
-    func DISABLED_testSerialInputDemo() { // TODO: Fix testSerialInputDemo
+    func testSerialInputDemo() {
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""

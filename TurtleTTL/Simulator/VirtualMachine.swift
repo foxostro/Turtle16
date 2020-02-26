@@ -9,6 +9,7 @@
 import Foundation
 
 public class VirtualMachine: NSObject, InterpreterDelegate {
+    public var logger:Logger? = nil
     public let cpuState: CPUStateSnapshot
     public let instructionDecoder: InstructionDecoder
     public let peripherals: ComputerPeripherals
@@ -17,22 +18,23 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let upperInstructionRAM: RAM
     public let lowerInstructionRAM: RAM
     public let instructionFormatter: InstructionFormatter
-    public var logger:Logger? = nil
+    public let microcodeGenerator = MicrocodeGenerator()
     
     public init(cpuState: CPUStateSnapshot,
-                microcodeGenerator: MicrocodeGenerator,
+                instructionDecoder: InstructionDecoder,
                 peripherals: ComputerPeripherals,
                 dataRAM: RAM,
                 instructionROM: InstructionROM,
                 upperInstructionRAM: RAM,
                 lowerInstructionRAM: RAM) {
         self.cpuState = cpuState
-        instructionDecoder = microcodeGenerator.microcode
+        self.instructionDecoder = instructionDecoder
         self.peripherals = peripherals
         self.dataRAM = dataRAM
         self.instructionROM = instructionROM
         self.upperInstructionRAM = upperInstructionRAM
         self.lowerInstructionRAM = lowerInstructionRAM
+        microcodeGenerator.generate()
         instructionFormatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
     }
     

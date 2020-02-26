@@ -9,21 +9,13 @@
 import Cocoa
 
 // Simulates the behavior of the "revision one" TurtleTTL hardware.
-public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
+public class ComputerRev1: NSObject, Computer {
     public let cpuState = CPUStateSnapshot()
     public var dataRAM = RAM()
     public var upperInstructionRAM = RAM()
     public var lowerInstructionRAM = RAM()
     public var instructionROM = InstructionROM()
-    
-    public var instructionDecoder: InstructionDecoder {
-        get {
-            return interpreter.instructionDecoder
-        }
-        set(microcode) {
-            interpreter.instructionDecoder = microcode
-        }
-    }
+    public var instructionDecoder = InstructionDecoder()
     
     var internalLogger:Logger? = nil
     public var logger:Logger? {
@@ -33,6 +25,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         set(newLogger) {
             internalLogger = newLogger
             peripherals.logger = newLogger
+            vm.logger = logger
         }
     }
     
@@ -49,21 +42,11 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     let decoderRomFilenameFormat = "Decoder ROM %d.bin"
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
-    let instructionFormatter = InstructionFormatter()
-    let interpreter: Interpreter
     let peripherals = ComputerPeripherals()
-    let profiler = TraceProfiler()
-    let traceCache = NSCache<ProgramCounter, Trace>()
-    var traceRecorder: TraceRecorder? = nil
+    var vm: VirtualMachine! = nil
     
     public override init() {
-        interpreter = Interpreter(cpuState: cpuState,
-                                  peripherals: peripherals,
-                                  dataRAM: dataRAM)
-        
         super.init()
-        
-        interpreter.delegate = self
         
         let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
             self.upperInstructionRAM.store(value: value, to: address)
@@ -82,122 +65,36 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
                              storeLowerInstructionRAM,
                              loadLowerInstructionRAM)
         peripherals.getSerialInterface().didUpdateSerialOutput = didUpdateSerialOutput
+        
+        rebuildVirtualMachine()
+    }
+    
+    fileprivate func rebuildVirtualMachine() {
+        vm = InterpretingVM(cpuState: cpuState,
+                            instructionDecoder: instructionDecoder,
+                            peripherals: peripherals,
+                            dataRAM: dataRAM,
+                            instructionROM: instructionROM,
+                            upperInstructionRAM: upperInstructionRAM,
+                            lowerInstructionRAM: lowerInstructionRAM)
+        vm.logger = logger
     }
     
     public func reset() {
-        interpreter.reset()
+        vm.reset()
     }
     
     public func runUntilHalted() {
-        while .inactive == cpuState.controlWord.HLT {
-            step()
-        }
+        vm.runUntilHalted()
     }
     
     public func step() {
-        // TODO: Is it a problem to allocate a state object every tick?
-        let prevState = cpuState.copy() as! CPUStateSnapshot
-        
-        // If the instruction is hot then check to see if we have a
-        // corresponding trace. If so then execute that. Else, begin recording.
-        let pc = prevState.if_id.pc
-        if let traceRecorder = traceRecorder {
-            if traceRecorder.trace.pc! == pc || traceCache.doesContain(pc) {
-                // The next instruction corresponds to an existing trace.
-                // So, this is a good point to finish the current trace.
-                let trace = traceRecorder.trace
-                traceCache.setObject(trace, forKey: trace.pc!)
-                self.traceRecorder = nil
-                if let logger = logger {
-                    logger.append("Finished recording trace for pc=\(trace.pc!):")
-                    for line in trace.description.components(separatedBy: "\n") {
-                        logger.append(line)
-                    }
-                    logger.append("===")
-                }
-            }
-        }
-        
-        if let trace = traceCache.object(forKey: pc) {
-            // We have a trace for the next instruction and we should
-            // execute that now.
-            logger?.append("Running trace for pc=\(pc)...")
-            runTrace(trace)
-            logger?.append("...Finished running trace for pc=\(pc).")
-            
-            return
-        } else if (traceRecorder == nil) && profiler.isHot(pc: pc.value) {
-            // The instruction is hot but we don't have a trace for it.
-            // Begin recording now.
-            let tr = TraceRecorder()
-            traceRecorder = tr
-            logger?.append("Beginning trace recording for for pc=\(pc)")
-        }
-        
-        interpreter.step()
-        
-        // Log changes in the state.
-        if let logger = logger {
-            CPUStateSnapshot.logChanges(logger: logger,
-                                        prevState: prevState,
-                                        nextState: cpuState)
-        }
-        
-        // Record backwards jumps.
-        let oldPC = prevState.pc.value
-        let newPC = cpuState.pc.value
-        if newPC < oldPC {
-            let hasBecomeHot = profiler.hit(pc: newPC)
-            if hasBecomeHot {
-                logger?.append("Jump destination \(cpuState.pc) has become hot.")
-            }
-        }
-        
-        // Update the trace if we're recording one now.
-        if let traceRecorder = traceRecorder {
-            logger?.append("recording: \(prevState.if_id)")
-            traceRecorder.record(instruction: prevState.if_id,
-                                 stateBefore: prevState)
-        }
-        
-        logger?.append("-----")
-    }
-    
-    fileprivate func runTrace(_ trace: Trace) {
-        let executor = TraceExecutor(trace: trace,
-                                     cpuState: cpuState,
-                                     peripherals: peripherals,
-                                     dataRAM: dataRAM,
-                                     instructionDecoder: instructionDecoder)
-        executor.logger = logger
-        executor.delegate = self
-        executor.run()
-    }
-    
-    public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
-        let offset = 0x8000
-        
-        let temp: Instruction
-        if pc.value < offset {
-            temp = instructionROM.load(from: cpuState.pc_if.integerValue)
-        } else {
-            let opcode = Int(upperInstructionRAM.load(from: pc.integerValue - offset))
-            let immediate = Int(lowerInstructionRAM.load(from: pc.integerValue - offset))
-            temp = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
-        }
-
-        let disassembly = instructionFormatter.format(instruction: temp)
-        let instruction = Instruction(opcode: temp.opcode,
-                                      immediate: temp.immediate,
-                                      disassembly: disassembly,
-                                      pc: pc)
-        
-        logger?.append("Fetched instruction from memory -> %@", instruction)
-        return instruction
+        vm.step()
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
         instructionROM = instructionROM.withStore(instructions)
+        rebuildVirtualMachine()
     }
     
     public func saveMicrocode(to: URL) throws {
@@ -228,6 +125,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
     
     public func provideMicrocode(microcode: InstructionDecoder) {
         instructionDecoder = microcode
+        rebuildVirtualMachine()
     }
     
     public func saveProgram(to: URL) throws {
@@ -251,6 +149,7 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
                                  withLowerROM: Memory(withData: lowerData))
         
         instructionROM = rom
+        rebuildVirtualMachine()
     }
     
     public func provideSerialInput(bytes: [UInt8]) {

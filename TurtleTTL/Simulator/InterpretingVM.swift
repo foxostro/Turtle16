@@ -12,7 +12,7 @@ public class InterpretingVM: VirtualMachine {
     let interpreter: Interpreter
     
     public override init(cpuState: CPUStateSnapshot,
-                         microcodeGenerator: MicrocodeGenerator,
+                         instructionDecoder: InstructionDecoder,
                          peripherals: ComputerPeripherals,
                          dataRAM: RAM,
                          instructionROM: InstructionROM,
@@ -21,9 +21,9 @@ public class InterpretingVM: VirtualMachine {
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
                                   dataRAM: dataRAM,
-                                  instructionDecoder: microcodeGenerator.microcode)
+                                  instructionDecoder: instructionDecoder)
         super.init(cpuState: cpuState,
-                   microcodeGenerator: microcodeGenerator,
+                   instructionDecoder: instructionDecoder,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
                    instructionROM: instructionROM,

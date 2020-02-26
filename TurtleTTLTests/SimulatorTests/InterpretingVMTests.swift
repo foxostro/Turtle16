@@ -48,7 +48,7 @@ NOP
 NOP
 """)
         vm.upperInstructionRAM.store(value: 1, to: 0) // corresponds to 0x8000 in the address space
-        vm.runUntilHalted() // Run the program to cause a change in VM state.
+        vm.runUntilHalted()
         
         XCTAssertEqual(vm.cpuState.pc.value, 0x8003)
         XCTAssertEqual(vm.cpuState.controlWord.HLT, .active)

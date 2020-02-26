@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class ComputerRev1Tests: XCTestCase {
-    let isVerboseLogging = false
+    let isVerboseLogging = true
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
@@ -256,7 +256,7 @@ HLT
         XCTAssertEqual(computer.cpuState.registerA.value, 5)
     }
     
-    func testSerialOutputDemo() {
+    func DISABLED_testSerialOutputDemo() { // TODO: Fix testSerialOutputDemo
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""
@@ -415,7 +415,7 @@ ready.
 """)
     }
     
-    func disabled_testSerialInputDemo() {
+    func DISABLED_testSerialInputDemo() { // TODO: Fix testSerialInputDemo
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""

@@ -96,7 +96,41 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         // TODO: Is it a problem to allocate a state object every tick?
         let prevState = cpuState.copy() as! CPUStateSnapshot
         
-        enforceTraceRecorderPolicy(prevState)
+        // If the instruction is hot then check to see if we have a
+        // corresponding trace. If so then execute that. Else, begin recording.
+        let pc = prevState.if_id.pc
+        if let traceRecorder = traceRecorder {
+            if traceRecorder.trace.pc! == pc || traceCache.doesContain(pc) {
+                // The next instruction corresponds to an existing trace.
+                // So, this is a good point to finish the current trace.
+                let trace = traceRecorder.trace
+                traceCache.setObject(trace, forKey: trace.pc!)
+                self.traceRecorder = nil
+                if let logger = logger {
+                    logger.append("Finished recording trace for pc=\(trace.pc!):")
+                    for line in trace.description.components(separatedBy: "\n") {
+                        logger.append(line)
+                    }
+                    logger.append("===")
+                }
+            }
+        }
+        
+        if let trace = traceCache.object(forKey: pc) {
+            // We have a trace for the next instruction and we should
+            // execute that now.
+            logger?.append("Running trace for pc=\(pc)...")
+            runTrace(trace)
+            logger?.append("...Finished running trace for pc=\(pc).")
+            
+            return
+        } else if (traceRecorder == nil) && profiler.isHot(pc: pc.value) {
+            // The instruction is hot but we don't have a trace for it.
+            // Begin recording now.
+            let tr = TraceRecorder()
+            traceRecorder = tr
+            logger?.append("Beginning trace recording for for pc=\(pc)")
+        }
         
         interpreter.step()
         
@@ -127,53 +161,14 @@ public class ComputerRev1: NSObject, Computer, InterpreterDelegate {
         logger?.append("-----")
     }
     
-    fileprivate func enforceTraceRecorderPolicy(_ prevState: CPUStateSnapshot) {
-        let pc = prevState.if_id.pc
-        
-        // If the instruction is hot then check to see if we have a
-        // corresponding trace. If so then execute that. Else, begin recording.
-        if let traceRecorder = traceRecorder {
-            if traceRecorder.trace.pc! == pc || traceCache.doesContain(pc) {
-                // The next instruction corresponds to an existing trace.
-                // So, this is a good point to finish the current trace.
-                traceRecorder.recordEpilogue(pc: cpuState.if_id.pc)
-                let trace = traceRecorder.trace
-                traceCache.setObject(trace, forKey: trace.pc!)
-                self.traceRecorder = nil
-                if let logger = logger {
-                    logger.append("Finished recording trace for pc=\(trace.pc!):")
-                    for line in trace.description.components(separatedBy: "\n") {
-                        logger.append(line)
-                    }
-                    logger.append("===")
-                }
-            }
-        }
-        
-        if let trace = traceCache.object(forKey: pc) {
-            // We have a trace for the next instruction and we should
-            // execute that now.
-            logger?.append("Running trace for pc=\(pc)...")
-            runTrace(trace)
-            logger?.append("...Finished running trace for pc=\(pc).")
-        } else if (traceRecorder == nil) && profiler.isHot(pc: pc.value) {
-            // The instruction is hot but we don't have a trace for it.
-            // Begin recording now.
-            let tr = TraceRecorder()
-            tr.recordPrologue(pc: pc)
-            traceRecorder = tr
-            logger?.append("Beginning trace recording for for pc=\(pc)")
-        }
-    }
-    
     fileprivate func runTrace(_ trace: Trace) {
-        let traceInterpreter = TraceInterpreter(cpuState: cpuState,
-                                                peripherals: peripherals,
-                                                instructionDecoder: instructionDecoder,
-                                                trace: trace)
-        traceInterpreter.logger = logger
-        traceInterpreter.delegate = self
-        traceInterpreter.run()
+        let executor = TraceExecutor(trace: trace,
+                                     cpuState: cpuState,
+                                     peripherals: peripherals,
+                                     instructionDecoder: instructionDecoder)
+        executor.logger = logger
+        executor.delegate = self
+        executor.run()
     }
     
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction {

@@ -30,12 +30,7 @@ HLT
         XCTAssertEqual(trace.description, """
 0x0000: NOP
 0x0000: NOP
-0x0000: NOP
-0x0000: NOP
 0x0000: HLT
-0x0000: NOP
-0x0000: NOP
-0x0000: NOP ; guardFail=true
 """)
     }
     
@@ -58,8 +53,6 @@ HLT
         XCTAssertEqual(trace.description, """
 0x0000: NOP
 0x0000: NOP
-0x0000: NOP
-0x0000: NOP
 0x0000: LI X, 1
 0x0001: LI Y, 0
 0x0002: NOP ; guardAddress=0x0100
@@ -67,9 +60,6 @@ HLT
 0x0004: NOP
 0x0100: LI A, 2
 0x0101: HLT
-0x0101: NOP
-0x0101: NOP
-0x0101: NOP ; guardFail=true
 """)
     }
     
@@ -95,8 +85,6 @@ HLT
         XCTAssertEqual(trace.description, """
 0x0000: NOP
 0x0000: NOP
-0x0000: NOP
-0x0000: NOP
 0x0000: LI X, 1
 0x0001: LI Y, 0
 0x0002: LI A, 1
@@ -108,9 +96,6 @@ HLT
 0x0008: NOP
 0x0100: LI D, 2
 0x0101: HLT
-0x0101: NOP
-0x0101: NOP
-0x0101: NOP ; guardFail=true
 """)
     }
 }

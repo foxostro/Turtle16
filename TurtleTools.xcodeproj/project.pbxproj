@@ -116,6 +116,7 @@
 		6FE976CE2406551C006C393B /* InterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CD2406551C006C393B /* InterpretingVM.swift */; };
 		6FE976D024065529006C393B /* InterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CF24065529006C393B /* InterpretingVMTests.swift */; };
 		6FE976D2240661D0006C393B /* VirtualMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D1240661D0006C393B /* VirtualMachineTests.swift */; };
+		6FE976D8240669A8006C393B /* VirtualMachineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D7240669A8006C393B /* VirtualMachineUtils.swift */; };
 		6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
 		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
@@ -305,6 +306,7 @@
 		6FE976CD2406551C006C393B /* InterpretingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretingVM.swift; sourceTree = "<group>"; };
 		6FE976CF24065529006C393B /* InterpretingVMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretingVMTests.swift; sourceTree = "<group>"; };
 		6FE976D1240661D0006C393B /* VirtualMachineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineTests.swift; sourceTree = "<group>"; };
+		6FE976D7240669A8006C393B /* VirtualMachineUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineUtils.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FF1995322ECB36F00C255A2 /* Simulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FF1995622ECB36F00C255A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -429,6 +431,7 @@
 				6FE046592403A857001461C4 /* TraceUtils.swift */,
 				6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */,
 				6FE976C92406545D006C393B /* VirtualMachine.swift */,
+				6FE976D7240669A8006C393B /* VirtualMachineUtils.swift */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -907,6 +910,7 @@
 				6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */,
 				6F5A00FA231F6415003E7C7F /* TokenNewline.swift in Sources */,
 				6F5A00F8231F6406003E7C7F /* TokenEOF.swift in Sources */,
+				6FE976D8240669A8006C393B /* VirtualMachineUtils.swift in Sources */,
 				6F6A024723FF8C60003876BD /* ConsoleLogger.swift in Sources */,
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
 				6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */,

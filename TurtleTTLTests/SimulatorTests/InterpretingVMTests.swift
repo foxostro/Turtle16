@@ -16,10 +16,6 @@ class InterpretingVMTests: XCTestCase {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
-    fileprivate func makeInstructionROM(program: String) -> InstructionROM {
-        return InstructionROM().withStore(TraceUtils.assemble(program))
-    }
-    
     fileprivate func makeVM(program: String) -> InterpretingVM {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -27,7 +23,7 @@ class InterpretingVMTests: XCTestCase {
                                 instructionDecoder: microcodeGenerator.microcode,
                                 peripherals: ComputerPeripherals(),
                                 dataRAM: RAM(),
-                                instructionROM: makeInstructionROM(program: program),
+                                instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
                                 upperInstructionRAM: RAM(),
                                 lowerInstructionRAM: RAM())
         vm.logger = makeLogger()

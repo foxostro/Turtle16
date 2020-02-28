@@ -43,11 +43,12 @@ public class TracingInterpretingVM: VirtualMachine {
         let pc = prevState.if_id.pc
         maybeStopTraceRecording(pc)
         
-        if let trace = traceCache[pc.value] {
+        if traceRecorder == nil, let trace = traceCache[pc.value] {
             // If we have a trace for this PC then execute it.
             runTrace(trace)
-        } else if profiler.isHot(pc: pc.value) {
-            // Else, if the instruction is hot then begin recording.
+        } else if traceRecorder == nil && profiler.isHot(pc: pc.value) {
+            // Else, if the instruction is hot, and we're not already recording,
+            // then begin recording now.
             beginRecordingAndStep(pc)
         } else {
             // Else, emulate a single clock tick.
@@ -67,20 +68,30 @@ public class TracingInterpretingVM: VirtualMachine {
     fileprivate func maybeStopTraceRecording(_ pc: ProgramCounter) {
         guard let traceRecorder = traceRecorder else { return }
         
-        // If the program counter has come to the start of the trace again then
-        // the loop has closed and recording should stop.
         if traceRecorder.trace.pc! == pc {
-            stopTraceRecording()
+            // If the program counter has come to the start of the trace again then
+            // the loop has closed and recording should stop.
+            let trace = traceRecorder.trace
+            trace.appendGuard(pc: pc, fail: true)
+            assert(traceCache[pc.value] == nil)
+            traceCache[trace.pc!.value] = trace
+            self.traceRecorder = nil
+            logger?.append("Finished recording trace at pc=\(trace.pc!) because the loop has closed.")
+            logTrace(trace)
+//        } else if let existingTrace = traceCache[pc.value] {
+//            // If the program counter is aready associated with another trace
+//            // then stop recording. The VM will continue on to execute this
+//            // trace next.
+//            let trace = traceRecorder.trace
+//            trace.appendGuard(pc: pc, fail: true)
+//            trace.append(instruction: Instruction.makeNOP(pc: pc))
+//            trace.append(instruction: Instruction.makeNOP(pc: pc))
+//            assert(traceCache[trace.pc!.value] == nil)
+//            traceCache[trace.pc!.value] = trace
+//            self.traceRecorder = nil
+//            logger?.append("Finished recording trace at pc=\(trace.pc!) because it connects to an existing trace at pc=\(existingTrace.pc!).")
+//            logTrace(trace)
         }
-    }
-    
-    fileprivate func stopTraceRecording() {
-        let trace = traceRecorder!.trace
-        trace.appendGuard(pc: trace.pc!, fail: true)
-        traceCache[trace.pc!.value] = trace
-        self.traceRecorder = nil
-        logger?.append("Finished recording trace at pc=\(trace.pc!).")
-        logTrace(trace)
     }
     
     fileprivate func logTrace(_ trace: Trace) {
@@ -127,9 +138,9 @@ public class TracingInterpretingVM: VirtualMachine {
     }
     
     fileprivate func beginRecordingAndStep(_ pc: ProgramCounter) {
+        logger?.append("Beginning trace recording for pc=\(pc)")
         assert(traceRecorder == nil)
         traceRecorder = TraceRecorder()
-        logger?.append("Beginning trace recording for pc=\(pc)")
         doStep()
     }
     

@@ -153,4 +153,48 @@ HLT
                                       seq1: vm.recordedStatesOverTime,
                                       seq2: interpretingVM.recordedStatesOverTime)
     }
+    
+    func testNestedLoopsGenerateMultipleTraces() {
+        let program = """
+LI V, 250 # outer loop counter
+LI B, 1
+outerLoop:
+LI U, 250 # inner loop counter
+innerLoop:
+MOV A, U
+ADD U
+LXY innerLoop
+JNC
+NOP
+NOP
+MOV A, V
+ADD V
+LXY outerLoop
+JNC
+NOP
+NOP
+HLT
+"""
+        let interpretingVM = runProgramViaStraightInterpretation(program)
+        
+        let vm = makeVM(program: program)
+        vm.allowsRunningTraces = true
+        vm.shouldRecordStatesOverTime = true
+        vm.runUntilHalted()
+        
+        // We expect one trace for the inner loop, and one for the outer loop.
+        XCTAssertEqual(vm.traceCache.count, 2)
+        
+        // The number of calls to step() should be less when executing the
+        // trace that was recorded for the hot loop.
+        XCTAssertLessThan(vm.numberOfStepsExecuted, interpretingVM.numberOfStepsExecuted)
+        
+        // The state changes encountered while running the tracing-interpreting
+        // should be exactly the same as when running the regular interpreting
+        // VM. (This is not the case when the trace is compiled to native code
+        // and executed that way.)
+        assertIdenticalStateSequences(logger: vm.logger,
+                                      seq1: vm.recordedStatesOverTime,
+                                      seq2: interpretingVM.recordedStatesOverTime)
+    }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class TracingInterpretingVM: InterpretingVM {
+public class TracingInterpretingVM: VirtualMachine {
     public let profiler = TraceProfiler()
     public var traceCache : [UInt16:Trace] = [:]
     public var allowsRunningTraces = true
@@ -16,6 +16,24 @@ public class TracingInterpretingVM: InterpretingVM {
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
     public var numberOfStepsExecuted = 0
     var traceRecorder: TraceRecorder? = nil
+    let interpreter: Interpreter
+    
+    public override init(cpuState: CPUStateSnapshot,
+                         instructionDecoder: InstructionDecoder,
+                         peripherals: ComputerPeripherals,
+                         dataRAM: Memory,
+                         instructionMemory: InstructionMemory) {
+        interpreter = Interpreter(cpuState: cpuState,
+                                  peripherals: peripherals,
+                                  dataRAM: dataRAM,
+                                  instructionDecoder: instructionDecoder)
+        super.init(cpuState: cpuState,
+                   instructionDecoder: instructionDecoder,
+                   peripherals: peripherals,
+                   dataRAM: dataRAM,
+                   instructionMemory: instructionMemory)
+        interpreter.delegate = self
+    }
     
     public override func step() {
         // TODO: Is it a problem to allocate a state object every tick?

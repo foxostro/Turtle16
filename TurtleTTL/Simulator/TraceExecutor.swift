@@ -13,6 +13,8 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     public let trace: Trace
     public var logger: Logger? = nil
     public var delegate: InterpreterDelegate? = nil
+    public var shouldRecordStatesOverTime = false
+    public var recordedStatesOverTime: [CPUStateSnapshot] = []
     let interpreter: Interpreter
     var instructions: [Instruction] = []
     var countInstructionsPastTheEnd = 0
@@ -100,6 +102,10 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             }
             
             interpreter.step()
+            
+            if shouldRecordStatesOverTime {
+                recordedStatesOverTime.append(cpuState)
+            }
             
             if let logger = logger {
                 CPUStateSnapshot.logChanges(logger: logger,

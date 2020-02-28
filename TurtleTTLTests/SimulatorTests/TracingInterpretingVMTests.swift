@@ -85,6 +85,61 @@ HLT
 0x0006: NOP ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
 0x0007: NOP
 0x0008: NOP
+0x0004: NOP ; guardFail=true
 """)
+    }
+    
+    func testExecutionFollowsTheSameStateChangesAsRegularInterpretingVM() {
+        let program = """
+LXY loop
+LI B, 1
+loop:
+ADD A
+NOP
+JNC
+NOP
+NOP
+HLT
+"""
+        
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        let interpretingVM = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
+                                                   instructionDecoder: microcodeGenerator.microcode,
+                                                   peripherals: ComputerPeripherals(),
+                                                   dataRAM: Memory(),
+                                                   instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
+        interpretingVM.logger = makeLogger()
+        interpretingVM.allowsRunningTraces = false
+        interpretingVM.shouldRecordStatesOverTime = true
+        interpretingVM.runUntilHalted()
+        
+        let vm = makeVM(program: program)
+        vm.allowsRunningTraces = true
+        vm.shouldRecordStatesOverTime = true
+        vm.runUntilHalted()
+        
+        // The number of calls to step() should be less when executing the
+        // trace that was recorded for the hot loop.
+        XCTAssertLessThan(vm.numberOfStepsExecuted, interpretingVM.numberOfStepsExecuted)
+        
+        // The state changes encountered while running the tracing-interpreting
+        // should be exactly the same as when running the regular interpreting
+        // VM. (This is not the case when the trace is compiled to native code
+        // and executed that way.)
+        XCTAssertEqual(vm.recordedStatesOverTime, interpretingVM.recordedStatesOverTime)
+        
+        if isVerboseLogging, let logger = vm.logger {
+            for i in 0..<(vm.recordedStatesOverTime.count) {
+                let actualState = vm.recordedStatesOverTime[i]
+                let expectedState = interpretingVM.recordedStatesOverTime[i]
+                if expectedState != actualState {
+                    logger.append("The sequences diverge at i=\(i).")
+                    CPUStateSnapshot.logChanges(logger: logger,
+                    prevState: expectedState,
+                    nextState: actualState)
+                }
+            }
+        }
     }
 }

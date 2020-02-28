@@ -14,8 +14,9 @@ public class ComputerRev1: NSObject, Computer {
     public var dataRAM = Memory()
     public var upperInstructionRAM = Memory()
     public var lowerInstructionRAM = Memory()
-    public var instructionROM = InstructionMemory()
+    public var instructionMemory: InstructionMemory
     public var instructionDecoder = InstructionDecoder()
+    public let instructionFormatter = InstructionFormatter()
     
     var internalLogger:Logger? = nil
     public var logger:Logger? {
@@ -46,6 +47,11 @@ public class ComputerRev1: NSObject, Computer {
     var vm: VirtualMachine! = nil
     
     public override init() {
+        instructionMemory = InstructionMemoryRev1(instructionROM: InstructionROM(),
+                                                  upperInstructionRAM: upperInstructionRAM,
+                                                  lowerInstructionRAM: lowerInstructionRAM,
+                                                  instructionFormatter: instructionFormatter)
+        
         super.init()
         
         let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
@@ -74,9 +80,7 @@ public class ComputerRev1: NSObject, Computer {
                             instructionDecoder: instructionDecoder,
                             peripherals: peripherals,
                             dataRAM: dataRAM,
-                            instructionROM: instructionROM,
-                            upperInstructionRAM: upperInstructionRAM,
-                            lowerInstructionRAM: lowerInstructionRAM)
+                            instructionMemory: instructionMemory)
         vm.logger = logger
     }
     
@@ -93,7 +97,7 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
-        instructionROM.store(instructions: instructions)
+        instructionMemory.store(instructions: instructions)
         rebuildVirtualMachine()
     }
     
@@ -131,8 +135,8 @@ public class ComputerRev1: NSObject, Computer {
     public func saveProgram(to: URL) throws {
         // Use minipro on the command-line to flash the binary file to EEPROM:
         //   % minipro -p SST29EE010 -y -w ./file.bin
-        let lowerROM = instructionROM.lowerROM.data
-        let upperROM = instructionROM.upperROM.data
+        let lowerROM = instructionMemory.lowerROMData
+        let upperROM = instructionMemory.upperROMData
         
         try FileManager.default.createDirectory(at: to,
                                                 withIntermediateDirectories: true,
@@ -144,11 +148,12 @@ public class ComputerRev1: NSObject, Computer {
     public func loadProgram(from: URL) throws {
         let lowerData = try Data(contentsOf: from.appendingPathComponent(lowerInstructionROMFilename) as URL)
         let upperData = try Data(contentsOf: from.appendingPathComponent(upperInstructionROMFilename) as URL)
-        
-        let rom = InstructionMemory(upperROM: Memory(data: upperData),
-                                    lowerROM: Memory(data: lowerData))
-        
-        instructionROM = rom
+        let rom = InstructionROM(upperROM: Memory(data: upperData),
+                                 lowerROM: Memory(data: lowerData))
+        instructionMemory = InstructionMemoryRev1(instructionROM: rom,
+                                               upperInstructionRAM: upperInstructionRAM,
+                                               lowerInstructionRAM: lowerInstructionRAM,
+                                               instructionFormatter: instructionFormatter)
         rebuildVirtualMachine()
     }
     

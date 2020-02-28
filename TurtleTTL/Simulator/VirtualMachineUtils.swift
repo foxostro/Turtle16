@@ -10,7 +10,7 @@ import Cocoa
 
 public class VirtualMachineUtils: NSObject {
     public static func makeInstructionROM(program: String) -> InstructionMemory {
-        let instructionMemory = InstructionMemory()
+        let instructionMemory = InstructionMemoryRev1()
         let instructions = TraceUtils.assemble(program)
         instructionMemory.store(instructions: instructions)
         return instructionMemory

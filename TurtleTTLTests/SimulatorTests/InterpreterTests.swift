@@ -81,7 +81,7 @@ class InterpreterTests: XCTestCase {
     fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
         let interpreter = Interpreter(cpuState: cpuState,
                                       peripherals: ComputerPeripherals(),
-                                      dataRAM: RAM())
+                                      dataRAM: Memory())
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()

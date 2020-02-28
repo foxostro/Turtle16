@@ -11,10 +11,10 @@ import Cocoa
 // Simulates the behavior of the "revision one" TurtleTTL hardware.
 public class ComputerRev1: NSObject, Computer {
     public let cpuState = CPUStateSnapshot()
-    public var dataRAM = RAM()
-    public var upperInstructionRAM = RAM()
-    public var lowerInstructionRAM = RAM()
-    public var instructionROM = InstructionROM()
+    public var dataRAM = Memory()
+    public var upperInstructionRAM = Memory()
+    public var lowerInstructionRAM = Memory()
+    public var instructionROM = InstructionMemory()
     public var instructionDecoder = InstructionDecoder()
     
     var internalLogger:Logger? = nil
@@ -93,7 +93,7 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
-        instructionROM = instructionROM.withStore(instructions)
+        instructionROM.store(instructions: instructions)
         rebuildVirtualMachine()
     }
     
@@ -116,7 +116,7 @@ public class ComputerRev1: NSObject, Computer {
         for i in 0..<instructionDecoder.rom.count {
             let fileName = String(format: decoderRomFilenameFormat, i)
             let data = try Data(contentsOf: from.appendingPathComponent(fileName) as URL)
-            let rom = Memory(withData: data)
+            let rom = Memory(data: data)
             roms.append(rom)
         }
         let decoder = InstructionDecoder(withROM: roms)
@@ -145,8 +145,8 @@ public class ComputerRev1: NSObject, Computer {
         let lowerData = try Data(contentsOf: from.appendingPathComponent(lowerInstructionROMFilename) as URL)
         let upperData = try Data(contentsOf: from.appendingPathComponent(upperInstructionROMFilename) as URL)
         
-        let rom = InstructionROM(withUpperROM: Memory(withData: upperData),
-                                 withLowerROM: Memory(withData: lowerData))
+        let rom = InstructionMemory(upperROM: Memory(data: upperData),
+                                    lowerROM: Memory(data: lowerData))
         
         instructionROM = rom
         rebuildVirtualMachine()

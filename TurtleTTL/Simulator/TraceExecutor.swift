@@ -21,13 +21,13 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         self.init(trace: trace,
                   cpuState: cpuState,
                   peripherals: ComputerPeripherals(),
-                  dataRAM: RAM())
+                  dataRAM: Memory())
     }
     
     public convenience init(trace: Trace,
                             cpuState: CPUStateSnapshot,
                             peripherals: ComputerPeripherals,
-                            dataRAM: RAM) {
+                            dataRAM: Memory) {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         
@@ -41,7 +41,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     public init(trace: Trace,
                 cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
-                dataRAM: RAM,
+                dataRAM: Memory,
                 instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
         self.trace = trace.copy() as! Trace

@@ -23,9 +23,7 @@ class VirtualMachineTests: XCTestCase {
                                 instructionDecoder: microcodeGenerator.microcode,
                                 peripherals: ComputerPeripherals(),
                                 dataRAM: Memory(),
-                                instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
-                                upperInstructionRAM: Memory(),
-                                lowerInstructionRAM: Memory())
+                                instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
         vm.logger = makeLogger()
         return vm
     }
@@ -59,7 +57,7 @@ class VirtualMachineTests: XCTestCase {
     
     func testFetchFromInstructionRAM() {
         let vm = makeVM()
-        vm.upperInstructionRAM.store(value: 1, to: 0) // corresponds to 0x8000 in the address space
+        vm.instructionMemory.store(value: 0x0100, to: 0x8000) // HLT
         
         let instruction = vm.fetchInstruction(from: ProgramCounter(withValue: 0x8000))
         

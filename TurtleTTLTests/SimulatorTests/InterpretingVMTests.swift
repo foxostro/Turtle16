@@ -23,9 +23,7 @@ class InterpretingVMTests: XCTestCase {
                                 instructionDecoder: microcodeGenerator.microcode,
                                 peripherals: ComputerPeripherals(),
                                 dataRAM: Memory(),
-                                instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
-                                upperInstructionRAM: Memory(),
-                                lowerInstructionRAM: Memory())
+                                instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
         vm.logger = makeLogger()
         return vm
     }
@@ -47,7 +45,7 @@ JMP
 NOP
 NOP
 """)
-        vm.upperInstructionRAM.store(value: 1, to: 0) // corresponds to 0x8000 in the address space
+        vm.instructionMemory.store(value: 0x0100, to: 0x8000) // HLT
         vm.runUntilHalted()
         
         XCTAssertEqual(vm.cpuState.pc.value, 0x8003)

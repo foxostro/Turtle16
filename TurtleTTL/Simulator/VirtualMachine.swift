@@ -14,28 +14,18 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let instructionDecoder: InstructionDecoder
     public let peripherals: ComputerPeripherals
     public let dataRAM: Memory
-    public let instructionROM: InstructionMemory
-    public let upperInstructionRAM: Memory
-    public let lowerInstructionRAM: Memory
-    public let instructionFormatter: InstructionFormatter
-    public let microcodeGenerator = MicrocodeGenerator()
+    public let instructionMemory: InstructionMemory
     
     public init(cpuState: CPUStateSnapshot,
                 instructionDecoder: InstructionDecoder,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
-                instructionROM: InstructionMemory,
-                upperInstructionRAM: Memory,
-                lowerInstructionRAM: Memory) {
+                instructionMemory: InstructionMemory) {
         self.cpuState = cpuState
         self.instructionDecoder = instructionDecoder
         self.peripherals = peripherals
         self.dataRAM = dataRAM
-        self.instructionROM = instructionROM
-        self.upperInstructionRAM = upperInstructionRAM
-        self.lowerInstructionRAM = lowerInstructionRAM
-        microcodeGenerator.generate()
-        instructionFormatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+        self.instructionMemory = instructionMemory
     }
     
     // This method duplicates the functionality of the hardware reset button.
@@ -64,23 +54,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     }
     
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
-        let offset = 0x8000
-        
-        let temp: Instruction
-        if pc.value < offset {
-            temp = instructionROM.load(from: pc.integerValue)
-        } else {
-            let opcode = upperInstructionRAM.load(from: pc.integerValue - offset)
-            let immediate = lowerInstructionRAM.load(from: pc.integerValue - offset)
-            temp = Instruction(opcode: opcode, immediate: immediate)
-        }
-
-        let disassembly = instructionFormatter.format(instruction: temp)
-        let instruction = Instruction(opcode: temp.opcode,
-                                      immediate: temp.immediate,
-                                      disassembly: disassembly,
-                                      pc: pc)
-        
+        let instruction = instructionMemory.load(from: pc.integerValue)
         logger?.append("\(String(describing: type(of: self))): Fetched instruction from memory at \(pc) -> \(instruction)")
         return instruction
     }

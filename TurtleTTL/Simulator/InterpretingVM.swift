@@ -15,9 +15,7 @@ public class InterpretingVM: VirtualMachine {
                          instructionDecoder: InstructionDecoder,
                          peripherals: ComputerPeripherals,
                          dataRAM: Memory,
-                         instructionROM: InstructionMemory,
-                         upperInstructionRAM: Memory,
-                         lowerInstructionRAM: Memory) {
+                         instructionMemory: InstructionMemory) {
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
                                   dataRAM: dataRAM,
@@ -26,9 +24,7 @@ public class InterpretingVM: VirtualMachine {
                    instructionDecoder: instructionDecoder,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
-                   instructionROM: instructionROM,
-                   upperInstructionRAM: upperInstructionRAM,
-                   lowerInstructionRAM: lowerInstructionRAM)
+                   instructionMemory: instructionMemory)
         interpreter.delegate = self
     }
     

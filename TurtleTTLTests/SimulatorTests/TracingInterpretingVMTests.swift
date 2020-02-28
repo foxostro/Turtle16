@@ -1,5 +1,5 @@
 //
-//  TracingJitVMTests.swift
+//  TracingInterpretingVMTests.swift
 //  TurtleTTLTests
 //
 //  Created by Andrew Fox on 2/26/20.
@@ -9,23 +9,23 @@
 import XCTest
 import TurtleTTL
 
-class TracingJitVMTests: XCTestCase {
+class TracingInterpretingVMTests: XCTestCase {
     let isVerboseLogging = true
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
-    fileprivate func makeVM(program: String) -> TracingJitVM {
+    fileprivate func makeVM(program: String) -> TracingInterpretingVM {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        let vm = TracingJitVM(cpuState: CPUStateSnapshot(),
-                              instructionDecoder: microcodeGenerator.microcode,
-                              peripherals: ComputerPeripherals(),
-                              dataRAM: RAM(),
-                              instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
-                              upperInstructionRAM: RAM(),
-                              lowerInstructionRAM: RAM())
+        let vm = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
+                                       instructionDecoder: microcodeGenerator.microcode,
+                                       peripherals: ComputerPeripherals(),
+                                       dataRAM: RAM(),
+                                       instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
+                                       upperInstructionRAM: RAM(),
+                                       lowerInstructionRAM: RAM())
         vm.logger = makeLogger()
         return vm
     }

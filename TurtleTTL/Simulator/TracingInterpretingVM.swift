@@ -1,5 +1,5 @@
 //
-//  TracingJitVM.swift
+//  TracingInterpretingVM.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 2/26/20.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class TracingJitVM: InterpretingVM {
+public class TracingInterpretingVM: InterpretingVM {
     public let profiler = TraceProfiler()
     public var traceCache : [UInt16:Trace] = [:]
     var traceRecorder: TraceRecorder? = nil

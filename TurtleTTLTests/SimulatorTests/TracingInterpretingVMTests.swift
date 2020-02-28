@@ -22,10 +22,10 @@ class TracingInterpretingVMTests: XCTestCase {
         let vm = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
                                        instructionDecoder: microcodeGenerator.microcode,
                                        peripherals: ComputerPeripherals(),
-                                       dataRAM: RAM(),
+                                       dataRAM: Memory(),
                                        instructionROM: VirtualMachineUtils.makeInstructionROM(program: program),
-                                       upperInstructionRAM: RAM(),
-                                       lowerInstructionRAM: RAM())
+                                       upperInstructionRAM: Memory(),
+                                       lowerInstructionRAM: Memory())
         vm.logger = makeLogger()
         return vm
     }

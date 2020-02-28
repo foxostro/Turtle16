@@ -14,10 +14,10 @@ public class InterpretingVM: VirtualMachine {
     public override init(cpuState: CPUStateSnapshot,
                          instructionDecoder: InstructionDecoder,
                          peripherals: ComputerPeripherals,
-                         dataRAM: RAM,
-                         instructionROM: InstructionROM,
-                         upperInstructionRAM: RAM,
-                         lowerInstructionRAM: RAM) {
+                         dataRAM: Memory,
+                         instructionROM: InstructionMemory,
+                         upperInstructionRAM: Memory,
+                         lowerInstructionRAM: Memory) {
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
                                   dataRAM: dataRAM,

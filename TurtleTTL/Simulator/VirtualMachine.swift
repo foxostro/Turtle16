@@ -13,20 +13,20 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let cpuState: CPUStateSnapshot
     public let instructionDecoder: InstructionDecoder
     public let peripherals: ComputerPeripherals
-    public let dataRAM: RAM
-    public let instructionROM: InstructionROM
-    public let upperInstructionRAM: RAM
-    public let lowerInstructionRAM: RAM
+    public let dataRAM: Memory
+    public let instructionROM: InstructionMemory
+    public let upperInstructionRAM: Memory
+    public let lowerInstructionRAM: Memory
     public let instructionFormatter: InstructionFormatter
     public let microcodeGenerator = MicrocodeGenerator()
     
     public init(cpuState: CPUStateSnapshot,
                 instructionDecoder: InstructionDecoder,
                 peripherals: ComputerPeripherals,
-                dataRAM: RAM,
-                instructionROM: InstructionROM,
-                upperInstructionRAM: RAM,
-                lowerInstructionRAM: RAM) {
+                dataRAM: Memory,
+                instructionROM: InstructionMemory,
+                upperInstructionRAM: Memory,
+                lowerInstructionRAM: Memory) {
         self.cpuState = cpuState
         self.instructionDecoder = instructionDecoder
         self.peripherals = peripherals

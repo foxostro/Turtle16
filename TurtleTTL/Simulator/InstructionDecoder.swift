@@ -19,7 +19,7 @@ public class InstructionDecoder: NSObject {
     }
     
     public override convenience init() {
-        let blank = Memory(withSize: 131072)
+        let blank = Memory(size: 131072)
         self.init(withROM: [blank, blank, blank, blank])
     }
     
@@ -54,10 +54,12 @@ public class InstructionDecoder: NSObject {
     }
     
     public func withStore(value: UInt32, to address: Int) -> InstructionDecoder {
-        return self.withROM(newROM: [rom[0].withStore(value: UInt8( value & 0x000000ff), to: address),
-                                     rom[1].withStore(value: UInt8((value & 0x0000ff00) >> 8), to: address),
-                                     rom[2].withStore(value: UInt8((value & 0x00ff0000) >> 16), to: address),
-                                     rom[3].withStore(value: UInt8((value & 0xff000000) >> 24), to: address)])
+        let updatedROM: [Memory] = rom.map { $0.copy() as! Memory }
+        updatedROM[0].store(value: UInt8( value & 0x000000ff), to: address)
+        updatedROM[1].store(value: UInt8((value & 0x0000ff00) >> 8), to: address)
+        updatedROM[2].store(value: UInt8((value & 0x00ff0000) >> 16), to: address)
+        updatedROM[3].store(value: UInt8((value & 0xff000000) >> 24), to: address)
+        return InstructionDecoder(withROM: updatedROM)
     }
     
     public func makeAddress(opcode:Int, carryFlag:Int, equalFlag:Int) -> Int {

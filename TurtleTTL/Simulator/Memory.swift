@@ -10,37 +10,39 @@ import Cocoa
 
 // Represents a memory-like object in hardware such as a ROM or RAM.
 public class Memory: NSObject {
-    let contents: [UInt8]
+    var contents: [UInt8]
     
     public var size: Int {
         return contents.count
     }
     
-    public convenience init(withData data: Data) {
-        self.init(withContents: [UInt8](data))
+    public convenience init(memory: Memory) {
+        self.init(contents: memory.contents)
     }
     
-    public convenience init(withSize size: Int) {
+    public convenience init(data: Data) {
+        self.init(contents: [UInt8](data))
+    }
+    
+    public convenience init(size: Int = 65536) {
         var contents = [UInt8]()
         contents.reserveCapacity(size)
         for _ in 0..<size {
             contents.append(0)
         }
-        self.init(withContents: contents)
+        self.init(contents: contents)
     }
     
-    public required init(withContents contents: [UInt8]) {
+    public required init(contents: [UInt8]) {
         self.contents = contents
     }
     
-    public func withStore(value: UInt8, to address: Int) -> Memory {
-        var updatedContents = self.contents
-        updatedContents[address] = value
-        return Memory(withContents: updatedContents)
+    public func store(value: UInt8, to address: Int) {
+        contents[address] = value
     }
     
     public func load(from address: Int) -> UInt8 {
-        return self.contents[address]
+        return contents[address]
     }
     
     public var data: Data {
@@ -49,5 +51,9 @@ public class Memory: NSObject {
             data.append(Data([value]))
         }
         return data as Data
+    }
+    
+    public override func copy() -> Any {
+        return Memory(memory: self)
     }
 }

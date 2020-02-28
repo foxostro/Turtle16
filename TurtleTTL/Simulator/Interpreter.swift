@@ -20,18 +20,18 @@ public class Interpreter: NSObject {
     public let cpuState: CPUStateSnapshot
     public var instructionDecoder: InstructionDecoder
     public var peripherals: ComputerPeripherals
-    public var dataRAM: RAM
+    public var dataRAM: Memory
     let alu = ALU()
     
     public override convenience init() {
         self.init(cpuState: CPUStateSnapshot(),
                   peripherals: ComputerPeripherals(),
-                  dataRAM: RAM())
+                  dataRAM: Memory())
     }
     
     public init(cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
-                dataRAM: RAM) {
+                dataRAM: Memory) {
         self.cpuState = cpuState
         self.peripherals = peripherals
         self.dataRAM = dataRAM
@@ -43,7 +43,7 @@ public class Interpreter: NSObject {
     
     public init(cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
-                dataRAM: RAM,
+                dataRAM: Memory,
                 instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
         self.dataRAM = dataRAM

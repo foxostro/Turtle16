@@ -185,7 +185,7 @@ LXY loop
 JE
 """)
         let cpuState = CPUStateSnapshot()
-        let dataRAM = RAM()
+        let dataRAM = Memory()
         
         let executor = TraceExecutor(trace: trace,
                                      cpuState: cpuState,

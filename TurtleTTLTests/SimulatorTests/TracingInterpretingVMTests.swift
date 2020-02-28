@@ -28,6 +28,39 @@ class TracingInterpretingVMTests: XCTestCase {
         return vm
     }
     
+    fileprivate func runProgramViaStraightInterpretation(_ program: String) -> TracingInterpretingVM {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        let interpretingVM = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
+                                                   instructionDecoder: microcodeGenerator.microcode,
+                                                   peripherals: ComputerPeripherals(),
+                                                   dataRAM: Memory(),
+                                                   instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
+        interpretingVM.logger = makeLogger()
+        interpretingVM.allowsRunningTraces = false
+        interpretingVM.shouldRecordStatesOverTime = true
+        interpretingVM.runUntilHalted()
+        return interpretingVM
+    }
+    
+    fileprivate func assertIdenticalStateSequences(logger: Logger?,
+                                                   seq1: [CPUStateSnapshot],
+                                                   seq2: [CPUStateSnapshot]) {
+        XCTAssertEqual(seq1.count, seq2.count)
+        XCTAssertEqual(seq1, seq2)
+        guard let logger = logger else { return }
+        for i in 0..<min(seq1.count, seq2.count) {
+            let actualState = seq1[i]
+            let expectedState = seq2[i]
+            if expectedState != actualState {
+                logger.append("The sequences diverge at i=\(i).")
+                CPUStateSnapshot.logChanges(logger: logger,
+                                            prevState: expectedState,
+                                            nextState: actualState)
+            }
+        }
+    }
+    
     func testExecuteProgram() {
         let vm = makeVM(program: "HLT")
         
@@ -101,18 +134,7 @@ NOP
 NOP
 HLT
 """
-        
-        let microcodeGenerator = MicrocodeGenerator()
-        microcodeGenerator.generate()
-        let interpretingVM = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
-                                                   instructionDecoder: microcodeGenerator.microcode,
-                                                   peripherals: ComputerPeripherals(),
-                                                   dataRAM: Memory(),
-                                                   instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
-        interpretingVM.logger = makeLogger()
-        interpretingVM.allowsRunningTraces = false
-        interpretingVM.shouldRecordStatesOverTime = true
-        interpretingVM.runUntilHalted()
+        let interpretingVM = runProgramViaStraightInterpretation(program)
         
         let vm = makeVM(program: program)
         vm.allowsRunningTraces = true
@@ -127,19 +149,8 @@ HLT
         // should be exactly the same as when running the regular interpreting
         // VM. (This is not the case when the trace is compiled to native code
         // and executed that way.)
-        XCTAssertEqual(vm.recordedStatesOverTime, interpretingVM.recordedStatesOverTime)
-        
-        if isVerboseLogging, let logger = vm.logger {
-            for i in 0..<(vm.recordedStatesOverTime.count) {
-                let actualState = vm.recordedStatesOverTime[i]
-                let expectedState = interpretingVM.recordedStatesOverTime[i]
-                if expectedState != actualState {
-                    logger.append("The sequences diverge at i=\(i).")
-                    CPUStateSnapshot.logChanges(logger: logger,
-                    prevState: expectedState,
-                    nextState: actualState)
-                }
-            }
-        }
+        assertIdenticalStateSequences(logger: vm.logger,
+                                      seq1: vm.recordedStatesOverTime,
+                                      seq2: interpretingVM.recordedStatesOverTime)
     }
 }

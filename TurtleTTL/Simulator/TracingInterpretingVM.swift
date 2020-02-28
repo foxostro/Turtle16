@@ -16,6 +16,7 @@ public class TracingInterpretingVM: VirtualMachine {
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
     public var numberOfStepsExecuted = 0
     var traceRecorder: TraceRecorder? = nil
+    var prevState = CPUStateSnapshot()
     let interpreter: Interpreter
     
     public override init(cpuState: CPUStateSnapshot,
@@ -36,59 +37,74 @@ public class TracingInterpretingVM: VirtualMachine {
     }
     
     public override func step() {
-        // TODO: Is it a problem to allocate a state object every tick?
-        let prevState = cpuState.copy() as! CPUStateSnapshot
-        
-        if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
-            recordedStatesOverTime.append(prevState)
-        }
+        prevState = cpuState.copy() as! CPUStateSnapshot // TODO: Is it a problem to allocate a state object every tick?
+        maybeAddInitialRecordedState()
         
         let pc = prevState.if_id.pc
-        
-        // If the program counter has come to the start of the trace again then
-        // the loop has closed and recording should stop.
-        if let traceRecorder = traceRecorder {
-            if traceRecorder.trace.pc! == pc {
-                let trace = traceRecorder.trace
-                trace.appendGuard(pc: pc, fail: true)
-                traceCache[pc.value] = trace
-                self.traceRecorder = nil
-                if let logger = logger {
-                    logger.append("Finished recording trace for pc=\(trace.pc!):")
-                    for line in trace.description.components(separatedBy: "\n") {
-                        logger.append(line)
-                    }
-                    logger.append("===")
-                }
-            }
-        }
+        maybeStopTraceRecording(pc)
         
         if let trace = traceCache[pc.value] {
-            // If we have a trace for this instruction then retrieve and execute it.
-            assert(traceRecorder == nil)
-            if allowsRunningTraces {
-                logger?.append("Running trace for pc=\(pc)...")
-                runTrace(trace)
-                logger?.append("...Finished running trace for pc=\(pc).")
-            } else {
-                doStep(prevState)
-            }
+            // If we have a trace for this PC then execute it.
+            runTrace(trace)
         } else if profiler.isHot(pc: pc.value) {
             // Else, if the instruction is hot then begin recording.
-            assert(traceRecorder == nil)
-            traceRecorder = TraceRecorder()
-            logger?.append("Beginning trace recording for for pc=\(pc)")
-            doStep(prevState)
+            beginRecordingAndStep(pc)
         } else {
             // Else, emulate a single clock tick.
-            doStep(prevState)
+            doStep()
         }
         
-        logStateChanges(prevState)
+        logStateChanges()
         logger?.append("-----")
     }
     
+    fileprivate func maybeAddInitialRecordedState() {
+        if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
+            recordedStatesOverTime.append(prevState)
+        }
+    }
+    
+    fileprivate func maybeStopTraceRecording(_ pc: ProgramCounter) {
+        guard let traceRecorder = traceRecorder else { return }
+        
+        // If the program counter has come to the start of the trace again then
+        // the loop has closed and recording should stop.
+        if traceRecorder.trace.pc! == pc {
+            stopTraceRecording()
+        }
+    }
+    
+    fileprivate func stopTraceRecording() {
+        let trace = traceRecorder!.trace
+        trace.appendGuard(pc: trace.pc!, fail: true)
+        traceCache[trace.pc!.value] = trace
+        self.traceRecorder = nil
+        logger?.append("Finished recording trace at pc=\(trace.pc!).")
+        logTrace(trace)
+    }
+    
+    fileprivate func logTrace(_ trace: Trace) {
+        guard let logger = logger else { return }
+        logger.append("Listing trace at pc=\(trace.pc!):")
+        for line in trace.description.components(separatedBy: "\n") {
+            logger.append(line)
+        }
+        logger.append("===")
+    }
+    
     fileprivate func runTrace(_ trace: Trace) {
+        assert(traceRecorder == nil)
+        let pc = trace.pc!
+        if allowsRunningTraces {
+            logger?.append("Running trace for pc=\(pc)...")
+            actuallyRunTrace(trace)
+            logger?.append("...Finished running trace for pc=\(pc).")
+        } else {
+            doStep()
+        }
+    }
+    
+    fileprivate func actuallyRunTrace(_ trace: Trace) {
         let executor = TraceExecutor(trace: trace,
                                      cpuState: cpuState,
                                      peripherals: peripherals,
@@ -110,17 +126,28 @@ public class TracingInterpretingVM: VirtualMachine {
         cpuState.pc_if = pc.increment()
     }
     
-    fileprivate func doStep(_ prevState: CPUStateSnapshot) {
+    fileprivate func beginRecordingAndStep(_ pc: ProgramCounter) {
+        assert(traceRecorder == nil)
+        traceRecorder = TraceRecorder()
+        logger?.append("Beginning trace recording for pc=\(pc)")
+        doStep()
+    }
+    
+    fileprivate func doStep() {
         interpreter.step()
-        profile(prevState)
-        record(prevState)
-        if shouldRecordStatesOverTime {
-            recordedStatesOverTime.append(cpuState)
-        }
+        profile()
+        record()
+        maybeAddAnotherRecordedState()
         numberOfStepsExecuted += 1
     }
     
-    fileprivate func profile(_ prevState: CPUStateSnapshot) {
+    fileprivate func maybeAddAnotherRecordedState() {
+        if shouldRecordStatesOverTime {
+            recordedStatesOverTime.append(cpuState)
+        }
+    }
+    
+    fileprivate func profile() {
         // Record backwards jumps.
         let oldPC = prevState.pc.value
         let newPC = cpuState.pc.value
@@ -132,7 +159,7 @@ public class TracingInterpretingVM: VirtualMachine {
         }
     }
     
-    fileprivate func record(_ prevState: CPUStateSnapshot) {
+    fileprivate func record() {
         // Update the trace if we're recording one now.
         if let traceRecorder = traceRecorder {
             logger?.append("recording: \(prevState.if_id)")
@@ -141,7 +168,7 @@ public class TracingInterpretingVM: VirtualMachine {
         }
     }
     
-    fileprivate func logStateChanges(_ prevState: CPUStateSnapshot) {
+    fileprivate func logStateChanges() {
         if let logger = logger {
             CPUStateSnapshot.logChanges(logger: logger,
                                         prevState: prevState,

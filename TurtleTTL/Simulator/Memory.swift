@@ -46,11 +46,7 @@ public class Memory: NSObject {
     }
     
     public var data: Data {
-        let data = NSMutableData()
-        for value in contents {
-            data.append(Data([value]))
-        }
-        return data as Data
+        return Data(self.contents)
     }
     
     public override func copy() -> Any {

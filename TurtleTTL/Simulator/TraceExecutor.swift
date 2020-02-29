@@ -16,6 +16,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     public var shouldRecordStatesOverTime = false
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
     let interpreter: Interpreter
+    var instructions: [Instruction] = []
     
     public convenience init(trace: Trace, cpuState: CPUStateSnapshot) {
         self.init(trace: trace,
@@ -54,14 +55,6 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         super.init()
         
         interpreter.delegate = self
-    }
-    
-    fileprivate func makeGuideRailHLT(pc: ProgramCounter) -> Instruction {
-        return Instruction(opcode: 1,
-                           immediate: 0,
-                           disassembly: "Guide Rail",
-                           pc: pc,
-                           guardFail: true)
     }
     
     public func run() {
@@ -128,6 +121,18 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     }
     
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
-        return trace.fetchInstruction(from: pc) ?? makeGuideRailHLT(pc: pc)
+        if pc == trace.pc! {
+            instructions = trace.instructions
+        }
+        if instructions.isEmpty {
+            let HLT = 1
+            return Instruction(opcode: HLT,
+                               immediate: 0,
+                               disassembly: "Guide Rail",
+                               pc: pc,
+                               guardFail: true)
+        } else {
+            return instructions.removeFirst()
+        }
     }
 }

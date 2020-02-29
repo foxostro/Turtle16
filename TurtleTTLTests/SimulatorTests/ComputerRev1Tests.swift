@@ -594,13 +594,14 @@ NOP
 NOP
 """
         let instructions = TraceUtils.assemble(program)
+        let serialInput = Array("hello".data(using: .utf8)!)
         
         let reference = makeComputer()
         reference.logger = nil
         reference.allowsRunningTraces = false
         reference.shouldRecordStatesOverTime = true
         reference.provideInstructions(instructions)
-        reference.provideSerialInput(bytes: Array("hello".data(using: .utf8)!))
+        reference.provideSerialInput(bytes: serialInput)
         try! reference.runUntilHalted(maxSteps: 661)
         
         let computer = makeComputer()
@@ -608,7 +609,7 @@ NOP
         computer.provideInstructions(instructions)
         var serialOutput = ""
         computer.didUpdateSerialOutput = { serialOutput = $0 }
-        computer.provideSerialInput(bytes: Array("hello".data(using: .utf8)!))
+        computer.provideSerialInput(bytes: serialInput)
         do {
             try computer.runUntilHalted(maxSteps: 661)
         } catch {

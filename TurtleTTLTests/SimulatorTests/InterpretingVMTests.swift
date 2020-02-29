@@ -31,7 +31,7 @@ class InterpretingVMTests: XCTestCase {
     func testExecuteProgram() {
         let vm = makeVM(program: "HLT")
         
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         XCTAssertEqual(vm.cpuState.pc.value, 4)
         XCTAssertEqual(vm.cpuState.controlWord.HLT, .active)
@@ -46,7 +46,7 @@ NOP
 NOP
 """)
         vm.instructionMemory.store(value: 0x0100, to: 0x8000) // HLT
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         XCTAssertEqual(vm.cpuState.pc.value, 0x8003)
         XCTAssertEqual(vm.cpuState.controlWord.HLT, .active)

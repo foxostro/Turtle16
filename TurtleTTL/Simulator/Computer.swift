@@ -12,7 +12,7 @@ public protocol Computer {
     var logger: Logger? { get set }
     var cpuState: CPUStateSnapshot { get }
     
-    func runUntilHalted() -> Void
+    func runUntilHalted(maxSteps: Int) throws -> Void
     func step() -> Void
     func reset() -> Void
     

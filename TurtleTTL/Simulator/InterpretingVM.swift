@@ -34,7 +34,15 @@ public class InterpretingVM: VirtualMachine {
         // TODO: Is it a problem to allocate a state object every tick?
         let prevState = cpuState.copy() as! CPUStateSnapshot
         
+        if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
+            recordedStatesOverTime.append(prevState.copy() as! CPUStateSnapshot)
+        }
+        
         interpreter.step()
+        
+        if shouldRecordStatesOverTime {
+            recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
+        }
         
         if let logger = logger {
             CPUStateSnapshot.logChanges(logger: logger,

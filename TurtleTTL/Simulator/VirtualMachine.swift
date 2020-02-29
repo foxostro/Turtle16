@@ -8,6 +8,18 @@
 
 import Foundation
 
+public struct VirtualMachineError: Error {
+    public let message: String
+    
+    public init(format: String, _ args: CVarArg...) {
+        message = String(format:format, arguments:args)
+    }
+    
+    public init(_ message: String) {
+        self.message = message
+    }
+}
+
 public class VirtualMachine: NSObject, InterpreterDelegate {
     public var logger:Logger? = nil
     public let cpuState: CPUStateSnapshot
@@ -15,6 +27,10 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let peripherals: ComputerPeripherals
     public let dataRAM: Memory
     public let instructionMemory: InstructionMemory
+    
+    public var shouldRecordStatesOverTime = false
+    public var recordedStatesOverTime: [CPUStateSnapshot] = []
+    public var numberOfStepsExecuted = 0
     
     public init(cpuState: CPUStateSnapshot,
                 instructionDecoder: InstructionDecoder,
@@ -47,10 +63,15 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     }
     
     // Runs the VM until the CPU is halted via the HLT instruction.
-    public func runUntilHalted() {
+    public func runUntilHalted(maxSteps: Int = Int.max) throws {
+        var stepCount = 0
         logger?.append("\(String(describing: type(of: self))): runUntilHalted")
         while .inactive == cpuState.controlWord.HLT {
+            if stepCount >= maxSteps {
+                throw VirtualMachineError("Exceeded maximum number of step: stepCount=\(stepCount) ; maxSteps=\(maxSteps)")
+            }
             step()
+            stepCount += 1
         }
     }
     

@@ -27,13 +27,6 @@ public class TraceUtils: NSObject {
                 return instruction.withProgramCounter(from)
             }
         }
-        
-        func storeToRAM(value: UInt8, at address: Int) {}
-        func loadFromRAM(at address: Int) -> UInt8 { return 0 }
-        func activateSignalPO(_ index: Int) {}
-        func activateSignalPI(_ index: Int) {}
-        func didTickControlClock() {}
-        func didTickRegisterClock() {}
     }
     
     public static func assemble(_ text: String) -> [Instruction] {

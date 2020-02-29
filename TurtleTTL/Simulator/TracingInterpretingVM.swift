@@ -10,11 +10,8 @@ import Foundation
 
 public class TracingInterpretingVM: VirtualMachine {
     public let profiler = TraceProfiler()
-    public var traceCache : [UInt16:Trace] = [:]
+    public private(set) var traceCache : [UInt16:Trace] = [:]
     public var allowsRunningTraces = true
-    public var shouldRecordStatesOverTime = false
-    public var recordedStatesOverTime: [CPUStateSnapshot] = []
-    public var numberOfStepsExecuted = 0
     var traceRecorder: TraceRecorder? = nil
     var prevState = CPUStateSnapshot()
     let interpreter: Interpreter

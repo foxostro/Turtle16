@@ -16,8 +16,6 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     public var shouldRecordStatesOverTime = false
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
     let interpreter: Interpreter
-    var instructions: [Instruction] = []
-    var countInstructionsPastTheEnd = 0
     
     public convenience init(trace: Trace, cpuState: CPUStateSnapshot) {
         self.init(trace: trace,
@@ -46,7 +44,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
                 dataRAM: Memory,
                 instructionDecoder: InstructionDecoder) {
         self.cpuState = cpuState
-        self.trace = trace.copy() as! Trace
+        self.trace = trace
         
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
@@ -55,21 +53,13 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         
         super.init()
         
-        if let finalPC = trace.finalPC {
-            let pc = finalPC.increment()
-            self.trace.appendGuard(pc: pc, fail: true)
-            self.trace.append(instruction: makeGuideRailHLT(pc: pc))
-            self.trace.append(instruction: makeGuideRailHLT(pc: pc))
-        }
-        instructions = self.trace.instructions
-        
         interpreter.delegate = self
     }
     
     fileprivate func makeGuideRailHLT(pc: ProgramCounter) -> Instruction {
         return Instruction(opcode: 1,
                            immediate: 0,
-                           disassembly: "HLT",
+                           disassembly: "Guide Rail",
                            pc: pc,
                            guardFail: true)
     }
@@ -83,6 +73,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         cpuState.if_id = fetchInstruction(from: trace.pc!)
         cpuState.pc = trace.pc!.increment().increment()
         cpuState.pc_if = trace.pc!.increment()
+        cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
         
         while cpuState.controlWord.HLT == .inactive {
             let prevState = cpuState.copy() as! CPUStateSnapshot
@@ -91,7 +82,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             logger?.append("upcomingInstruction: \(upcomingInstruction.pc): \(upcomingInstruction)")
             
             if shouldBail(upcomingInstruction) {
-                jumpAndFlushPipeline(pc: upcomingInstruction.pc)
+                cpuState.pc = upcomingInstruction.pc
                 if let logger = logger {
                     CPUStateSnapshot.logChanges(logger: logger,
                                                 prevState: prevState,
@@ -104,7 +95,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             interpreter.step()
             
             if shouldRecordStatesOverTime {
-                recordedStatesOverTime.append(cpuState)
+                recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
             }
             
             if let logger = logger {
@@ -136,14 +127,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         return false
     }
     
-    fileprivate func jumpAndFlushPipeline(pc: ProgramCounter) {
-        logger?.append("jumpAndFlushPipeline: \(pc)")
-        cpuState.pc = pc
-        cpuState.pc_if = ProgramCounter()
-        cpuState.if_id = Instruction.makeNOP()
-    }
-    
-    public func fetchInstruction(from: ProgramCounter) -> Instruction {
-        return instructions.removeFirst()
+    public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
+        return trace.fetchInstruction(from: pc) ?? makeGuideRailHLT(pc: pc)
     }
 }

@@ -72,7 +72,6 @@ public class TracingInterpretingVM: VirtualMachine {
             // If the program counter has come to the start of the trace again then
             // the loop has closed and recording should stop.
             let trace = traceRecorder.trace
-            trace.appendGuard(pc: pc, fail: true)
             assert(traceCache[pc.value] == nil)
             traceCache[trace.pc!.value] = trace
             self.traceRecorder = nil

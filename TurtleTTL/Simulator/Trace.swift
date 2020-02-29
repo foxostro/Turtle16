@@ -10,40 +10,37 @@ import Cocoa
 
 public class Trace: NSObject {
     public private(set) var instructions: [Instruction] = []
-    public var pc: ProgramCounter? {
-        return instructions.first?.pc
-    }
+    public private(set) var pc: ProgramCounter? = nil
     
     public func append(instruction: Instruction) {
+        if pc == nil {
+            pc = instruction.pc
+        }
         instructions.append(instruction)
     }
     
-    public func appendGuard(pc: ProgramCounter, fail: Bool) {
-        append(instruction: Instruction(opcode: 0,
-                                        immediate: 0,
-                                        disassembly: "NOP",
-                                        pc: pc,
-                                        guardFail: fail))
+    public func appendGuard(instruction: Instruction, fail: Bool) {
+        append(instruction: instruction.withGuard(fail: fail))
     }
     
-    public func appendGuard(pc: ProgramCounter,
+    public func appendGuard(instruction: Instruction,
                             flags: Flags,
                             address: UInt16) {
-        append(instruction: Instruction(opcode: 0,
-                                        immediate: 0,
-                                        disassembly: "NOP",
-                                        pc: pc,
-                                        guardFlags: flags,
-                                        guardAddress: address))
+        append(instruction: instruction.withGuard(flags: flags).withGuard(address: address))
     }
     
-    public func appendGuard(pc: ProgramCounter, address: UInt16) {
-        append(instruction: Instruction(opcode: 0,
-                                        immediate: 0,
-                                        disassembly: "NOP",
-                                        pc: pc,
-                                        guardFlags: nil,
-                                        guardAddress: address))
+    public func appendGuard(instruction: Instruction, address: UInt16) {
+        append(instruction: instruction.withGuard(address: address))
+    }
+    
+    public func fetchInstruction(from pc: ProgramCounter) -> Instruction? {
+        if let offset = self.pc?.integerValue {
+            let index = pc.integerValue - offset
+            if index < instructions.count {
+                return instructions[index]
+            }
+        }
+        return nil
     }
     
     public override var description: String {
@@ -71,12 +68,9 @@ public class Trace: NSObject {
         return result
     }
     
-    public var finalPC: ProgramCounter? {
-        return instructions.last?.pc
-    }
-    
     public override func copy() -> Any {
         let theCopy = Trace()
+        theCopy.pc = pc
         theCopy.instructions = instructions
         return theCopy
     }

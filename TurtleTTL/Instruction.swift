@@ -129,6 +129,36 @@ public class Instruction: NSObject {
                            guardFlags: guardFlags,
                            guardAddress: guardAddress)
     }
+    
+    public func withGuard(fail: Bool) -> Instruction {
+        return Instruction(opcode: opcode,
+                           immediate: immediate,
+                           disassembly: disassembly,
+                           pc: pc,
+                           guardFail: fail,
+                           guardFlags: guardFlags,
+                           guardAddress: guardAddress)
+    }
+    
+    public func withGuard(flags: Flags) -> Instruction {
+        return Instruction(opcode: opcode,
+                           immediate: immediate,
+                           disassembly: disassembly,
+                           pc: pc,
+                           guardFail: guardFail,
+                           guardFlags: flags,
+                           guardAddress: guardAddress)
+    }
+    
+    public func withGuard(address: UInt16) -> Instruction {
+        return Instruction(opcode: opcode,
+                           immediate: immediate,
+                           disassembly: disassembly,
+                           pc: pc,
+                           guardFail: guardFail,
+                           guardFlags: guardFlags,
+                           guardAddress: address)
+    }
 }
 
 public func ==(lhs: Instruction, rhs: Instruction) -> Bool {

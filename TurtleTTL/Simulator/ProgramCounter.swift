@@ -32,6 +32,13 @@ public class ProgramCounter: NSObject {
         return ProgramCounter(withValue: value &+ 1)
     }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.value)
+        let result = hasher.finalize()
+        return result
+    }
+
     public override func isEqual(_ rhs: Any?) -> Bool {
         if let rhs = rhs as? ProgramCounter {
             return self == rhs

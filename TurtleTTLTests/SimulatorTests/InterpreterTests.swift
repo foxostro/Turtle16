@@ -59,6 +59,7 @@ class InterpreterTests: XCTestCase {
         XCTAssertEqual(interpreter.cpuState.pc_if.value, 0)
         XCTAssertEqual(interpreter.cpuState.registerC.value, 0)
         XCTAssertEqual(interpreter.cpuState.controlWord, ControlWord())
+        XCTAssertEqual(interpreter.cpuState.uptime, 0)
     }
     
     func testInterpretNOP() {
@@ -66,6 +67,7 @@ class InterpreterTests: XCTestCase {
         expectedFinalState.pc = ProgramCounter(withValue: 3)
         expectedFinalState.pc_if = ProgramCounter(withValue: 2)
         expectedFinalState.aluFlags = Flags(1, 0) // Changes every tick according to the values of A and B.
+        expectedFinalState.uptime = 3
         
         let interpreter = makeInterpreter()
         let delegate = TestInterpreterDelegate(instructions: assemble("NOP"))

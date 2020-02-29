@@ -60,6 +60,7 @@ public class Interpreter: NSObject {
         cpuState.if_id = Instruction.makeNOP()
         cpuState.controlWord = ControlWord()
         cpuState.registerC = Register(withValue: 0)
+        cpuState.uptime = 0
     }
     
     // Emulates one hardware clock tick.
@@ -70,6 +71,7 @@ public class Interpreter: NSObject {
         onRegisterClock()
         tickPeripheralRegisterClock()
         peripherals.onPeripheralClock()
+        cpuState.uptime += 1
     }
     
     fileprivate func tickPeripheralControlClock() {

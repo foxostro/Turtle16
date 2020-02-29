@@ -38,6 +38,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
         cpuState.if_id = Instruction.makeNOP()
         cpuState.controlWord = ControlWord()
         cpuState.registerC = Register(withValue: 0)
+        cpuState.uptime = 0
     }
     
     // Emulates one hardware clock tick.

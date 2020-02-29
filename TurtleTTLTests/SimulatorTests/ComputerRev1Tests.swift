@@ -34,6 +34,7 @@ class ComputerRev1Tests: XCTestCase {
         XCTAssertEqual(computer.cpuState.pc_if.value, 0)
         XCTAssertEqual(computer.cpuState.registerC.value, 0)
         XCTAssertEqual(computer.cpuState.controlWord.unsignedIntegerValue, ControlWord().unsignedIntegerValue)
+        XCTAssertEqual(computer.cpuState.uptime, 0)
     }
     
     func testSerialOutput() {

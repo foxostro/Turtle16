@@ -7,6 +7,7 @@
 //
 
 public class CPUStateSnapshot: NSObject {
+    public var uptime: Int
     public var bus: Register
     public var registerA: Register
     public var registerB: Register
@@ -27,6 +28,7 @@ public class CPUStateSnapshot: NSObject {
     public var controlWord: ControlWord
     
     public override init() {
+        uptime = 0
         bus = Register()
         registerA = Register()
         registerB = Register()
@@ -47,7 +49,8 @@ public class CPUStateSnapshot: NSObject {
         controlWord = ControlWord()
     }
     
-    public init(bus: Register,
+    public init(uptime: Int,
+                bus: Register,
                 registerA: Register,
                 registerB: Register,
                 registerC: Register,
@@ -65,6 +68,7 @@ public class CPUStateSnapshot: NSObject {
                 pc_if: ProgramCounter,
                 if_id: Instruction,
                 controlWord: ControlWord) {
+        self.uptime = uptime
         self.bus = bus
         self.registerA = registerA
         self.registerB = registerB
@@ -86,7 +90,8 @@ public class CPUStateSnapshot: NSObject {
     }
     
     public override func copy() -> Any {
-        return CPUStateSnapshot(bus: bus,
+        return CPUStateSnapshot(uptime: uptime,
+                                bus: bus,
                                 registerA: registerA,
                                 registerB: registerB,
                                 registerC: registerC,
@@ -125,6 +130,9 @@ public class CPUStateSnapshot: NSObject {
     public static func logChanges(logger: Logger,
                                   prevState: CPUStateSnapshot,
                                   nextState: CPUStateSnapshot) {
+        if prevState.uptime != nextState.uptime {
+            logger.append("uptime: \(prevState.uptime) --> \(nextState.uptime)")
+        }
         if prevState.pc != nextState.pc {
             logger.append("pc: 0x%04x --> 0x%04x", prevState.pc.value, nextState.pc.value)
         }
@@ -175,6 +183,9 @@ public class CPUStateSnapshot: NSObject {
 }
 
 public func ==(lhs: CPUStateSnapshot, rhs: CPUStateSnapshot) -> Bool {
+    guard lhs.uptime == rhs.uptime else {
+        return false
+    }
     guard lhs.bus == rhs.bus else {
         return false
     }

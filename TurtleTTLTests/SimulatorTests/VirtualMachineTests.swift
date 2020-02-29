@@ -42,6 +42,7 @@ class VirtualMachineTests: XCTestCase {
         XCTAssertEqual(vm.cpuState.pc_if.value, 0)
         XCTAssertEqual(vm.cpuState.registerC.value, 0)
         XCTAssertEqual(vm.cpuState.controlWord.unsignedIntegerValue, ControlWord().unsignedIntegerValue)
+        XCTAssertEqual(vm.cpuState.uptime, 0)
     }
     
     func testFetchFromInstructionROM() {

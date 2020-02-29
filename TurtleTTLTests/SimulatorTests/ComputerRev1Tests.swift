@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class ComputerRev1Tests: XCTestCase {
-    let isVerboseLogging = false
+    let isVerboseLogging = true
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
@@ -64,7 +64,7 @@ LI P, 0 # Lower SCK
 NOP # delay
 HLT
 """))
-        computer.runUntilHalted()
+        try! computer.runUntilHalted()
         XCTAssertEqual(serialOutput, "A")
     }
     
@@ -91,7 +91,7 @@ LI P, 0 # Lower SCK
 NOP # delay
 HLT
 """))
-        computer.runUntilHalted()
+        try! computer.runUntilHalted(maxSteps: 14)
         
         XCTAssertEqual(computer.cpuState.registerA.value, 65)
     }
@@ -114,7 +114,7 @@ NOP # branch delay slot
 NOP # branch delay slot
 HLT
 """))
-        computer.runUntilHalted()
+        try! computer.runUntilHalted()
         
         XCTAssertEqual(computer.cpuState.registerA.value, n)
     }
@@ -198,7 +198,7 @@ MOV A, M
 
 HLT
 """))
-        computer.runUntilHalted()
+        try! computer.runUntilHalted(maxSteps: 460)
         
         XCTAssertEqual(computer.cpuState.registerA.value, 233)
     }
@@ -229,7 +229,7 @@ JMP
 NOP
 NOP
 """))
-        computer.runUntilHalted()
+        try! computer.runUntilHalted(maxSteps: 20)
         
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
     }
@@ -252,7 +252,7 @@ NOP # delay
 HLT
 """))
         computer.provideSerialInput(bytes: Array("hello".data(using: .utf8)!))
-        computer.runUntilHalted()
+        try! computer.runUntilHalted(maxSteps: 14)
         
         XCTAssertEqual(computer.cpuState.registerA.value, 5)
     }
@@ -408,7 +408,7 @@ NOP
         computer.didUpdateSerialOutput = {
             serialOutput = $0
         }
-        computer.runUntilHalted()
+        try! computer.runUntilHalted(maxSteps: 620)
         
         XCTAssertEqual(serialOutput, """
 ready.
@@ -417,9 +417,7 @@ ready.
     }
     
     func testSerialInputDemo() {
-        let computer = makeComputer()
-        
-        computer.provideInstructions(TraceUtils.assemble("""
+        let program = """
 beginningOfInputLoop:
 
 LXY serial_get_number_available_bytes
@@ -594,14 +592,33 @@ INXY # Must adjust the return address.
 JMP
 NOP
 NOP
-"""))
+"""
+        let instructions = TraceUtils.assemble(program)
+        
+        let reference = makeComputer()
+        reference.logger = nil
+        reference.allowsRunningTraces = false
+        reference.shouldRecordStatesOverTime = true
+        reference.provideInstructions(instructions)
+        reference.provideSerialInput(bytes: Array("hello".data(using: .utf8)!))
+        try! reference.runUntilHalted(maxSteps: 661)
+        
+        let computer = makeComputer()
+        computer.shouldRecordStatesOverTime = true
+        computer.provideInstructions(instructions)
         var serialOutput = ""
-        computer.didUpdateSerialOutput = {
-            serialOutput = $0
-        }
+        computer.didUpdateSerialOutput = { serialOutput = $0 }
         computer.provideSerialInput(bytes: Array("hello".data(using: .utf8)!))
-        computer.runUntilHalted()
+        do {
+            try computer.runUntilHalted(maxSteps: 661)
+        } catch {
+            XCTFail()
+        }
         
         XCTAssertEqual(serialOutput, "hello")
+        
+        XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: computer.logger,
+                                                                            expected: reference.recordedStatesOverTime,
+                                                                            actual: computer.recordedStatesOverTime))
     }
 }

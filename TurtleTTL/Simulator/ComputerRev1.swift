@@ -44,6 +44,12 @@ public class ComputerRev1: NSObject, Computer {
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
     let peripherals = ComputerPeripherals()
+    
+    public var allowsRunningTraces = true
+    public var shouldRecordStatesOverTime = false
+    public var recordedStatesOverTime: [CPUStateSnapshot] {
+        return vm.recordedStatesOverTime
+    }
     var vm: VirtualMachine! = nil
     
     public override init() {
@@ -76,20 +82,23 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     fileprivate func rebuildVirtualMachine() {
-        vm = InterpretingVM(cpuState: cpuState,
-                            instructionDecoder: instructionDecoder,
-                            peripherals: peripherals,
-                            dataRAM: dataRAM,
-                            instructionMemory: instructionMemory)
+        let vm = TracingInterpretingVM(cpuState: cpuState,
+                                       instructionDecoder: instructionDecoder,
+                                       peripherals: peripherals,
+                                       dataRAM: dataRAM,
+                                       instructionMemory: instructionMemory)
+        vm.allowsRunningTraces = allowsRunningTraces
+        vm.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         vm.logger = logger
+        self.vm = vm
     }
     
     public func reset() {
         vm.reset()
     }
     
-    public func runUntilHalted() {
-        vm.runUntilHalted()
+    public func runUntilHalted(maxSteps: Int = Int.max) throws {
+        try vm.runUntilHalted(maxSteps: maxSteps)
     }
     
     public func step() {

@@ -39,51 +39,14 @@ class TracingInterpretingVMTests: XCTestCase {
         interpretingVM.logger = makeLogger()
         interpretingVM.allowsRunningTraces = false
         interpretingVM.shouldRecordStatesOverTime = true
-        interpretingVM.runUntilHalted()
+        try! interpretingVM.runUntilHalted()
         return interpretingVM
-    }
-    
-    fileprivate func assertEquivalentStateProgressions(logger: Logger?,
-                                                       expected: [CPUStateSnapshot],
-                                                       actual: [CPUStateSnapshot]) {
-        if actual.count != expected.count {
-            logger?.append("The two sequences have different lengths: expected.count=\(expected.count) and actual.count=\(actual.count)")
-            XCTFail()
-        }
-        
-        var expected = expected
-        var actual = actual
-        
-        var prevExpectedState = expected.removeFirst()
-        var prevActualState = actual.removeFirst()
-        
-        for i in 0..<min(expected.count, actual.count) {
-            let expectedState = expected[i]
-            let actualState = actual[i]
-            if expectedState != actualState {
-                if let logger = logger {
-                    logger.append("The sequence diverges from expectation at uptime=\(actualState.uptime).")
-                    logger.append("Expected the following progression:")
-                    CPUStateSnapshot.logChanges(logger: logger,
-                                                prevState: prevExpectedState,
-                                                nextState: expectedState)
-                    logger.append("Got the following progression instead:")
-                    CPUStateSnapshot.logChanges(logger: logger,
-                                                prevState: prevActualState,
-                                                nextState: actualState)
-                }
-                XCTFail()
-                return
-            }
-            prevExpectedState = expectedState
-            prevActualState = actualState
-        }
     }
     
     func testExecuteProgram() {
         let vm = makeVM(program: "HLT")
         
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         XCTAssertEqual(vm.cpuState.pc.value, 4)
         XCTAssertEqual(vm.cpuState.controlWord.HLT, .active)
@@ -98,7 +61,7 @@ NOP
 NOP
 """)
         vm.instructionMemory.store(value: 0x0100, to: 0x8000) // HLT
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         XCTAssertEqual(vm.cpuState.pc.value, 0x8003)
         XCTAssertEqual(vm.cpuState.controlWord.HLT, .active)
@@ -110,7 +73,7 @@ LI B, 1
 ADD A
 HLT
 """)
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         XCTAssertFalse(vm.profiler.isHot(pc: 0x0001))
     }
@@ -127,7 +90,7 @@ NOP
 NOP
 HLT
 """)
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         XCTAssertTrue(vm.profiler.isHot(pc: 0x0004))
         XCTAssertTrue(vm.traceCache[0x0004] != nil)
@@ -157,7 +120,7 @@ HLT
         let vm = makeVM(program: program)
         vm.allowsRunningTraces = true
         vm.shouldRecordStatesOverTime = true
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         // The number of calls to step() should be less when executing the
         // trace that was recorded for the hot loop.
@@ -167,9 +130,9 @@ HLT
         // should be exactly the same as when running the regular interpreting
         // VM. (This is not the case when the trace is compiled to native code
         // and executed that way.)
-        assertEquivalentStateProgressions(logger: vm.logger,
-                                      expected: interpretingVM.recordedStatesOverTime,
-                                      actual: vm.recordedStatesOverTime)
+        XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: vm.logger,
+                                                                            expected: interpretingVM.recordedStatesOverTime,
+                                                                            actual: vm.recordedStatesOverTime))
     }
     
     func testNestedLoopsGenerateMultipleTraces() {
@@ -198,7 +161,7 @@ HLT
         let vm = makeVM(program: program)
         vm.allowsRunningTraces = true
         vm.shouldRecordStatesOverTime = true
-        vm.runUntilHalted()
+        try! vm.runUntilHalted()
         
         // We expect one trace for the inner loop, and one for the outer loop.
         XCTAssertEqual(vm.traceCache.count, 2)
@@ -211,8 +174,8 @@ HLT
         // should be exactly the same as when running the regular interpreting
         // VM. (This is not the case when the trace is compiled to native code
         // and executed that way.)
-        assertEquivalentStateProgressions(logger: vm.logger,
-                                      expected: interpretingVM.recordedStatesOverTime,
-                                      actual: vm.recordedStatesOverTime)
+        XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: vm.logger,
+                                                                            expected: interpretingVM.recordedStatesOverTime,
+                                                                            actual: vm.recordedStatesOverTime))
     }
 }

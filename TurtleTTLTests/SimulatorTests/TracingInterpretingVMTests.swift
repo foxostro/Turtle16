@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class TracingInterpretingVMTests: XCTestCase {
-    let isVerboseLogging = false
+    let isVerboseLogging = true
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
@@ -43,21 +43,40 @@ class TracingInterpretingVMTests: XCTestCase {
         return interpretingVM
     }
     
-    fileprivate func assertIdenticalStateSequences(logger: Logger?,
-                                                   seq1: [CPUStateSnapshot],
-                                                   seq2: [CPUStateSnapshot]) {
-        XCTAssertEqual(seq1.count, seq2.count)
-        XCTAssertEqual(seq1, seq2)
-        guard let logger = logger else { return }
-        for i in 0..<min(seq1.count, seq2.count) {
-            let actualState = seq1[i]
-            let expectedState = seq2[i]
+    fileprivate func assertEquivalentStateProgressions(logger: Logger?,
+                                                       expected: [CPUStateSnapshot],
+                                                       actual: [CPUStateSnapshot]) {
+        if actual.count != expected.count {
+            logger?.append("The two sequences have different lengths: expected.count=\(expected.count) and actual.count=\(actual.count)")
+            XCTFail()
+        }
+        
+        var expected = expected
+        var actual = actual
+        
+        var prevExpectedState = expected.removeFirst()
+        var prevActualState = actual.removeFirst()
+        
+        for i in 0..<min(expected.count, actual.count) {
+            let expectedState = expected[i]
+            let actualState = actual[i]
             if expectedState != actualState {
-                logger.append("The sequences diverge at i=\(i).")
-                CPUStateSnapshot.logChanges(logger: logger,
-                                            prevState: expectedState,
-                                            nextState: actualState)
+                if let logger = logger {
+                    logger.append("The sequence diverges from expectation at uptime=\(actualState.uptime).")
+                    logger.append("Expected the following progression:")
+                    CPUStateSnapshot.logChanges(logger: logger,
+                                                prevState: prevExpectedState,
+                                                nextState: expectedState)
+                    logger.append("Got the following progression instead:")
+                    CPUStateSnapshot.logChanges(logger: logger,
+                                                prevState: prevActualState,
+                                                nextState: actualState)
+                }
+                XCTFail()
+                return
             }
+            prevExpectedState = expectedState
+            prevActualState = actualState
         }
     }
     
@@ -148,9 +167,9 @@ HLT
         // should be exactly the same as when running the regular interpreting
         // VM. (This is not the case when the trace is compiled to native code
         // and executed that way.)
-        assertIdenticalStateSequences(logger: vm.logger,
-                                      seq1: vm.recordedStatesOverTime,
-                                      seq2: interpretingVM.recordedStatesOverTime)
+        assertEquivalentStateProgressions(logger: vm.logger,
+                                      expected: interpretingVM.recordedStatesOverTime,
+                                      actual: vm.recordedStatesOverTime)
     }
     
     func testNestedLoopsGenerateMultipleTraces() {
@@ -192,8 +211,8 @@ HLT
         // should be exactly the same as when running the regular interpreting
         // VM. (This is not the case when the trace is compiled to native code
         // and executed that way.)
-        assertIdenticalStateSequences(logger: vm.logger,
-                                      seq1: vm.recordedStatesOverTime,
-                                      seq2: interpretingVM.recordedStatesOverTime)
+        assertEquivalentStateProgressions(logger: vm.logger,
+                                      expected: interpretingVM.recordedStatesOverTime,
+                                      actual: vm.recordedStatesOverTime)
     }
 }

@@ -104,14 +104,12 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func runTrace(_ trace: Trace) {
         assert(traceRecorder == nil)
-        let pc = trace.pc!
         if allowsRunningTraces {
-            logger?.append("Running trace for pc=\(pc)...")
+            logger?.append("Running trace for pc=\(trace.pc!)...")
             actuallyRunTrace(trace)
-            logger?.append("...Finished running trace for pc=\(pc).")
-        } else {
-            doStep()
+            logger?.append("...Finished running trace for pc=\(trace.pc!).")
         }
+        doStep()
     }
     
     fileprivate func actuallyRunTrace(_ trace: Trace) {
@@ -134,6 +132,7 @@ public class TracingInterpretingVM: VirtualMachine {
         cpuState.if_id = fetchInstruction(from: pc)
         cpuState.pc = pc.increment().increment()
         cpuState.pc_if = pc.increment()
+        cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
     }
     
     fileprivate func beginRecordingAndStep(_ pc: ProgramCounter) {

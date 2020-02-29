@@ -61,7 +61,7 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func maybeAddInitialRecordedState() {
         if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
-            recordedStatesOverTime.append(prevState)
+            recordedStatesOverTime.append(prevState.copy() as! CPUStateSnapshot)
         }
     }
     
@@ -153,7 +153,7 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func maybeAddAnotherRecordedState() {
         if shouldRecordStatesOverTime {
-            recordedStatesOverTime.append(cpuState)
+            recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
         }
     }
     

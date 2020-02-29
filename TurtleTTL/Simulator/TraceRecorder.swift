@@ -12,13 +12,12 @@ public class TraceRecorder: NSObject {
     public let trace = Trace()
     
     public func record(instruction: Instruction, stateBefore: CPUStateSnapshot) {
-        let pc = instruction.pc
         let flags = stateBefore.flags
         let address = UInt16(stateBefore.valueOfXYPair())
         if isUnconditionalJump(instruction) {
-            trace.appendGuard(pc: pc, address: address)
+            trace.appendGuard(instruction: instruction, address: address)
         } else if isConditionalJump(instruction) {
-            trace.appendGuard(pc: pc, flags: flags, address: address)
+            trace.appendGuard(instruction: instruction, flags: flags, address: address)
         } else {
             trace.append(instruction: instruction)
         }

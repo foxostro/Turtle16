@@ -55,7 +55,7 @@ HLT
 0x0000: NOP
 0x0000: LI X, 1
 0x0001: LI Y, 0
-0x0002: NOP ; guardAddress=0x0100
+0x0002: JMP ; guardAddress=0x0100
 0x0003: NOP
 0x0004: NOP
 0x0100: LI A, 2
@@ -91,7 +91,7 @@ HLT
 0x0003: LI B, 1
 0x0004: CMP
 0x0005: NOP
-0x0006: NOP ; guardAddress=0x0100 ; guardFlags={carryFlag: 1, equalFlag: 1}
+0x0006: JE ; guardAddress=0x0100 ; guardFlags={carryFlag: 1, equalFlag: 1}
 0x0007: NOP
 0x0008: NOP
 0x0100: LI D, 2

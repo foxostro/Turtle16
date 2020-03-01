@@ -17,7 +17,7 @@ class TraceTests: XCTestCase {
     
     func testAppendInstruction() {
         let trace = Trace()
-        trace.append(instruction: Instruction(opcode: 1, immediate: 1))
+        trace.append(Instruction(opcode: 1, immediate: 1))
         XCTAssertEqual(trace.instructions.count, 1)
         let ins = trace.fetchInstruction(from: ProgramCounter())
         XCTAssertEqual(ins!.pc, ProgramCounter())
@@ -26,7 +26,7 @@ class TraceTests: XCTestCase {
         
     func testAppendGuardUnconditionalFail() {
         let trace = Trace()
-        trace.appendGuard(instruction: Instruction.makeNOP(), fail: true)
+        trace.append(Instruction.makeNOP().withGuard(fail: true))
         XCTAssertEqual(trace.instructions.count, 1)
         let ins = trace.fetchInstruction(from: ProgramCounter())
         XCTAssertEqual(ins!.pc.value, 0)
@@ -35,9 +35,7 @@ class TraceTests: XCTestCase {
         
     func testAppendGuardConditionFlags() {
         let trace = Trace()
-        trace.appendGuard(instruction: Instruction.makeNOP(),
-                          flags: Flags(1, 1),
-                          address: 0xcafe)
+        trace.append(Instruction.makeNOP().withGuard(flags: Flags(1, 1)).withGuard(address: 0xcafe))
         XCTAssertEqual(trace.instructions.count, 1)
         let ins = trace.fetchInstruction(from: ProgramCounter())
         XCTAssertEqual(ins!.pc.value, 0)
@@ -47,8 +45,7 @@ class TraceTests: XCTestCase {
         
     func testAppendGuardConditionAddressRegister() {
         let trace = Trace()
-        trace.appendGuard(instruction: Instruction.makeNOP(),
-                          address: 0xcafe)
+        trace.append(Instruction.makeNOP().withGuard(address: 0xcafe))
         XCTAssertEqual(trace.instructions.count, 1)
         let ins = trace.fetchInstruction(from: ProgramCounter())
         XCTAssertEqual(ins!.pc.value, 0)
@@ -63,17 +60,17 @@ class TraceTests: XCTestCase {
         
     func testFetchInstructionFromInvalidPC() {
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP())
+        trace.append(Instruction.makeNOP())
         let ins = trace.fetchInstruction(from: ProgramCounter(withValue: 0xffff))
         XCTAssertEqual(ins, nil)
     }
     
     func testLogTrace() {
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP())
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), flags: Flags(1, 1), address: 0xFFFF)
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)), fail: true)
-        trace.appendBreakpoint(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 3)))
+        trace.append(Instruction.makeNOP())
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(flags: Flags(1, 1)).withGuard(address: 0xFFFF))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)).withGuard(fail: true))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 3)).withBreakpoint(true))
         XCTAssertEqual(trace.description, """
 0x0000: NOP
 0x0001: NOP ; guardAddress=0xffff ; guardFlags={carryFlag: 1, equalFlag: 1}
@@ -84,22 +81,22 @@ class TraceTests: XCTestCase {
         
     func testTraceRecordsInitialProgramCounter() {
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0xffff)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0xffff)))
         XCTAssertEqual(trace.pc, ProgramCounter(withValue: 0xffff))
     }
         
     func testCopyIsTheSame() {
         let traceA = Trace()
-        traceA.append(instruction: Instruction.makeNOP())
-        traceA.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), flags: Flags(1, 1), address: 0xFFFF)
+        traceA.append(Instruction.makeNOP())
+        traceA.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0xffff).withGuard(flags: Flags(1, 1)))
         let traceB = traceA.copy() as! Trace
         XCTAssertEqual(traceA, traceB)
     }
         
     func testDifferentTracesAreNotEqual() {
         let traceA = Trace()
-        traceA.append(instruction: Instruction.makeNOP())
-        traceA.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), flags: Flags(1, 1), address: 0xFFFF)
+        traceA.append(Instruction.makeNOP())
+        traceA.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0xffff).withGuard(flags: Flags(1, 1)))
         let traceB = Trace()
         XCTAssertNotEqual(traceA, traceB)
         XCTAssertNotEqual([traceA], [traceB])

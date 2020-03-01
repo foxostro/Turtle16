@@ -14,20 +14,25 @@ public class TraceRecorder: NSObject {
     public func record(instruction: Instruction, stateBefore: CPUStateSnapshot) {
         let flags = stateBefore.flags
         let address = UInt16(stateBefore.valueOfXYPair())
-        if isUnconditionalJump(instruction) {
-            trace.append(instruction.withGuard(address: address))
-        } else if isConditionalJump(instruction) {
-            trace.append(instruction.withGuard(address: address).withGuard(flags: flags))
-        } else {
-            trace.append(instruction)
+        var instruction = instruction
+        if trace.instructions.isEmpty {
+            instruction = instruction.withBreakpoint(true)
         }
+        if isUnconditionalJump(instruction) {
+            instruction = instruction.withGuard(address: address)
+        } else if isConditionalJump(instruction) {
+            instruction = instruction.withGuard(address: address).withGuard(flags: flags)
+        }
+        trace.append(instruction)
     }
     
     fileprivate func isUnconditionalJump(_ instruction: Instruction) -> Bool {
+        // TODO: TraceRecorder.isUnconditionalJump should consult the MicrocodeGenerator instead of using the disassembly string.
         return instruction.disassembly == "JMP"
     }
     
     fileprivate func isConditionalJump(_ instruction: Instruction) -> Bool {
+        // TODO: TraceRecorder.isConditionalJump should consult the MicrocodeGenerator instead of using the disassembly
         let disassembly = instruction.disassembly
         return disassembly == "JC"
             || disassembly == "JNC"

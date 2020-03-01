@@ -102,7 +102,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     
     fileprivate func shouldBail(_ upcomingInstruction: Instruction) -> Bool {
         if upcomingInstruction.guardFail == true {
-            logger?.append("shouldBail: guardFail=\(upcomingInstruction.guardFail!)")
+            logger?.append("shouldBail: guardFail=\(upcomingInstruction.guardFail)")
             return true
         }
         if let guardAddress = upcomingInstruction.guardAddress {

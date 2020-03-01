@@ -33,6 +33,10 @@ public class Trace: NSObject {
         append(instruction: instruction.withGuard(address: address))
     }
     
+    public func appendBreakpoint(instruction: Instruction) {
+        append(instruction: instruction.withBreakpoint(true))
+    }
+    
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction? {
         if let offset = self.pc?.integerValue {
             let index = pc.integerValue - offset
@@ -48,8 +52,8 @@ public class Trace: NSObject {
         for ins in instructions {
             result += "\(ins.pc): \(ins)"
             
-            if let guardFail = ins.guardFail {
-                result += " ; guardFail=\(guardFail)"
+            if ins.guardFail {
+                result += " ; guardFail=true"
             }
             
             if let address = ins.guardAddress {
@@ -58,6 +62,10 @@ public class Trace: NSObject {
             
             if let flags = ins.guardFlags {
                 result += String(format: " ; guardFlags=\(flags)")
+            }
+            
+            if ins.isBreakpoint {
+                result += " ; isBreakpoint=true"
             }
             
             result += "\n"

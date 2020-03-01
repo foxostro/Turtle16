@@ -16,9 +16,10 @@ public class Instruction: NSObject {
     public let immediate: UInt8
     public let disassembly: String?
     public let pc: ProgramCounter
-    public let guardFail: Bool?
+    public let guardFail: Bool
     public let guardFlags: Flags?
     public let guardAddress: UInt16?
+    public let isBreakpoint: Bool
     
     public static func makeNOP() -> Instruction {
         return makeNOP(pc: ProgramCounter(withValue: 0))
@@ -29,18 +30,20 @@ public class Instruction: NSObject {
                            immediate: 0,
                            disassembly: "NOP",
                            pc: pc,
-                           guardFail: nil,
+                           guardFail: false,
                            guardFlags: nil,
-                           guardAddress: nil)
+                           guardAddress: nil,
+                           isBreakpoint: false)
     }
     
     public init(opcode: UInt8,
                 immediate: UInt8,
                 disassembly:String? = nil,
                 pc: ProgramCounter = ProgramCounter(withValue: 0),
-                guardFail: Bool? = nil,
+                guardFail: Bool = false,
                 guardFlags: Flags? = nil,
-                guardAddress: UInt16? = nil) {
+                guardAddress: UInt16? = nil,
+                isBreakpoint: Bool = false) {
         self.opcode = opcode
         self.immediate = immediate
         self.disassembly = disassembly
@@ -48,15 +51,17 @@ public class Instruction: NSObject {
         self.guardFail = guardFail
         self.guardFlags = guardFlags
         self.guardAddress = guardAddress
+        self.isBreakpoint = isBreakpoint
     }
     
     public init(opcode: Int,
                 immediate: Int,
                 disassembly:String? = nil,
                 pc: ProgramCounter = ProgramCounter(withValue: 0),
-                guardFail: Bool? = nil,
+                guardFail: Bool = false,
                 guardFlags: Flags? = nil,
-                guardAddress: UInt16? = nil) {
+                guardAddress: UInt16? = nil,
+                isBreakpoint: Bool = false) {
         self.opcode = UInt8(opcode)
         self.immediate = UInt8(immediate)
         self.disassembly = disassembly
@@ -64,6 +69,7 @@ public class Instruction: NSObject {
         self.guardFail = guardFail
         self.guardFlags = guardFlags
         self.guardAddress = guardAddress
+        self.isBreakpoint = isBreakpoint
     }
     
     public init?(_ stringValue: String) {
@@ -93,9 +99,10 @@ public class Instruction: NSObject {
         
         self.disassembly = nil
         self.pc = ProgramCounter(withValue: 0)
-        self.guardFail = nil
+        self.guardFail = false
         self.guardFlags = nil
         self.guardAddress = nil
+        self.isBreakpoint = false
     }
     
     public var value:UInt16 {
@@ -113,11 +120,8 @@ public class Instruction: NSObject {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? Instruction {
-            return self == rhs
-        } else {
-            return false
-        }
+        guard let rhs = rhs as? Instruction else { return false }
+        return self == rhs
     }
     
     public func withProgramCounter(_ pc: ProgramCounter) -> Instruction {
@@ -127,7 +131,8 @@ public class Instruction: NSObject {
                            pc: pc,
                            guardFail: guardFail,
                            guardFlags: guardFlags,
-                           guardAddress: guardAddress)
+                           guardAddress: guardAddress,
+                           isBreakpoint: isBreakpoint)
     }
     
     public func withGuard(fail: Bool) -> Instruction {
@@ -137,7 +142,8 @@ public class Instruction: NSObject {
                            pc: pc,
                            guardFail: fail,
                            guardFlags: guardFlags,
-                           guardAddress: guardAddress)
+                           guardAddress: guardAddress,
+                           isBreakpoint: isBreakpoint)
     }
     
     public func withGuard(flags: Flags) -> Instruction {
@@ -147,7 +153,8 @@ public class Instruction: NSObject {
                            pc: pc,
                            guardFail: guardFail,
                            guardFlags: flags,
-                           guardAddress: guardAddress)
+                           guardAddress: guardAddress,
+                           isBreakpoint: isBreakpoint)
     }
     
     public func withGuard(address: UInt16) -> Instruction {
@@ -157,7 +164,19 @@ public class Instruction: NSObject {
                            pc: pc,
                            guardFail: guardFail,
                            guardFlags: guardFlags,
-                           guardAddress: address)
+                           guardAddress: address,
+                           isBreakpoint: isBreakpoint)
+    }
+    
+    public func withBreakpoint(_ isBreakpoint: Bool) -> Instruction {
+        return Instruction(opcode: opcode,
+                           immediate: immediate,
+                           disassembly: disassembly,
+                           pc: pc,
+                           guardFail: guardFail,
+                           guardFlags: guardFlags,
+                           guardAddress: guardAddress,
+                           isBreakpoint: isBreakpoint)
     }
 }
 

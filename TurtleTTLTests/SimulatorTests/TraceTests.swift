@@ -24,6 +24,15 @@ class TraceTests: XCTestCase {
         XCTAssertEqual(ins, Instruction(opcode: 1, immediate: 1))
     }
         
+    func testAppendGuardUnconditionalFail() {
+        let trace = Trace()
+        trace.appendGuard(instruction: Instruction.makeNOP(), fail: true)
+        XCTAssertEqual(trace.instructions.count, 1)
+        let ins = trace.fetchInstruction(from: ProgramCounter())
+        XCTAssertEqual(ins!.pc.value, 0)
+        XCTAssertEqual(ins!.guardFail, true)
+    }
+        
     func testAppendGuardConditionFlags() {
         let trace = Trace()
         trace.appendGuard(instruction: Instruction.makeNOP(),
@@ -45,14 +54,31 @@ class TraceTests: XCTestCase {
         XCTAssertEqual(ins!.pc.value, 0)
         XCTAssertEqual(ins!.guardAddress, 0xcafe)
     }
+        
+    func testFetchInstructionFromEmptyTrace() {
+        let trace = Trace()
+        let ins = trace.fetchInstruction(from: ProgramCounter())
+        XCTAssertEqual(ins, nil)
+    }
+        
+    func testFetchInstructionFromInvalidPC() {
+        let trace = Trace()
+        trace.append(instruction: Instruction.makeNOP())
+        let ins = trace.fetchInstruction(from: ProgramCounter(withValue: 0xffff))
+        XCTAssertEqual(ins, nil)
+    }
     
     func testLogTrace() {
         let trace = Trace()
         trace.append(instruction: Instruction.makeNOP())
         trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), flags: Flags(1, 1), address: 0xFFFF)
+        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)), fail: true)
+        trace.appendBreakpoint(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 3)))
         XCTAssertEqual(trace.description, """
 0x0000: NOP
 0x0001: NOP ; guardAddress=0xffff ; guardFlags={carryFlag: 1, equalFlag: 1}
+0x0002: NOP ; guardFail=true
+0x0003: NOP ; isBreakpoint=true
 """)
     }
         

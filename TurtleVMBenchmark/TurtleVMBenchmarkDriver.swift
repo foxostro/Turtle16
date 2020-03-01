@@ -78,7 +78,7 @@ class TurtleVMBenchmarkDriver: NSObject {
         computer.provideInstructions(try generateFibonacciProgram())
         computer.reset()
         let elapsedTime = self.measure {
-            computer.runUntilHalted()
+            try! computer.runUntilHalted()
         }
         if computer.cpuState.registerA.value != 233 {
             throw TurtleVMBenchmarkDriverError(format: "Benchmark finished with an incorrect result.")

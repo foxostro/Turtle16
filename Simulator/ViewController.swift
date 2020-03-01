@@ -76,6 +76,8 @@ class ViewController: NSViewController {
         executor.didStop = {[weak self] in
             guard let this = self else { return }
             this.updateCPUState(this.executor.cpuState)
+            this.enableCPUStateUpdate()
+            this.enableEventLog()
             this.makeRunButtonAvailable()
         }
         
@@ -147,18 +149,11 @@ class ViewController: NSViewController {
     }
     
     @IBAction func runOrStop(_ sender: Any) {
-        var shouldEnableEventLog = false
         if stepButton.isEnabled {
             disableEventLog()
             disableCPUStateUpdate()
-        } else {
-            shouldEnableEventLog = true
         }
         executor.runOrStop()
-        if shouldEnableEventLog {
-            enableEventLog()
-            enableCPUStateUpdate()
-        }
     }
     
     @IBAction func reset(_ sender: Any) {
@@ -206,11 +201,9 @@ class ViewController: NSViewController {
         panel.begin { (response: NSApplication.ModalResponse) in
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
-                    do {
-                        try self.executor.saveMicrocode(to: url)
-                    } catch {
-                        NSAlert(error: error).runModal()
-                    }
+                    self.executor.saveMicrocode(to: url, errorBlock: {
+                        NSAlert(error: $0).runModal()
+                    })
                 }
             }
         }
@@ -223,11 +216,9 @@ class ViewController: NSViewController {
         panel.begin { (response: NSApplication.ModalResponse) in
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
-                    do {
-                        try self.executor.loadMicrocode(from: url)
-                    } catch {
-                        NSAlert(error: error).runModal()
-                    }
+                    self.executor.loadMicrocode(from: url, errorBlock: {
+                        NSAlert(error: $0).runModal()
+                    })
                 }
             }
         }
@@ -241,11 +232,9 @@ class ViewController: NSViewController {
         panel.begin { (response: NSApplication.ModalResponse) in
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
-                    do {
-                        try self.executor.saveProgram(to: url)
-                    } catch {
-                        NSAlert(error: error).runModal()
-                    }
+                    self.executor.saveProgram(to: url, errorBlock: {
+                        NSAlert(error: $0).runModal()
+                    })
                 }
             }
         }
@@ -258,11 +247,9 @@ class ViewController: NSViewController {
         panel.begin { (response: NSApplication.ModalResponse) in
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
-                    do {
-                        try self.executor.loadProgram(from: url)
-                    } catch {
-                        NSAlert(error: error).runModal()
-                    }
+                    self.executor.loadProgram(from: url, errorBlock: {
+                        NSAlert(error: $0).runModal()
+                    })
                 }
             }
         }

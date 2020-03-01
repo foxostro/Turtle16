@@ -14,44 +14,60 @@ public class ComputerExecutor: NSObject {
     let queue = DispatchQueue(label: "com.foxostro.ComputerExecutor")
     
     public func provideMicrocode(microcode: InstructionDecoder) {
-        queue.sync {
-            unlockedExecutor.provideMicrocode(microcode: microcode)
+        queue.async { [weak self] in
+            self?.unlockedExecutor.provideMicrocode(microcode: microcode)
         }
     }
     
-    public func loadMicrocode(from url: URL) throws {
-        try queue.sync {
-            try unlockedExecutor.loadMicrocode(from: url)
+    public func loadMicrocode(from url: URL, errorBlock: @escaping (Error)->Void) {
+        queue.async { [weak self] in
+            do {
+                try self?.unlockedExecutor.loadMicrocode(from: url)
+            } catch {
+                errorBlock(error)
+            }
         }
     }
     
-    public func saveMicrocode(to url: URL) throws {
-        try queue.sync {
-            try unlockedExecutor.saveMicrocode(to: url)
+    public func saveMicrocode(to url: URL, errorBlock: @escaping (Error)->Void) {
+        queue.async { [weak self] in
+            do {
+                try self?.unlockedExecutor.saveMicrocode(to: url)
+            } catch {
+                errorBlock(error)
+            }
         }
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
-        queue.sync {
-            unlockedExecutor.provideInstructions(instructions)
+        queue.async { [weak self] in
+            self?.unlockedExecutor.provideInstructions(instructions)
         }
     }
     
-    public func loadProgram(from url: URL) throws {
-        try queue.sync {
-            try unlockedExecutor.loadProgram(from: url)
+    public func loadProgram(from url: URL, errorBlock: @escaping (Error)->Void) {
+        queue.async { [weak self] in
+            do {
+                try self?.unlockedExecutor.loadProgram(from: url)
+            } catch {
+                errorBlock(error)
+            }
         }
     }
     
-    public func saveProgram(to url: URL) throws {
-        try queue.sync {
-            try unlockedExecutor.saveProgram(to: url)
+    public func saveProgram(to url: URL, errorBlock: @escaping (Error)->Void) {
+        queue.async { [weak self] in
+            do {
+                try self?.unlockedExecutor.saveProgram(to: url)
+            } catch {
+                errorBlock(error)
+            }
         }
     }
     
     public func provideSerialInput(bytes: [UInt8]) {
-        queue.sync {
-            unlockedExecutor.provideSerialInput(bytes: bytes)
+        queue.async { [weak self] in
+            self?.unlockedExecutor.provideSerialInput(bytes: bytes)
         }
     }
     
@@ -64,8 +80,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.logger = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.logger = value
             }
         }
     }
@@ -79,8 +95,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.computer = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.computer = value
             }
         }
     }
@@ -94,8 +110,8 @@ public class ComputerExecutor: NSObject {
            return result
         }
         set(value) {
-           queue.sync {
-               self.unlockedExecutor.didUpdateSerialOutput = value
+           queue.async { [weak self] in
+                self?.unlockedExecutor.didUpdateSerialOutput = value
            }
         }
     }
@@ -109,8 +125,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.onUpdatedIPS = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.onUpdatedIPS = value
             }
         }
     }
@@ -124,8 +140,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.didStart = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.didStart = value
             }
         }
     }
@@ -139,8 +155,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.didStop = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.didStop = value
             }
         }
     }
@@ -154,8 +170,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.didHalt = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.didHalt = value
             }
         }
     }
@@ -169,8 +185,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.didReset = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.didReset = value
             }
         }
     }
@@ -184,8 +200,8 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync {
-                self.unlockedExecutor.numberOfInstructionsRemaining = value
+            queue.async { [weak self] in
+                self?.unlockedExecutor.numberOfInstructionsRemaining = value
             }
         }
     }
@@ -211,16 +227,18 @@ public class ComputerExecutor: NSObject {
     }
     
     public func step() {
-        queue.sync {
-            unlockedExecutor.step()
-            runForABit()
+        queue.async { [weak self] in
+            guard let this = self else { return }
+            this.unlockedExecutor.step()
+            this.runForABit()
         }
     }
     
     public func runOrStop() {
-        queue.sync {
-            unlockedExecutor.runOrStop()
-            runForABit()
+        queue.async { [weak self] in
+            guard let this = self else { return }
+            this.unlockedExecutor.runOrStop()
+            this.runForABit()
         }
     }
     
@@ -235,8 +253,8 @@ public class ComputerExecutor: NSObject {
     }
     
     public func reset() {
-        queue.sync {
-            unlockedExecutor.reset()
+        queue.async { [weak self] in
+            self?.unlockedExecutor.reset()
         }
     }
     

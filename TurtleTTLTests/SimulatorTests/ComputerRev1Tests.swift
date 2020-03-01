@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class ComputerRev1Tests: XCTestCase {
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     

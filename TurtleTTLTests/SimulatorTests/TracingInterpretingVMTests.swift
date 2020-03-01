@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class TracingInterpretingVMTests: XCTestCase {
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()

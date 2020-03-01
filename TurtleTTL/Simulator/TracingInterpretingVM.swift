@@ -74,19 +74,6 @@ public class TracingInterpretingVM: VirtualMachine {
             self.traceRecorder = nil
             logger?.append("Finished recording trace at pc=\(trace.pc!) because the loop has closed.")
             logTrace(trace)
-//        } else if let existingTrace = traceCache[pc.value] {
-//            // If the program counter is aready associated with another trace
-//            // then stop recording. The VM will continue on to execute this
-//            // trace next.
-//            let trace = traceRecorder.trace
-//            trace.appendGuard(pc: pc, fail: true)
-//            trace.append(instruction: Instruction.makeNOP(pc: pc))
-//            trace.append(instruction: Instruction.makeNOP(pc: pc))
-//            assert(traceCache[trace.pc!.value] == nil)
-//            traceCache[trace.pc!.value] = trace
-//            self.traceRecorder = nil
-//            logger?.append("Finished recording trace at pc=\(trace.pc!) because it connects to an existing trace at pc=\(existingTrace.pc!).")
-//            logTrace(trace)
         }
     }
     

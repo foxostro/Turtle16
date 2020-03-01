@@ -16,7 +16,7 @@ class TraceRecorderTests: XCTestCase {
                         stateBefore: CPUStateSnapshot())
         XCTAssertEqual(recorder.trace.instructions.count, 1)
         XCTAssertEqual(recorder.trace.description, """
-0x0000: NOP
+0x0000: NOP ; isBreakpoint=true
 """)
     }
     
@@ -28,7 +28,7 @@ HLT
         // When we record a trace we must include pipeline flushes at the
         // beginning and end of the trace.
         XCTAssertEqual(trace.description, """
-0x0000: NOP
+0x0000: NOP ; isBreakpoint=true
 0x0000: NOP
 0x0000: HLT
 """)
@@ -51,7 +51,7 @@ HLT
         // expected, but the jump instruction itself is not present. Then, the
         // trace continues recording instructions at the following PC.
         XCTAssertEqual(trace.description, """
-0x0000: NOP
+0x0000: NOP ; isBreakpoint=true
 0x0000: NOP
 0x0000: LI X, 1
 0x0001: LI Y, 0
@@ -83,7 +83,7 @@ HLT
         // unconditional jump, the jump destination is a computed value which
         // must be asserted with a guard condition.
         XCTAssertEqual(trace.description, """
-0x0000: NOP
+0x0000: NOP ; isBreakpoint=true
 0x0000: NOP
 0x0000: LI X, 1
 0x0001: LI Y, 0

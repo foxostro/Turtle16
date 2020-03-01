@@ -95,7 +95,33 @@ HLT
         XCTAssertTrue(vm.profiler.isHot(pc: 0x0004))
         XCTAssertTrue(vm.traceCache[0x0004] != nil)
         XCTAssertEqual(vm.traceCache[0x0004]!.description, """
-0x0004: ADD A
+0x0004: ADD A ; isBreakpoint=true
+0x0005: NOP
+0x0006: JNC ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
+0x0007: NOP
+0x0008: NOP
+""")
+    }
+        
+    func testTracesAreRecordedForHotLoops_withNullLogger_toPlacateCodeCoverage() {
+        let vm = makeVM(program: """
+LXY loop
+LI B, 1
+loop:
+ADD A
+NOP
+JNC
+NOP
+NOP
+HLT
+""")
+        vm.logger = nil
+        try! vm.runUntilHalted()
+        
+        XCTAssertTrue(vm.profiler.isHot(pc: 0x0004))
+        XCTAssertTrue(vm.traceCache[0x0004] != nil)
+        XCTAssertEqual(vm.traceCache[0x0004]!.description, """
+0x0004: ADD A ; isBreakpoint=true
 0x0005: NOP
 0x0006: JNC ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
 0x0007: NOP

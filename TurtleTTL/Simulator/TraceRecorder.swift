@@ -15,11 +15,11 @@ public class TraceRecorder: NSObject {
         let flags = stateBefore.flags
         let address = UInt16(stateBefore.valueOfXYPair())
         if isUnconditionalJump(instruction) {
-            trace.appendGuard(instruction: instruction, address: address)
+            trace.append(instruction.withGuard(address: address))
         } else if isConditionalJump(instruction) {
-            trace.appendGuard(instruction: instruction, flags: flags, address: address)
+            trace.append(instruction.withGuard(address: address).withGuard(flags: flags))
         } else {
-            trace.append(instruction: instruction)
+            trace.append(instruction)
         }
     }
     

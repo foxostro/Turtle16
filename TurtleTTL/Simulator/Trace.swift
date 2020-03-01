@@ -12,29 +12,11 @@ public class Trace: NSObject {
     public private(set) var instructions: [Instruction] = []
     public private(set) var pc: ProgramCounter? = nil
     
-    public func append(instruction: Instruction) {
+    public func append(_ instruction: Instruction) {
         if pc == nil {
             pc = instruction.pc
         }
         instructions.append(instruction)
-    }
-    
-    public func appendGuard(instruction: Instruction, fail: Bool) {
-        append(instruction: instruction.withGuard(fail: fail))
-    }
-    
-    public func appendGuard(instruction: Instruction,
-                            flags: Flags,
-                            address: UInt16) {
-        append(instruction: instruction.withGuard(flags: flags).withGuard(address: address))
-    }
-    
-    public func appendGuard(instruction: Instruction, address: UInt16) {
-        append(instruction: instruction.withGuard(address: address))
-    }
-    
-    public func appendBreakpoint(instruction: Instruction) {
-        append(instruction: instruction.withBreakpoint(true))
     }
     
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction? {

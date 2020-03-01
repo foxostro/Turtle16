@@ -33,7 +33,7 @@ class TraceExecutorTests: XCTestCase {
     func testRunTraceWithOnlyFailGuard() {
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0x0100)), fail: true)
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0x0100)).withGuard(fail: true))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -47,13 +47,15 @@ class TraceExecutorTests: XCTestCase {
         // instruction in the trace.
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)))
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)))
         let executor = TraceExecutor(trace: trace, cpuState: state)
+        executor.shouldRecordStatesOverTime = true
         executor.logger = makeLogger()
         executor.run()
         XCTAssertEqual(state.pc.value, 3)
+        XCTAssertEqual(executor.recordedStatesOverTime.count, 3)
     }
     
     func testRunTraceWhichRetiresNopsAndsPassesTheFailGuard() {
@@ -63,9 +65,9 @@ class TraceExecutorTests: XCTestCase {
         // instruction in the trace.
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), fail: false)
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(fail: false))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -75,9 +77,9 @@ class TraceExecutorTests: XCTestCase {
     func testRunTraceWhichRetiresNopsAndsFailsTheFailGuard() {
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), fail: true)
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(fail: true))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -87,9 +89,9 @@ class TraceExecutorTests: XCTestCase {
     func testRunTraceWhichPassesTheAddressGuard() {
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), address: 0)
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)), fail: true)
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)).withGuard(fail: true))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -99,9 +101,9 @@ class TraceExecutorTests: XCTestCase {
     func testRunTraceWhichFailsTheAddressGuard() {
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), address: 0xffff)
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)), fail: true)
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0xffff))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)).withGuard(fail: true))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -111,9 +113,9 @@ class TraceExecutorTests: XCTestCase {
     func testRunTraceWhichPassesTheFlagsGuard() {
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), flags: Flags(), address: 0)
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)), fail: true)
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0).withGuard(flags: Flags(0, 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)).withGuard(fail: true))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -123,9 +125,9 @@ class TraceExecutorTests: XCTestCase {
     func testRunTraceWhichFailsTheFlagsGuard() {
         let state = CPUStateSnapshot()
         let trace = Trace()
-        trace.append(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 1)), flags: Flags(1, 1), address: 0)
-        trace.appendGuard(instruction: Instruction.makeNOP(pc: ProgramCounter(withValue: 2)), fail: true)
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0).withGuard(flags: Flags(1, 1)))
+        trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 2)).withGuard(fail: true))
         let executor = TraceExecutor(trace: trace, cpuState: state)
         executor.logger = makeLogger()
         executor.run()
@@ -140,7 +142,7 @@ LI A, 0xff
         let trace = Trace()
         var pc = ProgramCounter()
         for ins in instructions {
-            trace.append(instruction: ins.withProgramCounter(pc))
+            trace.append(ins.withProgramCounter(pc))
             pc = pc.increment()
         }
         let executor = TraceExecutor(trace: trace, cpuState: state)

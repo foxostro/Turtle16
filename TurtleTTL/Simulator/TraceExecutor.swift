@@ -131,8 +131,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
                                disassembly: "Guide Rail",
                                pc: pc,
                                guardFail: true)
-        } else {
-            return instructions.removeFirst()
         }
+        return instructions.removeFirst()
     }
 }

@@ -28,20 +28,27 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let dataRAM: Memory
     public let instructionMemory: InstructionMemory
     
+    // For debugging and diagnostics, the virtual machine can optionally record
+    // execution states over time.
     public var shouldRecordStatesOverTime = false
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
     public var numberOfStepsExecuted = 0
+    
+    // Raise this boolean flag to request execution stop on the next breakpoint.
+    public let flagBreak: AtomicBooleanFlag
     
     public init(cpuState: CPUStateSnapshot,
                 instructionDecoder: InstructionDecoder,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
-                instructionMemory: InstructionMemory) {
+                instructionMemory: InstructionMemory,
+                flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
         self.cpuState = cpuState
         self.instructionDecoder = instructionDecoder
         self.peripherals = peripherals
         self.dataRAM = dataRAM
         self.instructionMemory = instructionMemory
+        self.flagBreak = flagBreak
     }
     
     // This method duplicates the functionality of the hardware reset button.

@@ -52,6 +52,9 @@ public class ComputerRev1: NSObject, Computer {
     }
     var vm: VirtualMachine! = nil
     
+    // Raise this boolean flag to request execution stop on the next breakpoint.
+    public let flagBreak = AtomicBooleanFlag()
+    
     public override init() {
         instructionMemory = InstructionMemoryRev1(instructionROM: InstructionROM(),
                                                   upperInstructionRAM: upperInstructionRAM,
@@ -86,7 +89,8 @@ public class ComputerRev1: NSObject, Computer {
                                        instructionDecoder: instructionDecoder,
                                        peripherals: peripherals,
                                        dataRAM: dataRAM,
-                                       instructionMemory: instructionMemory)
+                                       instructionMemory: instructionMemory,
+                                       flagBreak: flagBreak)
         vm.allowsRunningTraces = allowsRunningTraces
         vm.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         vm.logger = logger

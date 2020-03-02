@@ -100,6 +100,10 @@ class UnlockedComputerExecutor: NSObject {
         }
     }
     
+    public func stop() {
+        numberOfInstructionsRemaining = 0
+    }
+    
     func runForABit() {
         guard numberOfInstructionsRemaining > 0 else { return }
         

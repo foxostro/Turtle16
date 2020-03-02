@@ -15,7 +15,8 @@ public class InterpretingVM: VirtualMachine {
                          instructionDecoder: InstructionDecoder,
                          peripherals: ComputerPeripherals,
                          dataRAM: Memory,
-                         instructionMemory: InstructionMemory) {
+                         instructionMemory: InstructionMemory,
+                         flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
                                   dataRAM: dataRAM,
@@ -24,7 +25,8 @@ public class InterpretingVM: VirtualMachine {
                    instructionDecoder: instructionDecoder,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
-                   instructionMemory: instructionMemory)
+                   instructionMemory: instructionMemory,
+                   flagBreak: flagBreak)
         interpreter.delegate = self
     }
     

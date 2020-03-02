@@ -11,6 +11,7 @@ import Cocoa
 public protocol Computer {
     var logger: Logger? { get set }
     var cpuState: CPUStateSnapshot { get }
+    var flagBreak: AtomicBooleanFlag { get }
     
     func runUntilHalted(maxSteps: Int) throws -> Void
     func step() -> Void

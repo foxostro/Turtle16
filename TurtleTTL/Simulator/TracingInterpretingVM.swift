@@ -20,7 +20,8 @@ public class TracingInterpretingVM: VirtualMachine {
                          instructionDecoder: InstructionDecoder,
                          peripherals: ComputerPeripherals,
                          dataRAM: Memory,
-                         instructionMemory: InstructionMemory) {
+                         instructionMemory: InstructionMemory,
+                         flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
                                   dataRAM: dataRAM,
@@ -29,7 +30,8 @@ public class TracingInterpretingVM: VirtualMachine {
                    instructionDecoder: instructionDecoder,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
-                   instructionMemory: instructionMemory)
+                   instructionMemory: instructionMemory,
+                   flagBreak: flagBreak)
         interpreter.delegate = self
     }
     
@@ -101,7 +103,8 @@ public class TracingInterpretingVM: VirtualMachine {
                                      cpuState: cpuState,
                                      peripherals: peripherals,
                                      dataRAM: dataRAM,
-                                     instructionDecoder: instructionDecoder)
+                                     instructionDecoder: instructionDecoder,
+                                     flagBreak: flagBreak)
         executor.logger = logger
         executor.delegate = self
         executor.shouldRecordStatesOverTime = shouldRecordStatesOverTime

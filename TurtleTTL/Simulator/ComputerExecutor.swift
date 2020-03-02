@@ -12,6 +12,8 @@ import Cocoa
 public class ComputerExecutor: NSObject {
     let unlockedExecutor = UnlockedComputerExecutor()
     let queue = DispatchQueue(label: "com.foxostro.ComputerExecutor")
+    let isRunning = AtomicBooleanFlag()
+    var flagBreak: AtomicBooleanFlag!
     
     public func provideMicrocode(microcode: InstructionDecoder) {
         queue.async { [weak self] in
@@ -96,7 +98,9 @@ public class ComputerExecutor: NSObject {
         }
         set(value) {
             queue.async { [weak self] in
-                self?.unlockedExecutor.computer = value
+                guard let this = self else { return }
+                this.flagBreak = value.flagBreak
+                this.unlockedExecutor.computer = value
             }
         }
     }
@@ -227,6 +231,7 @@ public class ComputerExecutor: NSObject {
     }
     
     public func step() {
+        flagBreak.value = false
         queue.async { [weak self] in
             guard let this = self else { return }
             this.unlockedExecutor.step()
@@ -235,6 +240,7 @@ public class ComputerExecutor: NSObject {
     }
     
     public func runOrStop() {
+        flagBreak.value = !isRunning.value
         queue.async { [weak self] in
             guard let this = self else { return }
             this.unlockedExecutor.runOrStop()
@@ -242,7 +248,17 @@ public class ComputerExecutor: NSObject {
         }
     }
     
+    public func stop() {
+        flagBreak.value = true
+        queue.async { [weak self] in
+            guard let this = self else { return }
+            this.unlockedExecutor.stop()
+            this.runForABit()
+        }
+    }
+    
     func runForABit() {
+        flagBreak.value = false
         queue.async { [weak self] in
             guard let this = self else { return }
             if this.unlockedExecutor.isExecuting && !this.unlockedExecutor.isHalted {
@@ -253,6 +269,7 @@ public class ComputerExecutor: NSObject {
     }
     
     public func reset() {
+        flagBreak.value = false
         queue.async { [weak self] in
             self?.unlockedExecutor.reset()
         }

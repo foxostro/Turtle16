@@ -206,4 +206,28 @@ JE
         // was recorded in place of the conditional jump, "JE".
         XCTAssertEqual(cpuState.pc.value, 0x0009)
     }
+    
+    func testRunThrowsExceptionIfTooManySteps() {
+        let trace = TraceUtils.recordTraceForProgram("""
+JMP
+NOP
+NOP
+""")
+        let executor = TraceExecutor(trace: trace, cpuState: CPUStateSnapshot())
+        executor.logger = makeLogger()
+        XCTAssertThrowsError(try executor.run(maxSteps: 10))
+    }
+    
+    func testRunTraceAndStopAtTheBreakpoint() {
+        let trace = TraceUtils.recordTraceForProgram("""
+JMP
+NOP
+NOP
+""")
+        let executor = TraceExecutor(trace: trace, cpuState: CPUStateSnapshot())
+        executor.logger = makeLogger()
+        executor.flagBreak.value = true
+        XCTAssertNoThrow(try executor.run(maxSteps: 10))
+        XCTAssertEqual(executor.cpuState.pc.value, 0)
+    }
 }

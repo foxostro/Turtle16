@@ -49,10 +49,6 @@ class UnlockedComputerExecutor: NSObject {
         try computer.saveProgram(to: url)
     }
     
-    public func provideSerialInput(bytes: [UInt8]) {
-        computer.provideSerialInput(bytes: bytes)
-    }
-    
     public var computer:Computer!
     public var didUpdateSerialOutput:(String)->Void = {_ in}
     public var onUpdatedIPS:(Double)->Void = {_ in}

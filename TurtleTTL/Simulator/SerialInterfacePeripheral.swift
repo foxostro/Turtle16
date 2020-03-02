@@ -34,7 +34,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
     public var outputBuffer: UInt8 = 0
     public var sck: UInt8 = 0
     
-    public var serialInput: [UInt8] = []
+    public let serialInput = SerialInput()
     public var serialOutput: [UInt8] = []
 
     public var address: UInt16 {
@@ -48,7 +48,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
     }
     
     public func provideSerialInput(bytes: [UInt8]) {
-        serialInput += bytes
+        serialInput.provide(bytes: bytes)
     }
     
     public func describeSerialOutput() -> String {
@@ -152,7 +152,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
 
     func doCommandReset() -> UInt8 {
         outputBuffer = kStatusSuccess
-        serialInput = []
+        serialInput.clear()
         serialOutput = []
         return kStateIdle
     }
@@ -168,8 +168,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
     }
 
     func getNextByte() -> UInt8 {
-        if let byte = serialInput.first {
-            serialInput.removeFirst()
+        if let byte = serialInput.removeFirst() {
             return byte
         } else {
             return 255

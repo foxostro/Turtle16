@@ -44,6 +44,7 @@ public class ComputerRev1: NSObject, Computer {
     let lowerInstructionROMFilename = "Lower Instruction ROM.bin"
     let upperInstructionROMFilename = "Upper Instruction ROM.bin"
     let peripherals = ComputerPeripherals()
+    public private(set) var serialInput: SerialInput!
     
     public var allowsRunningTraces = true
     public var shouldRecordStatesOverTime = false
@@ -79,7 +80,9 @@ public class ComputerRev1: NSObject, Computer {
                              loadUpperInstructionRAM,
                              storeLowerInstructionRAM,
                              loadLowerInstructionRAM)
-        peripherals.getSerialInterface().didUpdateSerialOutput = didUpdateSerialOutput
+        let serialInterface = peripherals.getSerialInterface()
+        serialInterface.didUpdateSerialOutput = didUpdateSerialOutput
+        serialInput = serialInterface.serialInput
         
         rebuildVirtualMachine()
     }
@@ -168,9 +171,5 @@ public class ComputerRev1: NSObject, Computer {
                                                lowerInstructionRAM: lowerInstructionRAM,
                                                instructionFormatter: instructionFormatter)
         rebuildVirtualMachine()
-    }
-    
-    public func provideSerialInput(bytes: [UInt8]) {
-        peripherals.getSerialInterface().provideSerialInput(bytes: bytes)
     }
 }

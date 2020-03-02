@@ -14,6 +14,7 @@ public class ComputerExecutor: NSObject {
     let queue = DispatchQueue(label: "com.foxostro.ComputerExecutor")
     let isRunning = AtomicBooleanFlag()
     var flagBreak: AtomicBooleanFlag!
+    var serialInput: SerialInput!
     
     public func provideMicrocode(microcode: InstructionDecoder) {
         queue.async { [weak self] in
@@ -68,9 +69,7 @@ public class ComputerExecutor: NSObject {
     }
     
     public func provideSerialInput(bytes: [UInt8]) {
-        queue.async { [weak self] in
-            self?.unlockedExecutor.provideSerialInput(bytes: bytes)
-        }
+        serialInput.provide(bytes: bytes)
     }
     
     public var logger: Logger? {
@@ -100,6 +99,7 @@ public class ComputerExecutor: NSObject {
             queue.async { [weak self] in
                 guard let this = self else { return }
                 this.flagBreak = value.flagBreak
+                this.serialInput = value.serialInput
                 this.unlockedExecutor.computer = value
             }
         }

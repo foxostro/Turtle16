@@ -12,6 +12,7 @@ public protocol Computer {
     var logger: Logger? { get set }
     var cpuState: CPUStateSnapshot { get }
     var flagBreak: AtomicBooleanFlag { get }
+    var serialInput: SerialInput! { get }
     
     func runUntilHalted(maxSteps: Int) throws -> Void
     func step() -> Void
@@ -24,8 +25,6 @@ public protocol Computer {
     func provideInstructions(_ instructions: [Instruction]) -> Void
     func loadProgram(from: URL) throws
     func saveProgram(to: URL) throws
-    
-    func provideSerialInput(bytes: [UInt8]) -> Void
     
     var didUpdateSerialOutput:(String)->Void { get set }
 }

@@ -50,7 +50,7 @@ class SerialInterfacePeripheralTests: XCTestCase {
     
     func testInitiallyEmptySerialInputAndOutput() {
         let serial = SerialInterfacePeripheral()
-        XCTAssertEqual(serial.serialInput, [])
+        XCTAssertEqual(serial.serialInput.bytes, [])
         XCTAssertEqual(serial.serialOutput, [])
         XCTAssertEqual(serial.describeSerialOutput(), "")
     }
@@ -88,13 +88,13 @@ class SerialInterfacePeripheralTests: XCTestCase {
     
     func testCommandResetSerialLink() {
         let serial = SerialInterfacePeripheral()
-        serial.serialInput = [1, 2, 3]
+        serial.serialInput.bytes = [1, 2, 3]
         serial.serialOutput = [1, 2, 3]
         
         let status = serial.doCommand(command: serial.kCommandResetSerialLink)
         
         XCTAssertEqual(status, serial.kStatusSuccess)
-        XCTAssertEqual(serial.serialInput, [])
+        XCTAssertEqual(serial.serialInput.bytes, [])
         XCTAssertEqual(serial.serialOutput, [])
     }
     
@@ -106,7 +106,7 @@ class SerialInterfacePeripheralTests: XCTestCase {
         
         XCTAssertEqual(status1, serial.kStatusSuccess)
         XCTAssertEqual(status2, serial.kStatusSuccess)
-        XCTAssertEqual(serial.serialInput, [])
+        XCTAssertEqual(serial.serialInput.bytes, [])
         XCTAssertEqual(serial.serialOutput, [65])
     }
     
@@ -120,7 +120,7 @@ class SerialInterfacePeripheralTests: XCTestCase {
     
     func testCommandGetNumBytesWithSomeAvailable() {
         let serial = SerialInterfacePeripheral()
-        serial.serialInput = [1, 2, 3]
+        serial.serialInput.bytes = [1, 2, 3]
         
         let count = serial.doCommand(command: serial.kCommandGetNumBytes)
         
@@ -137,11 +137,11 @@ class SerialInterfacePeripheralTests: XCTestCase {
     
     func testCommandGetByteWithSomeAvailable() {
         let serial = SerialInterfacePeripheral()
-        serial.serialInput = [1, 2, 3]
+        serial.serialInput.bytes = [1, 2, 3]
         
         let byte = serial.doCommand(command: serial.kCommandGetByte)
         
         XCTAssertEqual(byte, 1)
-        XCTAssertEqual(serial.serialInput, [2, 3])
+        XCTAssertEqual(serial.serialInput.bytes, [2, 3])
     }
 }

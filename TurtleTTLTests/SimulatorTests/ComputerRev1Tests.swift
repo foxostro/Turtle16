@@ -71,12 +71,14 @@ HLT
     func testSerialInput() {
         let computer = makeComputer()
         
+        let serialInput = computer.serialInput!
+        
         var serialOutput = ""
         computer.didUpdateSerialOutput = {
             serialOutput += $0
         }
         
-        computer.provideSerialInput(bytes: [65])
+        serialInput.provide(bytes: [65])
         
         computer.provideInstructions(TraceUtils.assemble("""
 LI D, 6 # The Serial Interface device
@@ -251,9 +253,11 @@ NOP # delay
 
 HLT
 """))
-        computer.provideSerialInput(bytes: Array("hello".data(using: .utf8)!))
-        try! computer.runUntilHalted(maxSteps: 14)
+
+        let serialInput = computer.serialInput!
+        serialInput.provide(bytes: Array("hello".data(using: .utf8)!))
         
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 14))
         XCTAssertEqual(computer.cpuState.registerA.value, 5)
     }
     
@@ -408,8 +412,8 @@ NOP
         computer.didUpdateSerialOutput = {
             serialOutput = $0
         }
-        try! computer.runUntilHalted(maxSteps: 620)
         
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 620))
         XCTAssertEqual(serialOutput, """
 ready.
 
@@ -601,23 +605,22 @@ NOP
         reference.allowsRunningTraces = false
         reference.shouldRecordStatesOverTime = true
         reference.provideInstructions(instructions)
-        reference.provideSerialInput(bytes: serialInput)
-        try! reference.runUntilHalted(maxSteps: 661)
+        let referenceSerialInputToken = reference.serialInput!
+        referenceSerialInputToken.provide(bytes: serialInput)
+        
+        XCTAssertNoThrow(try reference.runUntilHalted(maxSteps: 661))
         
         let computer = makeComputer()
         computer.shouldRecordStatesOverTime = true
         computer.provideInstructions(instructions)
         var serialOutput = ""
         computer.didUpdateSerialOutput = { serialOutput = $0 }
-        computer.provideSerialInput(bytes: serialInput)
-        do {
-            try computer.runUntilHalted(maxSteps: 661)
-        } catch {
-            XCTFail()
-        }
+        let serialInputToken = computer.serialInput!
+        serialInputToken.provide(bytes: serialInput)
+        
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 661))
         
         XCTAssertEqual(serialOutput, "hello")
-        
         XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: computer.logger,
                                                                             expected: reference.recordedStatesOverTime,
                                                                             actual: computer.recordedStatesOverTime))

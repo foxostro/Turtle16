@@ -20,6 +20,8 @@
 		6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
 		6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */; };
+		6F2EE661240C8621001FE46E /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE660240C8621001FE46E /* AtomicBooleanFlag.swift */; };
+		6F2EE663240C8634001FE46E /* AtomicBooleanFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE662240C8634001FE46E /* AtomicBooleanFlagTests.swift */; };
 		6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
 		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
@@ -211,6 +213,8 @@
 		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUStateSnapshot.swift; sourceTree = "<group>"; };
+		6F2EE660240C8621001FE46E /* AtomicBooleanFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlag.swift; sourceTree = "<group>"; };
+		6F2EE662240C8634001FE46E /* AtomicBooleanFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlagTests.swift; sourceTree = "<group>"; };
 		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
 		6F37BA462305D903009754D3 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		6F4ACBDA2400BCD900014F4B /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
@@ -498,14 +502,15 @@
 			children = (
 				6F5A0137231F7C56003E7C7F /* Assembler */,
 				6F5A0138231F7C77003E7C7F /* Simulator */,
+				6F2EE660240C8621001FE46E /* AtomicBooleanFlag.swift */,
 				6F6A024623FF8C60003876BD /* ConsoleLogger.swift */,
+				6FE0038B22F3D75E00221C4C /* Info.plist */,
 				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
 				6F6A024223FF7926003876BD /* InstructionFormatter.swift */,
 				6F790AE822EEDD1900B38267 /* Logger.swift */,
 				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
 				6FE0465F2405119D001461C4 /* NullLogger.swift */,
 				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
-				6FE0038B22F3D75E00221C4C /* Info.plist */,
 			);
 			path = TurtleTTL;
 			sourceTree = "<group>";
@@ -515,9 +520,10 @@
 			children = (
 				6F5A0139231F7CA7003E7C7F /* AssemblerTests */,
 				6F5A013A231F7CCC003E7C7F /* SimulatorTests */,
+				6F2EE662240C8634001FE46E /* AtomicBooleanFlagTests.swift */,
 				6FE0039922F3D75E00221C4C /* Info.plist */,
-				6F37BA442305B559009754D3 /* InstructionTests.swift */,
 				6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */,
+				6F37BA442305B559009754D3 /* InstructionTests.swift */,
 				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
 			);
 			path = TurtleTTLTests;
@@ -911,6 +917,7 @@
 				6F615171230CAF4A00282B12 /* AssemblerLexer.swift in Sources */,
 				6F088069230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift in Sources */,
 				6F6A024323FF7926003876BD /* InstructionFormatter.swift in Sources */,
+				6F2EE661240C8621001FE46E /* AtomicBooleanFlag.swift in Sources */,
 				6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */,
 				6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */,
 				6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */,
@@ -935,6 +942,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FD8F9FF2360CAC5005A1856 /* ParameterListNodeTests.swift in Sources */,
+				6F2EE663240C8634001FE46E /* AtomicBooleanFlagTests.swift in Sources */,
 				6FE976DA24066A71006C393B /* TracingInterpretingVMTests.swift in Sources */,
 				6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */,
 				6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */,

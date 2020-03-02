@@ -15,6 +15,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     public var delegate: InterpreterDelegate? = nil
     public var shouldRecordStatesOverTime = false
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
+    public let flagBreak: AtomicBooleanFlag
     let interpreter: Interpreter
     var instructions: [Instruction] = []
     
@@ -43,9 +44,11 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
                 cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
-                instructionDecoder: InstructionDecoder) {
+                instructionDecoder: InstructionDecoder,
+                flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
         self.cpuState = cpuState
         self.trace = trace
+        self.flagBreak = flagBreak
         
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
@@ -58,6 +61,10 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     }
     
     public func run() {
+        try! run(maxSteps: Int.max)
+    }
+    
+    public func run(maxSteps: Int) throws {
         if self.trace.instructions.isEmpty {
             return
         }
@@ -68,7 +75,13 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         cpuState.pc_if = trace.pc!.increment()
         cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
         
+        var stepCount = 0
+        
         while cpuState.controlWord.HLT == .inactive {
+            if stepCount >= maxSteps {
+                throw VirtualMachineError("Exceeded maximum number of step: stepCount=\(stepCount) ; maxSteps=\(maxSteps)")
+            }
+            
             let prevState = cpuState.copy() as! CPUStateSnapshot
             let upcomingInstruction = prevState.if_id
             
@@ -97,12 +110,18 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
                                             nextState: cpuState)
             }
             logger?.append("-----")
+            
+            stepCount += 1
         }
     }
     
     fileprivate func shouldBail(_ upcomingInstruction: Instruction) -> Bool {
+        if upcomingInstruction.isBreakpoint && flagBreak.value {
+            logger?.append("shouldBail: isBreakpoint && flagBreak.value")
+            return true
+        }
         if upcomingInstruction.guardFail == true {
-            logger?.append("shouldBail: guardFail=\(upcomingInstruction.guardFail)")
+            logger?.append("shouldBail: guardFail=true")
             return true
         }
         if let guardAddress = upcomingInstruction.guardAddress {
@@ -125,12 +144,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             instructions = trace.instructions
         }
         if instructions.isEmpty {
-            let HLT = 1
-            return Instruction(opcode: HLT,
-                               immediate: 0,
-                               disassembly: "Guide Rail",
-                               pc: pc,
-                               guardFail: true)
+            return Instruction.makeNOP(pc: pc).withGuard(fail: true)
         }
         return instructions.removeFirst()
     }

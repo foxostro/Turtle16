@@ -96,11 +96,10 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.sync { [weak self] in
-                guard let this = self else { return }
-                this.flagBreak = value.flagBreak
-                this.serialInput = value.serialInput
-                this.unlockedExecutor.computer = value
+            queue.sync {
+                self.flagBreak = value.flagBreak
+                self.serialInput = value.serialInput
+                self.unlockedExecutor.computer = value
             }
         }
     }
@@ -117,21 +116,6 @@ public class ComputerExecutor: NSObject {
            queue.async { [weak self] in
                 self?.unlockedExecutor.didUpdateSerialOutput = value
            }
-        }
-    }
-    
-    public var onUpdatedIPS:(Double)->Void {
-        get {
-            var result:(Double)->Void = {_ in}
-            queue.sync {
-                result = unlockedExecutor.onUpdatedIPS
-            }
-            return result
-        }
-        set(value) {
-            queue.async { [weak self] in
-                self?.unlockedExecutor.onUpdatedIPS = value
-            }
         }
     }
     
@@ -281,5 +265,13 @@ public class ComputerExecutor: NSObject {
             cpuState = unlockedExecutor.cpuState
         }
         return cpuState!
+    }
+    
+    public var stopwatch: ComputerStopwatch? {
+        didSet {
+            queue.sync {
+                unlockedExecutor.stopwatch = stopwatch
+            }
+        }
     }
 }

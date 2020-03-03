@@ -11,8 +11,9 @@ import Cocoa
 public class TraceExecutor: NSObject, InterpreterDelegate {
     public let cpuState: CPUStateSnapshot
     public let trace: Trace
-    public var logger: Logger? = nil
-    public var delegate: InterpreterDelegate? = nil
+    public var logger: Logger?
+    public var stopwatch: ComputerStopwatch?
+    public var delegate: InterpreterDelegate?
     public var shouldRecordStatesOverTime = false
     public var recordedStatesOverTime: [CPUStateSnapshot] = []
     public let flagBreak: AtomicBooleanFlag
@@ -99,6 +100,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             }
             
             interpreter.step()
+            stopwatch?.retireInstructions(count: 1)
             
             if shouldRecordStatesOverTime {
                 recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)

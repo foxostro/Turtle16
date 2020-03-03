@@ -35,6 +35,7 @@ class ViewController: NSViewController {
     @IBOutlet var ipsLabel:NSTextField!
     var logger:TextViewLogger!
     let executor = ComputerExecutor()
+    let stopwatch = ComputerStopwatch()
     let microcodeGenerator = MicrocodeGenerator()
     
     override func viewDidLoad() {
@@ -56,10 +57,18 @@ class ViewController: NSViewController {
         formatter.groupingSize = 3
         formatter.groupingSeparator = ","
         ipsLabel.formatter = formatter
+        
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            let ips = self?.stopwatch.measure() ?? 0.0
+            if ips > 0.0 {
+                self?.ipsLabel.objectValue = ips
+            }
+        }
     }
     
     func setupExecutor() {
         executor.computer = ComputerRev1()
+        executor.stopwatch = stopwatch
         disableEventLog()
         disableCPUStateUpdate()
         executor.provideMicrocode(microcode: microcodeGenerator.microcode)
@@ -67,10 +76,6 @@ class ViewController: NSViewController {
         
         executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
             self?.didUpdateSerialOutput(aString)
-        }
-        
-        executor.onUpdatedIPS = {[weak self](ips: Double) -> Void in
-            self?.updateIPS(ips)
         }
         
         executor.didStart = {[weak self] in
@@ -184,10 +189,6 @@ class ViewController: NSViewController {
         programCounter.stringValue = cpuState.pc.description
         if_id.stringValue = cpuState.if_id.description
         bus.stringValue = cpuState.bus.description
-    }
-        
-    func updateIPS(_ ips: Double) {
-        ipsLabel.objectValue = ips
     }
         
     func didUpdateSerialOutput(_ aString: String) {

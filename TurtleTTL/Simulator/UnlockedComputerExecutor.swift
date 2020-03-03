@@ -10,7 +10,12 @@ import Cocoa
 
 class UnlockedComputerExecutor: NSObject {
     let notificationQueue = DispatchQueue.main
-    let stopwatch = ComputerStopwatch()
+    
+    public var stopwatch: ComputerStopwatch? {
+        didSet {
+            computer.stopwatch = stopwatch
+        }
+    }
     
     public var logger: Logger? {
         get {
@@ -49,9 +54,12 @@ class UnlockedComputerExecutor: NSObject {
         try computer.saveProgram(to: url)
     }
     
-    public var computer:Computer!
+    public var computer: Computer! {
+        didSet {
+            computer.stopwatch = stopwatch
+        }
+    }
     public var didUpdateSerialOutput:(String)->Void = {_ in}
-    public var onUpdatedIPS:(Double)->Void = {_ in}
     public var didStart:()->Void = {}
     public var didStop:()->Void = {}
     public var didHalt:()->Void = {}
@@ -108,11 +116,6 @@ class UnlockedComputerExecutor: NSObject {
         }
         
         computer.step()
-        stopwatch.retireInstructions(count: 1)
-        
-        stopwatch.tick {
-            publish(ips: $0)
-        }
         
         if (.active == computer.cpuState.controlWord.HLT) {
             numberOfInstructionsRemaining = 0
@@ -157,12 +160,6 @@ class UnlockedComputerExecutor: NSObject {
     func notifyDidReset() {
         notificationQueue.async { [weak self] in
             self?.didReset()
-        }
-    }
-    
-    func publish(ips: Double) {
-        notificationQueue.async { [weak self] in
-            self?.onUpdatedIPS(ips)
         }
     }
 }

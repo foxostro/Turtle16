@@ -121,6 +121,10 @@ public class ComputerRev1: NSObject, Computer {
         try vm.runUntilHalted(maxSteps: maxSteps)
     }
     
+    public func singleStep() {
+        vm.singleStep()
+    }
+    
     public func step() {
         vm.step()
     }

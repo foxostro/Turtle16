@@ -30,8 +30,8 @@ public class InterpretingVM: VirtualMachine {
         interpreter.delegate = self
     }
     
-    public override func step() {
-        logger?.append("\(String(describing: type(of: self))): step")
+    public override func singleStep() {
+        logger?.append("\(String(describing: type(of: self))): singleStep")
         
         // TODO: Is it a problem to allocate a state object every tick?
         let prevState = cpuState.copy() as! CPUStateSnapshot
@@ -53,5 +53,9 @@ public class InterpretingVM: VirtualMachine {
                                         nextState: cpuState)
             logger.append("-----")
         }
+    }
+    
+    public override func step() {
+        singleStep()
     }
 }

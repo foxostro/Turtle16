@@ -31,6 +31,14 @@ public class ComputerRev1: NSObject, Computer {
         }
     }
     
+    public var stopwatch: ComputerStopwatch? {
+        didSet {
+            if vm != nil {
+                vm.stopwatch = stopwatch
+            }
+        }
+    }
+    
     var internaDidUpdateSerialOutput:(String)->Void = {_ in}
     public var didUpdateSerialOutput:(String)->Void {
         get {
@@ -52,7 +60,7 @@ public class ComputerRev1: NSObject, Computer {
     public var recordedStatesOverTime: [CPUStateSnapshot] {
         return vm.recordedStatesOverTime
     }
-    var vm: VirtualMachine! = nil
+    var vm: VirtualMachine!
     
     // Raise this boolean flag to request execution stop on the next breakpoint.
     public let flagBreak = AtomicBooleanFlag()
@@ -101,6 +109,7 @@ public class ComputerRev1: NSObject, Computer {
         vm.allowsRunningTraces = allowsRunningTraces
         vm.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         vm.logger = logger
+        vm.stopwatch = stopwatch
         self.vm = vm
     }
     

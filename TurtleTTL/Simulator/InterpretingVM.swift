@@ -41,6 +41,7 @@ public class InterpretingVM: VirtualMachine {
         }
         
         interpreter.step()
+        stopwatch?.retireInstructions(count: 1)
         
         if shouldRecordStatesOverTime {
             recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)

@@ -21,7 +21,8 @@ public struct VirtualMachineError: Error {
 }
 
 public class VirtualMachine: NSObject, InterpreterDelegate {
-    public var logger:Logger? = nil
+    public var logger: Logger?
+    public var stopwatch: ComputerStopwatch?
     public let cpuState: CPUStateSnapshot
     public let microcodeGenerator: MicrocodeGenerator
     public let peripherals: ComputerPeripherals

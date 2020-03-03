@@ -108,6 +108,7 @@ public class TracingInterpretingVM: VirtualMachine {
         executor.logger = logger
         executor.delegate = self
         executor.shouldRecordStatesOverTime = shouldRecordStatesOverTime
+        executor.stopwatch = stopwatch
         executor.run()
         if shouldRecordStatesOverTime {
             recordedStatesOverTime += executor.recordedStatesOverTime
@@ -131,6 +132,7 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func doStep() {
         interpreter.step()
+        stopwatch?.retireInstructions(count: 1)
         profile()
         record()
         maybeAddAnotherRecordedState()

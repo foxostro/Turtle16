@@ -16,6 +16,7 @@ public protocol Computer {
     var serialInput: SerialInput! { get }
     
     func runUntilHalted(maxSteps: Int) throws -> Void
+    func singleStep() -> Void
     func step() -> Void
     func reset() -> Void
     

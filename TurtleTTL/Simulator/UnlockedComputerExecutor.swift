@@ -86,12 +86,13 @@ class UnlockedComputerExecutor: NSObject {
         return .active == computer.cpuState.controlWord.HLT
     }
     
-    public func step() {
-        if numberOfInstructionsRemaining == 0 {
-            numberOfInstructionsRemaining = 1
-            notifyDidStart()
-        } else {
-            numberOfInstructionsRemaining = 0
+    public func singleStep() {
+        numberOfInstructionsRemaining = 0
+        notifyDidStart()
+        computer.singleStep()
+        notifyDidStop()
+        if (.active == computer.cpuState.controlWord.HLT) {
+            notifyDidHalt()
         }
     }
     

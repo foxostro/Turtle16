@@ -35,7 +35,15 @@ public class TracingInterpretingVM: VirtualMachine {
         interpreter.delegate = self
     }
     
+    public override func singleStep() {
+        step(allowsRunningTraces: false)
+    }
+    
     public override func step() {
+        step(allowsRunningTraces: allowsRunningTraces)
+    }
+    
+    fileprivate func step(allowsRunningTraces: Bool) {
         prevState = cpuState.copy() as! CPUStateSnapshot // TODO: Is it a problem to allocate a state object every tick?
         maybeAddInitialRecordedState()
         
@@ -44,7 +52,7 @@ public class TracingInterpretingVM: VirtualMachine {
         
         if traceRecorder == nil, let trace = traceCache[pc.value] {
             // If we have a trace for this PC then execute it.
-            runTrace(trace)
+            runTrace(allowsRunningTraces, trace)
         } else if traceRecorder == nil && profiler.isHot(pc: pc.value) {
             // Else, if the instruction is hot, and we're not already recording,
             // then begin recording now.
@@ -88,7 +96,7 @@ public class TracingInterpretingVM: VirtualMachine {
         logger.append("===")
     }
     
-    fileprivate func runTrace(_ trace: Trace) {
+    fileprivate func runTrace(_ allowsRunningTraces: Bool, _ trace: Trace) {
         assert(traceRecorder == nil)
         if allowsRunningTraces {
             logger?.append("Running trace for pc=\(trace.pc!)...")

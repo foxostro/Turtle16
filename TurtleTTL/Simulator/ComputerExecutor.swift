@@ -214,12 +214,10 @@ public class ComputerExecutor: NSObject {
         }
     }
     
-    public func step() {
+    public func singleStep() {
         flagBreak.value = false
         queue.async { [weak self] in
-            guard let this = self else { return }
-            this.unlockedExecutor.step()
-            this.runForABit()
+            self?.unlockedExecutor.singleStep()
         }
     }
     

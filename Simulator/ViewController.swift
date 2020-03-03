@@ -154,7 +154,7 @@ class ViewController: NSViewController {
     @IBAction func step(_ sender: Any) {
         enableEventLog()
         enableCPUStateUpdate()
-        executor.step()
+        executor.singleStep()
     }
     
     @IBAction func runOrStop(_ sender: Any) {

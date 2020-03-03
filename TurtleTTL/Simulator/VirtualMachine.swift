@@ -65,7 +65,14 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
         cpuState.uptime = 0
     }
     
-    // Emulates one hardware clock tick.
+    // Emulates a single hardware clock tick.
+    public func singleStep() {
+        assert(false) // override in a subclass
+    }
+    
+    // Executes a comfortable emulation unit, which may be a single instruction
+    // or it may be a block representing multiple instructions. The details
+    // depend on the emulation strategy employed by the concrete subclass.
     public func step() {
         assert(false) // override in a subclass
     }

@@ -96,7 +96,7 @@ public class ComputerExecutor: NSObject {
             return result
         }
         set(value) {
-            queue.async { [weak self] in
+            queue.sync { [weak self] in
                 guard let this = self else { return }
                 this.flagBreak = value.flagBreak
                 this.serialInput = value.serialInput

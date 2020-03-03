@@ -15,7 +15,8 @@ public class ComputerRev1: NSObject, Computer {
     public var upperInstructionRAM = Memory()
     public var lowerInstructionRAM = Memory()
     public var instructionMemory: InstructionMemory
-    public var instructionDecoder = InstructionDecoder()
+    public var instructionDecoder: InstructionDecoder
+    public let microcodeGenerator = MicrocodeGenerator()
     public let instructionFormatter = InstructionFormatter()
     
     var internalLogger:Logger? = nil
@@ -57,6 +58,9 @@ public class ComputerRev1: NSObject, Computer {
     public let flagBreak = AtomicBooleanFlag()
     
     public override init() {
+        microcodeGenerator.generate()
+        instructionDecoder = microcodeGenerator.microcode
+        
         instructionMemory = InstructionMemoryRev1(instructionROM: InstructionROM(),
                                                   upperInstructionRAM: upperInstructionRAM,
                                                   lowerInstructionRAM: lowerInstructionRAM,
@@ -89,7 +93,7 @@ public class ComputerRev1: NSObject, Computer {
     
     fileprivate func rebuildVirtualMachine() {
         let vm = TracingInterpretingVM(cpuState: cpuState,
-                                       instructionDecoder: instructionDecoder,
+                                       microcodeGenerator: microcodeGenerator,
                                        peripherals: peripherals,
                                        dataRAM: dataRAM,
                                        instructionMemory: instructionMemory,

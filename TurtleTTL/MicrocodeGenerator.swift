@@ -248,4 +248,22 @@ public class MicrocodeGenerator: NSObject {
     public func getMnemonic(withOpcode opcode: Int) -> String? {
         return mapOpcodeToMnemonic[opcode]
     }
+    
+    public func isUnconditionalJump(_ instruction: Instruction) -> Bool {
+        let opcode = instruction.opcode
+        return opcode == getOpcode(withMnemonic: "JMP")!
+            || opcode == getOpcode(withMnemonic: "JALR")!
+    }
+    
+    public func isConditionalJump(_ instruction: Instruction) -> Bool {
+        let opcode = instruction.opcode
+        return opcode == getOpcode(withMnemonic: "JC")!
+            || opcode == getOpcode(withMnemonic: "JNC")!
+            || opcode == getOpcode(withMnemonic: "JE")!
+            || opcode == getOpcode(withMnemonic: "JNE")!
+            || opcode == getOpcode(withMnemonic: "JG")!
+            || opcode == getOpcode(withMnemonic: "JLE")!
+            || opcode == getOpcode(withMnemonic: "JL")!
+            || opcode == getOpcode(withMnemonic: "JGE")!
+    }
 }

@@ -10,6 +10,13 @@ import XCTest
 import TurtleTTL
 
 class TracingInterpretingVMTests: XCTestCase {
+    var microcodeGenerator: MicrocodeGenerator!
+    
+    override func setUp() {
+        microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+    }
+    
     let isVerboseLogging = false
     
     fileprivate func makeLogger() -> Logger {
@@ -20,7 +27,7 @@ class TracingInterpretingVMTests: XCTestCase {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let vm = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
-                                       instructionDecoder: microcodeGenerator.microcode,
+                                       microcodeGenerator: microcodeGenerator,
                                        peripherals: ComputerPeripherals(),
                                        dataRAM: Memory(),
                                        instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
@@ -32,7 +39,7 @@ class TracingInterpretingVMTests: XCTestCase {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let interpretingVM = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
-                                                   instructionDecoder: microcodeGenerator.microcode,
+                                                   microcodeGenerator: microcodeGenerator,
                                                    peripherals: ComputerPeripherals(),
                                                    dataRAM: Memory(),
                                                    instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))

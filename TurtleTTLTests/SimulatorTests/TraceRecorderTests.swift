@@ -10,8 +10,15 @@ import XCTest
 import TurtleTTL
 
 class TraceRecorderTests: XCTestCase {
+    var microcodeGenerator: MicrocodeGenerator!
+    
+    override func setUp() {
+        microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+    }
+    
     func testAppendInstruction() {
-        let recorder = TraceRecorder()
+        let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         recorder.record(instruction: Instruction.makeNOP(),
                         stateBefore: CPUStateSnapshot())
         XCTAssertEqual(recorder.trace.instructions.count, 1)
@@ -21,7 +28,7 @@ class TraceRecorderTests: XCTestCase {
     }
     
     func testRecordTraceIncludesPipelineFlushes() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 HLT
 """)
         
@@ -35,7 +42,7 @@ HLT
     }
     
     func testRecordTraceWithAForwardJump() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 LI X, 1
 LI Y, 0
 JMP
@@ -64,7 +71,7 @@ HLT
     }
     
     func testRecordTraceWithConditionalForwardJump() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 LI X, 1
 LI Y, 0
 LI A, 1

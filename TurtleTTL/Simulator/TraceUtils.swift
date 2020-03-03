@@ -43,8 +43,8 @@ public class TraceUtils: NSObject {
         return assembler.instructions
     }
     
-    public static func recordTraceForProgram(_ text: String) -> Trace {
-        let recorder = TraceRecorder()
+    public static func recordTraceForProgram(microcodeGenerator: MicrocodeGenerator, _ text: String) -> Trace {
+        let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         let feed = InstructionFeed(instructions: assemble(text))
         let interpreter = Interpreter()
         interpreter.delegate = feed

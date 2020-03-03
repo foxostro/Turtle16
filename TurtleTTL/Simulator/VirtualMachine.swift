@@ -23,7 +23,7 @@ public struct VirtualMachineError: Error {
 public class VirtualMachine: NSObject, InterpreterDelegate {
     public var logger:Logger? = nil
     public let cpuState: CPUStateSnapshot
-    public let instructionDecoder: InstructionDecoder
+    public let microcodeGenerator: MicrocodeGenerator
     public let peripherals: ComputerPeripherals
     public let dataRAM: Memory
     public let instructionMemory: InstructionMemory
@@ -38,13 +38,13 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let flagBreak: AtomicBooleanFlag
     
     public init(cpuState: CPUStateSnapshot,
-                instructionDecoder: InstructionDecoder,
+                microcodeGenerator: MicrocodeGenerator,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
                 instructionMemory: InstructionMemory,
                 flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
         self.cpuState = cpuState
-        self.instructionDecoder = instructionDecoder
+        self.microcodeGenerator = microcodeGenerator
         self.peripherals = peripherals
         self.dataRAM = dataRAM
         self.instructionMemory = instructionMemory

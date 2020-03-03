@@ -17,7 +17,7 @@ public class TracingInterpretingVM: VirtualMachine {
     let interpreter: Interpreter
     
     public override init(cpuState: CPUStateSnapshot,
-                         instructionDecoder: InstructionDecoder,
+                         microcodeGenerator: MicrocodeGenerator,
                          peripherals: ComputerPeripherals,
                          dataRAM: Memory,
                          instructionMemory: InstructionMemory,
@@ -25,9 +25,9 @@ public class TracingInterpretingVM: VirtualMachine {
         interpreter = Interpreter(cpuState: cpuState,
                                   peripherals: peripherals,
                                   dataRAM: dataRAM,
-                                  instructionDecoder: instructionDecoder)
+                                  instructionDecoder: microcodeGenerator.microcode)
         super.init(cpuState: cpuState,
-                   instructionDecoder: instructionDecoder,
+                   microcodeGenerator: microcodeGenerator,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
                    instructionMemory: instructionMemory,
@@ -103,7 +103,7 @@ public class TracingInterpretingVM: VirtualMachine {
                                      cpuState: cpuState,
                                      peripherals: peripherals,
                                      dataRAM: dataRAM,
-                                     instructionDecoder: instructionDecoder,
+                                     instructionDecoder: microcodeGenerator.microcode,
                                      flagBreak: flagBreak)
         executor.logger = logger
         executor.delegate = self
@@ -125,7 +125,7 @@ public class TracingInterpretingVM: VirtualMachine {
     fileprivate func beginRecordingAndStep(_ pc: ProgramCounter) {
         logger?.append("Beginning trace recording for pc=\(pc)")
         assert(traceRecorder == nil)
-        traceRecorder = TraceRecorder()
+        traceRecorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         doStep()
     }
     

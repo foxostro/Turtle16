@@ -11,6 +11,12 @@ import TurtleTTL
 
 class TraceExecutorTests: XCTestCase {
     let isVerboseLogging = false
+    var microcodeGenerator: MicrocodeGenerator!
+    
+    override func setUp() {
+        microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+    }
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
@@ -153,7 +159,7 @@ LI A, 0xff
     }
     
     func testRunTraceModifiesStateAndFailsTheAddressGuard() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 loop:
 LI B, 1
 ADD A
@@ -174,7 +180,7 @@ JE
     }
     
     func testRunTraceWhichAccessesRAM() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 loop:
 LI B, 1
 LI U, 0
@@ -208,7 +214,7 @@ JE
     }
     
     func testRunThrowsExceptionIfTooManySteps() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 JMP
 NOP
 NOP
@@ -219,7 +225,7 @@ NOP
     }
     
     func testRunTraceAndStopAtTheBreakpoint() {
-        let trace = TraceUtils.recordTraceForProgram("""
+        let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 JMP
 NOP
 NOP

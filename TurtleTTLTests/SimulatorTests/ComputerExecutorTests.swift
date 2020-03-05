@@ -10,6 +10,15 @@ import XCTest
 import TurtleTTL
 
 class ComputerExecutorTests: XCTestCase {
+    let isVerboseLogging = false
+    
+    fileprivate func makeExecutor() -> ComputerExecutor {
+        let executor = ComputerExecutor()
+        executor.computer = makeComputer()
+        executor.logger = makeLogger()
+        return executor
+    }
+    
     fileprivate func makeComputer() -> Computer {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -21,10 +30,8 @@ class ComputerExecutorTests: XCTestCase {
         return computer
     }
     
-    fileprivate func makeExecutor() -> ComputerExecutor {
-        let executor = ComputerExecutor()
-        executor.computer = makeComputer()
-        return executor
+    fileprivate func makeLogger() -> Logger {
+        return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
     fileprivate func assembleSerialOutputTestProgram() -> [Instruction] {
@@ -281,6 +288,41 @@ ready.
 """)
     }
     
+    func testSerialInput() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.provideInstructions(TraceUtils.assemble("""
+LI D, 6 # The Serial Interface device
+LI Y, 1 # Data Port
+LI P, 2 # "Get" Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+NOP # delay
+MOV A, P # Store the input byte in register A
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+NOP # delay
+HLT
+"""))
+        
+        var serialOutput = ""
+        executor.didUpdateSerialOutput = {
+            serialOutput += $0
+        }
+        
+        executor.didHalt = {
+            semaphore.signal()
+        }
+        
+        executor.provideSerialInput(bytes: [65])
+        executor.reset()
+        executor.runOrStop()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+        
+        XCTAssertEqual(executor.cpuState.registerA.value, 65)
+    }
+    
     func testGetAndSetCallbackClosures() {
         let executor = makeExecutor()
         
@@ -382,5 +424,88 @@ HLT
         executor.runOrStop()
         
         waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+    }
+    
+    func testComputerLoggerIsTheExecutorLogger() {
+        let executor = makeExecutor()
+        executor.logger = NullLogger()
+        let a: NullLogger = executor.logger! as! NullLogger
+        let b: NullLogger = executor.computer.logger! as! NullLogger
+        XCTAssertTrue(a === b)
+    }
+    
+    func testRoundTripProgramSaveLoad() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.provideInstructions(TraceUtils.assemble("""
+LI A, 42
+HLT
+"""))
+        
+        let tempUrl: URL = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
+        defer { try! FileManager.default.removeItem(at: tempUrl) }
+        executor.saveProgram(to: tempUrl) { _ in XCTFail() }
+
+        executor.provideInstructions(TraceUtils.assemble("HLT")) // reset
+        
+        executor.loadProgram(from: tempUrl) { _ in XCTFail() }
+        
+        executor.didHalt = {
+            semaphore.signal()
+        }
+        
+        executor.reset()
+        executor.runOrStop()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+        
+        XCTAssertEqual(executor.cpuState.registerA.value, 42)
+        XCTAssertEqual(executor.computer.cpuState.registerA.value, 42)
+    }
+    
+    func testLoadProgramFailsDueToBadURL() {
+        let executor = makeExecutor()
+        let tempUrl = URL(fileURLWithPath: "")
+        let expectation = XCTestExpectation(description: "ComputerExecutor.loadProgram fails")
+        executor.loadProgram(from: tempUrl) { (error: Error) in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.1)
+    }
+    
+    func testSaveProgramFailsDueToBadURL() {
+        let executor = makeExecutor()
+        let tempUrl = URL(fileURLWithPath: "/")
+        let expectation = XCTestExpectation(description: "ComputerExecutor.saveProgram fails")
+        executor.saveProgram(to: tempUrl) { (error: Error) in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.1)
+    }
+    
+    func testSaveMicrocodeToFile() {
+        let executor = makeExecutor()
+        
+        let tempUrl: URL = FileManager.default.temporaryDirectory.appendingPathComponent(NSUUID().uuidString)
+        defer { try! FileManager.default.removeItem(at: tempUrl) }
+        
+        let expectation = XCTestExpectation(description: "ComputerExecutor.saveMicrocode does not fail")
+        expectation.isInverted = true
+        executor.saveMicrocode(to: tempUrl) { _ in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.1)
+    }
+    
+    func testSaveMicrocodeToFileFailsDueToBadUrl() {
+        let executor = makeExecutor()
+        
+        let tempUrl = URL(fileURLWithPath: "/")
+        
+        let expectation = XCTestExpectation(description: "ComputerExecutor.saveMicrocode fails")
+        executor.saveMicrocode(to: tempUrl) { _ in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.1)
     }
 }

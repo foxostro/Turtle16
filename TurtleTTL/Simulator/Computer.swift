@@ -20,8 +20,6 @@ public protocol Computer {
     func step() -> Void
     func reset() -> Void
     
-    func provideMicrocode(microcode: InstructionDecoder) -> Void
-    func loadMicrocode(from: URL) throws
     func saveMicrocode(to: URL) throws
     
     func provideInstructions(_ instructions: [Instruction]) -> Void

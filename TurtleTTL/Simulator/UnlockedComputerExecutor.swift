@@ -30,14 +30,6 @@ class UnlockedComputerExecutor: NSObject {
         return computer.cpuState
     }
     
-    public func provideMicrocode(microcode: InstructionDecoder) {
-        computer.provideMicrocode(microcode: microcode)
-    }
-    
-    public func loadMicrocode(from url: URL) throws {
-        try computer.loadMicrocode(from: url)
-    }
-    
     public func saveMicrocode(to url: URL) throws {
         try computer.saveMicrocode(to: url)
     }

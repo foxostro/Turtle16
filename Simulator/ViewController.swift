@@ -67,7 +67,6 @@ class ViewController: NSViewController {
         executor.stopwatch = stopwatch
         disableEventLog()
         disableCPUStateUpdate()
-        executor.provideMicrocode(microcode: microcodeGenerator.microcode)
         executor.provideInstructions(generateExampleProgram())
         
         executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
@@ -207,21 +206,6 @@ class ViewController: NSViewController {
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
                     self.executor.saveMicrocode(to: url, errorBlock: {
-                        NSAlert(error: $0).runModal()
-                    })
-                }
-            }
-        }
-    }
-    
-    @IBAction func loadMicrocode(sender: Any?) {
-        let panel = NSOpenPanel()
-        panel.allowedFileTypes = ["microcode"]
-        panel.allowsOtherFileTypes = false
-        panel.begin { (response: NSApplication.ModalResponse) in
-            if (response == NSApplication.ModalResponse.OK) {
-                if let url = panel.url {
-                    self.executor.loadMicrocode(from: url, errorBlock: {
                         NSAlert(error: $0).runModal()
                     })
                 }

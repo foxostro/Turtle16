@@ -349,6 +349,7 @@ HLT
         waitOrFailTest(semaphore: semaphore, timeout: 0.1)
         
         XCTAssertEqual(executor.cpuState.registerA.value, 42)
+        XCTAssertEqual(executor.computer.cpuState.registerA.value, 42)
     }
     
     func testExplicitlyStopComputerFromRunning() {

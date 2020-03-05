@@ -16,22 +16,6 @@ public class ComputerExecutor: NSObject {
     var flagBreak: AtomicBooleanFlag!
     var serialInput: SerialInput!
     
-    public func provideMicrocode(microcode: InstructionDecoder) {
-        queue.async { [weak self] in
-            self?.unlockedExecutor.provideMicrocode(microcode: microcode)
-        }
-    }
-    
-    public func loadMicrocode(from url: URL, errorBlock: @escaping (Error)->Void) {
-        queue.async { [weak self] in
-            do {
-                try self?.unlockedExecutor.loadMicrocode(from: url)
-            } catch {
-                errorBlock(error)
-            }
-        }
-    }
-    
     public func saveMicrocode(to url: URL, errorBlock: @escaping (Error)->Void) {
         queue.async { [weak self] in
             do {

@@ -1476,11 +1476,11 @@
                                             </tabViewItem>
                                             <tabViewItem label="Memory" identifier="" id="YRW-2l-BPb">
                                                 <view key="view" id="QhD-OS-ZSr">
-                                                    <rect key="frame" x="10" y="33" width="588" height="449"/>
+                                                    <rect key="frame" x="10" y="33" width="588" height="522"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zaz-WL-EYK">
-                                                            <rect key="frame" x="20" y="379" width="208" height="50"/>
+                                                            <rect key="frame" x="20" y="452" width="208" height="50"/>
                                                             <subviews>
                                                                 <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="12" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PFC-zp-Nnp" userLabel="Program">
                                                                     <rect key="frame" x="0.0" y="29" width="208" height="21"/>
@@ -1526,7 +1526,7 @@
                                                                     </customSpacing>
                                                                 </stackView>
                                                                 <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="12" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U06-LG-Oap" userLabel="Microcode">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="208" height="21"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="138" height="21"/>
                                                                     <subviews>
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QCc-Tx-rVU" userLabel="Microcode:">
                                                                             <rect key="frame" x="-2" y="5" width="72" height="16"/>
@@ -1546,24 +1546,12 @@
                                                                                 <action selector="saveMicrocodeWithSender:" target="XfG-lQ-9wD" id="yVG-FG-Se2"/>
                                                                             </connections>
                                                                         </button>
-                                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9ed-if-S6N">
-                                                                            <rect key="frame" x="144" y="-7" width="70" height="32"/>
-                                                                            <buttonCell key="cell" type="push" title="Load" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="OjI-tU-mHS">
-                                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="loadMicrocodeWithSender:" target="XfG-lQ-9wD" id="zHs-Ph-QCD"/>
-                                                                            </connections>
-                                                                        </button>
                                                                     </subviews>
                                                                     <visibilityPriorities>
                                                                         <integer value="1000"/>
                                                                         <integer value="1000"/>
-                                                                        <integer value="1000"/>
                                                                     </visibilityPriorities>
                                                                     <customSpacing>
-                                                                        <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
                                                                     </customSpacing>

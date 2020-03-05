@@ -373,6 +373,26 @@ HLT
         XCTAssertEqual(executor.stopwatch!.numberOfInstructionRetired, 1)
     }
     
+    func testSingleStepInvokesTheHaltCallback() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.stopwatch = ComputerStopwatch()
+        var didHalt = false
+        executor.didHalt = {
+            didHalt = true
+            semaphore.signal()
+        }
+        executor.reset()
+        executor.singleStep()
+        executor.singleStep()
+        executor.singleStep()
+        executor.singleStep()
+        executor.singleStep()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+        XCTAssertTrue(didHalt)
+    }
+    
     func testGetComputerCPUState() {
         let semaphore = DispatchSemaphore(value: 0)
         let executor = makeExecutor()

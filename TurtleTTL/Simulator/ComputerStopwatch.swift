@@ -9,7 +9,19 @@
 import Cocoa
 
 public final class ComputerStopwatch: NSObject {
-    var numberOfInstructionRetired = 0
+    fileprivate var internalVumberOfInstructionRetired = 0
+    public private(set) var numberOfInstructionRetired: Int {
+        get {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+            return internalVumberOfInstructionRetired
+        }
+        set(value) {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+            internalVumberOfInstructionRetired = value
+        }
+    }
     var beginningOfPeriod: CFAbsoluteTime = 0
     let updateInterval = 1.0
     

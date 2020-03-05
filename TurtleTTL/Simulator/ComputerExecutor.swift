@@ -106,7 +106,7 @@ public class ComputerExecutor: NSObject {
 
     public var didUpdateSerialOutput:(String)->Void {
         get {
-           var result:(String)->Void = {_ in}
+           var result: (String)->Void = {_ in}
            queue.sync {
                result = unlockedExecutor.didUpdateSerialOutput
            }
@@ -179,21 +179,6 @@ public class ComputerExecutor: NSObject {
         }
     }
     
-    public var numberOfInstructionsRemaining: Int {
-        get {
-            var result = 0
-            queue.sync {
-                result = unlockedExecutor.numberOfInstructionsRemaining
-            }
-            return result
-        }
-        set(value) {
-            queue.async { [weak self] in
-                self?.unlockedExecutor.numberOfInstructionsRemaining = value
-            }
-        }
-    }
-    
     public var isExecuting: Bool {
         get {
             var result = false
@@ -216,7 +201,7 @@ public class ComputerExecutor: NSObject {
     
     public func singleStep() {
         flagBreak.value = false
-        queue.async { [weak self] in
+        queue.sync { [weak self] in
             self?.unlockedExecutor.singleStep()
         }
     }

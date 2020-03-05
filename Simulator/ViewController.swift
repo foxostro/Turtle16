@@ -44,10 +44,6 @@ class ViewController: NSViewController {
         logger = TextViewLogger(textView: eventLog)
         microcodeGenerator.generate()
         setupExecutor()
-        
-        // TODO: Perhaps a lot of this simulator logic should be moved out of the view-controller.
-        let appDelegate = NSApplication.shared.delegate as! AppDelegate
-        appDelegate.executor = executor
     }
     
     func setupInstructionsPerSecondLabel() {
@@ -106,6 +102,10 @@ class ViewController: NSViewController {
         }
         
         executor.reset()
+        
+        NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.executor.stop()
+        }
     }
     
     func generateExampleProgram() -> [Instruction] {

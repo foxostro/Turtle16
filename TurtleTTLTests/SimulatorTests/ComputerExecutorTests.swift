@@ -10,30 +10,191 @@ import XCTest
 import TurtleTTL
 
 class ComputerExecutorTests: XCTestCase {
-    let sourceCode = "NOP\nHLT"
-    
-    func mustCompile(_ sourceCode: String) -> [Instruction] {
-        let frontEnd = AssemblerFrontEnd()
-        frontEnd.compile(sourceCode)
-        assert(!frontEnd.hasError)
-        return frontEnd.instructions
-    }
-    
-    func makeComputer() -> Computer {
+    fileprivate func makeComputer() -> Computer {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         
         let computer = ComputerRev1()
         computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.provideInstructions(mustCompile(sourceCode))
+        computer.provideInstructions(TraceUtils.assemble("NOP\nHLT"))
         
         return computer
     }
     
-    func makeExecutor() -> ComputerExecutor {
+    fileprivate func makeExecutor() -> ComputerExecutor {
         let executor = ComputerExecutor()
         executor.computer = makeComputer()
         return executor
+    }
+    
+    fileprivate func assembleSerialOutputTestProgram() -> [Instruction] {
+        return TraceUtils.assemble("""
+LI A, 0
+LI B, 0
+LI D, 6 # The Serial Interface device
+LI X, 0
+LI Y, 0
+LI U, 0
+LI V, 0
+
+LI A, 'r'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 'e'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 'a'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 'd'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 'y'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, '.'
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+LI A, 10
+LXY serial_put
+LINK
+JMP
+NOP
+NOP
+
+HLT
+
+
+
+
+
+serial_put:
+
+# Preserve the value of the link register by
+# storing return address at address 10 and 11.
+LI U, 0
+LI V, 10
+MOV M, G
+LI V, 11
+MOV M, H
+
+# The A register contains the character to output.
+# Copy it into memory at address 5.
+LI U, 0
+LI V, 5
+MOV M, A
+
+LI D, 6 # The Serial Interface device
+LI Y, 1 # Data Port
+LI P, 1 # Put Command
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 1 # Data Port
+LI U, 0
+LI V, 5
+MOV P, M # Retrieve the byte from address 5 and pass it to the serial device.
+LI Y, 0 # Control Port
+LI P, 1 # Raise SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+LI Y, 0 # Control Port
+LI P, 0 # Lower SCK
+LXY delay
+LINK
+JMP
+NOP
+NOP
+
+# Retrieve the return address from memory at address 10 and 11,
+# and then return from the call.
+LI U, 0
+LI V, 10
+MOV X, M
+LI V, 11
+MOV Y, M
+INXY # Must adjust the return address.
+JMP
+NOP
+NOP
+
+
+
+
+
+# We only require a single clock cycle delay in the Simulator.
+# However, this delay should be a few milliseconds on real hardware.
+delay:
+
+MOV X, G
+MOV Y, H
+INXY # Must adjust the return address.
+JMP
+NOP
+NOP
+
+""")
+    }
+    
+    fileprivate func assembleInfiniteLoopProgram() -> [Instruction] {
+        return TraceUtils.assemble("""
+beginning:
+LXY beginning
+JMP
+NOP
+NOP
+""")
+    }
+    
+    fileprivate func waitOrFailTest(semaphore: DispatchSemaphore, timeout: CFAbsoluteTime) {
+        let beginTime = CFAbsoluteTimeGetCurrent()
+        while .success != semaphore.wait(timeout: DispatchTime.now()) {
+            RunLoop.main.run(mode: .default, before: Date())
+            let currentTime = CFAbsoluteTimeGetCurrent()
+            let elapsedTime = currentTime - beginTime
+            if elapsedTime > timeout {
+                XCTFail()
+                break
+            }
+        }
     }
     
     func testNotExecutingAtFirst() {
@@ -71,9 +232,7 @@ class ComputerExecutorTests: XCTestCase {
         executor.reset()
         executor.runOrStop()
         
-        while .success != semaphore.wait(timeout: DispatchTime.now()) {
-            RunLoop.main.run(mode: .default, before: Date())
-        }
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
         
         // Resets once at start.
         XCTAssertTrue(didReset)
@@ -94,5 +253,133 @@ class ComputerExecutorTests: XCTestCase {
         
         // Computer background thread is not executing now.
         XCTAssertFalse(executor.isExecuting)
+    }
+    
+    func testSerialOutput() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.provideInstructions(assembleSerialOutputTestProgram())
+        
+        var serialOutput = ""
+        
+        executor.didUpdateSerialOutput = {
+            serialOutput = $0
+        }
+        
+        executor.didHalt = {
+            semaphore.signal()
+        }
+        
+        executor.reset()
+        executor.runOrStop()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+        
+        XCTAssertEqual(serialOutput, """
+ready.
+
+""")
+    }
+    
+    func testGetAndSetCallbackClosures() {
+        let executor = makeExecutor()
+        
+        var serialOutput = ""
+        var didStart = false
+        var didStop = false
+        var didHalt = false
+        var didReset = false
+        
+        executor.didUpdateSerialOutput = {
+            serialOutput = $0
+        }
+        
+        executor.didReset = {
+            didReset = true
+        }
+        executor.didStart = {
+            didStart = true
+        }
+        executor.didStop = {
+            didStop = true
+        }
+        executor.didHalt = {
+            didHalt = true
+        }
+        
+        executor.didUpdateSerialOutput("foo")
+        XCTAssertEqual("foo", serialOutput)
+        
+        executor.didReset()
+        XCTAssertEqual(true, didReset)
+        
+        executor.didStart()
+        XCTAssertEqual(true, didStart)
+        
+        executor.didStop()
+        XCTAssertEqual(true, didStop)
+        
+        executor.didHalt()
+        XCTAssertEqual(true, didHalt)
+    }
+    
+    func testSingleStep() {
+        let executor = makeExecutor()
+        executor.stopwatch = ComputerStopwatch()
+        executor.reset()
+        executor.singleStep()
+        XCTAssertEqual(executor.stopwatch!.numberOfInstructionRetired, 1)
+    }
+    
+    func testGetComputerCPUState() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.provideInstructions(TraceUtils.assemble("""
+LI A, 42
+HLT
+"""))
+        
+        executor.didHalt = {
+            semaphore.signal()
+        }
+        
+        executor.reset()
+        executor.runOrStop()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+        
+        XCTAssertEqual(executor.cpuState.registerA.value, 42)
+    }
+    
+    func testExplicitlyStopComputerFromRunning() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.provideInstructions(assembleInfiniteLoopProgram())
+        
+        executor.didStop = {
+            semaphore.signal()
+        }
+        
+        executor.reset()
+        executor.runOrStop()
+        executor.stop()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+    }
+    
+    func testImplicitlyStopComputerFromRunning() {
+        let semaphore = DispatchSemaphore(value: 0)
+        let executor = makeExecutor()
+        executor.provideInstructions(assembleInfiniteLoopProgram())
+        
+        executor.didStop = {
+            semaphore.signal()
+        }
+        
+        executor.reset()
+        executor.runOrStop()
+        executor.runOrStop()
+        
+        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
     }
 }

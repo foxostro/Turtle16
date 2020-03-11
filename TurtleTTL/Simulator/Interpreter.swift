@@ -65,12 +65,15 @@ public class Interpreter: NSObject {
     
     // Emulates one hardware clock tick.
     public func step() {
-        peripherals.resetControlSignals()
         onControlClock()
-        tickPeripheralControlClock()
+        if doesExecutionInvolvePeripherals() {
+            tickPeripheralControlClock()
+        }
         onRegisterClock()
-        tickPeripheralRegisterClock()
-        peripherals.onPeripheralClock()
+        if doesExecutionInvolvePeripherals() {
+            tickPeripheralRegisterClock()
+            peripherals.onPeripheralClock()
+        }
         cpuState.uptime += 1
     }
     
@@ -122,6 +125,14 @@ public class Interpreter: NSObject {
                                         carryFlag: cpuState.flags.carryFlag,
                                         equalFlag: cpuState.flags.equalFlag)
         cpuState.controlWord = ControlWord(withValue: UInt(b))
+        
+        if doesExecutionInvolvePeripherals() {
+            peripherals.catchUp(uptime: cpuState.uptime)
+        }
+    }
+    
+    fileprivate func doesExecutionInvolvePeripherals() -> Bool {
+        return cpuState.controlWord.PI == .active || cpuState.controlWord.PO == .active
     }
     
     fileprivate func doIF() {

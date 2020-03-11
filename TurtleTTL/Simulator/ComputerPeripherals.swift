@@ -104,4 +104,27 @@ public class ComputerPeripherals: NSObject {
     public func getSerialInterface() -> SerialInterfacePeripheral {
         return peripherals[6] as! SerialInterfacePeripheral
     }
+    
+    public func catchUp(uptime desiredUptime: Int) {
+        logger?.append("Peripherals are catching up to CPU now. -- " +
+                       "peripheral uptime: \(uptime) ; " +
+                       "CPU uptime: \(desiredUptime)")
+        while uptime < desiredUptime {
+            resetControlSignals()
+            
+            bus = Register(withValue: 0)
+            registerX = Register(withValue: 0)
+            registerY = Register(withValue: 0)
+            onControlClock()
+            
+            bus = Register(withValue: 0)
+            registerX = Register(withValue: 0)
+            registerY = Register(withValue: 0)
+            onRegisterClock()
+            
+            onPeripheralClock()
+        }
+        
+        resetControlSignals()
+    }
 }

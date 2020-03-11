@@ -13,6 +13,7 @@ public class ComputerPeripherals: NSObject {
     public var bus = Register()
     public var registerX = Register()
     public var registerY = Register()
+    public private(set) var uptime: Int = 0
     public var peripherals: [ComputerPeripheral] = [ComputerPeripheral(),
                                                     ComputerPeripheral(),
                                                     ComputerPeripheral(),
@@ -93,6 +94,7 @@ public class ComputerPeripherals: NSObject {
         for peripheral in peripherals {
             peripheral.onPeripheralClock()
         }
+        uptime += 1
     }
     
     public func valueOfXYPair() -> Int {

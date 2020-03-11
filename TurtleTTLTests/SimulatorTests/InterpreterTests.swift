@@ -651,6 +651,7 @@ LI P, 13
         for _ in 1...5 { interpreter.step() }
         
         XCTAssertEqual(peripheral.storesToPeripheral, [13])
+        XCTAssertEqual(interpreter.peripherals.uptime, interpreter.cpuState.uptime)
     }
     
     func testLoadFromPeripheral() {
@@ -667,6 +668,7 @@ MOV A, P
         for _ in 1...5 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.registerA.value, 42)
+        XCTAssertEqual(interpreter.peripherals.uptime, interpreter.cpuState.uptime)
     }
     
     func testADD() {

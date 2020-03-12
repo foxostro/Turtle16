@@ -76,17 +76,23 @@ public class ComputerRev1: NSObject, Computer {
         
         super.init()
         
-        let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
-            self.upperInstructionRAM.store(value: value, to: address)
+        let storeUpperInstructionRAM = {[weak self] (_ value: UInt8, _ address: Int) -> Void in
+            guard let this = self else { return }
+            this.upperInstructionRAM.store(value: value, to: address)
+            this.vm?.didModifyInstructionMemory()
         }
-        let loadUpperInstructionRAM = {(_ address: Int) -> UInt8 in
-             return self.upperInstructionRAM.load(from: address)
+        let loadUpperInstructionRAM = {[weak self] (_ address: Int) -> UInt8 in
+             guard let this = self else { return 0 }
+             return this.upperInstructionRAM.load(from: address)
         }
-        let storeLowerInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
-            self.lowerInstructionRAM.store(value: value, to: address)
+        let storeLowerInstructionRAM = {[weak self] (_ value: UInt8, _ address: Int) -> Void in
+            guard let this = self else { return }
+            this.lowerInstructionRAM.store(value: value, to: address)
+            this.vm?.didModifyInstructionMemory()
         }
-        let loadLowerInstructionRAM = {(_ address: Int) -> UInt8 in
-            return self.lowerInstructionRAM.load(from: address)
+        let loadLowerInstructionRAM = {[weak self] (_ address: Int) -> UInt8 in
+            guard let this = self else { return 0 }
+            return this.lowerInstructionRAM.load(from: address)
         }
         peripherals.populate(storeUpperInstructionRAM,
                              loadUpperInstructionRAM,
@@ -184,9 +190,9 @@ public class ComputerRev1: NSObject, Computer {
         let rom = InstructionROM(upperROM: Memory(data: upperData),
                                  lowerROM: Memory(data: lowerData))
         instructionMemory = InstructionMemoryRev1(instructionROM: rom,
-                                               upperInstructionRAM: upperInstructionRAM,
-                                               lowerInstructionRAM: lowerInstructionRAM,
-                                               instructionFormatter: instructionFormatter)
+                                                  upperInstructionRAM: upperInstructionRAM,
+                                                  lowerInstructionRAM: lowerInstructionRAM,
+                                                  instructionFormatter: instructionFormatter)
         rebuildVirtualMachine()
     }
 }

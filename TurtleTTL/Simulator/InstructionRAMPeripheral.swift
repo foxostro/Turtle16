@@ -13,8 +13,8 @@ public class InstructionRAMPeripheral: ComputerPeripheral {
     public let load: (_ address: Int) -> UInt8
     
     public init(name: String = "Instruction RAM Slice",
-                store:@escaping (_ value: UInt8, _ address: Int) -> Void,
-                load:@escaping (_ address: Int) -> UInt8) {
+                store: @escaping (_ value: UInt8, _ address: Int) -> Void,
+                load: @escaping (_ address: Int) -> UInt8) {
         self.store = store
         self.load = load
         super.init(name: name)

@@ -17,7 +17,7 @@ class TracingInterpretingVMTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    let isVerboseLogging = false
+    let isVerboseLogging = true
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
@@ -26,12 +26,33 @@ class TracingInterpretingVMTests: XCTestCase {
     fileprivate func makeVM(program: String) -> TracingInterpretingVM {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
+        let upperInstructionRAM = Memory()
+        let lowerInstructionRAM = Memory()
+        let peripherals = ComputerPeripherals()
         let vm = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
                                        microcodeGenerator: microcodeGenerator,
-                                       peripherals: ComputerPeripherals(),
+                                       peripherals: peripherals,
                                        dataRAM: Memory(),
                                        instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
         vm.logger = makeLogger()
+        let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
+            upperInstructionRAM.store(value: value, to: address)
+            vm.didModifyInstructionMemory()
+        }
+        let loadUpperInstructionRAM = {(_ address: Int) -> UInt8 in
+             return upperInstructionRAM.load(from: address)
+        }
+        let storeLowerInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
+            lowerInstructionRAM.store(value: value, to: address)
+            vm.didModifyInstructionMemory()
+        }
+        let loadLowerInstructionRAM = {(_ address: Int) -> UInt8 in
+            return lowerInstructionRAM.load(from: address)
+        }
+        peripherals.populate(storeUpperInstructionRAM,
+                             loadUpperInstructionRAM,
+                             storeLowerInstructionRAM,
+                             loadLowerInstructionRAM)
         return vm
     }
     
@@ -210,5 +231,96 @@ HLT
         XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: vm.logger,
                                                                             expected: interpretingVM.recordedStatesOverTime,
                                                                             actual: vm.recordedStatesOverTime))
+    }
+    
+    func testTraceCacheIsClearedAfterWritingToUpperInstructionMemory() {
+        let vm = makeVM(program: """
+LXY loop
+LI B, 1
+loop:
+ADD A
+NOP
+JNC
+NOP
+NOP
+LI X, 0x80
+LI Y, 0x00
+LI D, 0
+LI P, 0
+HLT
+""")
+        try! vm.runUntilHalted()
+        
+        XCTAssertFalse(vm.profiler.isHot(pc: 0x0004))
+        XCTAssertNil(vm.traceCache[0x0004])
+    }
+    
+    func testTraceCacheIsClearedAfterWritingToLowerInstructionMemory() {
+        let vm = makeVM(program: """
+LXY loop
+LI B, 1
+loop:
+ADD A
+NOP
+JNC
+NOP
+NOP
+LI X, 0x80
+LI Y, 0x00
+LI D, 1
+LI P, 0
+HLT
+""")
+        try! vm.runUntilHalted()
+        
+        XCTAssertFalse(vm.profiler.isHot(pc: 0x0004))
+        XCTAssertNil(vm.traceCache[0x0004])
+    }
+        
+    func testAbortTraceRecordingIfInstructionMemoryIsModified() {
+        let program = """
+loop:
+LI B, 1
+ADD A
+
+LI B, 4
+CMP
+LXY skip
+JL
+NOP
+NOP
+
+LI X, 0x80
+MOV Y, A
+LI D, 1
+LI P, 0
+
+skip:
+
+LI B, 4
+CMP
+LXY loop
+JL
+NOP
+NOP
+HLT
+"""
+//        let interpretingVM = runProgramViaStraightInterpretation(program)
+        
+        let vm = makeVM(program: program)
+        vm.allowsRunningTraces = true
+        vm.shouldRecordStatesOverTime = true
+        try! vm.runUntilHalted()
+        
+        // The tracing VM should not actually finish generating any traces, or
+        // actually execute any traces. Each recording should be aborted when
+        // instruction memory is modified. The entire trace cache should be
+        // discarded when instruction memory is modified.
+//        XCTAssertEqual(vm.numberOfStepsExecuted, interpretingVM.numberOfStepsExecuted)
+//        XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: vm.logger,
+//                                                                            expected: interpretingVM.recordedStatesOverTime,
+//                                                                            actual: vm.recordedStatesOverTime))
+        XCTAssertFalse(vm.profiler.isHot(pc: 0x0001))
+        XCTAssertNil(vm.traceCache[0x0001])
     }
 }

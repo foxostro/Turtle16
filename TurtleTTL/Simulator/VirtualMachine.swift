@@ -95,4 +95,11 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
         logger?.append("\(String(describing: type(of: self))): Fetched instruction from memory at \(pc) -> \(instruction)")
         return instruction
     }
+    
+    // Indicates to the virtual machine that instruction memory was modified by
+    // an external actor. This provides the virtual machine with an opportunity
+    // to invalidate internal caches and perform other book keeping.
+    public func didModifyInstructionMemory() {
+        // override in a subclass
+    }
 }

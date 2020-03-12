@@ -181,4 +181,17 @@ public class TracingInterpretingVM: VirtualMachine {
                                         nextState: cpuState)
         }
     }
+    
+    // Indicates to the virtual machine that instruction memory was modified by
+    // an external actor. This provides the virtual machine with an opportunity
+    // to invalidate internal caches and perform other book keeping.
+    public override func didModifyInstructionMemory() {
+        if let traceRecorder = traceRecorder {
+            let trace = traceRecorder.trace
+            logger?.append("Aborting recording of trace at pc=\(trace.pc!) because instruction memory has been modified.")
+            self.traceRecorder = nil
+        }
+        traceCache = [:]
+        profiler.reset()
+    }
 }

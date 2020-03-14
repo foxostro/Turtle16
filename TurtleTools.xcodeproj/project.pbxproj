@@ -114,6 +114,7 @@
 		6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465B2404EC78001461C4 /* TraceExecutor.swift */; };
 		6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */; };
 		6FE046602405119D001461C4 /* NullLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465F2405119D001461C4 /* NullLogger.swift */; };
+		6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */; };
 		6FE976CA2406545D006C393B /* VirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976C92406545D006C393B /* VirtualMachine.swift */; };
 		6FE976CE2406551C006C393B /* InterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CD2406551C006C393B /* InterpretingVM.swift */; };
 		6FE976D024065529006C393B /* InterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CF24065529006C393B /* InterpretingVMTests.swift */; };
@@ -310,6 +311,7 @@
 		6FE0465B2404EC78001461C4 /* TraceExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceExecutor.swift; sourceTree = "<group>"; };
 		6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceExecutorTests.swift; sourceTree = "<group>"; };
 		6FE0465F2405119D001461C4 /* NullLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullLogger.swift; sourceTree = "<group>"; };
+		6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerVirtualMachineFactory.swift; sourceTree = "<group>"; };
 		6FE976C92406545D006C393B /* VirtualMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachine.swift; sourceTree = "<group>"; };
 		6FE976CD2406551C006C393B /* InterpretingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretingVM.swift; sourceTree = "<group>"; };
 		6FE976CF24065529006C393B /* InterpretingVMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretingVMTests.swift; sourceTree = "<group>"; };
@@ -421,22 +423,23 @@
 				6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */,
 				6F86EDC522ED113800375A00 /* ComputerRev1.swift */,
 				6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */,
+				6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */,
 				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
 				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
 				6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */,
 				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
 				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
-				6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */,
 				6F86EDB522ECC53500375A00 /* InstructionMemory.swift */,
-				6FE976E124084944006C393B /* InstructionROM.swift */,
 				6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */,
+				6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */,
+				6FE976E124084944006C393B /* InstructionROM.swift */,
 				6F4ACBDA2400BCD900014F4B /* Interpreter.swift */,
 				6FE976CD2406551C006C393B /* InterpretingVM.swift */,
 				6F86CC7F22F0001C008C6322 /* Memory.swift */,
 				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
 				6F37BA462305D903009754D3 /* Register.swift */,
-				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
 				6F2EE664240C9D1D001FE46E /* SerialInput.swift */,
+				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
 				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
 				6F6A023C23FF7204003876BD /* Trace.swift */,
 				6FE0465B2404EC78001461C4 /* TraceExecutor.swift */,
@@ -875,6 +878,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */,
+				6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */,
 				6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */,
 				6F6A023923FF7013003876BD /* TraceRecorder.swift in Sources */,
 				6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */,

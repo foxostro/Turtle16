@@ -108,7 +108,8 @@ class ViewController: NSViewController {
     }
     
     func makeComputer() -> Computer {
-        let computer = ComputerRev1()
+        let factory = ComputerFactory()
+        let computer = factory.makeComputer()
         return computer
     }
     
@@ -129,7 +130,8 @@ class ViewController: NSViewController {
     }
     
     func loadExampleProgram() -> String {
-        if let fileName = Bundle.main.path(forResource: "Example", ofType: "txt") {
+        let exampleProgramName = determineExampleProgramName()
+        if let fileName = Bundle.main.path(forResource: exampleProgramName, ofType: "txt") {
             do {
                 return try String(contentsOfFile: fileName)
             } catch {
@@ -139,6 +141,11 @@ class ViewController: NSViewController {
             alert(withMessage: "Error: Example program could not be found.")
         }
         return ""
+    }
+    
+    func determineExampleProgramName() -> String {
+        let suffix = ComputerFactory().determineDesiredComputerType()
+        return "Example_\(suffix)"
     }
     
     func makeRunButtonAvailable() {

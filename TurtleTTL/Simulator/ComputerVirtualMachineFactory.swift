@@ -9,7 +9,7 @@
 import Cocoa
 
 final class ComputerVirtualMachineFactory: NSObject {
-    var cpuState: CPUStateSnapshot! = nil
+    var cpuState: ProcessorState! = nil
     var microcodeGenerator: MicrocodeGenerator! = nil
     var peripherals: ComputerPeripherals! = nil
     var dataRAM: Memory! = nil

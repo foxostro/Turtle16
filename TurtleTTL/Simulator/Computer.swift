@@ -11,7 +11,7 @@ import Cocoa
 public protocol Computer {
     var logger: Logger? { get set }
     var stopwatch: ComputerStopwatch? { get set }
-    var cpuState: CPUStateSnapshot { get }
+    var cpuState: ProcessorState { get }
     var flagBreak: AtomicBooleanFlag { get }
     var serialInput: SerialInput! { get }
     

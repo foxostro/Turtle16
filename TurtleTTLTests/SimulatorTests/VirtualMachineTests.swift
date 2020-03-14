@@ -17,7 +17,7 @@ class VirtualMachineTests: XCTestCase {
     }
     
     fileprivate func makeVM(program: String = "") -> VirtualMachine {
-        let cpuState = CPUStateSnapshot()
+        let cpuState = ProcessorState()
         let peripherals = ComputerPeripherals()
         let dataRAM = Memory()
         

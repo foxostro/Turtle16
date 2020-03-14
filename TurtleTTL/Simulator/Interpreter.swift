@@ -17,7 +17,7 @@ public protocol InterpreterDelegate: NSObject {
 // Interpreter for revision one of the computer hardware.
 public protocol Interpreter: NSObject {
     var delegate: InterpreterDelegate? { get set }
-    var cpuState: CPUStateSnapshot { get }
+    var cpuState: ProcessorState { get }
     var instructionDecoder: InstructionDecoder { get set }
     var peripherals: ComputerPeripherals { get set }
     var dataRAM: Memory { get set }

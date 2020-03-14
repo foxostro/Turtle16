@@ -10,7 +10,7 @@ import Cocoa
 
 // Simulates the behavior of the "revision one" TurtleTTL hardware.
 public class ComputerRev1: NSObject, Computer {
-    public let cpuState = CPUStateSnapshot()
+    public let cpuState = ProcessorState()
     public var dataRAM = Memory()
     public var upperInstructionRAM = Memory()
     public var lowerInstructionRAM = Memory()
@@ -57,7 +57,7 @@ public class ComputerRev1: NSObject, Computer {
     
     public var allowsRunningTraces = true
     public var shouldRecordStatesOverTime = false
-    public var recordedStatesOverTime: [CPUStateSnapshot] {
+    public var recordedStatesOverTime: [ProcessorState] {
         return vm.recordedStatesOverTime
     }
     var vm: VirtualMachine!

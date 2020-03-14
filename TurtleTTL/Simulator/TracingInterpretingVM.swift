@@ -13,10 +13,10 @@ public class TracingInterpretingVM: VirtualMachine {
     public private(set) var traceCache : [UInt16:Trace] = [:]
     public var allowsRunningTraces = true
     var traceRecorder: TraceRecorder? = nil
-    var prevState = CPUStateSnapshot()
+    var prevState = ProcessorState()
     let interpreter: Interpreter
     
-    public init(cpuState: CPUStateSnapshot,
+    public init(cpuState: ProcessorState,
                 microcodeGenerator: MicrocodeGenerator,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
@@ -42,7 +42,7 @@ public class TracingInterpretingVM: VirtualMachine {
     }
     
     fileprivate func step(allowsRunningTraces: Bool) {
-        prevState = cpuState.copy() as! CPUStateSnapshot // TODO: Is it a problem to allocate a state object every tick?
+        prevState = cpuState.copy() as! ProcessorState // TODO: Is it a problem to allocate a state object every tick?
         maybeAddInitialRecordedState()
         
         let pc = prevState.if_id.pc
@@ -66,7 +66,7 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func maybeAddInitialRecordedState() {
         if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
-            recordedStatesOverTime.append(prevState.copy() as! CPUStateSnapshot)
+            recordedStatesOverTime.append(prevState.copy() as! ProcessorState)
         }
     }
     
@@ -147,7 +147,7 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func maybeAddAnotherRecordedState() {
         if shouldRecordStatesOverTime {
-            recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
+            recordedStatesOverTime.append(cpuState.copy() as! ProcessorState)
         }
     }
     
@@ -174,7 +174,7 @@ public class TracingInterpretingVM: VirtualMachine {
     
     fileprivate func logStateChanges() {
         if let logger = logger {
-            CPUStateSnapshot.logChanges(logger: logger,
+            ProcessorState.logChanges(logger: logger,
                                         prevState: prevState,
                                         nextState: cpuState)
         }

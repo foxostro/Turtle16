@@ -17,7 +17,7 @@ class InterpretingVMTests: XCTestCase {
     }
     
     fileprivate func makeVM(program: String) -> InterpretingVM {
-        let cpuState = CPUStateSnapshot()
+        let cpuState = ProcessorState()
         let peripherals = ComputerPeripherals()
         let dataRAM = Memory()
         let microcodeGenerator = MicrocodeGenerator()

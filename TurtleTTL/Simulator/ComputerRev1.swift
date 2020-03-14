@@ -117,12 +117,16 @@ public class ComputerRev1: NSObject, Computer {
         factory.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         factory.stopwatch = stopwatch
         factory.logger = logger
-        factory.interpreter = InterpreterRev1(cpuState: cpuState,
-                                              peripherals: peripherals,
-                                              dataRAM: dataRAM,
-                                              instructionDecoder: microcodeGenerator.microcode)
+        factory.interpreter = makeInterpreter()
         let vm = factory.makeVirtualMachine()
         self.vm = vm
+    }
+    
+    func makeInterpreter() -> Interpreter {
+        return InterpreterRev1(cpuState: cpuState,
+                               peripherals: peripherals,
+                               dataRAM: dataRAM,
+                               instructionDecoder: microcodeGenerator.microcode)
     }
     
     public func reset() {

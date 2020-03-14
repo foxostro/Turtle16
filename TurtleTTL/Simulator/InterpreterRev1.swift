@@ -336,7 +336,7 @@ public class InterpreterRev1: NSObject, Interpreter {
         }
     }
  
-    fileprivate func handleControlSignalLinkIn() {
+    func handleControlSignalLinkIn() {
         if (.active == cpuState.controlWord.LinkIn) {
             cpuState.registerG = Register(withValue: UInt8((cpuState.pc.value >> 8) & 0xff))
             cpuState.registerH = Register(withValue: UInt8(cpuState.pc.value & 0xff))

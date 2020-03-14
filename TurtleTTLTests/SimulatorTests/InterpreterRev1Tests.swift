@@ -607,6 +607,27 @@ LINK
         XCTAssertEqual(interpreter.cpuState.registerH.value, 4)
     }
     
+    func testJALR() {
+        // Jump sets the program counter to the value of the XY register.
+        // Simultaneously sets the LINK register.
+        // Unfortunately, due to a hardware bug, the link register always picks
+        // up the new value of PC and not the intended return address.
+        let interpreter = makeInterpreter()
+        interpreter.cpuState.registerX = Register(withValue: 0xff)
+        interpreter.cpuState.registerY = Register(withValue: 0xff)
+        
+        let delegate = TestInterpreterDelegate(instructions: assemble("JALR"))
+        interpreter.delegate = delegate
+        
+        interpreter.step()
+        interpreter.step()
+        interpreter.step()
+        
+        XCTAssertEqual(interpreter.cpuState.pc.value, 0xffff)
+        XCTAssertEqual(interpreter.cpuState.registerG.value, 0xff)
+        XCTAssertEqual(interpreter.cpuState.registerH.value, 0xff)
+    }
+    
     func testStoreToRAM() {
         let interpreter = makeInterpreter()
         

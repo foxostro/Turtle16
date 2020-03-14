@@ -106,16 +106,18 @@ public class ComputerRev1: NSObject, Computer {
     }
     
     fileprivate func rebuildVirtualMachine() {
-        let vm = TracingInterpretingVM(cpuState: cpuState,
-                                       microcodeGenerator: microcodeGenerator,
-                                       peripherals: peripherals,
-                                       dataRAM: dataRAM,
-                                       instructionMemory: instructionMemory,
-                                       flagBreak: flagBreak)
-        vm.allowsRunningTraces = allowsRunningTraces
-        vm.shouldRecordStatesOverTime = shouldRecordStatesOverTime
-        vm.logger = logger
-        vm.stopwatch = stopwatch
+        let factory = ComputerVirtualMachineFactory()
+        factory.cpuState = cpuState
+        factory.microcodeGenerator = microcodeGenerator
+        factory.peripherals = peripherals
+        factory.dataRAM = dataRAM
+        factory.instructionMemory = instructionMemory
+        factory.flagBreak = flagBreak
+        factory.allowsRunningTraces = allowsRunningTraces
+        factory.shouldRecordStatesOverTime = shouldRecordStatesOverTime
+        factory.stopwatch = stopwatch
+        factory.logger = logger
+        let vm = factory.makeVirtualMachine()
         self.vm = vm
     }
     

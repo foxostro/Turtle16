@@ -43,7 +43,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
                 instructionMemory: InstructionMemory,
-                flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
+                flagBreak: AtomicBooleanFlag) {
         self.cpuState = cpuState
         self.microcodeGenerator = microcodeGenerator
         self.peripherals = peripherals

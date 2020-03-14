@@ -11,23 +11,21 @@ import Foundation
 public class InterpretingVM: VirtualMachine {
     let interpreter: Interpreter
     
-    public override init(cpuState: CPUStateSnapshot,
-                         microcodeGenerator: MicrocodeGenerator,
-                         peripherals: ComputerPeripherals,
-                         dataRAM: Memory,
-                         instructionMemory: InstructionMemory,
-                         flagBreak: AtomicBooleanFlag = AtomicBooleanFlag()) {
-        interpreter = Interpreter(cpuState: cpuState,
-                                  peripherals: peripherals,
-                                  dataRAM: dataRAM,
-                                  instructionDecoder: microcodeGenerator.microcode)
+    public init(cpuState: CPUStateSnapshot,
+                microcodeGenerator: MicrocodeGenerator,
+                peripherals: ComputerPeripherals,
+                dataRAM: Memory,
+                instructionMemory: InstructionMemory,
+                flagBreak: AtomicBooleanFlag,
+                interpreter: Interpreter) {
+        self.interpreter = interpreter
         super.init(cpuState: cpuState,
                    microcodeGenerator: microcodeGenerator,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
                    instructionMemory: instructionMemory,
                    flagBreak: flagBreak)
-        interpreter.delegate = self
+        self.interpreter.delegate = self
     }
     
     public override func singleStep() {

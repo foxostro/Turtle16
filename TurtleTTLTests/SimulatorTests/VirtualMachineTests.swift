@@ -17,14 +17,22 @@ class VirtualMachineTests: XCTestCase {
     }
     
     fileprivate func makeVM(program: String = "") -> VirtualMachine {
+        let cpuState = CPUStateSnapshot()
+        let peripherals = ComputerPeripherals()
+        let dataRAM = Memory()
+        
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        let vm = VirtualMachine(cpuState: CPUStateSnapshot(),
+        
+        let vm = VirtualMachine(cpuState: cpuState,
                                 microcodeGenerator: microcodeGenerator,
-                                peripherals: ComputerPeripherals(),
-                                dataRAM: Memory(),
-                                instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
+                                peripherals: peripherals,
+                                dataRAM: dataRAM,
+                                instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program),
+                                flagBreak: AtomicBooleanFlag())
+        
         vm.logger = makeLogger()
+        
         return vm
     }
     

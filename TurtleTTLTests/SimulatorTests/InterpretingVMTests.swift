@@ -17,13 +17,23 @@ class InterpretingVMTests: XCTestCase {
     }
     
     fileprivate func makeVM(program: String) -> InterpretingVM {
+        let cpuState = CPUStateSnapshot()
+        let peripherals = ComputerPeripherals()
+        let dataRAM = Memory()
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        let vm = InterpretingVM(cpuState: CPUStateSnapshot(),
+        let instructionDecoder = microcodeGenerator.microcode
+        let interpreter = InterpreterRev1(cpuState: cpuState,
+                                          peripherals: peripherals,
+                                          dataRAM: dataRAM,
+                                          instructionDecoder: instructionDecoder)
+        let vm = InterpretingVM(cpuState: cpuState,
                                 microcodeGenerator: microcodeGenerator,
-                                peripherals: ComputerPeripherals(),
-                                dataRAM: Memory(),
-                                instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
+                                peripherals: peripherals,
+                                dataRAM: dataRAM,
+                                instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program),
+                                flagBreak: AtomicBooleanFlag(),
+                                interpreter: interpreter)
         vm.logger = makeLogger()
         return vm
     }

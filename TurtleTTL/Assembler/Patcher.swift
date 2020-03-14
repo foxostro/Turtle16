@@ -13,6 +13,7 @@ import Cocoa
 public class Patcher: NSObject {
     let inputInstructions: [Instruction]
     let symbols: SymbolTable
+    let base: Int
     
     // For some given instruction (given by index), specify a symbol through
     // which to determine the the new immediate value to use.
@@ -21,17 +22,19 @@ public class Patcher: NSObject {
     
     public required init(inputInstructions: [Instruction],
                          symbols: SymbolTable,
-                         actions: [Action]) {
+                         actions: [Action],
+                         base: Int) {
         self.inputInstructions = inputInstructions
         self.symbols = symbols
         self.actions = actions
+        self.base = base
     }
     
     public func patch() throws -> [Instruction] {
         var instructions = inputInstructions
         for action in actions {
             let oldInstruction = instructions[action.index]
-            let symbolValue = try resolveSymbol(identifier: action.symbol)
+            let symbolValue = try resolveSymbol(identifier: action.symbol) + base
             let immediate: UInt8 = UInt8((symbolValue >> action.shift) & 0xff)
             let newInstruction = Instruction(opcode: oldInstruction.opcode,
                                              immediate: immediate)

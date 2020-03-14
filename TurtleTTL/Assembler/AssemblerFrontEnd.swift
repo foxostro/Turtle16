@@ -17,6 +17,10 @@ public class AssemblerFrontEnd: NSObject {
     }
     
     public func compile(_ text: String) {
+        return compile(program: text, base: 0x0000)
+    }
+    
+    public func compile(program text: String, base: Int) {
         instructions = []
         errors = []
         
@@ -40,7 +44,7 @@ public class AssemblerFrontEnd: NSObject {
         let codeGenerator = CodeGenerator(microcodeGenerator: microcodeGenerator)
         
         let compiler = AssemblerCodeGenPass(codeGenerator: codeGenerator)
-        compiler.compile(ast)
+        compiler.compile(ast: ast, base: base)
         if compiler.hasError {
             errors = compiler.errors
             return

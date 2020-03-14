@@ -26,9 +26,9 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         super.init()
     }
     
-    public func compile(_ root: AbstractSyntaxTreeNode) {
+    public func compile(ast root: AbstractSyntaxTreeNode, base: Int) {
         do {
-            try tryCompile(root)
+            try tryCompile(ast: root, base: base)
         } catch let error as AssemblerError {
             errors.append(error)
         } catch {
@@ -39,7 +39,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         }
     }
     
-    func tryCompile(_ root: AbstractSyntaxTreeNode) throws {
+    func tryCompile(ast root: AbstractSyntaxTreeNode, base: Int) throws {
         instructions = []
         patcherActions = []
         codeGenerator.begin()
@@ -53,7 +53,8 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         codeGenerator.end()
         let patcher = Patcher(inputInstructions: codeGenerator.instructions,
                               symbols: symbols,
-                              actions: patcherActions)
+                              actions: patcherActions,
+                              base: base)
         instructions = try patcher.patch()
     }
     

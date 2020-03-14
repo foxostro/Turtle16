@@ -11,7 +11,7 @@ import Cocoa
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {
     let unlockedExecutor = UnlockedComputerExecutor()
-    let queue = DispatchQueue(label: "com.foxostro.ComputerExecutor")
+    let queue = DispatchQueue(label: "com.foxostro.Simulator.ComputerExecutor")
     let isRunning = AtomicBooleanFlag()
     var flagBreak: AtomicBooleanFlag!
     var serialInput: SerialInput!

@@ -63,7 +63,7 @@ class ViewController: NSViewController {
     }
     
     func setupExecutor() {
-        executor.computer = ComputerRev1()
+        executor.computer = makeComputer()
         executor.stopwatch = stopwatch
         disableEventLog()
         disableCPUStateUpdate()
@@ -105,6 +105,11 @@ class ViewController: NSViewController {
         NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.executor.stop()
         }
+    }
+    
+    func makeComputer() -> Computer {
+        let computer = ComputerRev1()
+        return computer
     }
     
     func generateExampleProgram() -> [Instruction] {

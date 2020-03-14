@@ -30,12 +30,16 @@ public class TraceUtils: NSObject {
     }
     
     public static func assemble(_ text: String) -> [Instruction] {
-        return  try! tryAssemble(text: text)
+        return  assemble(program: text, base: 0x0000)
     }
     
-    fileprivate static func tryAssemble(text: String) throws -> [Instruction] {
+    public static func assemble(program text: String, base: Int) -> [Instruction] {
+        return  try! tryAssemble(program: text, base: base)
+    }
+    
+    fileprivate static func tryAssemble(program text: String, base: Int) throws -> [Instruction] {
         let assembler = AssemblerFrontEnd()
-        assembler.compile(text)
+        assembler.compile(program: text, base: base)
         if assembler.hasError {
             let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
             throw error

@@ -34,14 +34,14 @@ class AssemblerCodeGenPassTests: XCTestCase {
     
     func mustCompile(_ root: AbstractSyntaxTreeNode) -> [Instruction] {
         let compiler = makeBackEnd()
-        compiler.compile(root)
+        compiler.compile(ast: root, base: 0x0000)
         assert(!compiler.hasError)
         return compiler.instructions
     }
     
     func mustFailToCompile(_ root: AbstractSyntaxTreeNode) -> [AssemblerError] {
         let compiler = makeBackEnd()
-        compiler.compile(root)
+        compiler.compile(ast: root, base: 0x0000)
         assert(compiler.hasError)
         return compiler.errors
     }

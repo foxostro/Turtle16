@@ -11,7 +11,7 @@ import TurtleTTL
 
 class PatcherTests: XCTestCase {
     func testPatchWithNoInstructions() {
-        let patcher = Patcher(inputInstructions: [], symbols: [:], actions: [])
+        let patcher = Patcher(inputInstructions: [], symbols: [:], actions: [], base: 0x0000)
         let output = try! patcher.patch()
         XCTAssertEqual([], output)
     }
@@ -20,7 +20,8 @@ class PatcherTests: XCTestCase {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: [:],
-                              actions: [])
+                              actions: [],
+                              base: 0x0000)
         let output = try! patcher.patch()
         XCTAssertEqual(inputInstructions, output)
     }
@@ -32,7 +33,8 @@ class PatcherTests: XCTestCase {
         let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
-                              actions: actions)
+                              actions: actions,
+                              base: 0x0000)
         let output = try! patcher.patch()
         XCTAssertEqual(inputInstructions, output)
     }
@@ -45,7 +47,8 @@ class PatcherTests: XCTestCase {
         let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
-                              actions: actions)
+                              actions: actions,
+                              base: 0x0000)
         let actual = try! patcher.patch()
         XCTAssertEqual(expected, actual)
     }
@@ -58,7 +61,8 @@ class PatcherTests: XCTestCase {
         let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 8)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
-                              actions: actions)
+                              actions: actions,
+                              base: 0x0000)
         let actual = try! patcher.patch()
         XCTAssertEqual(expected, actual)
     }
@@ -78,7 +82,8 @@ class PatcherTests: XCTestCase {
                                          (index: 2, symbol: TokenIdentifier(lineNumber: 3, lexeme: "c"), shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: symbols,
-                              actions: actions)
+                              actions: actions,
+                              base: 0x0000)
         let actual = try! patcher.patch()
         XCTAssertEqual(expected, actual)
     }
@@ -88,7 +93,8 @@ class PatcherTests: XCTestCase {
         let actions: [Patcher.Action] = [(index: 0, symbol: TokenIdentifier(lineNumber: 0, lexeme: ""), shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               symbols: [:],
-                              actions: actions)
+                              actions: actions,
+                              base: 0x0000)
         XCTAssertThrowsError(try patcher.patch()) { e in
             let error = e as! AssemblerError
             XCTAssertEqual(error.message, "unrecognized symbol name: `'")

@@ -26,14 +26,21 @@ class TracingInterpretingVMTests: XCTestCase {
     fileprivate func makeVM(program: String) -> TracingInterpretingVM {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
+        let peripherals = ComputerPeripherals()
+        
         let upperInstructionRAM = Memory()
         let lowerInstructionRAM = Memory()
-        let peripherals = ComputerPeripherals()
+        let instructionMemory = InstructionMemoryRev1(instructionROM: InstructionROM(),
+                                                      upperInstructionRAM: upperInstructionRAM,
+                                                      lowerInstructionRAM: lowerInstructionRAM,
+                                                      instructionFormatter: InstructionFormatter())
+        instructionMemory.store(instructions: TraceUtils.assemble(program))
+        
         let vm = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
                                        microcodeGenerator: microcodeGenerator,
                                        peripherals: peripherals,
                                        dataRAM: Memory(),
-                                       instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
+                                       instructionMemory: instructionMemory)
         vm.logger = makeLogger()
         let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
             upperInstructionRAM.store(value: value, to: address)
@@ -279,9 +286,19 @@ HLT
         
     func testAbortTraceRecordingIfInstructionMemoryIsModified() {
         let program = """
+LI X, 0x80
+LI Y, 0x00
+JMP
+NOP
+NOP
+"""
+        
+        let userProgram = """
 loop:
 LI B, 1
 ADD A
+
+LI U, 255
 
 LI B, 4
 CMP
@@ -290,14 +307,14 @@ JL
 NOP
 NOP
 
-LI X, 0x80
-MOV Y, A
+LI X, 0x00
+LI Y, 0x03
 LI D, 1
-LI P, 0
+LI P, 42
 
 skip:
 
-LI B, 4
+LI B, 5
 CMP
 LXY loop
 JL
@@ -305,21 +322,13 @@ NOP
 NOP
 HLT
 """
-//        let interpretingVM = runProgramViaStraightInterpretation(program)
         
         let vm = makeVM(program: program)
-        vm.allowsRunningTraces = true
-        vm.shouldRecordStatesOverTime = true
+        vm.instructionMemory.store(instructions: TraceUtils.assemble(program: userProgram, base: 0x8000), at: 0x8000)
+        
         try! vm.runUntilHalted()
         
-        // The tracing VM should not actually finish generating any traces, or
-        // actually execute any traces. Each recording should be aborted when
-        // instruction memory is modified. The entire trace cache should be
-        // discarded when instruction memory is modified.
-//        XCTAssertEqual(vm.numberOfStepsExecuted, interpretingVM.numberOfStepsExecuted)
-//        XCTAssertTrue(VirtualMachineUtils.assertEquivalentStateProgressions(logger: vm.logger,
-//                                                                            expected: interpretingVM.recordedStatesOverTime,
-//                                                                            actual: vm.recordedStatesOverTime))
+        XCTAssertEqual(vm.cpuState.registerU.value, 42)
         XCTAssertFalse(vm.profiler.isHot(pc: 0x0001))
         XCTAssertNil(vm.traceCache[0x0001])
     }

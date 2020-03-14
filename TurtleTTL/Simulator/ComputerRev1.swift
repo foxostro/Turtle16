@@ -117,6 +117,10 @@ public class ComputerRev1: NSObject, Computer {
         factory.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         factory.stopwatch = stopwatch
         factory.logger = logger
+        factory.interpreter = InterpreterRev1(cpuState: cpuState,
+                                              peripherals: peripherals,
+                                              dataRAM: dataRAM,
+                                              instructionDecoder: microcodeGenerator.microcode)
         let vm = factory.makeVirtualMachine()
         self.vm = vm
     }

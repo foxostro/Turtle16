@@ -19,6 +19,7 @@ final class ComputerVirtualMachineFactory: NSObject {
     var shouldRecordStatesOverTime: Bool! = nil
     var stopwatch: ComputerStopwatch? = nil
     var logger: Logger? = nil
+    var interpreter: Interpreter! = nil
     
     let kVirtualMachineTypeString = "VirtualMachineType"
     let kDefaultString = "Default"
@@ -63,7 +64,8 @@ final class ComputerVirtualMachineFactory: NSObject {
                                 peripherals: peripherals,
                                 dataRAM: dataRAM,
                                 instructionMemory: instructionMemory,
-                                flagBreak: flagBreak)
+                                flagBreak: flagBreak,
+                                interpreter: interpreter)
         vm.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         vm.logger = logger
         vm.stopwatch = stopwatch
@@ -76,7 +78,8 @@ final class ComputerVirtualMachineFactory: NSObject {
                                        peripherals: peripherals,
                                        dataRAM: dataRAM,
                                        instructionMemory: instructionMemory,
-                                       flagBreak: flagBreak)
+                                       flagBreak: flagBreak,
+                                       interpreter: interpreter)
         vm.allowsRunningTraces = allowsRunningTraces
         vm.shouldRecordStatesOverTime = shouldRecordStatesOverTime
         vm.logger = logger

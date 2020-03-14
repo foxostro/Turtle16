@@ -17,16 +17,20 @@ class TracingInterpretingVMTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
     fileprivate func makeVM(program: String) -> TracingInterpretingVM {
+        let cpuState = CPUStateSnapshot()
+        
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
+        
         let peripherals = ComputerPeripherals()
+        let dataRAM = Memory()
         
         let upperInstructionRAM = Memory()
         let lowerInstructionRAM = Memory()
@@ -36,11 +40,18 @@ class TracingInterpretingVMTests: XCTestCase {
                                                       instructionFormatter: InstructionFormatter())
         instructionMemory.store(instructions: TraceUtils.assemble(program))
         
-        let vm = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
+        let interpreter = InterpreterRev1(cpuState: cpuState,
+                                          peripherals: peripherals,
+                                          dataRAM: dataRAM,
+                                          instructionDecoder: microcodeGenerator.microcode)
+        
+        let vm = TracingInterpretingVM(cpuState: cpuState,
                                        microcodeGenerator: microcodeGenerator,
                                        peripherals: peripherals,
-                                       dataRAM: Memory(),
-                                       instructionMemory: instructionMemory)
+                                       dataRAM: dataRAM,
+                                       instructionMemory: instructionMemory,
+                                       flagBreak: AtomicBooleanFlag(),
+                                       interpreter: interpreter)
         vm.logger = makeLogger()
         let storeUpperInstructionRAM = {(_ value: UInt8, _ address: Int) -> Void in
             upperInstructionRAM.store(value: value, to: address)
@@ -64,13 +75,26 @@ class TracingInterpretingVMTests: XCTestCase {
     }
     
     fileprivate func runProgramViaStraightInterpretation(_ program: String) -> TracingInterpretingVM {
+        let cpuState = CPUStateSnapshot()
+        
+        let dataRAM = Memory()
+        
+        let peripherals = ComputerPeripherals()
+        
+        let interpreter = InterpreterRev1(cpuState: cpuState,
+                                          peripherals: peripherals,
+                                          dataRAM: dataRAM)
+        
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        let interpretingVM = TracingInterpretingVM(cpuState: CPUStateSnapshot(),
+        
+        let interpretingVM = TracingInterpretingVM(cpuState: cpuState,
                                                    microcodeGenerator: microcodeGenerator,
-                                                   peripherals: ComputerPeripherals(),
-                                                   dataRAM: Memory(),
-                                                   instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program))
+                                                   peripherals: peripherals,
+                                                   dataRAM: dataRAM,
+                                                   instructionMemory: VirtualMachineUtils.makeInstructionROM(program: program),
+                                                   flagBreak: AtomicBooleanFlag(),
+                                                   interpreter: interpreter)
         interpretingVM.logger = makeLogger()
         interpretingVM.allowsRunningTraces = false
         interpretingVM.shouldRecordStatesOverTime = true

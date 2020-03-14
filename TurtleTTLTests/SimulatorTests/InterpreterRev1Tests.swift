@@ -9,7 +9,7 @@
 import XCTest
 import TurtleTTL
 
-class InterpreterTests: XCTestCase {
+class InterpreterRev1Tests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
         var storesToRAM: [(UInt8, Int)] = []
         var instructions: [Instruction]
@@ -81,9 +81,9 @@ class InterpreterTests: XCTestCase {
     }
     
     fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
-        let interpreter = Interpreter(cpuState: cpuState,
-                                      peripherals: ComputerPeripherals(),
-                                      dataRAM: Memory())
+        let interpreter = InterpreterRev1(cpuState: cpuState,
+                                          peripherals: ComputerPeripherals(),
+                                          dataRAM: Memory())
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()

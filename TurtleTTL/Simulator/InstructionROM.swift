@@ -36,8 +36,12 @@ public class InstructionROM: NSObject, InstructionMemory {
     }
     
     public func store(instructions: [Instruction]) {
+        store(instructions: instructions, at: 0)
+    }
+    
+    public func store(instructions: [Instruction], at address: Int) {
         for i in 0..<instructions.count {
-            store(instruction: instructions[i], to: i)
+            store(instruction: instructions[i], to: address + i)
         }
     }
     

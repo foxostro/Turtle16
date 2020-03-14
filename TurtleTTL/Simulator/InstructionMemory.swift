@@ -14,6 +14,7 @@ public protocol InstructionMemory: NSObject {
     var upperROMData: Data { get }
     func load(from address: Int) -> Instruction
     func store(instructions: [Instruction])
+    func store(instructions: [Instruction], at address: Int)
     func store(instruction: Instruction, to address: Int)
     func store(value: UInt16, to address: Int)
 }

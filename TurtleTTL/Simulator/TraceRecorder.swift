@@ -16,7 +16,7 @@ public class TraceRecorder: NSObject {
         self.microcodeGenerator = microcodeGenerator
     }
     
-    public func record(instruction: Instruction, stateBefore: CPUStateSnapshot) {
+    public func record(instruction: Instruction, stateBefore: ProcessorState) {
         let flags = stateBefore.flags
         let address = UInt16(stateBefore.valueOfXYPair())
         var instruction = instruction

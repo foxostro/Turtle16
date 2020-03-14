@@ -52,9 +52,9 @@ public class TraceUtils: NSObject {
         let feed = InstructionFeed(instructions: assemble(text))
         let interpreter = InterpreterRev1()
         interpreter.delegate = feed
-        var prevCpuState: CPUStateSnapshot!
+        var prevCpuState: ProcessorState!
         while feed.numberOfInstructionsPastEnd < 2 && interpreter.cpuState.controlWord.HLT == .inactive {
-            prevCpuState = interpreter.cpuState.copy() as? CPUStateSnapshot
+            prevCpuState = interpreter.cpuState.copy() as? ProcessorState
             let instruction = prevCpuState.if_id
             interpreter.step()
             recorder.record(instruction: instruction, stateBefore: prevCpuState)

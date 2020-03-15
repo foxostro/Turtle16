@@ -87,8 +87,8 @@ class AssemblerCommandLineDriverTests: XCTestCase {
         let lowerData = try! Data(contentsOf: lowerDataUrl)
         
         // Now unpack the first instruction. Is it the NOP that we expected?
-        let instructionROM = InstructionROM(upperROM: Memory(data: upperData),
-                                            lowerROM: Memory(data: lowerData))
+        let instructionROM = InstructionROM(upperROM: Memory(upperData),
+                                            lowerROM: Memory(lowerData))
         let instruction = instructionROM.load(from: 0)
         XCTAssert(instruction == Instruction(opcode: 0, immediate: 0))
         XCTAssertEqual(instruction.value, 0)

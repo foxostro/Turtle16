@@ -10,43 +10,39 @@ import Cocoa
 
 // Represents a memory-like object in hardware such as a ROM or RAM.
 public class Memory: NSObject {
-    var contents: [UInt8]
+    public let storage: UnsafeMutableRawBufferPointer
     
     public var size: Int {
-        return contents.count
+        return storage.count
+    }
+    
+    deinit {
+        storage.deallocate()
     }
     
     public convenience init(memory: Memory) {
-        self.init(contents: memory.contents)
+        self.init(memory.data)
     }
     
-    public convenience init(data: Data) {
-        self.init(contents: [UInt8](data))
+    public convenience init<C>(_ source: C) where C : Collection, C.Element == UInt8 {
+        self.init(size: source.count)
+        storage.copyBytes(from: source)
     }
     
-    public convenience init(size: Int = 65536) {
-        var contents = [UInt8]()
-        contents.reserveCapacity(size)
-        for _ in 0..<size {
-            contents.append(0)
-        }
-        self.init(contents: contents)
-    }
-    
-    public required init(contents: [UInt8]) {
-        self.contents = contents
+    public init(size: Int = 65536) {
+        storage = UnsafeMutableRawBufferPointer.allocate(byteCount: size, alignment: 4)
     }
     
     public func store(value: UInt8, to address: Int) {
-        contents[address] = value
+        storage.storeBytes(of: value, toByteOffset: address, as: UInt8.self)
     }
     
     public func load(from address: Int) -> UInt8 {
-        return contents[address]
+        return storage.load(fromByteOffset: address, as: UInt8.self)
     }
     
     public var data: Data {
-        return Data(self.contents)
+        return Data(storage)
     }
     
     public override func copy() -> Any {

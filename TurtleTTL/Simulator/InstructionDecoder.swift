@@ -19,8 +19,11 @@ public class InstructionDecoder: NSObject {
     }
     
     public override convenience init() {
-        let blank = Memory(size: 131072)
-        self.init(withROM: [blank, blank, blank, blank])
+        let romChipSize = 131072
+        self.init(withROM: [Memory(size: romChipSize),
+                            Memory(size: romChipSize),
+                            Memory(size: romChipSize),
+                            Memory(size: romChipSize)])
     }
     
     public required init(withROM rom: [Memory]) {
@@ -28,38 +31,25 @@ public class InstructionDecoder: NSObject {
         self.rom = rom
     }
     
-    public func withROM(newROM: [Memory]) -> InstructionDecoder {
-        return InstructionDecoder(withROM: newROM)
+    public func store(opcode:Int, controlWord:ControlWord) {
+        store(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord)
+        store(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: controlWord)
+        store(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)
+        store(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: controlWord)
     }
     
-    public func withROM(index: Int, newROM: Memory) -> InstructionDecoder {
-        var rom = self.rom
-        rom[index] = newROM
-        return InstructionDecoder(withROM: rom)
+    public func store(opcode:Int, carryFlag:Int, equalFlag:Int, controlWord:ControlWord) {
+        store(value: UInt32(controlWord.unsignedIntegerValue),
+              to: makeAddress(opcode: opcode,
+                              carryFlag: carryFlag,
+                              equalFlag: equalFlag))
     }
     
-    public func withStore(opcode:Int, controlWord:ControlWord) -> InstructionDecoder {
-        return self
-            .withStore(opcode: opcode, carryFlag: 0, equalFlag: 0, controlWord: controlWord)
-            .withStore(opcode: opcode, carryFlag: 1, equalFlag: 0, controlWord: controlWord)
-            .withStore(opcode: opcode, carryFlag: 0, equalFlag: 1, controlWord: controlWord)
-            .withStore(opcode: opcode, carryFlag: 1, equalFlag: 1, controlWord: controlWord)
-    }
-    
-    public func withStore(opcode:Int, carryFlag:Int, equalFlag:Int, controlWord:ControlWord) -> InstructionDecoder {
-        return withStore(value: UInt32(controlWord.unsignedIntegerValue),
-                         to: makeAddress(opcode: opcode,
-                                         carryFlag: carryFlag,
-                                         equalFlag: equalFlag))
-    }
-    
-    public func withStore(value: UInt32, to address: Int) -> InstructionDecoder {
-        let updatedROM: [Memory] = rom.map { $0.copy() as! Memory }
-        updatedROM[0].store(value: UInt8( value & 0x000000ff), to: address)
-        updatedROM[1].store(value: UInt8((value & 0x0000ff00) >> 8), to: address)
-        updatedROM[2].store(value: UInt8((value & 0x00ff0000) >> 16), to: address)
-        updatedROM[3].store(value: UInt8((value & 0xff000000) >> 24), to: address)
-        return InstructionDecoder(withROM: updatedROM)
+    public func store(value: UInt32, to address: Int) {
+        rom[0].store(value: UInt8( value & 0x000000ff), to: address)
+        rom[1].store(value: UInt8((value & 0x0000ff00) >> 8), to: address)
+        rom[2].store(value: UInt8((value & 0x00ff0000) >> 16), to: address)
+        rom[3].store(value: UInt8((value & 0xff000000) >> 24), to: address)
     }
     
     public func makeAddress(opcode:Int, carryFlag:Int, equalFlag:Int) -> Int {

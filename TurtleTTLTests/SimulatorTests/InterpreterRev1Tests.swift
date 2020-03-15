@@ -63,7 +63,7 @@ class InterpreterRev1Tests: XCTestCase {
     }
     
     func testInterpretNOP() {
-        let expectedFinalState = ProcessorState()
+        let expectedFinalState = CPUStateSnapshot()
         expectedFinalState.pc = ProgramCounter(withValue: 3)
         expectedFinalState.pc_if = ProgramCounter(withValue: 2)
         expectedFinalState.aluFlags = Flags(1, 0) // Changes every tick according to the values of A and B.
@@ -80,7 +80,7 @@ class InterpreterRev1Tests: XCTestCase {
         XCTAssertEqual(interpreter.cpuState, expectedFinalState)
     }
     
-    fileprivate func makeInterpreter(cpuState: ProcessorState = ProcessorState()) -> Interpreter {
+    fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
         let interpreter = InterpreterRev1(cpuState: cpuState,
                                           peripherals: ComputerPeripherals(),
                                           dataRAM: Memory())

@@ -17,8 +17,8 @@ public class VirtualMachineUtils: NSObject {
     }
     
     public static func assertEquivalentStateProgressions(logger: Logger?,
-                                                         expected: [ProcessorState],
-                                                         actual: [ProcessorState]) -> Bool {
+                                                         expected: [CPUStateSnapshot],
+                                                         actual: [CPUStateSnapshot]) -> Bool {
         if actual.count != expected.count {
             logger?.append("The two sequences have different lengths: expected.count=\(expected.count) and actual.count=\(actual.count)")
         }
@@ -36,11 +36,11 @@ public class VirtualMachineUtils: NSObject {
                 if let logger = logger {
                     logger.append("The sequence diverges from expectation at uptime=\(actualState.uptime).")
                     logger.append("Expected the following progression:")
-                    ProcessorState.logChanges(logger: logger,
+                    CPUStateSnapshot.logChanges(logger: logger,
                                                 prevState: prevExpectedState,
                                                 nextState: expectedState)
                     logger.append("Got the following progression instead:")
-                    ProcessorState.logChanges(logger: logger,
+                    CPUStateSnapshot.logChanges(logger: logger,
                                                 prevState: prevActualState,
                                                 nextState: actualState)
                 }

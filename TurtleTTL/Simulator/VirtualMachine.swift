@@ -23,7 +23,7 @@ public struct VirtualMachineError: Error {
 public class VirtualMachine: NSObject, InterpreterDelegate {
     public var logger: Logger?
     public var stopwatch: ComputerStopwatch?
-    public let cpuState: ProcessorState
+    public let cpuState: CPUStateSnapshot
     public let microcodeGenerator: MicrocodeGenerator
     public let peripherals: ComputerPeripherals
     public let dataRAM: Memory
@@ -32,13 +32,13 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     // For debugging and diagnostics, the virtual machine can optionally record
     // execution states over time.
     public var shouldRecordStatesOverTime = false
-    public var recordedStatesOverTime: [ProcessorState] = []
+    public var recordedStatesOverTime: [CPUStateSnapshot] = []
     public var numberOfStepsExecuted = 0
     
     // Raise this boolean flag to request execution stop on the next breakpoint.
     public let flagBreak: AtomicBooleanFlag
     
-    public init(cpuState: ProcessorState,
+    public init(cpuState: CPUStateSnapshot,
                 microcodeGenerator: MicrocodeGenerator,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,

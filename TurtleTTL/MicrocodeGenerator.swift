@@ -15,6 +15,12 @@ public class MicrocodeGenerator: NSObject {
     var mapOpcodeToMnemonic = [Int:String]()
     var nextOpcode = 0
     
+    public static func makeMicrocodeGenerator() -> MicrocodeGenerator {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        return microcodeGenerator
+    }
+    
     // Registers which can output a value to the bus.
     // These can be the source for a MOV instruction.
     public enum SourceRegister : CaseIterable {

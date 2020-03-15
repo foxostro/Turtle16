@@ -10,7 +10,7 @@ import XCTest
 import TurtleTTL
 
 class ComputerRev2Tests: XCTestCase {
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     
     func makeComputer() -> ComputerRev2 {
         let computer = ComputerRev2()

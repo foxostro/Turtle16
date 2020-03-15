@@ -9,12 +9,11 @@
 import Cocoa
 
 public class InstructionFormatter: NSObject {
+    static let sharedMicrocodeGenerator = MicrocodeGenerator.makeMicrocodeGenerator()
     let microcodeGenerator: MicrocodeGenerator
     
     public override convenience init() {
-        let microcodeGenerator = MicrocodeGenerator()
-        microcodeGenerator.generate()
-        self.init(microcodeGenerator: microcodeGenerator)
+        self.init(microcodeGenerator: InstructionFormatter.sharedMicrocodeGenerator)
     }
     
     public init(microcodeGenerator: MicrocodeGenerator) {

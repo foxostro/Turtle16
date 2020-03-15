@@ -26,7 +26,7 @@ class UnlockedComputerExecutor: NSObject {
         }
     }
     
-    public var cpuState: ProcessorState {
+    public var cpuState: CPUStateSnapshot {
         return computer.cpuState
     }
     

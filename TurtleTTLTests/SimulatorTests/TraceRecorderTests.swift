@@ -20,7 +20,7 @@ class TraceRecorderTests: XCTestCase {
     func testAppendInstruction() {
         let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         recorder.record(instruction: Instruction.makeNOP(),
-                        stateBefore: ProcessorState())
+                        stateBefore: CPUStateSnapshot())
         XCTAssertEqual(recorder.trace.instructions.count, 1)
         XCTAssertEqual(recorder.trace.description, """
 0x0000: NOP ; isBreakpoint=true

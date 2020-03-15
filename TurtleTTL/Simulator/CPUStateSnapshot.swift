@@ -1,12 +1,12 @@
 //
-//  ProcessorState.swift
+//  CPUStateSnapshot.swift
 //  TurtleTTL
 //
 //  Created by Andrew Fox on 2/11/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class ProcessorState: NSObject {
+public class CPUStateSnapshot: NSObject {
     public var uptime: UInt64
     public var bus: Register
     public var registerA: Register
@@ -90,7 +90,7 @@ public class ProcessorState: NSObject {
     }
     
     public override func copy() -> Any {
-        return ProcessorState(uptime: uptime,
+        return CPUStateSnapshot(uptime: uptime,
                                 bus: bus,
                                 registerA: registerA,
                                 registerB: registerB,
@@ -112,7 +112,7 @@ public class ProcessorState: NSObject {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? ProcessorState {
+        if let rhs = rhs as? CPUStateSnapshot {
             return self == rhs
         } else {
             return false
@@ -128,8 +128,8 @@ public class ProcessorState: NSObject {
     }
     
     public static func logChanges(logger: Logger,
-                                  prevState: ProcessorState,
-                                  nextState: ProcessorState) {
+                                  prevState: CPUStateSnapshot,
+                                  nextState: CPUStateSnapshot) {
         if prevState.uptime != nextState.uptime {
             logger.append("uptime: \(prevState.uptime) --> \(nextState.uptime)")
         }
@@ -182,7 +182,7 @@ public class ProcessorState: NSObject {
     }
 }
 
-public func ==(lhs: ProcessorState, rhs: ProcessorState) -> Bool {
+public func ==(lhs: CPUStateSnapshot, rhs: CPUStateSnapshot) -> Bool {
     guard lhs.uptime == rhs.uptime else {
         return false
     }

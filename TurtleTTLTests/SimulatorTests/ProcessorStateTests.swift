@@ -20,7 +20,7 @@ class ProcessorStateTests: XCTestCase {
     }
     
     func testInitDefault() {
-        let cpuState = ProcessorState()
+        let cpuState = CPUStateSnapshot()
         XCTAssertEqual(cpuState.uptime, 0)
         XCTAssertEqual(cpuState.bus, Register())
         XCTAssertEqual(cpuState.registerA, Register())
@@ -43,7 +43,7 @@ class ProcessorStateTests: XCTestCase {
     }
     
     func testInitParameterized() {
-        let cpuState = ProcessorState(uptime: UInt64.max,
+        let cpuState = CPUStateSnapshot(uptime: UInt64.max,
                                       bus: Register(withValue: 0xf0),
                                       registerA: Register(withValue: 0xf1),
                                       registerB: Register(withValue: 0xf2),
@@ -84,7 +84,7 @@ class ProcessorStateTests: XCTestCase {
     }
     
     func testValueOfRegisterPairXY() {
-        let cpuState = ProcessorState(uptime: UInt64.max,
+        let cpuState = CPUStateSnapshot(uptime: UInt64.max,
                                       bus: Register(withValue: 0xf0),
                                       registerA: Register(withValue: 0xf1),
                                       registerB: Register(withValue: 0xf2),
@@ -107,7 +107,7 @@ class ProcessorStateTests: XCTestCase {
     }
     
     func testValueOfRegisterPairUV() {
-        let cpuState = ProcessorState(uptime: UInt64.max,
+        let cpuState = CPUStateSnapshot(uptime: UInt64.max,
                                       bus: Register(withValue: 0xf0),
                                       registerA: Register(withValue: 0xf1),
                                       registerB: Register(withValue: 0xf2),
@@ -130,7 +130,7 @@ class ProcessorStateTests: XCTestCase {
     }
     
     func testEquality_Equal() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -149,12 +149,12 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         XCTAssertEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_Uptime() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -173,13 +173,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.uptime = 0
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_Bus() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -198,13 +198,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.bus = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterA() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -223,13 +223,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerA = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterB() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -248,13 +248,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerB = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterC() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -273,13 +273,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerC = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterD() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -298,13 +298,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerD = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterG() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -323,13 +323,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerG = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterH() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -348,13 +348,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerH = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterX() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -373,13 +373,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerX = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterY() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -398,13 +398,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerY = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterU() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -423,13 +423,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerU = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_RegisterV() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -448,13 +448,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.registerV = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_AluResult() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -473,13 +473,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.aluResult = Register()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_AluFlags() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -498,13 +498,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.aluFlags = Flags()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_Flags() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -523,13 +523,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.flags = Flags()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_PC() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -548,13 +548,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.pc = ProgramCounter()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_PCIF() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -573,13 +573,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.pc_if = ProgramCounter()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_Instruction() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -598,13 +598,13 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.if_id = Instruction.makeNOP()
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_ControlWord() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -623,17 +623,17 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = cpuState1.copy() as! ProcessorState
+        let cpuState2 = cpuState1.copy() as! CPUStateSnapshot
         cpuState2.controlWord = ControlWord(withValue: 0xabababab)
         XCTAssertNotEqual(cpuState1, cpuState2)
     }
     
     func testEquality_Unequal_DifferentTypeObject() {
-        XCTAssertNotEqual(ProcessorState(), NSObject())
+        XCTAssertNotEqual(CPUStateSnapshot(), NSObject())
     }
     
     func testEquality_LogChanges() {
-        let cpuState1 = ProcessorState(uptime: UInt64.max,
+        let cpuState1 = CPUStateSnapshot(uptime: UInt64.max,
                                        bus: Register(withValue: 0xf0),
                                        registerA: Register(withValue: 0xf1),
                                        registerB: Register(withValue: 0xf2),
@@ -652,9 +652,9 @@ class ProcessorStateTests: XCTestCase {
                                        pc_if: ProgramCounter(withValue: 0xbeef),
                                        if_id: Instruction(opcode: 0xaa, immediate: 0xbb),
                                        controlWord: ControlWord(withValue: 0xffffffff))
-        let cpuState2 = ProcessorState()
+        let cpuState2 = CPUStateSnapshot()
         let logger = StringLogger()
-        ProcessorState.logChanges(logger: logger,
+        CPUStateSnapshot.logChanges(logger: logger,
                                   prevState: cpuState1,
                                   nextState: cpuState2)
         XCTAssertEqual(logger.string, """

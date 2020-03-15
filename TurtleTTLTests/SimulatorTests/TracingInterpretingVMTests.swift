@@ -24,7 +24,7 @@ class TracingInterpretingVMTests: XCTestCase {
     }
     
     fileprivate func makeVM(program: String) -> TracingInterpretingVM {
-        let cpuState = ProcessorState()
+        let cpuState = CPUStateSnapshot()
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -75,7 +75,7 @@ class TracingInterpretingVMTests: XCTestCase {
     }
     
     fileprivate func runProgramViaStraightInterpretation(_ program: String) -> TracingInterpretingVM {
-        let cpuState = ProcessorState()
+        let cpuState = CPUStateSnapshot()
         
         let dataRAM = Memory()
         

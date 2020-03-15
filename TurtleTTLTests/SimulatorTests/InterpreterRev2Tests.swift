@@ -31,7 +31,7 @@ class InterpreterRev2Tests: XCTestCase {
         }
     }
     
-    fileprivate func makeInterpreter(cpuState: ProcessorState = ProcessorState()) -> Interpreter {
+    fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
         let interpreter = InterpreterRev2(cpuState: cpuState,
                                           peripherals: ComputerPeripherals(),
                                           dataRAM: Memory())

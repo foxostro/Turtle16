@@ -23,21 +23,21 @@ class TraceExecutorTests: XCTestCase {
     }
     
     func testRunEmptyTrace() {
-        let state = ProcessorState()
-        let prevState = state.copy() as! ProcessorState
+        let state = CPUStateSnapshot()
+        let prevState = state.copy() as! CPUStateSnapshot
         let trace = Trace()
         let executor = TraceExecutor(trace: trace, cpuState: state)
         let logger: Logger = makeLogger()
         executor.logger = logger
         executor.run()
         if state != prevState {
-            ProcessorState.logChanges(logger: logger, prevState: state, nextState: prevState)
+            CPUStateSnapshot.logChanges(logger: logger, prevState: state, nextState: prevState)
         }
         XCTAssertEqual(state, prevState)
     }
     
     func testRunTraceWithOnlyFailGuard() {
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0x0100)).withGuard(fail: true))
         let executor = TraceExecutor(trace: trace, cpuState: state)
@@ -51,7 +51,7 @@ class TraceExecutorTests: XCTestCase {
         // leave the CPU in a state where continued interpretation would
         // immediately begin executing the instruction which follows the final
         // instruction in the trace.
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)))
@@ -69,7 +69,7 @@ class TraceExecutorTests: XCTestCase {
         // leave the CPU in a state where continued interpretation would
         // immediately begin executing the instruction which follows the final
         // instruction in the trace.
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(fail: false))
@@ -81,7 +81,7 @@ class TraceExecutorTests: XCTestCase {
     }
     
     func testRunTraceWhichRetiresNopsAndsFailsTheFailGuard() {
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(fail: true))
@@ -93,7 +93,7 @@ class TraceExecutorTests: XCTestCase {
     }
     
     func testRunTraceWhichPassesTheAddressGuard() {
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0))
@@ -105,7 +105,7 @@ class TraceExecutorTests: XCTestCase {
     }
     
     func testRunTraceWhichFailsTheAddressGuard() {
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0xffff))
@@ -117,7 +117,7 @@ class TraceExecutorTests: XCTestCase {
     }
     
     func testRunTraceWhichPassesTheFlagsGuard() {
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0).withGuard(flags: Flags(0, 0)))
@@ -129,7 +129,7 @@ class TraceExecutorTests: XCTestCase {
     }
     
     func testRunTraceWhichFailsTheFlagsGuard() {
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 0)))
         trace.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0).withGuard(flags: Flags(1, 1)))
@@ -144,7 +144,7 @@ class TraceExecutorTests: XCTestCase {
         let instructions = TraceUtils.assemble("""
 LI A, 0xff
 """)
-        let state = ProcessorState()
+        let state = CPUStateSnapshot()
         let trace = Trace()
         var pc = ProgramCounter()
         for ins in instructions {
@@ -167,7 +167,7 @@ CMP
 LXY loop
 JE
 """)
-        let cpuState = ProcessorState()
+        let cpuState = CPUStateSnapshot()
         cpuState.registerA = Register(withValue: 2)
         
         let executor = TraceExecutor(trace: trace, cpuState: cpuState)
@@ -192,7 +192,7 @@ CMP
 LXY loop
 JE
 """)
-        let cpuState = ProcessorState()
+        let cpuState = CPUStateSnapshot()
         let dataRAM = Memory()
         
         let executor = TraceExecutor(trace: trace,
@@ -219,7 +219,7 @@ JMP
 NOP
 NOP
 """)
-        let executor = TraceExecutor(trace: trace, cpuState: ProcessorState())
+        let executor = TraceExecutor(trace: trace, cpuState: CPUStateSnapshot())
         executor.logger = makeLogger()
         XCTAssertThrowsError(try executor.run(maxSteps: 10))
     }
@@ -230,7 +230,7 @@ JMP
 NOP
 NOP
 """)
-        let executor = TraceExecutor(trace: trace, cpuState: ProcessorState())
+        let executor = TraceExecutor(trace: trace, cpuState: CPUStateSnapshot())
         executor.logger = makeLogger()
         executor.flagBreak.value = true
         XCTAssertNoThrow(try executor.run(maxSteps: 10))

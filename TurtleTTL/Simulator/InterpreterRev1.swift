@@ -10,19 +10,19 @@ import Cocoa
 
 public class InterpreterRev1: NSObject, Interpreter {
     public weak var delegate: InterpreterDelegate? = nil
-    public let cpuState: ProcessorState
+    public let cpuState: CPUStateSnapshot
     public var instructionDecoder: InstructionDecoder
     public var peripherals: ComputerPeripherals
     public var dataRAM: Memory
     let alu = ALU()
     
     public override convenience init() {
-        self.init(cpuState: ProcessorState(),
+        self.init(cpuState: CPUStateSnapshot(),
                   peripherals: ComputerPeripherals(),
                   dataRAM: Memory())
     }
     
-    public init(cpuState: ProcessorState,
+    public init(cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory) {
         self.cpuState = cpuState
@@ -34,7 +34,7 @@ public class InterpreterRev1: NSObject, Interpreter {
         self.instructionDecoder = microcodeGenerator.microcode
     }
     
-    public init(cpuState: ProcessorState,
+    public init(cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
                 instructionDecoder: InstructionDecoder) {

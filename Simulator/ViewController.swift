@@ -183,7 +183,7 @@ class ViewController: NSViewController {
         executor.reset()
     }
         
-    func updateCPUState(_ cpuState: ProcessorState) {
+    func updateCPUState(_ cpuState: CPUStateSnapshot) {
         registerA.stringValue = cpuState.registerA.description
         registerB.stringValue = cpuState.registerB.description
         registerC.stringValue = cpuState.registerC.description

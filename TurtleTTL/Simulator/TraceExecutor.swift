@@ -9,18 +9,18 @@
 import Cocoa
 
 public class TraceExecutor: NSObject, InterpreterDelegate {
-    public let cpuState: ProcessorState
+    public let cpuState: CPUStateSnapshot
     public let trace: Trace
     public var logger: Logger?
     public var stopwatch: ComputerStopwatch?
     public var delegate: InterpreterDelegate?
     public var shouldRecordStatesOverTime = false
-    public var recordedStatesOverTime: [ProcessorState] = []
+    public var recordedStatesOverTime: [CPUStateSnapshot] = []
     public let flagBreak: AtomicBooleanFlag
     let interpreter: Interpreter
     var instructions: [Instruction] = []
     
-    public convenience init(trace: Trace, cpuState: ProcessorState) {
+    public convenience init(trace: Trace, cpuState: CPUStateSnapshot) {
         self.init(trace: trace,
                   cpuState: cpuState,
                   peripherals: ComputerPeripherals(),
@@ -28,7 +28,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     }
     
     public convenience init(trace: Trace,
-                            cpuState: ProcessorState,
+                            cpuState: CPUStateSnapshot,
                             peripherals: ComputerPeripherals,
                             dataRAM: Memory) {
         let microcodeGenerator = MicrocodeGenerator()
@@ -42,7 +42,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
     }
     
     public init(trace: Trace,
-                cpuState: ProcessorState,
+                cpuState: CPUStateSnapshot,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
                 instructionDecoder: InstructionDecoder,
@@ -83,7 +83,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
                 throw VirtualMachineError("Exceeded maximum number of step: stepCount=\(stepCount) ; maxSteps=\(maxSteps)")
             }
             
-            let prevState = cpuState.copy() as! ProcessorState
+            let prevState = cpuState.copy() as! CPUStateSnapshot
             let upcomingInstruction = prevState.if_id
             
             logger?.append("upcomingInstruction: \(upcomingInstruction.pc): \(upcomingInstruction)")
@@ -91,7 +91,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             if shouldBail(upcomingInstruction) {
                 cpuState.pc = upcomingInstruction.pc
                 if let logger = logger {
-                    ProcessorState.logChanges(logger: logger,
+                    CPUStateSnapshot.logChanges(logger: logger,
                                                 prevState: prevState,
                                                 nextState: cpuState)
                 }
@@ -103,11 +103,11 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
             stopwatch?.retireInstructions(count: 1)
             
             if shouldRecordStatesOverTime {
-                recordedStatesOverTime.append(cpuState.copy() as! ProcessorState)
+                recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
             }
             
             if let logger = logger {
-                ProcessorState.logChanges(logger: logger,
+                CPUStateSnapshot.logChanges(logger: logger,
                                             prevState: prevState,
                                             nextState: cpuState)
             }

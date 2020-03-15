@@ -11,7 +11,7 @@ import Foundation
 public class InterpretingVM: VirtualMachine {
     let interpreter: Interpreter
     
-    public init(cpuState: ProcessorState,
+    public init(cpuState: CPUStateSnapshot,
                 microcodeGenerator: MicrocodeGenerator,
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
@@ -32,21 +32,21 @@ public class InterpretingVM: VirtualMachine {
         logger?.append("\(String(describing: type(of: self))): singleStep")
         
         // TODO: Is it a problem to allocate a state object every tick?
-        let prevState = cpuState.copy() as! ProcessorState
+        let prevState = cpuState.copy() as! CPUStateSnapshot
         
         if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
-            recordedStatesOverTime.append(prevState.copy() as! ProcessorState)
+            recordedStatesOverTime.append(prevState.copy() as! CPUStateSnapshot)
         }
         
         interpreter.step()
         stopwatch?.retireInstructions(count: 1)
         
         if shouldRecordStatesOverTime {
-            recordedStatesOverTime.append(cpuState.copy() as! ProcessorState)
+            recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
         }
         
         if let logger = logger {
-            ProcessorState.logChanges(logger: logger,
+            CPUStateSnapshot.logChanges(logger: logger,
                                         prevState: prevState,
                                         nextState: cpuState)
             logger.append("-----")

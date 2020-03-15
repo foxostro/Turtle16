@@ -7,7 +7,7 @@
 //
 
 public class ProcessorState: NSObject {
-    public var uptime: Int
+    public var uptime: UInt64
     public var bus: Register
     public var registerA: Register
     public var registerB: Register
@@ -49,7 +49,7 @@ public class ProcessorState: NSObject {
         controlWord = ControlWord()
     }
     
-    public init(uptime: Int,
+    public init(uptime: UInt64,
                 bus: Register,
                 registerA: Register,
                 registerB: Register,

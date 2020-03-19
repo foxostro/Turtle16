@@ -31,6 +31,7 @@ public class Memory: NSObject {
     
     public init(size: Int = 65536) {
         storage = UnsafeMutableRawBufferPointer.allocate(byteCount: size, alignment: 4)
+        storage.copyBytes(from: repeatElement(UInt8(0), count: size))
     }
     
     public func store(value: UInt8, to address: Int) {

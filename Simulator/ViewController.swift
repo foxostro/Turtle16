@@ -182,24 +182,24 @@ class ViewController: NSViewController {
         }
         executor.reset()
     }
-        
+    
     func updateCPUState(_ cpuState: CPUStateSnapshot) {
-        registerA.stringValue = cpuState.registerA.description
-        registerB.stringValue = cpuState.registerB.description
-        registerC.stringValue = cpuState.registerC.description
-        registerD.stringValue = cpuState.registerD.description
-        registerG.stringValue = cpuState.registerG.description
-        registerH.stringValue = cpuState.registerH.description
-        registerU.stringValue = cpuState.registerU.description
-        registerV.stringValue = cpuState.registerV.description
-        registerX.stringValue = cpuState.registerX.description
-        registerY.stringValue = cpuState.registerY.description
-        aluResult.stringValue = cpuState.aluResult.description
+        registerA.stringValue = cpuState.registerA.displayString
+        registerB.stringValue = cpuState.registerB.displayString
+        registerC.stringValue = cpuState.registerC.displayString
+        registerD.stringValue = cpuState.registerD.displayString
+        registerG.stringValue = cpuState.registerG.displayString
+        registerH.stringValue = cpuState.registerH.displayString
+        registerU.stringValue = cpuState.registerU.displayString
+        registerV.stringValue = cpuState.registerV.displayString
+        registerX.stringValue = cpuState.registerX.displayString
+        registerY.stringValue = cpuState.registerY.displayString
+        aluResult.stringValue = cpuState.aluResult.displayString
         controlWord.stringValue = cpuState.controlWord.stringValue
         controlSignals.stringValue = cpuState.controlWord.description
         programCounter.stringValue = cpuState.pc.description
         if_id.stringValue = cpuState.if_id.description
-        bus.stringValue = cpuState.bus.description
+        bus.stringValue = cpuState.bus.displayString
     }
         
     func didUpdateSerialOutput(_ aString: String) {

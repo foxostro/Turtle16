@@ -16,12 +16,28 @@ public class Register: NSObject {
         return Int(value)
     }
     
-    public var stringValue: String {
-        return String(format: "0x%02x", value)
+    public override var description: String {
+        return hexadecimalStringValue
     }
     
-    public override var description: String {
-        return stringValue
+    public var displayString: String {
+        return "\(hexadecimalStringValue) (\(binaryStringValue))"
+    }
+    
+    public var stringValue: String {
+        return hexadecimalStringValue
+    }
+    
+    fileprivate var binaryStringValue: String {
+        var result = String(value, radix: 2)
+        if result.count < 8 {
+            result = String(repeatElement("0", count: 8 - result.count)) + result
+        }
+        return "0b" + result
+    }
+    
+    fileprivate var hexadecimalStringValue: String {
+        return String(format: "0x%02x", value)
     }
     
     public required init(withValue value: UInt8 = 0) {

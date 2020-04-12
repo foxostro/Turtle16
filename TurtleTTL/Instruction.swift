@@ -110,13 +110,24 @@ public class Instruction: NSObject {
     }
     
     public override var description: String {
-        return disassembly ?? Instruction.makeBasicDescription(opcode: opcode, immediate: immediate)
+        let numericalValue = Instruction.makeNumericalString(opcode: opcode, immediate: immediate)
+        let prefix = (disassembly==nil) ? "" : (disassembly! + " ")
+        let result = prefix + numericalValue
+        return result
     }
     
-    fileprivate static func makeBasicDescription(opcode: UInt8, immediate: UInt8) -> String {
-        return String(format: "{op=0b%@, imm=0b%@}",
-                      String(opcode, radix: 2),
-                      String(immediate, radix: 2))
+    fileprivate static func makeNumericalString(opcode: UInt8, immediate: UInt8) -> String {
+        return String(format: "(0b%@, 0b%@)",
+                      makePaddedBinaryString(opcode),
+                      makePaddedBinaryString(immediate))
+    }
+    
+    fileprivate static func makePaddedBinaryString(_ value: UInt8) -> String {
+        var result = String(value, radix: 2)
+        if result.count < 8 {
+            result = String(repeatElement("0", count: 8 - result.count)) + result
+        }
+        return result
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

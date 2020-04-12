@@ -32,7 +32,7 @@ public class Trace: NSObject {
     public override var description: String {
         var result = ""
         for ins in instructions {
-            result += "\(ins.pc): \(ins)"
+            result += "\(ins.pc): \(ins.disassembly ?? ins.description)"
             
             if ins.guardFail {
                 result += " ; guardFail=true"

@@ -661,7 +661,7 @@ class ProcessorStateTests: XCTestCase {
 uptime: 18446744073709551615 --> 0
 pc: 0xcafe --> 0x0000
 pc_if: 0xbeef --> 0x0000
-if_id: {op=0b10101010, imm=0b10111011} --> NOP
+if_id: (0b10101010, 0b10111011) --> NOP (0b00000000, 0b00000000)
 controlWord: 0xffffffff --> 0xfff7efff
 controlSignals: {UVInc, XYInc} --> {}
 registerA: 0xf1 --> 0x00

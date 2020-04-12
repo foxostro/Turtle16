@@ -95,7 +95,7 @@ class InstructionFormatterTests: XCTestCase {
     
     func testCreateNewInstructionWithDisassembly() {
         let result = formatter.makeInstructionWithDisassembly(instruction: assemble("NOP"))
-        XCTAssertEqual(result.description, "NOP")
+        XCTAssertEqual(result.description, "NOP (0b00000000, 0b00000000)")
         XCTAssertEqual(result.disassembly, "NOP")
         XCTAssertEqual(result.opcode, 0)
         XCTAssertEqual(result.immediate, 0)

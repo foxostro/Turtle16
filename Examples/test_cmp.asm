@@ -3,6 +3,7 @@ beginning:
 LI A, 254
 LI B, 255
 CMP
+CMP
 LXY not_equal
 JNE
 NOP

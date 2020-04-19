@@ -36,20 +36,6 @@ class InterpreterRev1Tests: XCTestCase {
         }
     }
     
-    fileprivate func assemble(_ text: String) -> [Instruction] {
-        return try! tryAssemble(text)
-    }
-
-    fileprivate func tryAssemble(_ text: String) throws -> [Instruction] {
-        let assembler = AssemblerFrontEnd()
-        assembler.compile(text)
-        if assembler.hasError {
-            let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
-            throw error
-        }
-        return assembler.instructions
-    }
-    
     func testReset() {
         let interpreter = makeInterpreter()
         interpreter.cpuState.pc = ProgramCounter(withValue: 1)
@@ -70,7 +56,7 @@ class InterpreterRev1Tests: XCTestCase {
         expectedFinalState.uptime = 3
         
         let interpreter = makeInterpreter()
-        let delegate = TestInterpreterDelegate(instructions: assemble("NOP"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("NOP"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -123,7 +109,7 @@ class InterpreterRev1Tests: XCTestCase {
     func testInterpretHLT_EnsureThreeClockPipelineLatency() {
         // The pipeline takes three clocks to execute an instruction.
         let interpreter = makeInterpreter()
-        let delegate = TestInterpreterDelegate(instructions: assemble("HLT"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("HLT"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -143,7 +129,7 @@ class InterpreterRev1Tests: XCTestCase {
         // The instruction immediate value ends up in register C when the
         // instruction executes.
         let interpreter = makeInterpreter()
-        let delegate = TestInterpreterDelegate(instructions: assemble("LI A, 42"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("LI A, 42"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -159,7 +145,7 @@ class InterpreterRev1Tests: XCTestCase {
         interpreter.cpuState.registerX = Register(withValue: 0xff)
         interpreter.cpuState.registerY = Register(withValue: 0xff)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("JMP"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("JMP"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -174,7 +160,7 @@ class InterpreterRev1Tests: XCTestCase {
         interpreter.cpuState.registerA = Register(withValue: 255)
         interpreter.cpuState.registerB = Register(withValue: 1)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 ADD D
 NOP
 JC
@@ -191,7 +177,7 @@ JC
         interpreter.cpuState.registerA = Register(withValue: 254)
         interpreter.cpuState.registerB = Register(withValue: 1)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 ADD D
 NOP
 JNC
@@ -208,7 +194,7 @@ JNC
         interpreter.cpuState.registerA = Register(withValue: 42)
         interpreter.cpuState.registerB = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
 NOP
 JE
@@ -225,7 +211,7 @@ JE
         interpreter.cpuState.registerA = Register(withValue: 42)
         interpreter.cpuState.registerB = Register(withValue: 0)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
 NOP
 JNE
@@ -242,7 +228,7 @@ JNE
         interpreter.cpuState.registerA = Register(withValue: 42)
         interpreter.cpuState.registerB = Register(withValue: 0)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
 NOP
 JG
@@ -259,7 +245,7 @@ JG
         interpreter.cpuState.registerA = Register(withValue: 42)
         interpreter.cpuState.registerB = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
 NOP
 JLE
@@ -276,7 +262,7 @@ JLE
         interpreter.cpuState.registerA = Register(withValue: 41)
         interpreter.cpuState.registerB = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
 NOP
 JL
@@ -293,7 +279,7 @@ JL
         interpreter.cpuState.registerA = Register(withValue: 42)
         interpreter.cpuState.registerB = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
 NOP
 JGE
@@ -310,7 +296,7 @@ JGE
         interpreter.cpuState.registerU = Register(withValue: 0)
         interpreter.cpuState.registerV = Register(withValue: 0)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("INUV"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("INUV"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -326,7 +312,7 @@ JGE
         interpreter.cpuState.registerU = Register(withValue: 0xfe)
         interpreter.cpuState.registerV = Register(withValue: 0xff)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("INUV"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("INUV"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -342,7 +328,7 @@ JGE
         interpreter.cpuState.registerX = Register(withValue: 0)
         interpreter.cpuState.registerY = Register(withValue: 0)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("INXY"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("INXY"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -358,7 +344,7 @@ JGE
         interpreter.cpuState.registerX = Register(withValue: 0xfe)
         interpreter.cpuState.registerY = Register(withValue: 0xff)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("INXY"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("INXY"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -373,7 +359,7 @@ JGE
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerH = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, H
 MOV B, H
 MOV D, H
@@ -399,7 +385,7 @@ MOV V, H
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerG = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, G
 MOV B, G
 MOV D, G
@@ -425,7 +411,7 @@ MOV V, G
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerB = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, B
 MOV D, B
 MOV X, B
@@ -449,7 +435,7 @@ MOV V, B
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerA = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV B, A
 MOV D, A
 MOV X, A
@@ -473,7 +459,7 @@ MOV V, A
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerU = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, U
 MOV B, U
 MOV D, U
@@ -497,7 +483,7 @@ MOV V, U
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerV = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, V
 MOV B, V
 MOV D, V
@@ -521,7 +507,7 @@ MOV U, V
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerX = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, X
 MOV B, X
 MOV D, X
@@ -545,7 +531,7 @@ MOV V, X
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerY = Register(withValue: 42)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 MOV A, Y
 MOV B, Y
 MOV D, Y
@@ -568,7 +554,7 @@ MOV V, Y
     func testLI() {
         let interpreter = makeInterpreter()
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 LI A, 42
 LI B, 42
 LI D, 42
@@ -595,7 +581,7 @@ LI V, 42
         interpreter.cpuState.registerG = Register(withValue: 0xff)
         interpreter.cpuState.registerH = Register(withValue: 0xff)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 NOP
 LINK
 """))
@@ -616,7 +602,7 @@ LINK
         interpreter.cpuState.registerX = Register(withValue: 0xff)
         interpreter.cpuState.registerY = Register(withValue: 0xff)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("JALR"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("JALR"))
         interpreter.delegate = delegate
         
         interpreter.step()
@@ -631,7 +617,7 @@ LINK
     func testStoreToRAM() {
         let interpreter = makeInterpreter()
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 LI U, 0xff
 LI V, 0xff
 LI M, 42
@@ -647,7 +633,7 @@ LI M, 42
         let interpreter = makeInterpreter()
         interpreter.dataRAM.store(value: 42, to: 0x0000)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 LI U, 0
 LI V, 0
 MOV A, M
@@ -662,7 +648,7 @@ MOV A, M
     func testStoreToPeripheral() {
         let interpreter = makeInterpreter()
         let peripheral = interpreter.peripherals.peripherals[0] as! MockComputerPeripheral
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 LI X, 0xff
 LI Y, 0xff
 LI P, 13
@@ -679,7 +665,7 @@ LI P, 13
         let interpreter = makeInterpreter()
         let peripheral = interpreter.peripherals.peripherals[0] as! MockComputerPeripheral
         peripheral.loadsFromPeripheral = [42]
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 LI X, 0xff
 LI Y, 0xff
 MOV A, P
@@ -697,7 +683,7 @@ MOV A, P
         interpreter.cpuState.registerA = Register(withValue: 0xff)
         interpreter.cpuState.registerB = Register(withValue: 1)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("ADD D"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("ADD D"))
         interpreter.delegate = delegate
         
         for _ in 1...3 { interpreter.step() }
@@ -712,7 +698,7 @@ MOV A, P
         interpreter.cpuState.registerA = Register(withValue: 1)
         interpreter.cpuState.registerB = Register(withValue: 0)
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("CMP"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("CMP"))
         interpreter.delegate = delegate
         
         for _ in 1...3 { interpreter.step() }
@@ -725,7 +711,7 @@ MOV A, P
     func testBasicAddition() {
         let interpreter = makeInterpreter()
         
-        let delegate = TestInterpreterDelegate(instructions: assemble("""
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 LI A, 1
 LI B, 2
 ADD D

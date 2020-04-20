@@ -208,6 +208,13 @@ class AssemblerLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeRegisterNone() {
+        let tokenizer = AssemblerLexer(withString: "_")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenRegister(lineNumber: 1, lexeme: "_", literal: .NONE),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeColon() {
         let tokenizer = AssemblerLexer(withString: "label:")
         tokenizer.scanTokens()

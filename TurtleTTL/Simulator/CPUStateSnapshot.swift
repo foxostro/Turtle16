@@ -19,7 +19,9 @@ public class CPUStateSnapshot: NSObject {
     public var registerY: Register
     public var registerU: Register
     public var registerV: Register
+    public var aluResultBuffer: Register
     public var aluResult: Register
+    public var aluFlagsBuffer: Flags
     public var aluFlags: Flags
     public var flags: Flags
     public var pc: ProgramCounter
@@ -40,7 +42,9 @@ public class CPUStateSnapshot: NSObject {
         registerY = Register()
         registerU = Register()
         registerV = Register()
+        aluResultBuffer = Register()
         aluResult = Register()
+        aluFlagsBuffer = Flags()
         aluFlags = Flags()
         flags = Flags()
         pc = ProgramCounter()
@@ -61,7 +65,9 @@ public class CPUStateSnapshot: NSObject {
                 registerY: Register,
                 registerU: Register,
                 registerV: Register,
+                aluResultBuffer: Register,
                 aluResult: Register,
+                aluFlagsBuffer: Flags,
                 aluFlags: Flags,
                 flags: Flags,
                 pc: ProgramCounter,
@@ -80,7 +86,9 @@ public class CPUStateSnapshot: NSObject {
         self.registerY = registerY
         self.registerU = registerU
         self.registerV = registerV
+        self.aluResultBuffer = aluResultBuffer
         self.aluResult = aluResult
+        self.aluFlagsBuffer = aluFlagsBuffer
         self.aluFlags = aluFlags
         self.flags = flags
         self.pc = pc
@@ -102,7 +110,9 @@ public class CPUStateSnapshot: NSObject {
                                 registerY: registerY,
                                 registerU: registerU,
                                 registerV: registerV,
+                                aluResultBuffer: aluResultBuffer,
                                 aluResult: aluResult,
+                                aluFlagsBuffer: aluFlagsBuffer,
                                 aluFlags: aluFlags,
                                 flags: flags,
                                 pc: pc,
@@ -176,6 +186,18 @@ public class CPUStateSnapshot: NSObject {
         if prevState.registerV != nextState.registerV {
             logger.append("registerV: 0x%02x --> 0x%02x", prevState.registerV.value, nextState.registerV.value)
         }
+        if prevState.aluResultBuffer != nextState.aluResultBuffer {
+            logger.append("aluResultBuffer: %@ --> %@", prevState.aluResultBuffer, nextState.aluResultBuffer)
+        }
+        if prevState.aluResult != nextState.aluResult {
+            logger.append("aluResult: %@ --> %@", prevState.aluResult, nextState.aluResult)
+        }
+        if prevState.aluFlagsBuffer != nextState.aluFlagsBuffer {
+            logger.append("aluFlagsBuffer: %@ --> %@", prevState.aluFlagsBuffer, nextState.aluFlagsBuffer)
+        }
+        if prevState.aluFlags != nextState.aluFlags {
+            logger.append("aluFlags: %@ --> %@", prevState.aluFlags, nextState.aluFlags)
+        }
         if prevState.flags != nextState.flags {
             logger.append("flags: %@ --> %@", prevState.flags, nextState.flags)
         }
@@ -219,7 +241,13 @@ public func ==(lhs: CPUStateSnapshot, rhs: CPUStateSnapshot) -> Bool {
     guard lhs.registerV == rhs.registerV else {
         return false
     }
+    guard lhs.aluResultBuffer == rhs.aluResultBuffer else {
+        return false
+    }
     guard lhs.aluResult == rhs.aluResult else {
+        return false
+    }
+    guard lhs.aluFlagsBuffer == rhs.aluFlagsBuffer else {
         return false
     }
     guard lhs.aluFlags == rhs.aluFlags else {

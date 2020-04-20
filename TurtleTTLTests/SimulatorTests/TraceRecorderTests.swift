@@ -77,6 +77,7 @@ LI Y, 0
 LI A, 1
 LI B, 1
 CMP
+CMP
 NOP
 JE
 NOP # branch delay slot
@@ -97,10 +98,11 @@ HLT
 0x0002: LI A, 1
 0x0003: LI B, 1
 0x0004: CMP
-0x0005: NOP
-0x0006: JE ; guardAddress=0x0100 ; guardFlags={carryFlag: 1, equalFlag: 1}
-0x0007: NOP
+0x0005: CMP
+0x0006: NOP
+0x0007: JE ; guardAddress=0x0100 ; guardFlags={carryFlag: 1, equalFlag: 1}
 0x0008: NOP
+0x0009: NOP
 0x0100: LI D, 2
 0x0101: HLT
 """)

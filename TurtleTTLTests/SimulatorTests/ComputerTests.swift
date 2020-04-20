@@ -64,7 +64,7 @@ LI P, 0 # Lower SCK
 NOP # delay
 HLT
 """))
-        try! computer.runUntilHalted()
+        XCTAssertNoThrow(try computer.runUntilHalted())
         XCTAssertEqual(serialOutput, "A")
     }
     
@@ -93,8 +93,7 @@ LI P, 0 # Lower SCK
 NOP # delay
 HLT
 """))
-        try! computer.runUntilHalted(maxSteps: 14)
-        
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 14))
         XCTAssertEqual(computer.cpuState.registerA.value, 65)
     }
     
@@ -107,17 +106,19 @@ LXY loop
 LI A, 0
 loop:
 LI B, 1
+ADD _
 ADD A
 LI B, \(n)
 CMP
+CMP
+NOP
 NOP
 JNE
 NOP # branch delay slot
 NOP # branch delay slot
 HLT
 """))
-        try! computer.runUntilHalted()
-        
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 5000))
         XCTAssertEqual(computer.cpuState.registerA.value, n)
     }
     
@@ -154,6 +155,7 @@ MOV A, M
 LI U, 0
 LI V, 1
 MOV B, M
+ADD _
 ADD A
 LI U, 0
 LI V, 2
@@ -180,6 +182,7 @@ LI U, 0
 LI V, 3
 MOV A, M
 LI B, 1
+ADD _
 ADD M
 
 # Loop as long as i is less than 12
@@ -187,6 +190,7 @@ LI U, 0
 LI V, 3
 MOV A, M
 LI B, 12
+CMP
 CMP
 LXY loop
 JL
@@ -200,8 +204,7 @@ MOV A, M
 
 HLT
 """))
-        try! computer.runUntilHalted(maxSteps: 460)
-        
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 496))
         XCTAssertEqual(computer.cpuState.registerA.value, 233)
     }
     
@@ -212,27 +215,26 @@ HLT
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""
-LI A, 100
+LI V, 100
 LI B, 1
 LXY fn
 JALR
-ADD A
-ADD A # The return address points here!
-ADD A
+INUV
+INUV # The return address points here!
+INUV
 
 HLT
 
 fn:
-LI A, 0
+LI V, 0
 MOV X, G
 MOV Y, H
 JMP
 NOP
 NOP
 """))
-        try! computer.runUntilHalted(maxSteps: 20)
-        
-        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+        XCTAssertNoThrow(try computer.runUntilHalted(maxSteps: 20))
+        XCTAssertEqual(computer.cpuState.registerV.value, 2)
     }
     
     func testSerialGetNumberOfBytes() {
@@ -415,6 +417,7 @@ JALR
 NOP
 NOP
 LI B, 0
+CMP
 CMP
 LXY done
 JE

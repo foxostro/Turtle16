@@ -17,7 +17,7 @@ class TracingInterpretingVMTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    let isVerboseLogging = false
+    let isVerboseLogging = true
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
@@ -129,6 +129,7 @@ NOP
     func testProfilerReportsInstructionIsNotHot() {
         let vm = makeVM(program: """
 LI B, 1
+ADD _
 ADD A
 HLT
 """)
@@ -142,6 +143,7 @@ HLT
 LXY loop
 LI B, 1
 loop:
+ADD _
 ADD A
 NOP
 JNC
@@ -154,11 +156,12 @@ HLT
         XCTAssertTrue(vm.profiler.isHot(pc: 0x0004))
         XCTAssertTrue(vm.traceCache[0x0004] != nil)
         XCTAssertEqual(vm.traceCache[0x0004]!.description, """
-0x0004: ADD A ; isBreakpoint=true
-0x0005: NOP
-0x0006: JNC ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
-0x0007: NOP
+0x0004: ADD ; isBreakpoint=true
+0x0005: ADD A
+0x0006: NOP
+0x0007: JNC ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
 0x0008: NOP
+0x0009: NOP
 """)
     }
         
@@ -167,6 +170,7 @@ HLT
 LXY loop
 LI B, 1
 loop:
+ADD _
 ADD A
 NOP
 JNC
@@ -180,11 +184,12 @@ HLT
         XCTAssertTrue(vm.profiler.isHot(pc: 0x0004))
         XCTAssertTrue(vm.traceCache[0x0004] != nil)
         XCTAssertEqual(vm.traceCache[0x0004]!.description, """
-0x0004: ADD A ; isBreakpoint=true
-0x0005: NOP
-0x0006: JNC ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
-0x0007: NOP
+0x0004: ADD ; isBreakpoint=true
+0x0005: ADD A
+0x0006: NOP
+0x0007: JNC ; guardAddress=0x0004 ; guardFlags={carryFlag: 1, equalFlag: 0}
 0x0008: NOP
+0x0009: NOP
 """)
     }
     
@@ -193,6 +198,7 @@ HLT
 LXY loop
 LI B, 1
 loop:
+ADD _
 ADD A
 NOP
 JNC
@@ -228,12 +234,14 @@ outerLoop:
 LI U, 250 # inner loop counter
 innerLoop:
 MOV A, U
+ADD _
 ADD U
 LXY innerLoop
 JNC
 NOP
 NOP
 MOV A, V
+ADD _
 ADD V
 LXY outerLoop
 JNC
@@ -269,6 +277,7 @@ HLT
 LXY loop
 LI B, 1
 loop:
+ADD _
 ADD A
 NOP
 JNC
@@ -291,6 +300,7 @@ HLT
 LXY loop
 LI B, 1
 loop:
+ADD _
 ADD A
 NOP
 JNC
@@ -320,11 +330,13 @@ NOP
         let userProgram = """
 loop:
 LI B, 1
+ADD _
 ADD A
 
 LI U, 255
 
 LI B, 4
+CMP
 CMP
 LXY skip
 JL
@@ -332,13 +344,14 @@ NOP
 NOP
 
 LI X, 0x00
-LI Y, 0x03
+LI Y, 0x04
 LI D, 1
 LI P, 42
 
 skip:
 
 LI B, 5
+CMP
 CMP
 LXY loop
 JL

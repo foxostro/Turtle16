@@ -154,8 +154,16 @@ public class Interpreter: NSObject {
         alu.b = b
         alu.update()
         
-        cpuState.aluResult = Register(withValue: alu.result)
-        cpuState.aluFlags = Flags(alu.carryFlag, alu.equalFlag)
+        // On real hardware, the ALU takes two clock cycles to produce a result.
+        // Use a buffer to introduce a delay. Though, this won't precisely
+        // replicate the behavior of hardware where the result is also unstable
+        // during that first clock tick.
+        
+        cpuState.aluResult = cpuState.aluResultBuffer
+        cpuState.aluResultBuffer = Register(withValue: alu.result)
+        
+        cpuState.aluFlags = cpuState.aluFlagsBuffer
+        cpuState.aluFlagsBuffer = Flags(alu.carryFlag, alu.equalFlag)
     }
     
     fileprivate func handleControlSignalCO() {

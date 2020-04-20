@@ -23,7 +23,7 @@ class ComputerExecutorTests: XCTestCase {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         
-        let computer = ComputerRev1()
+        let computer = Computer()
         computer.provideMicrocode(microcode: microcodeGenerator.microcode)
         computer.provideInstructions(TraceUtils.assemble("NOP\nHLT"))
         

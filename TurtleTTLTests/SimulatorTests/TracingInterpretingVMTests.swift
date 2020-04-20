@@ -40,10 +40,10 @@ class TracingInterpretingVMTests: XCTestCase {
                                                       instructionFormatter: InstructionFormatter())
         instructionMemory.store(instructions: TraceUtils.assemble(program))
         
-        let interpreter = InterpreterRev1(cpuState: cpuState,
-                                          peripherals: peripherals,
-                                          dataRAM: dataRAM,
-                                          instructionDecoder: microcodeGenerator.microcode)
+        let interpreter = Interpreter(cpuState: cpuState,
+                                      peripherals: peripherals,
+                                      dataRAM: dataRAM,
+                                      instructionDecoder: microcodeGenerator.microcode)
         
         let vm = TracingInterpretingVM(cpuState: cpuState,
                                        microcodeGenerator: microcodeGenerator,
@@ -81,9 +81,9 @@ class TracingInterpretingVMTests: XCTestCase {
         
         let peripherals = ComputerPeripherals()
         
-        let interpreter = InterpreterRev1(cpuState: cpuState,
-                                          peripherals: peripherals,
-                                          dataRAM: dataRAM)
+        let interpreter = Interpreter(cpuState: cpuState,
+                                      peripherals: peripherals,
+                                      dataRAM: dataRAM)
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()

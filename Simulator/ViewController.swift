@@ -37,6 +37,7 @@ class ViewController: NSViewController {
     let executor = ComputerExecutor()
     let stopwatch = ComputerStopwatch()
     let microcodeGenerator = MicrocodeGenerator()
+    let kExampleProgramName = "Example"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +64,7 @@ class ViewController: NSViewController {
     }
     
     func setupExecutor() {
-        executor.computer = makeComputer()
+        executor.computer = Computer()
         executor.stopwatch = stopwatch
         disableEventLog()
         disableCPUStateUpdate()
@@ -107,12 +108,6 @@ class ViewController: NSViewController {
         }
     }
     
-    func makeComputer() -> Computer {
-        let factory = ComputerFactory()
-        let computer = factory.makeComputer()
-        return computer
-    }
-    
     func generateExampleProgram() -> [Instruction] {
         let frontEnd = AssemblerFrontEnd()
         frontEnd.compile(loadExampleProgram())
@@ -130,8 +125,7 @@ class ViewController: NSViewController {
     }
     
     func loadExampleProgram() -> String {
-        let exampleProgramName = determineExampleProgramName()
-        if let fileName = Bundle.main.path(forResource: exampleProgramName, ofType: "txt") {
+        if let fileName = Bundle.main.path(forResource: kExampleProgramName, ofType: "txt") {
             do {
                 return try String(contentsOfFile: fileName)
             } catch {
@@ -141,11 +135,6 @@ class ViewController: NSViewController {
             alert(withMessage: "Error: Example program could not be found.")
         }
         return ""
-    }
-    
-    func determineExampleProgramName() -> String {
-        let suffix = ComputerFactory().determineDesiredComputerType()
-        return "Example_\(suffix)"
     }
     
     func makeRunButtonAvailable() {

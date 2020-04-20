@@ -9,7 +9,7 @@
 import XCTest
 import TurtleTTL
 
-class InterpreterRev1Tests: XCTestCase {
+class InterpreterTests: XCTestCase {
     class TestInterpreterDelegate : NSObject, InterpreterDelegate {
         var storesToRAM: [(UInt8, Int)] = []
         var instructions: [Instruction]
@@ -67,9 +67,9 @@ class InterpreterRev1Tests: XCTestCase {
     }
     
     fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
-        let interpreter = InterpreterRev1(cpuState: cpuState,
-                                          peripherals: ComputerPeripherals(),
-                                          dataRAM: Memory())
+        let interpreter = Interpreter(cpuState: cpuState,
+                                      peripherals: ComputerPeripherals(),
+                                      dataRAM: Memory())
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -590,14 +590,12 @@ LINK
         for _ in 1...4 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.registerG.value, 0)
-        XCTAssertEqual(interpreter.cpuState.registerH.value, 4)
+        XCTAssertEqual(interpreter.cpuState.registerH.value, 3)
     }
     
     func testJALR() {
         // Jump sets the program counter to the value of the XY register.
-        // Simultaneously sets the LINK register.
-        // Unfortunately, due to a hardware bug, the link register always picks
-        // up the new value of PC and not the intended return address.
+        // Simultaneously sets the LINK register to the return address.
         let interpreter = makeInterpreter()
         interpreter.cpuState.registerX = Register(withValue: 0xff)
         interpreter.cpuState.registerY = Register(withValue: 0xff)
@@ -610,8 +608,8 @@ LINK
         interpreter.step()
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0xffff)
-        XCTAssertEqual(interpreter.cpuState.registerG.value, 0xff)
-        XCTAssertEqual(interpreter.cpuState.registerH.value, 0xff)
+        XCTAssertEqual(interpreter.cpuState.registerG.value, 0x00)
+        XCTAssertEqual(interpreter.cpuState.registerH.value, 0x02)
     }
     
     func testStoreToRAM() {

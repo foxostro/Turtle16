@@ -9,13 +9,13 @@
 import XCTest
 import TurtleTTL
 
-class ComputerRev1Tests: XCTestCase {
+class ComputerTests: XCTestCase {
     let isVerboseLogging = false
     let kUpperInstructionRAM = 0
     let kLowerInstructionRAM = 1
     
-    func makeComputer() -> ComputerRev1 {
-        let computer = ComputerRev1()
+    func makeComputer() -> Computer {
+        let computer = Computer()
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         computer.provideMicrocode(microcode: microcodeGenerator.microcode)
@@ -207,17 +207,17 @@ HLT
     
     func testFunctionCallAndReturn() {
         // Perform a function call and return and assert that the return lands
-        // in the expected position in the program, after the delay slots.
+        // in the expected position in the program. For Rev2 hardare, this means
+        // that execution resumes on the second delay slot. (unfortunately)
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""
 LI A, 100
 LI B, 1
 LXY fn
-LINK
-JMP
+JALR
 ADD A
-ADD A
+ADD A # The return address points here!
 ADD A
 
 HLT
@@ -226,14 +226,13 @@ fn:
 LI A, 0
 MOV X, G
 MOV Y, H
-INXY # Must adjust the return address to accomodate a bug in the Rev 1 hardware.
 JMP
 NOP
 NOP
 """))
         try! computer.runUntilHalted(maxSteps: 20)
         
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
     }
     
     func testSerialGetNumberOfBytes() {
@@ -275,50 +274,43 @@ LI V, 0
 
 LI A, 'r'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'e'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'a'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'd'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'y'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, '.'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 10
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -350,15 +342,13 @@ LI P, 1 # Put Command
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 1 # Data Port
@@ -368,15 +358,13 @@ MOV P, M # Retrieve the byte from address 5 and pass it to the serial device.
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -387,7 +375,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -402,7 +389,6 @@ delay:
 
 MOV X, G
 MOV Y, H
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -425,8 +411,7 @@ ready.
 beginningOfInputLoop:
 
 LXY serial_get_number_available_bytes
-LINK
-JMP
+JALR
 NOP
 NOP
 LI B, 0
@@ -439,14 +424,12 @@ NOP
 
 # Read a byte and echo it back.
 LXY serial_get
-LINK
-JMP # The return value is in "A".
+JALR # The return value is in "A".
 NOP
 NOP
 
 LXY serial_put # The parameter is in "A".
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -505,7 +488,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -548,7 +530,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -592,7 +573,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP

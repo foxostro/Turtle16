@@ -66,7 +66,7 @@ public class AssemblerCommandLineDriver: NSObject {
     }
     
     func writeToFile(instructions: [Instruction]) throws {
-        let computer = ComputerRev1()
+        let computer = Computer()
         computer.provideInstructions(instructions)
         try computer.saveProgram(to: outputFileName!)
     }

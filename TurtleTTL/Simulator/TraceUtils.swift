@@ -50,7 +50,7 @@ public class TraceUtils: NSObject {
     public static func recordTraceForProgram(microcodeGenerator: MicrocodeGenerator, _ text: String) -> Trace {
         let recorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         let feed = InstructionFeed(instructions: assemble(text))
-        let interpreter = InterpreterRev1()
+        let interpreter = Interpreter()
         interpreter.delegate = feed
         var prevCpuState: CPUStateSnapshot!
         while feed.numberOfInstructionsPastEnd < 2 && interpreter.cpuState.controlWord.HLT == .inactive {

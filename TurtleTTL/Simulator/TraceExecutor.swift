@@ -51,10 +51,10 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         self.trace = trace
         self.flagBreak = flagBreak
         
-        interpreter = InterpreterRev1(cpuState: cpuState,
-                                      peripherals: peripherals,
-                                      dataRAM: dataRAM,
-                                      instructionDecoder: instructionDecoder)
+        interpreter = Interpreter(cpuState: cpuState,
+                                  peripherals: peripherals,
+                                  dataRAM: dataRAM,
+                                  instructionDecoder: instructionDecoder)
         
         super.init()
         

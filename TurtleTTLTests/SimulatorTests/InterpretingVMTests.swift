@@ -23,10 +23,10 @@ class InterpretingVMTests: XCTestCase {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let instructionDecoder = microcodeGenerator.microcode
-        let interpreter = InterpreterRev1(cpuState: cpuState,
-                                          peripherals: peripherals,
-                                          dataRAM: dataRAM,
-                                          instructionDecoder: instructionDecoder)
+        let interpreter = Interpreter(cpuState: cpuState,
+                                      peripherals: peripherals,
+                                      dataRAM: dataRAM,
+                                      instructionDecoder: instructionDecoder)
         let vm = InterpretingVM(cpuState: cpuState,
                                 microcodeGenerator: microcodeGenerator,
                                 peripherals: peripherals,

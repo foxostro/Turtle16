@@ -127,7 +127,12 @@ public class CodeGenerator: NSObject {
     // the result to the specified destination bus device.
     public func add(_ destination: RegisterName) throws {
         assert(isAssembling)
-        let mnemonic = String(format: "ALU %@", String(describing: destination))
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALU"
+        } else {
+            mnemonic = String(format: "ALU %@", String(describing: destination))
+        }
         try instruction(withMnemonic: mnemonic, immediate: 0b1001)
     }
     

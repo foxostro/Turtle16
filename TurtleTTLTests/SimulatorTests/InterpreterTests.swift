@@ -53,6 +53,7 @@ class InterpreterTests: XCTestCase {
         expectedFinalState.pc = ProgramCounter(withValue: 3)
         expectedFinalState.pc_if = ProgramCounter(withValue: 2)
         expectedFinalState.aluFlags = Flags(1, 0) // Changes every tick according to the values of A and B.
+        expectedFinalState.aluFlagsBuffer = Flags(1, 0) // Changes every tick according to the values of A and B.
         expectedFinalState.uptime = 3
         
         let interpreter = makeInterpreter()
@@ -161,13 +162,14 @@ class InterpreterTests: XCTestCase {
         interpreter.cpuState.registerB = Register(withValue: 1)
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
+ADD _
 ADD D
 NOP
 JC
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }
@@ -196,12 +198,13 @@ JNC
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
+CMP
 NOP
 JE
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }
@@ -230,12 +233,13 @@ JNE
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
+CMP
 NOP
 JG
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }
@@ -281,12 +285,13 @@ JL
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
+CMP
 NOP
 JGE
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }
@@ -681,10 +686,10 @@ MOV A, P
         interpreter.cpuState.registerA = Register(withValue: 0xff)
         interpreter.cpuState.registerB = Register(withValue: 1)
         
-        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("ADD D"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("ADD _\nADD D"))
         interpreter.delegate = delegate
         
-        for _ in 1...3 { interpreter.step() }
+        for _ in 1...4 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.registerD.value, 0)
         XCTAssertEqual(interpreter.cpuState.flags.carryFlag, 0)
@@ -696,10 +701,10 @@ MOV A, P
         interpreter.cpuState.registerA = Register(withValue: 1)
         interpreter.cpuState.registerB = Register(withValue: 0)
         
-        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("CMP"))
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("CMP\nCMP"))
         interpreter.delegate = delegate
         
-        for _ in 1...3 { interpreter.step() }
+        for _ in 1...4 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.registerD.value, 0)
         XCTAssertEqual(interpreter.cpuState.flags.carryFlag, 0)
@@ -707,6 +712,26 @@ MOV A, P
     }
     
     func testBasicAddition() {
+        let interpreter = makeInterpreter()
+        
+        let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
+LI A, 1
+LI B, 2
+ADD _
+ADD D
+HLT
+"""))
+        interpreter.delegate = delegate
+        
+        for _ in 1...7 { interpreter.step() }
+        
+        XCTAssertEqual(interpreter.cpuState.registerA.value, 1)
+        XCTAssertEqual(interpreter.cpuState.registerB.value, 2)
+        XCTAssertEqual(interpreter.cpuState.registerD.value, 3)
+        XCTAssertEqual(interpreter.cpuState.controlWord.HLT, .active)
+    }
+    
+    func testALUResultIsDelayedOneClock() {
         let interpreter = makeInterpreter()
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
@@ -721,7 +746,7 @@ HLT
         
         XCTAssertEqual(interpreter.cpuState.registerA.value, 1)
         XCTAssertEqual(interpreter.cpuState.registerB.value, 2)
-        XCTAssertEqual(interpreter.cpuState.registerD.value, 3)
+        XCTAssertNotEqual(interpreter.cpuState.registerD.value, 3)
         XCTAssertEqual(interpreter.cpuState.controlWord.HLT, .active)
     }
 }

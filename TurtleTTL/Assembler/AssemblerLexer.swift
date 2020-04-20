@@ -66,6 +66,9 @@ public class AssemblerLexer: Lexer {
             Rule(pattern: "Y\\b") {
                 TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .Y)
             },
+            Rule(pattern: "_\\b") {
+                TokenRegister(lineNumber: self.lineNumber, lexeme: $0, literal: .NONE)
+            },
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {
                 TokenIdentifier(lineNumber: self.lineNumber, lexeme: $0)
             },

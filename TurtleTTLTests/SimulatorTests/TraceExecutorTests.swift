@@ -162,7 +162,9 @@ LI A, 0xff
         let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
 loop:
 LI B, 1
+ADD _
 ADD A
+CMP
 CMP
 LXY loop
 JE
@@ -174,9 +176,9 @@ JE
         executor.logger = makeLogger()
         executor.run()
         
-        // We expect execution of the trace to fail the guard at 0x0005, which
+        // We expect execution of the trace to fail the guard at 0x0007, which
         // was recorded in place of the conditional jump, "JE".
-        XCTAssertEqual(cpuState.pc.value, 0x0005)
+        XCTAssertEqual(cpuState.pc.value, 0x0007)
     }
     
     func testRunTraceWhichAccessesRAM() {
@@ -186,8 +188,10 @@ LI B, 1
 LI U, 0
 LI V, 0
 MOV A, M
+ADD _
 ADD A
 MOV M, A
+CMP
 CMP
 LXY loop
 JE
@@ -208,9 +212,9 @@ JE
         
         executor.run()
         
-        // We expect execution of the trace to fail the guard at 0x0009, which
+        // We expect execution of the trace to fail the guard at 0x000b, which
         // was recorded in place of the conditional jump, "JE".
-        XCTAssertEqual(cpuState.pc.value, 0x0009)
+        XCTAssertEqual(cpuState.pc.value, 0x000b)
     }
     
     func testRunThrowsExceptionIfTooManySteps() {

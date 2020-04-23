@@ -1,0 +1,31 @@
+LI X, 0x00
+
+LI Y, 0x00
+LI D, 0
+LI P, 0x28 # LI A
+LI D, 1
+LI P, 0xff
+
+LI Y, 0x01
+LI D, 0
+LI P, 0x98 # LI U
+LI D, 1
+LI P, 0xff
+
+LI Y, 0x02
+LI D, 0
+LI P, 0x58 # LI V
+LI D, 1
+LI P, 0xff
+
+LI Y, 0x03
+LI D, 0
+LI P, 0x80 # HLT
+LI D, 1
+LI P, 0x0
+
+LI X, 0x80
+LI Y, 0x00
+JMP
+NOP
+NOP

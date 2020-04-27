@@ -1,6 +1,6 @@
 LI A, 0
 LI B, 0
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI X, 0
 LI Y, 0
 LI U, 0
@@ -8,57 +8,49 @@ LI V, 0
 
 
 LXY serial_init
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'r'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'e'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'a'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'd'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 'y'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, '.'
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
 LI A, 10
 LXY serial_put
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -70,11 +62,11 @@ beginningOfInputLoop:
 
 waitForInput:
 LXY serial_get_number_available_bytes
-LINK
-JMP
+JALR
 NOP
 NOP
 LI B, 0
+CMP
 CMP
 LXY waitForInput
 JE
@@ -83,14 +75,12 @@ NOP
 
 # Read a byte and echo it back.
 LXY serial_get
-LINK
-JMP # The return value is in "A".
+JALR # The return value is in "A".
 NOP
 NOP
 
 LXY serial_put # The parameter is in "A".
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -115,15 +105,14 @@ MOV M, G
 LI V, 11
 MOV M, H
 
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 0 # Reset Command
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 1 # Data Port
@@ -131,8 +120,7 @@ MOV A, P # Store the status in A
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -143,7 +131,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -168,21 +155,19 @@ LI U, 0
 LI V, 5
 MOV M, A
 
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 1 # Put Command
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 1 # Data Port
@@ -192,15 +177,13 @@ MOV P, M # Retrieve the byte from address 5 and pass it to the serial device.
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -211,7 +194,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -235,8 +217,7 @@ LI P, 2 # "Get" Command
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI U, 0
@@ -245,8 +226,7 @@ MOV M, P # Store the input byte in memory at address 5.
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -262,7 +242,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -281,14 +260,13 @@ MOV M, G
 LI V, 11
 MOV M, H
 
-LI D, 6 # kSerialInterface
+LI D, 7 # kSerialInterface
 LI Y, 1 # Data Port
 LI P, 3 # "Get Number of Bytes" Command
 LI Y, 0 # Control Port
 LI P, 1 # Raise SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 LI U, 0
@@ -297,8 +275,7 @@ MOV M, P # Store the number of available bytes in memory at address 5.
 LI Y, 0 # Control Port
 LI P, 0 # Lower SCK
 LXY delay
-LINK
-JMP
+JALR
 NOP
 NOP
 
@@ -314,7 +291,6 @@ LI V, 10
 MOV X, M
 LI V, 11
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -330,8 +306,10 @@ LI A, 0
 delay256_0:
 # Increment A by 1. If the value is not equal to 255 then loop.
 LI B, 1
+ADD _
 ADD A
 LI B, 255
+CMP
 CMP
 LXY delay256_0
 JNE
@@ -340,7 +318,6 @@ NOP
 
 MOV X, G
 MOV Y, H
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP
@@ -366,16 +343,17 @@ LI U, 0
 LI V, 2
 MOV M, A
 LXY delay256
-LINK
-JMP
+JALR
 NOP
 NOP
 MOV A, M
 
 # Increment A by 1. If the value is not equal to 255 then loop.
 LI B, 1
+ADD _
 ADD A
 LI B, 255
+CMP
 CMP
 LXY delay_0
 JNE
@@ -389,7 +367,6 @@ LI V, 0
 MOV X, M
 LI V, 1
 MOV Y, M
-INXY # Must adjust the return address.
 JMP
 NOP
 NOP

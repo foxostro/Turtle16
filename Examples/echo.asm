@@ -348,11 +348,12 @@ NOP
 NOP
 MOV A, M
 
-# Increment A by 1. If the value is not equal to 255 then loop.
+# Increment A by 1. If the value is not equal to 1 then loop.
+# Adjust the upper limit of the loop according to the CPU speed.
 LI B, 1
 ADD _
 ADD A
-LI B, 255
+LI B, 1
 CMP
 CMP
 LXY delay_0

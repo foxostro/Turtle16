@@ -36,8 +36,8 @@ public class ComputerPeripherals: NSObject {
             ComputerPeripheral(),
             ComputerPeripheral(),
             ComputerPeripheral(),
-            SerialInterfacePeripheral(),
             ComputerPeripheral(),
+            SerialInterfacePeripheral(),
             ComputerPeripheral()
         ]
     }
@@ -102,7 +102,7 @@ public class ComputerPeripherals: NSObject {
     }
     
     public func getSerialInterface() -> SerialInterfacePeripheral {
-        return peripherals[6] as! SerialInterfacePeripheral
+        return peripherals[7] as! SerialInterfacePeripheral
     }
     
     public func catchUp(uptime desiredUptime: UInt64) {

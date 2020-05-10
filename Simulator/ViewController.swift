@@ -245,6 +245,32 @@ class ViewController: NSViewController {
         }
     }
     
+    @IBAction func loadProgramFromSource(sender: Any?) {
+        let panel = NSOpenPanel()
+        panel.allowedFileTypes = ["asm"]
+        panel.allowsOtherFileTypes = false
+        panel.begin { (response: NSApplication.ModalResponse) in
+            if (response == NSApplication.ModalResponse.OK) {
+                if let url = panel.url {
+                    do {
+                        let programText = try String(contentsOf: url, encoding: .utf8)
+                        let frontEnd = AssemblerFrontEnd()
+                        frontEnd.compile(programText)
+                        if frontEnd.hasError {
+                            let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
+                            self.alert(withMessage: error.message)
+                        } else {
+                            self.executor.stop()
+                            self.executor.provideInstructions(frontEnd.instructions)
+                        }
+                    } catch {
+                        self.alert(withMessage: String(describing: error))
+                    }
+                }
+            }
+        }
+    }
+    
     @IBAction func provideSerialInput(sender: Any?) {
         let bytes = Array(serialInput.stringValue.appending("\n").utf8)
         executor.provideSerialInput(bytes: bytes)

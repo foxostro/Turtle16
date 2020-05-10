@@ -1234,7 +1234,7 @@
                                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vSK-HH-WZE">
                                                         <rect key="frame" x="43" y="0.0" width="254" height="16"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="width" constant="250" id="7PY-Bz-0Yn"/>
+                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="7PY-Bz-0Yn"/>
                                                         </constraints>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="0xff" usesSingleLineMode="YES" id="TeU-PM-kw7">
                                                             <font key="font" usesAppearanceFont="YES"/>
@@ -1525,10 +1525,10 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zaz-WL-EYK">
-                                                            <rect key="frame" x="20" y="452" width="208" height="50"/>
+                                                            <rect key="frame" x="20" y="452" width="359" height="50"/>
                                                             <subviews>
                                                                 <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="12" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PFC-zp-Nnp" userLabel="Program">
-                                                                    <rect key="frame" x="0.0" y="29" width="208" height="21"/>
+                                                                    <rect key="frame" x="0.0" y="29" width="359" height="21"/>
                                                                     <subviews>
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9Hg-Il-VfH" userLabel="Program:">
                                                                             <rect key="frame" x="-2" y="5" width="72" height="16"/>
@@ -1558,13 +1558,25 @@
                                                                                 <action selector="loadProgramWithSender:" target="XfG-lQ-9wD" id="vKb-oX-QgX"/>
                                                                             </connections>
                                                                         </button>
+                                                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oOE-Jr-52E">
+                                                                            <rect key="frame" x="214" y="-7" width="151" height="32"/>
+                                                                            <buttonCell key="cell" type="push" title="Load From Source" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xKj-Tf-PGa">
+                                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                            <connections>
+                                                                                <action selector="loadProgramFromSourceWithSender:" target="XfG-lQ-9wD" id="oKh-NI-ypC"/>
+                                                                            </connections>
+                                                                        </button>
                                                                     </subviews>
                                                                     <visibilityPriorities>
                                                                         <integer value="1000"/>
                                                                         <integer value="1000"/>
                                                                         <integer value="1000"/>
+                                                                        <integer value="1000"/>
                                                                     </visibilityPriorities>
                                                                     <customSpacing>
+                                                                        <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>

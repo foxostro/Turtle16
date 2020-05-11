@@ -21,12 +21,12 @@ public class AudioDevicePeripheral: ComputerPeripheral {
     public var frequencyRegister: UInt8 = 0 {
         didSet {
             let mapping: [Range<Int> : (Double,Double)] = [
-                Int.min..<15 : (138.0, 147.0),
+                0..<15 : (138.0, 147.0),
                 15..<31 : (147.0, 183.0),
                 31..<63 : (183.0, 316.0),
                 63..<127 : (316.0, 692.0),
                 127..<255 : (692.0, 1585.0),
-                255..<Int.max : (1585.0, 1585.0)
+                255..<256 : (1585.0, 1585.0)
             ]
             
             for (rangeValue, rangeFrequency) in mapping {

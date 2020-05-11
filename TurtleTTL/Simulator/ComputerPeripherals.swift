@@ -27,7 +27,7 @@ public class ComputerPeripherals: NSObject {
                          _ loadUpperInstructionRAM: @escaping (_ address: Int) -> UInt8,
                          _ storeLowerInstructionRAM: @escaping (_ value: UInt8, _ address: Int) -> Void,
                          _ loadLowerInstructionRAM: @escaping (_ address: Int) -> UInt8,
-                         toneGenerator: ToneGenerator?) {
+                         toneGenerator: ToneGenerator? = nil) {
         peripherals = [
             InstructionRAMPeripheral(name: "Upper Instruction RAM",
                                      store: storeUpperInstructionRAM,

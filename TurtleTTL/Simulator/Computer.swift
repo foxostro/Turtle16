@@ -65,7 +65,7 @@ public class Computer: NSObject {
     // Raise this boolean flag to request execution stop on the next breakpoint.
     public let flagBreak = AtomicBooleanFlag()
     
-    public override init() {
+    public init(toneGenerator: ToneGenerator? = nil) {
         microcodeGenerator.generate()
         instructionDecoder = microcodeGenerator.microcode
         
@@ -97,7 +97,8 @@ public class Computer: NSObject {
         peripherals.populate(storeUpperInstructionRAM,
                              loadUpperInstructionRAM,
                              storeLowerInstructionRAM,
-                             loadLowerInstructionRAM)
+                             loadLowerInstructionRAM,
+                             toneGenerator: toneGenerator)
         let serialInterface = peripherals.getSerialInterface()
         serialInterface.didUpdateSerialOutput = didUpdateSerialOutput
         serialInput = serialInterface.serialInput

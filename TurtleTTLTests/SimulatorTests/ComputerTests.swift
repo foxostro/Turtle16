@@ -45,7 +45,7 @@ class ComputerTests: XCTestCase {
             serialOutput += $0
         }
         computer.provideInstructions(TraceUtils.assemble("""
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 1 # Put Command
 LI Y, 0 # Control Port
@@ -81,7 +81,7 @@ HLT
         serialInput.provide(bytes: [65])
         
         computer.provideInstructions(TraceUtils.assemble("""
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 2 # "Get" Command
 LI Y, 0 # Control Port
@@ -241,7 +241,7 @@ NOP
         let computer = makeComputer()
         
         computer.provideInstructions(TraceUtils.assemble("""
-LI D, 6 # kSerialInterface
+LI D, 7 # kSerialInterface
 LI Y, 1 # Data Port
 LI P, 3 # "Get Number of Bytes" Command
 LI Y, 0 # Control Port
@@ -268,7 +268,7 @@ HLT
         computer.provideInstructions(TraceUtils.assemble("""
 LI A, 0
 LI B, 0
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI X, 0
 LI Y, 0
 LI U, 0
@@ -338,7 +338,7 @@ LI U, 0
 LI V, 5
 MOV M, A
 
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 1 # Put Command
 LI Y, 0 # Control Port
@@ -464,7 +464,7 @@ LI U, 0
 LI V, 5
 MOV M, A
 
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 1 # Put Command
 LI Y, 0 # Control Port
@@ -551,7 +551,7 @@ MOV M, G
 LI V, 11
 MOV M, H
 
-LI D, 6 # kSerialInterface
+LI D, 7 # kSerialInterface
 LI Y, 1 # Data Port
 LI P, 3 # "Get Number of Bytes" Command
 LI Y, 0 # Control Port

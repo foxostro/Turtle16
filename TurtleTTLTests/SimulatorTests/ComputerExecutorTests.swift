@@ -38,7 +38,7 @@ class ComputerExecutorTests: XCTestCase {
         return TraceUtils.assemble("""
 LI A, 0
 LI B, 0
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI X, 0
 LI Y, 0
 LI U, 0
@@ -115,7 +115,7 @@ LI U, 0
 LI V, 5
 MOV M, A
 
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 1 # Put Command
 LI Y, 0 # Control Port
@@ -292,7 +292,7 @@ ready.
         let semaphore = DispatchSemaphore(value: 0)
         let executor = makeExecutor()
         executor.provideInstructions(TraceUtils.assemble("""
-LI D, 6 # The Serial Interface device
+LI D, 7 # The Serial Interface device
 LI Y, 1 # Data Port
 LI P, 2 # "Get" Command
 LI Y, 0 # Control Port

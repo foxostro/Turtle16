@@ -19,12 +19,15 @@ public class ComputerPeripherals: NSObject {
                                                     ComputerPeripheral(),
                                                     ComputerPeripheral(),
                                                     ComputerPeripheral(),
+                                                    ComputerPeripheral(),
+                                                    ComputerPeripheral(),
                                                     ComputerPeripheral()]
     
     public func populate(_ storeUpperInstructionRAM: @escaping (_ value: UInt8, _ address: Int) -> Void,
                          _ loadUpperInstructionRAM: @escaping (_ address: Int) -> UInt8,
                          _ storeLowerInstructionRAM: @escaping (_ value: UInt8, _ address: Int) -> Void,
-                         _ loadLowerInstructionRAM: @escaping (_ address: Int) -> UInt8) {
+                         _ loadLowerInstructionRAM: @escaping (_ address: Int) -> UInt8,
+                         toneGenerator: ToneGenerator?) {
         peripherals = [
             InstructionRAMPeripheral(name: "Upper Instruction RAM",
                                      store: storeUpperInstructionRAM,
@@ -36,9 +39,8 @@ public class ComputerPeripherals: NSObject {
             ComputerPeripheral(),
             ComputerPeripheral(),
             ComputerPeripheral(),
-            ComputerPeripheral(),
-            SerialInterfacePeripheral(),
-            ComputerPeripheral()
+            AudioDevicePeripheral(toneGenerator: toneGenerator),
+            SerialInterfacePeripheral()
         ]
     }
     

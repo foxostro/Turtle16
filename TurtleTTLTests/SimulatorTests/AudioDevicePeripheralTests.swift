@@ -52,4 +52,37 @@ class AudioDevicePeripheralTests: XCTestCase {
         peripheral.gainRegister = 42
         XCTAssertEqual(peripheral.load(peripheral.kGainRegisterAddr), 0)
     }
+    
+    func testMappingBetweenFrequenyRegisterAndFrequency() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        
+        let expectedMapping: [UInt8 : Double] = [
+            0 : 138.0,
+            15 : 147.0,
+            31 : 183.0,
+            63 : 316.0,
+            127 : 692.0,
+            255 : 1585.0
+        ]
+        
+        for (value, frequency) in expectedMapping {
+            peripheral.frequencyRegister = value
+            XCTAssertEqual(mockToneGenerator.frequency, frequency)
+        }
+    }
+    
+    func testMappingBetweenGainRegisterAndGain() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        
+        let expectedMapping: [UInt8 : Double] = [
+            0 : 0.0,
+            51 : 0.2,
+            255 : 1.0
+        ]
+        
+        for (value, gain) in expectedMapping {
+            peripheral.gainRegister = value
+            XCTAssertEqual(mockToneGenerator.gain, gain)
+        }
+    }
 }

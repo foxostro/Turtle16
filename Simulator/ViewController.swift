@@ -38,6 +38,7 @@ class ViewController: NSViewController {
     let stopwatch = ComputerStopwatch()
     let microcodeGenerator = MicrocodeGenerator()
     let kExampleProgramName = "Example"
+    let toneGenerator = ConcreteToneGenerator()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +65,8 @@ class ViewController: NSViewController {
     }
     
     func setupExecutor() {
-        executor.computer = Computer()
+        let computer = Computer(toneGenerator: toneGenerator)
+        executor.computer = computer
         executor.stopwatch = stopwatch
         disableEventLog()
         disableCPUStateUpdate()

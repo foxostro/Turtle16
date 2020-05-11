@@ -93,7 +93,7 @@ MOV A, M
 LI B, 1
 ADD _
 ADD A
-LI B, 255
+LI B, 1
 CMP
 CMP
 LXY delay_0

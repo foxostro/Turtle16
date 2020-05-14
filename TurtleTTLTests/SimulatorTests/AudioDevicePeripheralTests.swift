@@ -12,7 +12,7 @@ import TurtleTTL
 class AudioDevicePeripheralTests: XCTestCase {
     class MockToneGenerator : ToneGenerator {
         var frequency: Double = 0.0
-        var gain: Double = 0.0
+        var amplitude: Double = 0.0
     }
     
     let mockToneGenerator = MockToneGenerator()
@@ -82,7 +82,7 @@ class AudioDevicePeripheralTests: XCTestCase {
         
         for (value, gain) in expectedMapping {
             peripheral.gainRegister = value
-            XCTAssertEqual(mockToneGenerator.gain, gain)
+            XCTAssertEqual(mockToneGenerator.amplitude, gain)
         }
     }
 }

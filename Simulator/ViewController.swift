@@ -166,7 +166,8 @@ class ViewController: NSViewController {
         }
         executor.runOrStop()
         if !executor.isExecuting {
-            toneGenerator.amplitude = 0
+            toneGenerator.amplitude1 = 0
+            toneGenerator.amplitude2 = 0
         }
     }
     
@@ -176,7 +177,8 @@ class ViewController: NSViewController {
         }
         executor.reset()
         if !executor.isExecuting {
-            toneGenerator.amplitude = 0
+            toneGenerator.amplitude1 = 0
+            toneGenerator.amplitude2 = 0
         }
     }
     

@@ -10,12 +10,14 @@ import Cocoa
 
 public protocol ToneGenerator {
     var frequency: Double { get set }
-    var amplitude: Double { get set }
+    var amplitude1: Double { get set }
+    var amplitude2: Double { get set }
 }
 
 public class AudioDevicePeripheral: ComputerPeripheral {
     public let kFrequencyRegisterAddr = 0x00
-    public let kGainRegisterAddr = 0x01
+    public let kAmplitude1RegisterAddr = 0x01
+    public let kAmplitude2RegisterAddr = 0x02
     public var toneGenerator: ToneGenerator?
     
     public var frequencyRegister: UInt8 = 0 {
@@ -41,9 +43,15 @@ public class AudioDevicePeripheral: ComputerPeripheral {
         }
     }
     
-    public var gainRegister: UInt8 = 0 {
+    public var amplitude1Register: UInt8 = 0 {
         didSet {
-            toneGenerator?.amplitude = Double(gainRegister) / 255.0
+            toneGenerator?.amplitude1 = Double(amplitude1Register) / 255.0
+        }
+    }
+    
+    public var amplitude2Register: UInt8 = 0 {
+        didSet {
+            toneGenerator?.amplitude2 = Double(amplitude2Register) / 255.0
         }
     }
     
@@ -61,8 +69,12 @@ public class AudioDevicePeripheral: ComputerPeripheral {
             frequencyRegister = value
         }
             
-        if address == kGainRegisterAddr {
-            gainRegister = value
+        if address == kAmplitude1RegisterAddr {
+            amplitude1Register = value
+        }
+            
+        if address == kAmplitude2RegisterAddr {
+            amplitude2Register = value
         }
     }
     

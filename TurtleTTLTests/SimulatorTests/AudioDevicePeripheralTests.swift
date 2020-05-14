@@ -12,7 +12,8 @@ import TurtleTTL
 class AudioDevicePeripheralTests: XCTestCase {
     class MockToneGenerator : ToneGenerator {
         var frequency: Double = 0.0
-        var amplitude: Double = 0.0
+        var amplitude1: Double = 0.0
+        var amplitude2: Double = 0.0
     }
     
     let mockToneGenerator = MockToneGenerator()
@@ -28,17 +29,24 @@ class AudioDevicePeripheralTests: XCTestCase {
         XCTAssertEqual(peripheral.frequencyRegister, 42)
     }
     
-    func testStoreSetsGain() {
+    func testStoreSetsAmplitude1() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.store(42, peripheral.kGainRegisterAddr)
-        XCTAssertEqual(peripheral.gainRegister, 42)
+        peripheral.store(42, peripheral.kAmplitude1RegisterAddr)
+        XCTAssertEqual(peripheral.amplitude1Register, 42)
+    }
+    
+    func testStoreSetsAmplitude2() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        peripheral.store(42, peripheral.kAmplitude2RegisterAddr)
+        XCTAssertEqual(peripheral.amplitude2Register, 42)
     }
     
     func testStoreToSomeOtherAddressDoesNothing() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
         peripheral.store(42, 5)
         XCTAssertEqual(peripheral.frequencyRegister, 0)
-        XCTAssertEqual(peripheral.gainRegister, 0)
+        XCTAssertEqual(peripheral.amplitude1Register, 0)
+        XCTAssertEqual(peripheral.amplitude2Register, 0)
     }
     
     func testLoadProducesZeroNotFrequency() {
@@ -49,8 +57,8 @@ class AudioDevicePeripheralTests: XCTestCase {
     
     func testLoadProducesZeroNotGain() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.gainRegister = 42
-        XCTAssertEqual(peripheral.load(peripheral.kGainRegisterAddr), 0)
+        peripheral.amplitude1Register = 42
+        XCTAssertEqual(peripheral.load(peripheral.kAmplitude1RegisterAddr), 0)
     }
     
     func testMappingBetweenFrequenyRegisterAndFrequency() {
@@ -71,7 +79,7 @@ class AudioDevicePeripheralTests: XCTestCase {
         }
     }
     
-    func testMappingBetweenGainRegisterAndGain() {
+    func testMappingBetweenGainRegisterAndAmplitude1() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
         
         let expectedMapping: [UInt8 : Double] = [
@@ -80,9 +88,24 @@ class AudioDevicePeripheralTests: XCTestCase {
             255 : 1.0
         ]
         
-        for (value, gain) in expectedMapping {
-            peripheral.gainRegister = value
-            XCTAssertEqual(mockToneGenerator.amplitude, gain)
+        for (value, amplitude) in expectedMapping {
+            peripheral.amplitude1Register = value
+            XCTAssertEqual(mockToneGenerator.amplitude1, amplitude)
+        }
+    }
+    
+    func testMappingBetweenGainRegisterAndAmplitude2() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        
+        let expectedMapping: [UInt8 : Double] = [
+            0 : 0.0,
+            51 : 0.2,
+            255 : 1.0
+        ]
+        
+        for (value, amplitude) in expectedMapping {
+            peripheral.amplitude2Register = value
+            XCTAssertEqual(mockToneGenerator.amplitude2, amplitude)
         }
     }
 }

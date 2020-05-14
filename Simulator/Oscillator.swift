@@ -46,19 +46,6 @@ final class Oscillator {
             _frequency = value
         }
     }
-    var _amplitude = 0.0
-    public var amplitude: Double {
-        get {
-            lock.lock()
-            defer { lock.unlock() }
-            return _amplitude
-        }
-        set (value) {
-            lock.lock()
-            defer { lock.unlock() }
-            _amplitude = value
-        }
-    }
     public typealias TransferFunction = (Double) -> Double
     var _transferFunction: TransferFunction = { theta in
         return sin(theta)
@@ -110,7 +97,7 @@ final class Oscillator {
         let theta_increment = 2.0 * .pi * _frequency / sampleRate
         
         for frame in 0..<inNumberFrames {
-            samples[Int(frame)] = Float(_transferFunction(theta) * _amplitude)
+            samples[Int(frame)] = Float(_transferFunction(theta))
             
             theta += theta_increment;
             if (theta > 2.0 * .pi) {

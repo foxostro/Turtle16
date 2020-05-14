@@ -77,11 +77,15 @@ class ViewController: NSViewController {
         }
         
         executor.didStart = {[weak self] in
-            self?.makeStopButtonAvailable()
+            guard let this = self else { return }
+            this.toneGenerator.reset()
+            this.toneGenerator.start()
+            this.makeStopButtonAvailable()
         }
         
         executor.didStop = {[weak self] in
             guard let this = self else { return }
+            this.toneGenerator.reset()
             this.updateCPUState(this.executor.cpuState)
             this.enableCPUStateUpdate()
             this.enableEventLog()
@@ -90,12 +94,14 @@ class ViewController: NSViewController {
         
         executor.didHalt = {[weak self] in
             guard let this = self else { return }
+            this.toneGenerator.reset()
             this.stepButton.isEnabled = false
             this.runButton.isEnabled = false
         }
         
         executor.didReset = {[weak self] in
             guard let this = self else { return }
+            this.toneGenerator.reset()
             this.makeRunButtonAvailable()
             this.stepButton.isEnabled = true
             this.runButton.isEnabled = true
@@ -165,10 +171,6 @@ class ViewController: NSViewController {
             disableCPUStateUpdate()
         }
         executor.runOrStop()
-        if !executor.isExecuting {
-            toneGenerator.amplitude1 = 0
-            toneGenerator.amplitude2 = 0
-        }
     }
     
     @IBAction func reset(_ sender: Any) {
@@ -176,10 +178,6 @@ class ViewController: NSViewController {
             serialOutputDisplay.setString("")
         }
         executor.reset()
-        if !executor.isExecuting {
-            toneGenerator.amplitude1 = 0
-            toneGenerator.amplitude2 = 0
-        }
     }
     
     func updateCPUState(_ cpuState: CPUStateSnapshot) {
@@ -270,7 +268,7 @@ class ViewController: NSViewController {
                             let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
                             self.alert(withMessage: error.message)
                         } else {
-                            self.executor.stop()
+                            self.executor.reset()
                             self.executor.provideInstructions(frontEnd.instructions)
                         }
                     } catch {

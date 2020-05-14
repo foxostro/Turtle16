@@ -99,7 +99,7 @@ final class Oscillator {
         for frame in 0..<inNumberFrames {
             samples[Int(frame)] = Float(_transferFunction(theta))
             
-            theta += theta_increment;
+            theta += theta_increment
             if (theta > 2.0 * .pi) {
                 theta -= 2.0 * .pi
             }

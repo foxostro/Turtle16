@@ -12,12 +12,14 @@ public protocol ToneGenerator {
     var frequency: Double { get set }
     var amplitude1: Double { get set }
     var amplitude2: Double { get set }
+    var directDrive: Double { get set }
 }
 
 public class AudioDevicePeripheral: ComputerPeripheral {
     public let kFrequencyRegisterAddr = 0x00
     public let kAmplitude1RegisterAddr = 0x01
     public let kAmplitude2RegisterAddr = 0x02
+    public let kDirectDriveRegisterAddr = 0x03
     public var toneGenerator: ToneGenerator?
     
     public var frequencyRegister: UInt8 = 0 {
@@ -55,6 +57,12 @@ public class AudioDevicePeripheral: ComputerPeripheral {
         }
     }
     
+    public var directDriveRegister: UInt8 = 0 {
+        didSet {
+            toneGenerator?.directDrive = Double(directDriveRegister) / 255.0
+        }
+    }
+    
     func lerp(_ x: Double, _ x0: Double, _ x1: Double) -> Double {
         return x0 + (x * (x1 - x0))
     }
@@ -75,6 +83,10 @@ public class AudioDevicePeripheral: ComputerPeripheral {
             
         if address == kAmplitude2RegisterAddr {
             amplitude2Register = value
+        }
+            
+        if address == kDirectDriveRegisterAddr {
+            directDriveRegister = value
         }
     }
     

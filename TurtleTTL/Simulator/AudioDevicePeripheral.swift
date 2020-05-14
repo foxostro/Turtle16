@@ -10,7 +10,7 @@ import Cocoa
 
 public protocol ToneGenerator {
     var frequency: Double { get set }
-    var gain: Double { get set }
+    var amplitude: Double { get set }
 }
 
 public class AudioDevicePeripheral: ComputerPeripheral {
@@ -43,7 +43,7 @@ public class AudioDevicePeripheral: ComputerPeripheral {
     
     public var gainRegister: UInt8 = 0 {
         didSet {
-            toneGenerator?.gain = Double(gainRegister) / 255.0
+            toneGenerator?.amplitude = Double(gainRegister) / 255.0
         }
     }
     

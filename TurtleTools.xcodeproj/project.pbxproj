@@ -29,8 +29,9 @@
 		6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
 		6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */; };
 		6F4BE176230D2E31008C2329 /* AssemblerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BE175230D2E31008C2329 /* AssemblerError.swift */; };
-		6F4C13F42468DACE0039796F /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4C13F32468DACE0039796F /* ConcreteToneGenerator.swift */; };
 		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
+		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
+		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
 		6F5A00E623184880003E7C7F /* Patcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E523184880003E7C7F /* Patcher.swift */; };
 		6F5A00E823184896003E7C7F /* PatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* PatcherTests.swift */; };
 		6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
@@ -137,27 +138,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6F4C14032468E41C0039796F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6F4C13FE2468E41C0039796F /* AudioKit For macOS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C42F36CC1C0582E6000E937C;
-			remoteInfo = AudioKit;
-		};
-		6F4C14052468E41C0039796F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6F4C13FE2468E41C0039796F /* AudioKit For macOS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAFECEBD1F4EBBFE00A2B046;
-			remoteInfo = AudioKitUI;
-		};
-		6F4C14072468E4260039796F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6F4C13FE2468E41C0039796F /* AudioKit For macOS.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = C42F36CB1C0582E6000E937C;
-			remoteInfo = AudioKit;
-		};
 		6F5036FA22F50DC600761737 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -251,8 +231,8 @@
 		6F4ACBDA2400BCD900014F4B /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
 		6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* AssemblerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerError.swift; sourceTree = "<group>"; };
-		6F4C13F32468DACE0039796F /* ConcreteToneGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteToneGenerator.swift; sourceTree = "<group>"; };
-		6F4C13FE2468E41C0039796F /* AudioKit For macOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "AudioKit For macOS.xcodeproj"; path = "../../AudioKit/AudioKit/macOS/AudioKit For macOS.xcodeproj"; sourceTree = "<group>"; };
+		6F59F052246D2E0B005C7348 /* Oscillator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Oscillator.swift; sourceTree = "<group>"; };
+		6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteToneGenerator.swift; sourceTree = "<group>"; };
 		6F5A00E523184880003E7C7F /* Patcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patcher.swift; sourceTree = "<group>"; };
 		6F5A00E723184896003E7C7F /* PatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatcherTests.swift; sourceTree = "<group>"; };
 		6F5A00E9231C6454003E7C7F /* SymbolTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTable.swift; sourceTree = "<group>"; };
@@ -415,15 +395,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6F4C13FF2468E41C0039796F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6F4C14042468E41C0039796F /* AudioKit.framework */,
-				6F4C14062468E41C0039796F /* AudioKitUI.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		6F5036F822F50DBA00761737 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -643,7 +614,6 @@
 		6FF1994A22ECB36F00C255A2 = {
 			isa = PBXGroup;
 			children = (
-				6F4C13FE2468E41C0039796F /* AudioKit For macOS.xcodeproj */,
 				6FF1995522ECB36F00C255A2 /* Simulator */,
 				6FF1996822ECB37000C255A2 /* SimulatorTests */,
 				6FE003D922F3F4C600221C4C /* TurtleAssembler */,
@@ -672,14 +642,15 @@
 			isa = PBXGroup;
 			children = (
 				6FF1995622ECB36F00C255A2 /* AppDelegate.swift */,
-				6F4C13F32468DACE0039796F /* ConcreteToneGenerator.swift */,
+				6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */,
+				6F59F052246D2E0B005C7348 /* Oscillator.swift */,
 				6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */,
 				6FF1995822ECB36F00C255A2 /* ViewController.swift */,
+				6FF1996022ECB37000C255A2 /* Simulator.entitlements */,
+				6FF1995F22ECB37000C255A2 /* Info.plist */,
+				6FE219CD241CC223006BC92A /* Example.txt */,
 				6FF1995A22ECB37000C255A2 /* Assets.xcassets */,
 				6FF1995C22ECB37000C255A2 /* Main.storyboard */,
-				6FF1995F22ECB37000C255A2 /* Info.plist */,
-				6FF1996022ECB37000C255A2 /* Simulator.entitlements */,
-				6FE219CD241CC223006BC92A /* Example.txt */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -736,7 +707,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				6F4C14082468E4260039796F /* PBXTargetDependency */,
 			);
 			name = TurtleTTL;
 			productName = TurtleTTL;
@@ -865,12 +835,6 @@
 			mainGroup = 6FF1994A22ECB36F00C255A2;
 			productRefGroup = 6FF1995422ECB36F00C255A2 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 6F4C13FF2468E41C0039796F /* Products */;
-					ProjectRef = 6F4C13FE2468E41C0039796F /* AudioKit For macOS.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				6FF1995222ECB36F00C255A2 /* Simulator */,
@@ -882,23 +846,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		6F4C14042468E41C0039796F /* AudioKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = AudioKit.framework;
-			remoteRef = 6F4C14032468E41C0039796F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6F4C14062468E41C0039796F /* AudioKitUI.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = AudioKitUI.framework;
-			remoteRef = 6F4C14052468E41C0039796F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6FE0038622F3D75E00221C4C /* Resources */ = {
@@ -1082,8 +1029,9 @@
 			files = (
 				6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */,
 				6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */,
-				6F4C13F42468DACE0039796F /* ConcreteToneGenerator.swift in Sources */,
+				6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */,
 				6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */,
+				6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1098,11 +1046,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6F4C14082468E4260039796F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AudioKit;
-			targetProxy = 6F4C14072468E4260039796F /* PBXContainerItemProxy */;
-		};
 		6F5036FB22F50DC600761737 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FE0038722F3D75E00221C4C /* TurtleTTL */;

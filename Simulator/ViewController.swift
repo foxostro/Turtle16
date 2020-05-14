@@ -165,6 +165,9 @@ class ViewController: NSViewController {
             disableCPUStateUpdate()
         }
         executor.runOrStop()
+        if !executor.isExecuting {
+            toneGenerator.amplitude = 0
+        }
     }
     
     @IBAction func reset(_ sender: Any) {
@@ -172,6 +175,9 @@ class ViewController: NSViewController {
             serialOutputDisplay.setString("")
         }
         executor.reset()
+        if !executor.isExecuting {
+            toneGenerator.amplitude = 0
+        }
     }
     
     func updateCPUState(_ cpuState: CPUStateSnapshot) {

@@ -14,6 +14,7 @@ class AudioDevicePeripheralTests: XCTestCase {
         var frequency: Double = 0.0
         var amplitude1: Double = 0.0
         var amplitude2: Double = 0.0
+        var directDrive: Double = 0.0
     }
     
     let mockToneGenerator = MockToneGenerator()

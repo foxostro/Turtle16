@@ -9,14 +9,14 @@
 import Cocoa
 import TurtleTTL
 
-class ConcreteToneGenerator: ToneGenerator {
+final class ConcreteToneGenerator: ToneGenerator {
     private var isRunning = false
     private let oscillator = Oscillator()
     private let lock = NSLock()
     
     public var frequency: Double = 0.0 {
         didSet {
-            update()
+            oscillator.frequency = frequency
         }
     }
     
@@ -31,7 +31,6 @@ class ConcreteToneGenerator: ToneGenerator {
             lock.lock()
             _amplitude1 = value
             lock.unlock()
-            update()
         }
     }
     
@@ -46,7 +45,20 @@ class ConcreteToneGenerator: ToneGenerator {
             lock.lock()
             _amplitude2 = value
             lock.unlock()
-            update()
+        }
+    }
+    
+    private var _directDrive = 0.0
+    public var directDrive: Double {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _directDrive
+        }
+        set (value) {
+            lock.lock()
+            _directDrive = value
+            lock.unlock()
         }
     }
     
@@ -65,7 +77,7 @@ class ConcreteToneGenerator: ToneGenerator {
     func transferFunction(_ theta: Double) -> Double {
         lock.lock()
         defer { lock.unlock() }
-        return triangleFn(theta)*_amplitude1 + sawtoothFn(theta)*_amplitude2
+        return triangleFn(theta)*_amplitude1 + sawtoothFn(theta)*_amplitude2 + _directDrive
     }
     
     init() {
@@ -74,20 +86,27 @@ class ConcreteToneGenerator: ToneGenerator {
         }
     }
     
-    func isSilent() -> Bool {
-        return amplitude1 == 0.0 && amplitude2 == 0.0
-    }
-    
-    func update() {
-        if (frequency == 0.0 || isSilent()) && isRunning {
-            oscillator.stop()
-            isRunning = false
-        } else {
-            oscillator.frequency = frequency
-            if !isRunning {
-                oscillator.start()
-            }
+    func start() {
+        if !isRunning {
+            oscillator.start()
             isRunning = true
         }
+    }
+    
+    func stop() {
+        if isRunning {
+            oscillator.stop()
+            isRunning = false
+        }
+    }
+    
+    func reset() {
+        stop()
+        frequency = 0.0
+        lock.lock()
+        _amplitude1 = 0.0
+        _amplitude2 = 0.0
+        _directDrive = 0.0
+        lock.unlock()
     }
 }

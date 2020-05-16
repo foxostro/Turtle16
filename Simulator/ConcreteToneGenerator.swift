@@ -14,9 +14,12 @@ final class ConcreteToneGenerator: ToneGenerator {
     private let oscillator = Oscillator()
     private let lock = NSLock()
     
-    public var frequency: Double = 0.0 {
-        didSet {
-            oscillator.frequency = frequency
+    public var frequency: Double {
+        get {
+            return oscillator.frequency
+        }
+        set (value) {
+            oscillator.frequency = value
         }
     }
     

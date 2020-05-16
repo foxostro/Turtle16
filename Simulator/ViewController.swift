@@ -69,8 +69,6 @@ class ViewController: NSViewController {
         executor.computer = computer
         executor.stopwatch = stopwatch
         disableEventLog()
-        disableCPUStateUpdate()
-        executor.provideInstructions(generateExampleProgram())
         
         executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
             self?.didUpdateSerialOutput(aString)
@@ -109,7 +107,7 @@ class ViewController: NSViewController {
             this.updateCPUState(this.executor.cpuState)
         }
         
-        executor.reset()
+        executor.provideInstructions(generateExampleProgram())
         
         NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.executor.stop()
@@ -268,7 +266,6 @@ class ViewController: NSViewController {
                             let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
                             self.alert(withMessage: error.message)
                         } else {
-                            self.executor.reset()
                             self.executor.provideInstructions(frontEnd.instructions)
                         }
                     } catch {

@@ -36,10 +36,12 @@ class UnlockedComputerExecutor: NSObject {
     
     public func provideInstructions(_ instructions: [Instruction]) {
         computer.provideInstructions(instructions)
+        reset()
     }
     
     public func loadProgram(from url: URL) throws {
         try computer.loadProgram(from: url)
+        reset()
     }
     
     public func saveProgram(to url: URL) throws {

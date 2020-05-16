@@ -79,6 +79,7 @@
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
 		6FA90CEC23FE681500E9AF1D /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
+		6FB0D27B247092E2003B5D5C /* TokenEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27A247092E2003B5D5C /* TokenEqual.swift */; };
 		6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */; };
 		6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */; };
 		6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */; };
@@ -297,6 +298,7 @@
 		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurtleVMBenchmarkDriver.swift; sourceTree = "<group>"; };
 		6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TurtleAssembler.entitlements; sourceTree = "<group>"; };
+		6FB0D27A247092E2003B5D5C /* TokenEqual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenEqual.swift; sourceTree = "<group>"; };
 		6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockedComputerExecutor.swift; sourceTree = "<group>"; };
 		6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStopwatch.swift; sourceTree = "<group>"; };
 		6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheral.swift; sourceTree = "<group>"; };
@@ -599,6 +601,7 @@
 		6FF07F862323128F00072830 /* Token */ = {
 			isa = PBXGroup;
 			children = (
+				6FB0D27A247092E2003B5D5C /* TokenEqual.swift */,
 				6F0880A0230FBDFF00AB2339 /* Token.swift */,
 				6F5A00FD231F6439003E7C7F /* TokenColon.swift */,
 				6F5A00FB231F642A003E7C7F /* TokenComma.swift */,
@@ -899,6 +902,7 @@
 				6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */,
 				6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */,
 				6F6A023923FF7013003876BD /* TraceRecorder.swift in Sources */,
+				6FB0D27B247092E2003B5D5C /* TokenEqual.swift in Sources */,
 				6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */,
 				6F6A023D23FF7204003876BD /* Trace.swift in Sources */,
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,

@@ -72,7 +72,7 @@ public class Parser: NSObject {
         return tokens.first
     }
     
-    func accept(_ typeInQuestion: AnyClass) -> Any? {
+    func accept(_ typeInQuestion: AnyClass) -> Token? {
         if let token = peek() {
             if typeInQuestion == type(of: token) {
                 advance()
@@ -82,16 +82,19 @@ public class Parser: NSObject {
         return nil
     }
     
-    func expect(type: AnyClass, error: Error) throws {
-        if nil == accept(type) {
+    @discardableResult func expect(type: AnyClass, error: Error) throws -> Token {
+        let result = accept(type)
+        if nil == result {
             throw error
         }
+        return result!
     }
     
-    func expect(types: [AnyClass], error: Error) throws {
-        for t in types {
-            if nil != accept(t) {
-                return
+    @discardableResult func expect(types: [AnyClass], error: Error) throws -> Token {
+        for type in types {
+            let result = accept(type)
+            if nil != result {
+                return result!
             }
         }
         throw error
@@ -99,7 +102,7 @@ public class Parser: NSObject {
     
     func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         for production in productions {
-            guard let symbol = accept(production.symbol) as? Token else { continue }
+            guard let symbol = accept(production.symbol) else { continue }
             if let statements = try production.generator(symbol) {
                 return statements
             }

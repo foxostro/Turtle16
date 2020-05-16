@@ -1,5 +1,9 @@
+let kAudioDevice = 6
+let kFrequencyRegister = 0
+let kGainRegister = 1
+
 LI A, 0
-LI D, 6 # audio device
+LI D, kAudioDevice
 LI U, 0
 LI V, 0
 
@@ -19,9 +23,9 @@ ADD A
 MOV M, A
 
 LI X, 0
-LI Y, 0 # Memory-mapped register for frequency
+LI Y, kFrequencyRegister
 MOV P, A
-LI Y, 1 # Memory-mapped register for amplifier gain
+LI Y, kGainRegister
 LI P, 0x80
 
 LXY delay

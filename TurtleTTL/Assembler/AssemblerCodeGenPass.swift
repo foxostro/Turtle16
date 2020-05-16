@@ -236,11 +236,21 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        guard let immediate = node.parameters.parameters[1] as? TokenNumber else {
+        if let immediate = node.parameters.parameters[1] as? TokenNumber {
+            try self.codeGenerator.li(node.destination, token: immediate)
+        } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
+            guard let value = symbols[identifier.lexeme] else {
+                throw AssemblerError(line: identifier.lineNumber,
+                                     format: "use of undeclared identifier: `%@'",
+                                     identifier.lexeme)
+            }
+            try self.codeGenerator.li(node.destination,
+                                      token: TokenNumber(lineNumber: identifier.lineNumber,
+                                                         lexeme: identifier.lexeme,
+                                                         literal: value))
+        } else {
             throw operandTypeMismatchError(node.instruction)
         }
-        
-        try self.codeGenerator.li(node.destination, token: immediate)
     }
     
     func lxy(_ node: InstructionNode) throws {
@@ -331,7 +341,20 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         if symbols[name] == nil {
             symbols[name] = codeGenerator.programCounter
         } else {
-            throw AssemblerError(line: node.identifier.lineNumber, format: "duplicate label: `%@'", name)
+            throw AssemblerError(line: node.identifier.lineNumber,
+                                 format: "label redefines existing symbol: `%@'",
+                                 node.identifier.lexeme)
+        }
+    }
+    
+    public func visit(node: ConstantDeclarationNode) throws {
+        let name = node.identifier.lexeme
+        if symbols[name] == nil {
+            symbols[name] = node.number.literal
+        } else {
+            throw AssemblerError(line: node.identifier.lineNumber,
+                                 format: "constant redefines existing symbol: `%@'",
+                                 node.identifier.lexeme)
         }
     }
     

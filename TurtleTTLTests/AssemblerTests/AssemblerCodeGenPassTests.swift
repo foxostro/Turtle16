@@ -736,4 +736,59 @@ class AssemblerCodeGenPassTests: XCTestCase {
         XCTAssertEqual(controlWord.UVInc, .active)
         XCTAssertEqual(controlWord.XYInc, .active)
     }
+    
+    func testFailToCompileDueToRedefinitionOfLabel() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.message, "label redefines existing symbol: `foo'")
+    }
+    
+    func testFailToCompileDueToRedefinitionOfConstant() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                    number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+            ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                    number: TokenNumber(lineNumber: 2, lexeme: "42", literal: 42)),
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.message, "constant redefines existing symbol: `foo'")
+    }
+
+    func testLICannotUseUndeclaredSymbolAsSource() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
+                                TokenIdentifier(lineNumber: 1, lexeme: "foo")
+                            ]))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.line, 1)
+        XCTAssertEqual(errors.first?.message, "use of undeclared identifier: `foo'")
+    }
+    
+    func testLIWithConstantSource() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                    number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)),
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LI"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 2, lexeme: "B", literal: .B),
+                                TokenIdentifier(lineNumber: 2, lexeme: "foo")
+                            ]))
+        ])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions[1].immediate, 42)
+        
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.CO, .active)
+        XCTAssertEqual(controlWord.BI, .active)
+    }
 }

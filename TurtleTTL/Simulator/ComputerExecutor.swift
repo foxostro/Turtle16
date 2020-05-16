@@ -229,9 +229,9 @@ public class ComputerExecutor: NSObject {
     }
     
     public var cpuState: CPUStateSnapshot {
-        var cpuState: CPUStateSnapshot? = nil
+        var cpuState: CPUStateSnapshot!
         queue.sync {
-            cpuState = unlockedExecutor.cpuState
+            cpuState = unlockedExecutor.cpuState.copy() as? CPUStateSnapshot
         }
         return cpuState!
     }

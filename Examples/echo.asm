@@ -1,6 +1,14 @@
+let kSerialInterface = 7
+let kDataPort = 1
+let kControlPort = 0
+let kResetCommand = 0
+let kPutCommand = 1
+let kGetCommand = 2
+let kGetNumberOfBytesCommand = 3
+
 LI A, 0
 LI B, 0
-LI D, 7 # The Serial Interface device
+LI D, kSerialInterface
 LI X, 0
 LI Y, 0
 LI U, 0
@@ -105,19 +113,19 @@ MOV M, G
 LI V, 11
 MOV M, H
 
-LI D, 7 # The Serial Interface device
-LI Y, 1 # Data Port
-LI P, 0 # Reset Command
-LI Y, 0 # Control Port
+LI D, kSerialInterface
+LI Y, kDataPort
+LI P, kResetCommand
+LI Y, kControlPort
 LI P, 0 # Lower SCK
 LI P, 1 # Raise SCK
 LXY delay
 JALR
 NOP
 NOP
-LI Y, 1 # Data Port
+LI Y, kDataPort
 MOV A, P # Store the status in A
-LI Y, 0 # Control Port
+LI Y, kControlPort
 LI P, 0 # Lower SCK
 LXY delay
 JALR
@@ -156,31 +164,31 @@ LI V, 5
 MOV M, A
 
 LI D, 7 # The Serial Interface device
-LI Y, 1 # Data Port
-LI P, 1 # Put Command
-LI Y, 0 # Control Port
+LI Y, kDataPort
+LI P, kPutCommand
+LI Y, kControlPort
 LI P, 1 # Raise SCK
 LXY delay
 JALR
 NOP
 NOP
-LI Y, 0 # Control Port
+LI Y, kControlPort
 LI P, 0 # Lower SCK
 LXY delay
 JALR
 NOP
 NOP
-LI Y, 1 # Data Port
+LI Y, kDataPort
 LI U, 0
 LI V, 5
 MOV P, M # Retrieve the byte from address 5 and pass it to the serial device.
-LI Y, 0 # Control Port
+LI Y, kControlPort
 LI P, 1 # Raise SCK
 LXY delay
 JALR
 NOP
 NOP
-LI Y, 0 # Control Port
+LI Y, kControlPort
 LI P, 0 # Lower SCK
 LXY delay
 JALR
@@ -212,9 +220,9 @@ MOV M, G
 LI V, 11
 MOV M, H
 
-LI Y, 1 # Data Port
-LI P, 2 # "Get" Command
-LI Y, 0 # Control Port
+LI Y, kDataPort
+LI P, kGetCommand
+LI Y, kControlPort
 LI P, 1 # Raise SCK
 LXY delay
 JALR
@@ -223,7 +231,7 @@ NOP
 LI U, 0
 LI V, 5
 MOV M, P # Store the input byte in memory at address 5.
-LI Y, 0 # Control Port
+LI Y, kControlPort
 LI P, 0 # Lower SCK
 LXY delay
 JALR
@@ -260,10 +268,10 @@ MOV M, G
 LI V, 11
 MOV M, H
 
-LI D, 7 # kSerialInterface
-LI Y, 1 # Data Port
-LI P, 3 # "Get Number of Bytes" Command
-LI Y, 0 # Control Port
+LI D, kSerialInterface
+LI Y, kDataPort
+LI P, kGetNumberOfBytesCommand
+LI Y, kControlPort
 LI P, 1 # Raise SCK
 LXY delay
 JALR
@@ -272,7 +280,7 @@ NOP
 LI U, 0
 LI V, 5
 MOV M, P # Store the number of available bytes in memory at address 5.
-LI Y, 0 # Control Port
+LI Y, kControlPort
 LI P, 0 # Lower SCK
 LXY delay
 JALR

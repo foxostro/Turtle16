@@ -1,3 +1,7 @@
+let kAudioDevice = 6
+let kFrequencyRegister = 0
+let kGainRegister = 0
+
 LI A, 1
 LI B, 2
 LI D, 3
@@ -6,11 +10,11 @@ LI V, 5
 LI X, 6
 LI Y, 7
 
-LI D, 6 # audio device
+LI D, kAudioDevice
 LI X, 0
-LI Y, 0 # Memory-mapped register for frequency
+LI Y, kFrequencyRegister
 LI P, 0x80
-LI Y, 1 # Memory-mapped register for amplifier gain
+LI Y, kGainRegister
 LI P, 0x80
 
 LXY delay
@@ -19,11 +23,11 @@ NOP
 NOP
 
 # Go silent again and halt the computer.
-LI D, 6 # audio device
+LI D, kAudioDevice
 LI X, 0
-LI Y, 1 # Memory-mapped register for amplifier gain
+LI Y, kFrequencyRegister
 LI P, 0
-LI Y, 0 # Memory-mapped register for frequency
+LI Y, kGainRegister
 LI P, 0
 
 LI A, 0xff

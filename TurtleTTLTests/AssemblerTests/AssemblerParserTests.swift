@@ -155,4 +155,65 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors[1].line, 2)
         XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `MOV'")
     }
+    
+    func testMalformedDeclaration_BareLetStatement() {
+        let parser = AssemblerParser(tokens: tokenize("let"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in constant declaration")
+    }
+    
+    func testMalformedDeclaration_MissingAssignment() {
+        let parser = AssemblerParser(tokens: tokenize("let foo"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "constants must be assigned a value")
+    }
+    
+    func testMalformedDeclaration_MissingValue() {
+        let tokens = tokenize("let foo =")
+        let parser = AssemblerParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected value after '='")
+    }
+    
+    func testMalformedDeclaration_BadTypeForValue_Identifier() {
+        let parser = AssemblerParser(tokens: tokenize("let foo = bar"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `bar'")
+    }
+    
+    func testMalformedDeclaration_BadTypeForValue_Register() {
+        let parser = AssemblerParser(tokens: tokenize("let foo = A"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `A'")
+    }
+    
+    func testMalformedDeclaration_BadTypeForValue_TooManyTokens() {
+        let parser = AssemblerParser(tokens: tokenize("let foo = 1 A"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `A'")
+    }
+    
+    func testWellFormedDeclaration() {
+        let parser = AssemblerParser(tokens: tokenize("let foo = 1"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0],
+                       ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                               number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+    }
 }

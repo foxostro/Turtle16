@@ -27,12 +27,14 @@ public class ComputerExecutor: NSObject {
     }
     
     public func provideInstructions(_ instructions: [Instruction]) {
+        flagBreak.value = false
         queue.async { [weak self] in
             self?.unlockedExecutor.provideInstructions(instructions)
         }
     }
     
     public func loadProgram(from url: URL, errorBlock: @escaping (Error)->Void) {
+        flagBreak.value = false
         queue.async { [weak self] in
             do {
                 try self?.unlockedExecutor.loadProgram(from: url)

@@ -17,6 +17,11 @@ public struct AssemblerError: Error {
         message = String(format:format, arguments:args)
     }
     
+    public init(line: Int, message: String) {
+        self.line = line
+        self.message = message
+    }
+    
     public init(message: String) {
         line = nil
         self.message = message

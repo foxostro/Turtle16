@@ -117,6 +117,13 @@ class AssemblerLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeBinaryLiteral() {
+        let tokenizer = AssemblerLexer(withString: "0b11")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenNumber(lineNumber: 1, lexeme: "0b11", literal: 3),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeLiteralCharacter() {
         let tokenizer = AssemblerLexer(withString: "'A'")
         tokenizer.scanTokens()

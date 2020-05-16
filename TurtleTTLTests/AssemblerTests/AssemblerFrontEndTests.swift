@@ -142,7 +142,7 @@ class AssemblerFrontEndTests: XCTestCase {
         let errors = mustFailToCompile("label:\nlabel:")
         let error = errors.first!
         XCTAssertEqual(error.line, 2)
-        XCTAssertEqual(error.message, "duplicate label: `label'")
+        XCTAssertEqual(error.message, "label redefines existing symbol: `label'")
     }
     
     func testParseLabelNameIsANumber() {

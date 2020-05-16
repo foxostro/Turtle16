@@ -111,11 +111,11 @@ class ViewController: NSViewController {
             this.makeRunButtonAvailable()
         }
         
-        executor.provideInstructions(generateExampleProgram())
-        
         NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.executor.stop()
         }
+        
+        executor.provideInstructions(generateExampleProgram())
     }
     
     func generateExampleProgram() -> [Instruction] {

@@ -229,4 +229,30 @@ class AssemblerLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeLet() {
+        let tokenizer = AssemblerLexer(withString: "let")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLet(lineNumber: 1, lexeme: "let"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeEqualAdjacentToOtherTokens() {
+        let tokenizer = AssemblerLexer(withString: "let foo=1")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLet(lineNumber: 1, lexeme: "let"),
+                                          TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                          TokenEqual(lineNumber: 1, lexeme: "="),
+                                          TokenNumber(lineNumber: 1, lexeme: "1", literal: 1),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeEqualByItself() {
+        let tokenizer = AssemblerLexer(withString: "let foo =")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLet(lineNumber: 1, lexeme: "let"),
+                                          TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                          TokenEqual(lineNumber: 1, lexeme: "="),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

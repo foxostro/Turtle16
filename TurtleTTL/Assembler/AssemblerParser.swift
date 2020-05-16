@@ -15,7 +15,8 @@ public class AssemblerParser: Parser {
         self.productions = [
             Production(symbol: TokenEOF.self,        generator: { _ in [] }),
             Production(symbol: TokenNewline.self,    generator: { _ in [] }),
-            Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) })
+            Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) }),
+            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) })
         ]
     }
     
@@ -92,6 +93,29 @@ public class AssemblerParser: Parser {
         parameters += [maybeParameter!]
         
         return parameters
+    }
+    
+    func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
+        let identifier = try expect(type: TokenIdentifier.self,
+                                    error: AssemblerError(line: letToken.lineNumber,
+                                                          format: "expected to find an identifier in constant declaration",
+                                                          letToken.lexeme)) as! TokenIdentifier
+        try expect(type: TokenEqual.self,
+                   error: AssemblerError(line: letToken.lineNumber,
+                                         format: "constants must be assigned a value",
+                                         letToken.lexeme))
+        let numberToken = peek()
+        if (numberToken == nil) || (type(of: numberToken!) == TokenNewline.self) || (type(of: numberToken!) == TokenEOF.self) {
+            throw AssemblerError(line: letToken.lineNumber,
+                                 format: "expected value after '='",
+                                 letToken.lexeme)
+        }
+        let number = try expect(type: TokenNumber.self,
+                                error: operandTypeMismatchError(numberToken!)) as! TokenNumber
+        try expect(types: [TokenNewline.self, TokenEOF.self],
+                   error: operandTypeMismatchError(peek()!))
+        
+        return [ConstantDeclarationNode(identifier: identifier, number: number)]
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {

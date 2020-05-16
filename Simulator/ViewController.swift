@@ -68,7 +68,6 @@ class ViewController: NSViewController {
         let computer = Computer(toneGenerator: toneGenerator)
         executor.computer = computer
         executor.stopwatch = stopwatch
-        disableEventLog()
         
         executor.didUpdateSerialOutput = {[weak self] (aString: String) -> Void in
             self?.didUpdateSerialOutput(aString)
@@ -78,6 +77,8 @@ class ViewController: NSViewController {
             guard let this = self else { return }
             this.toneGenerator.reset()
             this.toneGenerator.start()
+            this.disableEventLog()
+            this.disableCPUStateUpdate()
             this.makeStopButtonAvailable()
         }
         
@@ -93,18 +94,21 @@ class ViewController: NSViewController {
         executor.didHalt = {[weak self] in
             guard let this = self else { return }
             this.toneGenerator.reset()
-            this.stepButton.isEnabled = false
-            this.runButton.isEnabled = false
+            this.updateCPUState(this.executor.cpuState)
+            this.enableCPUStateUpdate()
+            this.enableEventLog()
+            this.makeRunButtonAvailable()
         }
         
         executor.didReset = {[weak self] in
             guard let this = self else { return }
-            this.toneGenerator.reset()
-            this.makeRunButtonAvailable()
-            this.stepButton.isEnabled = true
-            this.runButton.isEnabled = true
+            this.serialOutput.textStorage?.mutableString.setString("")
             this.logger.clear()
+            this.toneGenerator.reset()
             this.updateCPUState(this.executor.cpuState)
+            this.enableCPUStateUpdate()
+            this.enableEventLog()
+            this.makeRunButtonAvailable()
         }
         
         executor.provideInstructions(generateExampleProgram())
@@ -158,23 +162,14 @@ class ViewController: NSViewController {
     }
 
     @IBAction func step(_ sender: Any) {
-        enableEventLog()
-        enableCPUStateUpdate()
         executor.singleStep()
     }
     
     @IBAction func runOrStop(_ sender: Any) {
-        if stepButton.isEnabled {
-            disableEventLog()
-            disableCPUStateUpdate()
-        }
         executor.runOrStop()
     }
     
     @IBAction func reset(_ sender: Any) {
-        if let serialOutputDisplay = serialOutput.textStorage?.mutableString {
-            serialOutputDisplay.setString("")
-        }
         executor.reset()
     }
     

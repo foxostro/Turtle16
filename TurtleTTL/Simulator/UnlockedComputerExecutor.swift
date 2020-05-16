@@ -123,14 +123,19 @@ class UnlockedComputerExecutor: NSObject {
     }
     
     public func reset() {
+        if numberOfInstructionsRemaining > 0 {
+            notifyDidStop()
+        }
         numberOfInstructionsRemaining = 0
+        computer.reset()
+        
         computer.didUpdateSerialOutput = {[weak self] (aString: String) in
             guard let this = self else { return }
             this.notificationQueue.async {
                 this.didUpdateSerialOutput(aString)
             }
         }
-        computer.reset()
+        
         notifyDidReset()
     }
     

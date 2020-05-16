@@ -11,7 +11,7 @@ import Cocoa
 public class AssemblerLexer: Lexer {
     public required init(withString string: String) {
         super.init(withString: string)
-        self.rules = [
+        self.rules = [ // XXX: These closures retain self and self retains closures through rules. Retain cyle?
             Rule(pattern: "\n") {
                 let token = TokenNewline(lineNumber: self.lineNumber, lexeme: $0)
                 self.lineNumber += 1
@@ -98,6 +98,13 @@ public class AssemblerLexer: Lexer {
                 let result = scanner.scanHexInt32(&number)
                 assert(result)
                 return TokenNumber(lineNumber: self.lineNumber, lexeme: $0, literal: Int(number))
+            },
+            Rule(pattern: "0b[01]+\\b") {
+                let scanner = Scanner(string: String($0))
+                var number = 0
+                let result = scanner.scanBinaryInt(&number)
+                assert(result)
+                return TokenNumber(lineNumber: self.lineNumber, lexeme: $0, literal: number)
             },
             Rule(pattern: "'.'") {
                 let number = Int(String($0).split(separator: "'").first!.unicodeScalars.first!.value)

@@ -1,6 +1,6 @@
 let kAudioDevice = 6
 let kFrequencyRegister = 0
-let kGainRegister = 0
+let kGainRegister = 1
 
 LI A, 1
 LI B, 2

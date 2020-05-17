@@ -6,5 +6,10 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-print("Hello, World!")
+import TurtleCore
 
+let driver = SnapCommandLineDriver(withArguments: CommandLine.arguments)
+driver.stdout = FileHandleTextOutputStream(FileHandle.standardOutput)
+driver.stderr = FileHandleTextOutputStream(FileHandle.standardError)
+driver.run()
+exit(driver.status)

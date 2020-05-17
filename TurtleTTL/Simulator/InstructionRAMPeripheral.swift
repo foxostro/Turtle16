@@ -20,15 +20,32 @@ public class InstructionRAMPeripheral: ComputerPeripheral {
         super.init(name: name)
     }
     
+    func reverseBits(_ value: UInt8) -> UInt8 {
+        var n = value
+        var result: UInt8 = 0
+        while (n > 0) {
+            result <<= 1
+            if ((n & 1) == 1) {
+                result ^= 1
+            }
+            n >>= 1
+        }
+        return result
+    }
+    
     public override func onControlClock() {
         if (PO == .active) {
-            bus = Register(withValue: load(valueOfXYPair()))
+            // There's a hardware bug in Rev 2 where the bits of the instruction
+            // RAM port connected to the data bus are in reverse order.
+            bus = Register(withValue: reverseBits(load(valueOfXYPair())))
         }
     }
     
     public override func onRegisterClock() {
         if (PI == .active) {
-            store(bus.value, valueOfXYPair())
+            // There's a hardware bug in Rev 2 where the bits of the instruction
+            // RAM port connected to the data bus are in reverse order.
+            store(reverseBits(bus.value), valueOfXYPair())
         }
     }
 }

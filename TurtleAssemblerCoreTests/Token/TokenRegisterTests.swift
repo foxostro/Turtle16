@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class TokenRegisterTests: XCTestCase {
     func testTokenRegisterDescription() {

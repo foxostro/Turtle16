@@ -7,6 +7,7 @@
 //
 
 import TurtleCore
+import TurtleCompilerToolbox
 
 public class AssemblerFrontEnd: NSObject {
     public var instructions: [Instruction] = []

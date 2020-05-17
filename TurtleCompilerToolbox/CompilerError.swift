@@ -1,12 +1,12 @@
 //
 //  CompilerError.swift
-//  TurtleAssemblerCore
+//  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 8/21/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public struct CompilerError: Error {
+open class CompilerError: Error {
     public let line: Int?
     public let message: String
     

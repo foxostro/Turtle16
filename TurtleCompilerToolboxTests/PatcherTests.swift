@@ -1,13 +1,12 @@
 //
 //  PatcherTests.swift
-//  TurtleAssemblerCoreTests
+//  TurtleCompilerToolboxTests
 //
 //  Created by Andrew Fox on 8/29/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleAssemblerCore
 import TurtleCompilerToolbox
 import TurtleCore
 

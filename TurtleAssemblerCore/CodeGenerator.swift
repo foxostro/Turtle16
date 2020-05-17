@@ -7,6 +7,7 @@
 //
 
 import TurtleCore
+import TurtleCompilerToolbox
 
 // Generates machine code for use in the IF stage of TurtleTTL hardware.
 public class CodeGenerator: NSObject {

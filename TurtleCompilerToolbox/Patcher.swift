@@ -1,13 +1,12 @@
 //
 //  Patcher.swift
-//  TurtleAssemblerCore
+//  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 8/29/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import TurtleCore
-import TurtleCompilerToolbox
 
 // Rewrites instructions, replacing placeholder immediate values with final
 // values determined from the symbol table.

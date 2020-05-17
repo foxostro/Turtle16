@@ -7,6 +7,7 @@
 //
 
 import TurtleCore
+import TurtleCompilerToolbox
 
 public class InstructionNode: AbstractSyntaxTreeNode {
     public let instruction: Token
@@ -19,10 +20,6 @@ public class InstructionNode: AbstractSyntaxTreeNode {
         self.instruction = instruction
         self.parameters = parameters
         super.init(children: [])
-    }
-    
-    public override func accept(visitor: AbstractSyntaxTreeNodeVisitor) throws {
-        try visitor.visit(node: self)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

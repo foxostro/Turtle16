@@ -1,17 +1,15 @@
 //
-//  TokenRegister.swift
-//  TurtleAssemblerCore
+//  TokenNumber.swift
+//  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 9/3/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
-public class TokenRegister : Token {
-    public let literal: RegisterName
+public class TokenNumber : Token {
+    public let literal: Int
     
-    public init(lineNumber: Int, lexeme: String, literal: RegisterName) {
+    public init(lineNumber: Int, lexeme: String, literal: Int) {
         self.literal = literal
         super.init(lineNumber: lineNumber, lexeme: lexeme)
     }
@@ -21,14 +19,14 @@ public class TokenRegister : Token {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? TokenRegister {
+        if let rhs = rhs as? TokenNumber {
             return self == rhs
         }
         return false
     }
 }
 
-public func ==(lhs: TokenRegister, rhs: TokenRegister) -> Bool {
+public func ==(lhs: TokenNumber, rhs: TokenNumber) -> Bool {
     if lhs.lineNumber != rhs.lineNumber {
         return false
     }

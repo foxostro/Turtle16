@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCompilerToolbox
+
 public class AssemblerLexer: Lexer {
     public required init(withString string: String) {
         super.init(withString: string)

@@ -42,6 +42,9 @@
 		6F9201D32471D881009E1410 /* PatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* PatcherTests.swift */; };
 		6F9201D42471D881009E1410 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615178230CB56E00282B12 /* LexerTests.swift */; };
 		6F9201DC2471DA22009E1410 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9201DB2471DA22009E1410 /* main.swift */; };
+		6F9201EE2471DAC7009E1410 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
+		6F9201F32471DAC7009E1410 /* SnapCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9201F22471DAC7009E1410 /* SnapCoreTests.swift */; };
+		6F9201F52471DAC7009E1410 /* SnapCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F9201E72471DAC7009E1410 /* SnapCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
 		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
@@ -203,6 +206,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
 			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F9201EF2471DAC7009E1410 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
 		};
 		6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -436,6 +446,12 @@
 		6F9201CB2471D82C009E1410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F9201D92471DA22009E1410 /* Snap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Snap; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F9201DB2471DA22009E1410 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		6F9201E52471DAC7009E1410 /* SnapCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F9201E72471DAC7009E1410 /* SnapCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnapCore.h; sourceTree = "<group>"; };
+		6F9201E82471DAC7009E1410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6F9201ED2471DAC7009E1410 /* SnapCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F9201F22471DAC7009E1410 /* SnapCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCoreTests.swift; sourceTree = "<group>"; };
+		6F9201F42471DAC7009E1410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
 		6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleVMBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -527,6 +543,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201E22471DAC7009E1410 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201EA2471DAC7009E1410 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F9201EE2471DAC7009E1410 /* SnapCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,6 +732,24 @@
 				6F9201DB2471DA22009E1410 /* main.swift */,
 			);
 			path = Snap;
+			sourceTree = "<group>";
+		};
+		6F9201E62471DAC7009E1410 /* SnapCore */ = {
+			isa = PBXGroup;
+			children = (
+				6F9201E72471DAC7009E1410 /* SnapCore.h */,
+				6F9201E82471DAC7009E1410 /* Info.plist */,
+			);
+			path = SnapCore;
+			sourceTree = "<group>";
+		};
+		6F9201F12471DAC7009E1410 /* SnapCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				6F9201F22471DAC7009E1410 /* SnapCoreTests.swift */,
+				6F9201F42471DAC7009E1410 /* Info.plist */,
+			);
+			path = SnapCoreTests;
 			sourceTree = "<group>";
 		};
 		6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */ = {
@@ -909,6 +958,8 @@
 				6FB0D29724710C26003B5D5C /* TurtleCoreTests */,
 				6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6F9201DA2471DA22009E1410 /* Snap */,
+				6F9201E62471DAC7009E1410 /* SnapCore */,
+				6F9201F12471DAC7009E1410 /* SnapCoreTests */,
 				6FF1995422ECB36F00C255A2 /* Products */,
 				6F5036F822F50DBA00761737 /* Frameworks */,
 			);
@@ -930,6 +981,8 @@
 				6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */,
 				6F9201C72471D82C009E1410 /* TurtleCompilerToolboxTests.xctest */,
 				6F9201D92471DA22009E1410 /* Snap */,
+				6F9201E52471DAC7009E1410 /* SnapCore.framework */,
+				6F9201ED2471DAC7009E1410 /* SnapCoreTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -968,6 +1021,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F17182D2471C56600AE60C2 /* TurtleCompilerToolbox.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201E02471DAC7009E1410 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F9201F52471DAC7009E1410 /* SnapCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1051,6 +1112,42 @@
 			productName = Snap;
 			productReference = 6F9201D92471DA22009E1410 /* Snap */;
 			productType = "com.apple.product-type.tool";
+		};
+		6F9201E42471DAC7009E1410 /* SnapCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F9201F62471DAC7009E1410 /* Build configuration list for PBXNativeTarget "SnapCore" */;
+			buildPhases = (
+				6F9201E02471DAC7009E1410 /* Headers */,
+				6F9201E12471DAC7009E1410 /* Sources */,
+				6F9201E22471DAC7009E1410 /* Frameworks */,
+				6F9201E32471DAC7009E1410 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SnapCore;
+			productName = SnapCore;
+			productReference = 6F9201E52471DAC7009E1410 /* SnapCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6F9201EC2471DAC7009E1410 /* SnapCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F9201F92471DAC7009E1410 /* Build configuration list for PBXNativeTarget "SnapCoreTests" */;
+			buildPhases = (
+				6F9201E92471DAC7009E1410 /* Sources */,
+				6F9201EA2471DAC7009E1410 /* Frameworks */,
+				6F9201EB2471DAC7009E1410 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6F9201F02471DAC7009E1410 /* PBXTargetDependency */,
+			);
+			name = SnapCoreTests;
+			productName = SnapCoreTests;
+			productReference = 6F9201ED2471DAC7009E1410 /* SnapCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */ = {
 			isa = PBXNativeTarget;
@@ -1263,6 +1360,12 @@
 					6F9201D82471DA22009E1410 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
+					6F9201E42471DAC7009E1410 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					6F9201EC2471DAC7009E1410 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
 					6FA90CE223FE67C800E9AF1D = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -1329,6 +1432,8 @@
 				6FB0D29224710C26003B5D5C /* TurtleCoreTests */,
 				6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6F9201D82471DA22009E1410 /* Snap */,
+				6F9201E42471DAC7009E1410 /* SnapCore */,
+				6F9201EC2471DAC7009E1410 /* SnapCoreTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1342,6 +1447,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6F9201C52471D82C009E1410 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201E32471DAC7009E1410 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201EB2471DAC7009E1410 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1450,6 +1569,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F9201DC2471DA22009E1410 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201E12471DAC7009E1410 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F9201E92471DAC7009E1410 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F9201F32471DAC7009E1410 /* SnapCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1659,6 +1793,11 @@
 			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
 			targetProxy = 6F9201CD2471D82C009E1410 /* PBXContainerItemProxy */;
 		};
+		6F9201F02471DAC7009E1410 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6F9201EF2471DAC7009E1410 /* PBXContainerItemProxy */;
+		};
 		6FB0D29624710C26003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
@@ -1842,6 +1981,96 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6F9201F72471DAC7009E1410 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = SnapCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		6F9201F82471DAC7009E1410 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = SnapCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6F9201FA2471DAC7009E1410 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				INFOPLIST_FILE = SnapCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6F9201FB2471DAC7009E1410 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				INFOPLIST_FILE = SnapCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -2414,6 +2643,24 @@
 			buildConfigurations = (
 				6F9201DD2471DA22009E1410 /* Debug */,
 				6F9201DE2471DA22009E1410 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F9201F62471DAC7009E1410 /* Build configuration list for PBXNativeTarget "SnapCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F9201F72471DAC7009E1410 /* Debug */,
+				6F9201F82471DAC7009E1410 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F9201F92471DAC7009E1410 /* Build configuration list for PBXNativeTarget "SnapCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F9201FA2471DAC7009E1410 /* Debug */,
+				6F9201FB2471DAC7009E1410 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

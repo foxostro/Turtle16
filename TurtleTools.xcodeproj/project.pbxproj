@@ -7,17 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6F088069230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088068230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift */; };
-		6F088075230F5D8F00AB2339 /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
-		6F08807B230F5DBF00AB2339 /* LabelDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */; };
-		6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807C230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift */; };
-		6F08807F230F6AEC00AB2339 /* AssemblerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */; };
-		6F08808B230F6E4F00AB2339 /* InstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */; };
-		6F088091230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */; };
-		6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */; };
-		6F088095230F864D00AB2339 /* AssemblerCodeGenPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */; };
-		6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A0230FBDFF00AB2339 /* Token.swift */; };
-		6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
 		6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */; };
 		6F2EE665240C9D1D001FE46E /* SerialInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE664240C9D1D001FE46E /* SerialInput.swift */; };
@@ -25,35 +14,10 @@
 		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
 		6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */; };
-		6F4BE176230D2E31008C2329 /* AssemblerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BE175230D2E31008C2329 /* AssemblerError.swift */; };
 		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
 		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
-		6F5A00E623184880003E7C7F /* Patcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E523184880003E7C7F /* Patcher.swift */; };
-		6F5A00E823184896003E7C7F /* PatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* PatcherTests.swift */; };
-		6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
-		6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00ED231D029D003E7C7F /* Parser.swift */; };
-		6F5A00F2231E2FFD003E7C7F /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
-		6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
-		6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */; };
-		6F5A00F8231F6406003E7C7F /* TokenEOF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F7231F6406003E7C7F /* TokenEOF.swift */; };
-		6F5A00FA231F6415003E7C7F /* TokenNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F9231F6415003E7C7F /* TokenNewline.swift */; };
-		6F5A00FC231F642A003E7C7F /* TokenComma.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FB231F642A003E7C7F /* TokenComma.swift */; };
-		6F5A00FE231F6439003E7C7F /* TokenColon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FD231F6439003E7C7F /* TokenColon.swift */; };
-		6F5A0114231F6503003E7C7F /* TokenIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */; };
-		6F5A0116231F721B003E7C7F /* TokenEOFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */; };
-		6F5A011E231F725A003E7C7F /* TokenNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */; };
-		6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
-		6F5A013C231F7DCC003E7C7F /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013B231F7DCC003E7C7F /* ParserTests.swift */; };
 		6F5A013E232069FF003E7C7F /* ComputerExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */; };
-		6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
-		6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */; };
-		6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */; };
-		6F615171230CAF4A00282B12 /* AssemblerLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615170230CAF4A00282B12 /* AssemblerLexer.swift */; };
-		6F615173230CAF5600282B12 /* AssemblerLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */; };
-		6F615177230CB54200282B12 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615176230CB54200282B12 /* Lexer.swift */; };
-		6F615179230CB56E00282B12 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615178230CB56E00282B12 /* LexerTests.swift */; };
-		6F61517F230D041600282B12 /* AssemblerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F61517E230D041600282B12 /* AssemblerParser.swift */; };
 		6F6A023523FF62C6003876BD /* TraceProfiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023423FF62C6003876BD /* TraceProfiler.swift */; };
 		6F6A023723FF65D5003876BD /* TraceProfilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */; };
 		6F6A023923FF7013003876BD /* TraceRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023823FF7013003876BD /* TraceRecorder.swift */; };
@@ -67,15 +31,9 @@
 		6F7E7FBC23BEAC4D00647482 /* InstructionRAMPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */; };
 		6F7E7FBE23BEB77A00647482 /* ComputerPeripherals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */; };
 		6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */; };
-		6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
-		6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */; };
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
 		6FA90CEC23FE681500E9AF1D /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
-		6FB0D27B247092E2003B5D5C /* TokenEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27A247092E2003B5D5C /* TokenEqual.swift */; };
-		6FB0D27D24709301003B5D5C /* TokenLet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27C24709301003B5D5C /* TokenLet.swift */; };
-		6FB0D27F24709373003B5D5C /* ConstantDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */; };
-		6FB0D2812470937D003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
 		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D28D24710C26003B5D5C /* TurtleCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */; };
@@ -102,12 +60,58 @@
 		6FB0D2DB247112EF003B5D5C /* FlagsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DC241DA0C3006BC92A /* FlagsTest.swift */; };
 		6FB0D2DC247112F5003B5D5C /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F679BD422ED6FB0008C8E2C /* Flags.swift */; };
 		6FB0D2DF247113E3003B5D5C /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
+		6FB0D2EE247115BA003B5D5C /* TurtleAssemblerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; };
+		6FB0D2F3247115BA003B5D5C /* TurtleAssemblerCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2F2247115BA003B5D5C /* TurtleAssemblerCoreTests.swift */; };
+		6FB0D2F5247115BA003B5D5C /* TurtleAssemblerCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D2E7247115BA003B5D5C /* TurtleAssemblerCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6FB0D2FC24711605003B5D5C /* CodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */; };
+		6FB0D2FD24711605003B5D5C /* AssemblerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */; };
+		6FB0D2FF24711605003B5D5C /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013B231F7DCC003E7C7F /* ParserTests.swift */; };
+		6FB0D30024711605003B5D5C /* AssemblerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */; };
+		6FB0D30124711605003B5D5C /* PatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* PatcherTests.swift */; };
+		6FB0D30224711605003B5D5C /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615178230CB56E00282B12 /* LexerTests.swift */; };
+		6FB0D30324711605003B5D5C /* AssemblerCodeGenPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */; };
+		6FB0D30424711605003B5D5C /* AssemblerLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */; };
+		6FB0D30624711618003B5D5C /* AssemblerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F61517E230D041600282B12 /* AssemblerParser.swift */; };
+		6FB0D30724711618003B5D5C /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00ED231D029D003E7C7F /* Parser.swift */; };
+		6FB0D30824711618003B5D5C /* AssemblerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */; };
+		6FB0D30924711618003B5D5C /* Patcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E523184880003E7C7F /* Patcher.swift */; };
+		6FB0D30A24711618003B5D5C /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
+		6FB0D30B24711618003B5D5C /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
+		6FB0D30C24711618003B5D5C /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
+		6FB0D30D24711618003B5D5C /* AssemblerLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615170230CAF4A00282B12 /* AssemblerLexer.swift */; };
+		6FB0D30E24711618003B5D5C /* AssemblerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BE175230D2E31008C2329 /* AssemblerError.swift */; };
+		6FB0D30F24711618003B5D5C /* AssemblerCodeGenPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */; };
+		6FB0D31024711618003B5D5C /* CodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* CodeGenerator.swift */; };
+		6FB0D31124711618003B5D5C /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615176230CB54200282B12 /* Lexer.swift */; };
+		6FB0D316247117F3003B5D5C /* AbstractSyntaxTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088068230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift */; };
+		6FB0D317247117F3003B5D5C /* AbstractSyntaxTreeNodeVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807C230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift */; };
+		6FB0D318247117F3003B5D5C /* ConstantDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */; };
+		6FB0D319247117F3003B5D5C /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
+		6FB0D31A247117F3003B5D5C /* LabelDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */; };
+		6FB0D31B247117F3003B5D5C /* ParameterListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */; };
+		6FB0D31C247117F3003B5D5C /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A0230FBDFF00AB2339 /* Token.swift */; };
+		6FB0D31D247117F3003B5D5C /* TokenColon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FD231F6439003E7C7F /* TokenColon.swift */; };
+		6FB0D31E247117F3003B5D5C /* TokenComma.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00FB231F642A003E7C7F /* TokenComma.swift */; };
+		6FB0D31F247117F3003B5D5C /* TokenEOF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F7231F6406003E7C7F /* TokenEOF.swift */; };
+		6FB0D320247117F3003B5D5C /* TokenEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27A247092E2003B5D5C /* TokenEqual.swift */; };
+		6FB0D321247117F3003B5D5C /* TokenIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0113231F6503003E7C7F /* TokenIdentifier.swift */; };
+		6FB0D322247117F3003B5D5C /* TokenLet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27C24709301003B5D5C /* TokenLet.swift */; };
+		6FB0D323247117F3003B5D5C /* TokenNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F9231F6415003E7C7F /* TokenNewline.swift */; };
+		6FB0D324247117F3003B5D5C /* TokenNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */; };
+		6FB0D325247117F3003B5D5C /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
+		6FB0D33324711814003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
+		6FB0D33424711820003B5D5C /* InstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */; };
+		6FB0D33524711820003B5D5C /* LabelDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */; };
+		6FB0D33624711820003B5D5C /* ParameterListNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */; };
+		6FB0D33724711820003B5D5C /* TokenEOFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */; };
+		6FB0D33824711820003B5D5C /* TokenNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */; };
+		6FB0D33924711820003B5D5C /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
+		6FB0D33A24711820003B5D5C /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
+		6FB0D34624711859003B5D5C /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
 		6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */; };
 		6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */; };
 		6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */; };
 		6FD4D7112468BA55004F85B0 /* AudioDevicePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */; };
-		6FD8F9FF2360CAC5005A1856 /* ParameterListNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */; };
-		6FD8FA012360CAF1005A1856 /* ParameterListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */; };
 		6FE0039122F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6FE0039A22F3D75E00221C4C /* TurtleTTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FE0038A22F3D75E00221C4C /* TurtleTTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FE0039D22F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
@@ -115,12 +119,10 @@
 		6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */; };
 		6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBD22ECC86400375A00 /* ALU.swift */; };
 		6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB522ECC53500375A00 /* InstructionMemory.swift */; };
-		6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* CodeGenerator.swift */; };
 		6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC122ECE51C00375A00 /* Chip74x181.swift */; };
 		6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */; };
 		6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBF22ECCAC800375A00 /* ALUTests.swift */; };
 		6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC722ED179C00375A00 /* ComputerTests.swift */; };
-		6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */; };
 		6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */; };
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE003DB22F3F4C600221C4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003DA22F3F4C600221C4C /* main.swift */; };
@@ -173,6 +175,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
+		};
+		6FB0D2EF247115BA003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6FB0D31224711724003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6FB0D3142471179E003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
 		};
 		6FE0039222F3D75E00221C4C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -319,7 +342,6 @@
 		6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chip74x181Tests.swift; sourceTree = "<group>"; };
 		6F86EDC722ED179C00375A00 /* ComputerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerTests.swift; sourceTree = "<group>"; };
 		6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
-		6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriverTests.swift; sourceTree = "<group>"; };
 		6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleVMBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurtleVMBenchmarkDriver.swift; sourceTree = "<group>"; };
@@ -337,6 +359,12 @@
 		6FB0D2A324710CED003B5D5C /* ScannerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerExtension.swift; sourceTree = "<group>"; };
 		6FB0D2A624710CF3003B5D5C /* AtomicBooleanFlagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlagTests.swift; sourceTree = "<group>"; };
 		6FB0D2A724710CF3003B5D5C /* ScannerExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerExtensionTests.swift; sourceTree = "<group>"; };
+		6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleAssemblerCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0D2E7247115BA003B5D5C /* TurtleAssemblerCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleAssemblerCore.h; sourceTree = "<group>"; };
+		6FB0D2E8247115BA003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FB0D2ED247115BA003B5D5C /* TurtleAssemblerCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleAssemblerCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0D2F2247115BA003B5D5C /* TurtleAssemblerCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleAssemblerCoreTests.swift; sourceTree = "<group>"; };
+		6FB0D2F4247115BA003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockedComputerExecutor.swift; sourceTree = "<group>"; };
 		6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStopwatch.swift; sourceTree = "<group>"; };
 		6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheral.swift; sourceTree = "<group>"; };
@@ -409,6 +437,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6FB0D2E2247115BA003B5D5C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D2EA247115BA003B5D5C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D2EE247115BA003B5D5C /* TurtleAssemblerCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FE0038522F3D75E00221C4C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -457,28 +500,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		6F5A0137231F7C56003E7C7F /* Assembler */ = {
-			isa = PBXGroup;
-			children = (
-				6FF07F832323123A00072830 /* AST */,
-				6FF07F862323128F00072830 /* Token */,
-				6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */,
-				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
-				6F4BE175230D2E31008C2329 /* AssemblerError.swift */,
-				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
-				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
-				6F61517E230D041600282B12 /* AssemblerParser.swift */,
-				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
-				6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */,
-				6F615176230CB54200282B12 /* Lexer.swift */,
-				6F5A00ED231D029D003E7C7F /* Parser.swift */,
-				6F5A00E523184880003E7C7F /* Patcher.swift */,
-				6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */,
-				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
-			);
-			path = Assembler;
-			sourceTree = "<group>";
-		};
 		6F5A0138231F7C77003E7C7F /* Simulator */ = {
 			isa = PBXGroup;
 			children = (
@@ -512,24 +533,6 @@
 				6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */,
 			);
 			path = Simulator;
-			sourceTree = "<group>";
-		};
-		6F5A0139231F7CA7003E7C7F /* AssemblerTests */ = {
-			isa = PBXGroup;
-			children = (
-				6FF07F842323126000072830 /* AST */,
-				6FF07F852323127D00072830 /* Token */,
-				6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */,
-				6F94B1E322F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift */,
-				6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */,
-				6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */,
-				6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */,
-				6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */,
-				6F615178230CB56E00282B12 /* LexerTests.swift */,
-				6F5A013B231F7DCC003E7C7F /* ParserTests.swift */,
-				6F5A00E723184896003E7C7F /* PatcherTests.swift */,
-			);
-			path = AssemblerTests;
 			sourceTree = "<group>";
 		};
 		6F5A013A231F7CCC003E7C7F /* SimulatorTests */ = {
@@ -607,10 +610,51 @@
 			path = TurtleCoreTests;
 			sourceTree = "<group>";
 		};
+		6FB0D2E6247115BA003B5D5C /* TurtleAssemblerCore */ = {
+			isa = PBXGroup;
+			children = (
+				6FF07F832323123A00072830 /* AST */,
+				6FF07F862323128F00072830 /* Token */,
+				6F088092230F85FF00AB2339 /* AssemblerCodeGenPass.swift */,
+				6F4BE175230D2E31008C2329 /* AssemblerError.swift */,
+				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
+				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
+				6F61517E230D041600282B12 /* AssemblerParser.swift */,
+				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
+				6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */,
+				6F615176230CB54200282B12 /* Lexer.swift */,
+				6F5A00ED231D029D003E7C7F /* Parser.swift */,
+				6F5A00E523184880003E7C7F /* Patcher.swift */,
+				6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */,
+				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
+				6FB0D2E7247115BA003B5D5C /* TurtleAssemblerCore.h */,
+				6FB0D2E8247115BA003B5D5C /* Info.plist */,
+			);
+			path = TurtleAssemblerCore;
+			sourceTree = "<group>";
+		};
+		6FB0D2F1247115BA003B5D5C /* TurtleAssemblerCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				6FF07F842323126000072830 /* AST */,
+				6FF07F852323127D00072830 /* Token */,
+				6F088094230F864D00AB2339 /* AssemblerCodeGenPassTests.swift */,
+				6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */,
+				6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */,
+				6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */,
+				6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */,
+				6F615178230CB56E00282B12 /* LexerTests.swift */,
+				6F5A013B231F7DCC003E7C7F /* ParserTests.swift */,
+				6F5A00E723184896003E7C7F /* PatcherTests.swift */,
+				6FB0D2F2247115BA003B5D5C /* TurtleAssemblerCoreTests.swift */,
+				6FB0D2F4247115BA003B5D5C /* Info.plist */,
+			);
+			path = TurtleAssemblerCoreTests;
+			sourceTree = "<group>";
+		};
 		6FE0038922F3D75E00221C4C /* TurtleTTL */ = {
 			isa = PBXGroup;
 			children = (
-				6F5A0137231F7C56003E7C7F /* Assembler */,
 				6F5A0138231F7C77003E7C7F /* Simulator */,
 				6FE0038B22F3D75E00221C4C /* Info.plist */,
 				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
@@ -621,7 +665,6 @@
 		6FE0039622F3D75E00221C4C /* TurtleTTLTests */ = {
 			isa = PBXGroup;
 			children = (
-				6F5A0139231F7CA7003E7C7F /* AssemblerTests */,
 				6F5A013A231F7CCC003E7C7F /* SimulatorTests */,
 				6FE0039922F3D75E00221C4C /* Info.plist */,
 			);
@@ -633,6 +676,7 @@
 			children = (
 				6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */,
 				6FE003DA22F3F4C600221C4C /* main.swift */,
+				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
 			);
 			path = TurtleAssembler;
 			sourceTree = "<group>";
@@ -697,6 +741,8 @@
 				6FE003D922F3F4C600221C4C /* TurtleAssembler */,
 				6FE0038922F3D75E00221C4C /* TurtleTTL */,
 				6FE0039622F3D75E00221C4C /* TurtleTTLTests */,
+				6FB0D2E6247115BA003B5D5C /* TurtleAssemblerCore */,
+				6FB0D2F1247115BA003B5D5C /* TurtleAssemblerCoreTests */,
 				6FB0D28C24710C26003B5D5C /* TurtleCore */,
 				6FB0D29724710C26003B5D5C /* TurtleCoreTests */,
 				6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */,
@@ -716,6 +762,8 @@
 				6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6FB0D28B24710C26003B5D5C /* TurtleCore.framework */,
 				6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */,
+				6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */,
+				6FB0D2ED247115BA003B5D5C /* TurtleAssemblerCoreTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -754,6 +802,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D2E0247115BA003B5D5C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D2F5247115BA003B5D5C /* TurtleAssemblerCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -821,6 +877,43 @@
 			productReference = 6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FB0D2F6247115BA003B5D5C /* Build configuration list for PBXNativeTarget "TurtleAssemblerCore" */;
+			buildPhases = (
+				6FB0D2E0247115BA003B5D5C /* Headers */,
+				6FB0D2E1247115BA003B5D5C /* Sources */,
+				6FB0D2E2247115BA003B5D5C /* Frameworks */,
+				6FB0D2E3247115BA003B5D5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FB0D31324711724003B5D5C /* PBXTargetDependency */,
+			);
+			name = TurtleAssemblerCore;
+			productName = TurtleAssemblerCore;
+			productReference = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6FB0D2EC247115BA003B5D5C /* TurtleAssemblerCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FB0D2F9247115BA003B5D5C /* Build configuration list for PBXNativeTarget "TurtleAssemblerCoreTests" */;
+			buildPhases = (
+				6FB0D2E9247115BA003B5D5C /* Sources */,
+				6FB0D2EA247115BA003B5D5C /* Frameworks */,
+				6FB0D2EB247115BA003B5D5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FB0D2F0247115BA003B5D5C /* PBXTargetDependency */,
+			);
+			name = TurtleAssemblerCoreTests;
+			productName = TurtleAssemblerCoreTests;
+			productReference = 6FB0D2ED247115BA003B5D5C /* TurtleAssemblerCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6FE0038722F3D75E00221C4C /* TurtleTTL */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FE003A322F3D75E00221C4C /* Build configuration list for PBXNativeTarget "TurtleTTL" */;
@@ -833,6 +926,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FB0D3152471179E003B5D5C /* PBXTargetDependency */,
 				6FB0D2AB24710D3E003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleTTL;
@@ -935,6 +1029,12 @@
 					6FB0D29224710C26003B5D5C = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
+					6FB0D2E4247115BA003B5D5C = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					6FB0D2EC247115BA003B5D5C = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
 					6FE0038722F3D75E00221C4C = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -976,10 +1076,12 @@
 				6FF1996422ECB37000C255A2 /* SimulatorTests */,
 				6FE0038722F3D75E00221C4C /* TurtleTTL */,
 				6FE0038F22F3D75E00221C4C /* TurtleTTLTests */,
-				6FE003D722F3F4C600221C4C /* TurtleAssembler */,
-				6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6FB0D28A24710C26003B5D5C /* TurtleCore */,
 				6FB0D29224710C26003B5D5C /* TurtleCoreTests */,
+				6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */,
+				6FB0D2EC247115BA003B5D5C /* TurtleAssemblerCoreTests */,
+				6FE003D722F3F4C600221C4C /* TurtleAssembler */,
+				6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */,
 			);
 		};
 /* End PBXProject section */
@@ -993,6 +1095,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6FB0D29124710C26003B5D5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D2E3247115BA003B5D5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D2EB247115BA003B5D5C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1076,7 +1192,66 @@
 				6FB0D2CF247111C3003B5D5C /* InstructionFormatterTests.swift in Sources */,
 				6FB0D2D0247111C3003B5D5C /* InstructionTests.swift in Sources */,
 				6FB0D2DB247112EF003B5D5C /* FlagsTest.swift in Sources */,
+				6FB0D33324711814003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */,
 				6FB0D2A824710CF3003B5D5C /* AtomicBooleanFlagTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D2E1247115BA003B5D5C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D31024711618003B5D5C /* CodeGenerator.swift in Sources */,
+				6FB0D319247117F3003B5D5C /* InstructionNode.swift in Sources */,
+				6FB0D30824711618003B5D5C /* AssemblerFrontEnd.swift in Sources */,
+				6FB0D322247117F3003B5D5C /* TokenLet.swift in Sources */,
+				6FB0D31E247117F3003B5D5C /* TokenComma.swift in Sources */,
+				6FB0D320247117F3003B5D5C /* TokenEqual.swift in Sources */,
+				6FB0D324247117F3003B5D5C /* TokenNumber.swift in Sources */,
+				6FB0D31F247117F3003B5D5C /* TokenEOF.swift in Sources */,
+				6FB0D30E24711618003B5D5C /* AssemblerError.swift in Sources */,
+				6FB0D31B247117F3003B5D5C /* ParameterListNode.swift in Sources */,
+				6FB0D325247117F3003B5D5C /* TokenRegister.swift in Sources */,
+				6FB0D30F24711618003B5D5C /* AssemblerCodeGenPass.swift in Sources */,
+				6FB0D30D24711618003B5D5C /* AssemblerLexer.swift in Sources */,
+				6FB0D30C24711618003B5D5C /* SymbolTable.swift in Sources */,
+				6FB0D31124711618003B5D5C /* Lexer.swift in Sources */,
+				6FB0D31A247117F3003B5D5C /* LabelDeclarationNode.swift in Sources */,
+				6FB0D31C247117F3003B5D5C /* Token.swift in Sources */,
+				6FB0D31D247117F3003B5D5C /* TokenColon.swift in Sources */,
+				6FB0D30A24711618003B5D5C /* FileHandleTextOutputStream.swift in Sources */,
+				6FB0D30924711618003B5D5C /* Patcher.swift in Sources */,
+				6FB0D323247117F3003B5D5C /* TokenNewline.swift in Sources */,
+				6FB0D316247117F3003B5D5C /* AbstractSyntaxTreeNode.swift in Sources */,
+				6FB0D321247117F3003B5D5C /* TokenIdentifier.swift in Sources */,
+				6FB0D30B24711618003B5D5C /* RegisterName.swift in Sources */,
+				6FB0D317247117F3003B5D5C /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
+				6FB0D30624711618003B5D5C /* AssemblerParser.swift in Sources */,
+				6FB0D318247117F3003B5D5C /* ConstantDeclarationNode.swift in Sources */,
+				6FB0D30724711618003B5D5C /* Parser.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D2E9247115BA003B5D5C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D30324711605003B5D5C /* AssemblerCodeGenPassTests.swift in Sources */,
+				6FB0D33424711820003B5D5C /* InstructionNodeTests.swift in Sources */,
+				6FB0D30424711605003B5D5C /* AssemblerLexerTests.swift in Sources */,
+				6FB0D2FD24711605003B5D5C /* AssemblerParserTests.swift in Sources */,
+				6FB0D33524711820003B5D5C /* LabelDeclarationNodeTests.swift in Sources */,
+				6FB0D33A24711820003B5D5C /* TokenTests.swift in Sources */,
+				6FB0D33724711820003B5D5C /* TokenEOFTests.swift in Sources */,
+				6FB0D33824711820003B5D5C /* TokenNumberTests.swift in Sources */,
+				6FB0D30024711605003B5D5C /* AssemblerFrontEndTests.swift in Sources */,
+				6FB0D33624711820003B5D5C /* ParameterListNodeTests.swift in Sources */,
+				6FB0D2FF24711605003B5D5C /* ParserTests.swift in Sources */,
+				6FB0D2FC24711605003B5D5C /* CodeGeneratorTests.swift in Sources */,
+				6FB0D33924711820003B5D5C /* TokenRegisterTests.swift in Sources */,
+				6FB0D30124711605003B5D5C /* PatcherTests.swift in Sources */,
+				6FB0D30224711605003B5D5C /* LexerTests.swift in Sources */,
+				6FB0D2F3247115BA003B5D5C /* TurtleAssemblerCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1085,61 +1260,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */,
-				6FB0D27F24709373003B5D5C /* ConstantDeclarationNode.swift in Sources */,
 				6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */,
 				6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */,
 				6F6A023923FF7013003876BD /* TraceRecorder.swift in Sources */,
-				6FB0D27B247092E2003B5D5C /* TokenEqual.swift in Sources */,
 				6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */,
 				6F6A023D23FF7204003876BD /* Trace.swift in Sources */,
-				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
-				6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */,
 				6FE976CA2406545D006C393B /* VirtualMachine.swift in Sources */,
-				6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */,
-				6F5A00FC231F642A003E7C7F /* TokenComma.swift in Sources */,
-				6F615177230CB54200282B12 /* Lexer.swift in Sources */,
 				6F7E7FBA23BEAC3B00647482 /* SerialInterfacePeripheral.swift in Sources */,
 				6FE976E4240849B6006C393B /* InstructionMemoryRev1.swift in Sources */,
 				6F78DA3D23D947F4000ACA88 /* Computer.swift in Sources */,
-				6FD8FA012360CAF1005A1856 /* ParameterListNode.swift in Sources */,
-				6F61517F230D041600282B12 /* AssemblerParser.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
 				6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */,
-				6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */,
-				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
-				6FB0D27D24709301003B5D5C /* TokenLet.swift in Sources */,
 				6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */,
 				6F2EE665240C9D1D001FE46E /* SerialInput.swift in Sources */,
 				6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */,
 				6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */,
 				6F7E7FB623BEAADE00647482 /* ComputerPeripheral.swift in Sources */,
 				6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */,
-				6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */,
 				6FE976DE24066A7B006C393B /* VirtualMachineUtils.swift in Sources */,
 				6FE976DD24066A7B006C393B /* TracingInterpretingVM.swift in Sources */,
 				6F6A023523FF62C6003876BD /* TraceProfiler.swift in Sources */,
 				6F37BA472305D903009754D3 /* Register.swift in Sources */,
-				6F5A00FE231F6439003E7C7F /* TokenColon.swift in Sources */,
-				6F088075230F5D8F00AB2339 /* InstructionNode.swift in Sources */,
-				6F4BE176230D2E31008C2329 /* AssemblerError.swift in Sources */,
-				6F5A00F2231E2FFD003E7C7F /* RegisterName.swift in Sources */,
-				6F08807B230F5DBF00AB2339 /* LabelDeclarationNode.swift in Sources */,
-				6F615171230CAF4A00282B12 /* AssemblerLexer.swift in Sources */,
-				6F088069230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift in Sources */,
-				6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */,
-				6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */,
-				6F5A00E623184880003E7C7F /* Patcher.swift in Sources */,
-				6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */,
-				6F5A00FA231F6415003E7C7F /* TokenNewline.swift in Sources */,
-				6F5A00F8231F6406003E7C7F /* TokenEOF.swift in Sources */,
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
 				6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */,
-				6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */,
 				6FE976CE2406551C006C393B /* InterpretingVM.swift in Sources */,
 				6F7E7FBE23BEB77A00647482 /* ComputerPeripherals.swift in Sources */,
-				6F5A8AEA230A7713000046C2 /* AssemblerFrontEnd.swift in Sources */,
 				6F7E7FBC23BEAC4D00647482 /* InstructionRAMPeripheral.swift in Sources */,
-				6F5A0114231F6503003E7C7F /* TokenIdentifier.swift in Sources */,
 				6FE976E224084944006C393B /* InstructionROM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1148,40 +1294,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FD8F9FF2360CAC5005A1856 /* ParameterListNodeTests.swift in Sources */,
 				6FE976DA24066A71006C393B /* TracingInterpretingVMTests.swift in Sources */,
 				6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */,
 				6FE219D9241D81FD006BC92A /* ProcessorStateTests.swift in Sources */,
-				6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */,
 				6F5A013E232069FF003E7C7F /* ComputerExecutorTests.swift in Sources */,
-				6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */,
-				6F08807F230F6AEC00AB2339 /* AssemblerParserTests.swift in Sources */,
-				6F088091230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift in Sources */,
 				6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */,
 				6F0B0D042308688900478220 /* RegisterTests.swift in Sources */,
 				6F2EE667240C9D38001FE46E /* SerialInputTests.swift in Sources */,
 				6F6A023B23FF7024003876BD /* TraceRecorderTests.swift in Sources */,
-				6F088095230F864D00AB2339 /* AssemblerCodeGenPassTests.swift in Sources */,
-				6F5A0116231F721B003E7C7F /* TokenEOFTests.swift in Sources */,
-				6F615179230CB56E00282B12 /* LexerTests.swift in Sources */,
-				6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */,
 				6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */,
-				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
-				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,
 				6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */,
 				6FD4D7112468BA55004F85B0 /* AudioDevicePeripheralTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
-				6F5A011E231F725A003E7C7F /* TokenNumberTests.swift in Sources */,
-				6FB0D2812470937D003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */,
-				6F5A013C231F7DCC003E7C7F /* ParserTests.swift in Sources */,
 				6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */,
 				6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */,
 				6F6A024123FF7225003876BD /* TraceTests.swift in Sources */,
-				6F615173230CAF5600282B12 /* AssemblerLexerTests.swift in Sources */,
 				6FE976D2240661D0006C393B /* VirtualMachineTests.swift in Sources */,
-				6F5A00E823184896003E7C7F /* PatcherTests.swift in Sources */,
 				6F6A023723FF65D5003876BD /* TraceProfilerTests.swift in Sources */,
-				6F08808B230F6E4F00AB2339 /* InstructionNodeTests.swift in Sources */,
 				6FE976D024065529006C393B /* InterpretingVMTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1190,6 +1319,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FB0D34624711859003B5D5C /* AssemblerCommandLineDriver.swift in Sources */,
 				6FE003DB22F3F4C600221C4C /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1236,6 +1366,21 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6FB0D2DD24711390003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D2F0247115BA003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D2EF247115BA003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D31324711724003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D31224711724003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3152471179E003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D3142471179E003B5D5C /* PBXContainerItemProxy */;
 		};
 		6FE0039322F3D75E00221C4C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1383,6 +1528,98 @@
 					"@loader_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6FB0D2F7247115BA003B5D5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = TurtleAssemblerCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssemblerCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		6FB0D2F8247115BA003B5D5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = TurtleAssemblerCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssemblerCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6FB0D2FA247115BA003B5D5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				INFOPLIST_FILE = TurtleAssemblerCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssemblerCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6FB0D2FB247115BA003B5D5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				INFOPLIST_FILE = TurtleAssemblerCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssemblerCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1751,6 +1988,24 @@
 			buildConfigurations = (
 				6FB0D2A024710C26003B5D5C /* Debug */,
 				6FB0D2A124710C26003B5D5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FB0D2F6247115BA003B5D5C /* Build configuration list for PBXNativeTarget "TurtleAssemblerCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FB0D2F7247115BA003B5D5C /* Debug */,
+				6FB0D2F8247115BA003B5D5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FB0D2F9247115BA003B5D5C /* Build configuration list for PBXNativeTarget "TurtleAssemblerCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FB0D2FA247115BA003B5D5C /* Debug */,
+				6FB0D2FB247115BA003B5D5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

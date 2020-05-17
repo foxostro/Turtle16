@@ -6,8 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Foundation
-import TurtleTTL
+import TurtleAssemblerCore
 
 let driver = AssemblerCommandLineDriver(withArguments: CommandLine.arguments)
 driver.stdout = FileHandleTextOutputStream(FileHandle.standardOutput)

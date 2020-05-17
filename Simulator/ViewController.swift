@@ -8,6 +8,7 @@
 
 import Cocoa
 import TurtleTTL
+import TurtleAssemblerCore
 import TurtleCore
 
 class ViewController: NSViewController {

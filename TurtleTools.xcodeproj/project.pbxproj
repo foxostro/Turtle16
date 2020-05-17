@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
 		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
+		6F639EB124712473007B05F1 /* TurtleAssemblerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; };
+		6F639EB224712473007B05F1 /* TurtleAssemblerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F639EB62471247D007B05F1 /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; };
+		6F639EB72471247D007B05F1 /* TurtleSimulatorCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F639EBA24712482007B05F1 /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
+		6F639EBB24712482007B05F1 /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
@@ -150,6 +156,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6F639EB324712473007B05F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6F639EB82471247D007B05F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6F639EBC24712482007B05F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
 		6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -293,6 +320,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		6F639EB524712473007B05F1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6F639EBB24712482007B05F1 /* TurtleCore.framework in Embed Frameworks */,
+				6F639EB72471247D007B05F1 /* TurtleSimulatorCore.framework in Embed Frameworks */,
+				6F639EB224712473007B05F1 /* TurtleAssemblerCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FA90CE123FE67C800E9AF1D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -537,6 +577,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F639EBA24712482007B05F1 /* TurtleCore.framework in Frameworks */,
+				6F639EB62471247D007B05F1 /* TurtleSimulatorCore.framework in Frameworks */,
+				6F639EB124712473007B05F1 /* TurtleAssemblerCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1014,6 +1057,7 @@
 				6FE003D422F3F4C600221C4C /* Sources */,
 				6FE003D522F3F4C600221C4C /* Frameworks */,
 				6FE003D622F3F4C600221C4C /* CopyFiles */,
+				6F639EB524712473007B05F1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1021,6 +1065,9 @@
 				6FB0D39824711ACE003B5D5C /* PBXTargetDependency */,
 				6FB0D39624711AC8003B5D5C /* PBXTargetDependency */,
 				6FB0D39424711AC2003B5D5C /* PBXTargetDependency */,
+				6F639EB424712473007B05F1 /* PBXTargetDependency */,
+				6F639EB92471247D007B05F1 /* PBXTargetDependency */,
+				6F639EBD24712482007B05F1 /* PBXTargetDependency */,
 			);
 			name = TurtleAssembler;
 			productName = TurtleAssembler;
@@ -1407,6 +1454,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6F639EB424712473007B05F1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6F639EB324712473007B05F1 /* PBXContainerItemProxy */;
+		};
+		6F639EB92471247D007B05F1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6F639EB82471247D007B05F1 /* PBXContainerItemProxy */;
+		};
+		6F639EBD24712482007B05F1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F639EBC24712482007B05F1 /* PBXContainerItemProxy */;
+		};
 		6FB0D29624710C26003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;

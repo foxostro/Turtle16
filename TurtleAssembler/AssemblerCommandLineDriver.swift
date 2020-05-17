@@ -9,6 +9,7 @@
 import TurtleSimulatorCore
 import TurtleAssemblerCore
 import TurtleCore
+import TurtleCompilerToolbox
 
 // Provides an interface for driving the assembler from the command-line.
 public class AssemblerCommandLineDriver: NSObject {

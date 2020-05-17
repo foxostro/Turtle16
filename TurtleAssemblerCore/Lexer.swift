@@ -17,7 +17,7 @@ public class Lexer: NSObject {
     public typealias Rule = (pattern: String, emit: (String) -> Token?)
     public var rules: [Rule] = []
     
-    public private(set) var errors: [AssemblerError] = []
+    public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
         return errors.count != 0
     }
@@ -74,14 +74,14 @@ public class Lexer: NSObject {
         while !isAtEnd {
             do {
                 try scanToken()
-            } catch let error as AssemblerError {
+            } catch let error as CompilerError {
                 errors.append(error)
                 advanceToNewline() // recover by skipping to the next line
             } catch {
                 // This catch block should be unreachable because scanToken()
                 // only throws AssemblerError. Regardless, we need it to satisfy
                 // the compiler.
-                errors.append(AssemblerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
+                errors.append(CompilerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
                 return
             }
         }
@@ -101,7 +101,7 @@ public class Lexer: NSObject {
         throw unexpectedCharacterError(peek()!)
     }
     
-    func unexpectedCharacterError(_ character: String) -> AssemblerError {
-        return AssemblerError(line: lineNumber, format: "unexpected character: `%@'", character)
+    func unexpectedCharacterError(_ character: String) -> CompilerError {
+        return CompilerError(line: lineNumber, format: "unexpected character: `%@'", character)
     }
 }

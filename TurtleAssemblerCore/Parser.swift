@@ -21,7 +21,7 @@ public class Parser: NSObject {
     public var productions: [Production] = []
     public var tokens: [Token] = []
     
-    public private(set) var errors: [AssemblerError] = []
+    public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
         return errors.count != 0
     }
@@ -32,7 +32,7 @@ public class Parser: NSObject {
         while tokens.count > 0 {
             do {
                 statements += try consumeStatement()
-            } catch let error as AssemblerError {
+            } catch let error as CompilerError {
                 errors.append(error)
                 advanceToNewline() // recover by skipping to the next line
             } catch {
@@ -40,7 +40,7 @@ public class Parser: NSObject {
                 // consumeStatement() only throws AssemblerError. Regardless,
                 // we need it to satisfy the compiler.
                 let lineNumber = peek()?.lineNumber ?? 1
-                errors.append(AssemblerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
+                errors.append(CompilerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
                 return
             }
         }
@@ -105,6 +105,6 @@ public class Parser: NSObject {
                 return statements
             }
         }
-        throw AssemblerError(format: "unexpected end of input")
+        throw CompilerError(format: "unexpected end of input")
     }
 }

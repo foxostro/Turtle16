@@ -1,12 +1,12 @@
 //
-//  AssemblerError.swift
+//  CompilerError.swift
 //  TurtleAssemblerCore
 //
 //  Created by Andrew Fox on 8/21/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public struct AssemblerError: Error {
+public struct CompilerError: Error {
     public let line: Int?
     public let message: String
     

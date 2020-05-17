@@ -23,7 +23,7 @@ class AssemblerFrontEndTests: XCTestCase {
         return assembler.instructions
     }
     
-    func mustFailToCompile(_ sourceCode: String) -> [AssemblerError] {
+    func mustFailToCompile(_ sourceCode: String) -> [CompilerError] {
         assembler.compile(sourceCode)
         assert(assembler.hasError)
         return assembler.errors

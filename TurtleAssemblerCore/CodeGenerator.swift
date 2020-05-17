@@ -39,14 +39,14 @@ public class CodeGenerator: NSObject {
     public func instruction(withMnemonic mnemonic:String, immediate: Int) throws {
         assert(isAssembling)
         if immediate < 0 || immediate > 255 {
-            throw AssemblerError(format: "immediate value is not between 0 and 255: `%d'", immediate)
+            throw CompilerError(format: "immediate value is not between 0 and 255: `%d'", immediate)
         }
         let maybeOpcode = microcodeGenerator.getOpcode(withMnemonic: mnemonic)
         if let opcode = maybeOpcode {
             let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
-            throw AssemblerError(format: "unrecognized mnemonic: `%@'", mnemonic)
+            throw CompilerError(format: "unrecognized mnemonic: `%@'", mnemonic)
         }
     }
     
@@ -55,14 +55,14 @@ public class CodeGenerator: NSObject {
         assert(isAssembling)
         let immediate = immediateToken.literal
         if immediate < 0 || immediate > 255 {
-            throw AssemblerError(line: immediateToken.lineNumber, format: "immediate value is not between 0 and 255: `%d'", immediate)
+            throw CompilerError(line: immediateToken.lineNumber, format: "immediate value is not between 0 and 255: `%d'", immediate)
         }
         let maybeOpcode = microcodeGenerator.getOpcode(withMnemonic: mnemonic)
         if let opcode = maybeOpcode {
             let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
-            throw AssemblerError(line: immediateToken.lineNumber, format: "unrecognized mnemonic: `%@'", mnemonic)
+            throw CompilerError(line: immediateToken.lineNumber, format: "unrecognized mnemonic: `%@'", mnemonic)
         }
     }
     

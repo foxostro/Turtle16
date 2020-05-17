@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FE003D722F3F4C600221C4C"
-               BuildableName = "TurtleAssembler"
-               BlueprintName = "TurtleAssembler"
+               BlueprintIdentifier = "6F9201D82471DA22009E1410"
+               BuildableName = "Snap"
+               BlueprintName = "Snap"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,23 +27,14 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6FE003D722F3F4C600221C4C"
-            BuildableName = "TurtleAssembler"
-            BlueprintName = "TurtleAssembler"
-            ReferencedContainer = "container:TurtleTools.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FB0D2EC247115BA003B5D5C"
-               BuildableName = "TurtleAssemblerCoreTests.xctest"
-               BlueprintName = "TurtleAssemblerCoreTests"
+               BlueprintIdentifier = "6F9201EC2471DAC7009E1410"
+               BuildableName = "SnapCoreTests.xctest"
+               BlueprintName = "SnapCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -63,19 +54,19 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6FE003D722F3F4C600221C4C"
-            BuildableName = "TurtleAssembler"
-            BlueprintName = "TurtleAssembler"
+            BlueprintIdentifier = "6F9201D82471DA22009E1410"
+            BuildableName = "Snap"
+            BlueprintName = "Snap"
             ReferencedContainer = "container:TurtleTools.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/andrewfox/src/TurtleTTL/TurtleTools/Examples/echo.asm"
+            argument = "/Users/andrewfox/src/TurtleTTL/TurtleTools/Examples/hello.snap"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/andrewfox/Desktop/echo.program"
+            argument = "/Users/andrewfox/Desktop/hello.program"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -90,9 +81,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6FE003D722F3F4C600221C4C"
-            BuildableName = "TurtleAssembler"
-            BlueprintName = "TurtleAssembler"
+            BlueprintIdentifier = "6F9201D82471DA22009E1410"
+            BuildableName = "Snap"
+            BlueprintName = "Snap"
             ReferencedContainer = "container:TurtleTools.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

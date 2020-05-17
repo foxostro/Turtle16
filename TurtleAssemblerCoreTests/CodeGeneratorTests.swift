@@ -7,8 +7,9 @@
 //
 
 import XCTest
-import TurtleCore
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
+import TurtleCore
 
 class CodeGeneratorTests: XCTestCase {
     var microcodeGenerator = MicrocodeGenerator()

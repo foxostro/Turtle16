@@ -9,6 +9,7 @@
 import XCTest
 import TurtleCore
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class AssemblerFrontEndTests: XCTestCase {
     var assembler = AssemblerFrontEnd()

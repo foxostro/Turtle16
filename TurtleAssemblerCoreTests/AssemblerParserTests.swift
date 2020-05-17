@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class AssemblerParserTests: XCTestCase {
     func tokenize(_ text: String) -> [Token] {

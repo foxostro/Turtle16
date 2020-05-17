@@ -7,9 +7,10 @@
 //
 
 import TurtleCore
+import TurtleCompilerToolbox
 
 // Takes an AST and performs a pass that does final code generation.
-public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
+public class AssemblerCodeGenPass: NSObject {
     let codeGenerator: CodeGenerator
     public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []
@@ -33,7 +34,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             errors.append(error)
         } catch {
             // This catch block should be unreachable because patch()
-            // only throws AssemblerError. Regardless, we need it to satisfy
+            // only throws CompilerError. Regardless, we need it to satisfy
             // the compiler.
             errors.append(CompilerError(format: "unrecoverable error: %@", error.localizedDescription))
         }
@@ -45,7 +46,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         codeGenerator.begin()
         try root.iterate {
             do {
-                try $0.accept(visitor: self)
+                try visit(genericNode: $0)
             } catch let error as CompilerError {
                 errors.append(error)
             }
@@ -58,7 +59,25 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         instructions = try patcher.patch()
     }
     
-    public func visit(node: InstructionNode) throws {
+    func visit(genericNode: AbstractSyntaxTreeNode) throws {
+        // While could use the visitor pattern here, (and indeed used to)
+        // this leads to problems. There's a lot of boilerplate code, for one.
+        // The visitor class must know of all subclasses ahead of time. It's
+        // not really possible to have more than one visitor for the whole
+        // class hierarchy. These issues make it difficult to use the same set
+        // of AST nodes for two, separate parsers.
+        if let node = genericNode as? InstructionNode {
+            try visit(node: node)
+        }
+        if let node = genericNode as? LabelDeclarationNode {
+            try visit(node: node)
+        }
+        if let node = genericNode as? ConstantDeclarationNode {
+            try visit(node: node)
+        }
+    }
+    
+    func visit(node: InstructionNode) throws {
         let instructions = [
             "ADD"  : { try self.add(node) },
             "BLT"  : { try self.blt(node) },
@@ -336,7 +355,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
                               instruction.lexeme)
     }
     
-    public func visit(node: LabelDeclarationNode) throws {
+    func visit(node: LabelDeclarationNode) throws {
         let name = node.identifier.lexeme
         if symbols[name] == nil {
             symbols[name] = codeGenerator.programCounter
@@ -347,7 +366,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         }
     }
     
-    public func visit(node: ConstantDeclarationNode) throws {
+    func visit(node: ConstantDeclarationNode) throws {
         let name = node.identifier.lexeme
         if symbols[name] == nil {
             symbols[name] = node.number.literal

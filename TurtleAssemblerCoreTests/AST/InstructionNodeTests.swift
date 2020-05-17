@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class InstructionNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {

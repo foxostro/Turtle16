@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class AssemblerLexerTests: XCTestCase {
     func testTokenizeEmptyString() {

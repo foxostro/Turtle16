@@ -1,14 +1,12 @@
 //
 //  Lexer.swift
-//  TurtleAssemblerCore
+//  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 8/20/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
-public class Lexer: NSObject {
+open class Lexer: NSObject {
     public private(set) var string = ""
     public var isAtEnd:Bool {
         return string == ""

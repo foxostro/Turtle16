@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCompilerToolbox
+
 public class AssemblerParser: Parser {
     public init(tokens: [Token]) {
         super.init()

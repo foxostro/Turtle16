@@ -9,6 +9,7 @@
 import XCTest
 import TurtleCore
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class AssemblerCodeGenPassTests: XCTestCase {
     let aabb = TokenNumber(lineNumber: 1, lexeme: "0xaabb", literal: 0xaabb)

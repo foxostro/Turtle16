@@ -1,14 +1,12 @@
 //
 //  Parser.swift
-//  TurtleAssemblerCore
+//  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 9/2/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
-public class Parser: NSObject {
+open class Parser: NSObject {
     public struct Production {
         public typealias Generator = (Token) throws -> [AbstractSyntaxTreeNode]?
         
@@ -53,11 +51,11 @@ public class Parser: NSObject {
         }
     }
     
-    func advance() {
+    public func advance() {
         tokens.removeFirst()
     }
     
-    func advanceToNewline() {
+    public func advanceToNewline() {
         while let token = peek() {
             let tokenType = type(of: token)
             if (tokenType == TokenEOF.self) || (tokenType == TokenNewline.self) {
@@ -68,11 +66,11 @@ public class Parser: NSObject {
         }
     }
     
-    func peek() -> Token? {
+    public func peek() -> Token? {
         return tokens.first
     }
     
-    func accept(_ typeInQuestion: AnyClass) -> Token? {
+    public func accept(_ typeInQuestion: AnyClass) -> Token? {
         if let token = peek() {
             if typeInQuestion == type(of: token) {
                 advance()
@@ -82,7 +80,7 @@ public class Parser: NSObject {
         return nil
     }
     
-    @discardableResult func expect(type: AnyClass, error: Error) throws -> Token {
+    @discardableResult public func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
         if nil == result {
             throw error
@@ -90,7 +88,7 @@ public class Parser: NSObject {
         return result!
     }
     
-    @discardableResult func expect(types: [AnyClass], error: Error) throws -> Token {
+    @discardableResult public func expect(types: [AnyClass], error: Error) throws -> Token {
         for type in types {
             let result = accept(type)
             if nil != result {

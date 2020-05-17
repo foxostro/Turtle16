@@ -1,13 +1,13 @@
 //
 //  ParameterListNodeTests.swift
-//  TurtleTTLTests
+//  TurtleAssemblerCoreTests
 //
 //  Created by Andrew Fox on 10/23/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleTTL
+import TurtleAssemblerCore
 
 class ParameterListNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {

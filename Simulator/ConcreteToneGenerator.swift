@@ -6,8 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
-import TurtleTTL
+import TurtleSimulatorCore
 
 final class ConcreteToneGenerator: ToneGenerator {
     private var isRunning = false

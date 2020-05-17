@@ -1,13 +1,13 @@
 //
 //  ConstantDeclarationNodeTests.swift
-//  TurtleTTLTests
+//  TurtleAssemblerCoreTests
 //
 //  Created by Andrew Fox on 5/16/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleTTL
+import TurtleAssemblerCore
 
 class ConstantDeclarationNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {

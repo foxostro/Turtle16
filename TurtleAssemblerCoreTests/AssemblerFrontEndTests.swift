@@ -1,6 +1,6 @@
 //
 //  AssemblerFrontEndTests.swift
-//  TurtleTTLTests
+//  TurtleAssemblerCoreTests
 //
 //  Created by Andrew Fox on 8/18/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 import TurtleCore
-import TurtleTTL
+import TurtleAssemblerCore
 
 class AssemblerFrontEndTests: XCTestCase {
     var assembler = AssemblerFrontEnd()

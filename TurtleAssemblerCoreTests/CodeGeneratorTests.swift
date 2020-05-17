@@ -1,6 +1,6 @@
 //
 //  CodeGeneratorTests.swift
-//  SimulatorTests
+//  TurtleAssemblerCoreTests
 //
 //  Created by Andrew Fox on 7/30/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 import TurtleCore
-import TurtleTTL
+import TurtleAssemblerCore
 
 class CodeGeneratorTests: XCTestCase {
     var microcodeGenerator = MicrocodeGenerator()

@@ -1,13 +1,13 @@
 //
 //  LexerTests.swift
-//  TurtleTTLTests
+//  TurtleAssemblerCoreTests
 //
 //  Created by Andrew Fox on 8/20/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleTTL
+import TurtleAssemblerCore
 
 class LexerTests: XCTestCase {
     func testInitWithEmptyString() {

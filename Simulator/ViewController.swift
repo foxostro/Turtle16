@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import TurtleTTL
+import TurtleSimulatorCore
 import TurtleAssemblerCore
 import TurtleCore
 

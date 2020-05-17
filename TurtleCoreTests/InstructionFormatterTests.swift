@@ -1,13 +1,13 @@
 //
 //  InstructionFormatterTests.swift
-//  TurtleTTLTests
+//  TurtleCoreTests
 //
 //  Created by Andrew Fox on 2/20/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleTTL
+import TurtleCore
 
 class InstructionFormatterTests: XCTestCase {
     let formatter = InstructionFormatter()

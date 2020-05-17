@@ -1,12 +1,10 @@
 //
 //  Memory.swift
-//  Simulator
+//  TurtleCore
 //
 //  Created by Andrew Fox on 7/29/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 // Represents a memory-like object in hardware such as a ROM or RAM.
 public class Memory: NSObject {

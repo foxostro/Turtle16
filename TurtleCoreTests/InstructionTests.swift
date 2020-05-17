@@ -1,13 +1,13 @@
 //
 //  InstructionTests.swift
-//  TurtleTTLTests
+//  TurtleCoreTests
 //
 //  Created by Andrew Fox on 8/15/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleTTL
+import TurtleCore
 
 class InstructionTests: XCTestCase {
     func testInit_1() {

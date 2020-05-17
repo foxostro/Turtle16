@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleTTL
+import TurtleCore
 
 class AssemblerCommandLineDriverTests: XCTestCase {
     func testParseArgumentsFailsWithNoArguments() {

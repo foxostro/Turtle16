@@ -1,13 +1,13 @@
 //
 //  ControlWordTests.swift
-//  SimulatorTests
+//  TurtleCoreTests
 //
 //  Created by Andrew Fox on 7/27/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import XCTest
-import TurtleTTL
+import TurtleCore
 
 class ControlWordTests: XCTestCase {
     func testNOPDoesNotHalt() {

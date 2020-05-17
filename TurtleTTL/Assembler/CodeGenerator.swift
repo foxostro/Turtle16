@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Generates machine code for use in the IF stage of TurtleTTL hardware.
 public class CodeGenerator: NSObject {

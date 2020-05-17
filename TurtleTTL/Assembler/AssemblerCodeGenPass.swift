@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Takes an AST and performs a pass that does final code generation.
 public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {

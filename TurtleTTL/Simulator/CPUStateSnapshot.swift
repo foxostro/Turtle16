@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 public class CPUStateSnapshot: NSObject {
     public var uptime: UInt64
     public var bus: Register

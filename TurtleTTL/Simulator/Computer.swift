@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Simulates the behavior of the revision two of TurtleTTL hardware.
 public class Computer: NSObject {

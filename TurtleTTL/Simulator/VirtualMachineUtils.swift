@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 public class VirtualMachineUtils: NSObject {
     public static func makeInstructionROM(program: String) -> InstructionMemory {

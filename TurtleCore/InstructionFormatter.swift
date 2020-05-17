@@ -1,12 +1,10 @@
 //
 //  InstructionFormatter.swift
-//  TurtleTTL
+//  TurtleCore
 //
 //  Created by Andrew Fox on 2/20/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 public class InstructionFormatter: NSObject {
     static let sharedMicrocodeGenerator = MicrocodeGenerator.makeMicrocodeGenerator()

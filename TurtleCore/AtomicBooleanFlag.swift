@@ -1,12 +1,10 @@
 //
 //  AtomicBooleanFlag.swift
-//  TurtleTTL
+//  TurtleCore
 //
 //  Created by Andrew Fox on 3/1/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 public class AtomicBooleanFlag: NSObject {
     fileprivate var internalValue: Bool

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Foundation
+import TurtleCore
 
 public struct VirtualMachineError: Error {
     public let message: String

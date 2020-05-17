@@ -1,12 +1,10 @@
 //
 //  ControlWord.swift
-//  Simulator
+//  TurtleCore
 //
 //  Created by Andrew Fox on 7/27/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 // Represents a control word in the TurtleTTL hardware.
 public class ControlWord: NSObject {

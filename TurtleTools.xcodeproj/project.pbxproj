@@ -20,11 +20,8 @@
 		6F0880A3230FC09B00AB2339 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
 		6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */; };
-		6F2EE661240C8621001FE46E /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE660240C8621001FE46E /* AtomicBooleanFlag.swift */; };
-		6F2EE663240C8634001FE46E /* AtomicBooleanFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE662240C8634001FE46E /* AtomicBooleanFlagTests.swift */; };
 		6F2EE665240C9D1D001FE46E /* SerialInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE664240C9D1D001FE46E /* SerialInput.swift */; };
 		6F2EE667240C9D38001FE46E /* SerialInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE666240C9D38001FE46E /* SerialInputTests.swift */; };
-		6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
 		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
 		6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
 		6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */; };
@@ -63,13 +60,9 @@
 		6F6A023B23FF7024003876BD /* TraceRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */; };
 		6F6A023D23FF7204003876BD /* Trace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023C23FF7204003876BD /* Trace.swift */; };
 		6F6A024123FF7225003876BD /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024023FF7225003876BD /* TraceTests.swift */; };
-		6F6A024323FF7926003876BD /* InstructionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024223FF7926003876BD /* InstructionFormatter.swift */; };
-		6F6A024523FF7931003876BD /* InstructionFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */; };
-		6F6A024723FF8C60003876BD /* ConsoleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024623FF8C60003876BD /* ConsoleLogger.swift */; };
 		6F78DA3D23D947F4000ACA88 /* Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F78DA3C23D947F4000ACA88 /* Computer.swift */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F7E7FB623BEAADE00647482 /* ComputerPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */; };
-		6F7E7FB823BEAB9B00647482 /* ControlSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */; };
 		6F7E7FBA23BEAC3B00647482 /* SerialInterfacePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */; };
 		6F7E7FBC23BEAC4D00647482 /* InstructionRAMPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */; };
 		6F7E7FBE23BEB77A00647482 /* ComputerPeripherals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */; };
@@ -83,8 +76,32 @@
 		6FB0D27D24709301003B5D5C /* TokenLet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27C24709301003B5D5C /* TokenLet.swift */; };
 		6FB0D27F24709373003B5D5C /* ConstantDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */; };
 		6FB0D2812470937D003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
-		6FB0D28324709B7D003B5D5C /* Scanner+TurtleTTL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D28224709B7D003B5D5C /* Scanner+TurtleTTL.swift */; };
-		6FB0D28524709C91003B5D5C /* ScannerExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D28424709C91003B5D5C /* ScannerExtensionTests.swift */; };
+		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
+		6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D28D24710C26003B5D5C /* TurtleCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */; };
+		6FB0D2A524710CED003B5D5C /* ScannerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A324710CED003B5D5C /* ScannerExtension.swift */; };
+		6FB0D2A824710CF3003B5D5C /* AtomicBooleanFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A624710CF3003B5D5C /* AtomicBooleanFlagTests.swift */; };
+		6FB0D2A924710CF3003B5D5C /* ScannerExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A724710CF3003B5D5C /* ScannerExtensionTests.swift */; };
+		6FB0D2CA247111BB003B5D5C /* NullLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465F2405119D001461C4 /* NullLogger.swift */; };
+		6FB0D2CB247111BB003B5D5C /* InstructionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024223FF7926003876BD /* InstructionFormatter.swift */; };
+		6FB0D2CC247111BB003B5D5C /* ConsoleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024623FF8C60003876BD /* ConsoleLogger.swift */; };
+		6FB0D2CD247111BB003B5D5C /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C3022ED3AAA0027A981 /* Instruction.swift */; };
+		6FB0D2CE247111BB003B5D5C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AE822EEDD1900B38267 /* Logger.swift */; };
+		6FB0D2CF247111C3003B5D5C /* InstructionFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */; };
+		6FB0D2D0247111C3003B5D5C /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
+		6FB0D2D12471120F003B5D5C /* MicrocodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */; };
+		6FB0D2D224711213003B5D5C /* MicrocodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */; };
+		6FB0D2D324711252003B5D5C /* InstructionDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */; };
+		6FB0D2D424711264003B5D5C /* InstructionDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */; };
+		6FB0D2D524711274003B5D5C /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86CC7F22F0001C008C6322 /* Memory.swift */; };
+		6FB0D2D624711282003B5D5C /* MemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DE241DB21A006BC92A /* MemoryTests.swift */; };
+		6FB0D2D72471129C003B5D5C /* ControlWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB122ECC05500375A00 /* ControlWordTests.swift */; };
+		6FB0D2D8247112AF003B5D5C /* ControlWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAF22ECBEC400375A00 /* ControlWord.swift */; };
+		6FB0D2D9247112BF003B5D5C /* ControlSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */; };
+		6FB0D2DA247112DA003B5D5C /* ProgramCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */; };
+		6FB0D2DB247112EF003B5D5C /* FlagsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DC241DA0C3006BC92A /* FlagsTest.swift */; };
+		6FB0D2DC247112F5003B5D5C /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F679BD422ED6FB0008C8E2C /* Flags.swift */; };
+		6FB0D2DF247113E3003B5D5C /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
 		6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */; };
 		6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */; };
 		6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */; };
@@ -95,38 +112,24 @@
 		6FE0039A22F3D75E00221C4C /* TurtleTTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FE0038A22F3D75E00221C4C /* TurtleTTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FE0039D22F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6FE0039E22F3D75E00221C4C /* TurtleTTL.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */; };
 		6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */; };
-		6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */; };
-		6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */; };
 		6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBD22ECC86400375A00 /* ALU.swift */; };
 		6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB522ECC53500375A00 /* InstructionMemory.swift */; };
 		6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* CodeGenerator.swift */; };
 		6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC122ECE51C00375A00 /* Chip74x181.swift */; };
-		6FE003B422F3D78B00221C4C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AE822EEDD1900B38267 /* Logger.swift */; };
-		6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAF22ECBEC400375A00 /* ControlWord.swift */; };
-		6FE003B722F3D78B00221C4C /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F679BD422ED6FB0008C8E2C /* Flags.swift */; };
-		6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C3022ED3AAA0027A981 /* Instruction.swift */; };
-		6FE003BB22F3D78B00221C4C /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86CC7F22F0001C008C6322 /* Memory.swift */; };
 		6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */; };
 		6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBF22ECCAC800375A00 /* ALUTests.swift */; };
 		6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC722ED179C00375A00 /* ComputerTests.swift */; };
 		6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */; };
-		6FE003C322F3D88800221C4C /* MicrocodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */; };
-		6FE003C422F3D88800221C4C /* ControlWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB122ECC05500375A00 /* ControlWordTests.swift */; };
 		6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */; };
-		6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */; };
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE003DB22F3F4C600221C4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003DA22F3F4C600221C4C /* main.swift */; };
 		6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE046592403A857001461C4 /* TraceUtils.swift */; };
 		6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465B2404EC78001461C4 /* TraceExecutor.swift */; };
 		6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */; };
-		6FE046602405119D001461C4 /* NullLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465F2405119D001461C4 /* NullLogger.swift */; };
 		6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */; };
 		6FE219CE241CC223006BC92A /* Example.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6FE219CD241CC223006BC92A /* Example.txt */; };
 		6FE219D9241D81FD006BC92A /* ProcessorStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */; };
-		6FE219DD241DA0C3006BC92A /* FlagsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DC241DA0C3006BC92A /* FlagsTest.swift */; };
-		6FE219DF241DB21A006BC92A /* MemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DE241DB21A006BC92A /* MemoryTests.swift */; };
 		6FE976CA2406545D006C393B /* VirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976C92406545D006C393B /* VirtualMachine.swift */; };
 		6FE976CE2406551C006C393B /* InterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CD2406551C006C393B /* InterpretingVM.swift */; };
 		6FE976D024065529006C393B /* InterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CF24065529006C393B /* InterpretingVMTests.swift */; };
@@ -136,7 +139,6 @@
 		6FE976DE24066A7B006C393B /* VirtualMachineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */; };
 		6FE976E224084944006C393B /* InstructionROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E124084944006C393B /* InstructionROM.swift */; };
 		6FE976E4240849B6006C393B /* InstructionMemoryRev1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */; };
-		6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
 		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
 		6FF1995B22ECB37000C255A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FF1995A22ECB37000C255A2 /* Assets.xcassets */; };
@@ -150,6 +152,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6FE0038722F3D75E00221C4C;
 			remoteInfo = TurtleTTL;
+		};
+		6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6FB0D2AA24710D3E003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6FB0D2DD24711390003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
 		};
 		6FE0039222F3D75E00221C4C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -228,8 +251,6 @@
 		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUStateSnapshot.swift; sourceTree = "<group>"; };
-		6F2EE660240C8621001FE46E /* AtomicBooleanFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlag.swift; sourceTree = "<group>"; };
-		6F2EE662240C8634001FE46E /* AtomicBooleanFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlagTests.swift; sourceTree = "<group>"; };
 		6F2EE664240C9D1D001FE46E /* SerialInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInput.swift; sourceTree = "<group>"; };
 		6F2EE666240C9D38001FE46E /* SerialInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputTests.swift; sourceTree = "<group>"; };
 		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
@@ -307,8 +328,15 @@
 		6FB0D27C24709301003B5D5C /* TokenLet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenLet.swift; sourceTree = "<group>"; };
 		6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationNode.swift; sourceTree = "<group>"; };
 		6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationNodeTests.swift; sourceTree = "<group>"; };
-		6FB0D28224709B7D003B5D5C /* Scanner+TurtleTTL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scanner+TurtleTTL.swift"; sourceTree = "<group>"; };
-		6FB0D28424709C91003B5D5C /* ScannerExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerExtensionTests.swift; sourceTree = "<group>"; };
+		6FB0D28B24710C26003B5D5C /* TurtleCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0D28D24710C26003B5D5C /* TurtleCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleCore.h; sourceTree = "<group>"; };
+		6FB0D28E24710C26003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0D29A24710C26003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlag.swift; sourceTree = "<group>"; };
+		6FB0D2A324710CED003B5D5C /* ScannerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerExtension.swift; sourceTree = "<group>"; };
+		6FB0D2A624710CF3003B5D5C /* AtomicBooleanFlagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlagTests.swift; sourceTree = "<group>"; };
+		6FB0D2A724710CF3003B5D5C /* ScannerExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerExtensionTests.swift; sourceTree = "<group>"; };
 		6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockedComputerExecutor.swift; sourceTree = "<group>"; };
 		6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStopwatch.swift; sourceTree = "<group>"; };
 		6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheral.swift; sourceTree = "<group>"; };
@@ -363,6 +391,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FA90CEC23FE681500E9AF1D /* TurtleTTL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D28824710C26003B5D5C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D29024710C26003B5D5C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,23 +491,16 @@
 				6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */,
 				6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */,
 				6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */,
-				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
-				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
 				6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */,
-				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
-				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
 				6F86EDB522ECC53500375A00 /* InstructionMemory.swift */,
 				6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */,
 				6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */,
 				6FE976E124084944006C393B /* InstructionROM.swift */,
 				6F4ACBDA2400BCD900014F4B /* Interpreter.swift */,
 				6FE976CD2406551C006C393B /* InterpretingVM.swift */,
-				6F86CC7F22F0001C008C6322 /* Memory.swift */,
-				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
 				6F37BA462305D903009754D3 /* Register.swift */,
 				6F2EE664240C9D1D001FE46E /* SerialInput.swift */,
 				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
-				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
 				6F6A023C23FF7204003876BD /* Trace.swift */,
 				6FE0465B2404EC78001461C4 /* TraceExecutor.swift */,
 				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
@@ -504,13 +540,9 @@
 				6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */,
 				6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */,
 				6F86EDC722ED179C00375A00 /* ComputerTests.swift */,
-				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
-				6FE219DC241DA0C3006BC92A /* FlagsTest.swift */,
-				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
 				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
 				6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */,
 				6FE976CF24065529006C393B /* InterpretingVMTests.swift */,
-				6FE219DE241DB21A006BC92A /* MemoryTests.swift */,
 				6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */,
 				6F0B0D032308688900478220 /* RegisterTests.swift */,
 				6F2EE666240C9D38001FE46E /* SerialInputTests.swift */,
@@ -534,21 +566,54 @@
 			path = TurtleVMBenchmark;
 			sourceTree = "<group>";
 		};
+		6FB0D28C24710C26003B5D5C /* TurtleCore */ = {
+			isa = PBXGroup;
+			children = (
+				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
+				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
+				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
+				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
+				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
+				6F86CC7F22F0001C008C6322 /* Memory.swift */,
+				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
+				6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */,
+				6F6A024623FF8C60003876BD /* ConsoleLogger.swift */,
+				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
+				6F6A024223FF7926003876BD /* InstructionFormatter.swift */,
+				6F790AE822EEDD1900B38267 /* Logger.swift */,
+				6FE0465F2405119D001461C4 /* NullLogger.swift */,
+				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
+				6FB0D2A324710CED003B5D5C /* ScannerExtension.swift */,
+				6FB0D28D24710C26003B5D5C /* TurtleCore.h */,
+				6FB0D28E24710C26003B5D5C /* Info.plist */,
+			);
+			path = TurtleCore;
+			sourceTree = "<group>";
+		};
+		6FB0D29724710C26003B5D5C /* TurtleCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				6FE219DC241DA0C3006BC92A /* FlagsTest.swift */,
+				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
+				6FE219DE241DB21A006BC92A /* MemoryTests.swift */,
+				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
+				6FB0D2A624710CF3003B5D5C /* AtomicBooleanFlagTests.swift */,
+				6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */,
+				6F37BA442305B559009754D3 /* InstructionTests.swift */,
+				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
+				6FB0D2A724710CF3003B5D5C /* ScannerExtensionTests.swift */,
+				6FB0D29A24710C26003B5D5C /* Info.plist */,
+			);
+			path = TurtleCoreTests;
+			sourceTree = "<group>";
+		};
 		6FE0038922F3D75E00221C4C /* TurtleTTL */ = {
 			isa = PBXGroup;
 			children = (
 				6F5A0137231F7C56003E7C7F /* Assembler */,
 				6F5A0138231F7C77003E7C7F /* Simulator */,
-				6F2EE660240C8621001FE46E /* AtomicBooleanFlag.swift */,
-				6F6A024623FF8C60003876BD /* ConsoleLogger.swift */,
 				6FE0038B22F3D75E00221C4C /* Info.plist */,
-				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
-				6F6A024223FF7926003876BD /* InstructionFormatter.swift */,
-				6F790AE822EEDD1900B38267 /* Logger.swift */,
-				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
-				6FE0465F2405119D001461C4 /* NullLogger.swift */,
 				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
-				6FB0D28224709B7D003B5D5C /* Scanner+TurtleTTL.swift */,
 			);
 			path = TurtleTTL;
 			sourceTree = "<group>";
@@ -558,12 +623,7 @@
 			children = (
 				6F5A0139231F7CA7003E7C7F /* AssemblerTests */,
 				6F5A013A231F7CCC003E7C7F /* SimulatorTests */,
-				6F2EE662240C8634001FE46E /* AtomicBooleanFlagTests.swift */,
 				6FE0039922F3D75E00221C4C /* Info.plist */,
-				6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */,
-				6F37BA442305B559009754D3 /* InstructionTests.swift */,
-				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
-				6FB0D28424709C91003B5D5C /* ScannerExtensionTests.swift */,
 			);
 			path = TurtleTTLTests;
 			sourceTree = "<group>";
@@ -637,6 +697,8 @@
 				6FE003D922F3F4C600221C4C /* TurtleAssembler */,
 				6FE0038922F3D75E00221C4C /* TurtleTTL */,
 				6FE0039622F3D75E00221C4C /* TurtleTTLTests */,
+				6FB0D28C24710C26003B5D5C /* TurtleCore */,
+				6FB0D29724710C26003B5D5C /* TurtleCoreTests */,
 				6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6FF1995422ECB36F00C255A2 /* Products */,
 				6F5036F822F50DBA00761737 /* Frameworks */,
@@ -652,6 +714,8 @@
 				6FE0039022F3D75E00221C4C /* TurtleTTLTests.xctest */,
 				6FE003D822F3F4C600221C4C /* TurtleAssembler */,
 				6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */,
+				6FB0D28B24710C26003B5D5C /* TurtleCore.framework */,
+				6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -685,6 +749,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		6FB0D28624710C26003B5D5C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FE0038322F3D75E00221C4C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -713,6 +785,42 @@
 			productReference = 6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */;
 			productType = "com.apple.product-type.tool";
 		};
+		6FB0D28A24710C26003B5D5C /* TurtleCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FB0D29C24710C26003B5D5C /* Build configuration list for PBXNativeTarget "TurtleCore" */;
+			buildPhases = (
+				6FB0D28624710C26003B5D5C /* Headers */,
+				6FB0D28724710C26003B5D5C /* Sources */,
+				6FB0D28824710C26003B5D5C /* Frameworks */,
+				6FB0D28924710C26003B5D5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TurtleCore;
+			productName = TurtleCore;
+			productReference = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6FB0D29224710C26003B5D5C /* TurtleCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FB0D29F24710C26003B5D5C /* Build configuration list for PBXNativeTarget "TurtleCoreTests" */;
+			buildPhases = (
+				6FB0D28F24710C26003B5D5C /* Sources */,
+				6FB0D29024710C26003B5D5C /* Frameworks */,
+				6FB0D29124710C26003B5D5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FB0D29624710C26003B5D5C /* PBXTargetDependency */,
+			);
+			name = TurtleCoreTests;
+			productName = TurtleCoreTests;
+			productReference = 6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6FE0038722F3D75E00221C4C /* TurtleTTL */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FE003A322F3D75E00221C4C /* Build configuration list for PBXNativeTarget "TurtleTTL" */;
@@ -725,6 +833,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FB0D2AB24710D3E003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleTTL;
 			productName = TurtleTTL;
@@ -780,6 +889,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FB0D2DE24711390003B5D5C /* PBXTargetDependency */,
 				6FE0039C22F3D75E00221C4C /* PBXTargetDependency */,
 			);
 			name = Simulator;
@@ -816,6 +926,13 @@
 				ORGANIZATIONNAME = "Andrew Fox";
 				TargetAttributes = {
 					6FA90CE223FE67C800E9AF1D = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					6FB0D28A24710C26003B5D5C = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+					};
+					6FB0D29224710C26003B5D5C = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
 					6FE0038722F3D75E00221C4C = {
@@ -861,11 +978,27 @@
 				6FE0038F22F3D75E00221C4C /* TurtleTTLTests */,
 				6FE003D722F3F4C600221C4C /* TurtleAssembler */,
 				6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */,
+				6FB0D28A24710C26003B5D5C /* TurtleCore */,
+				6FB0D29224710C26003B5D5C /* TurtleCoreTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6FB0D28924710C26003B5D5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D29124710C26003B5D5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FE0038622F3D75E00221C4C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -909,6 +1042,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6FB0D28724710C26003B5D5C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D2DF247113E3003B5D5C /* ThrottledQueue.swift in Sources */,
+				6FB0D2CD247111BB003B5D5C /* Instruction.swift in Sources */,
+				6FB0D2CA247111BB003B5D5C /* NullLogger.swift in Sources */,
+				6FB0D2D8247112AF003B5D5C /* ControlWord.swift in Sources */,
+				6FB0D2D424711264003B5D5C /* InstructionDecoder.swift in Sources */,
+				6FB0D2A524710CED003B5D5C /* ScannerExtension.swift in Sources */,
+				6FB0D2D9247112BF003B5D5C /* ControlSignal.swift in Sources */,
+				6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */,
+				6FB0D2CE247111BB003B5D5C /* Logger.swift in Sources */,
+				6FB0D2CC247111BB003B5D5C /* ConsoleLogger.swift in Sources */,
+				6FB0D2CB247111BB003B5D5C /* InstructionFormatter.swift in Sources */,
+				6FB0D2D524711274003B5D5C /* Memory.swift in Sources */,
+				6FB0D2DA247112DA003B5D5C /* ProgramCounter.swift in Sources */,
+				6FB0D2D224711213003B5D5C /* MicrocodeGenerator.swift in Sources */,
+				6FB0D2DC247112F5003B5D5C /* Flags.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FB0D28F24710C26003B5D5C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FB0D2D624711282003B5D5C /* MemoryTests.swift in Sources */,
+				6FB0D2D72471129C003B5D5C /* ControlWordTests.swift in Sources */,
+				6FB0D2D12471120F003B5D5C /* MicrocodeGeneratorTests.swift in Sources */,
+				6FB0D2D324711252003B5D5C /* InstructionDecoderTests.swift in Sources */,
+				6FB0D2A924710CF3003B5D5C /* ScannerExtensionTests.swift in Sources */,
+				6FB0D2CF247111C3003B5D5C /* InstructionFormatterTests.swift in Sources */,
+				6FB0D2D0247111C3003B5D5C /* InstructionTests.swift in Sources */,
+				6FB0D2DB247112EF003B5D5C /* FlagsTest.swift in Sources */,
+				6FB0D2A824710CF3003B5D5C /* AtomicBooleanFlagTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FE0038422F3D75E00221C4C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -922,7 +1093,6 @@
 				6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */,
 				6F6A023D23FF7204003876BD /* Trace.swift in Sources */,
 				6FE003AF22F3D78B00221C4C /* CodeGenerator.swift in Sources */,
-				6FE003A622F3D78B00221C4C /* ProgramCounter.swift in Sources */,
 				6F0880A1230FBDFF00AB2339 /* Token.swift in Sources */,
 				6FE976CA2406545D006C393B /* VirtualMachine.swift in Sources */,
 				6F5A8AE8230A2732000046C2 /* FileHandleTextOutputStream.swift in Sources */,
@@ -933,13 +1103,9 @@
 				6F78DA3D23D947F4000ACA88 /* Computer.swift in Sources */,
 				6FD8FA012360CAF1005A1856 /* ParameterListNode.swift in Sources */,
 				6F61517F230D041600282B12 /* AssemblerParser.swift in Sources */,
-				6FE003A822F3D78B00221C4C /* MicrocodeGenerator.swift in Sources */,
 				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
 				6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */,
 				6F5A00EE231D029D003E7C7F /* Parser.swift in Sources */,
-				6F7E7FB823BEAB9B00647482 /* ControlSignal.swift in Sources */,
-				6FE003B822F3D78B00221C4C /* Instruction.swift in Sources */,
-				6FE003B622F3D78B00221C4C /* ControlWord.swift in Sources */,
 				6F08807D230F61CE00AB2339 /* AbstractSyntaxTreeNodeVisitor.swift in Sources */,
 				6FB0D27D24709301003B5D5C /* TokenLet.swift in Sources */,
 				6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */,
@@ -949,33 +1115,23 @@
 				6F7E7FB623BEAADE00647482 /* ComputerPeripheral.swift in Sources */,
 				6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */,
 				6F088093230F85FF00AB2339 /* AssemblerCodeGenPass.swift in Sources */,
-				6FE003A922F3D78B00221C4C /* InstructionDecoder.swift in Sources */,
 				6FE976DE24066A7B006C393B /* VirtualMachineUtils.swift in Sources */,
-				6FE003B422F3D78B00221C4C /* Logger.swift in Sources */,
 				6FE976DD24066A7B006C393B /* TracingInterpretingVM.swift in Sources */,
 				6F6A023523FF62C6003876BD /* TraceProfiler.swift in Sources */,
 				6F37BA472305D903009754D3 /* Register.swift in Sources */,
 				6F5A00FE231F6439003E7C7F /* TokenColon.swift in Sources */,
 				6F088075230F5D8F00AB2339 /* InstructionNode.swift in Sources */,
-				6FE003BB22F3D78B00221C4C /* Memory.swift in Sources */,
 				6F4BE176230D2E31008C2329 /* AssemblerError.swift in Sources */,
 				6F5A00F2231E2FFD003E7C7F /* RegisterName.swift in Sources */,
 				6F08807B230F5DBF00AB2339 /* LabelDeclarationNode.swift in Sources */,
-				6FE003B722F3D78B00221C4C /* Flags.swift in Sources */,
-				6FE046602405119D001461C4 /* NullLogger.swift in Sources */,
 				6F615171230CAF4A00282B12 /* AssemblerLexer.swift in Sources */,
 				6F088069230F5CA000AB2339 /* AbstractSyntaxTreeNode.swift in Sources */,
-				6F6A024323FF7926003876BD /* InstructionFormatter.swift in Sources */,
-				6F2EE661240C8621001FE46E /* AtomicBooleanFlag.swift in Sources */,
-				6FEBE3E323F77F0200E42B66 /* ThrottledQueue.swift in Sources */,
 				6F5A00F6231F63E0003E7C7F /* TokenNumber.swift in Sources */,
 				6F94B1E222F3FA5F00726C9A /* AssemblerCommandLineDriver.swift in Sources */,
 				6F5A00E623184880003E7C7F /* Patcher.swift in Sources */,
-				6FB0D28324709B7D003B5D5C /* Scanner+TurtleTTL.swift in Sources */,
 				6F5A00EA231C6454003E7C7F /* SymbolTable.swift in Sources */,
 				6F5A00FA231F6415003E7C7F /* TokenNewline.swift in Sources */,
 				6F5A00F8231F6406003E7C7F /* TokenEOF.swift in Sources */,
-				6F6A024723FF8C60003876BD /* ConsoleLogger.swift in Sources */,
 				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
 				6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */,
 				6F5A00F4231F63BB003E7C7F /* TokenRegister.swift in Sources */,
@@ -992,16 +1148,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FB0D28524709C91003B5D5C /* ScannerExtensionTests.swift in Sources */,
-				6FE219DF241DB21A006BC92A /* MemoryTests.swift in Sources */,
 				6FD8F9FF2360CAC5005A1856 /* ParameterListNodeTests.swift in Sources */,
-				6F2EE663240C8634001FE46E /* AtomicBooleanFlagTests.swift in Sources */,
 				6FE976DA24066A71006C393B /* TracingInterpretingVMTests.swift in Sources */,
 				6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */,
 				6FE219D9241D81FD006BC92A /* ProcessorStateTests.swift in Sources */,
 				6FE003C222F3D88800221C4C /* CodeGeneratorTests.swift in Sources */,
 				6F5A013E232069FF003E7C7F /* ComputerExecutorTests.swift in Sources */,
-				6FE003C322F3D88800221C4C /* MicrocodeGeneratorTests.swift in Sources */,
 				6F5A8AEC230A7726000046C2 /* AssemblerFrontEndTests.swift in Sources */,
 				6F08807F230F6AEC00AB2339 /* AssemblerParserTests.swift in Sources */,
 				6F088091230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift in Sources */,
@@ -1017,13 +1169,8 @@
 				6F94B1E422F3FA7100726C9A /* AssemblerCommandLineDriverTests.swift in Sources */,
 				6F5A0122231F7271003E7C7F /* TokenRegisterTests.swift in Sources */,
 				6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */,
-				6F6A024523FF7931003876BD /* InstructionFormatterTests.swift in Sources */,
-				6FE219DD241DA0C3006BC92A /* FlagsTest.swift in Sources */,
 				6FD4D7112468BA55004F85B0 /* AudioDevicePeripheralTests.swift in Sources */,
 				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
-				6F37BA452305B559009754D3 /* InstructionTests.swift in Sources */,
-				6FE003C422F3D88800221C4C /* ControlWordTests.swift in Sources */,
-				6FE003C622F3D88800221C4C /* InstructionDecoderTests.swift in Sources */,
 				6F5A011E231F725A003E7C7F /* TokenNumberTests.swift in Sources */,
 				6FB0D2812470937D003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */,
 				6F5A013C231F7DCC003E7C7F /* ParserTests.swift in Sources */,
@@ -1074,6 +1221,21 @@
 			isa = PBXTargetDependency;
 			target = 6FE0038722F3D75E00221C4C /* TurtleTTL */;
 			targetProxy = 6F5036FA22F50DC600761737 /* PBXContainerItemProxy */;
+		};
+		6FB0D29624710C26003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D2AB24710D3E003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D2AA24710D3E003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D2DE24711390003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D2DD24711390003B5D5C /* PBXContainerItemProxy */;
 		};
 		6FE0039322F3D75E00221C4C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1126,6 +1288,101 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6FB0D29D24710C26003B5D5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = TurtleCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		6FB0D29E24710C26003B5D5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = TurtleCore/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6FB0D2A024710C26003B5D5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				INFOPLIST_FILE = TurtleCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6FB0D2A124710C26003B5D5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				INFOPLIST_FILE = TurtleCoreTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1476,6 +1733,24 @@
 			buildConfigurations = (
 				6FA90CE723FE67C800E9AF1D /* Debug */,
 				6FA90CE823FE67C800E9AF1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FB0D29C24710C26003B5D5C /* Build configuration list for PBXNativeTarget "TurtleCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FB0D29D24710C26003B5D5C /* Debug */,
+				6FB0D29E24710C26003B5D5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FB0D29F24710C26003B5D5C /* Build configuration list for PBXNativeTarget "TurtleCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FB0D2A024710C26003B5D5C /* Debug */,
+				6FB0D2A124710C26003B5D5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

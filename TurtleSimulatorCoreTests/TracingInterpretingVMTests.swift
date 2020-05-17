@@ -18,7 +18,7 @@ class TracingInterpretingVMTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     
     fileprivate func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()

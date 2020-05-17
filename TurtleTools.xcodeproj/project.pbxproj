@@ -238,27 +238,6 @@
 			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
 			remoteInfo = TurtleSimulatorCore;
 		};
-		6FB0D39324711AC2003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
-			remoteInfo = TurtleAssemblerCore;
-		};
-		6FB0D39524711AC8003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
-		6FB0D39724711ACE003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
-			remoteInfo = TurtleCore;
-		};
 		6FB0D39924711AD6003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -1172,9 +1151,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				6FB0D39824711ACE003B5D5C /* PBXTargetDependency */,
-				6FB0D39624711AC8003B5D5C /* PBXTargetDependency */,
-				6FB0D39424711AC2003B5D5C /* PBXTargetDependency */,
 				6F639EB424712473007B05F1 /* PBXTargetDependency */,
 				6F639EB92471247D007B05F1 /* PBXTargetDependency */,
 				6F639EBD24712482007B05F1 /* PBXTargetDependency */,
@@ -1649,21 +1625,6 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
 			targetProxy = 6FB0D39124711AAC003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D39424711AC2003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
-			targetProxy = 6FB0D39324711AC2003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D39624711AC8003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6FB0D39524711AC8003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D39824711ACE003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
-			targetProxy = 6FB0D39724711ACE003B5D5C /* PBXContainerItemProxy */;
 		};
 		6FB0D39A24711AD6003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

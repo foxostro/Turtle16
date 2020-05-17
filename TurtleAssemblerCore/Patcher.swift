@@ -48,6 +48,6 @@ public class Patcher: NSObject {
         if let value = symbols[name] {
             return value
         }
-        throw AssemblerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
+        throw CompilerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
     }
 }

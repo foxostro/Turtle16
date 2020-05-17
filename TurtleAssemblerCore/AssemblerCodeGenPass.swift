@@ -16,7 +16,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     public var instructions: [Instruction] = []
     
-    public private(set) var errors: [AssemblerError] = []
+    public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
         return errors.count != 0
     }
@@ -29,13 +29,13 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     public func compile(ast root: AbstractSyntaxTreeNode, base: Int) {
         do {
             try tryCompile(ast: root, base: base)
-        } catch let error as AssemblerError {
+        } catch let error as CompilerError {
             errors.append(error)
         } catch {
             // This catch block should be unreachable because patch()
             // only throws AssemblerError. Regardless, we need it to satisfy
             // the compiler.
-            errors.append(AssemblerError(format: "unrecoverable error: %@", error.localizedDescription))
+            errors.append(CompilerError(format: "unrecoverable error: %@", error.localizedDescription))
         }
     }
     
@@ -46,7 +46,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         try root.iterate {
             do {
                 try $0.accept(visitor: self)
-            } catch let error as AssemblerError {
+            } catch let error as CompilerError {
                 errors.append(error)
             }
         }
@@ -240,7 +240,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
             try self.codeGenerator.li(node.destination, token: immediate)
         } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
             guard let value = symbols[identifier.lexeme] else {
-                throw AssemblerError(line: identifier.lineNumber,
+                throw CompilerError(line: identifier.lineNumber,
                                      format: "use of undeclared identifier: `%@'",
                                      identifier.lexeme)
             }
@@ -301,7 +301,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     func badDestinationError(_ register: TokenRegister) -> Error {
-        return AssemblerError(line: register.lineNumber,
+        return CompilerError(line: register.lineNumber,
                               format: "register cannot be used as a destination: `%@'",
                               register.lexeme)
     }
@@ -313,25 +313,25 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     }
     
     func badSourceError(_ register: TokenRegister) -> Error {
-        return AssemblerError(line: register.lineNumber,
+        return CompilerError(line: register.lineNumber,
                               format: "register cannot be used as a source: `%@'",
                               register.lexeme)
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {
-        return AssemblerError(line: instruction.lineNumber,
+        return CompilerError(line: instruction.lineNumber,
                               format: "instruction takes no operands: `%@'",
                               instruction.lexeme)
     }
     
     func operandTypeMismatchError(_ instruction: Token) -> Error {
-        return AssemblerError(line: instruction.lineNumber,
+        return CompilerError(line: instruction.lineNumber,
                               format: "operand type mismatch: `%@'",
                               instruction.lexeme)
     }
     
     func unrecognizedInstructionError(_ instruction: Token) -> Error {
-        return AssemblerError(line: instruction.lineNumber,
+        return CompilerError(line: instruction.lineNumber,
                               format: "no such instruction: `%@'",
                               instruction.lexeme)
     }
@@ -341,7 +341,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         if symbols[name] == nil {
             symbols[name] = codeGenerator.programCounter
         } else {
-            throw AssemblerError(line: node.identifier.lineNumber,
+            throw CompilerError(line: node.identifier.lineNumber,
                                  format: "label redefines existing symbol: `%@'",
                                  node.identifier.lexeme)
         }
@@ -352,7 +352,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
         if symbols[name] == nil {
             symbols[name] = node.number.literal
         } else {
-            throw AssemblerError(line: node.identifier.lineNumber,
+            throw CompilerError(line: node.identifier.lineNumber,
                                  format: "constant redefines existing symbol: `%@'",
                                  node.identifier.lexeme)
         }
@@ -360,7 +360,7 @@ public class AssemblerCodeGenPass: NSObject, AbstractSyntaxTreeNodeVisitor {
     
     func setAddress(_ address: Int) throws {
         if(address < 0 || address > 0xffff) {
-            throw AssemblerError(format: "invalid address: 0x%x", address)
+            throw CompilerError(format: "invalid address: 0x%x", address)
         }
         try self.codeGenerator.li(.X, (address & 0xff00) >> 8)
         try self.codeGenerator.li(.Y, (address & 0xff))

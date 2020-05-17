@@ -97,7 +97,7 @@ class PatcherTests: XCTestCase {
                               actions: actions,
                               base: 0x0000)
         XCTAssertThrowsError(try patcher.patch()) { e in
-            let error = e as! AssemblerError
+            let error = e as! CompilerError
             XCTAssertEqual(error.message, "unrecognized symbol name: `'")
         }
     }

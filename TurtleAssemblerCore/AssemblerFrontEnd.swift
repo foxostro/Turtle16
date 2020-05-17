@@ -11,7 +11,7 @@ import TurtleCore
 public class AssemblerFrontEnd: NSObject {
     public var instructions: [Instruction] = []
     
-    public private(set) var errors: [AssemblerError] = []
+    public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
         return errors.count != 0
     }
@@ -57,7 +57,7 @@ public class AssemblerFrontEnd: NSObject {
         }
     }
     
-    public func makeOmnibusError(fileName: String?, errors: [AssemblerError]) -> AssemblerError {
+    public func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError {
         var message = ""
         
         for error in errors {
@@ -76,6 +76,6 @@ public class AssemblerFrontEnd: NSObject {
             message += String(format: "%d errors generated\n", errors.count)
         }
         
-        return AssemblerError(message: message)
+        return CompilerError(message: message)
     }
 }

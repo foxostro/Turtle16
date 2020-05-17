@@ -95,16 +95,16 @@ public class AssemblerParser: Parser {
     
     func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
-                                    error: AssemblerError(line: letToken.lineNumber,
+                                    error: CompilerError(line: letToken.lineNumber,
                                                           format: "expected to find an identifier in constant declaration",
                                                           letToken.lexeme)) as! TokenIdentifier
         try expect(type: TokenEqual.self,
-                   error: AssemblerError(line: letToken.lineNumber,
+                   error: CompilerError(line: letToken.lineNumber,
                                          format: "constants must be assigned a value",
                                          letToken.lexeme))
         let numberToken = peek()
         if (numberToken == nil) || (type(of: numberToken!) == TokenNewline.self) || (type(of: numberToken!) == TokenEOF.self) {
-            throw AssemblerError(line: letToken.lineNumber,
+            throw CompilerError(line: letToken.lineNumber,
                                  format: "expected value after '='",
                                  letToken.lexeme)
         }
@@ -117,19 +117,19 @@ public class AssemblerParser: Parser {
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {
-        return AssemblerError(line: instruction.lineNumber,
+        return CompilerError(line: instruction.lineNumber,
                               format: "instruction takes no operands: `%@'",
                               instruction.lexeme)
     }
     
     func operandTypeMismatchError(_ instruction: Token) -> Error {
-        return AssemblerError(line: instruction.lineNumber,
+        return CompilerError(line: instruction.lineNumber,
                               format: "operand type mismatch: `%@'",
                               instruction.lexeme)
     }
     
     func unrecognizedInstructionError(_ instruction: Token) -> Error {
-        return AssemblerError(line: instruction.lineNumber,
+        return CompilerError(line: instruction.lineNumber,
                               format: "no such instruction: `%@'",
                               instruction.lexeme)
     }

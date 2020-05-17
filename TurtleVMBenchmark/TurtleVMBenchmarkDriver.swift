@@ -47,7 +47,7 @@ class TurtleVMBenchmarkDriver: NSObject {
             try tryRun()
         } catch let error as TurtleVMBenchmarkDriverError {
             reportError(withMessage: error.message)
-            } catch let error as AssemblerError {
+            } catch let error as CompilerError {
                 reportError(withMessage: error.message)
         } catch {
             reportError(withMessage: error.localizedDescription)

@@ -1,12 +1,10 @@
 //
 //  MicrocodeGenerator.swift
-//  Simulator
+//  TurtleCore
 //
 //  Created by Andrew Fox on 7/30/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 // Generates microcode for use in the ID stage of TurtleTTL hardware.
 public class MicrocodeGenerator: NSObject {

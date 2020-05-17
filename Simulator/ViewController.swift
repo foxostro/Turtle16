@@ -8,6 +8,7 @@
 
 import Cocoa
 import TurtleTTL
+import TurtleCore
 
 class ViewController: NSViewController {
     @IBOutlet var registerA:NSTextField!

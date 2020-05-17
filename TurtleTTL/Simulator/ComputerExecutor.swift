@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Executes a simulation on a background thread.
 public class ComputerExecutor: NSObject {

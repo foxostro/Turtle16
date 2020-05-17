@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Foundation
+import TurtleCore
 
 public class TracingInterpretingVM: VirtualMachine {
     public let profiler = TraceProfiler()

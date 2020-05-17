@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleTTL
+import TurtleCore
 
 class VirtualMachineTests: XCTestCase {
     let isVerboseLogging = false

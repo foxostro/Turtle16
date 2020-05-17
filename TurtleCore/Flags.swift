@@ -1,12 +1,10 @@
 //
 //  Flags.swift
-//  Simulator
+//  TurtleCoreTests
 //
 //  Created by Andrew Fox on 7/27/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 // Represents a flags (condition codes) register in the TurtleTTL hardware.
 public class Flags: NSObject {

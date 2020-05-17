@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 public protocol InterpreterDelegate: NSObject {
     // Fetch an instruction for the IF stage. This may fetch from instruction

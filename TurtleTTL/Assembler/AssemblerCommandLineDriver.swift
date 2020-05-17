@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Provides an interface for driving the assembler from the command-line.
 public class AssemblerCommandLineDriver: NSObject {

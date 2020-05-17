@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 public class AssemblerFrontEnd: NSObject {
     public var instructions: [Instruction] = []

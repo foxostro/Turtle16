@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import TurtleTTL
+import TurtleCore
 
 class ScannerExtensionTests: XCTestCase {
     func testFailToScanBinaryIntFromEmptyString() {

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Useful for building Traces of programs in unit test.
 public class TraceUtils: NSObject {

@@ -7,9 +7,9 @@
 //
 
 import Cocoa
-import TurtleTTL
+import TurtleCore
 
-class TextViewLogger: NSObject, Logger {
+final class TextViewLogger: NSObject, Logger {
     let textView:NSTextView
     let viewUpdateQueue:ThrottledQueue
     let queue = DispatchQueue(label: "com.foxostro.TextViewLogger")

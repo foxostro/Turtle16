@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import TurtleCore
 import TurtleTTL
 
 class InterpreterTests: XCTestCase {

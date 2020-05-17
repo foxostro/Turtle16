@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Rewrites instructions, replacing placeholder immediate values with final
 // values determined from the symbol table.

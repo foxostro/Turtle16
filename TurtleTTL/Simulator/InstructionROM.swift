@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Instruction ROM is backed by two ROM buffers.
 // This mirrors the physical construction of the Instruction ROM circuit which

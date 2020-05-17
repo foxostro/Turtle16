@@ -6,6 +6,4 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
-
 public enum ControlSignal { case active, inactive }

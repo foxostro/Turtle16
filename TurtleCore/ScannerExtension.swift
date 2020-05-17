@@ -1,12 +1,10 @@
 //
 //  NSScanner_TurtleTTL.swift
-//  TurtleTTL
+//  TurtleCore
 //
 //  Created by Andrew Fox on 5/16/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 public extension Scanner {
     func scanBinaryInt(_ result: inout Int) -> Bool {

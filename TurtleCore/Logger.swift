@@ -1,12 +1,10 @@
 //
 //  Logger.swift
-//  Simulator
+//  TurtleCore
 //
 //  Created by Andrew Fox on 7/29/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
-
-import Cocoa
 
 // Provides an interface for logging simulation progress.
 public protocol Logger {

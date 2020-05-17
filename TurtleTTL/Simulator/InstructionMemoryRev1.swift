@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import TurtleCore
 
 // Emulates the instruction memory mapping in the Rev 1 hardware.
 public class InstructionMemoryRev1: NSObject, InstructionMemory {

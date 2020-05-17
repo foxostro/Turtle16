@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import TurtleAssemblerCore
+import TurtleAssemblerCore
 
 class TurtleAssemblerCoreTests: XCTestCase {
 

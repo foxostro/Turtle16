@@ -1,6 +1,6 @@
 //
 //  AssemblerCodeGenPassTests.swift
-//  TurtleTTLTests
+//  TurtleAssemblerCoreTests
 //
 //  Created by Andrew Fox on 8/22/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 import TurtleCore
-import TurtleTTL
+import TurtleAssemblerCore
 
 class AssemblerCodeGenPassTests: XCTestCase {
     let aabb = TokenNumber(lineNumber: 1, lexeme: "0xaabb", literal: 0xaabb)

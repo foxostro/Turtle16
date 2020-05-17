@@ -7,33 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6F0B0D042308688900478220 /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
-		6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */; };
-		6F2EE665240C9D1D001FE46E /* SerialInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE664240C9D1D001FE46E /* SerialInput.swift */; };
-		6F2EE667240C9D38001FE46E /* SerialInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE666240C9D38001FE46E /* SerialInputTests.swift */; };
-		6F37BA472305D903009754D3 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
-		6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
-		6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */; };
-		6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
 		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
-		6F5A013E232069FF003E7C7F /* ComputerExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */; };
-		6F6A023523FF62C6003876BD /* TraceProfiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023423FF62C6003876BD /* TraceProfiler.swift */; };
-		6F6A023723FF65D5003876BD /* TraceProfilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */; };
-		6F6A023923FF7013003876BD /* TraceRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023823FF7013003876BD /* TraceRecorder.swift */; };
-		6F6A023B23FF7024003876BD /* TraceRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */; };
-		6F6A023D23FF7204003876BD /* Trace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023C23FF7204003876BD /* Trace.swift */; };
-		6F6A024123FF7225003876BD /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024023FF7225003876BD /* TraceTests.swift */; };
-		6F78DA3D23D947F4000ACA88 /* Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F78DA3C23D947F4000ACA88 /* Computer.swift */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
-		6F7E7FB623BEAADE00647482 /* ComputerPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */; };
-		6F7E7FBA23BEAC3B00647482 /* SerialInterfacePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */; };
-		6F7E7FBC23BEAC4D00647482 /* InstructionRAMPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */; };
-		6F7E7FBE23BEB77A00647482 /* ComputerPeripherals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */; };
-		6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */; };
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
-		6FA90CEC23FE681500E9AF1D /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
 		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D28D24710C26003B5D5C /* TurtleCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */; };
@@ -75,7 +53,6 @@
 		6FB0D30724711618003B5D5C /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00ED231D029D003E7C7F /* Parser.swift */; };
 		6FB0D30824711618003B5D5C /* AssemblerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */; };
 		6FB0D30924711618003B5D5C /* Patcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E523184880003E7C7F /* Patcher.swift */; };
-		6FB0D30A24711618003B5D5C /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
 		6FB0D30B24711618003B5D5C /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
 		6FB0D30C24711618003B5D5C /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
 		6FB0D30D24711618003B5D5C /* AssemblerLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615170230CAF4A00282B12 /* AssemblerLexer.swift */; };
@@ -99,7 +76,6 @@
 		6FB0D323247117F3003B5D5C /* TokenNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F9231F6415003E7C7F /* TokenNewline.swift */; };
 		6FB0D324247117F3003B5D5C /* TokenNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */; };
 		6FB0D325247117F3003B5D5C /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
-		6FB0D33324711814003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
 		6FB0D33424711820003B5D5C /* InstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */; };
 		6FB0D33524711820003B5D5C /* LabelDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */; };
 		6FB0D33624711820003B5D5C /* ParameterListNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */; };
@@ -108,39 +84,65 @@
 		6FB0D33924711820003B5D5C /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
 		6FB0D33A24711820003B5D5C /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6FB0D34624711859003B5D5C /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */; };
-		6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */; };
-		6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */; };
-		6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */; };
-		6FD4D7112468BA55004F85B0 /* AudioDevicePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */; };
-		6FE0039122F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
-		6FE0039A22F3D75E00221C4C /* TurtleTTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FE0038A22F3D75E00221C4C /* TurtleTTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6FE0039D22F3D75E00221C4C /* TurtleTTL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; };
-		6FE0039E22F3D75E00221C4C /* TurtleTTL.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */; };
-		6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBD22ECC86400375A00 /* ALU.swift */; };
-		6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB522ECC53500375A00 /* InstructionMemory.swift */; };
-		6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC122ECE51C00375A00 /* Chip74x181.swift */; };
-		6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */; };
-		6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBF22ECCAC800375A00 /* ALUTests.swift */; };
-		6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC722ED179C00375A00 /* ComputerTests.swift */; };
-		6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */; };
+		6FB0D35524711A23003B5D5C /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; };
+		6FB0D35C24711A23003B5D5C /* TurtleSimulatorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D34E24711A23003B5D5C /* TurtleSimulatorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6FB0D36324711A3B003B5D5C /* InterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CF24065529006C393B /* InterpretingVMTests.swift */; };
+		6FB0D36424711A3B003B5D5C /* VirtualMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D1240661D0006C393B /* VirtualMachineTests.swift */; };
+		6FB0D36524711A3B003B5D5C /* ComputerExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */; };
+		6FB0D36624711A3B003B5D5C /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024023FF7225003876BD /* TraceTests.swift */; };
+		6FB0D36724711A3B003B5D5C /* Chip74x181Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */; };
+		6FB0D36824711A3B003B5D5C /* ProcessorStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */; };
+		6FB0D36924711A3B003B5D5C /* TraceRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */; };
+		6FB0D36A24711A3B003B5D5C /* TraceExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */; };
+		6FB0D36B24711A3B003B5D5C /* TracingInterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */; };
+		6FB0D36C24711A3B003B5D5C /* ALUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBF22ECCAC800375A00 /* ALUTests.swift */; };
+		6FB0D36D24711A3B003B5D5C /* ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC722ED179C00375A00 /* ComputerTests.swift */; };
+		6FB0D36E24711A3B003B5D5C /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
+		6FB0D36F24711A3B003B5D5C /* SerialInterfacePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */; };
+		6FB0D37024711A3B003B5D5C /* InstructionROMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */; };
+		6FB0D37124711A3B003B5D5C /* TraceProfilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */; };
+		6FB0D37224711A3B003B5D5C /* AudioDevicePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */; };
+		6FB0D37324711A3B003B5D5C /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */; };
+		6FB0D37424711A3B003B5D5C /* SerialInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE666240C9D38001FE46E /* SerialInputTests.swift */; };
+		6FB0D37524711A4E003B5D5C /* TraceRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023823FF7013003876BD /* TraceRecorder.swift */; };
+		6FB0D37624711A4E003B5D5C /* InstructionMemoryRev1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */; };
+		6FB0D37724711A4E003B5D5C /* VirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976C92406545D006C393B /* VirtualMachine.swift */; };
+		6FB0D37824711A4E003B5D5C /* ComputerStopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */; };
+		6FB0D37924711A4E003B5D5C /* AudioDevicePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */; };
+		6FB0D37A24711A4E003B5D5C /* ComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */; };
+		6FB0D37B24711A4E003B5D5C /* Trace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023C23FF7204003876BD /* Trace.swift */; };
+		6FB0D37C24711A4E003B5D5C /* CPUStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */; };
+		6FB0D37D24711A4E003B5D5C /* InstructionROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E124084944006C393B /* InstructionROM.swift */; };
+		6FB0D37E24711A4E003B5D5C /* InstructionRAMPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */; };
+		6FB0D37F24711A4E003B5D5C /* Chip74x181.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC122ECE51C00375A00 /* Chip74x181.swift */; };
+		6FB0D38024711A4E003B5D5C /* TraceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE046592403A857001461C4 /* TraceUtils.swift */; };
+		6FB0D38124711A4E003B5D5C /* ComputerPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */; };
+		6FB0D38224711A4E003B5D5C /* InterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CD2406551C006C393B /* InterpretingVM.swift */; };
+		6FB0D38324711A4E003B5D5C /* UnlockedComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */; };
+		6FB0D38424711A4E003B5D5C /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
+		6FB0D38524711A4E003B5D5C /* SerialInterfacePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */; };
+		6FB0D38624711A4E003B5D5C /* ComputerPeripherals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */; };
+		6FB0D38724711A4E003B5D5C /* Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F78DA3C23D947F4000ACA88 /* Computer.swift */; };
+		6FB0D38824711A4E003B5D5C /* TraceExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465B2404EC78001461C4 /* TraceExecutor.swift */; };
+		6FB0D38924711A4E003B5D5C /* TraceProfiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023423FF62C6003876BD /* TraceProfiler.swift */; };
+		6FB0D38A24711A4E003B5D5C /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
+		6FB0D38B24711A4E003B5D5C /* SerialInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE664240C9D1D001FE46E /* SerialInput.swift */; };
+		6FB0D38C24711A4E003B5D5C /* VirtualMachineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */; };
+		6FB0D38D24711A4E003B5D5C /* TracingInterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */; };
+		6FB0D38E24711A4E003B5D5C /* InstructionMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB522ECC53500375A00 /* InstructionMemory.swift */; };
+		6FB0D38F24711A4E003B5D5C /* ComputerVirtualMachineFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */; };
+		6FB0D39024711A4E003B5D5C /* ALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBD22ECC86400375A00 /* ALU.swift */; };
+		6FB0D3A124711C46003B5D5C /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
+		6FB0D3A624711D16003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
+		6FB0D3AA24711F80003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
+		6FB0D3AB24711F80003B5D5C /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6FB0D3AE24711F87003B5D5C /* TurtleAssemblerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; };
+		6FB0D3AF24711F87003B5D5C /* TurtleAssemblerCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6FB0D3B224711F8B003B5D5C /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; };
+		6FB0D3B324711F8B003B5D5C /* TurtleSimulatorCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE003DB22F3F4C600221C4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003DA22F3F4C600221C4C /* main.swift */; };
-		6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE046592403A857001461C4 /* TraceUtils.swift */; };
-		6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465B2404EC78001461C4 /* TraceExecutor.swift */; };
-		6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */; };
-		6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */; };
 		6FE219CE241CC223006BC92A /* Example.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6FE219CD241CC223006BC92A /* Example.txt */; };
-		6FE219D9241D81FD006BC92A /* ProcessorStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */; };
-		6FE976CA2406545D006C393B /* VirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976C92406545D006C393B /* VirtualMachine.swift */; };
-		6FE976CE2406551C006C393B /* InterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CD2406551C006C393B /* InterpretingVM.swift */; };
-		6FE976D024065529006C393B /* InterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CF24065529006C393B /* InterpretingVMTests.swift */; };
-		6FE976D2240661D0006C393B /* VirtualMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D1240661D0006C393B /* VirtualMachineTests.swift */; };
-		6FE976DA24066A71006C393B /* TracingInterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */; };
-		6FE976DD24066A7B006C393B /* TracingInterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */; };
-		6FE976DE24066A7B006C393B /* VirtualMachineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */; };
-		6FE976E224084944006C393B /* InstructionROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E124084944006C393B /* InstructionROM.swift */; };
-		6FE976E4240849B6006C393B /* InstructionMemoryRev1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
 		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
 		6FF1995B22ECB37000C255A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FF1995A22ECB37000C255A2 /* Assets.xcassets */; };
@@ -148,21 +150,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6F5036FA22F50DC600761737 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FE0038722F3D75E00221C4C;
-			remoteInfo = TurtleTTL;
-		};
 		6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
-			remoteInfo = TurtleCore;
-		};
-		6FB0D2AA24710D3E003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
@@ -190,33 +178,110 @@
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
 		};
-		6FB0D3142471179E003B5D5C /* PBXContainerItemProxy */ = {
+		6FB0D35624711A23003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6FB0D39124711AAC003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6FB0D39324711AC2003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
 			remoteInfo = TurtleAssemblerCore;
 		};
-		6FE0039222F3D75E00221C4C /* PBXContainerItemProxy */ = {
+		6FB0D39524711AC8003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6FE0038722F3D75E00221C4C;
-			remoteInfo = TurtleTTL;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
 		};
-		6FE0039422F3D75E00221C4C /* PBXContainerItemProxy */ = {
+		6FB0D39724711ACE003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6FF1995222ECB36F00C255A2;
-			remoteInfo = Simulator;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
 		};
-		6FE0039B22F3D75E00221C4C /* PBXContainerItemProxy */ = {
+		6FB0D39924711AD6003B5D5C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6FE0038722F3D75E00221C4C;
-			remoteInfo = TurtleTTL;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6FB0D39B24711AE6003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6FB0D39D24711AEB003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6FB0D39F24711B69003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6FB0D3A224711C74003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6FB0D3A424711C79003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6FB0D3A724711D55003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6FB0D3AC24711F80003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6FB0D3B024711F87003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6FB0D3B424711F8B003B5D5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
 		};
 		6FF1996622ECB37000C255A2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -243,7 +308,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6FE0039E22F3D75E00221C4C /* TurtleTTL.framework in Embed Frameworks */,
+				6FB0D3AF24711F87003B5D5C /* TurtleAssemblerCore.framework in Embed Frameworks */,
+				6FB0D3B324711F8B003B5D5C /* TurtleSimulatorCore.framework in Embed Frameworks */,
+				6FB0D3AB24711F80003B5D5C /* TurtleCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,6 +432,11 @@
 		6FB0D2ED247115BA003B5D5C /* TurtleAssemblerCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleAssemblerCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB0D2F2247115BA003B5D5C /* TurtleAssemblerCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleAssemblerCoreTests.swift; sourceTree = "<group>"; };
 		6FB0D2F4247115BA003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleSimulatorCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0D34E24711A23003B5D5C /* TurtleSimulatorCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleSimulatorCore.h; sourceTree = "<group>"; };
+		6FB0D34F24711A23003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FB0D35424711A23003B5D5C /* TurtleSimulatorCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleSimulatorCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0D35B24711A23003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockedComputerExecutor.swift; sourceTree = "<group>"; };
 		6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStopwatch.swift; sourceTree = "<group>"; };
 		6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheral.swift; sourceTree = "<group>"; };
@@ -375,11 +447,6 @@
 		6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6FDFED7922F1627500AADA07 /* CodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGenerator.swift; sourceTree = "<group>"; };
 		6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGeneratorTests.swift; sourceTree = "<group>"; };
-		6FE0038822F3D75E00221C4C /* TurtleTTL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleTTL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FE0038A22F3D75E00221C4C /* TurtleTTL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleTTL.h; sourceTree = "<group>"; };
-		6FE0038B22F3D75E00221C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6FE0039022F3D75E00221C4C /* TurtleTTLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleTTLTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FE0039922F3D75E00221C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerTests.swift; sourceTree = "<group>"; };
 		6FE003D822F3F4C600221C4C /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FE003DA22F3F4C600221C4C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -418,7 +485,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FA90CEC23FE681500E9AF1D /* TurtleTTL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,18 +518,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038522F3D75E00221C4C /* Frameworks */ = {
+		6FB0D34924711A23003B5D5C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038D22F3D75E00221C4C /* Frameworks */ = {
+		6FB0D35124711A23003B5D5C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FE0039122F3D75E00221C4C /* TurtleTTL.framework in Frameworks */,
+				6FB0D35524711A23003B5D5C /* TurtleSimulatorCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +537,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F5036F922F50DBA00761737 /* TurtleTTL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,7 +544,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FE0039D22F3D75E00221C4C /* TurtleTTL.framework in Frameworks */,
+				6FB0D3AE24711F87003B5D5C /* TurtleAssemblerCore.framework in Frameworks */,
+				6FB0D3B224711F8B003B5D5C /* TurtleSimulatorCore.framework in Frameworks */,
+				6FB0D3AA24711F80003B5D5C /* TurtleCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,66 +567,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		6F5A0138231F7C77003E7C7F /* Simulator */ = {
-			isa = PBXGroup;
-			children = (
-				6F86EDBD22ECC86400375A00 /* ALU.swift */,
-				6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */,
-				6F86EDC122ECE51C00375A00 /* Chip74x181.swift */,
-				6F78DA3C23D947F4000ACA88 /* Computer.swift */,
-				6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */,
-				6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */,
-				6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */,
-				6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */,
-				6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */,
-				6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */,
-				6F86EDB522ECC53500375A00 /* InstructionMemory.swift */,
-				6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */,
-				6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */,
-				6FE976E124084944006C393B /* InstructionROM.swift */,
-				6F4ACBDA2400BCD900014F4B /* Interpreter.swift */,
-				6FE976CD2406551C006C393B /* InterpretingVM.swift */,
-				6F37BA462305D903009754D3 /* Register.swift */,
-				6F2EE664240C9D1D001FE46E /* SerialInput.swift */,
-				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
-				6F6A023C23FF7204003876BD /* Trace.swift */,
-				6FE0465B2404EC78001461C4 /* TraceExecutor.swift */,
-				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
-				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
-				6FE046592403A857001461C4 /* TraceUtils.swift */,
-				6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */,
-				6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */,
-				6FE976C92406545D006C393B /* VirtualMachine.swift */,
-				6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */,
-			);
-			path = Simulator;
-			sourceTree = "<group>";
-		};
-		6F5A013A231F7CCC003E7C7F /* SimulatorTests */ = {
-			isa = PBXGroup;
-			children = (
-				6F86EDBF22ECCAC800375A00 /* ALUTests.swift */,
-				6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */,
-				6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */,
-				6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */,
-				6F86EDC722ED179C00375A00 /* ComputerTests.swift */,
-				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
-				6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */,
-				6FE976CF24065529006C393B /* InterpretingVMTests.swift */,
-				6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */,
-				6F0B0D032308688900478220 /* RegisterTests.swift */,
-				6F2EE666240C9D38001FE46E /* SerialInputTests.swift */,
-				6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */,
-				6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */,
-				6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */,
-				6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */,
-				6F6A024023FF7225003876BD /* TraceTests.swift */,
-				6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */,
-				6FE976D1240661D0006C393B /* VirtualMachineTests.swift */,
-			);
-			path = SimulatorTests;
-			sourceTree = "<group>";
-		};
 		6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */ = {
 			isa = PBXGroup;
 			children = (
@@ -572,21 +579,22 @@
 		6FB0D28C24710C26003B5D5C /* TurtleCore */ = {
 			isa = PBXGroup;
 			children = (
-				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
-				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
-				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
-				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
-				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
-				6F86CC7F22F0001C008C6322 /* Memory.swift */,
-				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
 				6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */,
 				6F6A024623FF8C60003876BD /* ConsoleLogger.swift */,
+				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
+				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
+				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
+				6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */,
 				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
+				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
 				6F6A024223FF7926003876BD /* InstructionFormatter.swift */,
 				6F790AE822EEDD1900B38267 /* Logger.swift */,
-				6FE0465F2405119D001461C4 /* NullLogger.swift */,
+				6F86CC7F22F0001C008C6322 /* Memory.swift */,
 				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
+				6FE0465F2405119D001461C4 /* NullLogger.swift */,
+				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
 				6FB0D2A324710CED003B5D5C /* ScannerExtension.swift */,
+				6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */,
 				6FB0D28D24710C26003B5D5C /* TurtleCore.h */,
 				6FB0D28E24710C26003B5D5C /* Info.plist */,
 			);
@@ -596,13 +604,13 @@
 		6FB0D29724710C26003B5D5C /* TurtleCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				6FE219DC241DA0C3006BC92A /* FlagsTest.swift */,
-				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
-				6FE219DE241DB21A006BC92A /* MemoryTests.swift */,
-				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
 				6FB0D2A624710CF3003B5D5C /* AtomicBooleanFlagTests.swift */,
+				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
+				6FE219DC241DA0C3006BC92A /* FlagsTest.swift */,
+				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
 				6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */,
 				6F37BA442305B559009754D3 /* InstructionTests.swift */,
+				6FE219DE241DB21A006BC92A /* MemoryTests.swift */,
 				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
 				6FB0D2A724710CF3003B5D5C /* ScannerExtensionTests.swift */,
 				6FB0D29A24710C26003B5D5C /* Info.plist */,
@@ -621,7 +629,6 @@
 				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
 				6F61517E230D041600282B12 /* AssemblerParser.swift */,
 				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
-				6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */,
 				6F615176230CB54200282B12 /* Lexer.swift */,
 				6F5A00ED231D029D003E7C7F /* Parser.swift */,
 				6F5A00E523184880003E7C7F /* Patcher.swift */,
@@ -652,31 +659,75 @@
 			path = TurtleAssemblerCoreTests;
 			sourceTree = "<group>";
 		};
-		6FE0038922F3D75E00221C4C /* TurtleTTL */ = {
+		6FB0D34D24711A23003B5D5C /* TurtleSimulatorCore */ = {
 			isa = PBXGroup;
 			children = (
-				6F5A0138231F7C77003E7C7F /* Simulator */,
-				6FE0038B22F3D75E00221C4C /* Info.plist */,
-				6FE0038A22F3D75E00221C4C /* TurtleTTL.h */,
+				6F86EDBD22ECC86400375A00 /* ALU.swift */,
+				6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */,
+				6F86EDC122ECE51C00375A00 /* Chip74x181.swift */,
+				6F78DA3C23D947F4000ACA88 /* Computer.swift */,
+				6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */,
+				6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */,
+				6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */,
+				6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */,
+				6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */,
+				6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */,
+				6F86EDB522ECC53500375A00 /* InstructionMemory.swift */,
+				6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */,
+				6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */,
+				6FE976E124084944006C393B /* InstructionROM.swift */,
+				6F4ACBDA2400BCD900014F4B /* Interpreter.swift */,
+				6FE976CD2406551C006C393B /* InterpretingVM.swift */,
+				6F37BA462305D903009754D3 /* Register.swift */,
+				6F2EE664240C9D1D001FE46E /* SerialInput.swift */,
+				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
+				6F6A023C23FF7204003876BD /* Trace.swift */,
+				6FE0465B2404EC78001461C4 /* TraceExecutor.swift */,
+				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
+				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
+				6FE046592403A857001461C4 /* TraceUtils.swift */,
+				6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */,
+				6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */,
+				6FE976C92406545D006C393B /* VirtualMachine.swift */,
+				6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */,
+				6FB0D34E24711A23003B5D5C /* TurtleSimulatorCore.h */,
+				6FB0D34F24711A23003B5D5C /* Info.plist */,
 			);
-			path = TurtleTTL;
+			path = TurtleSimulatorCore;
 			sourceTree = "<group>";
 		};
-		6FE0039622F3D75E00221C4C /* TurtleTTLTests */ = {
+		6FB0D35824711A23003B5D5C /* TurtleSimulatorCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				6F5A013A231F7CCC003E7C7F /* SimulatorTests */,
-				6FE0039922F3D75E00221C4C /* Info.plist */,
+				6F86EDBF22ECCAC800375A00 /* ALUTests.swift */,
+				6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */,
+				6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */,
+				6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */,
+				6F86EDC722ED179C00375A00 /* ComputerTests.swift */,
+				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
+				6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */,
+				6FE976CF24065529006C393B /* InterpretingVMTests.swift */,
+				6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */,
+				6F0B0D032308688900478220 /* RegisterTests.swift */,
+				6F2EE666240C9D38001FE46E /* SerialInputTests.swift */,
+				6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */,
+				6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */,
+				6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */,
+				6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */,
+				6F6A024023FF7225003876BD /* TraceTests.swift */,
+				6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */,
+				6FE976D1240661D0006C393B /* VirtualMachineTests.swift */,
+				6FB0D35B24711A23003B5D5C /* Info.plist */,
 			);
-			path = TurtleTTLTests;
+			path = TurtleSimulatorCoreTests;
 			sourceTree = "<group>";
 		};
 		6FE003D922F3F4C600221C4C /* TurtleAssembler */ = {
 			isa = PBXGroup;
 			children = (
-				6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */,
-				6FE003DA22F3F4C600221C4C /* main.swift */,
 				6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */,
+				6FE003DA22F3F4C600221C4C /* main.swift */,
+				6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */,
 			);
 			path = TurtleAssembler;
 			sourceTree = "<group>";
@@ -738,9 +789,9 @@
 			children = (
 				6FF1995522ECB36F00C255A2 /* Simulator */,
 				6FF1996822ECB37000C255A2 /* SimulatorTests */,
+				6FB0D34D24711A23003B5D5C /* TurtleSimulatorCore */,
+				6FB0D35824711A23003B5D5C /* TurtleSimulatorCoreTests */,
 				6FE003D922F3F4C600221C4C /* TurtleAssembler */,
-				6FE0038922F3D75E00221C4C /* TurtleTTL */,
-				6FE0039622F3D75E00221C4C /* TurtleTTLTests */,
 				6FB0D2E6247115BA003B5D5C /* TurtleAssemblerCore */,
 				6FB0D2F1247115BA003B5D5C /* TurtleAssemblerCoreTests */,
 				6FB0D28C24710C26003B5D5C /* TurtleCore */,
@@ -756,14 +807,14 @@
 			children = (
 				6FF1995322ECB36F00C255A2 /* Simulator.app */,
 				6FF1996522ECB37000C255A2 /* SimulatorTests.xctest */,
-				6FE0038822F3D75E00221C4C /* TurtleTTL.framework */,
-				6FE0039022F3D75E00221C4C /* TurtleTTLTests.xctest */,
 				6FE003D822F3F4C600221C4C /* TurtleAssembler */,
 				6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6FB0D28B24710C26003B5D5C /* TurtleCore.framework */,
 				6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */,
 				6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */,
 				6FB0D2ED247115BA003B5D5C /* TurtleAssemblerCoreTests.xctest */,
+				6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */,
+				6FB0D35424711A23003B5D5C /* TurtleSimulatorCoreTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -788,8 +839,8 @@
 		6FF1996822ECB37000C255A2 /* SimulatorTests */ = {
 			isa = PBXGroup;
 			children = (
-				6FF1996B22ECB37000C255A2 /* Info.plist */,
 				6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */,
+				6FF1996B22ECB37000C255A2 /* Info.plist */,
 			);
 			path = SimulatorTests;
 			sourceTree = "<group>";
@@ -813,11 +864,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038322F3D75E00221C4C /* Headers */ = {
+		6FB0D34724711A23003B5D5C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FE0039A22F3D75E00221C4C /* TurtleTTL.h in Headers */,
+				6FB0D35C24711A23003B5D5C /* TurtleSimulatorCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,6 +886,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FB0D39A24711AD6003B5D5C /* PBXTargetDependency */,
+				6FB0D3A324711C74003B5D5C /* PBXTargetDependency */,
+				6FB0D3A524711C79003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleVMBenchmark;
 			productName = TurtleVMBenchmark;
@@ -870,6 +924,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FB0D3A824711D55003B5D5C /* PBXTargetDependency */,
 				6FB0D29624710C26003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleCoreTests;
@@ -914,43 +969,42 @@
 			productReference = 6FB0D2ED247115BA003B5D5C /* TurtleAssemblerCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		6FE0038722F3D75E00221C4C /* TurtleTTL */ = {
+		6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6FE003A322F3D75E00221C4C /* Build configuration list for PBXNativeTarget "TurtleTTL" */;
+			buildConfigurationList = 6FB0D35D24711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCore" */;
 			buildPhases = (
-				6FE0038322F3D75E00221C4C /* Headers */,
-				6FE0038422F3D75E00221C4C /* Sources */,
-				6FE0038522F3D75E00221C4C /* Frameworks */,
-				6FE0038622F3D75E00221C4C /* Resources */,
+				6FB0D34724711A23003B5D5C /* Headers */,
+				6FB0D34824711A23003B5D5C /* Sources */,
+				6FB0D34924711A23003B5D5C /* Frameworks */,
+				6FB0D34A24711A23003B5D5C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				6FB0D3152471179E003B5D5C /* PBXTargetDependency */,
-				6FB0D2AB24710D3E003B5D5C /* PBXTargetDependency */,
+				6FB0D39E24711AEB003B5D5C /* PBXTargetDependency */,
+				6FB0D39C24711AE6003B5D5C /* PBXTargetDependency */,
 			);
-			name = TurtleTTL;
-			productName = TurtleTTL;
-			productReference = 6FE0038822F3D75E00221C4C /* TurtleTTL.framework */;
+			name = TurtleSimulatorCore;
+			productName = TurtleSimulatorCore;
+			productReference = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		6FE0038F22F3D75E00221C4C /* TurtleTTLTests */ = {
+		6FB0D35324711A23003B5D5C /* TurtleSimulatorCoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6FE003A522F3D75E00221C4C /* Build configuration list for PBXNativeTarget "TurtleTTLTests" */;
+			buildConfigurationList = 6FB0D36024711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCoreTests" */;
 			buildPhases = (
-				6FE0038C22F3D75E00221C4C /* Sources */,
-				6FE0038D22F3D75E00221C4C /* Frameworks */,
-				6FE0038E22F3D75E00221C4C /* Resources */,
+				6FB0D35024711A23003B5D5C /* Sources */,
+				6FB0D35124711A23003B5D5C /* Frameworks */,
+				6FB0D35224711A23003B5D5C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				6FE0039322F3D75E00221C4C /* PBXTargetDependency */,
-				6FE0039522F3D75E00221C4C /* PBXTargetDependency */,
+				6FB0D35724711A23003B5D5C /* PBXTargetDependency */,
 			);
-			name = TurtleTTLTests;
-			productName = TurtleTTLTests;
-			productReference = 6FE0039022F3D75E00221C4C /* TurtleTTLTests.xctest */;
+			name = TurtleSimulatorCoreTests;
+			productName = TurtleSimulatorCoreTests;
+			productReference = 6FB0D35424711A23003B5D5C /* TurtleSimulatorCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		6FE003D722F3F4C600221C4C /* TurtleAssembler */ = {
@@ -964,7 +1018,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				6F5036FB22F50DC600761737 /* PBXTargetDependency */,
+				6FB0D39824711ACE003B5D5C /* PBXTargetDependency */,
+				6FB0D39624711AC8003B5D5C /* PBXTargetDependency */,
+				6FB0D39424711AC2003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleAssembler;
 			productName = TurtleAssembler;
@@ -983,8 +1039,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FB0D39224711AAC003B5D5C /* PBXTargetDependency */,
+				6FB0D3A024711B69003B5D5C /* PBXTargetDependency */,
 				6FB0D2DE24711390003B5D5C /* PBXTargetDependency */,
-				6FE0039C22F3D75E00221C4C /* PBXTargetDependency */,
+				6FB0D3AD24711F80003B5D5C /* PBXTargetDependency */,
+				6FB0D3B124711F87003B5D5C /* PBXTargetDependency */,
+				6FB0D3B524711F8B003B5D5C /* PBXTargetDependency */,
 			);
 			name = Simulator;
 			productName = Simulator;
@@ -1035,11 +1095,11 @@
 					6FB0D2EC247115BA003B5D5C = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
-					6FE0038722F3D75E00221C4C = {
-						CreatedOnToolsVersion = 10.2.1;
+					6FB0D34B24711A23003B5D5C = {
+						CreatedOnToolsVersion = 11.3.1;
 					};
-					6FE0038F22F3D75E00221C4C = {
-						CreatedOnToolsVersion = 10.2.1;
+					6FB0D35324711A23003B5D5C = {
+						CreatedOnToolsVersion = 11.3.1;
 					};
 					6FE003D722F3F4C600221C4C = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -1074,13 +1134,13 @@
 			targets = (
 				6FF1995222ECB36F00C255A2 /* Simulator */,
 				6FF1996422ECB37000C255A2 /* SimulatorTests */,
-				6FE0038722F3D75E00221C4C /* TurtleTTL */,
-				6FE0038F22F3D75E00221C4C /* TurtleTTLTests */,
-				6FB0D28A24710C26003B5D5C /* TurtleCore */,
-				6FB0D29224710C26003B5D5C /* TurtleCoreTests */,
+				6FE003D722F3F4C600221C4C /* TurtleAssembler */,
+				6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */,
+				6FB0D35324711A23003B5D5C /* TurtleSimulatorCoreTests */,
 				6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */,
 				6FB0D2EC247115BA003B5D5C /* TurtleAssemblerCoreTests */,
-				6FE003D722F3F4C600221C4C /* TurtleAssembler */,
+				6FB0D28A24710C26003B5D5C /* TurtleCore */,
+				6FB0D29224710C26003B5D5C /* TurtleCoreTests */,
 				6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */,
 			);
 		};
@@ -1115,14 +1175,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038622F3D75E00221C4C /* Resources */ = {
+		6FB0D34A24711A23003B5D5C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038E22F3D75E00221C4C /* Resources */ = {
+		6FB0D35224711A23003B5D5C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1164,6 +1224,7 @@
 			files = (
 				6FB0D2DF247113E3003B5D5C /* ThrottledQueue.swift in Sources */,
 				6FB0D2CD247111BB003B5D5C /* Instruction.swift in Sources */,
+				6FB0D3A124711C46003B5D5C /* FileHandleTextOutputStream.swift in Sources */,
 				6FB0D2CA247111BB003B5D5C /* NullLogger.swift in Sources */,
 				6FB0D2D8247112AF003B5D5C /* ControlWord.swift in Sources */,
 				6FB0D2D424711264003B5D5C /* InstructionDecoder.swift in Sources */,
@@ -1192,7 +1253,6 @@
 				6FB0D2CF247111C3003B5D5C /* InstructionFormatterTests.swift in Sources */,
 				6FB0D2D0247111C3003B5D5C /* InstructionTests.swift in Sources */,
 				6FB0D2DB247112EF003B5D5C /* FlagsTest.swift in Sources */,
-				6FB0D33324711814003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */,
 				6FB0D2A824710CF3003B5D5C /* AtomicBooleanFlagTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1219,7 +1279,6 @@
 				6FB0D31A247117F3003B5D5C /* LabelDeclarationNode.swift in Sources */,
 				6FB0D31C247117F3003B5D5C /* Token.swift in Sources */,
 				6FB0D31D247117F3003B5D5C /* TokenColon.swift in Sources */,
-				6FB0D30A24711618003B5D5C /* FileHandleTextOutputStream.swift in Sources */,
 				6FB0D30924711618003B5D5C /* Patcher.swift in Sources */,
 				6FB0D323247117F3003B5D5C /* TokenNewline.swift in Sources */,
 				6FB0D316247117F3003B5D5C /* AbstractSyntaxTreeNode.swift in Sources */,
@@ -1241,6 +1300,7 @@
 				6FB0D30424711605003B5D5C /* AssemblerLexerTests.swift in Sources */,
 				6FB0D2FD24711605003B5D5C /* AssemblerParserTests.swift in Sources */,
 				6FB0D33524711820003B5D5C /* LabelDeclarationNodeTests.swift in Sources */,
+				6FB0D3A624711D16003B5D5C /* ConstantDeclarationNodeTests.swift in Sources */,
 				6FB0D33A24711820003B5D5C /* TokenTests.swift in Sources */,
 				6FB0D33724711820003B5D5C /* TokenEOFTests.swift in Sources */,
 				6FB0D33824711820003B5D5C /* TokenNumberTests.swift in Sources */,
@@ -1255,63 +1315,63 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038422F3D75E00221C4C /* Sources */ = {
+		6FB0D34824711A23003B5D5C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F1BFF4223F3C97C00FCE919 /* CPUStateSnapshot.swift in Sources */,
-				6FE219C0241C6652006BC92A /* ComputerVirtualMachineFactory.swift in Sources */,
-				6FE003AE22F3D78B00221C4C /* InstructionMemory.swift in Sources */,
-				6F6A023923FF7013003876BD /* TraceRecorder.swift in Sources */,
-				6FE003B022F3D78B00221C4C /* Chip74x181.swift in Sources */,
-				6F6A023D23FF7204003876BD /* Trace.swift in Sources */,
-				6FE976CA2406545D006C393B /* VirtualMachine.swift in Sources */,
-				6F7E7FBA23BEAC3B00647482 /* SerialInterfacePeripheral.swift in Sources */,
-				6FE976E4240849B6006C393B /* InstructionMemoryRev1.swift in Sources */,
-				6F78DA3D23D947F4000ACA88 /* Computer.swift in Sources */,
-				6FE003A722F3D78B00221C4C /* ComputerExecutor.swift in Sources */,
-				6FCD8DA523FA26C800E90095 /* UnlockedComputerExecutor.swift in Sources */,
-				6FE0465C2404EC78001461C4 /* TraceExecutor.swift in Sources */,
-				6F2EE665240C9D1D001FE46E /* SerialInput.swift in Sources */,
-				6FCD8DA923FA601100E90095 /* ComputerStopwatch.swift in Sources */,
-				6FE0465A2403A857001461C4 /* TraceUtils.swift in Sources */,
-				6F7E7FB623BEAADE00647482 /* ComputerPeripheral.swift in Sources */,
-				6F4ACBDB2400BCD900014F4B /* Interpreter.swift in Sources */,
-				6FE976DE24066A7B006C393B /* VirtualMachineUtils.swift in Sources */,
-				6FE976DD24066A7B006C393B /* TracingInterpretingVM.swift in Sources */,
-				6F6A023523FF62C6003876BD /* TraceProfiler.swift in Sources */,
-				6F37BA472305D903009754D3 /* Register.swift in Sources */,
-				6FE003AA22F3D78B00221C4C /* ALU.swift in Sources */,
-				6FD4D70F2468BA12004F85B0 /* AudioDevicePeripheral.swift in Sources */,
-				6FE976CE2406551C006C393B /* InterpretingVM.swift in Sources */,
-				6F7E7FBE23BEB77A00647482 /* ComputerPeripherals.swift in Sources */,
-				6F7E7FBC23BEAC4D00647482 /* InstructionRAMPeripheral.swift in Sources */,
-				6FE976E224084944006C393B /* InstructionROM.swift in Sources */,
+				6FB0D38424711A4E003B5D5C /* Interpreter.swift in Sources */,
+				6FB0D38124711A4E003B5D5C /* ComputerPeripheral.swift in Sources */,
+				6FB0D38F24711A4E003B5D5C /* ComputerVirtualMachineFactory.swift in Sources */,
+				6FB0D37D24711A4E003B5D5C /* InstructionROM.swift in Sources */,
+				6FB0D37F24711A4E003B5D5C /* Chip74x181.swift in Sources */,
+				6FB0D38824711A4E003B5D5C /* TraceExecutor.swift in Sources */,
+				6FB0D38E24711A4E003B5D5C /* InstructionMemory.swift in Sources */,
+				6FB0D38D24711A4E003B5D5C /* TracingInterpretingVM.swift in Sources */,
+				6FB0D37924711A4E003B5D5C /* AudioDevicePeripheral.swift in Sources */,
+				6FB0D38B24711A4E003B5D5C /* SerialInput.swift in Sources */,
+				6FB0D38024711A4E003B5D5C /* TraceUtils.swift in Sources */,
+				6FB0D37524711A4E003B5D5C /* TraceRecorder.swift in Sources */,
+				6FB0D38C24711A4E003B5D5C /* VirtualMachineUtils.swift in Sources */,
+				6FB0D38924711A4E003B5D5C /* TraceProfiler.swift in Sources */,
+				6FB0D37C24711A4E003B5D5C /* CPUStateSnapshot.swift in Sources */,
+				6FB0D38724711A4E003B5D5C /* Computer.swift in Sources */,
+				6FB0D38224711A4E003B5D5C /* InterpretingVM.swift in Sources */,
+				6FB0D38A24711A4E003B5D5C /* Register.swift in Sources */,
+				6FB0D37724711A4E003B5D5C /* VirtualMachine.swift in Sources */,
+				6FB0D37824711A4E003B5D5C /* ComputerStopwatch.swift in Sources */,
+				6FB0D37B24711A4E003B5D5C /* Trace.swift in Sources */,
+				6FB0D38524711A4E003B5D5C /* SerialInterfacePeripheral.swift in Sources */,
+				6FB0D39024711A4E003B5D5C /* ALU.swift in Sources */,
+				6FB0D38324711A4E003B5D5C /* UnlockedComputerExecutor.swift in Sources */,
+				6FB0D37E24711A4E003B5D5C /* InstructionRAMPeripheral.swift in Sources */,
+				6FB0D37624711A4E003B5D5C /* InstructionMemoryRev1.swift in Sources */,
+				6FB0D38624711A4E003B5D5C /* ComputerPeripherals.swift in Sources */,
+				6FB0D37A24711A4E003B5D5C /* ComputerExecutor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FE0038C22F3D75E00221C4C /* Sources */ = {
+		6FB0D35024711A23003B5D5C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FE976DA24066A71006C393B /* TracingInterpretingVMTests.swift in Sources */,
-				6F4ACBDD2400BCEE00014F4B /* InterpreterTests.swift in Sources */,
-				6FE219D9241D81FD006BC92A /* ProcessorStateTests.swift in Sources */,
-				6F5A013E232069FF003E7C7F /* ComputerExecutorTests.swift in Sources */,
-				6FE003C022F3D88800221C4C /* ComputerTests.swift in Sources */,
-				6F0B0D042308688900478220 /* RegisterTests.swift in Sources */,
-				6F2EE667240C9D38001FE46E /* SerialInputTests.swift in Sources */,
-				6F6A023B23FF7024003876BD /* TraceRecorderTests.swift in Sources */,
-				6FE0465E2404EC96001461C4 /* TraceExecutorTests.swift in Sources */,
-				6F7E7FC023BEC1F800647482 /* SerialInterfacePeripheralTests.swift in Sources */,
-				6FD4D7112468BA55004F85B0 /* AudioDevicePeripheralTests.swift in Sources */,
-				6FE003BC22F3D88800221C4C /* Chip74x181Tests.swift in Sources */,
-				6FE003C522F3D88800221C4C /* InstructionROMTests.swift in Sources */,
-				6FE003BE22F3D88800221C4C /* ALUTests.swift in Sources */,
-				6F6A024123FF7225003876BD /* TraceTests.swift in Sources */,
-				6FE976D2240661D0006C393B /* VirtualMachineTests.swift in Sources */,
-				6F6A023723FF65D5003876BD /* TraceProfilerTests.swift in Sources */,
-				6FE976D024065529006C393B /* InterpretingVMTests.swift in Sources */,
+				6FB0D36D24711A3B003B5D5C /* ComputerTests.swift in Sources */,
+				6FB0D36F24711A3B003B5D5C /* SerialInterfacePeripheralTests.swift in Sources */,
+				6FB0D36B24711A3B003B5D5C /* TracingInterpretingVMTests.swift in Sources */,
+				6FB0D36E24711A3B003B5D5C /* RegisterTests.swift in Sources */,
+				6FB0D36824711A3B003B5D5C /* ProcessorStateTests.swift in Sources */,
+				6FB0D37224711A3B003B5D5C /* AudioDevicePeripheralTests.swift in Sources */,
+				6FB0D36C24711A3B003B5D5C /* ALUTests.swift in Sources */,
+				6FB0D36424711A3B003B5D5C /* VirtualMachineTests.swift in Sources */,
+				6FB0D37124711A3B003B5D5C /* TraceProfilerTests.swift in Sources */,
+				6FB0D37324711A3B003B5D5C /* InterpreterTests.swift in Sources */,
+				6FB0D36924711A3B003B5D5C /* TraceRecorderTests.swift in Sources */,
+				6FB0D37424711A3B003B5D5C /* SerialInputTests.swift in Sources */,
+				6FB0D36624711A3B003B5D5C /* TraceTests.swift in Sources */,
+				6FB0D36A24711A3B003B5D5C /* TraceExecutorTests.swift in Sources */,
+				6FB0D37024711A3B003B5D5C /* InstructionROMTests.swift in Sources */,
+				6FB0D36324711A3B003B5D5C /* InterpretingVMTests.swift in Sources */,
+				6FB0D36724711A3B003B5D5C /* Chip74x181Tests.swift in Sources */,
+				6FB0D36524711A3B003B5D5C /* ComputerExecutorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1347,20 +1407,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6F5036FB22F50DC600761737 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FE0038722F3D75E00221C4C /* TurtleTTL */;
-			targetProxy = 6F5036FA22F50DC600761737 /* PBXContainerItemProxy */;
-		};
 		6FB0D29624710C26003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D2AB24710D3E003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
-			targetProxy = 6FB0D2AA24710D3E003B5D5C /* PBXContainerItemProxy */;
 		};
 		6FB0D2DE24711390003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1377,25 +1427,80 @@
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6FB0D31224711724003B5D5C /* PBXContainerItemProxy */;
 		};
-		6FB0D3152471179E003B5D5C /* PBXTargetDependency */ = {
+		6FB0D35724711A23003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6FB0D35624711A23003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D39224711AAC003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6FB0D39124711AAC003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D39424711AC2003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
-			targetProxy = 6FB0D3142471179E003B5D5C /* PBXContainerItemProxy */;
+			targetProxy = 6FB0D39324711AC2003B5D5C /* PBXContainerItemProxy */;
 		};
-		6FE0039322F3D75E00221C4C /* PBXTargetDependency */ = {
+		6FB0D39624711AC8003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6FE0038722F3D75E00221C4C /* TurtleTTL */;
-			targetProxy = 6FE0039222F3D75E00221C4C /* PBXContainerItemProxy */;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6FB0D39524711AC8003B5D5C /* PBXContainerItemProxy */;
 		};
-		6FE0039522F3D75E00221C4C /* PBXTargetDependency */ = {
+		6FB0D39824711ACE003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6FF1995222ECB36F00C255A2 /* Simulator */;
-			targetProxy = 6FE0039422F3D75E00221C4C /* PBXContainerItemProxy */;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D39724711ACE003B5D5C /* PBXContainerItemProxy */;
 		};
-		6FE0039C22F3D75E00221C4C /* PBXTargetDependency */ = {
+		6FB0D39A24711AD6003B5D5C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6FE0038722F3D75E00221C4C /* TurtleTTL */;
-			targetProxy = 6FE0039B22F3D75E00221C4C /* PBXContainerItemProxy */;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6FB0D39924711AD6003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D39C24711AE6003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D39B24711AE6003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D39E24711AEB003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D39D24711AEB003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3A024711B69003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D39F24711B69003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3A324711C74003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D3A224711C74003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3A524711C79003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D3A424711C79003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3A824711D55003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D3A724711D55003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3AD24711F80003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6FB0D3AC24711F80003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3B124711F87003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6FB0D3B024711F87003B5D5C /* PBXContainerItemProxy */;
+		};
+		6FB0D3B524711F8B003B5D5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6FB0D3B424711F8B003B5D5C /* PBXContainerItemProxy */;
 		};
 		6FF1996722ECB37000C255A2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1625,10 +1730,9 @@
 			};
 			name = Release;
 		};
-		6FE0039F22F3D75E00221C4C /* Debug */ = {
+		6FB0D35E24711A23003B5D5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1637,15 +1741,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = TurtleTTL/Info.plist;
+				INFOPLIST_FILE = TurtleSimulatorCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleTTL;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1654,10 +1757,9 @@
 			};
 			name = Debug;
 		};
-		6FE003A022F3D75E00221C4C /* Release */ = {
+		6FB0D35F24711A23003B5D5C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1666,15 +1768,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = TurtleTTL/Info.plist;
+				INFOPLIST_FILE = TurtleSimulatorCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleTTL;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1683,41 +1784,39 @@
 			};
 			name = Release;
 		};
-		6FE003A122F3D75E00221C4C /* Debug */ = {
+		6FB0D36124711A23003B5D5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
-				INFOPLIST_FILE = TurtleTTLTests/Info.plist;
+				INFOPLIST_FILE = TurtleSimulatorCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleTTLTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		6FE003A222F3D75E00221C4C /* Release */ = {
+		6FB0D36224711A23003B5D5C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
-				INFOPLIST_FILE = TurtleTTLTests/Info.plist;
+				INFOPLIST_FILE = TurtleSimulatorCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleTTLTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1872,7 +1971,6 @@
 		6FF1996F22ECB37000C255A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Simulator/Simulator.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1895,7 +1993,6 @@
 		6FF1997022ECB37000C255A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Simulator/Simulator.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -2010,20 +2107,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6FE003A322F3D75E00221C4C /* Build configuration list for PBXNativeTarget "TurtleTTL" */ = {
+		6FB0D35D24711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6FE0039F22F3D75E00221C4C /* Debug */,
-				6FE003A022F3D75E00221C4C /* Release */,
+				6FB0D35E24711A23003B5D5C /* Debug */,
+				6FB0D35F24711A23003B5D5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6FE003A522F3D75E00221C4C /* Build configuration list for PBXNativeTarget "TurtleTTLTests" */ = {
+		6FB0D36024711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6FE003A122F3D75E00221C4C /* Debug */,
-				6FE003A222F3D75E00221C4C /* Release */,
+				6FB0D36124711A23003B5D5C /* Debug */,
+				6FB0D36224711A23003B5D5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

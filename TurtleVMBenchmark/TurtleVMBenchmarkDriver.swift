@@ -6,8 +6,9 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
-import TurtleTTL
+import TurtleSimulatorCore
+import TurtleAssemblerCore
+import TurtleCore
 
 class TurtleVMBenchmarkDriver: NSObject {
     public struct TurtleVMBenchmarkDriverError: Error {
@@ -70,7 +71,7 @@ class TurtleVMBenchmarkDriver: NSObject {
     }
     
     func runBenchmark() throws {
-        let computer = ComputerRev1()
+        let computer = Computer()
         computer.logger = isVerboseLogging ? ConsoleLogger(output: stdout) : nil
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()

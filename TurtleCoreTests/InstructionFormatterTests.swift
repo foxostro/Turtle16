@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleCore
+import TurtleAssemblerCore
 
 class InstructionFormatterTests: XCTestCase {
     let formatter = InstructionFormatter()

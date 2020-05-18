@@ -225,7 +225,7 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], ReturnNode(lineNumber: 1))
+        XCTAssertEqual(ast.children[0], Return(lineNumber: 1, expression: nil))
     }
     
     func testWellformedReturnStatement_OneOperand() {
@@ -235,7 +235,7 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], ReturnNode(lineNumber: 1, value: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))
+        XCTAssertEqual(ast.children[0], Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))))
     }
     
     func testMalformedReturnStatement_MultipleOperands() {
@@ -243,6 +243,15 @@ class SnapParserTests: XCTestCase {
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "`return' accepts exactly one or zero operands")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `return'")
+    }
+    
+    func testMalformedReturnStatement_WithMalformedExpression() {
+        // We do not yet support expressions other than a single literal number.
+        let parser = SnapParser(tokens: tokenize("return foo"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `foo'")
     }
 }

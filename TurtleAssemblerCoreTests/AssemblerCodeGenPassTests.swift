@@ -37,14 +37,18 @@ class AssemblerCodeGenPassTests: XCTestCase {
     func mustCompile(_ root: AbstractSyntaxTreeNode) -> [Instruction] {
         let compiler = makeBackEnd()
         compiler.compile(ast: root, base: 0x0000)
-        assert(!compiler.hasError)
+        if !compiler.hasError {
+            XCTFail()
+        }
         return compiler.instructions
     }
     
     func mustFailToCompile(_ root: AbstractSyntaxTreeNode) -> [CompilerError] {
         let compiler = makeBackEnd()
         compiler.compile(ast: root, base: 0x0000)
-        assert(compiler.hasError)
+        if compiler.hasError {
+            XCTFail()
+        }
         return compiler.errors
     }
     

@@ -793,4 +793,11 @@ class SnapCodeGenPassTests: XCTestCase {
         XCTAssertEqual(controlWord.CO, .active)
         XCTAssertEqual(controlWord.BI, .active)
     }
+    
+    func testBareReturnStatement() {
+        let ast = AbstractSyntaxTreeNode(children: [ReturnNode(lineNumber: 1)])
+        let instructions = mustCompile(ast)
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].opcode, nop)
+    }
 }

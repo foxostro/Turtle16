@@ -263,4 +263,11 @@ class SnapLexerTests: XCTestCase {
                                           TokenEqual(lineNumber: 1, lexeme: "="),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeReturn() {
+        let tokenizer = SnapLexer(withString: "return")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenReturn(lineNumber: 1, lexeme: "return"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

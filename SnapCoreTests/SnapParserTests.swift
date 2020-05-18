@@ -217,4 +217,22 @@ class SnapParserTests: XCTestCase {
                        ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                                number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
     }
+    
+    func testWellformedBareReturnStatement() {
+        let parser = SnapParser(tokens: tokenize("return"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children[0], ReturnNode(lineNumber: 1))
+    }
+    
+    func testMalformedReturnStatement_AnyOperands() {
+        let parser = SnapParser(tokens: tokenize("return 42"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "`return' accepts no operands at this time")
+    }
 }

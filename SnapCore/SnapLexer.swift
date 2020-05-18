@@ -76,6 +76,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "let") {[weak self] in
                 TokenLet(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "return") {[weak self] in
+                TokenReturn(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
             },

@@ -16,7 +16,8 @@ public class SnapParser: Parser {
             Production(symbol: TokenEOF.self,        generator: { _ in [] }),
             Production(symbol: TokenNewline.self,    generator: { _ in [] }),
             Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) }),
-            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) })
+            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) }),
+            Production(symbol: TokenReturn.self,     generator: { try self.consumeReturn($0 as! TokenReturn) })
         ]
     }
     
@@ -116,6 +117,14 @@ public class SnapParser: Parser {
                    error: operandTypeMismatchError(peek()!))
         
         return [ConstantDeclarationNode(identifier: identifier, number: number)]
+    }
+    
+    func consumeReturn(_ returnToken: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
+        try expect(types: [TokenNewline.self, TokenEOF.self],
+                   error: CompilerError(line: returnToken.lineNumber,
+                                        format: "`return' accepts no operands at this time",
+                                        returnToken.lexeme))
+        return [ReturnNode(lineNumber: returnToken.lineNumber)]
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {

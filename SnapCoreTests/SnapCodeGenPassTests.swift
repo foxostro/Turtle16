@@ -800,4 +800,18 @@ class SnapCodeGenPassTests: XCTestCase {
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
+    
+    func testReturnStatementWithOperand() {
+        let ast = AbstractSyntaxTreeNode(children: [ReturnNode(lineNumber: 1, value: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions[1].immediate, 42)
+        
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.CO, .active)
+        XCTAssertEqual(controlWord.AI, .active)
+    }
 }

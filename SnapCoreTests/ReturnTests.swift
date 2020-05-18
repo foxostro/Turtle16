@@ -1,5 +1,5 @@
 //
-//  ReturnReturnTests.swift
+//  ReturnTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/17/20.
@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCompilerToolbox
 
-class ReturnReturnTests: XCTestCase {
+class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         XCTAssertNotEqual(Return(lineNumber: 1, expression: nil), LabelDeclarationNode(identifier: foo))

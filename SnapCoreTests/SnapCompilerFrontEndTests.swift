@@ -21,7 +21,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func mustCompile(_ sourceCode: String) -> [Instruction] {
         compiler.compile(sourceCode)
         if compiler.hasError {
-            abort()
+            XCTFail()
         }
         return compiler.instructions
     }
@@ -29,7 +29,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func mustFailToCompile(_ sourceCode: String) -> [CompilerError] {
         compiler.compile(sourceCode)
         if !compiler.hasError {
-            abort()
+            XCTFail()
         }
         return compiler.errors
     }

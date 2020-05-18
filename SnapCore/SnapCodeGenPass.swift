@@ -380,9 +380,13 @@ public class SnapCodeGenPass: NSObject {
     }
     
     func visit(node: Return) throws {
-        if nil == node.expression {
-            // do nothing
-        } else if let expression = node.expression as? Expression.Literal {
+        if let expression = node.expression {
+            try visit(node: expression)
+        }
+    }
+    
+    func visit(node: Expression) throws {
+        if let expression = node as? Expression.Literal {
             try self.codeGenerator.li(.A, token: expression.number)
         } else {
             throw CompilerError(line: node.lineNumber, message: "compiler only supports returning a literal value for now")

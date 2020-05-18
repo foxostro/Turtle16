@@ -21,7 +21,7 @@ class AssemblerFrontEndTests: XCTestCase {
     func mustCompile(_ sourceCode: String) -> [Instruction] {
         assembler.compile(sourceCode)
         if assembler.hasError {
-            abort()
+            XCTFail()
         }
         return assembler.instructions
     }
@@ -29,7 +29,7 @@ class AssemblerFrontEndTests: XCTestCase {
     func mustFailToCompile(_ sourceCode: String) -> [CompilerError] {
         assembler.compile(sourceCode)
         if !assembler.hasError {
-            abort()
+            XCTFail()
         }
         return assembler.errors
     }

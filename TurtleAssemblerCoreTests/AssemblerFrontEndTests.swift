@@ -20,13 +20,17 @@ class AssemblerFrontEndTests: XCTestCase {
     
     func mustCompile(_ sourceCode: String) -> [Instruction] {
         assembler.compile(sourceCode)
-        assert(!assembler.hasError)
+        if assembler.hasError {
+            abort()
+        }
         return assembler.instructions
     }
     
     func mustFailToCompile(_ sourceCode: String) -> [CompilerError] {
         assembler.compile(sourceCode)
-        assert(assembler.hasError)
+        if !assembler.hasError {
+            abort()
+        }
         return assembler.errors
     }
     

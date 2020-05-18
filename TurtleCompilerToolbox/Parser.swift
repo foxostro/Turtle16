@@ -80,6 +80,19 @@ open class Parser: NSObject {
         return nil
     }
     
+    public func accept(_ anyOfTheseTypes: [AnyClass]) -> Token? {
+        if let token = peek() {
+            let tokenType = type(of: token)
+            for type in anyOfTheseTypes {
+                if tokenType == type {
+                    advance()
+                    return token
+                }
+            }
+        }
+        return nil
+    }
+    
     @discardableResult public func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
         if nil == result {

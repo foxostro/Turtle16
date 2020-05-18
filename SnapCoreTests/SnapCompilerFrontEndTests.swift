@@ -12,22 +12,26 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class SnapCompilerFrontEndTests: XCTestCase {
-    var assembler = SnapCompilerFrontEnd()
+    var compiler = SnapCompilerFrontEnd()
     
     override func setUp() {
-        assembler = SnapCompilerFrontEnd()
+        compiler = SnapCompilerFrontEnd()
     }
     
     func mustCompile(_ sourceCode: String) -> [Instruction] {
-        assembler.compile(sourceCode)
-        assert(!assembler.hasError)
-        return assembler.instructions
+        compiler.compile(sourceCode)
+        if compiler.hasError {
+            abort()
+        }
+        return compiler.instructions
     }
     
     func mustFailToCompile(_ sourceCode: String) -> [CompilerError] {
-        assembler.compile(sourceCode)
-        assert(assembler.hasError)
-        return assembler.errors
+        compiler.compile(sourceCode)
+        if !compiler.hasError {
+            abort()
+        }
+        return compiler.errors
     }
     
     func testCompileEmptyProgramYieldsNOP() {
@@ -421,21 +425,21 @@ class SnapCompilerFrontEndTests: XCTestCase {
     }
     
     func testOmnibusErrorWithNoErrors() {
-        let error = assembler.makeOmnibusError(fileName: nil, errors: [])
+        let error = compiler.makeOmnibusError(fileName: nil, errors: [])
         XCTAssertEqual(error.line, nil)
         XCTAssertEqual(error.message, "0 errors generated\n")
     }
     
     func testOmnibusErrorWithOneError() {
         let errors = mustFailToCompile("MOV E, A")
-        let error = assembler.makeOmnibusError(fileName: "foo.s", errors: errors)
+        let error = compiler.makeOmnibusError(fileName: "foo.s", errors: errors)
         XCTAssertEqual(error.line, nil)
         XCTAssertEqual(error.message, "foo.s:1: error: register cannot be used as a destination: `E'\n1 error generated\n")
     }
     
     func testOmnibusErrorWithMultipleErrors() {
         let errors = mustFailToCompile("MOV E, A\nMOV\n")
-        let error = assembler.makeOmnibusError(fileName: "foo.s", errors: errors)
+        let error = compiler.makeOmnibusError(fileName: "foo.s", errors: errors)
         XCTAssertEqual(error.line, nil)
         XCTAssertEqual(error.message, "foo.s:1: error: register cannot be used as a destination: `E'\nfoo.s:2: error: operand type mismatch: `MOV'\n2 errors generated\n")
     }
@@ -540,5 +544,10 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testCompiledInstructionsIncludeDisassembly() {
         let instructions = mustCompile("NOP")
         XCTAssertEqual(instructions[1].disassembly, "NOP")
+    }
+    
+    func testReturn42() {
+        let instructions = mustCompile("return 42")
+        XCTAssertEqual(instructions[1].disassembly, "LI A, 42")
     }
 }

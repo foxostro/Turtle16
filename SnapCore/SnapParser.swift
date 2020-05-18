@@ -120,12 +120,24 @@ public class SnapParser: Parser {
     }
     
     func consumeReturn(_ returnToken: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
-        let numberToken = accept(TokenNumber.self) as? TokenNumber
-        try expect(types: [TokenNewline.self, TokenEOF.self],
-                   error: CompilerError(line: returnToken.lineNumber,
-                                        format: "`return' accepts exactly one or zero operands",
-                                        returnToken.lexeme))
-        return [ReturnNode(lineNumber: returnToken.lineNumber, value: numberToken)]
+        if accept([TokenNewline.self, TokenEOF.self]) != nil {
+            return [Return(lineNumber: returnToken.lineNumber, expression: nil)]
+        } else {
+            let expression = try consumeExpression()
+            try expect(types: [TokenNewline.self, TokenEOF.self], error: operandTypeMismatchError(returnToken))
+            return [Return(lineNumber: returnToken.lineNumber, expression: expression)]
+        }
+    }
+    
+    func consumeExpression() throws -> Expression {
+        return try consumePrimary()
+    }
+    
+    func consumePrimary() throws -> Expression {
+        if let numberToken = accept(TokenNumber.self) as? TokenNumber {
+            return Expression.Literal(lineNumber: numberToken.lineNumber, number: numberToken)
+        }
+        throw operandTypeMismatchError(peek()!)
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {

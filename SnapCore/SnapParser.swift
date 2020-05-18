@@ -120,11 +120,12 @@ public class SnapParser: Parser {
     }
     
     func consumeReturn(_ returnToken: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
+        let numberToken = accept(TokenNumber.self) as? TokenNumber
         try expect(types: [TokenNewline.self, TokenEOF.self],
                    error: CompilerError(line: returnToken.lineNumber,
-                                        format: "`return' accepts no operands at this time",
+                                        format: "`return' accepts exactly one or zero operands",
                                         returnToken.lexeme))
-        return [ReturnNode(lineNumber: returnToken.lineNumber)]
+        return [ReturnNode(lineNumber: returnToken.lineNumber, value: numberToken)]
     }
     
     func zeroOperandsExpectedError(_ instruction: Token) -> Error {

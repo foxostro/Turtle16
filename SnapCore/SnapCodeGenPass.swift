@@ -74,6 +74,9 @@ public class SnapCodeGenPass: NSObject {
         if let node = genericNode as? ConstantDeclarationNode {
             try visit(node: node)
         }
+        if let node = genericNode as? ReturnNode {
+            try visit(node: node)
+        }
     }
     
     func visit(node: InstructionNode) throws {
@@ -373,6 +376,12 @@ public class SnapCodeGenPass: NSObject {
             throw CompilerError(line: node.identifier.lineNumber,
                                  format: "constant redefines existing symbol: `%@'",
                                  node.identifier.lexeme)
+        }
+    }
+    
+    func visit(node: ReturnNode) throws {
+        if let number = node.value {
+            try self.codeGenerator.li(.A, token: number)
         }
     }
     

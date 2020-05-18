@@ -1,15 +1,13 @@
 //
 //  ParameterListNode.swift
-//  TurtleAssemblerCore
+//  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 10/23/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
 public class ParameterListNode: AbstractSyntaxTreeNode {
-    let parameters: [Any]
+    public let parameters: [Any]
     
     public required init(parameters: [Any]) {
         self.parameters = parameters

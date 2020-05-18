@@ -24,7 +24,38 @@ public class SnapCompilerFrontEnd: NSObject {
     public func compile(program text: String, base: Int) {
         instructions = []
         errors = []
-        // TODO: STUB
+        
+        let tokenizer = SnapLexer(withString: text)
+        tokenizer.scanTokens()
+        if tokenizer.hasError {
+            errors = tokenizer.errors
+            return
+        }
+        
+        let parser = SnapParser(tokens: tokenizer.tokens)
+        parser.parse()
+        if parser.hasError {
+            errors = parser.errors
+            return
+        }
+        let ast = parser.syntaxTree!
+        
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        let codeGenerator = CodeGenerator(microcodeGenerator: microcodeGenerator)
+        
+        let compiler = SnapCodeGenPass(codeGenerator: codeGenerator)
+        compiler.compile(ast: ast, base: base)
+        if compiler.hasError {
+            errors = compiler.errors
+            return
+        }
+        
+        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+        
+        for instruction in compiler.instructions {
+            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
+        }
     }
     
     public func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError {

@@ -32,9 +32,39 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6F9201C62471D82C009E1410"
+               BuildableName = "TurtleCompilerToolboxTests.xctest"
+               BlueprintName = "TurtleCompilerToolboxTests"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "6F9201EC2471DAC7009E1410"
                BuildableName = "SnapCoreTests.xctest"
                BlueprintName = "SnapCoreTests"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6FB0D29224710C26003B5D5C"
+               BuildableName = "TurtleCoreTests.xctest"
+               BlueprintName = "TurtleCoreTests"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6FB0D35324711A23003B5D5C"
+               BuildableName = "TurtleSimulatorCoreTests.xctest"
+               BlueprintName = "TurtleSimulatorCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -8,6 +8,7 @@
 
 import TurtleSimulatorCore
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 import TurtleCore
 
 class TurtleVMBenchmarkDriver: NSObject {

@@ -30,3 +30,9 @@ open class CompilerError: Error {
         message = String(format:format, arguments:args)
     }
 }
+
+public func ==(lhs: CompilerError, rhs: CompilerError) -> Bool {
+    guard lhs.line == rhs.line else { return false }
+    guard lhs.message == rhs.message else { return false }
+    return true
+}

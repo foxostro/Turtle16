@@ -6,7 +6,15 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-open class Parser: NSObject {
+public protocol Parser {
+    var hasError: Bool { get }
+    var errors: [CompilerError] { get }
+    var syntaxTree: AbstractSyntaxTreeNode? { get }
+    
+    func parse()
+}
+
+open class ParserBase: NSObject, Parser {
     public struct Production {
         public typealias Generator = (Token) throws -> [AbstractSyntaxTreeNode]?
         

@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-public class SnapParser: Parser {
+public class SnapParser: ParserBase {
     public init(tokens: [Token]) {
         super.init()
         self.tokens = tokens

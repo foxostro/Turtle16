@@ -9,7 +9,7 @@
 import TurtleCore
 import TurtleCompilerToolbox
 
-public class SnapCodeGenerator: NSObject {
+public class SnapCodeGenerator: NSObject, CodeGenerator {
     // Programs written in Snap store the stack pointer in data RAM at
     // addresses 0x0000 and 0x0001. This is initialized on launch to 0x0000.
     let kStackPointerAddressHi: UInt16 = 0x0000

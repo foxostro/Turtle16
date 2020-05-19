@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-public class SnapLexer: Lexer {
+public class SnapLexer: LexerBase {
     public required init(withString string: String) {
         super.init(withString: string)
         self.rules = [

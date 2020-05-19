@@ -26,7 +26,6 @@ public class CodeGenerator: NSObject {
     public func begin() {
         isAssembling = true
         instructions = []
-        nop()
     }
     
     // End emitting instructions.

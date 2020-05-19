@@ -66,11 +66,12 @@ public class SnapCodeGenPass: NSObject {
     }
     
     // Inserts prologue code into the program, presumably at the beginning.
-    // The code generator inserts a NOP at the beginning of every program
-    // because correct operation of the hardware reset cycle requires this.
+    // Insert a NOP at the beginning of every program because correct operation
+    // of the hardware reset cycle requires this.
     // Likewise, correct operation of a program written in Snap requires some
     // inititalization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
+        codeGenerator.nop()
         try codeGenerator.li(.X, Int((kStackPointerAddressHi & 0xff00) >> 8))
         try codeGenerator.li(.Y, Int((kStackPointerAddressHi & 0x00ff)))
         try codeGenerator.li(.M, Int((kStackPointerInitialValue & 0xff00) >> 8))

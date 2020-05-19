@@ -146,9 +146,9 @@
 		6FCB68202472064800798905 /* SnapParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681F2472064800798905 /* SnapParserTests.swift */; };
 		6FCB68222472069D00798905 /* SnapCodeGenPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB68212472069D00798905 /* SnapCodeGenPass.swift */; };
 		6FCB6824247206C200798905 /* SnapCodeGenPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6823247206C200798905 /* SnapCodeGenPassTests.swift */; };
-		6FCB68252472077A00798905 /* CodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* CodeGenerator.swift */; };
+		6FCB68252472077A00798905 /* AssemblerBackEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */; };
 		6FCB68262472077A00798905 /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
-		6FCB68272472079700798905 /* CodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */; };
+		6FCB68272472079700798905 /* AssemblerBackEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */; };
 		6FCB68282472082D00798905 /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
 		6FCB68292472088400798905 /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
 		6FCB682A2472088400798905 /* ParameterListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */; };
@@ -538,8 +538,8 @@
 		6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterListNode.swift; sourceTree = "<group>"; };
 		6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGenerator.swift; sourceTree = "<group>"; };
 		6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGeneratorTests.swift; sourceTree = "<group>"; };
-		6FDFED7922F1627500AADA07 /* CodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGenerator.swift; sourceTree = "<group>"; };
-		6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGeneratorTests.swift; sourceTree = "<group>"; };
+		6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEnd.swift; sourceTree = "<group>"; };
+		6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEndTests.swift; sourceTree = "<group>"; };
 		6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerTests.swift; sourceTree = "<group>"; };
 		6FE003D822F3F4C600221C4C /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FE003DA22F3F4C600221C4C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -699,7 +699,7 @@
 			children = (
 				6F8F22E92471CB6B00AFD574 /* AST */,
 				6F38F9072471C8F100B5296D /* Token */,
-				6FDFED7922F1627500AADA07 /* CodeGenerator.swift */,
+				6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */,
 				6F4BE175230D2E31008C2329 /* CompilerError.swift */,
 				6F615176230CB54200282B12 /* Lexer.swift */,
 				6F5A00ED231D029D003E7C7F /* Parser.swift */,
@@ -775,7 +775,7 @@
 			children = (
 				6F8F22EE2471CB9B00AFD574 /* AST */,
 				6F8F22F22471D03300AFD574 /* Token */,
-				6FDFED7B22F16D4100AADA07 /* CodeGeneratorTests.swift */,
+				6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */,
 				6F615178230CB56E00282B12 /* LexerTests.swift */,
 				6F5A013B231F7DCC003E7C7F /* ParserTests.swift */,
 				6F5A00E723184896003E7C7F /* PatcherTests.swift */,
@@ -1583,7 +1583,7 @@
 				6F38F8FE2471C8D400B5296D /* TokenColon.swift in Sources */,
 				6F38F9052471C8D400B5296D /* TokenComma.swift in Sources */,
 				6F8F22E82471CB5600AFD574 /* AbstractSyntaxTreeNode.swift in Sources */,
-				6FCB68252472077A00798905 /* CodeGenerator.swift in Sources */,
+				6FCB68252472077A00798905 /* AssemblerBackEnd.swift in Sources */,
 				6F38F8F42471C77800B5296D /* Patcher.swift in Sources */,
 				6F38F8FF2471C8D400B5296D /* TokenNewline.swift in Sources */,
 				6F38F8F72471C77800B5296D /* Lexer.swift in Sources */,
@@ -1597,7 +1597,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FCB68272472079700798905 /* CodeGeneratorTests.swift in Sources */,
+				6FCB68272472079700798905 /* AssemblerBackEndTests.swift in Sources */,
 				6FCB682F24720AD000798905 /* TokenEOFTests.swift in Sources */,
 				6FCB683024720AD200798905 /* TokenNumberTests.swift in Sources */,
 				6FCB683224720AD900798905 /* TokenTests.swift in Sources */,

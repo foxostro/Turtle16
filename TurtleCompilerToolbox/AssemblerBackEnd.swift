@@ -1,5 +1,5 @@
 //
-//  CodeGenerator.swift
+//  AssemblerBackEnd.swift
 //  TurtleCompilerToolbox
 //
 //  Created by Andrew Fox on 7/30/19.
@@ -9,7 +9,7 @@
 import TurtleCore
 
 // Generates machine code for use in the IF stage of TurtleTTL hardware.
-public class CodeGenerator: NSObject {
+public class AssemblerBackEnd: NSObject {
     public let microcodeGenerator: MicrocodeGenerator
     public var instructions = [Instruction]()
     var isAssembling: Bool = false

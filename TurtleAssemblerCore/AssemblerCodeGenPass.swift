@@ -11,7 +11,7 @@ import TurtleCompilerToolbox
 
 // Takes an AST and performs a pass that does final code generation.
 public class AssemblerCodeGenPass: NSObject {
-    let codeGenerator: CodeGenerator
+    let assemblerBackEnd: AssemblerBackEnd
     public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []
     
@@ -22,8 +22,8 @@ public class AssemblerCodeGenPass: NSObject {
         return errors.count != 0
     }
     
-    public required init(codeGenerator: CodeGenerator) {
-        self.codeGenerator = codeGenerator
+    public required init(assemblerBackEnd: AssemblerBackEnd) {
+        self.assemblerBackEnd = assemblerBackEnd
         super.init()
     }
     
@@ -43,7 +43,7 @@ public class AssemblerCodeGenPass: NSObject {
     func tryCompile(ast root: AbstractSyntaxTreeNode, base: Int) throws {
         instructions = []
         patcherActions = []
-        codeGenerator.begin()
+        assemblerBackEnd.begin()
         insertProgramPrologue()
         try root.iterate {
             do {
@@ -52,8 +52,8 @@ public class AssemblerCodeGenPass: NSObject {
                 errors.append(error)
             }
         }
-        codeGenerator.end()
-        let patcher = Patcher(inputInstructions: codeGenerator.instructions,
+        assemblerBackEnd.end()
+        let patcher = Patcher(inputInstructions: assemblerBackEnd.instructions,
                               symbols: symbols,
                               actions: patcherActions,
                               base: base)
@@ -64,7 +64,7 @@ public class AssemblerCodeGenPass: NSObject {
     // Insert a NOP at the beginning of every program because correct operation
     // of the hardware reset cycle requires this.
     func insertProgramPrologue() {
-        codeGenerator.nop()
+        assemblerBackEnd.nop()
     }
     
     func visit(genericNode: AbstractSyntaxTreeNode) throws {
@@ -127,7 +127,7 @@ public class AssemblerCodeGenPass: NSObject {
         
         try expectRegisterCanBeUsedAsDestination(register)
         
-        try self.codeGenerator.add(node.destination)
+        try self.assemblerBackEnd.add(node.destination)
     }
     
     func blt(_ node: InstructionNode) throws {
@@ -145,112 +145,112 @@ public class AssemblerCodeGenPass: NSObject {
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try self.codeGenerator.blt(destination.literal, source.literal)
+        try self.assemblerBackEnd.blt(destination.literal, source.literal)
     }
     
     func cmp(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.cmp()
+        self.assemblerBackEnd.cmp()
     }
     
     func hlt(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.hlt()
+        self.assemblerBackEnd.hlt()
     }
     
     func inuv(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.inuv()
+        self.assemblerBackEnd.inuv()
     }
     
     func inxy(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.inxy()
+        self.assemblerBackEnd.inxy()
     }
     
     func link(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.link()
+        self.assemblerBackEnd.link()
     }
     
     func jalr(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jalr()
+        self.assemblerBackEnd.jalr()
     }
     
     func jc(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jc()
+        self.assemblerBackEnd.jc()
     }
     
     func jnc(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jnc()
+        self.assemblerBackEnd.jnc()
     }
     
     func je(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.je()
+        self.assemblerBackEnd.je()
     }
     
     func jne(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jne()
+        self.assemblerBackEnd.jne()
     }
     
     func jg(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jg()
+        self.assemblerBackEnd.jg()
     }
     
     func jle(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jle()
+        self.assemblerBackEnd.jle()
     }
     
     func jl(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jl()
+        self.assemblerBackEnd.jl()
     }
     
     func jge(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jge()
+        self.assemblerBackEnd.jge()
     }
     
     func jmp(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jmp()
+        self.assemblerBackEnd.jmp()
     }
     
     func li(_ node: InstructionNode) throws {
@@ -264,14 +264,14 @@ public class AssemblerCodeGenPass: NSObject {
         try expectRegisterCanBeUsedAsDestination(destination)
         
         if let immediate = node.parameters.parameters[1] as? TokenNumber {
-            try self.codeGenerator.li(node.destination, token: immediate)
+            try self.assemblerBackEnd.li(node.destination, token: immediate)
         } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
             guard let value = symbols[identifier.lexeme] else {
                 throw CompilerError(line: identifier.lineNumber,
                                      format: "use of undeclared identifier: `%@'",
                                      identifier.lexeme)
             }
-            try self.codeGenerator.li(node.destination,
+            try self.assemblerBackEnd.li(node.destination,
                                       token: TokenNumber(lineNumber: identifier.lineNumber,
                                                          lexeme: identifier.lexeme,
                                                          literal: value))
@@ -311,14 +311,14 @@ public class AssemblerCodeGenPass: NSObject {
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try self.codeGenerator.mov(destination.literal, source.literal)
+        try self.assemblerBackEnd.mov(destination.literal, source.literal)
     }
     
     func nop(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.nop()
+        self.assemblerBackEnd.nop()
     }
     
     func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
@@ -366,7 +366,7 @@ public class AssemblerCodeGenPass: NSObject {
     func visit(node: LabelDeclarationNode) throws {
         let name = node.identifier.lexeme
         if symbols[name] == nil {
-            symbols[name] = codeGenerator.programCounter
+            symbols[name] = assemblerBackEnd.programCounter
         } else {
             throw CompilerError(line: node.identifier.lineNumber,
                                  format: "label redefines existing symbol: `%@'",
@@ -389,19 +389,19 @@ public class AssemblerCodeGenPass: NSObject {
         if(address < 0 || address > 0xffff) {
             throw CompilerError(format: "invalid address: 0x%x", address)
         }
-        try self.codeGenerator.li(.X, (address & 0xff00) >> 8)
-        try self.codeGenerator.li(.Y, (address & 0xff))
+        try self.assemblerBackEnd.li(.X, (address & 0xff00) >> 8)
+        try self.assemblerBackEnd.li(.Y, (address & 0xff))
     }
     
     func setAddress(token identifier: TokenIdentifier) throws {
-        patcherActions.append((index: codeGenerator.programCounter,
+        patcherActions.append((index: assemblerBackEnd.programCounter,
                                symbol: identifier,
                                shift: 8))
-        try codeGenerator.li(.X, 0xAB)
+        try assemblerBackEnd.li(.X, 0xAB)
         
-        patcherActions.append((index: codeGenerator.programCounter,
+        patcherActions.append((index: assemblerBackEnd.programCounter,
                                symbol: identifier,
                                shift: 0))
-        try codeGenerator.li(.Y, 0xCD)
+        try assemblerBackEnd.li(.Y, 0xCD)
     }
 }

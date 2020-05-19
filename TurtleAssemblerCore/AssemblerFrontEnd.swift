@@ -42,18 +42,18 @@ public class AssemblerFrontEnd: NSObject {
         
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        let codeGenerator = CodeGenerator(microcodeGenerator: microcodeGenerator)
+        let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         
-        let compiler = AssemblerCodeGenPass(codeGenerator: codeGenerator)
-        compiler.compile(ast: ast, base: base)
-        if compiler.hasError {
-            errors = compiler.errors
+        let codeGenerator = AssemblerCodeGenPass(assemblerBackEnd: assemblerBackEnd)
+        codeGenerator.compile(ast: ast, base: base)
+        if codeGenerator.hasError {
+            errors = codeGenerator.errors
             return
         }
         
         let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
         
-        for instruction in compiler.instructions {
+        for instruction in codeGenerator.instructions {
             instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
         }
     }

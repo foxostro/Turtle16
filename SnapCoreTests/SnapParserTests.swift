@@ -225,7 +225,7 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], Return(lineNumber: 1, expression: nil))
+        XCTAssertEqual(ast.children[0], Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil))
     }
     
     func testWellformedReturnStatement_OneOperand() {
@@ -235,7 +235,7 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))))
+        XCTAssertEqual(ast.children[0], Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))))
     }
     
     func testMalformedReturnStatement_MultipleOperands() {

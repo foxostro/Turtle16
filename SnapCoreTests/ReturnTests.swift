@@ -12,24 +12,27 @@ import TurtleCompilerToolbox
 
 class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
+        let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertNotEqual(Return(lineNumber: 1, expression: nil), LabelDeclarationNode(identifier: foo))
+        XCTAssertNotEqual(Return(token: token, expression: nil), LabelDeclarationNode(identifier: foo))
     }
     
     func testDoesNotEqualNodeWithDifferentLineNumber() {
-        XCTAssertNotEqual(Return(lineNumber: 1, expression: nil), Return(lineNumber: 2, expression: nil))
+        XCTAssertNotEqual(Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil), Return(token: TokenReturn(lineNumber: 2, lexeme: "return"), expression: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentValue() {
+        let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)
-        XCTAssertNotEqual(Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: a)), Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: b)))
+        let b = TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)
+        XCTAssertNotEqual(Return(token: token, expression: Expression.Literal(number: a)), Return(token: token, expression: Expression.Literal(number: b)))
     }
     
     func testDoesEqualNodeWithSameLineNumberAndValue() {
+        let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertEqual(Return(lineNumber: 1, expression: nil), Return(lineNumber: 1, expression: nil))
-        XCTAssertEqual(Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: a)), Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: b)))
+        XCTAssertEqual(Return(token: token, expression: nil), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil))
+        XCTAssertEqual(Return(token: token, expression: Expression.Literal(number: a)), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: b)))
     }
 }

@@ -44,6 +44,7 @@ public class AssemblerCodeGenPass: NSObject {
         instructions = []
         patcherActions = []
         codeGenerator.begin()
+        insertProgramPrologue()
         try root.iterate {
             do {
                 try visit(genericNode: $0)
@@ -57,6 +58,13 @@ public class AssemblerCodeGenPass: NSObject {
                               actions: patcherActions,
                               base: base)
         instructions = try patcher.patch()
+    }
+    
+    // Inserts prologue code into the program, presumably at the beginning.
+    // Insert a NOP at the beginning of every program because correct operation
+    // of the hardware reset cycle requires this.
+    func insertProgramPrologue() {
+        codeGenerator.nop()
     }
     
     func visit(genericNode: AbstractSyntaxTreeNode) throws {

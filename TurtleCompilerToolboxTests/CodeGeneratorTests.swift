@@ -28,8 +28,7 @@ class CodeGeneratorTests: XCTestCase {
         codeGen.begin()
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0].opcode, nop)
+        XCTAssertEqual(instructions.count, 0)
     }
     
     func testNop() {
@@ -38,9 +37,8 @@ class CodeGeneratorTests: XCTestCase {
         codeGen.nop()
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, nop)
     }
     
     func testHlt() {
@@ -49,9 +47,8 @@ class CodeGeneratorTests: XCTestCase {
         codeGen.hlt()
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, hlt)
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].opcode, hlt)
     }
     
     func testInstructionWithInvalidMnemonicThrows() {
@@ -96,10 +93,9 @@ class CodeGeneratorTests: XCTestCase {
         try! codeGen.instruction(withMnemonic: "MOV D, C", immediate: 42)
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 42)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 42)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
     }
     
     func testGenericMovWithImmediate() {
@@ -108,10 +104,9 @@ class CodeGeneratorTests: XCTestCase {
         try! codeGen.mov(.D, .C, 42)
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 42)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 42)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
     }
     
     func testLoadImmediate() {
@@ -120,10 +115,9 @@ class CodeGeneratorTests: XCTestCase {
         try! codeGen.li(.D, 42)
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 42)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 42)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
     }
     
     func testAdd() {
@@ -132,10 +126,9 @@ class CodeGeneratorTests: XCTestCase {
         try! codeGen.add(.D)
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 0b1001)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU D")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b1001)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU D")!))
     }
     
     func testJmp() {
@@ -144,9 +137,8 @@ class CodeGeneratorTests: XCTestCase {
         codeGen.jmp()
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
     }
     
     func testJC() {
@@ -155,9 +147,8 @@ class CodeGeneratorTests: XCTestCase {
         codeGen.jc()
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
     }
     
     func testCMP() {
@@ -166,9 +157,8 @@ class CodeGeneratorTests: XCTestCase {
         codeGen.cmp()
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
     }
     
     func testBLT() {
@@ -177,9 +167,8 @@ class CodeGeneratorTests: XCTestCase {
         try! codeGen.instruction(withMnemonic: "BLT P, M", immediate: 0)
         codeGen.end()
         let instructions = codeGen.instructions
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "BLT P, M")!))
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "BLT P, M")!))
     }
 }

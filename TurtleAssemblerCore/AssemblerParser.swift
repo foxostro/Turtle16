@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-public class AssemblerParser: Parser {
+public class AssemblerParser: ParserBase {
     public init(tokens: [Token]) {
         super.init()
         self.tokens = tokens

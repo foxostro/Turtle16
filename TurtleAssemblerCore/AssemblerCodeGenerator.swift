@@ -10,7 +10,7 @@ import TurtleCore
 import TurtleCompilerToolbox
 
 // Takes an AST and performs a pass that does final code generation.
-public class AssemblerCodeGenerator: NSObject {
+public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     let assemblerBackEnd: AssemblerBackEnd
     public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []

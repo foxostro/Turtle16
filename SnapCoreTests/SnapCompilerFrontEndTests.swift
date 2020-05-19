@@ -16,10 +16,10 @@ class SnapCompilerFrontEndTests: XCTestCase {
 NOP
 LI X, 0
 LI Y, 0
-LI M, 255
+LI M, 0
 LI X, 0
 LI Y, 1
-LI M, 255
+LI M, 0
 """
     
     var compiler = SnapCompilerFrontEnd()

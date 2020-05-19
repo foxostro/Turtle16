@@ -11,10 +11,10 @@ import TurtleCompilerToolbox
 
 public class SnapCodeGenPass: NSObject {
     // Programs written in Snap store the stack pointer in data RAM at
-    // addresses 0x0000 and 0x0001. This is initialized on launch to 0xffff.
+    // addresses 0x0000 and 0x0001. This is initialized on launch to 0x0000.
     let kStackPointerAddressHi: UInt16 = 0x0000
     let kStackPointerAddressLo: UInt16 = 0x0001
-    let kStackPointerInitialValue = 0xffff
+    let kStackPointerInitialValue = 0x0000
     
     let codeGenerator: CodeGenerator
     public var symbols: [String:Int] = [:]

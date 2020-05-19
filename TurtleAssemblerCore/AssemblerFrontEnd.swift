@@ -44,7 +44,7 @@ public class AssemblerFrontEnd: NSObject {
         microcodeGenerator.generate()
         let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         
-        let codeGenerator = AssemblerCodeGenPass(assemblerBackEnd: assemblerBackEnd)
+        let codeGenerator = AssemblerCodeGenerator(assemblerBackEnd: assemblerBackEnd)
         codeGenerator.compile(ast: ast, base: base)
         if codeGenerator.hasError {
             errors = codeGenerator.errors

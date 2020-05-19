@@ -44,7 +44,7 @@ public class SnapCompilerFrontEnd: NSObject {
         microcodeGenerator.generate()
         let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         
-        let codeGenerator = SnapCodeGenPass(assemblerBackEnd: assemblerBackEnd)
+        let codeGenerator = SnapCodeGenerator(assemblerBackEnd: assemblerBackEnd)
         codeGenerator.compile(ast: ast, base: base)
         if codeGenerator.hasError {
             errors = codeGenerator.errors

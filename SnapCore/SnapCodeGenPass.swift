@@ -143,7 +143,7 @@ public class SnapCodeGenPass: NSObject {
         
         try expectRegisterCanBeUsedAsDestination(register)
         
-        try self.codeGenerator.add(node.destination)
+        try codeGenerator.add(node.destination)
     }
     
     func blt(_ node: InstructionNode) throws {
@@ -161,112 +161,112 @@ public class SnapCodeGenPass: NSObject {
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try self.codeGenerator.blt(destination.literal, source.literal)
+        try codeGenerator.blt(destination.literal, source.literal)
     }
     
     func cmp(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.cmp()
+        codeGenerator.cmp()
     }
     
     func hlt(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.hlt()
+        codeGenerator.hlt()
     }
     
     func inuv(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.inuv()
+        codeGenerator.inuv()
     }
     
     func inxy(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.inxy()
+        codeGenerator.inxy()
     }
     
     func link(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.link()
+        codeGenerator.link()
     }
     
     func jalr(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jalr()
+        codeGenerator.jalr()
     }
     
     func jc(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jc()
+        codeGenerator.jc()
     }
     
     func jnc(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jnc()
+        codeGenerator.jnc()
     }
     
     func je(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.je()
+        codeGenerator.je()
     }
     
     func jne(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jne()
+        codeGenerator.jne()
     }
     
     func jg(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jg()
+        codeGenerator.jg()
     }
     
     func jle(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jle()
+        codeGenerator.jle()
     }
     
     func jl(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jl()
+        codeGenerator.jl()
     }
     
     func jge(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jge()
+        codeGenerator.jge()
     }
     
     func jmp(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.jmp()
+        codeGenerator.jmp()
     }
     
     func li(_ node: InstructionNode) throws {
@@ -280,14 +280,14 @@ public class SnapCodeGenPass: NSObject {
         try expectRegisterCanBeUsedAsDestination(destination)
         
         if let immediate = node.parameters.parameters[1] as? TokenNumber {
-            try self.codeGenerator.li(node.destination, token: immediate)
+            try codeGenerator.li(node.destination, token: immediate)
         } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
             guard let value = symbols[identifier.lexeme] else {
                 throw CompilerError(line: identifier.lineNumber,
                                      format: "use of undeclared identifier: `%@'",
                                      identifier.lexeme)
             }
-            try self.codeGenerator.li(node.destination,
+            try codeGenerator.li(node.destination,
                                       token: TokenNumber(lineNumber: identifier.lineNumber,
                                                          lexeme: identifier.lexeme,
                                                          literal: value))
@@ -327,14 +327,14 @@ public class SnapCodeGenPass: NSObject {
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try self.codeGenerator.mov(destination.literal, source.literal)
+        try codeGenerator.mov(destination.literal, source.literal)
     }
     
     func nop(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        self.codeGenerator.nop()
+        codeGenerator.nop()
     }
     
     func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
@@ -419,8 +419,8 @@ public class SnapCodeGenPass: NSObject {
         if(address < 0 || address > 0xffff) {
             throw CompilerError(format: "invalid address: 0x%x", address)
         }
-        try self.codeGenerator.li(.X, (address & 0xff00) >> 8)
-        try self.codeGenerator.li(.Y, (address & 0xff))
+        try codeGenerator.li(.X, (address & 0xff00) >> 8)
+        try codeGenerator.li(.Y, (address & 0xff))
     }
     
     func setAddress(token identifier: TokenIdentifier) throws {

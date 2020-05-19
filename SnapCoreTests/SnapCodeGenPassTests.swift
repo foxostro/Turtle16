@@ -54,16 +54,16 @@ class SnapCodeGenPassTests: XCTestCase {
     
     func testEmptyProgram() {
         let instructions = mustCompile(AbstractSyntaxTreeNode())
-        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions.count, 7)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
     func testNop() {
         let ast = AbstractSyntaxTreeNode(children: [InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: []))])
         let instructions = mustCompile(ast)
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, nop)
+        XCTAssertEqual(instructions[7].opcode, nop)
     }
     
     func testHlt() {
@@ -72,9 +72,9 @@ class SnapCodeGenPassTests: XCTestCase {
                             parameters: ParameterListNode(parameters: []))
         ])
         let instructions = mustCompile(ast)
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, hlt)
+        XCTAssertEqual(instructions[7].opcode, hlt)
     }
     
     func testFailToCompileMOVWithNoOperands() {
@@ -188,10 +188,10 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.AO, .active)
         XCTAssertEqual(controlWord.DI, .active)
@@ -269,11 +269,11 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 42)
+        XCTAssertEqual(instructions[7].immediate, 42)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.CO, .active)
         XCTAssertEqual(controlWord.DI, .active)
@@ -321,12 +321,12 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
         
-        XCTAssertEqual(instructions[1].immediate, 0b1001)
+        XCTAssertEqual(instructions[7].immediate, 0b1001)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.EO, .active)
         XCTAssertEqual(controlWord.DI, .active)
@@ -346,25 +346,25 @@ class SnapCodeGenPassTests: XCTestCase {
                             parameters: ParameterListNode(parameters: []))])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 6)
+        XCTAssertEqual(instructions.count, 12)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 1)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
+        XCTAssertEqual(instructions[8].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[8].immediate, 7)
         
         // The JMP command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[9].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
         
         // JMP must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[4].opcode, nop)
-        XCTAssertEqual(instructions[5].opcode, nop)
+        XCTAssertEqual(instructions[10].opcode, nop)
+        XCTAssertEqual(instructions[11].opcode, nop)
     }
     
     func testForwardJmp() {
@@ -383,28 +383,28 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 7)
+        XCTAssertEqual(instructions.count, 13)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 6)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
+        XCTAssertEqual(instructions[8].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[8].immediate, 12)
         
         // The JMP command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[9].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
         
         // JMP must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[4].opcode, nop)
-        XCTAssertEqual(instructions[5].opcode, nop)
+        XCTAssertEqual(instructions[10].opcode, nop)
+        XCTAssertEqual(instructions[11].opcode, nop)
         
         // HLT halts the machine to stop it running.
-        XCTAssertEqual(instructions[6].opcode, hlt)
+        XCTAssertEqual(instructions[12].opcode, hlt)
     }
     
     func testJmpToAddressZero() {
@@ -420,25 +420,25 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
 
-        XCTAssertEqual(instructions.count, 6)
+        XCTAssertEqual(instructions.count, 12)
 
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
         XCTAssertEqual(instructions[0].opcode, nop)
 
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 0)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
+        XCTAssertEqual(instructions[8].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[8].immediate, 0)
 
         // The JMP command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[9].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
 
         // JMP must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[4].opcode, nop)
-        XCTAssertEqual(instructions[5].opcode, nop)
+        XCTAssertEqual(instructions[10].opcode, nop)
+        XCTAssertEqual(instructions[11].opcode, nop)
     }
     
     func testJmpToAddressNegative() {
@@ -487,26 +487,26 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 6)
+        XCTAssertEqual(instructions.count, 12)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 1)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
+        XCTAssertEqual(instructions[8].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[8].immediate, 7)
         
         // The JC command jumps to the address in the XY register pair, but only
         // if the carry flag is set.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[9].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
         
         // JC must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[4].opcode, nop)
-        XCTAssertEqual(instructions[5].opcode, nop)
+        XCTAssertEqual(instructions[10].opcode, nop)
+        XCTAssertEqual(instructions[11].opcode, nop)
     }
     
     func testJCToAddressZero() {
@@ -522,25 +522,25 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 6)
+        XCTAssertEqual(instructions.count, 12)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 0)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
+        XCTAssertEqual(instructions[8].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[8].immediate, 0)
         
         // The JC command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[9].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
         
         // JC must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
-        XCTAssertEqual(instructions[4].opcode, nop)
-        XCTAssertEqual(instructions[5].opcode, nop)
+        XCTAssertEqual(instructions[10].opcode, nop)
+        XCTAssertEqual(instructions[11].opcode, nop)
     }
     
     func testJCToAddressNegative() {
@@ -582,13 +582,13 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
-        XCTAssertEqual(instructions[1].immediate, 0b0110)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
+        XCTAssertEqual(instructions[7].immediate, 0b0110)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         XCTAssertEqual(controlWord.FI, .active)
         XCTAssertEqual(controlWord.CarryIn, .inactive)
     }
@@ -600,11 +600,11 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INUV")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INUV")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
     }
     
     func testINXY() {
@@ -614,11 +614,11 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INXY")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INXY")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
     }
     
     func testFailToCompileBLTWithNoOperands() {
@@ -732,10 +732,10 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.PI, .active)
         XCTAssertEqual(controlWord.MO, .active)
@@ -788,11 +788,11 @@ class SnapCodeGenPassTests: XCTestCase {
         ])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 42)
+        XCTAssertEqual(instructions[7].immediate, 42)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.CO, .active)
         XCTAssertEqual(controlWord.BI, .active)
@@ -801,7 +801,7 @@ class SnapCodeGenPassTests: XCTestCase {
     func testBareReturnStatement() {
         let ast = AbstractSyntaxTreeNode(children: [Return(lineNumber: 1, expression: nil)])
         let instructions = mustCompile(ast)
-        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions.count, 7)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
@@ -809,11 +809,11 @@ class SnapCodeGenPassTests: XCTestCase {
         let ast = AbstractSyntaxTreeNode(children: [Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))])
         let instructions = mustCompile(ast)
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].immediate, 42)
+        XCTAssertEqual(instructions[7].immediate, 42)
         
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.CO, .active)
         XCTAssertEqual(controlWord.AI, .active)

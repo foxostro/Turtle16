@@ -10,6 +10,12 @@ import TurtleCore
 import TurtleCompilerToolbox
 
 public class SnapCodeGenPass: NSObject {
+    // Programs written in Snap store the stack pointer in data RAM at
+    // addresses 0x0000 and 0x0001. This is initialized on launch to 0xffff.
+    let kStackPointerAddressHi: UInt16 = 0x0000
+    let kStackPointerAddressLo: UInt16 = 0x0001
+    let kStackPointerInitialValue = 0xffff
+    
     let codeGenerator: CodeGenerator
     public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []
@@ -43,6 +49,7 @@ public class SnapCodeGenPass: NSObject {
         instructions = []
         patcherActions = []
         codeGenerator.begin()
+        try insertProgramPrologue()
         try root.iterate {
             do {
                 try visit(genericNode: $0)
@@ -56,6 +63,20 @@ public class SnapCodeGenPass: NSObject {
                               actions: patcherActions,
                               base: base)
         instructions = try patcher.patch()
+    }
+    
+    // Inserts prologue code into the program, presumably at the beginning.
+    // The code generator inserts a NOP at the beginning of every program
+    // because correct operation of the hardware reset cycle requires this.
+    // Likewise, correct operation of a program written in Snap requires some
+    // inititalization to be performed before anything else occurs.
+    func insertProgramPrologue() throws {
+        try codeGenerator.li(.X, Int((kStackPointerAddressHi & 0xff00) >> 8))
+        try codeGenerator.li(.Y, Int((kStackPointerAddressHi & 0x00ff)))
+        try codeGenerator.li(.M, Int((kStackPointerInitialValue & 0xff00) >> 8))
+        try codeGenerator.li(.X, Int((kStackPointerAddressLo & 0xff00) >> 8))
+        try codeGenerator.li(.Y, Int((kStackPointerAddressLo & 0x00ff)))
+        try codeGenerator.li(.M, Int((kStackPointerInitialValue & 0x00ff)))
     }
     
     func visit(genericNode: AbstractSyntaxTreeNode) throws {

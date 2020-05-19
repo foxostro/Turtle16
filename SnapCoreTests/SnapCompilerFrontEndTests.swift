@@ -12,10 +12,32 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class SnapCompilerFrontEndTests: XCTestCase {
+    let kProgramPrologue = """
+NOP
+LI X, 0
+LI Y, 0
+LI M, 255
+LI X, 0
+LI Y, 1
+LI M, 255
+"""
+    
     var compiler = SnapCompilerFrontEnd()
     
     override func setUp() {
         compiler = SnapCompilerFrontEnd()
+    }
+    
+    func disassemble(_ instructions: [Instruction]) -> String {
+        var disassembly = ""
+        if instructions.count > 0 {
+            disassembly.append(instructions[0].disassembly ?? "")
+        }
+        for instruction in instructions[1..<instructions.count] {
+            disassembly.append("\n")
+            disassembly.append(instruction.disassembly ?? "")
+        }
+        return disassembly
     }
     
     func mustCompile(_ sourceCode: String) -> [Instruction] {
@@ -36,8 +58,8 @@ class SnapCompilerFrontEndTests: XCTestCase {
     
     func testCompileEmptyProgramYieldsNOP() {
         let instructions = mustCompile("")
-        XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction.makeNOP())
+        XCTAssertEqual(instructions.count, 7)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue)
     }
     
     // As a hardware requirement, every program has an implicit NOP as the first
@@ -45,9 +67,8 @@ class SnapCompilerFrontEndTests: XCTestCase {
     // of two NOPs.
     func testCompileASingleNOPYieldsTwoNOPs() {
         let instructions = mustCompile("NOP")
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0], Instruction.makeNOP())
-        XCTAssertEqual(instructions[1], Instruction.makeNOP())
+        XCTAssertEqual(instructions.count, 8)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue + "\nNOP")
     }
     
     func testCompileFailsDuringLexingDueToInvalidCharacter() {
@@ -73,29 +94,30 @@ class SnapCompilerFrontEndTests: XCTestCase {
     
     func testCompileTwoNOPsYieldsProgramWithThreeNOPs() {
         let instructions = mustCompile("NOP\nNOP\n")
-        XCTAssertEqual(instructions.count, 3)
-        XCTAssertEqual(instructions[0], Instruction.makeNOP())
-        XCTAssertEqual(instructions[1], Instruction.makeNOP())
-        XCTAssertEqual(instructions[2], Instruction.makeNOP())
+        XCTAssertEqual(instructions.count, 9)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue + """
+
+NOP
+NOP
+""")
     }
     
     func testCompilerIgnoresComments() {
         let instructions = mustCompile("// comment")
-        XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction.makeNOP())
+        XCTAssertEqual(instructions.count, 7)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue)
     }
     
     func testCompilerIgnoresCommentsAfterOpcodesToo() {
         let instructions = mustCompile("NOP  // do nothing\n")
-        XCTAssertEqual(instructions.count, 2)
-        XCTAssertEqual(instructions[0], Instruction.makeNOP())
-        XCTAssertEqual(instructions[1], Instruction.makeNOP())
+        XCTAssertEqual(instructions.count, 8)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue + "\nNOP")
     }
     
     func testCompilerIgnoresHashCommentsToo() {
         let instructions = mustCompile("# comment")
-        XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0], Instruction.makeNOP())
+        XCTAssertEqual(instructions.count, 7)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue)
     }
     
     func testNOPAcceptsNoOperands() {
@@ -107,12 +129,12 @@ class SnapCompilerFrontEndTests: XCTestCase {
     
     func testCMPCompiles() {
         let instructions = mustCompile("CMP")
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         let cmpOpcode: UInt8 = UInt8(makeMicrocodeGenerator().getOpcode(withMnemonic: "ALU")!)
         let kALUControlForCMP: UInt8 = 0b0110
         let cmpInstruction = Instruction(opcode: cmpOpcode, immediate: kALUControlForCMP)
-        XCTAssertEqual(instructions[1], cmpInstruction)
+        XCTAssertEqual(instructions[7], cmpInstruction)
     }
     
     func makeMicrocodeGenerator() -> MicrocodeGenerator {
@@ -130,11 +152,11 @@ class SnapCompilerFrontEndTests: XCTestCase {
     
     func testHLTCompiles() {
         let instructions = mustCompile("HLT")
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         let hltOpcode: UInt8 = UInt8(makeMicrocodeGenerator().getOpcode(withMnemonic: "HLT")!)
         let hltInstruction = Instruction(opcode: hltOpcode, immediate: 0)
-        XCTAssertEqual(instructions[1], hltInstruction)
+        XCTAssertEqual(instructions[7], hltInstruction)
     }
     
     func testHLTAcceptsNoOperands() {
@@ -180,7 +202,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testLXYCompiles() {
         let instructions = mustCompile("label:\nLXY label")
         
-        XCTAssertEqual(instructions.count, 3)
+        XCTAssertEqual(instructions.count, 9)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -189,17 +211,17 @@ class SnapCompilerFrontEndTests: XCTestCase {
         
         // Load the resolved label address into XY.
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
-        XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
-        XCTAssertEqual(instructions[2].immediate, 1)
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[7].immediate, 0)
+        XCTAssertEqual(instructions[8].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[8].immediate, 7)
     }
     
     func testJALRWithZeroOperandsDoesCompile() {
         let instructions = mustCompile("JALR")
         let microcodeGenerator = makeMicrocodeGenerator()
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -207,14 +229,14 @@ class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // A bare JALR will conditionally jump to whatever address is in XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JALR")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JALR")!))
     }
     
     func testJMPWithZeroOperandsDoesCompile() {
         let instructions = mustCompile("JMP")
         let microcodeGenerator = makeMicrocodeGenerator()
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -222,14 +244,14 @@ class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // A bare JMP will jump to whatever address is in XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
     }
     
     func testJCWithZeroOperandsDoesCompile() {
         let instructions = mustCompile("JC")
         let microcodeGenerator = makeMicrocodeGenerator()
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         
         // The first instruction in memory must be a NOP. Without this, CPU
         // reset does not work.
@@ -237,7 +259,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // A bare JC will conditionally jump to whatever address is in XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
     }
     
     func testFailToCompileADDWithZeroOperands() {
@@ -257,14 +279,14 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testCompileADDWithRegisterOperand() {
         let instructions = mustCompile("ADD D")
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         let nop: UInt8 = 0
         XCTAssertEqual(instructions[0].opcode, nop)
         
-        XCTAssertEqual(instructions[1].immediate, 0b1001)
+        XCTAssertEqual(instructions[7].immediate, 0b1001)
         
         let microcodeGenerator = makeMicrocodeGenerator()
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.EO, .active)
         XCTAssertEqual(controlWord.DI, .active)
@@ -337,12 +359,12 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testCompileValidLI() {
         let instructions = mustCompile("LI D, 42")
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, 0)
-        XCTAssertEqual(instructions[1].immediate, 42)
+        XCTAssertEqual(instructions[7].immediate, 42)
         
         let microcodeGenerator = makeMicrocodeGenerator()
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.CO, .active)
         XCTAssertEqual(controlWord.DI, .active)
@@ -414,11 +436,11 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testCompileValidMOV() {
         let instructions = mustCompile("MOV D, A")
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         XCTAssertEqual(instructions[0].opcode, 0)
         
         let microcodeGenerator = makeMicrocodeGenerator()
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.AO, .active)
         XCTAssertEqual(controlWord.DI, .active)
@@ -447,12 +469,12 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testINUV() {
         let instructions = mustCompile("INUV")
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         let nop: UInt8 = 0
         XCTAssertEqual(instructions[0].opcode, nop)
         
         let microcodeGenerator = makeMicrocodeGenerator()
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.UVInc, .active)
     }
@@ -460,12 +482,12 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testINXY() {
         let instructions = mustCompile("INXY")
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         let nop: UInt8 = 0
         XCTAssertEqual(instructions[0].opcode, nop)
         
         let microcodeGenerator = makeMicrocodeGenerator()
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.XYInc, .active)
     }
@@ -480,12 +502,12 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testBLT() {
         let instructions = mustCompile("BLT P, M")
         
-        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions.count, 8)
         let nop: UInt8 = 0
         XCTAssertEqual(instructions[0].opcode, nop)
         
         let microcodeGenerator = makeMicrocodeGenerator()
-        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[7].opcode), carryFlag: 0, equalFlag: 0)))
         
         XCTAssertEqual(controlWord.XYInc, .active)
         XCTAssertEqual(controlWord.UVInc, .active)
@@ -496,58 +518,58 @@ class SnapCompilerFrontEndTests: XCTestCase {
     func testJC() {
         let instructions = mustCompile("JC")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
     }
     
     func testJNC() {
         let instructions = mustCompile("JNC")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JNC")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JNC")!))
     }
     
     func testJE() {
         let instructions = mustCompile("JE")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JE")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JE")!))
     }
     
     func testJNE() {
         let instructions = mustCompile("JNE")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JNE")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JNE")!))
     }
     
     func testJG() {
         let instructions = mustCompile("JG")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JG")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JG")!))
     }
     
     func testJLE() {
         let instructions = mustCompile("JLE")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JLE")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JLE")!))
     }
     
     func testJL() {
         let instructions = mustCompile("JL")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JL")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JL")!))
     }
     
     func testJGE() {
         let instructions = mustCompile("JGE")
         let microcodeGenerator = makeMicrocodeGenerator()
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JGE")!))
+        XCTAssertEqual(instructions[7].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JGE")!))
     }
     
     func testCompiledInstructionsIncludeDisassembly() {
         let instructions = mustCompile("NOP")
-        XCTAssertEqual(instructions[1].disassembly, "NOP")
+        XCTAssertEqual(instructions[7].disassembly, "NOP")
     }
     
     func testReturn42() {
         let instructions = mustCompile("return 42")
-        XCTAssertEqual(instructions[1].disassembly, "LI A, 42")
+        XCTAssertEqual(instructions[7].disassembly, "LI A, 42")
     }
 }

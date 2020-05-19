@@ -16,7 +16,7 @@ public class SnapCodeGenPass: NSObject {
     let kStackPointerAddressLo: UInt16 = 0x0001
     let kStackPointerInitialValue = 0x0000
     
-    let codeGenerator: CodeGenerator
+    let assemblerBackEnd: AssemblerBackEnd
     public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []
     
@@ -27,8 +27,8 @@ public class SnapCodeGenPass: NSObject {
         return errors.count != 0
     }
     
-    public required init(codeGenerator: CodeGenerator) {
-        self.codeGenerator = codeGenerator
+    public required init(assemblerBackEnd: AssemblerBackEnd) {
+        self.assemblerBackEnd = assemblerBackEnd
         super.init()
     }
     
@@ -48,7 +48,7 @@ public class SnapCodeGenPass: NSObject {
     func tryCompile(ast root: AbstractSyntaxTreeNode, base: Int) throws {
         instructions = []
         patcherActions = []
-        codeGenerator.begin()
+        assemblerBackEnd.begin()
         try insertProgramPrologue()
         try root.iterate {
             do {
@@ -57,8 +57,8 @@ public class SnapCodeGenPass: NSObject {
                 errors.append(error)
             }
         }
-        codeGenerator.end()
-        let patcher = Patcher(inputInstructions: codeGenerator.instructions,
+        assemblerBackEnd.end()
+        let patcher = Patcher(inputInstructions: assemblerBackEnd.instructions,
                               symbols: symbols,
                               actions: patcherActions,
                               base: base)
@@ -71,13 +71,13 @@ public class SnapCodeGenPass: NSObject {
     // Likewise, correct operation of a program written in Snap requires some
     // inititalization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
-        codeGenerator.nop()
-        try codeGenerator.li(.X, Int((kStackPointerAddressHi & 0xff00) >> 8))
-        try codeGenerator.li(.Y, Int((kStackPointerAddressHi & 0x00ff)))
-        try codeGenerator.li(.M, Int((kStackPointerInitialValue & 0xff00) >> 8))
-        try codeGenerator.li(.X, Int((kStackPointerAddressLo & 0xff00) >> 8))
-        try codeGenerator.li(.Y, Int((kStackPointerAddressLo & 0x00ff)))
-        try codeGenerator.li(.M, Int((kStackPointerInitialValue & 0x00ff)))
+        assemblerBackEnd.nop()
+        try assemblerBackEnd.li(.X, Int((kStackPointerAddressHi & 0xff00) >> 8))
+        try assemblerBackEnd.li(.Y, Int((kStackPointerAddressHi & 0x00ff)))
+        try assemblerBackEnd.li(.M, Int((kStackPointerInitialValue & 0xff00) >> 8))
+        try assemblerBackEnd.li(.X, Int((kStackPointerAddressLo & 0xff00) >> 8))
+        try assemblerBackEnd.li(.Y, Int((kStackPointerAddressLo & 0x00ff)))
+        try assemblerBackEnd.li(.M, Int((kStackPointerInitialValue & 0x00ff)))
     }
     
     func visit(genericNode: AbstractSyntaxTreeNode) throws {
@@ -143,7 +143,7 @@ public class SnapCodeGenPass: NSObject {
         
         try expectRegisterCanBeUsedAsDestination(register)
         
-        try codeGenerator.add(node.destination)
+        try assemblerBackEnd.add(node.destination)
     }
     
     func blt(_ node: InstructionNode) throws {
@@ -161,112 +161,112 @@ public class SnapCodeGenPass: NSObject {
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try codeGenerator.blt(destination.literal, source.literal)
+        try assemblerBackEnd.blt(destination.literal, source.literal)
     }
     
     func cmp(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.cmp()
+        assemblerBackEnd.cmp()
     }
     
     func hlt(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.hlt()
+        assemblerBackEnd.hlt()
     }
     
     func inuv(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.inuv()
+        assemblerBackEnd.inuv()
     }
     
     func inxy(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.inxy()
+        assemblerBackEnd.inxy()
     }
     
     func link(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.link()
+        assemblerBackEnd.link()
     }
     
     func jalr(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jalr()
+        assemblerBackEnd.jalr()
     }
     
     func jc(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jc()
+        assemblerBackEnd.jc()
     }
     
     func jnc(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jnc()
+        assemblerBackEnd.jnc()
     }
     
     func je(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.je()
+        assemblerBackEnd.je()
     }
     
     func jne(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jne()
+        assemblerBackEnd.jne()
     }
     
     func jg(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jg()
+        assemblerBackEnd.jg()
     }
     
     func jle(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jle()
+        assemblerBackEnd.jle()
     }
     
     func jl(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jl()
+        assemblerBackEnd.jl()
     }
     
     func jge(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jge()
+        assemblerBackEnd.jge()
     }
     
     func jmp(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.jmp()
+        assemblerBackEnd.jmp()
     }
     
     func li(_ node: InstructionNode) throws {
@@ -280,14 +280,14 @@ public class SnapCodeGenPass: NSObject {
         try expectRegisterCanBeUsedAsDestination(destination)
         
         if let immediate = node.parameters.parameters[1] as? TokenNumber {
-            try codeGenerator.li(node.destination, token: immediate)
+            try assemblerBackEnd.li(node.destination, token: immediate)
         } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
             guard let value = symbols[identifier.lexeme] else {
                 throw CompilerError(line: identifier.lineNumber,
                                      format: "use of undeclared identifier: `%@'",
                                      identifier.lexeme)
             }
-            try codeGenerator.li(node.destination,
+            try assemblerBackEnd.li(node.destination,
                                       token: TokenNumber(lineNumber: identifier.lineNumber,
                                                          lexeme: identifier.lexeme,
                                                          literal: value))
@@ -327,14 +327,14 @@ public class SnapCodeGenPass: NSObject {
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try codeGenerator.mov(destination.literal, source.literal)
+        try assemblerBackEnd.mov(destination.literal, source.literal)
     }
     
     func nop(_ node: InstructionNode) throws {
         guard node.parameters.parameters.count == 0 else {
             throw zeroOperandsExpectedError(node.instruction)
         }
-        codeGenerator.nop()
+        assemblerBackEnd.nop()
     }
     
     func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
@@ -382,7 +382,7 @@ public class SnapCodeGenPass: NSObject {
     func visit(node: LabelDeclarationNode) throws {
         let name = node.identifier.lexeme
         if symbols[name] == nil {
-            symbols[name] = codeGenerator.programCounter
+            symbols[name] = assemblerBackEnd.programCounter
         } else {
             throw CompilerError(line: node.identifier.lineNumber,
                                  format: "label redefines existing symbol: `%@'",
@@ -409,7 +409,7 @@ public class SnapCodeGenPass: NSObject {
     
     func visit(node: Expression) throws {
         if let expression = node as? Expression.Literal {
-            try self.codeGenerator.li(.A, token: expression.number)
+            try self.assemblerBackEnd.li(.A, token: expression.number)
         } else {
             throw CompilerError(line: node.token.lineNumber, message: "compiler only supports returning a literal value for now")
         }
@@ -419,19 +419,19 @@ public class SnapCodeGenPass: NSObject {
         if(address < 0 || address > 0xffff) {
             throw CompilerError(format: "invalid address: 0x%x", address)
         }
-        try codeGenerator.li(.X, (address & 0xff00) >> 8)
-        try codeGenerator.li(.Y, (address & 0xff))
+        try assemblerBackEnd.li(.X, (address & 0xff00) >> 8)
+        try assemblerBackEnd.li(.Y, (address & 0xff))
     }
     
     func setAddress(token identifier: TokenIdentifier) throws {
-        patcherActions.append((index: codeGenerator.programCounter,
+        patcherActions.append((index: assemblerBackEnd.programCounter,
                                symbol: identifier,
                                shift: 8))
-        try codeGenerator.li(.X, 0xAB)
+        try assemblerBackEnd.li(.X, 0xAB)
         
-        patcherActions.append((index: codeGenerator.programCounter,
+        patcherActions.append((index: assemblerBackEnd.programCounter,
                                symbol: identifier,
                                shift: 0))
-        try codeGenerator.li(.Y, 0xCD)
+        try assemblerBackEnd.li(.Y, 0xCD)
     }
 }

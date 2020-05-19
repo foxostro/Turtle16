@@ -20,13 +20,6 @@ class AssemblerCodeGenPassTests: XCTestCase {
     var nop: UInt8 = 0
     var hlt: UInt8 = 0
     
-    func makeBackEnd(symbols: [String : Int] = [:]) -> AssemblerCodeGenPass {
-        let codeGen = CodeGenerator(microcodeGenerator: microcodeGenerator)
-        let compiler = AssemblerCodeGenPass(codeGenerator: codeGen)
-        compiler.symbols = symbols
-        return compiler
-    }
-    
     override func setUp() {
         microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -35,21 +28,28 @@ class AssemblerCodeGenPassTests: XCTestCase {
     }
     
     func mustCompile(_ root: AbstractSyntaxTreeNode) -> [Instruction] {
-        let compiler = makeBackEnd()
-        compiler.compile(ast: root, base: 0x0000)
-        if compiler.hasError {
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: root, base: 0x0000)
+        if codeGenerator.hasError {
             XCTFail()
         }
-        return compiler.instructions
+        return codeGenerator.instructions
     }
     
     func mustFailToCompile(_ root: AbstractSyntaxTreeNode) -> [CompilerError] {
-        let compiler = makeBackEnd()
-        compiler.compile(ast: root, base: 0x0000)
-        if !compiler.hasError {
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: root, base: 0x0000)
+        if !codeGenerator.hasError {
             XCTFail()
         }
-        return compiler.errors
+        return codeGenerator.errors
+    }
+    
+    func makeCodeGenerator(symbols: [String : Int] = [:]) -> AssemblerCodeGenPass {
+        let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        let codeGenerator = AssemblerCodeGenPass(assemblerBackEnd: assemblerBackEnd)
+        codeGenerator.symbols = symbols
+        return codeGenerator
     }
     
     func testEmptyProgram() {

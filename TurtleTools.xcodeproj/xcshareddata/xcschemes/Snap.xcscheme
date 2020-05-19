@@ -68,6 +68,16 @@
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6FB0D2EC247115BA003B5D5C"
+               BuildableName = "TurtleAssemblerCoreTests.xctest"
+               BlueprintName = "TurtleAssemblerCoreTests"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

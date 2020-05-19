@@ -121,11 +121,11 @@ public class SnapParser: Parser {
     
     func consumeReturn(_ returnToken: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
         if accept([TokenNewline.self, TokenEOF.self]) != nil {
-            return [Return(lineNumber: returnToken.lineNumber, expression: nil)]
+            return [Return(token: returnToken, expression: nil)]
         } else {
             let expression = try consumeExpression()
             try expect(types: [TokenNewline.self, TokenEOF.self], error: operandTypeMismatchError(returnToken))
-            return [Return(lineNumber: returnToken.lineNumber, expression: expression)]
+            return [Return(token: returnToken, expression: expression)]
         }
     }
     
@@ -135,7 +135,7 @@ public class SnapParser: Parser {
     
     func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
-            return Expression.Literal(lineNumber: numberToken.lineNumber, number: numberToken)
+            return Expression.Literal(number: numberToken)
         }
         throw operandTypeMismatchError(peek()!)
     }

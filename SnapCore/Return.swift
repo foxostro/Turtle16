@@ -9,18 +9,18 @@
 import TurtleCompilerToolbox
 
 public class Return: AbstractSyntaxTreeNode {
-    public let lineNumber: Int
+    public let token: TokenReturn
     public let expression: Expression?
     
-    public required init(lineNumber: Int, expression: Expression?) {
-        self.lineNumber = lineNumber
+    public required init(token: TokenReturn, expression: Expression?) {
+        self.token = token
         self.expression = expression
         super.init(children: [])
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? Return else { return false }
-        guard lineNumber == rhs.lineNumber else { return false }
+        guard token == rhs.token else { return false }
         guard expression == rhs.expression else { return false }
         return true
     }

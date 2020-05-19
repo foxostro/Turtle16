@@ -799,14 +799,14 @@ class SnapCodeGenPassTests: XCTestCase {
     }
     
     func testBareReturnStatement() {
-        let ast = AbstractSyntaxTreeNode(children: [Return(lineNumber: 1, expression: nil)])
+        let ast = AbstractSyntaxTreeNode(children: [Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil)])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 7)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
     func testReturnStatementWithOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [Return(lineNumber: 1, expression: Expression.Literal(lineNumber: 1, number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))])
+        let ast = AbstractSyntaxTreeNode(children: [Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)))])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 8)

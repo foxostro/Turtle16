@@ -411,7 +411,7 @@ public class SnapCodeGenPass: NSObject {
         if let expression = node as? Expression.Literal {
             try self.codeGenerator.li(.A, token: expression.number)
         } else {
-            throw CompilerError(line: node.lineNumber, message: "compiler only supports returning a literal value for now")
+            throw CompilerError(line: node.token.lineNumber, message: "compiler only supports returning a literal value for now")
         }
     }
     

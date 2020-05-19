@@ -9,25 +9,24 @@
 import TurtleCompilerToolbox
 
 public class Expression: AbstractSyntaxTreeNode {
-    public let lineNumber: Int
+    public let token: Token
     
-    public init(lineNumber: Int) {
-        self.lineNumber = lineNumber
-        super.init(children: [])
+    public init(token: Token) {
+        self.token = token
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? Expression else { return false }
-        guard lineNumber == rhs.lineNumber else { return false }
+        guard token == rhs.token else { return false }
         return true
     }
     
     public class Literal: Expression {
         public let number: TokenNumber
         
-        public init(lineNumber: Int, number: TokenNumber) {
+        public init(number: TokenNumber) {
             self.number = number
-            super.init(lineNumber: lineNumber)
+            super.init(token: number)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

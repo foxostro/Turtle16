@@ -1,10 +1,12 @@
 //
 //  TokenRegister.swift
-//  TurtleCompilerToolbox
+//  TurtleAssemblerCore
 //
 //  Created by Andrew Fox on 9/3/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
+
+import TurtleCompilerToolbox
 
 public class TokenRegister : Token {
     public let literal: RegisterName

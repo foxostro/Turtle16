@@ -18,7 +18,7 @@ public class Expression: AbstractSyntaxTreeNode {
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? Expression else { return false }
         guard token == rhs.token else { return false }
-        return true
+        return super.isEqual(rhs)
     }
     
     public class Literal: Expression {

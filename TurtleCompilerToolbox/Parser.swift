@@ -28,6 +28,7 @@ open class ParserBase: NSObject, Parser {
     }
     public var productions: [Production] = []
     public var tokens: [Token] = []
+    public private(set) var previous: Token? = nil
     
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
@@ -60,7 +61,7 @@ open class ParserBase: NSObject, Parser {
     }
     
     public func advance() {
-        tokens.removeFirst()
+        previous = tokens.removeFirst()
     }
     
     public func advanceToNewline() {
@@ -126,6 +127,11 @@ open class ParserBase: NSObject, Parser {
                 return statements
             }
         }
-        throw CompilerError(format: "unexpected end of input")
+        throw unexpectedEndOfInputError()
+    }
+    
+    func unexpectedEndOfInputError() -> CompilerError {
+        return CompilerError(line: peek()?.lineNumber ?? 1,
+                             format: "unexpected end of input")
     }
 }

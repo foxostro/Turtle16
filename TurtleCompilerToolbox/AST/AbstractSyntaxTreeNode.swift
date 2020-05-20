@@ -21,13 +21,12 @@ open class AbstractSyntaxTreeNode : NSObject {
     }
     
     open override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? AbstractSyntaxTreeNode {
-            return self == rhs
-        }
-        return false
+        guard let rhs = rhs as? AbstractSyntaxTreeNode else { return false }
+        guard children == rhs.children else { return false }
+        return true
     }
 }
 
 public func ==(lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
-    return lhs.children == rhs.children
+    return lhs.isEqual(rhs)
 }

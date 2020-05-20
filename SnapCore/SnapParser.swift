@@ -16,7 +16,8 @@ public class SnapParser: ParserBase {
             Production(symbol: TokenEOF.self,        generator: { _ in [] }),
             Production(symbol: TokenNewline.self,    generator: { _ in [] }),
             Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) }),
-            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) })
+            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) }),
+            Production(symbol: TokenEval.self,       generator: { try self.consumeEval($0 as! TokenEval) })
         ]
     }
     
@@ -47,6 +48,17 @@ public class SnapParser: ParserBase {
         try expectEndOfStatement()
         
         return [ConstantDeclaration(identifier: identifier, expression: expression)]
+    }
+    
+    func consumeEval(_ evalToken: TokenEval) throws -> [AbstractSyntaxTreeNode] {
+        if nil != acceptEndOfStatement() {
+            throw CompilerError(line: evalToken.lineNumber,
+                                format: "expected to find an expression following `%@' statement",
+                                evalToken.lexeme)
+        }
+        let expression = try consumeExpression()
+        try expectEndOfStatement()
+        return [EvalStatement(token: evalToken, expression: expression)]
     }
     
     func acceptEndOfStatement() -> Token? {

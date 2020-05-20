@@ -112,7 +112,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `2'")
     }
     
-    func testWellFormedDeclaration() {
+    func testWellFormedConstantDeclaration() {
         let parser = SnapParser(tokens: tokenize("let foo = 1"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
@@ -123,5 +123,26 @@ class SnapParserTests: XCTestCase {
         let expected = ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
+    }
+    
+    func testMalformedEvalStatement_MissingExpression() {
+        let parser = SnapParser(tokens: tokenize("eval"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected to find an expression following `eval' statement")
+    }
+    
+    func testWellformedEvalStatement() {
+        let parser = SnapParser(tokens: tokenize("eval 1"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
+                                     expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
     }
 }

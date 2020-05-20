@@ -40,6 +40,9 @@
 		6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */; };
 		6F5337352474BE7D00CFD33C /* ConstantDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337342474BE7D00CFD33C /* ConstantDeclarationTests.swift */; };
 		6F5337362474C18800CFD33C /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
+		6F5337392475128E00CFD33C /* TokenEval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337382475128E00CFD33C /* TokenEval.swift */; };
+		6F53373B247513E700CFD33C /* EvalStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F53373A247513E700CFD33C /* EvalStatement.swift */; };
+		6F53373D2475140E00CFD33C /* EvalStatementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F53373C2475140E00CFD33C /* EvalStatementTests.swift */; };
 		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
 		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
 		6F639EB124712473007B05F1 /* TurtleAssemblerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; };
@@ -431,6 +434,9 @@
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
 		6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantDeclaration.swift; sourceTree = "<group>"; };
 		6F5337342474BE7D00CFD33C /* ConstantDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationTests.swift; sourceTree = "<group>"; };
+		6F5337382475128E00CFD33C /* TokenEval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenEval.swift; sourceTree = "<group>"; };
+		6F53373A247513E700CFD33C /* EvalStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvalStatement.swift; sourceTree = "<group>"; };
+		6F53373C2475140E00CFD33C /* EvalStatementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvalStatementTests.swift; sourceTree = "<group>"; };
 		6F59F052246D2E0B005C7348 /* Oscillator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Oscillator.swift; sourceTree = "<group>"; };
 		6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteToneGenerator.swift; sourceTree = "<group>"; };
 		6F5A00E523184880003E7C7F /* Patcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patcher.swift; sourceTree = "<group>"; };
@@ -779,6 +785,7 @@
 			isa = PBXGroup;
 			children = (
 				6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */,
+				6F53373A247513E700CFD33C /* EvalStatement.swift */,
 				6FCB684924724B6300798905 /* Expression.swift */,
 				6FCB6845247241ED00798905 /* Return.swift */,
 			);
@@ -788,6 +795,7 @@
 		6F5337322474BE4B00CFD33C /* Token */ = {
 			isa = PBXGroup;
 			children = (
+				6F5337382475128E00CFD33C /* TokenEval.swift */,
 				6FCB68422472411000798905 /* TokenReturn.swift */,
 			);
 			path = Token;
@@ -796,6 +804,7 @@
 		6F5337332474BE7100CFD33C /* AST */ = {
 			isa = PBXGroup;
 			children = (
+				6F53373C2475140E00CFD33C /* EvalStatementTests.swift */,
 				6FCB684B24724B7F00798905 /* ExpressionTests.swift */,
 				6FCB68472472448300798905 /* ReturnTests.swift */,
 				6F5337342474BE7D00CFD33C /* ConstantDeclarationTests.swift */,
@@ -881,10 +890,10 @@
 			isa = PBXGroup;
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
-				6FCB6823247206C200798905 /* SnapCodeGeneratorTests.swift */,
 				6F4B5CBC2471DF2A000C57EB /* SnapCompilerFrontEndTests.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
+				6FCB6823247206C200798905 /* SnapCodeGeneratorTests.swift */,
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
 			path = SnapCoreTests;
@@ -1696,9 +1705,11 @@
 				6FCB684A24724B6300798905 /* Expression.swift in Sources */,
 				6FCB68432472411000798905 /* TokenReturn.swift in Sources */,
 				6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */,
+				6F5337392475128E00CFD33C /* TokenEval.swift in Sources */,
 				6FCB68222472069D00798905 /* SnapCodeGenerator.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
+				6F53373B247513E700CFD33C /* EvalStatement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1709,6 +1720,7 @@
 				6F5337352474BE7D00CFD33C /* ConstantDeclarationTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
+				6F53373D2475140E00CFD33C /* EvalStatementTests.swift in Sources */,
 				6FCB6824247206C200798905 /* SnapCodeGeneratorTests.swift in Sources */,
 				6FCB684C24724B7F00798905 /* ExpressionTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerFrontEndTests.swift in Sources */,

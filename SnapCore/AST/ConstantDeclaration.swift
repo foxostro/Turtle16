@@ -25,7 +25,3 @@ public class ConstantDeclaration: AbstractSyntaxTreeNode {
         return super.isEqual(rhs)
     }
 }
-
-public func ==(lhs: ConstantDeclaration, rhs: ConstantDeclaration) -> Bool {
-    return lhs.isEqual(rhs)
-}

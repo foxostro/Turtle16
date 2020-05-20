@@ -52,7 +52,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         try insertProgramPrologue()
         try root.iterate {
             do {
-                try visit(genericNode: $0)
+                try compile(genericNode: $0)
             } catch let error as CompilerError {
                 errors.append(error)
             }
@@ -80,7 +80,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         try assemblerBackEnd.li(.M, Int((kStackPointerInitialValue & 0x00ff)))
     }
     
-    func visit(genericNode: AbstractSyntaxTreeNode) throws {
+    func compile(genericNode: AbstractSyntaxTreeNode) throws {
         // While could use the visitor pattern here, (and indeed used to)
         // this leads to problems. There's a lot of boilerplate code, for one.
         // The visitor class must know of all subclasses ahead of time. It's
@@ -88,51 +88,55 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         // class hierarchy. These issues make it difficult to use the same set
         // of AST nodes for two, separate parsers.
         if let node = genericNode as? LabelDeclarationNode {
-            try visit(node: node)
+            try compile(label: node)
         }
         if let node = genericNode as? ConstantDeclaration {
-            try visit(node: node)
+            try compile(constant: node)
         }
     }
     
-    func visit(node: LabelDeclarationNode) throws {
-        let name = node.identifier.lexeme
+    func compile(label: LabelDeclarationNode) throws {
+        let name = label.identifier.lexeme
         if symbols[name] == nil {
             symbols[name] = assemblerBackEnd.programCounter
         } else {
-            throw CompilerError(line: node.identifier.lineNumber,
+            throw CompilerError(line: label.identifier.lineNumber,
                                  format: "label redefines existing symbol: `%@'",
-                                 node.identifier.lexeme)
+                                 label.identifier.lexeme)
         }
     }
     
-    func visit(node: ConstantDeclaration) throws {
-        let name = node.identifier.lexeme
+    func compile(constant: ConstantDeclaration) throws {
+        let name = constant.identifier.lexeme
         if symbols[name] == nil {
-            symbols[name] = try evaluateAtCompileTime(expression: node.expression)
+            symbols[name] = try evaluateAtCompileTime(expression: constant.expression)
         } else {
-            throw CompilerError(line: node.identifier.lineNumber,
+            throw CompilerError(line: constant.identifier.lineNumber,
                                 format: "constant redefines existing symbol: `%@'",
-                                node.identifier.lexeme)
+                                constant.identifier.lexeme)
         }
     }
     
-    func evaluateAtCompileTime(expression node: Expression) throws -> Int {
-        if let expression = node as? Expression.Literal {
-            return expression.number.literal
+    func evaluateAtCompileTime(expression: Expression) throws -> Int {
+        if let literal = expression as? Expression.Literal {
+            return literal.number.literal
         } else {
-            let lineNumber = node.tokens.first?.lineNumber ?? 1
+            let lineNumber = expression.tokens.first?.lineNumber ?? 1
             throw CompilerError(line: lineNumber,
                                 message: "expression must be a compile time constant")
         }
     }
     
-    func visit(node: Expression) throws {
-        if let expression = node as? Expression.Literal {
-            try self.assemblerBackEnd.li(.A, token: expression.number)
+    func compile(expression: Expression) throws {
+        if let literal = expression as? Expression.Literal {
+            try compile(literal: literal)
         } else {
-            let lineNumber = node.tokens.first?.lineNumber ?? 1
+            let lineNumber = expression.tokens.first?.lineNumber ?? 1
             throw CompilerError(line: lineNumber, message: "only literal expressions are supported at this time")
         }
+    }
+    
+    func compile(literal: Expression.Literal) throws {
+        try self.assemblerBackEnd.li(.A, token: literal.number)
     }
 }

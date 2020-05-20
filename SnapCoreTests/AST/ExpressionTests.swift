@@ -17,19 +17,19 @@ class ExpressionTests: XCTestCase {
         XCTAssertNotEqual(Expression.Literal(number: a), LabelDeclarationNode(identifier: foo))
     }
     
-    func testDoesNotEqualNodeWithDifferentLineNumber() {
+    func testDoesNotEqualExpressionWithDifferentLineNumber() {
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 2)
         XCTAssertNotEqual(Expression.Literal(number: a), Expression.Literal(number: b))
     }
     
-    func testDoesNotEqualNodeWithDifferentValue() {
+    func testDoesNotEqualExpressionWithDifferentValue() {
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)
         XCTAssertNotEqual(Expression.Literal(number: a), Expression.Literal(number: b))
     }
     
-    func testDoesEqualNodeWithSameLineNumberAndValue() {
+    func testDoesEqualExpressionWithSameLineNumberAndValue() {
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         XCTAssertEqual(Expression.Literal(number: a), Expression.Literal(number: b))

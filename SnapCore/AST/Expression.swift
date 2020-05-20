@@ -11,6 +11,9 @@ import TurtleCompilerToolbox
 public class Expression: AbstractSyntaxTreeNode {
     public let token: Token
     
+    // The token attempts to tie the expression to a position in the source file.
+    // This will, of course, not be entirely accurate.
+    // TODO: Find a way to tie the expression to something like a sequence of tokens within the source file.
     public init(token: Token) {
         self.token = token
     }

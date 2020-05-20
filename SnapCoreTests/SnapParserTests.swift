@@ -25,36 +25,6 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 0)
     }
-    
-    func testParseNOPYieldsSingleNOPNode() {
-        let parser = SnapParser(tokens: tokenize("NOP"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-    }
-
-    func testParseTwoNOPsYieldsTwoNOPNodes() {
-        let parser = SnapParser(tokens: tokenize("NOP\nNOP\n"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-        XCTAssertEqual(ast.children[1], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-    }
-
-    func testHLTParses() {
-        let parser = SnapParser(tokens: tokenize("HLT"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "HLT"),
-                                       parameters: ParameterListNode(parameters: [])))
-    }
 
     func testLabelDeclaration() {
         let parser = SnapParser(tokens: tokenize("label:"))
@@ -63,16 +33,6 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-    }
-
-    func testLabelDeclarationAtAnotherAddress() {
-        let parser = SnapParser(tokens: tokenize("NOP\nlabel:"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-        XCTAssertEqual(ast.children[1], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "label")))
     }
 
     func testParseLabelNameIsANumber() {
@@ -90,35 +50,6 @@ class SnapParserTests: XCTestCase {
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
-
-    func testParseValidLI() {
-        let parser = SnapParser(tokens: tokenize("LI D, 42"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                                       parameters: ParameterListNode(parameters: [
-                                        TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
-                                        TokenNumber(lineNumber: 1, lexeme: "42", literal: 42),
-                                       ])))
-    }
-
-    func testParseValidMOV() {
-        let parser = SnapParser(tokens: tokenize("MOV D, A"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                                       parameters: ParameterListNode(parameters: [
-                                        TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
-                                        TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                       ])))
-    }
     
     func testExtraneousComma() {
         let parser = SnapParser(tokens: tokenize(","))
@@ -127,34 +58,17 @@ class SnapParserTests: XCTestCase {
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
-    
-    func testParameterListMalformedByHavingOnlyComma() {
-        let parser = SnapParser(tokens: tokenize("MOV ,"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
-    
-    func testParameterListMalformedWithTrailingComma() {
-        let parser = SnapParser(tokens: tokenize("MOV A, B, C,"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
-    }
 
     func testMultipleErrorsParsingInstructions() {
-        let parser = SnapParser(tokens: tokenize("MOV ,\nMOV A, B, C,\n"))
+        let tokens = tokenize(",\n:\n")
+        let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors[0].line, 1)
-        XCTAssertEqual(parser.errors[0].message, "operand type mismatch: `MOV'")
-        XCTAssertEqual(parser.errors[1].line, 2)
-        XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `MOV'")
+        XCTAssertEqual(parser.errors[0].line, Optional<Int>(1))
+        XCTAssertEqual(parser.errors[0].message, "unexpected end of input")
+        XCTAssertEqual(parser.errors[1].line, Optional<Int>(2))
+        XCTAssertEqual(parser.errors[1].message, "unexpected end of input")
     }
     
     func testMalformedDeclaration_BareLetStatement() {
@@ -190,20 +104,12 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `bar'")
     }
     
-    func testMalformedDeclaration_BadTypeForValue_Register() {
-        let parser = SnapParser(tokens: tokenize("let foo = A"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `A'")
-    }
-    
     func testMalformedDeclaration_BadTypeForValue_TooManyTokens() {
-        let parser = SnapParser(tokens: tokenize("let foo = 1 A"))
+        let parser = SnapParser(tokens: tokenize("let foo = 1 2"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `A'")
+        XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `2'")
     }
     
     func testWellFormedDeclaration() {
@@ -213,45 +119,9 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0],
-                       ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                               number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
-    }
-    
-    func testWellformedBareReturnStatement() {
-        let parser = SnapParser(tokens: tokenize("return"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
         
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil))
-    }
-    
-    func testWellformedReturnStatement_OneOperand() {
-        let parser = SnapParser(tokens: tokenize("return 42"))
-        parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42))))
-    }
-    
-    func testMalformedReturnStatement_MultipleOperands() {
-        let parser = SnapParser(tokens: tokenize("return 42 foo"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `return'")
-    }
-    
-    func testMalformedReturnStatement_WithMalformedExpression() {
-        // We do not yet support expressions other than a single literal number.
-        let parser = SnapParser(tokens: tokenize("return foo"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `foo'")
+        let expected = ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
     }
 }

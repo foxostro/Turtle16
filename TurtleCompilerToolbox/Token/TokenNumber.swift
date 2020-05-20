@@ -19,21 +19,14 @@ public class TokenNumber : Token {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? TokenNumber {
-            return self == rhs
-        }
-        return false
+        guard let rhs = rhs as? TokenNumber else { return false }
+        guard lineNumber == rhs.lineNumber else { return false }
+        guard lexeme == rhs.lexeme else { return false }
+        guard literal == rhs.literal else { return false }
+        return super.isEqual(rhs)
     }
 }
 
 public func ==(lhs: TokenNumber, rhs: TokenNumber) -> Bool {
-    if lhs.lineNumber != rhs.lineNumber {
-        return false
-    }
-    
-    if lhs.lexeme != rhs.lexeme {
-        return false
-    }
-    
-    return lhs.literal == rhs.literal
+    return lhs.isEqual(rhs)
 }

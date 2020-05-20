@@ -30,6 +30,16 @@
 		6F4B5CB22471DE2D000C57EB /* SnapCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */; };
 		6F4B5CB42471DE33000C57EB /* SnapCompilerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB32471DE33000C57EB /* SnapCompilerFrontEnd.swift */; };
 		6F4B5CBD2471DF2A000C57EB /* SnapCompilerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CBC2471DF2A000C57EB /* SnapCompilerFrontEndTests.swift */; };
+		6F5337252474BC7700CFD33C /* ConstantDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */; };
+		6F5337262474BC7700CFD33C /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
+		6F5337272474BC7700CFD33C /* ParameterListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */; };
+		6F5337282474BCBC00CFD33C /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
+		6F5337292474BCCE00CFD33C /* ParameterListNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */; };
+		6F53372C2474BD2A00CFD33C /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
+		6F53372E2474BD4900CFD33C /* InstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */; };
+		6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */; };
+		6F5337352474BE7D00CFD33C /* ConstantDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337342474BE7D00CFD33C /* ConstantDeclarationTests.swift */; };
+		6F5337362474C18800CFD33C /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
 		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
 		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
 		6F639EB124712473007B05F1 /* TurtleAssemblerCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D2E5247115BA003B5D5C /* TurtleAssemblerCore.framework */; };
@@ -41,7 +51,6 @@
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F8F22E82471CB5600AFD574 /* AbstractSyntaxTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8F22E62471CB5100AFD574 /* AbstractSyntaxTreeNode.swift */; };
 		6F8F22EA2471CB8000AFD574 /* LabelDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */; };
-		6F8F22EB2471CB8000AFD574 /* ConstantDeclarationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */; };
 		6F9201CC2471D82C009E1410 /* TurtleCompilerToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; };
 		6F9201D22471D881009E1410 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013B231F7DCC003E7C7F /* ParserTests.swift */; };
 		6F9201D32471D881009E1410 /* PatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* PatcherTests.swift */; };
@@ -152,16 +161,9 @@
 		6FCB68252472077A00798905 /* AssemblerBackEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */; };
 		6FCB68262472077A00798905 /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
 		6FCB68272472079700798905 /* AssemblerBackEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */; };
-		6FCB68282472082D00798905 /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
-		6FCB68292472088400798905 /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
-		6FCB682A2472088400798905 /* ParameterListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */; };
-		6FCB682B24720AC200798905 /* ConstantDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */; };
-		6FCB682C24720AC700798905 /* InstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */; };
 		6FCB682D24720ACA00798905 /* LabelDeclarationNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */; };
-		6FCB682E24720ACD00798905 /* ParameterListNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */; };
 		6FCB682F24720AD000798905 /* TokenEOFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */; };
 		6FCB683024720AD200798905 /* TokenNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */; };
-		6FCB683124720AD600798905 /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
 		6FCB683224720AD900798905 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6FCB68432472411000798905 /* TokenReturn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB68422472411000798905 /* TokenReturn.swift */; };
 		6FCB6846247241ED00798905 /* Return.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6845247241ED00798905 /* Return.swift */; };
@@ -427,6 +429,8 @@
 		6F4B5CB32471DE33000C57EB /* SnapCompilerFrontEnd.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCompilerFrontEnd.swift; sourceTree = "<group>"; };
 		6F4B5CBC2471DF2A000C57EB /* SnapCompilerFrontEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerFrontEndTests.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
+		6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantDeclaration.swift; sourceTree = "<group>"; };
+		6F5337342474BE7D00CFD33C /* ConstantDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationTests.swift; sourceTree = "<group>"; };
 		6F59F052246D2E0B005C7348 /* Oscillator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Oscillator.swift; sourceTree = "<group>"; };
 		6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteToneGenerator.swift; sourceTree = "<group>"; };
 		6F5A00E523184880003E7C7F /* Patcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patcher.swift; sourceTree = "<group>"; };
@@ -732,7 +736,6 @@
 				6FB0D27C24709301003B5D5C /* TokenLet.swift */,
 				6F5A00F9231F6415003E7C7F /* TokenNewline.swift */,
 				6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */,
-				6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */,
 			);
 			path = Token;
 			sourceTree = "<group>";
@@ -744,14 +747,75 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6F53372A2474BCDE00CFD33C /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */,
+				6F088074230F5D8F00AB2339 /* InstructionNode.swift */,
+				6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		6F53372B2474BD0A00CFD33C /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */,
+				6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */,
+				6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		6F53372D2474BD3200CFD33C /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */,
+			);
+			path = Token;
+			sourceTree = "<group>";
+		};
+		6F53372F2474BE0B00CFD33C /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */,
+				6FCB684924724B6300798905 /* Expression.swift */,
+				6FCB6845247241ED00798905 /* Return.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		6F5337322474BE4B00CFD33C /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				6FCB68422472411000798905 /* TokenReturn.swift */,
+			);
+			path = Token;
+			sourceTree = "<group>";
+		};
+		6F5337332474BE7100CFD33C /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6FCB684B24724B7F00798905 /* ExpressionTests.swift */,
+				6FCB68472472448300798905 /* ReturnTests.swift */,
+				6F5337342474BE7D00CFD33C /* ConstantDeclarationTests.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		6F5337372474C19100CFD33C /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */,
+			);
+			path = Token;
+			sourceTree = "<group>";
+		};
 		6F8F22E92471CB6B00AFD574 /* AST */ = {
 			isa = PBXGroup;
 			children = (
 				6F8F22E62471CB5100AFD574 /* AbstractSyntaxTreeNode.swift */,
-				6FB0D27E24709373003B5D5C /* ConstantDeclarationNode.swift */,
-				6F088074230F5D8F00AB2339 /* InstructionNode.swift */,
 				6F08807A230F5DBF00AB2339 /* LabelDeclarationNode.swift */,
-				6FD8FA002360CAF1005A1856 /* ParameterListNode.swift */,
 			);
 			path = AST;
 			sourceTree = "<group>";
@@ -759,10 +823,7 @@
 		6F8F22EE2471CB9B00AFD574 /* AST */ = {
 			isa = PBXGroup;
 			children = (
-				6FB0D2802470937D003B5D5C /* ConstantDeclarationNodeTests.swift */,
-				6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */,
 				6F088090230F6E6A00AB2339 /* LabelDeclarationNodeTests.swift */,
-				6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */,
 			);
 			path = AST;
 			sourceTree = "<group>";
@@ -772,7 +833,6 @@
 			children = (
 				6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */,
 				6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */,
-				6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */,
 				6F0880A2230FC09B00AB2339 /* TokenTests.swift */,
 			);
 			path = Token;
@@ -805,13 +865,12 @@
 		6F9201E62471DAC7009E1410 /* SnapCore */ = {
 			isa = PBXGroup;
 			children = (
-				6FCB684924724B6300798905 /* Expression.swift */,
-				6FCB6845247241ED00798905 /* Return.swift */,
+				6F53372F2474BE0B00CFD33C /* AST */,
+				6F5337322474BE4B00CFD33C /* Token */,
 				6FCB68212472069D00798905 /* SnapCodeGenerator.swift */,
 				6F4B5CB32471DE33000C57EB /* SnapCompilerFrontEnd.swift */,
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
 				6FCB681D2472063900798905 /* SnapParser.swift */,
-				6FCB68422472411000798905 /* TokenReturn.swift */,
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
 				6F9201E82471DAC7009E1410 /* Info.plist */,
 			);
@@ -821,8 +880,7 @@
 		6F9201F12471DAC7009E1410 /* SnapCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				6FCB684B24724B7F00798905 /* ExpressionTests.swift */,
-				6FCB68472472448300798905 /* ReturnTests.swift */,
+				6F5337332474BE7100CFD33C /* AST */,
 				6FCB6823247206C200798905 /* SnapCodeGeneratorTests.swift */,
 				6F4B5CBC2471DF2A000C57EB /* SnapCompilerFrontEndTests.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
@@ -886,6 +944,8 @@
 		6FB0D2E6247115BA003B5D5C /* TurtleAssemblerCore */ = {
 			isa = PBXGroup;
 			children = (
+				6F53372A2474BCDE00CFD33C /* AST */,
+				6F5337372474C19100CFD33C /* Token */,
 				6F088092230F85FF00AB2339 /* AssemblerCodeGenerator.swift */,
 				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
 				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
@@ -899,6 +959,8 @@
 		6FB0D2F1247115BA003B5D5C /* TurtleAssemblerCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				6F53372B2474BD0A00CFD33C /* AST */,
+				6F53372D2474BD3200CFD33C /* Token */,
 				6F088094230F864D00AB2339 /* AssemblerCodeGeneratorTests.swift */,
 				6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */,
 				6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */,
@@ -1578,9 +1640,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F34B7F02474607500B0D163 /* GenericCompilerFrontEnd.swift in Sources */,
-				6FCB68282472082D00798905 /* TokenRegister.swift in Sources */,
 				6F38F9012471C8D400B5296D /* TokenLet.swift in Sources */,
-				6FCB68292472088400798905 /* InstructionNode.swift in Sources */,
 				6F8F22EA2471CB8000AFD574 /* LabelDeclarationNode.swift in Sources */,
 				6FCB68262472077A00798905 /* RegisterName.swift in Sources */,
 				6F38F8F62471C77800B5296D /* Parser.swift in Sources */,
@@ -1588,7 +1648,6 @@
 				6F1718382471C58D00AE60C2 /* CompilerError.swift in Sources */,
 				6F38F9042471C8D400B5296D /* TokenEqual.swift in Sources */,
 				6F38F9022471C8D400B5296D /* TokenIdentifier.swift in Sources */,
-				6F8F22EB2471CB8000AFD574 /* ConstantDeclarationNode.swift in Sources */,
 				6F34B7EF24745DE500B0D163 /* CodeGenerator.swift in Sources */,
 				6F38F9062471C8D400B5296D /* TokenNumber.swift in Sources */,
 				6F38F8FE2471C8D400B5296D /* TokenColon.swift in Sources */,
@@ -1598,7 +1657,6 @@
 				6F38F8F42471C77800B5296D /* Patcher.swift in Sources */,
 				6F38F8FF2471C8D400B5296D /* TokenNewline.swift in Sources */,
 				6F38F8F72471C77800B5296D /* Lexer.swift in Sources */,
-				6FCB682A2472088400798905 /* ParameterListNode.swift in Sources */,
 				6F38F9002471C8D400B5296D /* Token.swift in Sources */,
 				6F38F9032471C8D400B5296D /* TokenEOF.swift in Sources */,
 			);
@@ -1614,12 +1672,8 @@
 				6FCB683024720AD200798905 /* TokenNumberTests.swift in Sources */,
 				6FCB683224720AD900798905 /* TokenTests.swift in Sources */,
 				6F9201D32471D881009E1410 /* PatcherTests.swift in Sources */,
-				6FCB683124720AD600798905 /* TokenRegisterTests.swift in Sources */,
 				6FCB682D24720ACA00798905 /* LabelDeclarationNodeTests.swift in Sources */,
-				6FCB682C24720AC700798905 /* InstructionNodeTests.swift in Sources */,
 				6F9201D22471D881009E1410 /* ParserTests.swift in Sources */,
-				6FCB682E24720ACD00798905 /* ParameterListNodeTests.swift in Sources */,
-				6FCB682B24720AC200798905 /* ConstantDeclarationNodeTests.swift in Sources */,
 				6F9201D42471D881009E1410 /* LexerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1641,6 +1695,7 @@
 				6F4B5CB42471DE33000C57EB /* SnapCompilerFrontEnd.swift in Sources */,
 				6FCB684A24724B6300798905 /* Expression.swift in Sources */,
 				6FCB68432472411000798905 /* TokenReturn.swift in Sources */,
+				6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */,
 				6FCB68222472069D00798905 /* SnapCodeGenerator.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
@@ -1651,6 +1706,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F5337352474BE7D00CFD33C /* ConstantDeclarationTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
 				6FCB6824247206C200798905 /* SnapCodeGeneratorTests.swift in Sources */,
@@ -1712,7 +1768,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F5337272474BC7700CFD33C /* ParameterListNode.swift in Sources */,
 				6FB0D30824711618003B5D5C /* AssemblerFrontEnd.swift in Sources */,
+				6F5337252474BC7700CFD33C /* ConstantDeclarationNode.swift in Sources */,
+				6F5337262474BC7700CFD33C /* InstructionNode.swift in Sources */,
+				6F5337362474C18800CFD33C /* TokenRegister.swift in Sources */,
 				6FB0D30F24711618003B5D5C /* AssemblerCodeGenerator.swift in Sources */,
 				6FB0D30D24711618003B5D5C /* AssemblerLexer.swift in Sources */,
 				6FB0D30624711618003B5D5C /* AssemblerParser.swift in Sources */,
@@ -1723,9 +1783,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F53372E2474BD4900CFD33C /* InstructionNodeTests.swift in Sources */,
 				6FB0D30324711605003B5D5C /* AssemblerCodeGeneratorTests.swift in Sources */,
 				6FB0D30424711605003B5D5C /* AssemblerLexerTests.swift in Sources */,
 				6FB0D2FD24711605003B5D5C /* AssemblerParserTests.swift in Sources */,
+				6F5337292474BCCE00CFD33C /* ParameterListNodeTests.swift in Sources */,
+				6F53372C2474BD2A00CFD33C /* TokenRegisterTests.swift in Sources */,
+				6F5337282474BCBC00CFD33C /* ConstantDeclarationNodeTests.swift in Sources */,
 				6FB0D30024711605003B5D5C /* AssemblerFrontEndTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

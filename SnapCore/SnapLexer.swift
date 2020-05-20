@@ -28,48 +28,6 @@ public class SnapLexer: LexerBase {
             Rule(pattern: ":") {[weak self] in
                 TokenColon(lineNumber: self!.lineNumber, lexeme: $0)
             },
-            Rule(pattern: "A\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .A)
-            },
-            Rule(pattern: "B\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .B)
-            },
-            Rule(pattern: "C\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .C)
-            },
-            Rule(pattern: "D\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .D)
-            },
-            Rule(pattern: "E\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .E)
-            },
-            Rule(pattern: "G\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .G)
-            },
-            Rule(pattern: "H\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .H)
-            },
-            Rule(pattern: "M\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .M)
-            },
-            Rule(pattern: "P\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .P)
-            },
-            Rule(pattern: "U\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .U)
-            },
-            Rule(pattern: "V\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .V)
-            },
-            Rule(pattern: "X\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .X)
-            },
-            Rule(pattern: "Y\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .Y)
-            },
-            Rule(pattern: "_\\b") {[weak self] in
-                TokenRegister(lineNumber: self!.lineNumber, lexeme: $0, literal: .NONE)
-            },
             Rule(pattern: "=") {[weak self] in
                 TokenEqual(lineNumber: self!.lineNumber, lexeme: $0)
             },

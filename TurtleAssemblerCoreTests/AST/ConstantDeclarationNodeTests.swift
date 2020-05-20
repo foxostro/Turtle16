@@ -8,12 +8,13 @@
 
 import XCTest
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class ConstantDeclarationNodeTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let one = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertNotEqual(ConstantDeclarationNode(identifier: foo, number: one), InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
+        XCTAssertNotEqual(ConstantDeclarationNode(identifier: foo, number: one), LabelDeclarationNode(identifier: foo))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {

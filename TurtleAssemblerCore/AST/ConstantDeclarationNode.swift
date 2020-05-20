@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCompilerToolbox
+
 public class ConstantDeclarationNode: AbstractSyntaxTreeNode {
     public let identifier: TokenIdentifier
     public let number: TokenNumber
@@ -14,10 +16,6 @@ public class ConstantDeclarationNode: AbstractSyntaxTreeNode {
         self.identifier = identifier
         self.number = number
         super.init(children: [])
-    }
-    
-    public override func accept(visitor: AbstractSyntaxTreeNodeVisitor) throws {
-        try visitor.visit(node: self)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -96,4 +96,15 @@ LI M, \((kStackPointerInitialValue & 0x00ff))
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "constant redefines existing symbol: `foo'")
     }
+    
+    func testEvalStatementMovesLiteralValueIntoRegisterA() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
+                          expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        ])
+        let instructions = mustCompile(ast)
+        XCTAssertEqual(disassemble(instructions), kProgramPrologue + "\n" + """
+LI A, 1
+""")
+    }
 }

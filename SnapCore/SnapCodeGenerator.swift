@@ -90,8 +90,11 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         if let node = genericNode as? LabelDeclarationNode {
             try compile(label: node)
         }
-        if let node = genericNode as? ConstantDeclaration {
+        else if let node = genericNode as? ConstantDeclaration {
             try compile(constant: node)
+        }
+        else if let node = genericNode as? EvalStatement {
+            try compile(eval: node)
         }
     }
     
@@ -125,6 +128,10 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
             throw CompilerError(line: lineNumber,
                                 message: "expression must be a compile time constant")
         }
+    }
+    
+    func compile(eval: EvalStatement) throws {
+        try compile(expression: eval.expression)
     }
     
     func compile(expression: Expression) throws {

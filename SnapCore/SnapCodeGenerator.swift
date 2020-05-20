@@ -121,7 +121,8 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         if let expression = node as? Expression.Literal {
             return expression.number.literal
         } else {
-            throw CompilerError(line: node.token.lineNumber,
+            let lineNumber = node.tokens.first?.lineNumber ?? 1
+            throw CompilerError(line: lineNumber,
                                 message: "expression must be a compile time constant")
         }
     }
@@ -130,7 +131,8 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         if let expression = node as? Expression.Literal {
             try self.assemblerBackEnd.li(.A, token: expression.number)
         } else {
-            throw CompilerError(line: node.token.lineNumber, message: "only literal expressions are supported at this time")
+            let lineNumber = node.tokens.first?.lineNumber ?? 1
+            throw CompilerError(line: lineNumber, message: "only literal expressions are supported at this time")
         }
     }
 }

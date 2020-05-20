@@ -9,27 +9,28 @@
 import TurtleCompilerToolbox
 
 public class Expression: AbstractSyntaxTreeNode {
-    public let token: Token
-    
-    // The token attempts to tie the expression to a position in the source file.
-    // This will, of course, not be entirely accurate.
-    // TODO: Find a way to tie the expression to something like a sequence of tokens within the source file.
-    public init(token: Token) {
-        self.token = token
+    public var tokens: [Token] {
+        var result: [Token] = []
+        for child in children {
+            result += (child as! Expression).tokens
+        }
+        return result
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? Expression else { return false }
-        guard token == rhs.token else { return false }
+        guard tokens == rhs.tokens else { return false }
         return super.isEqual(rhs)
     }
     
     public class Literal: Expression {
         public let number: TokenNumber
+        public override var tokens: [Token] {
+            return [number]
+        }
         
         public init(number: TokenNumber) {
             self.number = number
-            super.init(token: number)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

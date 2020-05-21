@@ -49,4 +49,9 @@ class TokenRegisterTests: XCTestCase {
         let b = TokenEOF(lineNumber: 1)
         XCTAssertNotEqual(a, b)
     }
+    
+    func testHash() {
+        XCTAssertEqual(TokenRegister(lineNumber: 1, lexeme: "X", literal: .X).hashValue,
+                       TokenRegister(lineNumber: 1, lexeme: "X", literal: .X).hashValue)
+    }
 }

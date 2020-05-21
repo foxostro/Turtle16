@@ -19,9 +19,19 @@ public class EvalStatement: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? EvalStatement else { return false }
+        guard isBaseClassPartEqual(rhs) else { return false }
         guard token == rhs.token else { return false }
         guard expression == rhs.expression else { return false }
         return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(token)
+        hasher.combine(expression)
+        return hasher.finalize()
     }
 }

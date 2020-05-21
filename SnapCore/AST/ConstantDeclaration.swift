@@ -19,9 +19,19 @@ public class ConstantDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? ConstantDeclaration else { return false }
+        guard isBaseClassPartEqual(rhs) else { return false }
         guard identifier == rhs.identifier else { return false }
         guard expression == rhs.expression else { return false }
-        return super.isEqual(rhs)
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(identifier)
+        hasher.combine(expression)
+        return hasher.finalize()
     }
 }

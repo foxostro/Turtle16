@@ -103,4 +103,12 @@ class TraceTests: XCTestCase {
         XCTAssertNotEqual([traceA], [traceB])
         XCTAssertNotEqual([traceA as NSObject], [1 as NSObject])
     }
+        
+    func testHash() {
+        let traceA = Trace()
+        traceA.append(Instruction.makeNOP())
+        traceA.append(Instruction.makeNOP(pc: ProgramCounter(withValue: 1)).withGuard(address: 0xffff).withGuard(flags: Flags(1, 1)))
+        let traceB = traceA.copy() as! Trace
+        XCTAssertEqual(traceA.hashValue, traceB.hashValue)
+    }
 }

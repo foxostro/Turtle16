@@ -42,15 +42,21 @@ public class Register: NSObject {
         self.value = value
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? Register {
-            return self == rhs
-        } else {
-            return false
-        }
+    public static func ==(lhs: Register, rhs: Register) -> Bool {
+        return lhs.isEqual(rhs)
     }
-}
-
-public func ==(lhs: Register, rhs: Register) -> Bool {
-    return lhs.value == rhs.value
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? Register else { return false }
+        guard value == rhs.value else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(value)
+        return hasher.finalize()
+    }
 }

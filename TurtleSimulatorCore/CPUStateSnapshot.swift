@@ -123,12 +123,62 @@ public class CPUStateSnapshot: NSObject {
                                 controlWord: controlWord)
     }
     
+    public static func ==(lhs: CPUStateSnapshot, rhs: CPUStateSnapshot) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? CPUStateSnapshot {
-            return self == rhs
-        } else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? CPUStateSnapshot else { return false }
+        guard uptime == rhs.uptime else { return false }
+        guard bus == rhs.bus else { return false }
+        guard registerA == rhs.registerA else { return false }
+        guard registerB == rhs.registerB else { return false }
+        guard registerC == rhs.registerC else { return false }
+        guard registerD == rhs.registerD else { return false }
+        guard registerG == rhs.registerG else { return false }
+        guard registerH == rhs.registerH else { return false }
+        guard registerX == rhs.registerX else { return false }
+        guard registerY == rhs.registerY else { return false }
+        guard registerU == rhs.registerU else { return false }
+        guard registerV == rhs.registerV else { return false }
+        guard aluResultBuffer == rhs.aluResultBuffer else { return false }
+        guard aluResult == rhs.aluResult else { return false }
+        guard aluFlagsBuffer == rhs.aluFlagsBuffer else { return false }
+        guard aluFlags == rhs.aluFlags else { return false }
+        guard flags == rhs.flags else { return false }
+        guard pc == rhs.pc else { return false }
+        guard pc_if == rhs.pc_if else { return false }
+        guard if_id == rhs.if_id else { return false }
+        guard controlWord == rhs.controlWord else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(uptime)
+        hasher.combine(bus)
+        hasher.combine(registerA)
+        hasher.combine(registerB)
+        hasher.combine(registerC)
+        hasher.combine(registerD)
+        hasher.combine(registerG)
+        hasher.combine(registerH)
+        hasher.combine(registerX)
+        hasher.combine(registerY)
+        hasher.combine(registerU)
+        hasher.combine(registerV)
+        hasher.combine(aluResultBuffer)
+        hasher.combine(aluResult)
+        hasher.combine(aluFlagsBuffer)
+        hasher.combine(aluFlags)
+        hasher.combine(flags)
+        hasher.combine(pc)
+        hasher.combine(pc_if)
+        hasher.combine(if_id)
+        hasher.combine(controlWord)
+        return hasher.finalize()
     }
     
     public func valueOfXYPair() -> Int {
@@ -204,71 +254,4 @@ public class CPUStateSnapshot: NSObject {
             logger.append("flags: %@ --> %@", prevState.flags, nextState.flags)
         }
     }
-}
-
-public func ==(lhs: CPUStateSnapshot, rhs: CPUStateSnapshot) -> Bool {
-    guard lhs.uptime == rhs.uptime else {
-        return false
-    }
-    guard lhs.bus == rhs.bus else {
-        return false
-    }
-    guard lhs.registerA == rhs.registerA else {
-        return false
-    }
-    guard lhs.registerB == rhs.registerB else {
-        return false
-    }
-    guard lhs.registerC == rhs.registerC else {
-        return false
-    }
-    guard lhs.registerD == rhs.registerD else {
-        return false
-    }
-    guard lhs.registerG == rhs.registerG else {
-        return false
-    }
-    guard lhs.registerH == rhs.registerH else {
-        return false
-    }
-    guard lhs.registerX == rhs.registerX else {
-        return false
-    }
-    guard lhs.registerY == rhs.registerY else {
-        return false
-    }
-    guard lhs.registerU == rhs.registerU else {
-        return false
-    }
-    guard lhs.registerV == rhs.registerV else {
-        return false
-    }
-    guard lhs.aluResultBuffer == rhs.aluResultBuffer else {
-        return false
-    }
-    guard lhs.aluResult == rhs.aluResult else {
-        return false
-    }
-    guard lhs.aluFlagsBuffer == rhs.aluFlagsBuffer else {
-        return false
-    }
-    guard lhs.aluFlags == rhs.aluFlags else {
-        return false
-    }
-    guard lhs.flags == rhs.flags else {
-        return false
-    }
-    guard lhs.pc == rhs.pc else {
-        return false
-    }
-    guard lhs.pc_if == rhs.pc_if else {
-        return false
-    }
-    guard lhs.if_id == rhs.if_id else {
-        return false
-    }
-    guard lhs.controlWord == rhs.controlWord else {
-        return false
-    }
-    return true
 }

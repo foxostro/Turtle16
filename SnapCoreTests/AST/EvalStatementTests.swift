@@ -40,4 +40,12 @@ class EvalStatementTests: XCTestCase {
                                      expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         )
     }
+    
+    func testHash() {
+        XCTAssertEqual(EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
+            expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hashValue,
+                       EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
+                                     expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hashValue
+        )
+    }
 }

@@ -128,11 +128,6 @@ public class Instruction: NSObject {
         return result
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard let rhs = rhs as? Instruction else { return false }
-        return self == rhs
-    }
-    
     public func withProgramCounter(_ pc: ProgramCounter) -> Instruction {
         return Instruction(opcode: opcode,
                            immediate: immediate,
@@ -187,8 +182,37 @@ public class Instruction: NSObject {
                            guardAddress: guardAddress,
                            isBreakpoint: isBreakpoint)
     }
-}
-
-public func ==(lhs: Instruction, rhs: Instruction) -> Bool {
-    return lhs.value == rhs.value
+    
+    public static func ==(lhs: Instruction, rhs: Instruction) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? Instruction else { return false }
+        guard opcode == rhs.opcode else { return false }
+        guard immediate == rhs.immediate else { return false }
+        // TODO: Reconsider whether or not Instruction should consider the other properties when testing equality or computing a hash.
+//        guard disassembly == rhs.disassembly else { return false }
+//        guard pc == rhs.pc else { return false }
+//        guard guardFail == rhs.guardFail else { return false }
+//        guard guardFlags == rhs.guardFlags else { return false }
+//        guard guardAddress == rhs.guardAddress else { return false }
+//        guard isBreakpoint == rhs.isBreakpoint else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(opcode)
+        hasher.combine(immediate)
+//        hasher.combine(disassembly)
+//        hasher.combine(pc)
+//        hasher.combine(guardFail)
+//        hasher.combine(guardFlags)
+//        hasher.combine(guardAddress)
+//        hasher.combine(isBreakpoint)
+        return hasher.finalize()
+    }
 }

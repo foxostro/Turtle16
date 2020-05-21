@@ -32,4 +32,26 @@ class ConstantDeclarationTests: XCTestCase {
         XCTAssertNotEqual(ConstantDeclaration(identifier: foo, expression: one),
                           ConstantDeclaration(identifier: foo, expression: two))
     }
+    
+    func testNodesActuallyAreTheSame() {
+        XCTAssertEqual(ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
+                                                                                              lexeme: "1",
+                                                                                              literal: 1))),
+                       ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
+                                                                                              lexeme: "1",
+                                                                                              literal: 1))))
+    }
+    
+    func testHash() {
+        XCTAssertEqual(ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
+                                                                                              lexeme: "1",
+                                                                                              literal: 1))).hashValue,
+                       ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
+                                                                                              lexeme: "1",
+                                                                                              literal: 1))).hashValue)
+    }
 }

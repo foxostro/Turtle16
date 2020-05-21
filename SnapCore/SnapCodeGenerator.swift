@@ -17,7 +17,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     let kStackPointerInitialValue = 0x0000
     
     let assemblerBackEnd: AssemblerBackEnd
-    public var symbols: [String:Int] = [:]
+    public var symbols = SymbolTable()
     var patcherActions: [Patcher.Action] = []
     
     public var instructions: [Instruction] = []

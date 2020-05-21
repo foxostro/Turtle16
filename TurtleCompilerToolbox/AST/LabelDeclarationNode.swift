@@ -15,7 +15,17 @@ public class LabelDeclarationNode: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? LabelDeclarationNode else { return false }
-        return identifier == rhs.identifier
+        guard isBaseClassPartEqual(rhs) else { return false }
+        guard identifier == rhs.identifier else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(identifier)
+        return hasher.finalize()
     }
 }

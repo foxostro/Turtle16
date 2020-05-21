@@ -21,21 +21,17 @@ public class TokenRegister : Token {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? TokenRegister {
-            return self == rhs
-        }
-        return false
-    }
-}
-
-public func ==(lhs: TokenRegister, rhs: TokenRegister) -> Bool {
-    if lhs.lineNumber != rhs.lineNumber {
-        return false
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? TokenRegister else { return false }
+        guard isBaseClassPartEqual(rhs) else { return false }
+        guard literal == rhs.literal else { return false }
+        return true
     }
     
-    if lhs.lexeme != rhs.lexeme {
-        return false
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(literal)
+        return hasher.finalize()
     }
-    
-    return lhs.literal == rhs.literal
 }

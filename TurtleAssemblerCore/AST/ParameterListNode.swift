@@ -15,43 +15,49 @@ public class ParameterListNode: AbstractSyntaxTreeNode {
         self.parameters = parameters
         super.init(children: [])
     }
-        
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? ParameterListNode {
-            return self == rhs
-        }
-        return false
-    }
-}
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? ParameterListNode else { return false }
+        guard isBaseClassPartEqual(rhs) else { return false }
+        guard parameters.count == rhs.parameters.count else { return false }
+        
+        for i in 0..<parameters.count {
+            if type(of: parameters[i]) != type(of: rhs.parameters[i]) {
+                return false
+            }
+                
+            // Try to compare as RegisterName
+            let a = parameters[i] as? RegisterName
+            let b = rhs.parameters[i] as? RegisterName
+            if a != nil && b != nil && a != b {
+                return false
+            }
 
-public func ==(lhs: ParameterListNode, rhs: ParameterListNode) -> Bool {
-    if type(of: lhs) != type(of: rhs) {
-        return false
+            // Try to compare as NSObject
+            let c = parameters[i] as? NSObject
+            let d = rhs.parameters[i] as? NSObject
+            if c != nil && d != nil && c != d {
+                return false
+            }
+        }
+        
+        return true
     }
     
-    if lhs.parameters.count != rhs.parameters.count {
-        return false
+    public override var hash: Int {
+        var hasher = Hasher()
+        
+        for parameter in parameters {
+            if let a = parameter as? RegisterName {
+                hasher.combine(a)
+            } else {
+                let a = parameter as! NSObject
+                hasher.combine(a)
+            }
+        }
+        
+        return hasher.finalize()
     }
-    
-    for i in 0..<lhs.parameters.count {
-        if type(of: lhs.parameters[i]) != type(of: rhs.parameters[i]) {
-            return false
-        }
-            
-        // Try to compare as RegisterName
-        let a = lhs.parameters[i] as? RegisterName
-        let b = rhs.parameters[i] as? RegisterName
-        if a != nil && b != nil && a != b {
-            return false
-        }
-
-        // Try to compare as NSObject
-        let c = lhs.parameters[i] as? NSObject
-        let d = rhs.parameters[i] as? NSObject
-        if c != nil && d != nil && c != d {
-            return false
-        }
-    }
-    
-    return true
 }

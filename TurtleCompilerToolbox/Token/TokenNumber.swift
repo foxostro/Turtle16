@@ -19,14 +19,17 @@ public class TokenNumber : Token {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? TokenNumber else { return false }
-        guard lineNumber == rhs.lineNumber else { return false }
-        guard lexeme == rhs.lexeme else { return false }
+        guard isBaseClassPartEqual(rhs) else { return false }
         guard literal == rhs.literal else { return false }
-        return super.isEqual(rhs)
+        return true
     }
-}
-
-public func ==(lhs: TokenNumber, rhs: TokenNumber) -> Bool {
-    return lhs.isEqual(rhs)
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(literal)
+        return hasher.finalize()
+    }
 }

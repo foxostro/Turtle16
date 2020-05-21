@@ -1810,16 +1810,22 @@ public class ControlWord: NSObject {
                            withCarryIn: CarryIn,
                            withHLT: HLT)
     }
-
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? ControlWord {
-            return self == rhs
-        } else {
-            return false
-        }
+    
+    public static func ==(lhs: ControlWord, rhs: ControlWord) -> Bool {
+        return lhs.isEqual(rhs)
     }
-}
-
-public func ==(lhs: ControlWord, rhs: ControlWord) -> Bool {
-    return lhs.unsignedIntegerValue == rhs.unsignedIntegerValue
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? ControlWord else { return false }
+        guard unsignedIntegerValue == rhs.unsignedIntegerValue else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(unsignedIntegerValue)
+        return hasher.finalize()
+    }
 }

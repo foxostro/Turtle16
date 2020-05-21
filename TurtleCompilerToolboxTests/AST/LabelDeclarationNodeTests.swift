@@ -21,4 +21,14 @@ class LabelDeclarationNodeTests: XCTestCase {
         XCTAssertNotEqual(LabelDeclarationNode(identifier: foo),
                           LabelDeclarationNode(identifier: bar))
     }
+    
+    func testEquality() {
+        XCTAssertEqual(LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+                       LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
+    }
+    
+    func testHash() {
+        XCTAssertEqual(LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")).hashValue,
+                       LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")).hashValue)
+    }
 }

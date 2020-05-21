@@ -11,7 +11,7 @@ import TurtleCompilerToolbox
 
 public class InstructionNode: AbstractSyntaxTreeNode {
     public let instruction: Token
-    public let parameters: ParameterListNode
+    public let parameters: ParameterListNode // TODO: Should `parameters' be in `children' instead?
     public var destination: RegisterName {
         return (parameters.parameters.first as! TokenRegister).literal
     }
@@ -23,7 +23,19 @@ public class InstructionNode: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? InstructionNode else { return false }
-        return parameters == rhs.parameters
+        guard isBaseClassPartEqual(rhs) else { return false }
+        guard instruction == rhs.instruction else { return false }
+        guard parameters == rhs.parameters else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(instruction)
+        hasher.combine(parameters)
+        return hasher.finalize()
     }
 }

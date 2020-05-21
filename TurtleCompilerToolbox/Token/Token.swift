@@ -20,26 +20,27 @@ open class Token : NSObject {
         return String(format: "<%@: lineNumber=%d, lexeme=\"%@\">", String(describing: type(of: self)), lineNumber, lexeme)
     }
     
+    public static func ==(lhs: Token, rhs: Token) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
     open override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? Token {
-            return self == rhs
-        }
-        return false
-    }
-}
-
-public func ==(lhs: Token, rhs: Token) -> Bool {
-    if type(of: lhs) != type(of: rhs) {
-        return false
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        return isBaseClassPartEqual(rhs)
     }
     
-    if lhs.lineNumber != rhs.lineNumber {
-        return false
+    public final func isBaseClassPartEqual(_ rhs: Any?) -> Bool {
+        guard let rhs = rhs as? Token else { return false }
+        guard lineNumber == rhs.lineNumber else { return false }
+        guard lexeme == rhs.lexeme else { return false }
+        return true
     }
     
-    if lhs.lexeme != rhs.lexeme {
-        return false
+    open override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(lineNumber)
+        hasher.combine(lexeme)
+        return hasher.finalize()
     }
-    
-    return true
 }

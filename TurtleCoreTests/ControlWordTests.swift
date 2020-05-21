@@ -29,4 +29,9 @@ class ControlWordTests: XCTestCase {
         let hlt = ControlWord().withHLT(.active)
         XCTAssertEqual(hlt.stringValue, "01111111111101111110111111111111")
     }
+    
+    func testHash() {
+        XCTAssertEqual(ControlWord().withCO(.active).hashValue,
+                       ControlWord().withCO(.active).hashValue)
+    }
 }

@@ -88,7 +88,7 @@ LI M, \((kStackPointerInitialValue & 0x00ff))
         return codeGenerator.errors
     }
     
-    func makeCodeGenerator(symbols: [String : Int] = [:]) -> SnapCodeGenerator {
+    func makeCodeGenerator(symbols: SymbolTable = [:]) -> SnapCodeGenerator {
         let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         let codeGenerator = SnapCodeGenerator(assemblerBackEnd: assemblerBackEnd)
         codeGenerator.symbols = symbols

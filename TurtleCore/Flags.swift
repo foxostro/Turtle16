@@ -50,12 +50,23 @@ public class Flags: NSObject {
         return value
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard let rhs = rhs as? Flags else { return false }
-        return self == rhs
+    public static func ==(lhs: Flags, rhs: Flags) -> Bool {
+        return lhs.isEqual(rhs)
     }
-}
-
-public func ==(lhs: Flags, rhs: Flags) -> Bool {
-    return (lhs.equalFlag == rhs.equalFlag) && (lhs.carryFlag == rhs.carryFlag)
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let unwrappedRhs = rhs as? Flags else { return false }
+        guard equalFlag == unwrappedRhs.equalFlag else { return false }
+        guard carryFlag == unwrappedRhs.carryFlag else {return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(equalFlag)
+        hasher.combine(carryFlag)
+        return hasher.finalize()
+    }
 }

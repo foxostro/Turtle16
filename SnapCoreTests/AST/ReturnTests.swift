@@ -35,4 +35,14 @@ class ReturnTests: XCTestCase {
         XCTAssertEqual(Return(token: token, expression: nil), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil))
         XCTAssertEqual(Return(token: token, expression: Expression.Literal(number: a)), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: b)))
     }
+    
+    func testHash() {
+        let token = TokenReturn(lineNumber: 1, lexeme: "return")
+        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
+        let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
+        XCTAssertEqual(Return(token: token, expression: nil).hashValue,
+                       Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil).hashValue)
+        XCTAssertEqual(Return(token: token, expression: Expression.Literal(number: a)).hashValue,
+                       Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: b)).hashValue)
+    }
 }

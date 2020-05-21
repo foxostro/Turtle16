@@ -69,6 +69,14 @@ class FlagsTest: XCTestCase {
         XCTAssertNotEqual(Flags(), NSString())
     }
     
+    func testHash() {
+        XCTAssertEqual(Flags().hashValue, Flags().hashValue)
+        XCTAssertEqual(Flags(0, 0).hashValue, Flags(0, 0).hashValue)
+        XCTAssertEqual(Flags(0, 1).hashValue, Flags(0, 1).hashValue)
+        XCTAssertEqual(Flags(1, 0).hashValue, Flags(1, 0).hashValue)
+        XCTAssertEqual(Flags(1, 1).hashValue, Flags(1, 1).hashValue)
+    }
+    
     func testDescription() {
         XCTAssertEqual(Flags(0, 0).description, "{carryFlag: 0, equalFlag: 0}")
         XCTAssertEqual(Flags(0, 1).description, "{carryFlag: 0, equalFlag: 1}")

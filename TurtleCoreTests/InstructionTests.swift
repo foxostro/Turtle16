@@ -74,6 +74,11 @@ class InstructionTests: XCTestCase {
                        Instruction(opcode: 0, immediate: 0, disassembly: "NOP"))
     }
     
+    func testHash() {
+        XCTAssertEqual(Instruction.makeNOP().hashValue,
+                       Instruction.makeNOP().hashValue)
+    }
+    
     func testWithProgramCounter() {
         let ins1 = Instruction.makeNOP()
         let ins2 = ins1.withProgramCounter(ProgramCounter(withValue: 0xffff))

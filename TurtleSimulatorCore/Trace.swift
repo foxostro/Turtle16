@@ -65,14 +65,21 @@ public class Trace: NSObject {
         return theCopy
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        if let rhs = rhs as? Trace {
-            return self == rhs
-        }
-        return false
+    public static func ==(lhs: Trace, rhs: Trace) -> Bool {
+        return lhs.isEqual(rhs)
     }
-}
-
-public func ==(lhs: Trace, rhs: Trace) -> Bool {
-    return lhs.instructions == rhs.instructions
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? Trace else { return false }
+        guard instructions == rhs.instructions else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(instructions)
+        return hasher.finalize()
+    }
 }

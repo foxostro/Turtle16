@@ -42,7 +42,7 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
         XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-        XCTAssertEqual(ast.children[1], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
+        XCTAssertEqual(ast.children[1], InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
     }
 
     func testHLTParses() {
@@ -52,7 +52,7 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "HLT"),
+                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "HLT"),
                                        parameters: ParameterListNode(parameters: [])))
     }
 

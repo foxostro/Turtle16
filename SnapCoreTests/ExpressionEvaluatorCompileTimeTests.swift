@@ -26,4 +26,12 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
             XCTAssertNotNil($0 as? ExpressionEvaluatorCompileTime.MustBeCompileTimeConstantError)
         }
     }
+            
+    func testEvaluateConstantIdentifier() {
+        let expression = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let eval = ExpressionEvaluatorCompileTime(symbols: ["foo" : 1])
+        var actual: Int?
+        XCTAssertNoThrow(actual = try eval.evaluate(expression: expression))
+        XCTAssertEqual(1, actual)
+    }
 }

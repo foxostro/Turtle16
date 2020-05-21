@@ -48,4 +48,9 @@ class TokenNumberTests: XCTestCase {
         let b = TokenEOF(lineNumber: 1)
         XCTAssertNotEqual(a, b)
     }
+    
+    func testHash() {
+        XCTAssertEqual(TokenNumber(lineNumber: 1, lexeme: "1", literal: 1).hashValue,
+                       TokenNumber(lineNumber: 1, lexeme: "1", literal: 1).hashValue)
+    }
 }

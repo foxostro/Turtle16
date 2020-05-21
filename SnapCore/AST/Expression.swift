@@ -39,4 +39,21 @@ public class Expression: AbstractSyntaxTreeNode {
             return super.isEqual(rhs)
         }
     }
+    
+    public class Identifier: Expression {
+        public let identifier: TokenIdentifier
+        public override var tokens: [Token] {
+            return [identifier]
+        }
+        
+        public init(identifier: TokenIdentifier) {
+            self.identifier = identifier
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard let rhs = rhs as? Identifier else { return false }
+            guard identifier == rhs.identifier else { return false }
+            return super.isEqual(rhs)
+        }
+    }
 }

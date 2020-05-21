@@ -17,21 +17,17 @@ class ExpressionTests: XCTestCase {
         XCTAssertNotEqual(Expression.Literal(number: a), LabelDeclarationNode(identifier: foo))
     }
     
-    func testDoesNotEqualExpressionWithDifferentLineNumber() {
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 2)
-        XCTAssertNotEqual(Expression.Literal(number: a), Expression.Literal(number: b))
+    func testLiteralEquality() {
+        XCTAssertNotEqual(Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
+        XCTAssertEqual(Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
     }
     
-    func testDoesNotEqualExpressionWithDifferentValue() {
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)
-        XCTAssertNotEqual(Expression.Literal(number: a), Expression.Literal(number: b))
-    }
-    
-    func testDoesEqualExpressionWithSameLineNumberAndValue() {
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertEqual(Expression.Literal(number: a), Expression.Literal(number: b))
+    func testIdentifierEquality() {
+        XCTAssertNotEqual(Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+                          Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar")))
+        XCTAssertEqual(Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
+                       Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
     }
 }

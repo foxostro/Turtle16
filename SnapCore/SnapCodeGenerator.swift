@@ -57,6 +57,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
                 errors.append(error)
             }
         }
+        insertProgramEpilogue()
         assemblerBackEnd.end()
         let patcher = Patcher(inputInstructions: assemblerBackEnd.instructions,
                               symbols: symbols,
@@ -78,6 +79,11 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         try assemblerBackEnd.li(.X, Int((kStackPointerAddressLo & 0xff00) >> 8))
         try assemblerBackEnd.li(.Y, Int((kStackPointerAddressLo & 0x00ff)))
         try assemblerBackEnd.li(.M, Int((kStackPointerInitialValue & 0x00ff)))
+    }
+    
+    // Inserts epilogue code into the program, presumably at the end.
+    func insertProgramEpilogue() {
+        assemblerBackEnd.hlt()
     }
     
     func compile(genericNode: AbstractSyntaxTreeNode) throws {

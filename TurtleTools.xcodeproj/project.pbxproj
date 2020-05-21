@@ -215,6 +215,146 @@
 			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
 			remoteInfo = TurtleAssemblerCore;
 		};
+		6F41B66D2476F50F0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
+			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F41B66F2476F5130043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F41B6712476F5160043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6F41B6732476F51C0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6F41B6752476F5460043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F41B6772476F54E0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6F41B6792476F5560043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
+			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F41B67B2476F56A0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F41B67D2476F5E80043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6F41B67F2476F5ED0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6F41B6812476F5F50043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
+		};
+		6F41B6832476F5F90043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
+			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F41B6852476F5FE0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F41B6872476F6210043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
+			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F41B6892476F6260043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F41B68B2476F6340043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F41B68D2476F6760043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
+			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F41B68F2476F6830043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D2E4247115BA003B5D5C;
+			remoteInfo = TurtleAssemblerCore;
+		};
+		6F41B6912476F68D0043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F17181A2471C56600AE60C2;
+			remoteInfo = TurtleCompilerToolbox;
+		};
+		6F41B6932476F6990043A8D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
 		6F4B5CB52471DE3F000C57EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -1218,6 +1358,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B68C2476F6340043A8D7 /* PBXTargetDependency */,
 				6F41B66A247653BD0043A8D7 /* PBXTargetDependency */,
 				6F9201CE2471D82C009E1410 /* PBXTargetDependency */,
 			);
@@ -1237,7 +1378,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B6942476F6990043A8D7 /* PBXTargetDependency */,
+				6F41B6922476F68D0043A8D7 /* PBXTargetDependency */,
 				6F4B5CBA2471DE62000C57EB /* PBXTargetDependency */,
+				6F41B6902476F6830043A8D7 /* PBXTargetDependency */,
 				6F4B5CB62471DE3F000C57EB /* PBXTargetDependency */,
 			);
 			name = Snap;
@@ -1257,6 +1401,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B67C2476F56A0043A8D7 /* PBXTargetDependency */,
 				6F4B5CB82471DE4F000C57EB /* PBXTargetDependency */,
 			);
 			name = SnapCore;
@@ -1275,6 +1420,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B6742476F51C0043A8D7 /* PBXTargetDependency */,
+				6F41B6722476F5160043A8D7 /* PBXTargetDependency */,
+				6F41B6702476F5130043A8D7 /* PBXTargetDependency */,
+				6F41B66E2476F50F0043A8D7 /* PBXTargetDependency */,
 				6F9201F02471DAC7009E1410 /* PBXTargetDependency */,
 			);
 			name = SnapCoreTests;
@@ -1370,6 +1519,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B68A2476F6260043A8D7 /* PBXTargetDependency */,
+				6F41B6882476F6210043A8D7 /* PBXTargetDependency */,
 				6FB0D2F0247115BA003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleAssemblerCoreTests;
@@ -1389,6 +1540,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B67A2476F5560043A8D7 /* PBXTargetDependency */,
 				6F38F8FB2471C7CB00B5296D /* PBXTargetDependency */,
 				6FB0D39E24711AEB003B5D5C /* PBXTargetDependency */,
 			);
@@ -1408,6 +1560,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B6782476F54E0043A8D7 /* PBXTargetDependency */,
+				6F41B6762476F5460043A8D7 /* PBXTargetDependency */,
 				6FB0D35724711A23003B5D5C /* PBXTargetDependency */,
 			);
 			name = TurtleSimulatorCoreTests;
@@ -1427,6 +1581,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B68E2476F6760043A8D7 /* PBXTargetDependency */,
 				6F639EB424712473007B05F1 /* PBXTargetDependency */,
 				6F639EB92471247D007B05F1 /* PBXTargetDependency */,
 				6F639EBD24712482007B05F1 /* PBXTargetDependency */,
@@ -1467,6 +1622,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F41B6862476F5FE0043A8D7 /* PBXTargetDependency */,
+				6F41B6842476F5F90043A8D7 /* PBXTargetDependency */,
+				6F41B6822476F5F50043A8D7 /* PBXTargetDependency */,
+				6F41B6802476F5ED0043A8D7 /* PBXTargetDependency */,
+				6F41B67E2476F5E80043A8D7 /* PBXTargetDependency */,
 				6FF1996722ECB37000C255A2 /* PBXTargetDependency */,
 			);
 			name = SimulatorTests;
@@ -1942,6 +2102,106 @@
 			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
 			targetProxy = 6F41B669247653BD0043A8D7 /* PBXContainerItemProxy */;
 		};
+		6F41B66E2476F50F0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
+			targetProxy = 6F41B66D2476F50F0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6702476F5130043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B66F2476F5130043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6722476F5160043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6F41B6712476F5160043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6742476F51C0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6F41B6732476F51C0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6762476F5460043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B6752476F5460043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6782476F54E0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6F41B6772476F54E0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B67A2476F5560043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
+			targetProxy = 6F41B6792476F5560043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B67C2476F56A0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B67B2476F56A0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B67E2476F5E80043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6F41B67D2476F5E80043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6802476F5ED0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6F41B67F2476F5ED0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6822476F5F50043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6F41B6812476F5F50043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6842476F5F90043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
+			targetProxy = 6F41B6832476F5F90043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6862476F5FE0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B6852476F5FE0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6882476F6210043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
+			targetProxy = 6F41B6872476F6210043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B68A2476F6260043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B6892476F6260043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B68C2476F6340043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B68B2476F6340043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B68E2476F6760043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
+			targetProxy = 6F41B68D2476F6760043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6902476F6830043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D2E4247115BA003B5D5C /* TurtleAssemblerCore */;
+			targetProxy = 6F41B68F2476F6830043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6922476F68D0043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F17181A2471C56600AE60C2 /* TurtleCompilerToolbox */;
+			targetProxy = 6F41B6912476F68D0043A8D7 /* PBXContainerItemProxy */;
+		};
+		6F41B6942476F6990043A8D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F41B6932476F6990043A8D7 /* PBXContainerItemProxy */;
+		};
 		6F4B5CB62471DE3F000C57EB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
@@ -2118,6 +2378,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleCompilerToolboxTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2136,6 +2397,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleCompilerToolboxTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2175,7 +2437,6 @@
 		6F9201F72471DAC7009E1410 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2204,7 +2465,6 @@
 		6F9201F82471DAC7009E1410 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2233,10 +2493,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = SnapCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2254,10 +2514,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = SnapCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2295,7 +2555,6 @@
 		6FB0D29D24710C26003B5D5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2324,7 +2583,6 @@
 		6FB0D29E24710C26003B5D5C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2356,6 +2614,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2375,6 +2634,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2448,6 +2708,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleAssemblerCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2467,6 +2728,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleAssemblerCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2540,6 +2802,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleSimulatorCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2559,6 +2822,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = TurtleSimulatorCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2769,11 +3033,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = SimulatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2793,11 +3057,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
 				INFOPLIST_FILE = SimulatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

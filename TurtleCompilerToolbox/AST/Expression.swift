@@ -56,6 +56,14 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(super.hash)
             return hasher.finalize()
         }
+        
+        open override func makeIndentedDescription(depth: Int = 0) -> String {
+            return String(format: "%@<%@: number=%@, children=[%@]>",
+                          makeIndent(depth: depth),
+                          String(describing: type(of: self)),
+                          number.lexeme,
+                          makeChildDescriptions(depth: depth + 1))
+        }
     }
     
     public class Identifier: Expression {
@@ -82,6 +90,14 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(identifier)
             hasher.combine(super.hash)
             return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int = 0) -> String {
+            return String(format: "%@<%@: identifier='%@', children=[%@]>",
+                          makeIndent(depth: depth),
+                          String(describing: type(of: self)),
+                          identifier.lexeme,
+                          makeChildDescriptions(depth: depth + 1))
         }
     }
     
@@ -115,6 +131,14 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(op)
             hasher.combine(super.hash)
             return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int = 0) -> String {
+            return String(format: "%@<%@: op='%@', children=[%@]>",
+                          makeIndent(depth: depth),
+                          String(describing: type(of: self)),
+                          op.lexeme,
+                          makeChildDescriptions(depth: depth + 1))
         }
     }
     
@@ -154,6 +178,14 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(op)
             hasher.combine(super.hash)
             return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int = 0) -> String {
+            return String(format: "%@<%@: op='%@', children=[%@]>",
+                          makeIndent(depth: depth),
+                          String(describing: type(of: self)),
+                          op.lexeme,
+                          makeChildDescriptions(depth: depth + 1))
         }
     }
 }

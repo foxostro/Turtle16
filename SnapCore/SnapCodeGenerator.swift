@@ -118,8 +118,9 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     func compile(constant: ConstantDeclaration) throws {
         let name = constant.identifier.lexeme
         if symbols[name] == nil {
-            let eval = ExpressionEvaluatorCompileTime()
-            symbols[name] = try eval.evaluate(expression: constant.expression)
+            let eval = ExpressionEvaluatorCompileTime(symbols: symbols)
+            let value = try eval.evaluate(expression: constant.expression)
+            symbols[name] = value
         } else {
             throw CompilerError(line: constant.identifier.lineNumber,
                                 format: "constant redefines existing symbol: `%@'",

@@ -41,4 +41,31 @@ open class AbstractSyntaxTreeNode : NSObject {
         hasher.combine(children)
         return hasher.finalize()
     }
+    
+    public override var description: String {
+        return makeIndentedDescription()
+    }
+    
+    open func makeIndentedDescription(depth: Int = 0) -> String {
+        return String(format: "%@<%@: children=[%@]>",
+                      makeIndent(depth: depth),
+                      String(describing: type(of: self)),
+                      makeChildDescriptions(depth: depth + 1))
+    }
+    
+    public func makeIndent(depth: Int) -> String {
+        return String(repeating: "\t", count: depth)
+    }
+    
+    public func makeChildDescriptions(depth: Int = 0) -> String {
+        var result = ""
+        if children.count > 0 {
+            result += "\n" + children[0].makeIndentedDescription(depth: depth + 1)
+            for child in children[1..<children.count] {
+                result += ",\n" + child.makeIndentedDescription(depth: depth + 1)
+            }
+            result += "\n" + makeIndent(depth: depth)
+        }
+        return result
+    }
 }

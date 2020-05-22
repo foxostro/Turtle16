@@ -129,6 +129,37 @@ LI M, \((kStackPointerInitialValue & 0x00ff))
         XCTAssertEqual(errors.first?.message, "constant redefines existing symbol: `foo'")
     }
     
+    func testCompileConstantAssignment() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                              left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                              right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+        ])
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        XCTAssertFalse(codeGenerator.hasError)
+        XCTAssertEqual(codeGenerator.symbols["foo"], 2)
+    }
+    
+    func testCompileConstantAssignmentReferencingAnotherConstant() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                              left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                              right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))),
+            ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                              left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                              right: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"))))
+        ])
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        XCTAssertFalse(codeGenerator.hasError)
+        XCTAssertEqual(codeGenerator.symbols["bar"], Optional<Int>(2))
+        XCTAssertEqual(codeGenerator.symbols["foo"], Optional<Int>(3))
+    }
+    
     func testEvalStatementMovesLiteralValueIntoRegisterA() {
         let ast = AbstractSyntaxTreeNode(children: [
             EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),

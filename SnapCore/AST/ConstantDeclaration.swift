@@ -34,4 +34,12 @@ public class ConstantDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(super.hash)
         return hasher.finalize()
     }
+    
+    open override func makeIndentedDescription(depth: Int = 0) -> String {
+        return String(format: "%@<%@: identifier=%@, children=[%@]>",
+                      makeIndent(depth: depth),
+                      String(describing: type(of: self)),
+                      identifier.lexeme,
+                      makeChildDescriptions(depth: depth + 1))
+    }
 }

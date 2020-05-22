@@ -75,4 +75,46 @@ class ExpressionTests: XCTestCase {
                                                                                            lexeme: "1",
                                                                                            literal: 1))).hashValue)
     }
+    
+    func testBinaryEquality() {
+        // Different right expression
+        XCTAssertNotEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                       Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "9", literal: 9))))
+        
+        // Different left expression
+        XCTAssertNotEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                       Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+        
+        // Different tokens
+        XCTAssertNotEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                       Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+        
+        // Same
+        XCTAssertEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                       Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+        
+        // Hash
+        XCTAssertEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue,
+                       Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue)
+    }
 }

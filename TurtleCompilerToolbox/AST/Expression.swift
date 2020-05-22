@@ -113,4 +113,42 @@ public class Expression: AbstractSyntaxTreeNode {
             return hasher.finalize()
         }
     }
+    
+    public class Binary: Expression {
+        public let op: TokenOperator
+        
+        public var left: Expression {
+            children[0] as! Expression
+        }
+        
+        public var right: Expression {
+            children[1] as! Expression
+        }
+        
+        public override var tokens: [Token] {
+            return left.tokens + [op] + right.tokens
+        }
+        
+        public required init(op: TokenOperator, left: Expression, right: Expression) {
+            self.op = op
+            super.init(children: [left, right])
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? Binary else { return false }
+            guard isBaseClassPartEqual(rhs) else { return false }
+            guard left == rhs.left else { return false }
+            guard op == rhs.op else { return false }
+            guard right == rhs.right else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(op)
+            return hasher.finalize()
+        }
+    }
 }

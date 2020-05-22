@@ -32,6 +32,8 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             return try resolve(identifier: identifier.identifier)
         } else if let unary = expression as? Expression.Unary {
             return try evaluate(unary: unary)
+        } else if let binary = expression as? Expression.Binary {
+            return try evaluate(binary: binary)
         } else {
             let lineNumber = expression.tokens.first?.lineNumber ?? 1
             throw MustBeCompileTimeConstantError(line: lineNumber)
@@ -52,6 +54,23 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             result = -prior
         } else {
             throw CompilerError(line: unary.op.lineNumber, format: "\'%@\' is not a prefix unary operator", unary.op.lexeme)
+        }
+        return result
+    }
+    
+    public func evaluate(binary: Expression.Binary) throws -> Int {
+        let result: Int
+        let left = try evaluate(expression: binary.left)
+        let right = try evaluate(expression: binary.right)
+        switch binary.op.op {
+        case .plus:
+            result = left + right
+        case .minus:
+            result = left - right
+        case .multiply:
+            result = left * right
+        case .divide:
+            result = left / right
         }
         return result
     }

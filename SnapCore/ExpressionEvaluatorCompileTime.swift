@@ -46,7 +46,13 @@ public class ExpressionEvaluatorCompileTime: NSObject {
     }
     
     public func evaluate(unary: Expression.Unary) throws -> Int {
-        let temp = try evaluate(expression: unary.child)
-        return -temp
+        let result: Int
+        let prior = try evaluate(expression: unary.child)
+        if unary.op.op == .minus {
+            result = -prior
+        } else {
+            throw CompilerError(line: unary.op.lineNumber, format: "\'%@\' is not a prefix unary operator", unary.op.lexeme)
+        }
+        return result
     }
 }

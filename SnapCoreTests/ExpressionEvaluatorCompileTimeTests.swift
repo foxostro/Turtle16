@@ -41,4 +41,15 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
         let actual = try! eval.evaluate(expression: expression)
         XCTAssertEqual(1, actual)
     }
+    
+    func testEvaluateUnaryExpressionWithInvalidOperator() {
+        let expression = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                          expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let eval = ExpressionEvaluatorCompileTime()
+        XCTAssertThrowsError(try eval.evaluate(expression: expression)) {
+            XCTAssertNotNil($0 as? CompilerError)
+            let error = $0 as! CompilerError
+            XCTAssertEqual(error.message, "\'+\' is not a prefix unary operator")
+        }
+    }
 }

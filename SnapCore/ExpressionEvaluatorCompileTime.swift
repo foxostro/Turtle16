@@ -30,6 +30,8 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             return literal.number.literal
         } else if let identifier = expression as? Expression.Identifier {
             return try resolve(identifier: identifier.identifier)
+        } else if let unary = expression as? Expression.Unary {
+            return try evaluate(unary: unary)
         } else {
             let lineNumber = expression.tokens.first?.lineNumber ?? 1
             throw MustBeCompileTimeConstantError(line: lineNumber)
@@ -41,5 +43,10 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             throw MustBeCompileTimeConstantError(line: identifier.lineNumber)
         }
         return value
+    }
+    
+    public func evaluate(unary: Expression.Unary) throws -> Int {
+        let temp = try evaluate(expression: unary.child)
+        return -temp
     }
 }

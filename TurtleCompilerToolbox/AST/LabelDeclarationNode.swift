@@ -26,6 +26,7 @@ public class LabelDeclarationNode: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(identifier)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

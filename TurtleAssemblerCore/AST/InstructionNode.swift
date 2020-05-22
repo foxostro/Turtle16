@@ -11,7 +11,7 @@ import TurtleCompilerToolbox
 
 public class InstructionNode: AbstractSyntaxTreeNode {
     public let instruction: Token
-    public let parameters: ParameterListNode // TODO: Should `parameters' be in `children' instead?
+    public let parameters: ParameterListNode
     public var destination: RegisterName {
         return (parameters.parameters.first as! TokenRegister).literal
     }
@@ -36,6 +36,7 @@ public class InstructionNode: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(instruction)
         hasher.combine(parameters)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

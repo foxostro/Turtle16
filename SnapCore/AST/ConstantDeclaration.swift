@@ -10,12 +10,13 @@ import TurtleCompilerToolbox
 
 public class ConstantDeclaration: AbstractSyntaxTreeNode {
     public let identifier: TokenIdentifier
-    public let expression: Expression
+    public var expression: Expression {
+        children.first! as! Expression
+    }
     
     public required init(identifier: TokenIdentifier, expression: Expression) {
         self.identifier = identifier
-        self.expression = expression
-        super.init(children: [])
+        super.init(children: [expression])
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -24,14 +25,13 @@ public class ConstantDeclaration: AbstractSyntaxTreeNode {
         guard let rhs = rhs as? ConstantDeclaration else { return false }
         guard isBaseClassPartEqual(rhs) else { return false }
         guard identifier == rhs.identifier else { return false }
-        guard expression == rhs.expression else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(identifier)
-        hasher.combine(expression)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

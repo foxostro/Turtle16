@@ -32,6 +32,7 @@ public class ConstantDeclarationNode: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(identifier)
         hasher.combine(number)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

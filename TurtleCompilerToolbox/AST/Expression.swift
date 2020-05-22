@@ -27,6 +27,7 @@ public class Expression: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(tokens)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
     
@@ -52,6 +53,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(number)
+            hasher.combine(super.hash)
             return hasher.finalize()
         }
     }
@@ -78,6 +80,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(identifier)
+            hasher.combine(super.hash)
             return hasher.finalize()
         }
     }
@@ -110,6 +113,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(op)
+            hasher.combine(super.hash)
             return hasher.finalize()
         }
     }
@@ -148,6 +152,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(op)
+            hasher.combine(super.hash)
             return hasher.finalize()
         }
     }

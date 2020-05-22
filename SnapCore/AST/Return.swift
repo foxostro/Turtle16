@@ -32,6 +32,7 @@ public class Return: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(token)
         hasher.combine(expression)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

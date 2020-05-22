@@ -45,13 +45,22 @@ class ConstantDeclarationTests: XCTestCase {
     }
     
     func testHash() {
-        XCTAssertEqual(ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+//        XCTAssertEqual(ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+//                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
+//                                                                                              lexeme: "1",
+//                                                                                              literal: 1))).hashValue,
+//                       ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+//                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
+//                                                                                              lexeme: "1",
+//                                                                                              literal: 1))).hashValue)
+//        
+        XCTAssertNotEqual(ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                            expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
                                                                                               lexeme: "1",
                                                                                               literal: 1))).hashValue,
                        ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                            expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                              lexeme: "1",
-                                                                                              literal: 1))).hashValue)
+                                                                                              lexeme: "2",
+                                                                                              literal: 2))).hashValue)
     }
 }

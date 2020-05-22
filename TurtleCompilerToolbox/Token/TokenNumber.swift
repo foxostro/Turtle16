@@ -30,6 +30,7 @@ public class TokenNumber : Token {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(literal)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

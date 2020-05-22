@@ -34,6 +34,7 @@ public class TokenOperator : Token {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(op)
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

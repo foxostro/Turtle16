@@ -58,6 +58,7 @@ public class ParameterListNode: AbstractSyntaxTreeNode {
             }
         }
         
+        hasher.combine(super.hash)
         return hasher.finalize()
     }
 }

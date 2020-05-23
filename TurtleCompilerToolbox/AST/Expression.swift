@@ -31,6 +31,12 @@ public class Expression: AbstractSyntaxTreeNode {
         return hasher.finalize()
     }
     
+    public class MustBeCompileTimeConstantError: CompilerError {
+        public init(line lineNumber: Int) {
+            super.init(line: lineNumber, message: "expression must be a compile time constant")
+        }
+    }
+    
     public class Literal: Expression {
         public let number: TokenNumber
         public override var tokens: [Token] {

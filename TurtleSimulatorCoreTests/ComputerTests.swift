@@ -609,4 +609,17 @@ NOP
                                                                             expected: reference.recordedStatesOverTime,
                                                                             actual: computer.recordedStatesOverTime))
     }
+        
+    func testSubtraction() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI A, 10
+LI B, 1
+SUB _
+SUB X
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 9)
+    }
 }

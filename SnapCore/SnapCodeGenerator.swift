@@ -11,10 +11,10 @@ import TurtleCompilerToolbox
 
 public class SnapCodeGenerator: NSObject, CodeGenerator {
     // Programs written in Snap store the stack pointer in data RAM at
-    // addresses 0x0000 and 0x0001. This is initialized on launch to 0x0000.
-    let kStackPointerAddressHi: UInt16 = 0x0000
-    let kStackPointerAddressLo: UInt16 = 0x0001
-    let kStackPointerInitialValue = 0x0000
+    // addresses 0x0000 and 0x0001. This is initialized on launch to 0xffff.
+    public static let kStackPointerAddressHi: UInt16 = 0x0000
+    public static let kStackPointerAddressLo: UInt16 = 0x0001
+    public static let kStackPointerInitialValue = 0x0000
     
     let assemblerBackEnd: AssemblerBackEnd
     public var symbols = SymbolTable()
@@ -73,12 +73,12 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     // inititalization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
         assemblerBackEnd.nop()
-        try assemblerBackEnd.li(.X, Int((kStackPointerAddressHi & 0xff00) >> 8))
-        try assemblerBackEnd.li(.Y, Int((kStackPointerAddressHi & 0x00ff)))
-        try assemblerBackEnd.li(.M, Int((kStackPointerInitialValue & 0xff00) >> 8))
-        try assemblerBackEnd.li(.X, Int((kStackPointerAddressLo & 0xff00) >> 8))
-        try assemblerBackEnd.li(.Y, Int((kStackPointerAddressLo & 0x00ff)))
-        try assemblerBackEnd.li(.M, Int((kStackPointerInitialValue & 0x00ff)))
+        try assemblerBackEnd.li(.X, Int((SnapCodeGenerator.kStackPointerAddressHi & 0xff00) >> 8))
+        try assemblerBackEnd.li(.Y, Int((SnapCodeGenerator.kStackPointerAddressHi & 0x00ff)))
+        try assemblerBackEnd.li(.M, Int((SnapCodeGenerator.kStackPointerInitialValue & 0xff00) >> 8))
+        try assemblerBackEnd.li(.X, Int((SnapCodeGenerator.kStackPointerAddressLo & 0xff00) >> 8))
+        try assemblerBackEnd.li(.Y, Int((SnapCodeGenerator.kStackPointerAddressLo & 0x00ff)))
+        try assemblerBackEnd.li(.M, Int((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff)))
     }
     
     // Inserts epilogue code into the program, presumably at the end.

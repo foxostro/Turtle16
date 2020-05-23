@@ -633,6 +633,20 @@ HLT
 """))
         XCTAssertNoThrow(try computer.runUntilHalted())
         XCTAssertEqual(computer.cpuState.registerA.value, 9)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 0)
+    }
+
+    func testDEA_does_set_flags() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI A, 0
+DEA _
+DEA A
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerA.value,255)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
     }
         
     func testDCA() {
@@ -648,6 +662,25 @@ HLT
         XCTAssertNoThrow(try computer.runUntilHalted())
         XCTAssertEqual(computer.cpuState.registerX.value, 255)
         XCTAssertEqual(computer.cpuState.registerA.value, 255)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
+    }
+        
+    func testDCA_does_not_set_flags() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# ensure carry flags is set
+LI A, 0
+DEA _
+DEA X
+# decrement 10, yielding 9
+LI A, 10
+DCA _
+DCA A
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 255)
+        XCTAssertEqual(computer.cpuState.registerA.value, 9)
         XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
     }
 }

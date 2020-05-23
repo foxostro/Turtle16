@@ -628,10 +628,26 @@ HLT
         computer.provideInstructions(TraceUtils.assemble("""
 LI A, 10
 DEA _
-DEA X
+DEA A
 HLT
 """))
         XCTAssertNoThrow(try computer.runUntilHalted())
-        XCTAssertEqual(computer.cpuState.registerX.value, 9)
+        XCTAssertEqual(computer.cpuState.registerA.value, 9)
+    }
+        
+    func testDCA() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI A, 0
+DEA _
+DEA X
+DCA _
+DCA A
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 255)
+        XCTAssertEqual(computer.cpuState.registerA.value, 255)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
     }
 }

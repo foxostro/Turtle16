@@ -801,9 +801,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testDEA() {
         let ast = AbstractSyntaxTreeNode(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DEA"),
-                    parameters: ParameterListNode(parameters: [
-                        TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
-                    ]))
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
+                            ]))
         ])
         let instructions = mustCompile(ast)
         
@@ -817,5 +817,30 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(controlWord.EO, .active)
         XCTAssertEqual(controlWord.DI, .active)
         XCTAssertEqual(controlWord.CarryIn, .inactive)
+    }
+    
+    func testDCA() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DCA"),
+                            parameters: ParameterListNode(parameters: [
+                                TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
+                            ]))
+        ])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        XCTAssertEqual(instructions[1].immediate, 0b1111)
+        
+        let controlWord0 = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        XCTAssertEqual(controlWord0.EO, .inactive)
+        XCTAssertEqual(controlWord0.AI, .inactive)
+        XCTAssertEqual(controlWord0.CarryIn, .inactive)
+        
+        let controlWord1 = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 1, equalFlag: 0)))
+        XCTAssertEqual(controlWord1.EO, .active)
+        XCTAssertEqual(controlWord1.AI, .active)
+        XCTAssertEqual(controlWord1.CarryIn, .inactive)
     }
 }

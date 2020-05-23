@@ -121,9 +121,9 @@ class ExpressionCompilerBackEndTests: XCTestCase {
     }
     
     // Push enough values onto the stack to change the stack pointer high byte.
-//    func testPushUntilStackPointerHighByteChanges() {
-//        pushMany(count: 258)
-//    }
+    func testPushUntilStackPointerHighByteChanges() {
+        pushMany(count: 1024)
+    }
     
     func pushMany(count: Int) {
         var ir: [StackIR] = []

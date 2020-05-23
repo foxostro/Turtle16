@@ -160,6 +160,18 @@ public class AssemblerBackEnd: NSObject {
         try instruction(withMnemonic: mnemonic, immediate: 0b1111)
     }
     
+    // Decrement A -- Compute A-1 if the carry flag is set.
+    public func dca(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "DCA"
+        } else {
+            mnemonic = String(format: "DCA %@", String(describing: destination))
+        }
+        try instruction(withMnemonic: mnemonic, immediate: 0b1111)
+    }
+    
     // Compare -- The ALU compares the contents of the A and B registers.
     //            Flags are updated but the ALU result is not stored.
     public func cmp() {

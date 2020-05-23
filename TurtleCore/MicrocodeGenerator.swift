@@ -102,6 +102,7 @@ public class MicrocodeGenerator: NSObject {
         inuv()
         inxy()
         blt()
+        dca()
     }
     
     func record(mnemonic: String, opcode: Int) {
@@ -188,9 +189,13 @@ public class MicrocodeGenerator: NSObject {
     }
     
     public func conditionalJump(mnemonic: String, condition: UInt) {
+        let controlWord = ControlWord().withJ(.active)
+        conditional(mnemonic, condition, controlWord)
+    }
+    
+    func conditional(_ mnemonic: String, _ condition: UInt, _ controlWord: ControlWord) {
         let opcode = getNextOpcode()
         record(mnemonic: mnemonic, opcode: opcode)
-        let controlWord = ControlWord().withJ(.active)
         microcode.store(opcode: opcode,
                         carryFlag: 0, equalFlag: 0,
                         controlWord: (condition & 0b1000) != 0 ? controlWord : ControlWord())
@@ -233,6 +238,20 @@ public class MicrocodeGenerator: NSObject {
                 microcode.store(opcode: opcode, controlWord: controlWord)
             }
         }
+    }
+    
+    func dca() {
+        conditionalALU("DCA", condition: 0b0101)
+    }
+    
+    func conditionalALU(_ base: String, condition: UInt) {
+        var controlWord = ControlWord()
+        controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
+        controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: .A)
+        controlWord = controlWord.withFI(.active)
+        conditional("DCA A", condition, controlWord)
+        
+        conditional("DCA", condition, ControlWord().withFI(.active))
     }
     
     func getNextOpcode() -> Int {

@@ -14,9 +14,6 @@ import TurtleCore
 
 class SnapCodeGeneratorTests: XCTestCase {
     let isVerboseLogging = false
-    let kStackPointerAddressHi: UInt16 = 0x0000
-    let kStackPointerAddressLo: UInt16 = 0x0001
-    let kStackPointerInitialValue = 0x0000
     var kProgramPrologue = ""
     let kProgramEpilogue = "HLT"
     
@@ -48,12 +45,12 @@ class SnapCodeGeneratorTests: XCTestCase {
         
         kProgramPrologue = """
 NOP
-LI X, \((kStackPointerAddressHi & 0xff00) >> 8)
-LI Y, \((kStackPointerAddressHi & 0x00ff))
-LI M, \((kStackPointerInitialValue & 0xff00) >> 8)
-LI X, \((kStackPointerAddressLo & 0xff00) >> 8)
-LI Y, \((kStackPointerAddressLo & 0x00ff))
-LI M, \((kStackPointerInitialValue & 0x00ff))
+LI X, \((SnapCodeGenerator.kStackPointerAddressHi & 0xff00) >> 8)
+LI Y, \((SnapCodeGenerator.kStackPointerAddressHi & 0x00ff))
+LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0xff00) >> 8)
+LI X, \((SnapCodeGenerator.kStackPointerAddressLo & 0xff00) >> 8)
+LI Y, \((SnapCodeGenerator.kStackPointerAddressLo & 0x00ff))
+LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
 """
     }
     
@@ -160,7 +157,7 @@ LI M, \((kStackPointerInitialValue & 0x00ff))
         XCTAssertEqual(codeGenerator.symbols["foo"], Optional<Int>(3))
     }
     
-    func testEvalStatementMovesLiteralValueIntoRegisterA() {
+    func testEvalStatement_Literal_MovesToRegisterA() {
         let ast = AbstractSyntaxTreeNode(children: [
             EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
@@ -172,21 +169,4 @@ LI M, \((kStackPointerInitialValue & 0x00ff))
         let computer = execute(instructions: instructions)
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
     }
-        
-//    func testEvalStatementMovesLiteralValueIntoRegisterA() {
-//        let one = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-//        let two = TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)
-//        let ast = AbstractSyntaxTreeNode(children: [
-//            EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
-//                          expression: Expression.Addition(left: Expression.Literal(number: one),
-//                                                          right: Expression.Literal(number: two)))
-//        ])
-//        let instructions = mustCompile(ast)
-//        XCTAssertEqual(disassemble(instructions), kProgramPrologue + "\n" + """
-//LI A, 1
-//""")
-//
-//        let computer = execute(program: instructions)
-//        XCTAssertEqual(computer.cpuState.registerA.value, 3)
-//    }
 }

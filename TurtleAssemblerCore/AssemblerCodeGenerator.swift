@@ -88,6 +88,7 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     func visit(node: InstructionNode) throws {
         let instructions = [
             "ADD"  : { try self.add(node) },
+            "SUB"  : { try self.sub(node) },
             "BLT"  : { try self.blt(node) },
             "CMP"  : { try self.cmp(node) },
             "HLT"  : { try self.hlt(node) },
@@ -128,6 +129,20 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         try expectRegisterCanBeUsedAsDestination(register)
         
         try self.assemblerBackEnd.add(node.destination)
+    }
+    
+    func sub(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 1 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        guard let register = node.parameters.parameters.first as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try self.assemblerBackEnd.sub(node.destination)
     }
     
     func blt(_ node: InstructionNode) throws {

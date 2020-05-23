@@ -1,6 +1,6 @@
 //
 //  AssemblerBackEndTests.swift
-//  TurtleAssemblerCoreTests
+//  TurtleCompilerToolboxTests
 //
 //  Created by Andrew Fox on 7/30/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
@@ -129,6 +129,17 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1001)
         XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU D")!))
+    }
+    
+    func testSub() {
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        assembler.begin()
+        try! assembler.sub(.A)
+        assembler.end()
+        let instructions = assembler.instructions
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b0110)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALUC A")!))
     }
     
     func testJmp() {

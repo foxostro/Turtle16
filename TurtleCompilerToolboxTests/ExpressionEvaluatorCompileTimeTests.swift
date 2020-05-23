@@ -23,7 +23,7 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
         let expression = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
         let eval = ExpressionEvaluatorCompileTime()
         XCTAssertThrowsError(try eval.evaluate(expression: expression)) {
-            XCTAssertNotNil($0 as? ExpressionEvaluatorCompileTime.MustBeCompileTimeConstantError)
+            XCTAssertNotNil($0 as? Expression.MustBeCompileTimeConstantError)
         }
     }
     

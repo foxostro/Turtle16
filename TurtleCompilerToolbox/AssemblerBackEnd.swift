@@ -135,6 +135,19 @@ public class AssemblerBackEnd: NSObject {
         try instruction(withMnemonic: mnemonic, immediate: 0b1001)
     }
     
+    // Subtraction -- The ALU subtracts B from A and moves the result to the
+    // specified destination bus device.
+    public func sub(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUC"
+        } else {
+            mnemonic = String(format: "ALUC %@", String(describing: destination))
+        }
+        try instruction(withMnemonic: mnemonic, immediate: 0b0110)
+    }
+    
     // Compare -- The ALU compares the contents of the A and B registers.
     //            Flags are updated but the ALU result is not stored.
     public func cmp() {

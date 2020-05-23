@@ -31,6 +31,7 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .push(let value): try push(value)
             case .pop: try pop()
             case .add: try add()
+            case .sub: try sub()
             default:
                 throw CompilerError(message: "ExpressionCompilerBackEnd: unsupported instruction `\(instruction)\'")
             }
@@ -145,15 +146,26 @@ public class ExpressionCompilerBackEnd: NSObject {
     }
     
     fileprivate func add() throws {
-        if stackDepth < 2 {
+        guard stackDepth >= 2 else {
             throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during ADD")
-        } else if stackDepth == 2 {
-            try assembler.add(.NONE)
-            try assembler.add(.A)
-        } else {
-            try assembler.add(.NONE)
-            try assembler.add(.A)
+        }
+        try assembler.add(.NONE)
+        try assembler.add(.A)
+        if stackDepth > 2 {
             try popInMemoryStackIntoRegisterB()
         }
+        stackDepth -= 1
+    }
+    
+    fileprivate func sub() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during SUB")
+        }
+        try assembler.sub(.NONE)
+        try assembler.sub(.A)
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        stackDepth -= 1
     }
 }

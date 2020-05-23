@@ -224,4 +224,41 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
         XCTAssertEqual(computer.stackTop, 1)
     }
+    
+    func testSubWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.sub])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during SUB")
+        }
+    }
+    
+    func testSubWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.push(1), .sub])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during SUB")
+        }
+    }
+    
+    func testSubWithStackDepthTwo() {
+        let computer = try! execute(ir: [.push(1), .push(2), .sub])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+    }
+    
+    func testSubWithStackDepthThree() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+    }
+    
+    func testSubWithStackDepthFour() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .sub])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.stackTop, 1)
+    }
+    
+    func testSubTwice() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub, .sub])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
 }

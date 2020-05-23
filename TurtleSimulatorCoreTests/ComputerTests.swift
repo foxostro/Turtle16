@@ -622,4 +622,16 @@ HLT
         XCTAssertNoThrow(try computer.runUntilHalted())
         XCTAssertEqual(computer.cpuState.registerX.value, 9)
     }
+        
+    func testDEA() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI A, 10
+DEA _
+DEA X
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 9)
+    }
 }

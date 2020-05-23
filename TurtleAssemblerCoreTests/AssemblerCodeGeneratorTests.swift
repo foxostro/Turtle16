@@ -797,4 +797,25 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(controlWord.CO, .active)
         XCTAssertEqual(controlWord.BI, .active)
     }
+    
+    func testDEA() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DEA"),
+                    parameters: ParameterListNode(parameters: [
+                        TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
+                    ]))
+        ])
+        let instructions = mustCompile(ast)
+        
+        XCTAssertEqual(instructions.count, 2)
+        XCTAssertEqual(instructions[0].opcode, nop)
+        
+        XCTAssertEqual(instructions[1].immediate, 0b1111)
+        
+        let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
+        
+        XCTAssertEqual(controlWord.EO, .active)
+        XCTAssertEqual(controlWord.DI, .active)
+        XCTAssertEqual(controlWord.CarryIn, .inactive)
+    }
 }

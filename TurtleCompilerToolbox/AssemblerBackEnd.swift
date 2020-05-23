@@ -148,6 +148,18 @@ public class AssemblerBackEnd: NSObject {
         try instruction(withMnemonic: mnemonic, immediate: 0b0110)
     }
     
+    // Decrement A -- The ALU computes A-1 and outputs the result to the bus.
+    public func dea(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALU"
+        } else {
+            mnemonic = String(format: "ALU %@", String(describing: destination))
+        }
+        try instruction(withMnemonic: mnemonic, immediate: 0b1111)
+    }
+    
     // Compare -- The ALU compares the contents of the A and B registers.
     //            Flags are updated but the ALU result is not stored.
     public func cmp() {

@@ -26,11 +26,11 @@ class StackIRExecutor: NSObject {
     
     func execute(ir: [StackIR]) throws -> Computer {
         assembler.begin()
-        try assembler.li(.X, Int((SnapCodeGenerator.kStackPointerAddressHi & 0xff00) >> 8))
-        try assembler.li(.Y, Int((SnapCodeGenerator.kStackPointerAddressHi & 0x00ff)))
+        try assembler.li(.U, Int((SnapCodeGenerator.kStackPointerAddressHi & 0xff00) >> 8))
+        try assembler.li(.V, Int((SnapCodeGenerator.kStackPointerAddressHi & 0x00ff)))
         try assembler.li(.M, Int((SnapCodeGenerator.kStackPointerInitialValue & 0xff00) >> 8))
-        try assembler.li(.X, Int((SnapCodeGenerator.kStackPointerAddressLo & 0xff00) >> 8))
-        try assembler.li(.Y, Int((SnapCodeGenerator.kStackPointerAddressLo & 0x00ff)))
+        try assembler.li(.U, Int((SnapCodeGenerator.kStackPointerAddressLo & 0xff00) >> 8))
+        try assembler.li(.V, Int((SnapCodeGenerator.kStackPointerAddressLo & 0x00ff)))
         try assembler.li(.M, Int((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff)))
         let compiler = ExpressionCompilerBackEnd(assembler: assembler)
         try compiler.compile(ir: ir)
@@ -134,8 +134,44 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(Int(computer.cpuState.registerA.value), 255)
         XCTAssertEqual(Int(computer.cpuState.registerB.value), 255)
         for i in 2...count {
-            XCTAssertEqual(Int(computer.dataRAM.load(from: 0xffff - (count - i))), 255)
+            XCTAssertEqual(Int(computer.dataRAM.load(from: Int(UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- UInt16(count - i + 1)))), 255)
         }
-        XCTAssertEqual(computer.stackPointer, 0xffff - (count - 2))
+        XCTAssertEqual(computer.stackPointer, Int(UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- UInt16(count - 1)))
+    }
+    
+    func testPopEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.pop])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "IR stream generates code which would underflow the stack")
+        }
+    }
+    
+    func testPopWithStackDepthOneAndStackPointerDoesNotChange() {
+        // The top two stack slots are in registers A and B.
+        let computer = try! execute(ir: [.push(1), .pop])
+        XCTAssertEqual(computer.stackPointer, SnapCodeGenerator.kStackPointerInitialValue)
+    }
+    
+    func testPopWithStackDepthTwoAndStackPointerDoesNotChange() {
+        // The top two stack slots are in registers A and B.
+        let computer = try! execute(ir: [.push(1), .push(2), .pop])
+        XCTAssertEqual(computer.stackPointer, SnapCodeGenerator.kStackPointerInitialValue)
+    }
+    
+    func testPopWithStackDepthThreeAndStackPointerDoesNotChange() {
+        // The third stack slot is in memory at 0xffff. When we pop that, the
+        // stack pointer returns to the initial value.
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .pop])
+        XCTAssertEqual(computer.stackPointer, SnapCodeGenerator.kStackPointerInitialValue)
+    }
+    
+    func testPopWithStackDepthFour() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .pop])
+        XCTAssertEqual(UInt16(computer.stackPointer), UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- 1)
+    }
+    
+    func testPopWithStackDepthFive() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .push(5), .pop])
+        XCTAssertEqual(UInt16(computer.stackPointer), UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- 2)
     }
 }

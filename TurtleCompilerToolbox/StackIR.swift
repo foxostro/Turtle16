@@ -7,5 +7,5 @@
 //
 
 public enum StackIR: Equatable {
-    case push(Int), add, sub, mul, div
+    case push(Int), pop, add, sub, mul, div
 }

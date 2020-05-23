@@ -31,11 +31,11 @@ public class TraceUtils: NSObject {
     }
     
     public static func assemble(_ text: String) -> [Instruction] {
-        return  assemble(program: text, base: 0x0000)
+        return assemble(program: text, base: 0x0000)
     }
     
     public static func assemble(program text: String, base: Int) -> [Instruction] {
-        return  try! tryAssemble(program: text, base: base)
+        return try! tryAssemble(program: text, base: base)
     }
     
     fileprivate static func tryAssemble(program text: String, base: Int) throws -> [Instruction] {

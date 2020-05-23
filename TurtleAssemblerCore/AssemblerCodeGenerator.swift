@@ -109,7 +109,8 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             "LXY"  : { try self.lxy(node) },
             "MOV"  : { try self.mov(node) },
             "NOP"  : { try self.nop(node) },
-            "DEA"  : { try self.dea(node) }
+            "DEA"  : { try self.dea(node) },
+            "DCA"  : { try self.dca(node) }
         ]
         if let closure = instructions[node.instruction.lexeme] {
             try closure()
@@ -433,5 +434,19 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         try expectRegisterCanBeUsedAsDestination(register)
         
         try assemblerBackEnd.dea(node.destination)
+    }
+    
+    public func dca(_ node: InstructionNode) throws {
+        guard node.parameters.parameters.count == 1 else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        guard let register = node.parameters.parameters.first as? TokenRegister else {
+            throw operandTypeMismatchError(node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try assemblerBackEnd.dca(node.destination)
     }
 }

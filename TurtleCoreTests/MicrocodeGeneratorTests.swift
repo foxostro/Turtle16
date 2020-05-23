@@ -125,4 +125,11 @@ class MicrocodeGeneratorTests: XCTestCase {
         XCTAssertTrue(generator.isConditionalJump(JGE))
         XCTAssertFalse(generator.isConditionalJump(JMP))
     }
+    
+    func testDCA() {
+        let generator = MicrocodeGenerator()
+        generator.generate()
+        let DCA = generator.getOpcode(withMnemonic: "DCA")!
+        XCTAssertEqual(generator.getMnemonic(withOpcode: DCA), Optional("DCA"))
+    }
 }

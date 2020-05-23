@@ -73,30 +73,26 @@ public class ExpressionCompilerBackEnd: NSObject {
     }
     
     fileprivate func decrementStackPointer() throws {
-        // TODO: This only does an 8-bit subtract; need to do 16-bit.
-        
         // Save A in a well-known scratch location.
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo)
         try assembler.mov(.M, .A)
         
-        // Write the new stack pointer high byte back to memory.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
-        try assembler.li(.M, 0xff)
-        
-        // Load the low byte of the 16-bit stack pointer into A.
+        // Decrement the low byte of the 16-bit stack pointer.
         try assembler.li(.U, kStackPointerLoHi)
         try assembler.li(.V, kStackPointerLoLo)
         try assembler.mov(.A, .M)
-        
-        // Decrement the low byte of the stack pointer in A.
         try assembler.dea(.NONE)
         try assembler.dea(.A)
+        try assembler.mov(.M, .A)
         
-        // Write the new stack pointer low byte to memory.
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        // Decrement the high byte of the 16-bit stack pointer, but only if the
+        // above decrement set the carry flag.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.A, .M)
+        try assembler.dca(.NONE)
+        try assembler.dca(.A)
         try assembler.mov(.M, .A)
         
         // Restore A

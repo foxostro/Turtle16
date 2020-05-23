@@ -153,6 +153,17 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU A")!))
     }
     
+    func testDCA() {
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        assembler.begin()
+        try! assembler.dca(.A)
+        assembler.end()
+        let instructions = assembler.instructions
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b1111)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "DCA A")!))
+    }
+    
     func testJmp() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()

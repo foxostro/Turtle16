@@ -225,8 +225,10 @@ public class MicrocodeGenerator: NSObject {
     }
     
     public func blt() {
-        for source in SourceRegister.allCases {
-            for destination in DestinationRegister.allCases {
+        let sources = [SourceRegister.P, SourceRegister.M, SourceRegister.A]
+        let destinations = [DestinationRegister.P, DestinationRegister.M]
+        for source in sources {
+            for destination in destinations {
                 var controlWord = ControlWord().withUVInc(.active).withXYInc(.active)
                 controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: source)
                 controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)

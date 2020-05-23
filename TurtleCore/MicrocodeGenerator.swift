@@ -250,10 +250,9 @@ public class MicrocodeGenerator: NSObject {
         var controlWord = ControlWord()
         controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
         controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: .A)
-        controlWord = controlWord.withFI(.active)
         conditional("DCA A", condition, controlWord)
         
-        conditional("DCA", condition, ControlWord().withFI(.active))
+        conditional("DCA", condition, ControlWord())
     }
     
     func getNextOpcode() -> Int {

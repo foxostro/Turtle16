@@ -9,6 +9,7 @@
 import TurtleCompilerToolbox
 
 // Takes some StackIR and generates corresponding machine code.
+// For speed, we use the A and B registers as the top of the stack.
 // (see also ExpressionCompilerFrontEnd)
 public class ExpressionCompilerBackEnd: NSObject {
     let kScratchHi = 0
@@ -29,15 +30,17 @@ public class ExpressionCompilerBackEnd: NSObject {
             switch instruction {
             case .push(let value):
                 try push(value)
+            
+            case .pop:
+                try pop()
                 
             default:
-                abort()
+                throw CompilerError(message: "unsupported instruction in IR stream: \(instruction)")
             }
         }
     }
     
     func push(_ value: Int) throws {
-        // For speed, we use the A and B registers as the top of the stack.
         if stackDepth == 0 {
             try assembler.li(.A, value)
         } else if stackDepth == 1 {
@@ -100,5 +103,37 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo)
         try assembler.mov(.A, .M)
+    }
+    
+    func pop() throws {
+        if stackDepth == 0 {
+            throw CompilerError(message: "IR stream generates code which would underflow the stack")
+        } else if stackDepth < 3 {
+            // do nothing
+        } else {
+            try incrementStackPointer()
+        }
+        stackDepth -= 1
+    }
+    
+    fileprivate func incrementStackPointer() throws {
+        // Load the 16-bit stack pointer into XY.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.X, .M)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.Y, .M)
+        
+        // Increment
+        assembler.inxy()
+        
+        // Write it back into memory.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.M, .X)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.M, .Y)
     }
 }

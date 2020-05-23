@@ -66,6 +66,10 @@ extension Computer {
         let stackPointer = (stackPointerHi << 8) + stackPointerLo
         return stackPointer
     }
+    
+    public var stackTop: UInt8 {
+        return dataRAM.load(from: stackPointer)
+    }
 }
 
 class ExpressionCompilerBackEndTests: XCTestCase {
@@ -139,10 +143,10 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, Int(UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- UInt16(count - 1)))
     }
     
-    func testPopEmptyStack() {
+    func testPopWithEmptyStack() {
         XCTAssertThrowsError(try execute(ir: [.pop])) {
             XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "IR stream generates code which would underflow the stack")
+                           "ExpressionCompilerBackEnd: cannot pop when stack is empty")
         }
     }
     
@@ -150,12 +154,16 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         // The top two stack slots are in registers A and B.
         let computer = try! execute(ir: [.push(1), .pop])
         XCTAssertEqual(computer.stackPointer, SnapCodeGenerator.kStackPointerInitialValue)
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.cpuState.registerB.value, 0)
     }
     
     func testPopWithStackDepthTwoAndStackPointerDoesNotChange() {
         // The top two stack slots are in registers A and B.
         let computer = try! execute(ir: [.push(1), .push(2), .pop])
         XCTAssertEqual(computer.stackPointer, SnapCodeGenerator.kStackPointerInitialValue)
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerB.value, 0)
     }
     
     func testPopWithStackDepthThreeAndStackPointerDoesNotChange() {
@@ -163,15 +171,57 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         // stack pointer returns to the initial value.
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .pop])
         XCTAssertEqual(computer.stackPointer, SnapCodeGenerator.kStackPointerInitialValue)
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+        XCTAssertEqual(computer.cpuState.registerB.value, 1)
     }
     
     func testPopWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .pop])
+        XCTAssertEqual(computer.cpuState.registerA.value, 3)
+        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.stackTop, 1)
         XCTAssertEqual(UInt16(computer.stackPointer), UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- 1)
     }
     
     func testPopWithStackDepthFive() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .push(5), .pop])
-        XCTAssertEqual(UInt16(computer.stackPointer), UInt16(SnapCodeGenerator.kStackPointerInitialValue) &- 2)
+        XCTAssertEqual(computer.cpuState.registerA.value, 4)
+        XCTAssertEqual(computer.cpuState.registerB.value, 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 1)
+        XCTAssertEqual(computer.stackTop, 2)
+        XCTAssertEqual(computer.stackPointer, 0xfffe)
+    }
+    
+    func testAddWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.add])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during ADD")
+        }
+    }
+    
+    func testAddWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.push(1), .add])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during ADD")
+        }
+    }
+    
+    func testAddWithStackDepthTwo() {
+        let computer = try! execute(ir: [.push(1), .push(2), .add])
+        XCTAssertEqual(computer.cpuState.registerA.value, 3)
+    }
+    
+    func testAddWithStackDepthThree() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .add])
+        XCTAssertEqual(computer.cpuState.registerA.value, 5)
+        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+    }
+    
+    func testAddWithStackDepthFour() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .add])
+        XCTAssertEqual(computer.cpuState.registerA.value, 7)
+        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.stackTop, 1)
     }
 }

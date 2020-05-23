@@ -261,4 +261,44 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub, .sub])
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
+    
+    func testMulWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.mul])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during MUL")
+        }
+    }
+    
+    func testMulWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.mul])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during MUL")
+        }
+    }
+    
+    func testMulWithStackDepthTwo_0x0() {
+        let computer = try! execute(ir: [.push(0), .push(0), .mul])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
+    
+    func testMulWithStackDepthTwo_1x0() {
+        let computer = try! execute(ir: [.push(1), .push(0), .mul])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
+    
+    func testMulWithStackDepthTwo_1x1() {
+        let computer = try! execute(ir: [.push(1), .push(1), .mul])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+    }
+    
+    func testMulWithStackDepthTwo_4x3() {
+        let computer = try! execute(ir: [.push(4), .push(3), .mul])
+        XCTAssertEqual(computer.cpuState.registerA.value, 12)
+    }
+    
+    func testMulWithStackDepthTwo_255x2() {
+        // Multiplication is basically modulo 255.
+        let computer = try! execute(ir: [.push(255), .push(2), .mul])
+        XCTAssertEqual(computer.cpuState.registerA.value, 254)
+    }
 }

@@ -32,6 +32,7 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .pop: try pop()
             case .add: try add()
             case .sub: try sub()
+            case .mul: try mul()
             default:
                 throw CompilerError(message: "ExpressionCompilerBackEnd: unsupported instruction `\(instruction)\'")
             }
@@ -163,6 +164,72 @@ public class ExpressionCompilerBackEnd: NSObject {
         }
         try assembler.sub(.NONE)
         try assembler.sub(.A)
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        stackDepth -= 1
+    }
+    
+    fileprivate func mul() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during MUL")
+        }
+        
+        // A is the Multiplicand, B is the Multiplier
+        let multiplierAddress = kScratchLo
+        let multiplicandAddress = kScratchLo+1
+        let resultAddress = kScratchLo+2
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, multiplierAddress)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, multiplicandAddress)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, resultAddress)
+        try assembler.li(.M, 0)
+        
+        let loopHead = assembler.programCounter
+        let loopTail = loopHead + 27
+        
+        // If the multiplier is equal to zero then bail because we're done.
+        try assembler.li(.X, (loopTail & 0xff00) >> 8)
+        try assembler.li(.Y,  loopTail & 0x00ff)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, multiplierAddress)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        // Add the multiplicand to the result.
+        try assembler.li(.V, multiplicandAddress)
+        try assembler.mov(.B, .M)
+        try assembler.li(.V, resultAddress)
+        try assembler.mov(.A, .M)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        
+        // Decrement the multiplier.
+        try assembler.li(.V, multiplierAddress)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+
+        // Jump back to the beginning of the loop
+        try assembler.li(.X, (loopHead & 0xff00) >> 8)
+        try assembler.li(.Y,  loopHead & 0x00ff)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        assert(assembler.programCounter == loopTail)
+        
+        // Load the result into A.
+        try assembler.li(.V, resultAddress)
+        try assembler.mov(.A, .M)
+        
         if stackDepth > 2 {
             try popInMemoryStackIntoRegisterB()
         }

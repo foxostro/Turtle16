@@ -28,19 +28,16 @@ public class ExpressionCompilerBackEnd: NSObject {
     public func compile(ir: [StackIR]) throws {
         for instruction in ir {
             switch instruction {
-            case .push(let value):
-                try push(value)
-            
-            case .pop:
-                try pop()
-                
+            case .push(let value): try push(value)
+            case .pop: try pop()
+            case .add: try add()
             default:
-                throw CompilerError(message: "unsupported instruction in IR stream: \(instruction)")
+                throw CompilerError(message: "ExpressionCompilerBackEnd: unsupported instruction `\(instruction)\'")
             }
         }
     }
     
-    func push(_ value: Int) throws {
+    fileprivate func push(_ value: Int) throws {
         if stackDepth == 0 {
             try assembler.li(.A, value)
         } else if stackDepth == 1 {
@@ -105,18 +102,23 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.mov(.A, .M)
     }
     
-    func pop() throws {
+    fileprivate func pop() throws {
         if stackDepth == 0 {
-            throw CompilerError(message: "IR stream generates code which would underflow the stack")
-        } else if stackDepth < 3 {
-            // do nothing
+            throw CompilerError(message: "ExpressionCompilerBackEnd: cannot pop when stack is empty")
+        } else if stackDepth == 1 {
+            try assembler.li(.A, 0) // Clear A. This is not actually necessary.
+        } else if stackDepth == 2 {
+            try assembler.mov(.A, .B)
+            try assembler.li(.B, 0) // Clear B. This is not actually necessary.
         } else {
-            try incrementStackPointer()
+            try assembler.mov(.A, .B)
+            try popInMemoryStackIntoRegisterB()
         }
+        
         stackDepth -= 1
     }
     
-    fileprivate func incrementStackPointer() throws {
+    fileprivate func popInMemoryStackIntoRegisterB() throws {
         // Load the 16-bit stack pointer into XY.
         try assembler.li(.U, kStackPointerHiHi)
         try assembler.li(.V, kStackPointerHiLo)
@@ -125,15 +127,33 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.li(.V, kStackPointerLoLo)
         try assembler.mov(.Y, .M)
         
-        // Increment
+        // Shift the top of the in-memory stack into B.
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.B, .M)
+        
+        // Increment the stack pointer.
         assembler.inxy()
         
-        // Write it back into memory.
+        // Write the modified stack pointer back to memory.
         try assembler.li(.U, kStackPointerHiHi)
         try assembler.li(.V, kStackPointerHiLo)
         try assembler.mov(.M, .X)
         try assembler.li(.U, kStackPointerLoHi)
         try assembler.li(.V, kStackPointerLoLo)
         try assembler.mov(.M, .Y)
+    }
+    
+    fileprivate func add() throws {
+        if stackDepth < 2 {
+            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during ADD")
+        } else if stackDepth == 2 {
+            try assembler.add(.NONE)
+            try assembler.add(.A)
+        } else {
+            try assembler.add(.NONE)
+            try assembler.add(.A)
+            try popInMemoryStackIntoRegisterB()
+        }
     }
 }

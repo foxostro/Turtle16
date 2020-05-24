@@ -276,29 +276,71 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         }
     }
     
-    func testMulWithStackDepthTwo_0x0() {
+    func testMul_0x0() {
         let computer = try! execute(ir: [.push(0), .push(0), .mul])
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
     
-    func testMulWithStackDepthTwo_1x0() {
+    func testMul_1x0() {
         let computer = try! execute(ir: [.push(1), .push(0), .mul])
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
     
-    func testMulWithStackDepthTwo_1x1() {
+    func testMul_1x1() {
         let computer = try! execute(ir: [.push(1), .push(1), .mul])
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
     }
     
-    func testMulWithStackDepthTwo_4x3() {
+    func testMul_4x3() {
         let computer = try! execute(ir: [.push(4), .push(3), .mul])
         XCTAssertEqual(computer.cpuState.registerA.value, 12)
     }
     
-    func testMulWithStackDepthTwo_255x2() {
+    func testMul_255x2() {
         // Multiplication is basically modulo 255.
         let computer = try! execute(ir: [.push(255), .push(2), .mul])
         XCTAssertEqual(computer.cpuState.registerA.value, 254)
+    }
+    
+    
+    func testDivWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.div])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during DIV")
+        }
+    }
+    
+    func testDivWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.div])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during DIV")
+        }
+    }
+    
+    func testDiv_1div0() {
+        // There's a check in the DIV command to ensure that all division by
+        // zero yields a result of zero.
+        let computer = try! execute(ir: [.push(1), .push(0), .div])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
+    
+    func testDiv_0div1() {
+        let computer = try! execute(ir: [.push(1), .push(0), .div])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
+    
+    func testDiv_2div1() {
+        let computer = try! execute(ir: [.push(1), .push(2), .div])
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+    }
+    
+    func testDiv_4div2() {
+        let computer = try! execute(ir: [.push(2), .push(4), .div])
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+    }
+    
+    func testDiv_3div4() {
+        let computer = try! execute(ir: [.push(4), .push(3), .div])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
 }

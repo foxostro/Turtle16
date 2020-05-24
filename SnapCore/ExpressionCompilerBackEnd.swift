@@ -33,6 +33,7 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .add: try add()
             case .sub: try sub()
             case .mul: try mul()
+            case .div: try div()
             default:
                 throw CompilerError(message: "ExpressionCompilerBackEnd: unsupported instruction `\(instruction)\'")
             }
@@ -188,12 +189,11 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.li(.M, 0)
         
         let loopHead = assembler.programCounter
-        let loopTail = loopHead + 27
+        let loopTail = loopHead + 26
         
         // If the multiplier is equal to zero then bail because we're done.
         try assembler.li(.X, (loopTail & 0xff00) >> 8)
         try assembler.li(.Y,  loopTail & 0x00ff)
-        try assembler.li(.U, kScratchHi)
         try assembler.li(.V, multiplierAddress)
         try assembler.mov(.A, .M)
         try assembler.li(.B, 0)
@@ -228,6 +228,87 @@ public class ExpressionCompilerBackEnd: NSObject {
         
         // Load the result into A.
         try assembler.li(.V, resultAddress)
+        try assembler.mov(.A, .M)
+        
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        stackDepth -= 1
+    }
+    
+    fileprivate func div() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during DIV")
+        }
+        
+        // A is the Dividend, B is the Divisor
+        let a = kScratchLo+0
+        let b = kScratchLo+1
+        let counter = kScratchLo+2
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, a)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, b)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, counter)
+        try assembler.li(.M, 0)
+        
+        let loopHead = assembler.programCounter + 11
+        let loopTail = loopHead + 28
+        
+        // if b == 0 then bail because it's division by zero
+        try assembler.li(.X, (loopTail & 0xff00) >> 8)
+        try assembler.li(.Y,  loopTail & 0x00ff)
+        try assembler.li(.V, b)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        // while a >= b
+        assert(assembler.programCounter == loopHead)
+        try assembler.li(.X, (loopTail & 0xff00) >> 8)
+        try assembler.li(.Y,  loopTail & 0x00ff)
+        try assembler.li(.V, a)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, b)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jl()
+        assembler.nop()
+        assembler.nop()
+        
+        // a = a - b
+        try assembler.li(.V, b)
+        try assembler.mov(.B, .M)
+        try assembler.li(.V, a)
+        try assembler.mov(.A, .M)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        
+        // c += 1
+        try assembler.li(.V, counter)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 1)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+
+        // loop
+        try assembler.li(.X, (loopHead & 0xff00) >> 8)
+        try assembler.li(.Y,  loopHead & 0x00ff)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        assert(assembler.programCounter == loopTail)
+        
+        // Return the result in the A register.
+        try assembler.li(.V, counter)
         try assembler.mov(.A, .M)
         
         if stackDepth > 2 {

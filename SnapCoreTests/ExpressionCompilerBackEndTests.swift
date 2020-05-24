@@ -343,4 +343,42 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         let computer = try! execute(ir: [.push(4), .push(3), .div])
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
+    
+    func testModWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.mod])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during MOD")
+        }
+    }
+    
+    func testMod_1mod0() {
+        // There's a check in the MOD command to ensure that all division by
+        // zero yields a result of zero.
+        let computer = try! execute(ir: [.push(1), .push(0), .mod])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
+    
+    func testMod_1mod1() {
+        let computer = try! execute(ir: [.push(255), .push(1), .push(1), .mod])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.cpuState.registerB.value, 255)
+        XCTAssertEqual(computer.stackPointer, 0x0000)
+    }
+    
+    func testMod_modulus_pops_the_stack() {
+        let computer = try! execute(ir: [.push(255), .push(1), .push(1), .mod])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.cpuState.registerB.value, 255)
+        XCTAssertEqual(computer.stackPointer, 0x0000)
+    }
+    
+    func testMod_1mod2() {
+        let computer = try! execute(ir: [.push(2), .push(1), .mod])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+    }
+    
+    func testMod_7mod4() {
+        let computer = try! execute(ir: [.push(4), .push(7), .mod])
+        XCTAssertEqual(computer.cpuState.registerA.value, 3)
+    }
 }

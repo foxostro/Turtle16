@@ -88,4 +88,13 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
         let actual = try! eval.evaluate(expression: expression)
         XCTAssertEqual(4, actual)
     }
+    
+    func testEvaluateBinaryExpression_Modulus() {
+        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                          left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
+                                          right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
+        let eval = ExpressionEvaluatorCompileTime()
+        let actual = try! eval.evaluate(expression: expression)
+        XCTAssertEqual(3, actual)
+    }
 }

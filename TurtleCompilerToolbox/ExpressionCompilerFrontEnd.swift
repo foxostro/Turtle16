@@ -48,6 +48,8 @@ public class ExpressionCompilerFrontEnd: NSObject {
             return .mul
         case .divide:
             return .div
+        case .modulus:
+            return .mod
         }
     }
     

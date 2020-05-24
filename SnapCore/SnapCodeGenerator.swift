@@ -133,15 +133,10 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     }
     
     func compile(expression: Expression) throws {
-        if let literal = expression as? Expression.Literal {
-            try compile(literal: literal)
-        } else {
-            let lineNumber = expression.tokens.first?.lineNumber ?? 1
-            throw CompilerError(line: lineNumber, message: "only literal expressions are supported at this time")
-        }
-    }
-    
-    func compile(literal: Expression.Literal) throws {
-        try self.assemblerBackEnd.li(.A, token: literal.number)
+        let frontEnd = ExpressionCompilerFrontEnd(symbols: symbols)
+        let backEnd = ExpressionCompilerBackEnd(assembler: assemblerBackEnd)
+        
+        let ir = try frontEnd.compile(expression: expression)
+        try backEnd.compile(ir: ir)
     }
 }

@@ -7,7 +7,7 @@
 //
 
 public class TokenOperator : Token {
-    public enum Operator { case minus, plus, multiply, divide }
+    public enum Operator { case minus, plus, multiply, divide, modulus }
     public let op: Operator
     
     public init(lineNumber: Int, lexeme: String, op: Operator) {

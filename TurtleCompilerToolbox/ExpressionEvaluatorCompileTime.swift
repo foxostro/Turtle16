@@ -63,6 +63,8 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             result = left * right
         case .divide:
             result = left / right
+        case .modulus:
+            result = left % right
         }
         return result
     }

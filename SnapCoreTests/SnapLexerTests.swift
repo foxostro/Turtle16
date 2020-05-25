@@ -76,11 +76,11 @@ class SnapLexerTests: XCTestCase {
     }
     
     func testFailToTokenizeInvalidIdentifier() {
-        let tokenizer = SnapLexer(withString: "*")
+        let tokenizer = SnapLexer(withString: ";")
         tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
         XCTAssertEqual(tokenizer.errors.first?.line, 1)
-        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `*'")
+        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `;'")
     }
     
     func testTokenizeDecimalLiteral() {
@@ -93,7 +93,8 @@ class SnapLexerTests: XCTestCase {
     func testTokenizeNegativeDecimalLiteral() {
         let tokenizer = SnapLexer(withString: "-123")
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenNumber(lineNumber: 1, lexeme: "-123", literal: -123),
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                          TokenNumber(lineNumber: 1, lexeme: "123", literal: 123),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
@@ -191,6 +192,62 @@ class SnapLexerTests: XCTestCase {
         let tokenizer = SnapLexer(withString: "eval")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenEval(lineNumber: 1, lexeme: "eval"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeUnaryNegation() {
+        let tokenizer = SnapLexer(withString: "-foo")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                          TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeAdditionSymbol() {
+        let tokenizer = SnapLexer(withString: "+")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeMultiplicationSymbol() {
+        let tokenizer = SnapLexer(withString: "*")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeDivisionSymbol() {
+        let tokenizer = SnapLexer(withString: "/")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeModulusSymbol() {
+        let tokenizer = SnapLexer(withString: "%")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeParentheses() {
+        let tokenizer = SnapLexer(withString: "()")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenParenLeft(lineNumber: 1, lexeme: "("),
+                                          TokenParenRight(lineNumber: 1, lexeme: ")"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeParentheses2() {
+        let tokenizer = SnapLexer(withString: "eval (2-1)")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenEval(lineNumber: 1, lexeme: "eval"),
+                                          TokenParenLeft(lineNumber: 1, lexeme: "("),
+                                          TokenNumber(lineNumber: 1, lexeme: "2", literal: 2),
+                                          TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                          TokenNumber(lineNumber: 1, lexeme: "1", literal: 1),
+                                          TokenParenRight(lineNumber: 1, lexeme: ")"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
 }

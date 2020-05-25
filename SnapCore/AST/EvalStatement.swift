@@ -10,12 +10,13 @@ import TurtleCompilerToolbox
 
 public class EvalStatement: AbstractSyntaxTreeNode {
     public let token: TokenEval
-    public let expression: Expression
+    public var expression: Expression {
+        return children.first! as! Expression
+    }
     
     public required init(token: TokenEval, expression: Expression) {
         self.token = token
-        self.expression = expression
-        super.init(children: [])
+        super.init(children: [expression])
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -24,14 +25,12 @@ public class EvalStatement: AbstractSyntaxTreeNode {
         guard let rhs = rhs as? EvalStatement else { return false }
         guard isBaseClassPartEqual(rhs) else { return false }
         guard token == rhs.token else { return false }
-        guard expression == rhs.expression else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(token)
-        hasher.combine(expression)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

@@ -302,6 +302,12 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.cpuState.registerA.value, 254)
     }
     
+    func testMul_PopsTheStackToo() {
+        let computer = try! execute(ir: [.push(255), .push(254), .push(2), .push(2), .mul])
+        XCTAssertEqual(computer.cpuState.registerA.value, 4)
+        XCTAssertEqual(computer.cpuState.registerB.value, 254)
+        XCTAssertEqual(computer.stackTop, 255)
+    }
     
     func testDivWithEmptyStack() {
         XCTAssertThrowsError(try execute(ir: [.div])) {
@@ -344,6 +350,13 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
     }
     
+    func testDiv_PopsTheStackToo() {
+        let computer = try! execute(ir: [.push(255), .push(254), .push(2), .push(2), .div])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerB.value, 254)
+        XCTAssertEqual(computer.stackTop, 255)
+    }
+    
     func testModWithStackDepthOne() {
         XCTAssertThrowsError(try execute(ir: [.mod])) {
             XCTAssertEqual(($0 as? CompilerError)?.message,
@@ -380,5 +393,12 @@ class ExpressionCompilerBackEndTests: XCTestCase {
     func testMod_7mod4() {
         let computer = try! execute(ir: [.push(4), .push(7), .mod])
         XCTAssertEqual(computer.cpuState.registerA.value, 3)
+    }
+    
+    func testMod_PopsTheStackToo() {
+        let computer = try! execute(ir: [.push(255), .push(254), .push(2), .push(3), .mod])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerB.value, 254)
+        XCTAssertEqual(computer.stackTop, 255)
     }
 }

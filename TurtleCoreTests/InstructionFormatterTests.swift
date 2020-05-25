@@ -50,7 +50,8 @@ class InstructionFormatterTests: XCTestCase {
     }
     
     func testFormatADD() {
-        let result = formatter.format(instruction: assemble("ADD A"))
+        let instruction = assemble("ADD A")
+        let result = formatter.format(instruction: instruction)
         XCTAssertEqual(result, "ADD A")
     }
     

@@ -128,9 +128,9 @@ public class AssemblerBackEnd: NSObject {
         assert(isAssembling)
         let mnemonic: String
         if destination == .NONE {
-            mnemonic = "ALU"
+            mnemonic = "ALUwoC"
         } else {
-            mnemonic = "ALU \(String(describing: destination))"
+            mnemonic = "ALUwoC \(String(describing: destination))"
         }
         try instruction(mnemonic: mnemonic, immediate: 0b1001)
     }
@@ -153,9 +153,9 @@ public class AssemblerBackEnd: NSObject {
         assert(isAssembling)
         let mnemonic: String
         if destination == .NONE {
-            mnemonic = "ALU"
+            mnemonic = "ALUwoC"
         } else {
-            mnemonic = "ALU \(String(describing: destination))"
+            mnemonic = "ALUwoC \(String(describing: destination))"
         }
         try instruction(mnemonic: mnemonic, immediate: 0b1111)
     }
@@ -165,9 +165,9 @@ public class AssemblerBackEnd: NSObject {
         assert(isAssembling)
         let mnemonic: String
         if destination == .NONE {
-            mnemonic = "CALU"
+            mnemonic = "CALUwoC"
         } else {
-            mnemonic = "CALU \(String(describing: destination))"
+            mnemonic = "CALUwoC \(String(describing: destination))"
         }
         try instruction(mnemonic: mnemonic, immediate: 0b1111)
     }
@@ -176,7 +176,7 @@ public class AssemblerBackEnd: NSObject {
     //            Flags are updated but the ALU result is not stored.
     public func cmp() {
         assert(isAssembling)
-        try! instruction(mnemonic: "ALU", immediate: 0b0110)
+        try! instruction(mnemonic: "ALUwoC", immediate: 0b0110)
     }
     
     // Link -- Save the contents of PC to the Link register

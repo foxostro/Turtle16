@@ -128,7 +128,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1001)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU D")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC D")!))
     }
     
     func testSub() {
@@ -150,7 +150,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1111)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU A")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC A")!))
     }
     
     func testDCA() {
@@ -161,7 +161,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1111)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "CALU A")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "CALUwoC A")!))
     }
     
     func testJmp() {
@@ -191,7 +191,7 @@ class AssemblerBackEndTests: XCTestCase {
         assembler.end()
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC")!))
     }
     
     func testBLT() {

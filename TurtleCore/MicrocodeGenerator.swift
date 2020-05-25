@@ -137,14 +137,21 @@ public class MicrocodeGenerator: NSObject {
     }
     
     public func alu() {
-        alu("ALUwC", carry: .active)
-        alu("ALU", carry: .inactive)
+        // ALUwC -- ALU op with the 181's carry flag set High.
+        // ALUwoC -- ALU op with the 181's carry flag set Low.
+        // CALUwC -- When Carry Flag is Set: ALU op with the 181's carry flag set High. Otherwise: NOP
+        // CALUwoC -- When Carry Flag is Set: Conditional ALU op with the 181's carry flag set Low. Otherwise: NOP
+        // ALUxC -- ALU op with the 181's carry flag set High.
         
-        // These conditional instructions occur when the Carry flag is set, and
-        // regardless of the state of the A=B flag.
+        alu("ALUwC", carry: .active)
+        alu("ALUwoC", carry: .inactive)
+        
+        // These conditional instructions will perform the computation when the
+        // the Carry flag is set, regardless of the state of the A=B flag.
+        // Otherwise, they will treated as a NOP.
         let carryFlagSet: UInt = 0b0101
         conditionalALU("CALUwC", condition: carryFlagSet, carry: .active)
-        conditionalALU("CALU", condition: carryFlagSet, carry: .inactive)
+        conditionalALU("CALUwoC", condition: carryFlagSet, carry: .inactive)
     }
     
     public func alu(_ base: String, carry: ControlSignal) {

@@ -585,7 +585,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions.count, 2)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC")!))
         XCTAssertEqual(instructions[1].immediate, 0b0110)
         
         let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))

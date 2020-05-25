@@ -19,7 +19,7 @@ public class InstructionFormatter: NSObject {
     }
     
     public func format(instruction: Instruction) -> String {
-        let maybeMnemonic = microcodeGenerator.getMnemonic(withOpcode: Int(instruction.opcode))
+        let maybeMnemonic = microcodeGenerator.getMnemonic(opcode: Int(instruction.opcode))
         guard let mnemonic = maybeMnemonic else { return "UNKNOWN" }
         if mnemonic.hasPrefix("ALU") {
             switch instruction.immediate {

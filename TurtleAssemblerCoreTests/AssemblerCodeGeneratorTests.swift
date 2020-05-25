@@ -23,8 +23,8 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     override func setUp() {
         microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        nop = UInt8(microcodeGenerator.getOpcode(withMnemonic: "NOP")!)
-        hlt = UInt8(microcodeGenerator.getOpcode(withMnemonic: "HLT")!)
+        nop = UInt8(microcodeGenerator.getOpcode(mnemonic: "NOP")!)
+        hlt = UInt8(microcodeGenerator.getOpcode(mnemonic: "HLT")!)
     }
     
     func mustCompile(_ root: AbstractSyntaxTreeNode) -> [Instruction] {
@@ -353,13 +353,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV X, C")!))
         XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV Y, C")!))
         XCTAssertEqual(instructions[2].immediate, 1)
         
         // The JMP command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JMP")!))
         
         // JMP must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
@@ -390,13 +390,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV X, C")!))
         XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV Y, C")!))
         XCTAssertEqual(instructions[2].immediate, 6)
         
         // The JMP command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JMP")!))
         
         // JMP must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
@@ -427,13 +427,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
 
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV X, C")!))
         XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV Y, C")!))
         XCTAssertEqual(instructions[2].immediate, 0)
 
         // The JMP command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JMP")!))
 
         // JMP must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
@@ -494,14 +494,14 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV X, C")!))
         XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV Y, C")!))
         XCTAssertEqual(instructions[2].immediate, 1)
         
         // The JC command jumps to the address in the XY register pair, but only
         // if the carry flag is set.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JC")!))
         
         // JC must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
@@ -529,13 +529,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions[0].opcode, nop)
         
         // Load the resolved label address into XY.
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV X, C")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV X, C")!))
         XCTAssertEqual(instructions[1].immediate, 0)
-        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV Y, C")!))
+        XCTAssertEqual(instructions[2].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV Y, C")!))
         XCTAssertEqual(instructions[2].immediate, 0)
         
         // The JC command jumps to the address in the XY register pair.
-        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[3].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JC")!))
         
         // JC must be followed by two NOPs. A jump does not clear the pipeline
         // so this is necessary to ensure correct operation.
@@ -585,7 +585,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions.count, 2)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU")!))
         XCTAssertEqual(instructions[1].immediate, 0b0110)
         
         let controlWord = ControlWord(withValue: UInt(microcodeGenerator.microcode.load(opcode: Int(instructions[1].opcode), carryFlag: 0, equalFlag: 0)))
@@ -603,7 +603,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions.count, 2)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INUV")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "INUV")!))
         XCTAssertEqual(instructions[1].immediate, 0)
     }
     
@@ -617,7 +617,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(instructions.count, 2)
         
         XCTAssertEqual(instructions[0].opcode, nop)
-        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "INXY")!))
+        XCTAssertEqual(instructions[1].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "INXY")!))
         XCTAssertEqual(instructions[1].immediate, 0)
     }
     

@@ -102,7 +102,6 @@ public class MicrocodeGenerator: NSObject {
         inuv()
         inxy()
         blt()
-        dca()
     }
     
     func record(mnemonic: String, opcode: Int) {
@@ -129,9 +128,7 @@ public class MicrocodeGenerator: NSObject {
                 var controlWord = ControlWord()
                 controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: source)
                 controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
-                let mnemonic = String(format: "MOV %@, %@",
-                                      String(describing: destination),
-                                      String(describing: source))
+                let mnemonic = "MOV \(String(describing: destination)), \(String(describing: source))"
                 let opcode = getNextOpcode()
                 record(mnemonic: mnemonic, opcode: opcode)
                 microcode.store(opcode: opcode, controlWord: controlWord)
@@ -140,31 +137,58 @@ public class MicrocodeGenerator: NSObject {
     }
     
     public func alu() {
-        alu(base: "ALUC", withCarry: .active)
-        alu(base: "ALU", withCarry: .inactive)
+        alu("ALUwC", carry: .active)
+        alu("ALU", carry: .inactive)
+        
+        // These conditional instructions occur when the Carry flag is set, and
+        // regardless of the state of the A=B flag.
+        let carryFlagSet: UInt = 0b0101
+        conditionalALU("CALUwC", condition: carryFlagSet, carry: .active)
+        conditionalALU("CALU", condition: carryFlagSet, carry: .inactive)
     }
     
-    public func alu(base: String, withCarry carry: ControlSignal) {
+    public func alu(_ base: String, carry: ControlSignal) {
         for destination in DestinationRegister.allCases {
             var controlWord = ControlWord()
             controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
             controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
             controlWord = controlWord.withFI(.active).withCarryIn(carry)
-            let mnemonic = String(format: "%@ %@", base, String(describing: destination))
+            let mnemonic = "\(base) \(String(describing: destination))"
             let opcode = getNextOpcode()
             record(mnemonic: mnemonic, opcode: opcode)
             microcode.store(opcode: opcode, controlWord: controlWord)
         }
         
-        aluNoDest(mnemonic: base, withCarry: carry)
+        aluNoDest(base, carry)
     }
     
     // The case of an ALU operation with no destination register.
     // Only updates the flags.
-    func aluNoDest(mnemonic: String, withCarry carry: ControlSignal) {
+    func aluNoDest(_ mnemonic: String, _ carry: ControlSignal) {
         let opcode = getNextOpcode()
         record(mnemonic: mnemonic, opcode: opcode)
         microcode.store(opcode: opcode, controlWord: ControlWord().withFI(.active).withCarryIn(carry))
+    }
+    
+    func conditionalALU(_ base: String, condition: UInt, carry: ControlSignal) {
+        for destination in DestinationRegister.allCases {
+            conditionalALU(base, condition, destination, carry)
+        }
+        
+        conditional(base, condition, ControlWord().withFI(.active).withCarryIn(carry))
+    }
+    
+    func conditionalALU(_ base: String,
+                        _ condition: UInt,
+                        _ destination: MicrocodeGenerator.DestinationRegister,
+                        _ carry: ControlSignal) {
+        var controlWord = ControlWord()
+        controlWord = controlWord.withFI(.active)
+        controlWord = controlWord.withCarryIn(carry)
+        controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
+        controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
+        let mnemonic = "\(base) \(String(describing: destination))"
+        conditional(mnemonic, condition, controlWord)
     }
     
     public func link() {
@@ -232,27 +256,12 @@ public class MicrocodeGenerator: NSObject {
                 var controlWord = ControlWord().withUVInc(.active).withXYInc(.active)
                 controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: source)
                 controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
-                let mnemonic = String(format: "BLT %@, %@",
-                                      String(describing: destination),
-                                      String(describing: source))
+                let mnemonic = "BLT \(String(describing: destination)), \(String(describing: source))"
                 let opcode = getNextOpcode()
                 record(mnemonic: mnemonic, opcode: opcode)
                 microcode.store(opcode: opcode, controlWord: controlWord)
             }
         }
-    }
-    
-    func dca() {
-        conditionalALU("DCA", condition: 0b0101)
-    }
-    
-    func conditionalALU(_ base: String, condition: UInt) {
-        var controlWord = ControlWord()
-        controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
-        controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: .A)
-        conditional("DCA A", condition, controlWord)
-        
-        conditional("DCA", condition, ControlWord())
     }
     
     func getNextOpcode() -> Int {
@@ -262,29 +271,29 @@ public class MicrocodeGenerator: NSObject {
         return opcode
     }
     
-    public func getOpcode(withMnemonic mnemonic: String) -> Int? {
+    public func getOpcode(mnemonic: String) -> Int? {
         return mapMnemonicToOpcode[mnemonic]
     }
     
-    public func getMnemonic(withOpcode opcode: Int) -> String? {
+    public func getMnemonic(opcode: Int) -> String? {
         return mapOpcodeToMnemonic[opcode]
     }
     
     public func isUnconditionalJump(_ instruction: Instruction) -> Bool {
         let opcode = instruction.opcode
-        return opcode == getOpcode(withMnemonic: "JMP")!
-            || opcode == getOpcode(withMnemonic: "JALR")!
+        return opcode == getOpcode(mnemonic: "JMP")!
+            || opcode == getOpcode(mnemonic: "JALR")!
     }
     
     public func isConditionalJump(_ instruction: Instruction) -> Bool {
         let opcode = instruction.opcode
-        return opcode == getOpcode(withMnemonic: "JC")!
-            || opcode == getOpcode(withMnemonic: "JNC")!
-            || opcode == getOpcode(withMnemonic: "JE")!
-            || opcode == getOpcode(withMnemonic: "JNE")!
-            || opcode == getOpcode(withMnemonic: "JG")!
-            || opcode == getOpcode(withMnemonic: "JLE")!
-            || opcode == getOpcode(withMnemonic: "JL")!
-            || opcode == getOpcode(withMnemonic: "JGE")!
+        return opcode == getOpcode(mnemonic: "JC")!
+            || opcode == getOpcode(mnemonic: "JNC")!
+            || opcode == getOpcode(mnemonic: "JE")!
+            || opcode == getOpcode(mnemonic: "JNE")!
+            || opcode == getOpcode(mnemonic: "JG")!
+            || opcode == getOpcode(mnemonic: "JLE")!
+            || opcode == getOpcode(mnemonic: "JL")!
+            || opcode == getOpcode(mnemonic: "JGE")!
     }
 }

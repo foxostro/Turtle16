@@ -102,6 +102,20 @@ open class ParserBase: NSObject, Parser {
         return nil
     }
     
+    public func accept(operator op: TokenOperator.Operator) -> TokenOperator? {
+        return accept(operators: [op])
+    }
+    
+    public func accept(operators ops: [TokenOperator.Operator]) -> TokenOperator? {
+        if let token = peek() as? TokenOperator {
+            if ops.contains(token.op) {
+                advance()
+                return token
+            }
+        }
+        return nil
+    }
+    
     @discardableResult public func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
         if nil == result {

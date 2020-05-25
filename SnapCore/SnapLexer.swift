@@ -31,6 +31,27 @@ public class SnapLexer: LexerBase {
             Rule(pattern: "=") {[weak self] in
                 TokenEqual(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "\\+") {[weak self] in
+                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .plus)
+            },
+            Rule(pattern: "-") {[weak self] in
+                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .minus)
+            },
+            Rule(pattern: "\\*") {[weak self] in
+                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .multiply)
+            },
+            Rule(pattern: "/") {[weak self] in
+                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .divide)
+            },
+            Rule(pattern: "%") {[weak self] in
+                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .modulus)
+            },
+            Rule(pattern: "\\(") {[weak self] in
+                TokenParenLeft(lineNumber: self!.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "\\)") {[weak self] in
+                TokenParenRight(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "let") {[weak self] in
                 TokenLet(lineNumber: self!.lineNumber, lexeme: $0)
             },
@@ -43,7 +64,7 @@ public class SnapLexer: LexerBase {
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
             },
-            Rule(pattern: "[-]{0,1}[0-9]+\\b") {[weak self] in
+            Rule(pattern: "[1-9][0-9]*\\b") {[weak self] in
                 let scanner = Scanner(string: $0)
                 var number: Int = 0
                 let result = scanner.scanInt(&number)

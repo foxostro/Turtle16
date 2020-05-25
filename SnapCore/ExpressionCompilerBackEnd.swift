@@ -35,8 +35,6 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .mul: try mul()
             case .div: try div()
             case .mod: try mod()
-            default:
-                throw CompilerError(message: "ExpressionCompilerBackEnd: unsupported instruction `\(instruction)\'")
             }
         }
     }

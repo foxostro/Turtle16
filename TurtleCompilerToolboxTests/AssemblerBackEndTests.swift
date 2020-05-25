@@ -19,8 +19,8 @@ class AssemblerBackEndTests: XCTestCase {
     override func setUp() {
         microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        nop = UInt8(microcodeGenerator.getOpcode(withMnemonic: "NOP")!)
-        hlt = UInt8(microcodeGenerator.getOpcode(withMnemonic: "HLT")!)
+        nop = UInt8(microcodeGenerator.getOpcode(mnemonic: "NOP")!)
+        hlt = UInt8(microcodeGenerator.getOpcode(mnemonic: "HLT")!)
     }
     
     func testEmptyProgram() {
@@ -54,48 +54,48 @@ class AssemblerBackEndTests: XCTestCase {
     func testInstructionWithInvalidMnemonicThrows() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(withMnemonic: "", immediate: 0))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "", immediate: 0))
     }
     
     func testInstructionWithInvalidMnemonicThrowsUsingToken() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(withMnemonic: "", token:TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "", token:TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)))
     }
     
     func testInstructionWithNegativeImmediateThrows() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(withMnemonic: "NOP", immediate: -1))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", immediate: -1))
     }
     
     func testInstructionWithNegativeImmediateThrowsUsingToken() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(withMnemonic: "NOP", token: TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: -1)))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", token: TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: -1)))
     }
     
     func testInstructionWithTooLargeImmediateThrows() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(withMnemonic: "NOP", immediate: 256))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", immediate: 256))
     }
     
     func testInstructionWithTooLargeImmediateThrowsUsingToken() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(withMnemonic: "NOP", token: TokenNumber(lineNumber: 1, lexeme: "256", literal: 256)))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", token: TokenNumber(lineNumber: 1, lexeme: "256", literal: 256)))
     }
     
     func testMovFromScratch() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        try! assembler.instruction(withMnemonic: "MOV D, C", immediate: 42)
+        try! assembler.instruction(mnemonic: "MOV D, C", immediate: 42)
         assembler.end()
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 42)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV D, C")!))
     }
     
     func testGenericMovWithImmediate() {
@@ -106,7 +106,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 42)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV D, C")!))
     }
     
     func testLoadImmediate() {
@@ -117,7 +117,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 42)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "MOV D, C")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "MOV D, C")!))
     }
     
     func testAdd() {
@@ -128,7 +128,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1001)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU D")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU D")!))
     }
     
     func testSub() {
@@ -139,7 +139,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b0110)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALUC A")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwC A")!))
     }
     
     func testDEA() {
@@ -150,7 +150,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1111)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU A")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU A")!))
     }
     
     func testDCA() {
@@ -161,7 +161,7 @@ class AssemblerBackEndTests: XCTestCase {
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0b1111)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "DCA A")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "CALU A")!))
     }
     
     func testJmp() {
@@ -171,7 +171,7 @@ class AssemblerBackEndTests: XCTestCase {
         assembler.end()
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JMP")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JMP")!))
     }
     
     func testJC() {
@@ -181,7 +181,7 @@ class AssemblerBackEndTests: XCTestCase {
         assembler.end()
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "JC")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "JC")!))
     }
     
     func testCMP() {
@@ -191,17 +191,17 @@ class AssemblerBackEndTests: XCTestCase {
         assembler.end()
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "ALU")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALU")!))
     }
     
     func testBLT() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        try! assembler.instruction(withMnemonic: "BLT P, M", immediate: 0)
+        try! assembler.instruction(mnemonic: "BLT P, M", immediate: 0)
         assembler.end()
         let instructions = assembler.instructions
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].immediate, 0)
-        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(withMnemonic: "BLT P, M")!))
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "BLT P, M")!))
     }
 }

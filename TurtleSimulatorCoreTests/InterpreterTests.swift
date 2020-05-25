@@ -217,12 +217,15 @@ JE
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
+CMP
 NOP
 JNE
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 {
+            interpreter.step()
+        }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }
@@ -252,12 +255,13 @@ JG
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
+CMP
 NOP
 JLE
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }
@@ -269,12 +273,13 @@ JLE
         
         let delegate = TestInterpreterDelegate(instructions: TraceUtils.assemble("""
 CMP
+CMP
 NOP
 JL
 """))
         interpreter.delegate = delegate
         
-        for _ in 1...5 { interpreter.step() }
+        for _ in 1...6 { interpreter.step() }
         
         XCTAssertEqual(interpreter.cpuState.pc.value, 0)
     }

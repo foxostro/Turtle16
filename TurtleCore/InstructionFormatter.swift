@@ -21,12 +21,12 @@ public class InstructionFormatter: NSObject {
     public func format(instruction: Instruction) -> String {
         let maybeMnemonic = microcodeGenerator.getMnemonic(opcode: Int(instruction.opcode))
         guard let mnemonic = maybeMnemonic else { return "UNKNOWN" }
-        if mnemonic.hasPrefix("ALU") {
+        if mnemonic.hasPrefix("ALUwoC") {
             switch instruction.immediate {
             case 0b0110:
                 return "CMP"
             case 0b1001:
-                return "ADD" + mnemonic.dropFirst(3)
+                return "ADD" + mnemonic.dropFirst(6)
             default:
                 return mnemonic
             }

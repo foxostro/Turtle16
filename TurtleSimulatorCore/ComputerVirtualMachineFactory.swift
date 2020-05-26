@@ -32,11 +32,11 @@ final class ComputerVirtualMachineFactory: NSObject {
     
     let defaultVirtualMachineType: VirtualMachineType = .Interpreter
     
-    fileprivate func determineDesiredVirtualMachineTypeString() -> String {
+    private func determineDesiredVirtualMachineTypeString() -> String {
         return UserDefaults.standard.string(forKey: kVirtualMachineTypeString) ?? kDefaultString
     }
     
-    fileprivate func convertToVirtualMachineType(string: String) -> VirtualMachineType {
+    private func convertToVirtualMachineType(string: String) -> VirtualMachineType {
         if string == kInterpreterString {
             return .Interpreter
         } else if string == kTracingString {

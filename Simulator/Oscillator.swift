@@ -9,7 +9,7 @@
 import Foundation
 import AudioToolbox
 
-fileprivate func callback(
+private func callback(
   inRefCon:UnsafeMutableRawPointer,
   ioActionFlags:UnsafeMutablePointer<AudioUnitRenderActionFlags>,
   inTimeStamp:UnsafePointer<AudioTimeStamp>,

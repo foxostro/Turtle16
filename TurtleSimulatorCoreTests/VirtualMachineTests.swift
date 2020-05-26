@@ -13,11 +13,11 @@ import TurtleCore
 class VirtualMachineTests: XCTestCase {
     let isVerboseLogging = false
     
-    fileprivate func makeLogger() -> Logger {
+    private func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
-    fileprivate func makeVM(program: String = "") -> VirtualMachine {
+    private func makeVM(program: String = "") -> VirtualMachine {
         let cpuState = CPUStateSnapshot()
         let peripherals = ComputerPeripherals()
         let dataRAM = Memory()

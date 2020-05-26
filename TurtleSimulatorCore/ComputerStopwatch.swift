@@ -7,7 +7,7 @@
 //
 
 public final class ComputerStopwatch: NSObject {
-    fileprivate var internalVumberOfInstructionRetired = 0
+    private var internalVumberOfInstructionRetired = 0
     public private(set) var numberOfInstructionRetired: Int {
         get {
             objc_sync_enter(self)

@@ -20,11 +20,11 @@ class TracingInterpretingVMTests: XCTestCase {
     
     let isVerboseLogging = false
     
-    fileprivate func makeLogger() -> Logger {
+    private func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
-    fileprivate func makeVM(program: String) -> TracingInterpretingVM {
+    private func makeVM(program: String) -> TracingInterpretingVM {
         let cpuState = CPUStateSnapshot()
         
         let microcodeGenerator = MicrocodeGenerator()
@@ -75,7 +75,7 @@ class TracingInterpretingVMTests: XCTestCase {
         return vm
     }
     
-    fileprivate func runProgramViaStraightInterpretation(_ program: String) -> TracingInterpretingVM {
+    private func runProgramViaStraightInterpretation(_ program: String) -> TracingInterpretingVM {
         let cpuState = CPUStateSnapshot()
         
         let dataRAM = Memory()

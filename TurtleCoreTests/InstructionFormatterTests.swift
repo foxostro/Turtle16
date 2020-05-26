@@ -13,11 +13,11 @@ import TurtleAssemblerCore
 class InstructionFormatterTests: XCTestCase {
     let formatter = InstructionFormatter()
     
-    fileprivate func assemble(_ line: String) -> Instruction {
+    private func assemble(_ line: String) -> Instruction {
         return try! tryAssemble(line)
     }
     
-    fileprivate func tryAssemble(_ line: String) throws -> Instruction {
+    private func tryAssemble(_ line: String) throws -> Instruction {
         let assembler = AssemblerFrontEnd()
         assembler.compile(line)
         if assembler.hasError {

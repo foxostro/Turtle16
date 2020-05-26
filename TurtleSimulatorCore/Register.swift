@@ -26,7 +26,7 @@ public class Register: NSObject {
         return hexadecimalStringValue
     }
     
-    fileprivate var binaryStringValue: String {
+    private var binaryStringValue: String {
         var result = String(value, radix: 2)
         if result.count < 8 {
             result = String(repeatElement("0", count: 8 - result.count)) + result
@@ -34,7 +34,7 @@ public class Register: NSObject {
         return "0b" + result
     }
     
-    fileprivate var hexadecimalStringValue: String {
+    private var hexadecimalStringValue: String {
         return String(format: "0x%02x", value)
     }
     

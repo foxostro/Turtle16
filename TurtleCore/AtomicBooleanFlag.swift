@@ -7,7 +7,7 @@
 //
 
 public class AtomicBooleanFlag: NSObject {
-    fileprivate var internalValue: Bool
+    private var internalValue: Bool
     
     public var value: Bool {
         get {

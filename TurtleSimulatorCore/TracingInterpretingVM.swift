@@ -41,7 +41,7 @@ public class TracingInterpretingVM: VirtualMachine {
         step(allowsRunningTraces: allowsRunningTraces)
     }
     
-    fileprivate func step(allowsRunningTraces: Bool) {
+    private func step(allowsRunningTraces: Bool) {
         prevState = cpuState.copy() as! CPUStateSnapshot // TODO: Is it a problem to allocate a state object every tick?
         maybeAddInitialRecordedState()
         
@@ -64,13 +64,13 @@ public class TracingInterpretingVM: VirtualMachine {
         logger?.append("-----")
     }
     
-    fileprivate func maybeAddInitialRecordedState() {
+    private func maybeAddInitialRecordedState() {
         if shouldRecordStatesOverTime && recordedStatesOverTime.isEmpty {
             recordedStatesOverTime.append(prevState.copy() as! CPUStateSnapshot)
         }
     }
     
-    fileprivate func maybeStopTraceRecording(_ pc: ProgramCounter) {
+    private func maybeStopTraceRecording(_ pc: ProgramCounter) {
         guard let traceRecorder = traceRecorder else { return }
         
         if traceRecorder.trace.pc! == pc {
@@ -85,7 +85,7 @@ public class TracingInterpretingVM: VirtualMachine {
         }
     }
     
-    fileprivate func logTrace(_ trace: Trace) {
+    private func logTrace(_ trace: Trace) {
         guard let logger = logger else { return }
         logger.append("Listing trace at pc=\(trace.pc!):")
         for line in trace.description.components(separatedBy: "\n") {
@@ -94,7 +94,7 @@ public class TracingInterpretingVM: VirtualMachine {
         logger.append("===")
     }
     
-    fileprivate func runTrace(_ allowsRunningTraces: Bool, _ trace: Trace) {
+    private func runTrace(_ allowsRunningTraces: Bool, _ trace: Trace) {
         assert(traceRecorder == nil)
         if allowsRunningTraces {
             logger?.append("Running trace for pc=\(trace.pc!)...")
@@ -104,7 +104,7 @@ public class TracingInterpretingVM: VirtualMachine {
         doStep()
     }
     
-    fileprivate func actuallyRunTrace(_ trace: Trace) {
+    private func actuallyRunTrace(_ trace: Trace) {
         let executor = TraceExecutor(trace: trace,
                                      cpuState: cpuState,
                                      peripherals: peripherals,
@@ -129,14 +129,14 @@ public class TracingInterpretingVM: VirtualMachine {
         cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
     }
     
-    fileprivate func beginRecordingAndStep(_ pc: ProgramCounter) {
+    private func beginRecordingAndStep(_ pc: ProgramCounter) {
         logger?.append("Beginning trace recording for pc=\(pc)")
         assert(traceRecorder == nil)
         traceRecorder = TraceRecorder(microcodeGenerator: microcodeGenerator)
         doStep()
     }
     
-    fileprivate func doStep() {
+    private func doStep() {
         interpreter.step()
         stopwatch?.retireInstructions(count: 1)
         profile()
@@ -145,13 +145,13 @@ public class TracingInterpretingVM: VirtualMachine {
         numberOfStepsExecuted += 1
     }
     
-    fileprivate func maybeAddAnotherRecordedState() {
+    private func maybeAddAnotherRecordedState() {
         if shouldRecordStatesOverTime {
             recordedStatesOverTime.append(cpuState.copy() as! CPUStateSnapshot)
         }
     }
     
-    fileprivate func profile() {
+    private func profile() {
         // Record backwards jumps.
         let oldPC = prevState.pc.value
         let newPC = cpuState.pc.value
@@ -163,7 +163,7 @@ public class TracingInterpretingVM: VirtualMachine {
         }
     }
     
-    fileprivate func record() {
+    private func record() {
         // Update the trace if we're recording one now.
         if let traceRecorder = traceRecorder {
             logger?.append("recording: \(prevState.if_id)")
@@ -172,7 +172,7 @@ public class TracingInterpretingVM: VirtualMachine {
         }
     }
     
-    fileprivate func logStateChanges() {
+    private func logStateChanges() {
         if let logger = logger {
             CPUStateSnapshot.logChanges(logger: logger,
                                         prevState: prevState,

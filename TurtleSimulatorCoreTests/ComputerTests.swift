@@ -24,7 +24,7 @@ class ComputerTests: XCTestCase {
         return computer
     }
     
-    fileprivate func makeLogger() -> Logger {
+    private func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     

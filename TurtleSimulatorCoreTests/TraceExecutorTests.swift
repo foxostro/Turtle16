@@ -19,7 +19,7 @@ class TraceExecutorTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    fileprivate func makeLogger() -> Logger {
+    private func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     

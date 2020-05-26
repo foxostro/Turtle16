@@ -148,6 +148,30 @@ public class AssemblerBackEnd: NSObject {
         try instruction(mnemonic: mnemonic, immediate: 0b0110)
     }
     
+    // Addition -- Result <-- A + B + Cf
+    public func adc(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUxC"
+        } else {
+            mnemonic = "ALUxC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b1001)
+    }
+    
+    // Subtraction -- Result <-- A - B - Cf
+    public func sbc(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUxC"
+        } else {
+            mnemonic = "ALUxC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b0110)
+    }
+    
     // Decrement A -- The ALU computes A-1 and outputs the result to the bus.
     public func dea(_ destination: RegisterName) throws {
         assert(isAssembling)

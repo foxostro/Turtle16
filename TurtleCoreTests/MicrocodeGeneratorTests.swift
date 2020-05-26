@@ -126,10 +126,17 @@ class MicrocodeGeneratorTests: XCTestCase {
         XCTAssertFalse(generator.isConditionalJump(JMP))
     }
     
-    func testDCA() {
+    func testCALUwoC() {
         let generator = MicrocodeGenerator()
         generator.generate()
-        let DCA = generator.getOpcode(mnemonic: "CALUwoC")!
-        XCTAssertEqual(generator.getMnemonic(opcode: DCA), Optional("CALUwoC"))
+        let CALUwoC = generator.getOpcode(mnemonic: "CALUwoC")!
+        XCTAssertEqual(generator.getMnemonic(opcode: CALUwoC), Optional("CALUwoC"))
+    }
+    
+    func testALUxC() {
+        let generator = MicrocodeGenerator()
+        generator.generate()
+        let ALUxC = generator.getOpcode(mnemonic: "ALUxC")!
+        XCTAssertEqual(generator.getMnemonic(opcode: ALUxC), Optional("ALUxC"))
     }
 }

@@ -648,7 +648,7 @@ HLT
         XCTAssertEqual(computer.cpuState.registerA.value,255)
         XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
     }
-        
+    
     func testDCA() {
         let computer = makeComputer()
         computer.provideInstructions(TraceUtils.assemble("""
@@ -662,6 +662,244 @@ HLT
         XCTAssertNoThrow(try computer.runUntilHalted())
         XCTAssertEqual(computer.cpuState.registerX.value, 255)
         XCTAssertEqual(computer.cpuState.registerA.value, 255)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
+    }
+    
+    func testADC_cf_Active() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI B, 0
+LI A, 0
+DEA _
+DEA X
+ADC _
+ADC X
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 0)
+    }
+    
+    func testADC_cf_Inactive() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI B, 0
+LI A, 0
+ADC _
+ADC X
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 1)
+    }
+        
+    func testAddSixteenBitNumberWithADC() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# Compute 0x00ff + 0x0001 and write the result into UV. Should be 0x0100.
+LI U, 0x00
+LI V, 0xff
+LI X, 0x00
+LI Y, 0x01
+
+# Add the lower byte.
+MOV A, V
+MOV B, Y
+ADD _
+ADD V
+
+# Add the upper byte.
+MOV A, U
+MOV B, X
+ADC _
+ADC U
+
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerU.value, 0x01)
+        XCTAssertEqual(computer.cpuState.registerV.value, 0x00)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
+    }
+    
+    func testAddSixteenBitNumberWithADC_SetsTheCarryFlag() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# Compute 0xffff + 0x0001 and write the result into UV.
+# The result should be 0x0000, and the carry flag is active.
+LI U, 0xff
+LI V, 0xff
+LI X, 0x00
+LI Y, 0x01
+
+# Add the lower byte.
+MOV A, V
+MOV B, Y
+ADD _
+ADD V
+
+# Add the upper byte.
+MOV A, U
+MOV B, X
+ADC _
+ADC U
+
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerU.value, 0x00)
+        XCTAssertEqual(computer.cpuState.registerV.value, 0x00)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 0)
+    }
+    
+    func testAddTwentyfourBitNumberWithADC_SetsTheCarryFlag() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# Compute 0xffffff + 0x000002 and write the result into UVX.
+# The result should be 0x000001.
+
+# Add the lower byte.
+LI A, 0xff
+LI B, 0x02
+ADD _
+ADD U
+
+# Add the middle byte.
+LI A, 0xff
+LI B, 0x00
+ADC _
+ADC V
+
+# Add the upper byte.
+LI A, 0xff
+LI B, 0x00
+ADC _
+ADC X
+
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerU.value, 0x01)
+        XCTAssertEqual(computer.cpuState.registerV.value, 0x00)
+        XCTAssertEqual(computer.cpuState.registerX.value, 0x00)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 0)
+    }
+    
+    func testSBC_cf_Active() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI B, 0
+LI A, 0
+DEA _
+DEA X
+SBC _
+SBC X
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 255)
+    }
+    
+    func testSBC_cf_Inactive() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+LI B, 0
+LI A, 0
+SBC _
+SBC X
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerX.value, 0)
+    }
+        
+    func testSubtractSixteenBitNumberWithSBC() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# Compute 0x0100 - 0x0001 and write the result into UV. Should be 0x00ff.
+LI U, 0x01
+LI V, 0x00
+LI X, 0x00
+LI Y, 0x01
+
+# Subtract the lower byte.
+MOV A, V
+MOV B, Y
+SUB _
+SUB V
+
+# Subtract the upper byte.
+MOV A, U
+MOV B, X
+SBC _
+SBC U
+
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerU.value, 0x00)
+        XCTAssertEqual(computer.cpuState.registerV.value, 0xff)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 0)
+    }
+    
+    func testSubtractSixteenBitNumberWithSBC_SetsTheCarryFlag() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# Compute 0x0000 - 0x0001 and write the result into UV.
+LI U, 0x00
+LI V, 0x00
+LI X, 0x00
+LI Y, 0x01
+
+# Subtract the lower byte.
+MOV A, V
+MOV B, Y
+SUB _
+SUB V
+
+# Subtract the upper byte.
+MOV A, U
+MOV B, X
+SBC _
+SBC U
+
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerU.value, 0xff)
+        XCTAssertEqual(computer.cpuState.registerV.value, 0xff)
+        XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
+    }
+    
+    func testSubtractTwentyfourBitNumberWithSBC() {
+        let computer = makeComputer()
+        computer.provideInstructions(TraceUtils.assemble("""
+# Compute 0x000000 - 0x000002 and write the result into UVX.
+
+# Subtract the lower byte.
+LI A, 0x00
+LI B, 0x02
+SUB _
+SUB U
+
+# Subtract the middle byte.
+LI A, 0x00
+LI B, 0x00
+SBC _
+SBC V
+
+# Subtract the upper byte.
+LI A, 0x00
+LI B, 0x00
+SBC _
+SBC X
+
+HLT
+"""))
+        XCTAssertNoThrow(try computer.runUntilHalted())
+        XCTAssertEqual(computer.cpuState.registerU.value, 0xfe)
+        XCTAssertEqual(computer.cpuState.registerV.value, 0xff)
+        XCTAssertEqual(computer.cpuState.registerX.value, 0xff)
         XCTAssertEqual(computer.cpuState.flags.carryFlag, 1)
     }
 }

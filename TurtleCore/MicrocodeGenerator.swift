@@ -137,11 +137,11 @@ public class MicrocodeGenerator: NSObject {
     }
     
     public func alu() {
-        // ALUwC -- ALU op with the 181's carry flag set High.
-        // ALUwoC -- ALU op with the 181's carry flag set Low.
-        // CALUwC -- When Carry Flag is Set: ALU op with the 181's carry flag set High. Otherwise: NOP
-        // CALUwoC -- When Carry Flag is Set: Conditional ALU op with the 181's carry flag set Low. Otherwise: NOP
-        // ALUxC -- ALU op with the 181's carry flag set High.
+        // ALUwC -- ALU op with the 181's carry input set High.
+        // ALUwoC -- ALU op with the 181's carry input set Low.
+        // CALUwC -- When Carry Flag is Set: ALU op with the 181's carry input set High. Otherwise: NOP
+        // CALUwoC -- When Carry Flag is Set: Conditional ALU op with the 181's carry input set Low. Otherwise: NOP
+        // ALUxC -- ALU op with the 181's carry input set High when the CPU carry flag is High, and Low when the CPU carry flag is set Low as well.
         
         alu("ALUwC", carry: .active)
         alu("ALUwoC", carry: .inactive)
@@ -152,6 +152,8 @@ public class MicrocodeGenerator: NSObject {
         let carryFlagSet: UInt = 0b0101
         conditionalALU("CALUwC", condition: carryFlagSet, carry: .active)
         conditionalALU("CALUwoC", condition: carryFlagSet, carry: .inactive)
+        
+        carryPassThroughALU("ALUxC")
     }
     
     public func alu(_ base: String, carry: ControlSignal) {
@@ -198,6 +200,33 @@ public class MicrocodeGenerator: NSObject {
         conditional(mnemonic, condition, controlWord)
     }
     
+    func carryPassThroughALU(_ base: String) {
+        let carryFlagSet: UInt = 0b0101
+        for destination in DestinationRegister.allCases {
+            carryPassThroughALU(base, carryFlagSet, destination)
+        }
+        carryPassThroughALU(base, carryFlagSet)
+    }
+    
+    func carryPassThroughALU(_ base: String, _ condition: UInt, _ destination: MicrocodeGenerator.DestinationRegister) {
+        var controlWord = ControlWord().withFI(.active).withCarryIn(.inactive)
+        controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .E)
+        controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
+        
+        var controlWordElse = ControlWord().withFI(.active).withCarryIn(.active)
+        controlWordElse = modifyControlWord(controlWord: controlWordElse, toOutputToBus: .E)
+        controlWordElse = modifyControlWord(controlWord: controlWordElse, toInputFromBus: destination)
+        
+        conditional("\(base) \(String(describing: destination))",
+                    condition, controlWord, controlWordElse)
+    }
+    
+    func carryPassThroughALU(_ base: String, _ condition: UInt) {
+        let controlWord = ControlWord().withFI(.active).withCarryIn(.inactive)
+        let controlWordElse = ControlWord().withFI(.active).withCarryIn(.active)
+        conditional(base, condition, controlWord, controlWordElse)
+    }
+    
     public func link() {
         let opcode = getNextOpcode()
         record(mnemonic: "LINK", opcode: opcode)
@@ -224,21 +253,24 @@ public class MicrocodeGenerator: NSObject {
         conditional(mnemonic, condition, controlWord)
     }
     
-    func conditional(_ mnemonic: String, _ condition: UInt, _ controlWord: ControlWord) {
+    func conditional(_ mnemonic: String,
+                     _ condition: UInt,
+                     _ controlWord: ControlWord,
+                     _ controlWordElse: ControlWord = ControlWord()) {
         let opcode = getNextOpcode()
         record(mnemonic: mnemonic, opcode: opcode)
         microcode.store(opcode: opcode,
                         carryFlag: 0, equalFlag: 0,
-                        controlWord: (condition & 0b1000) != 0 ? controlWord : ControlWord())
+                        controlWord: (condition & 0b1000) != 0 ? controlWord : controlWordElse)
         microcode.store(opcode: opcode,
                         carryFlag: 1, equalFlag: 0,
-                        controlWord: (condition & 0b0100) != 0 ? controlWord : ControlWord())
+                        controlWord: (condition & 0b0100) != 0 ? controlWord : controlWordElse)
         microcode.store(opcode: opcode,
                         carryFlag: 0, equalFlag: 1,
-                        controlWord: (condition & 0b0010) != 0 ? controlWord : ControlWord())
+                        controlWord: (condition & 0b0010) != 0 ? controlWord : controlWordElse)
         microcode.store(opcode: opcode,
                         carryFlag: 1, equalFlag: 1,
-                        controlWord: (condition & 0b0001) != 0 ? controlWord : ControlWord())
+                        controlWord: (condition & 0b0001) != 0 ? controlWord : controlWordElse)
     }
     
     public func inuv() {

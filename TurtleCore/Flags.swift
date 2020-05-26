@@ -8,8 +8,8 @@
 
 // Represents a flags (condition codes) register in the TurtleTTL hardware.
 public class Flags: NSObject {
-    fileprivate let carryFlagMask: UInt8 = 0b00000001
-    fileprivate let equalFlagMask: UInt8 = 0b00000010
+    private let carryFlagMask: UInt8 = 0b00000001
+    private let equalFlagMask: UInt8 = 0b00000010
     
     public let carryFlag: Int
     public let equalFlag: Int

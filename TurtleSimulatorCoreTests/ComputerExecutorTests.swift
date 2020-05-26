@@ -13,14 +13,14 @@ import TurtleSimulatorCore
 class ComputerExecutorTests: XCTestCase {
     let isVerboseLogging = false
     
-    fileprivate func makeExecutor() -> ComputerExecutor {
+    private func makeExecutor() -> ComputerExecutor {
         let executor = ComputerExecutor()
         executor.computer = makeComputer()
         executor.logger = makeLogger()
         return executor
     }
     
-    fileprivate func makeComputer() -> Computer {
+    private func makeComputer() -> Computer {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         
@@ -31,11 +31,11 @@ class ComputerExecutorTests: XCTestCase {
         return computer
     }
     
-    fileprivate func makeLogger() -> Logger {
+    private func makeLogger() -> Logger {
         return isVerboseLogging ? ConsoleLogger() : NullLogger()
     }
     
-    fileprivate func assembleSerialOutputTestProgram() -> [Instruction] {
+    private func assembleSerialOutputTestProgram() -> [Instruction] {
         return TraceUtils.assemble("""
 LI A, 0
 LI B, 0
@@ -182,7 +182,7 @@ NOP
 """)
     }
     
-    fileprivate func assembleInfiniteLoopProgram() -> [Instruction] {
+    private func assembleInfiniteLoopProgram() -> [Instruction] {
         return TraceUtils.assemble("""
 beginning:
 LXY beginning
@@ -192,7 +192,7 @@ NOP
 """)
     }
     
-    fileprivate func waitOrFailTest(semaphore: DispatchSemaphore, timeout: CFAbsoluteTime) {
+    private func waitOrFailTest(semaphore: DispatchSemaphore, timeout: CFAbsoluteTime) {
         let beginTime = CFAbsoluteTimeGetCurrent()
         while .success != semaphore.wait(timeout: DispatchTime.now()) {
             RunLoop.main.run(mode: .default, before: Date())

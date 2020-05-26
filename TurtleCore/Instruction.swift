@@ -114,13 +114,13 @@ public class Instruction: NSObject {
         return result
     }
     
-    fileprivate static func makeNumericalString(opcode: UInt8, immediate: UInt8) -> String {
+    private static func makeNumericalString(opcode: UInt8, immediate: UInt8) -> String {
         return String(format: "(0b%@, 0b%@)",
                       makePaddedBinaryString(opcode),
                       makePaddedBinaryString(immediate))
     }
     
-    fileprivate static func makePaddedBinaryString(_ value: UInt8) -> String {
+    private static func makePaddedBinaryString(_ value: UInt8) -> String {
         var result = String(value, radix: 2)
         if result.count < 8 {
             result = String(repeatElement("0", count: 8 - result.count)) + result

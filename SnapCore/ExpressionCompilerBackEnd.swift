@@ -39,7 +39,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         }
     }
     
-    fileprivate func push(_ value: Int) throws {
+    private func push(_ value: Int) throws {
         if stackDepth == 0 {
             try assembler.li(.A, value)
         } else if stackDepth == 1 {
@@ -51,7 +51,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         stackDepth += 1
     }
     
-    fileprivate func pushToStackInMemory(_ value: Int) throws {
+    private func pushToStackInMemory(_ value: Int) throws {
         try decrementStackPointer()
         
         // Load the 16-bit stack pointer into UV.
@@ -74,7 +74,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.li(.A, value)
     }
     
-    fileprivate func decrementStackPointer() throws {
+    private func decrementStackPointer() throws {
         // Save A in a well-known scratch location.
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo)
@@ -104,7 +104,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.mov(.A, .M)
     }
     
-    fileprivate func pop() throws {
+    private func pop() throws {
         if stackDepth == 0 {
             throw CompilerError(message: "ExpressionCompilerBackEnd: cannot pop when stack is empty")
         } else if stackDepth == 1 {
@@ -120,7 +120,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         stackDepth -= 1
     }
     
-    fileprivate func popInMemoryStackIntoRegisterB() throws {
+    private func popInMemoryStackIntoRegisterB() throws {
         // Load the 16-bit stack pointer into XY.
         try assembler.li(.U, kStackPointerHiHi)
         try assembler.li(.V, kStackPointerHiLo)
@@ -146,7 +146,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.mov(.M, .Y)
     }
     
-    fileprivate func add() throws {
+    private func add() throws {
         guard stackDepth >= 2 else {
             throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during ADD")
         }
@@ -158,7 +158,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         stackDepth -= 1
     }
     
-    fileprivate func sub() throws {
+    private func sub() throws {
         guard stackDepth >= 2 else {
             throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during SUB")
         }
@@ -170,7 +170,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         stackDepth -= 1
     }
     
-    fileprivate func mul() throws {
+    private func mul() throws {
         guard stackDepth >= 2 else {
             throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during MUL")
         }
@@ -235,7 +235,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         stackDepth -= 1
     }
     
-    fileprivate func div() throws {
+    private func div() throws {
         guard stackDepth >= 2 else {
             throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during DIV")
         }
@@ -316,7 +316,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         stackDepth -= 1
     }
     
-    fileprivate func mod() throws {
+    private func mod() throws {
         guard stackDepth >= 2 else {
             throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during MOD")
         }

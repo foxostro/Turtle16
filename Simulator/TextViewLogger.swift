@@ -30,7 +30,7 @@ final class TextViewLogger: NSObject, Logger {
         }
     }
     
-    fileprivate func updateView() {
+    private func updateView() {
         if let textStorage = textView.textStorage {
             textStorage.beginEditing()
             queue.sync {

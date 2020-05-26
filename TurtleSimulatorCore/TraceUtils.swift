@@ -11,7 +11,7 @@ import TurtleAssemblerCore
 
 // Useful for building Traces of programs in unit test.
 public class TraceUtils: NSObject {
-    fileprivate class InstructionFeed : NSObject, InterpreterDelegate {
+    private class InstructionFeed : NSObject, InterpreterDelegate {
         var numberOfInstructionsPastEnd = 0
         var instructions: [Instruction]
         
@@ -38,7 +38,7 @@ public class TraceUtils: NSObject {
         return try! tryAssemble(program: text, base: base)
     }
     
-    fileprivate static func tryAssemble(program text: String, base: Int) throws -> [Instruction] {
+    private static func tryAssemble(program text: String, base: Int) throws -> [Instruction] {
         let assembler = AssemblerFrontEnd()
         assembler.compile(program: text, base: base)
         if assembler.hasError {

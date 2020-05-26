@@ -106,7 +106,7 @@ public class Computer: NSObject {
         rebuildVirtualMachine()
     }
     
-    fileprivate func rebuildVirtualMachine() {
+    private func rebuildVirtualMachine() {
         let factory = ComputerVirtualMachineFactory()
         factory.cpuState = cpuState
         factory.microcodeGenerator = microcodeGenerator

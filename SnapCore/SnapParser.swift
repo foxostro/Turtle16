@@ -21,13 +21,13 @@ public class SnapParser: ParserBase {
         ]
     }
     
-    fileprivate func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {
         try expect(type: TokenColon.self, error: useOfUnresolvedIdentifierError(identifier))
         try expectEndOfStatement()
         return [LabelDeclarationNode(identifier: identifier)]
     }
     
-    fileprivate func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
                                     error: CompilerError(line: letToken.lineNumber,
                                                           format: "expected to find an identifier in constant declaration",
@@ -50,7 +50,7 @@ public class SnapParser: ParserBase {
         return [ConstantDeclaration(identifier: identifier, expression: expression)]
     }
     
-    fileprivate func consumeEval(_ evalToken: TokenEval) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeEval(_ evalToken: TokenEval) throws -> [AbstractSyntaxTreeNode] {
         if nil != acceptEndOfStatement() {
             throw CompilerError(line: evalToken.lineNumber,
                                 format: "expected to find an expression following `%@' statement",
@@ -61,26 +61,26 @@ public class SnapParser: ParserBase {
         return [EvalStatement(token: evalToken, expression: expression)]
     }
     
-    fileprivate func acceptEndOfStatement() -> Token? {
+    private func acceptEndOfStatement() -> Token? {
         return accept([TokenNewline.self, TokenEOF.self])
     }
     
-    fileprivate func expectEndOfStatement() throws {
+    private func expectEndOfStatement() throws {
         try expect(types: [TokenNewline.self, TokenEOF.self],
                           error: expectedEndOfStatementError(peek()!))
     }
     
-    fileprivate func expectedEndOfStatementError(_ token: Token) -> Error {
+    private func expectedEndOfStatementError(_ token: Token) -> Error {
         return CompilerError(line: token.lineNumber,
                               format: "expected to find the end of the statement: `%@'",
                               token.lexeme)
     }
     
-    fileprivate func consumeExpression() throws -> Expression {
+    private func consumeExpression() throws -> Expression {
         return try consumeAddition()
     }
     
-    fileprivate func consumeAddition() throws -> Expression {
+    private func consumeAddition() throws -> Expression {
         var expression = try consumeMultiplication()
         while let tokenOperator = accept(operators: [.plus, .minus]) {
             let right = try consumeMultiplication()
@@ -89,7 +89,7 @@ public class SnapParser: ParserBase {
         return expression
     }
     
-    fileprivate func consumeMultiplication() throws -> Expression {
+    private func consumeMultiplication() throws -> Expression {
         var expression = try consumeUnary()
         while let tokenOperator = accept(operators: [.multiply, .divide, .modulus]) {
             let right = try consumeUnary()
@@ -98,7 +98,7 @@ public class SnapParser: ParserBase {
         return expression
     }
     
-    fileprivate func consumeUnary() throws -> Expression {
+    private func consumeUnary() throws -> Expression {
         if let token = accept(operator: .minus) {
             let right = try consumeUnary()
             return Expression.Unary(op: token, expression: right)
@@ -107,7 +107,7 @@ public class SnapParser: ParserBase {
         return try consumePrimary()
     }
     
-    fileprivate func consumePrimary() throws -> Expression {
+    private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
             return Expression.Literal(number: numberToken)
         }
@@ -127,13 +127,13 @@ public class SnapParser: ParserBase {
         throw operandTypeMismatchError(peek()!)
     }
     
-    fileprivate func useOfUnresolvedIdentifierError(_ instruction: Token) -> Error {
+    private func useOfUnresolvedIdentifierError(_ instruction: Token) -> Error {
         return CompilerError(line: instruction.lineNumber,
                               format: "use of unresolved identifier: `%@'",
                               instruction.lexeme)
     }
     
-    fileprivate func operandTypeMismatchError(_ instruction: Token) -> Error {
+    private func operandTypeMismatchError(_ instruction: Token) -> Error {
         return CompilerError(line: instruction.lineNumber,
                               format: "operand type mismatch: `%@'",
                               instruction.lexeme)

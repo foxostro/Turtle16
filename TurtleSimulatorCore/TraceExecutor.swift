@@ -117,7 +117,7 @@ public class TraceExecutor: NSObject, InterpreterDelegate {
         }
     }
     
-    fileprivate func shouldBail(_ upcomingInstruction: Instruction) -> Bool {
+    private func shouldBail(_ upcomingInstruction: Instruction) -> Bool {
         if upcomingInstruction.isBreakpoint && flagBreak.value {
             logger?.append("shouldBail: isBreakpoint && flagBreak.value")
             return true

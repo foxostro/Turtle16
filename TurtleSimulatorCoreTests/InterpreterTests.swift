@@ -68,7 +68,7 @@ class InterpreterTests: XCTestCase {
         XCTAssertEqual(interpreter.cpuState, expectedFinalState)
     }
     
-    fileprivate func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
+    private func makeInterpreter(cpuState: CPUStateSnapshot = CPUStateSnapshot()) -> Interpreter {
         let interpreter = Interpreter(cpuState: cpuState,
                                       peripherals: ComputerPeripherals(),
                                       dataRAM: Memory())

@@ -77,7 +77,7 @@ public class Interpreter: NSObject {
         cpuState.uptime += 1
     }
     
-    fileprivate func tickPeripheralControlClock() {
+    private func tickPeripheralControlClock() {
         peripherals.bus = cpuState.bus
         peripherals.registerX = cpuState.registerX
         peripherals.registerY = cpuState.registerY
@@ -85,14 +85,14 @@ public class Interpreter: NSObject {
         cpuState.bus = peripherals.bus
     }
     
-    fileprivate func tickPeripheralRegisterClock() {
+    private func tickPeripheralRegisterClock() {
         peripherals.bus = cpuState.bus
         peripherals.registerX = cpuState.registerX
         peripherals.registerY = cpuState.registerY
         peripherals.onRegisterClock()
     }
     
-    fileprivate func onControlClock() {
+    private func onControlClock() {
         doID()
         doIF()
         doPCIF()
@@ -118,7 +118,7 @@ public class Interpreter: NSObject {
         handleControlSignalJ()
     }
     
-    fileprivate func doID() {
+    private func doID() {
         cpuState.registerC = Register(withValue: cpuState.if_id.immediate)
         let opcode = Int(cpuState.if_id.opcode)
         let b = instructionDecoder.load(opcode: opcode,
@@ -131,19 +131,19 @@ public class Interpreter: NSObject {
         }
     }
     
-    fileprivate func doesExecutionInvolvePeripherals() -> Bool {
+    private func doesExecutionInvolvePeripherals() -> Bool {
         return cpuState.controlWord.PI == .active || cpuState.controlWord.PO == .active
     }
     
-    fileprivate func doIF() {
+    private func doIF() {
         cpuState.if_id = delegate!.fetchInstruction(from: cpuState.pc_if)
     }
     
-    fileprivate func doPCIF() {
+    private func doPCIF() {
         cpuState.pc_if = ProgramCounter(withValue: cpuState.pc.value)
     }
     
-    fileprivate func doALU() {
+    private func doALU() {
         let a = cpuState.registerA.value
         let b = cpuState.registerB.value
         let c = cpuState.registerC.value
@@ -166,92 +166,92 @@ public class Interpreter: NSObject {
         cpuState.aluFlagsBuffer = Flags(alu.carryFlag, alu.equalFlag)
     }
     
-    fileprivate func handleControlSignalCO() {
+    private func handleControlSignalCO() {
         if (.active == cpuState.controlWord.CO) {
             cpuState.bus = Register(withValue: cpuState.registerC.value)
         }
     }
     
-    fileprivate func handleControlSignalYO() {
+    private func handleControlSignalYO() {
         if (.active == cpuState.controlWord.YO) {
             cpuState.bus = Register(withValue: cpuState.registerY.value)
         }
     }
     
-    fileprivate func handleControlSignalXO() {
+    private func handleControlSignalXO() {
         if (.active == cpuState.controlWord.XO) {
             cpuState.bus = Register(withValue: cpuState.registerX.value)
         }
     }
     
-    fileprivate func handleControlSignalPO() {
+    private func handleControlSignalPO() {
         if (.active == cpuState.controlWord.PO) {
             peripherals.activateSignalPO(cpuState.registerD.integerValue)
         }
     }
     
-    fileprivate func handleControlSignalMO() {
+    private func handleControlSignalMO() {
         if (.active == cpuState.controlWord.MO) {
             let value = dataRAM.load(from: cpuState.valueOfUVPair())
             cpuState.bus = Register(withValue: value)
         }
     }
     
-    fileprivate func handleControlSignalVO() {
+    private func handleControlSignalVO() {
         if (.active == cpuState.controlWord.VO) {
             cpuState.bus = Register(withValue: cpuState.registerV.value)
         }
     }
     
-    fileprivate func handleControlSignalUO() {
+    private func handleControlSignalUO() {
         if (.active == cpuState.controlWord.UO) {
             cpuState.bus = Register(withValue: cpuState.registerU.value)
         }
     }
     
-    fileprivate func handleControlSignalEO() {
+    private func handleControlSignalEO() {
         if (.active == cpuState.controlWord.EO) {
             cpuState.bus = Register(withValue: cpuState.aluResult.value)
         }
     }
     
-    fileprivate func handleControlSignalFI() {
+    private func handleControlSignalFI() {
         if (.active == cpuState.controlWord.FI) {
             cpuState.flags = Flags(cpuState.aluFlags.carryFlag, cpuState.aluFlags.equalFlag)
         }
     }
     
-    fileprivate func handleControlSignalAO() {
+    private func handleControlSignalAO() {
         if (.active == cpuState.controlWord.AO) {
             cpuState.bus = Register(withValue: cpuState.registerA.value)
         }
     }
     
-    fileprivate func handleControlSignalBO() {
+    private func handleControlSignalBO() {
         if (.active == cpuState.controlWord.BO) {
             cpuState.bus = Register(withValue: cpuState.registerB.value)
         }
     }
     
-    fileprivate func handleControlSignalLinkHiOut() {
+    private func handleControlSignalLinkHiOut() {
         if (.active == cpuState.controlWord.LinkHiOut) {
             cpuState.bus = Register(withValue: cpuState.registerG.value)
         }
     }
     
-    fileprivate func handleControlSignalLinkLoOut() {
+    private func handleControlSignalLinkLoOut() {
         if (.active == cpuState.controlWord.LinkLoOut) {
             cpuState.bus = Register(withValue: cpuState.registerH.value)
         }
     }
     
-    fileprivate func handleControlSignalXYInc() {
+    private func handleControlSignalXYInc() {
         if (.active == cpuState.controlWord.XYInc) {
             incrementXY()
         }
     }
 
-    fileprivate func incrementXY() {
+    private func incrementXY() {
         if cpuState.registerY.value == 255 {
             cpuState.registerX = Register(withValue: cpuState.registerX.value &+ 1)
             cpuState.registerY = Register(withValue: 0)
@@ -260,13 +260,13 @@ public class Interpreter: NSObject {
         }
     }
     
-    fileprivate func handleControlSignalUVInc() {
+    private func handleControlSignalUVInc() {
         if (.active == cpuState.controlWord.UVInc) {
             incrementUV()
         }
     }
 
-    fileprivate func incrementUV() {
+    private func incrementUV() {
         if cpuState.registerV.value == 255 {
             cpuState.registerU = Register(withValue: cpuState.registerU.value &+ 1)
             cpuState.registerV = Register(withValue: 0)
@@ -275,7 +275,7 @@ public class Interpreter: NSObject {
         }
     }
     
-    fileprivate func handleControlSignalJ() {
+    private func handleControlSignalJ() {
         if (.active == cpuState.controlWord.J) {
             cpuState.pc = ProgramCounter(withValue: UInt16(cpuState.valueOfXYPair()))
         } else {
@@ -283,7 +283,7 @@ public class Interpreter: NSObject {
         }
     }
     
-    fileprivate func onRegisterClock() {
+    private func onRegisterClock() {
         handleControlSignalYI()
         handleControlSignalXI()
         handleControlSignalVI()
@@ -296,62 +296,62 @@ public class Interpreter: NSObject {
         handleControlSignalLinkIn()
     }
     
-    fileprivate func handleControlSignalYI() {
+    private func handleControlSignalYI() {
         if (.active == cpuState.controlWord.YI) {
             cpuState.registerY = Register(withValue: cpuState.bus.value)
         }
     }
     
-    fileprivate func handleControlSignalXI() {
+    private func handleControlSignalXI() {
         if (.active == cpuState.controlWord.XI) {
             cpuState.registerX = Register(withValue: cpuState.bus.value)
         }
     }
     
-    fileprivate func handleControlSignalVI() {
+    private func handleControlSignalVI() {
         if (.active == cpuState.controlWord.VI) {
             cpuState.registerV = Register(withValue: cpuState.bus.value)
         }
     }
     
-    fileprivate func handleControlSignalUI() {
+    private func handleControlSignalUI() {
         if (.active == cpuState.controlWord.UI) {
             cpuState.registerU = Register(withValue: cpuState.bus.value)
         }
     }
     
-    fileprivate func handleControlSignalAI() {
+    private func handleControlSignalAI() {
         if (.active == cpuState.controlWord.AI) {
             cpuState.registerA = Register(withValue: cpuState.bus.value)
         }
     }
     
-    fileprivate func handleControlSignalBI() {
+    private func handleControlSignalBI() {
         if (.active == cpuState.controlWord.BI) {
             cpuState.registerB = Register(withValue: cpuState.bus.value)
         }
     }
     
-    fileprivate func handleControlSignalDI() {
+    private func handleControlSignalDI() {
         if (.active == cpuState.controlWord.DI) {
             cpuState.registerD = Register(withValue: cpuState.bus.value)
         }
     }
         
-    fileprivate func handleControlSignalPI() {
+    private func handleControlSignalPI() {
         if (.active == cpuState.controlWord.PI) {
             peripherals.activateSignalPI(cpuState.registerD.integerValue)
         }
     }
     
-    fileprivate func handleControlSignalMI() {
+    private func handleControlSignalMI() {
         if (.active == cpuState.controlWord.MI) {
             dataRAM.store(value: cpuState.bus.value,
                           to: cpuState.valueOfUVPair())
         }
     }
  
-    fileprivate func handleControlSignalLinkIn() {
+    private func handleControlSignalLinkIn() {
         // The Rev2 hardware loads the LINK register from PC/IF. This fixes a
         // hardware bug in Rev1 which broke the JALR instruction.
         if (.active == cpuState.controlWord.LinkIn) {

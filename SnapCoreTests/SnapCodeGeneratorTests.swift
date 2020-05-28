@@ -85,7 +85,7 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         return codeGenerator.errors
     }
     
-    func makeCodeGenerator(symbols: SymbolTable = [:]) -> SnapCodeGenerator {
+    func makeCodeGenerator(symbols: SymbolTable = SymbolTable()) -> SnapCodeGenerator {
         let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         let codeGenerator = SnapCodeGenerator(assemblerBackEnd: assemblerBackEnd)
         codeGenerator.symbols = symbols
@@ -136,7 +136,7 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let codeGenerator = makeCodeGenerator()
         codeGenerator.compile(ast: ast, base: 0x0000)
         XCTAssertFalse(codeGenerator.hasError)
-        XCTAssertEqual(codeGenerator.symbols["foo"], 2)
+        XCTAssertEqual(codeGenerator.symbols["foo"], .constant(2))
     }
     
     func testCompileConstantAssignmentReferencingAnotherConstant() {
@@ -153,8 +153,8 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let codeGenerator = makeCodeGenerator()
         codeGenerator.compile(ast: ast, base: 0x0000)
         XCTAssertFalse(codeGenerator.hasError)
-        XCTAssertEqual(codeGenerator.symbols["bar"], Optional<Int>(2))
-        XCTAssertEqual(codeGenerator.symbols["foo"], Optional<Int>(3))
+        XCTAssertEqual(codeGenerator.symbols["bar"], Optional<Symbol>(.constant(2)))
+        XCTAssertEqual(codeGenerator.symbols["foo"], Optional<Symbol>(.constant(3)))
     }
     
     func testEvalStatement_AdditionAndMultiplication() {

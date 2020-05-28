@@ -27,18 +27,21 @@ public class ExpressionCompilerFrontEnd: NSObject {
         }
     }
     
-    func compile(literal: Expression.Literal) -> [StackIR] {
-        let value = literal.number.literal
-        return [.push(value)]
+    private func compile(literal: Expression.Literal) -> [StackIR] {
+        return compile(intValue: literal.number.literal)
     }
     
-    func compile(binary: Expression.Binary) throws -> [StackIR] {
+    private func compile(intValue: Int) -> [StackIR] {
+        return [.push(intValue)]
+    }
+    
+    private func compile(binary: Expression.Binary) throws -> [StackIR] {
         let right: [StackIR] = try compile(expression: binary.right)
         let left: [StackIR] = try compile(expression: binary.left)
         return right + left + [getOperator(binary: binary)]
     }
     
-    func getOperator(binary: Expression.Binary) -> StackIR {
+    private func getOperator(binary: Expression.Binary) -> StackIR {
         switch binary.op.op {
         case .plus:
             return .add
@@ -53,14 +56,23 @@ public class ExpressionCompilerFrontEnd: NSObject {
         }
     }
     
-    func compile(identifier: Expression.Identifier) throws -> [StackIR] {
-        if let symbol = symbols[identifier.identifier.lexeme] {
-            return [.push(symbol)]
+    private func compile(identifier: Expression.Identifier) throws -> [StackIR] {
+        guard let sym = symbols[identifier.identifier.lexeme] else {
+            throw Expression.MustBeCompileTimeConstantError(line: identifier.identifier.lineNumber)
         }
-        throw Expression.MustBeCompileTimeConstantError(line: identifier.identifier.lineNumber)
+        return compile(symbol: sym)
     }
     
-    func unsupportedError(expression: Expression) -> Error {
+    private func compile(symbol: Symbol) -> [StackIR] {
+        let result: [StackIR]
+        switch symbol {
+        case .constant(let value):
+            result = compile(intValue: value)
+        }
+        return result
+    }
+    
+    private func unsupportedError(expression: Expression) -> Error {
         let message = "unsupported expression: \(expression)"
         if let lineNumber = expression.tokens.first?.lineNumber {
             return CompilerError(line: lineNumber, message: message)

@@ -23,13 +23,15 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
         let expression = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
         let eval = ExpressionEvaluatorCompileTime()
         XCTAssertThrowsError(try eval.evaluate(expression: expression)) {
-            XCTAssertNotNil($0 as? Expression.MustBeCompileTimeConstantError)
+            let error = $0 as? CompilerError
+            XCTAssertNotNil(error)
+            XCTAssertEqual(error?.message, "use of unresolved identifier: `foo'")
         }
     }
     
     func testEvaluateConstantIdentifier() {
         let expression = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        let eval = ExpressionEvaluatorCompileTime(symbols: ["foo" : 1])
+        let eval = ExpressionEvaluatorCompileTime(symbols: SymbolTable(["foo" : .constant(1)]))
         let actual = try! eval.evaluate(expression: expression)
         XCTAssertEqual(1, actual)
     }

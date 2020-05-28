@@ -45,7 +45,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         return codeGenerator.errors
     }
     
-    func makeCodeGenerator(symbols: [String : Int] = [:]) -> AssemblerCodeGenerator {
+    func makeCodeGenerator(symbols: SymbolTable = SymbolTable()) -> AssemblerCodeGenerator {
         let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         let codeGenerator = AssemblerCodeGenerator(assemblerBackEnd: assemblerBackEnd)
         codeGenerator.symbols = symbols
@@ -773,7 +773,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.line, 1)
-        XCTAssertEqual(errors.first?.message, "use of undeclared identifier: `foo'")
+        XCTAssertEqual(errors.first?.message, "use of unresolved identifier: `foo'")
     }
     
     func testLIWithConstantSource() {

@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 // Takes an AST and performs a pass that does final code generation.
 public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     let assemblerBackEnd: AssemblerBackEnd
-    public var symbols: [String:Int] = [:]
+    public var symbols = SymbolTable()
     var patcherActions: [Patcher.Action] = []
     
     public var instructions: [Instruction] = []
@@ -313,11 +313,7 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         if let immediate = node.parameters.parameters[1] as? TokenNumber {
             try self.assemblerBackEnd.li(node.destination, token: immediate)
         } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
-            guard let value = symbols[identifier.lexeme] else {
-                throw CompilerError(line: identifier.lineNumber,
-                                     format: "use of undeclared identifier: `%@'",
-                                     identifier.lexeme)
-            }
+            let value = try symbols.resolve(identifier: identifier)
             try self.assemblerBackEnd.li(node.destination,
                                       token: TokenNumber(lineNumber: identifier.lineNumber,
                                                          lexeme: identifier.lexeme,
@@ -412,24 +408,22 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     
     func visit(node: LabelDeclarationNode) throws {
         let name = node.identifier.lexeme
-        if symbols[name] == nil {
-            symbols[name] = assemblerBackEnd.programCounter
-        } else {
+        guard symbols[name] == nil else {
             throw CompilerError(line: node.identifier.lineNumber,
                                  format: "label redefines existing symbol: `%@'",
                                  node.identifier.lexeme)
         }
+        symbols[name] = .constant(assemblerBackEnd.programCounter)
     }
     
     func visit(node: ConstantDeclarationNode) throws {
         let name = node.identifier.lexeme
-        if symbols[name] == nil {
-            symbols[name] = node.number.literal
-        } else {
+        guard symbols[name] == nil else {
             throw CompilerError(line: node.identifier.lineNumber,
                                  format: "constant redefines existing symbol: `%@'",
                                  node.identifier.lexeme)
         }
+        symbols[name] = .constant(node.number.literal)
     }
     
     func setAddress(_ address: Int) throws {

@@ -96,7 +96,7 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
     
     func testCompileIdentifierExpression_ValueIsKnownAtCompileTime() {
         let expr = makeIdentifier(name: "foo")
-        XCTAssertEqual(try compile(expression: expr, symbols: ["foo" : 42]), [
+        XCTAssertEqual(try compile(expression: expr, symbols: SymbolTable(["foo" : .constant(42)])), [
             .push(42)
         ])
     }

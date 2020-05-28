@@ -21,7 +21,7 @@ public class ExpressionEvaluatorCompileTime: NSObject {
         if let literal = expression as? Expression.Literal {
             return literal.number.literal
         } else if let identifier = expression as? Expression.Identifier {
-            return try resolve(identifier: identifier.identifier)
+            return try symbols.resolve(identifier: identifier.identifier)
         } else if let unary = expression as? Expression.Unary {
             return try evaluate(unary: unary)
         } else if let binary = expression as? Expression.Binary {
@@ -30,13 +30,6 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             let lineNumber = expression.tokens.first?.lineNumber ?? 1
             throw Expression.MustBeCompileTimeConstantError(line: lineNumber)
         }
-    }
-    
-    func resolve(identifier: TokenIdentifier) throws -> Int {
-        guard let value = symbols[identifier.lexeme] else {
-            throw Expression.MustBeCompileTimeConstantError(line: identifier.lineNumber)
-        }
-        return value
     }
     
     public func evaluate(unary: Expression.Unary) throws -> Int {

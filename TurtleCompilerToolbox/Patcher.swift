@@ -34,20 +34,12 @@ public class Patcher: NSObject {
         var instructions = inputInstructions
         for action in actions {
             let oldInstruction = instructions[action.index]
-            let symbolValue = try resolveSymbol(identifier: action.symbol) + base
+            let symbolValue = try symbols.resolve(identifier: action.symbol) + base
             let immediate: UInt8 = UInt8((symbolValue >> action.shift) & 0xff)
             let newInstruction = Instruction(opcode: oldInstruction.opcode,
                                              immediate: immediate)
             instructions[action.index] = newInstruction
         }
         return instructions
-    }
-    
-    func resolveSymbol(identifier: TokenIdentifier) throws -> Int {
-        let name = identifier.lexeme
-        if let value = symbols[name] {
-            return value
-        }
-        throw CompilerError(line: identifier.lineNumber, format: "unrecognized symbol name: `%@'", name)
     }
 }

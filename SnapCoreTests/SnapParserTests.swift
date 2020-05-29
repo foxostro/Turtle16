@@ -117,6 +117,67 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
+    func testMalformedStaticVariableDeclaration_BareStatic() {
+        let parser = SnapParser(tokens: tokenize("static"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected declaration")
+    }
+    
+    func testMalformedStaticVariableDeclaration_BareStaticVar() {
+        let parser = SnapParser(tokens: tokenize("static var"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in variable declaration")
+    }
+    
+    func testMalformedStaticVariableDeclaration_BareVar() {
+        let parser = SnapParser(tokens: tokenize("var"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "currently only `static var' is supported")
+    }
+    
+    func testMalformedStaticVariableDeclaration_MissingAssignment() {
+        let parser = SnapParser(tokens: tokenize("static var foo"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "variables must be assigned an initial value")
+    }
+    
+    func testMalformedStaticVariableDeclaration_MissingValue() {
+        let tokens = tokenize("static var foo =")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected initial value after `='")
+    }
+    
+    func testMalformedStaticVariableDeclaration_BadTypeForValue_TooManyTokens() {
+        let parser = SnapParser(tokens: tokenize("static var foo = 1 2"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `2'")
+    }
+    
+    func testWellFormedStaticVariableDeclaration() {
+        let parser = SnapParser(tokens: tokenize("static var foo = 1"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
     
     func testMalformedEvalStatement_MissingExpression() {
         let parser = SnapParser(tokens: tokenize("eval"))

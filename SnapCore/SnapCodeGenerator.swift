@@ -16,6 +16,9 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     public static let kStackPointerAddressLo: UInt16 = 0x0001
     public static let kStackPointerInitialValue = 0x0000
     
+    // Static storage is allocated in a region starting at this address.
+    public static let kStaticStorageStartAddress: Int = 0x0010
+    
     let assemblerBackEnd: AssemblerBackEnd
     public var symbols = SymbolTable()
     var patcherActions: [Patcher.Action] = []
@@ -102,6 +105,9 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         else if let node = genericNode as? EvalStatement {
             try compile(eval: node)
         }
+        else if let node = genericNode as? StaticDeclaration {
+            try compile(static: node)
+        }
     }
     
     func compile(label: LabelDeclarationNode) throws {
@@ -128,6 +134,21 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     
     func compile(eval: EvalStatement) throws {
         try compile(expression: eval.expression)
+    }
+    
+    func compile(static staticDeclaration: StaticDeclaration) throws {
+        let name = staticDeclaration.identifier.lexeme
+        guard symbols.exists(identifier: name) == false else {
+            throw CompilerError(line: staticDeclaration.identifier.lineNumber,
+                                format: "variable redefines existing symbol: `%@'",
+                                staticDeclaration.identifier.lexeme)
+        }
+        let address = SnapCodeGenerator.kStaticStorageStartAddress
+        symbols.bindStaticWord(identifier: name, address: address)
+        try compile(expression: staticDeclaration.expression)
+        try assemblerBackEnd.li(.U, (address & 0xff00) >> 8)
+        try assemblerBackEnd.li(.V,  address & 0x00ff)
+        try assemblerBackEnd.mov(.M, .A)
     }
     
     func compile(expression: Expression) throws {

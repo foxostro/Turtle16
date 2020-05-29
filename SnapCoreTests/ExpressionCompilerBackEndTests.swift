@@ -17,6 +17,7 @@ class StackIRExecutor: NSObject {
     let isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
+    var configure: (Computer)->Void = {_ in}
     
     override init() {
         microcodeGenerator = MicrocodeGenerator()
@@ -43,6 +44,7 @@ class StackIRExecutor: NSObject {
     func execute(instructions: [Instruction]) -> Computer {
         let computer = makeComputer(microcodeGenerator: microcodeGenerator)
         computer.provideInstructions(instructions)
+        configure(computer)
         XCTAssertNoThrow(try computer.runUntilHalted())
         return computer
     }
@@ -400,5 +402,42 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
         XCTAssertEqual(computer.cpuState.registerB.value, 254)
         XCTAssertEqual(computer.stackTop, 255)
+    }
+    
+    func testLoadWithEmptyStack() {
+        let value: UInt8 = 0xab
+        let address = 0x0010
+        let executor = StackIRExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: value, to: address)
+        }
+        let computer = try! executor.execute(ir: [.load(address)])
+        XCTAssertEqual(computer.cpuState.registerA.value, value)
+    }
+    
+    func testLoadWithStackDepthOne() {
+        let value: UInt8 = 0xab
+        let address = 0x0010
+        let executor = StackIRExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: value, to: address)
+        }
+        let computer = try! executor.execute(ir: [.push(1), .load(address)])
+        XCTAssertEqual(computer.cpuState.registerA.value, value)
+        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+    }
+    
+    func testLoadWithStackDepthTwo() {
+        let value: UInt8 = 0xab
+        let address = 0x0010
+        let executor = StackIRExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: value, to: address)
+        }
+        let computer = try! executor.execute(ir: [.push(1), .push(2), .load(address)])
+        XCTAssertEqual(computer.cpuState.registerA.value, value)
+        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.stackPointer, 0xffff)
+        XCTAssertEqual(computer.stackTop, 1)
     }
 }

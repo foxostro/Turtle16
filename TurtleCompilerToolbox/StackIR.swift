@@ -7,5 +7,12 @@
 //
 
 public enum StackIR: Equatable {
-    case push(Int), pop, add, sub, mul, div, mod
+    case push(Int) // push the specified value to the stack
+    case pop // pop the stack
+    case add // pop two from the stack, A+B, push the result
+    case sub // pop two from the stack, A-B, push the result
+    case mul // pop two from the stack, A*B, push the result
+    case div // pop two from the stack, A/B, push the result
+    case mod // pop two from the stack, A%B, push the result
+    case load(Int) // load from the specified address, push to the stack
 }

@@ -73,7 +73,14 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         if codeGenerator.hasError {
             XCTFail()
         }
-        return codeGenerator.instructions
+        
+        var instructions: [Instruction] = []
+        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+        for instruction in codeGenerator.instructions {
+            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
+        }
+        
+        return instructions
     }
     
     func mustFailToCompile(_ root: AbstractSyntaxTreeNode) -> [CompilerError] {

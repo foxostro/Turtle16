@@ -255,4 +255,53 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let computer = execute(instructions: instructions)
         XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress), 2)
     }
+    
+    func testStaticVariableDeclarationWithTwoSymbols() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                            left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                            right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))),
+            
+            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                              expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                            left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 1)),
+                                                            right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 1))))
+        ])
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        XCTAssertFalse(codeGenerator.hasError)
+        
+        switch try! codeGenerator.symbols.resolve(identifier: "foo") {
+        case .staticWord(let word):
+            XCTAssertEqual(word.address, SnapCodeGenerator.kStaticStorageStartAddress + 0)
+        default:
+            XCTFail()
+        }
+        
+        switch try! codeGenerator.symbols.resolve(identifier: "bar") {
+        case .staticWord(let word):
+            XCTAssertEqual(word.address, SnapCodeGenerator.kStaticStorageStartAddress + 1)
+        default:
+            XCTFail()
+        }
+    }
+    
+    func testStaticVariableDeclarationWithTwoVariableCompilesToTwoExpressionAssignments() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                            left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                            right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))),
+            
+            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                              expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                            left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                            right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+        ])
+        let instructions = mustCompile(ast)
+        let computer = execute(instructions: instructions)
+        XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 0), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 1), 4)
+    }
 }

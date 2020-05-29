@@ -18,6 +18,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     
     // Static storage is allocated in a region starting at this address.
     public static let kStaticStorageStartAddress: Int = 0x0010
+    var staticStoragePointer = kStaticStorageStartAddress
     
     let assemblerBackEnd: AssemblerBackEnd
     public var symbols = SymbolTable()
@@ -143,12 +144,18 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
                                 format: "variable redefines existing symbol: `%@'",
                                 staticDeclaration.identifier.lexeme)
         }
-        let address = SnapCodeGenerator.kStaticStorageStartAddress
+        let address = allocateStaticStorage()
         symbols.bindStaticWord(identifier: name, address: address)
         try compile(expression: staticDeclaration.expression)
         try assemblerBackEnd.li(.U, (address & 0xff00) >> 8)
         try assemblerBackEnd.li(.V,  address & 0x00ff)
         try assemblerBackEnd.mov(.M, .A)
+    }
+    
+    private func allocateStaticStorage(_ size: Int = 1) -> Int {
+        let result = staticStoragePointer
+        staticStoragePointer += size
+        return result
     }
     
     func compile(expression: Expression) throws {

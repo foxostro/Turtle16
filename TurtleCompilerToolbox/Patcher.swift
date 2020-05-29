@@ -34,12 +34,22 @@ public class Patcher: NSObject {
         var instructions = inputInstructions
         for action in actions {
             let oldInstruction = instructions[action.index]
-            let symbolValue = try symbols.resolve(identifier: action.symbol) + base
+            let symbolValue = try resolve(identifier: action.symbol) + base
             let immediate: UInt8 = UInt8((symbolValue >> action.shift) & 0xff)
             let newInstruction = Instruction(opcode: oldInstruction.opcode,
                                              immediate: immediate)
             instructions[action.index] = newInstruction
         }
         return instructions
+    }
+    
+    private func resolve(identifier: TokenIdentifier) throws -> Int {
+        let symbol = try symbols.resolve(identifierToken: identifier)
+        switch symbol {
+        case .constantAddress(let address):
+            return address.value
+        case .constantWord(let word):
+            return Int(word.value)
+        }
     }
 }

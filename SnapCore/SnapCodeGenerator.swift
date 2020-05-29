@@ -106,24 +106,24 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     
     func compile(label: LabelDeclarationNode) throws {
         let name = label.identifier.lexeme
-        guard symbols[name] == nil else {
+        guard symbols.exists(identifier: name) == false else {
             throw CompilerError(line: label.identifier.lineNumber,
                                  format: "label redefines existing symbol: `%@'",
                                  label.identifier.lexeme)
         }
-        symbols[name] = .constant(assemblerBackEnd.programCounter)
+        symbols.bindConstantAddress(identifier: name, value: assemblerBackEnd.programCounter)
     }
     
     func compile(constant: ConstantDeclaration) throws {
         let name = constant.identifier.lexeme
-        guard symbols[name] == nil else {
+        guard symbols.exists(identifier: name) == false else {
             throw CompilerError(line: constant.identifier.lineNumber,
                                 format: "constant redefines existing symbol: `%@'",
                                 constant.identifier.lexeme)
         }
         let eval = ExpressionEvaluatorCompileTime(symbols: symbols)
         let value = try eval.evaluate(expression: constant.expression)
-        symbols[name] = .constant(value)
+        symbols.bindConstantWord(identifier: name, value: UInt8(value))
     }
     
     func compile(eval: EvalStatement) throws {

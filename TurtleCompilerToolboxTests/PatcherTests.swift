@@ -29,7 +29,7 @@ class PatcherTests: XCTestCase {
     
     func testPatchWithNoOpChangeToInstruction() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let symbols: SymbolTable = SymbolTable(["" : .constant(0)])
+        let symbols = SymbolTable(["" : .constantAddress(SymbolConstantAddress(identifier: "", value: 0))])
         let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
         let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
@@ -43,7 +43,7 @@ class PatcherTests: XCTestCase {
     func testPatchWithChangeToInstruction() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
-        let symbols: SymbolTable = SymbolTable(["" : .constant(255)])
+        let symbols = SymbolTable(["" : .constantAddress(SymbolConstantAddress(identifier: "", value: 255))])
         let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
         let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
@@ -57,7 +57,7 @@ class PatcherTests: XCTestCase {
     func testPatchWithChangeToInstructionAndShift() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
-        let symbols = SymbolTable(["" : .constant(0xff00)])
+        let symbols = SymbolTable(["" : .constantAddress(SymbolConstantAddress(identifier: "", value: 0xff00))])
         let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
         let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 8)]
         let patcher = Patcher(inputInstructions: inputInstructions,
@@ -75,9 +75,9 @@ class PatcherTests: XCTestCase {
         let expected = [Instruction(opcode: 0, immediate: 10),
                         Instruction(opcode: 1, immediate: 20),
                         Instruction(opcode: 2, immediate: 30)]
-        let symbols = SymbolTable(["a" : .constant(10),
-                                   "b" : .constant(20),
-                                   "c" : .constant(30)])
+        let symbols = SymbolTable(["a" : .constantAddress(SymbolConstantAddress(identifier: "a", value: 10)),
+                                   "b" : .constantAddress(SymbolConstantAddress(identifier: "b", value: 20)),
+                                   "c" : .constantAddress(SymbolConstantAddress(identifier: "c", value: 30))])
         let actions: [Patcher.Action] = [(index: 0, symbol: TokenIdentifier(lineNumber: 1, lexeme: "a"), shift: 0),
                                          (index: 1, symbol: TokenIdentifier(lineNumber: 2, lexeme: "b"), shift: 0),
                                          (index: 2, symbol: TokenIdentifier(lineNumber: 3, lexeme: "c"), shift: 0)]

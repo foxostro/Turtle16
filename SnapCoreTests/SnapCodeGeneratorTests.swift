@@ -136,7 +136,13 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let codeGenerator = makeCodeGenerator()
         codeGenerator.compile(ast: ast, base: 0x0000)
         XCTAssertFalse(codeGenerator.hasError)
-        XCTAssertEqual(codeGenerator.symbols["foo"], .constant(2))
+        let symbol = try! codeGenerator.symbols.resolve(identifier: "foo")
+        switch symbol {
+        case .constantWord(let word):
+            XCTAssertEqual(word.value, 2)
+        default:
+            XCTFail()
+        }
     }
     
     func testCompileConstantAssignmentReferencingAnotherConstant() {
@@ -153,8 +159,22 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let codeGenerator = makeCodeGenerator()
         codeGenerator.compile(ast: ast, base: 0x0000)
         XCTAssertFalse(codeGenerator.hasError)
-        XCTAssertEqual(codeGenerator.symbols["bar"], Optional<Symbol>(.constant(2)))
-        XCTAssertEqual(codeGenerator.symbols["foo"], Optional<Symbol>(.constant(3)))
+        
+        let symbolBar = try! codeGenerator.symbols.resolve(identifier: "bar")
+        switch symbolBar {
+        case .constantWord(let word):
+            XCTAssertEqual(word.value, 2)
+        default:
+            XCTFail()
+        }
+        
+        let symbolFoo = try! codeGenerator.symbols.resolve(identifier: "foo")
+        switch symbolFoo {
+        case .constantWord(let word):
+            XCTAssertEqual(word.value, 3)
+        default:
+            XCTFail()
+        }
     }
     
     func testEvalStatement_AdditionAndMultiplication() {

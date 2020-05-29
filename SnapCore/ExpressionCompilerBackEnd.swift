@@ -35,6 +35,7 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .mul: try mul()
             case .div: try div()
             case .mod: try mod()
+            case .load(let address): try load(from: address)
             }
         }
     }
@@ -394,6 +395,61 @@ public class ExpressionCompilerBackEnd: NSObject {
         if stackDepth > 2 {
             try popInMemoryStackIntoRegisterB()
         }
+        stackDepth -= 1
+    }
+    
+    private func load(from address: Int) throws {
+        if stackDepth == 0 {
+            try assembler.li(.U, (address & 0xff00) >> 8)
+            try assembler.li(.V,  address & 0x00ff)
+            try assembler.mov(.A, .M)
+        } else if stackDepth == 1 {
+            try assembler.mov(.B, .A)
+            try assembler.li(.U, (address & 0xff00) >> 8)
+            try assembler.li(.V,  address & 0x00ff)
+            try assembler.mov(.A, .M)
+        } else {
+            try decrementStackPointer()
+            
+            // Load the 16-bit stack pointer into UV.
+            try assembler.li(.U, kStackPointerHiHi)
+            try assembler.li(.V, kStackPointerHiLo)
+            try assembler.mov(.X, .M)
+            try assembler.li(.U, kStackPointerLoHi)
+            try assembler.li(.V, kStackPointerLoLo)
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            
+            // Store B to the top of the in-memory stack.
+            try assembler.mov(.M, .B)
+            
+            // Move A into B
+            try assembler.mov(.B, .A)
+            
+            // Finally, load the value from RAM and push into A.
+            try assembler.li(.U, (address & 0xff00) >> 8)
+            try assembler.li(.V,  address & 0x00ff)
+            try assembler.mov(.A, .M)
+        }
+        stackDepth += 1
+    }
+    
+    private func store(to address: Int) throws {
+        guard stackDepth > 0 else {
+            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during STORE")
+        }
+        
+        try assembler.li(.U, (address & 0xff00) >> 8)
+        try assembler.li(.V,  address & 0x00ff)
+        try assembler.mov(.M, .A)
+        
+        try assembler.mov(.A, .B)
+        
+        if stackDepth > 1 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        
         stackDepth -= 1
     }
 }

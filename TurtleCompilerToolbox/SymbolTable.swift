@@ -6,40 +6,52 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public enum Symbol: Equatable {
-    case constant(Int)
-}
-
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
-    var table: [String:Symbol]
+    public enum SymbolEnum: Equatable {
+        case constantAddress(SymbolConstantAddress)
+        case constantWord(SymbolConstantWord)
+    }
     
-    public init(_ dict: [String:Symbol] = [:]) {
+    var table: [String:SymbolEnum]
+    
+    public init(_ dict: [String:SymbolEnum] = [:]) {
         table = dict
     }
     
-    public subscript(name: String) -> Symbol? {
-        get {
-            return table[name]
-        }
-        set(newValue) {
-            return table[name] = newValue
-        }
+    public func exists(identifier: String) -> Bool {
+        return nil != table[identifier]
     }
     
-    public func resolve(identifier: TokenIdentifier) throws -> Int {
-        guard let symbol = table[identifier.lexeme] else {
-            throw useOfUnresolvedIdentifierError(identifier)
-        }
-        switch symbol {
-        case .constant(let value):
-            return value
-        }
+    public func bindConstantAddress(identifier: String, value: Int) {
+        table[identifier] = .constantAddress(SymbolConstantAddress(identifier: identifier, value: value))
     }
     
-    private func useOfUnresolvedIdentifierError(_ identifier: TokenIdentifier) -> CompilerError {
-        return CompilerError(line: identifier.lineNumber,
+    public func bindConstantWord(identifier: String, value: UInt8) {
+        table[identifier] = .constantWord(SymbolConstantWord(identifier: identifier, value: value))
+    }
+    
+    public func resolve(identifier: String) throws -> SymbolEnum {
+        guard let symbol = table[identifier] else {
+            throw useOfUnresolvedIdentifierError(identifier: identifier)
+        }
+        return symbol
+    }
+    
+    private func useOfUnresolvedIdentifierError(identifier: String) -> CompilerError {
+        return CompilerError(message: "use of unresolved identifier: `\(identifier)'")
+    }
+    
+    public func resolve(identifierToken: TokenIdentifier) throws -> SymbolEnum {
+        guard let symbol = table[identifierToken.lexeme] else {
+            throw useOfUnresolvedIdentifierError(identifierToken: identifierToken)
+        }
+        return symbol
+    }
+    
+    private func useOfUnresolvedIdentifierError(identifierToken: TokenIdentifier) -> CompilerError {
+        return CompilerError(line: identifierToken.lineNumber,
                               format: "use of unresolved identifier: `%@'",
-                              identifier.lexeme)
+                              identifierToken.lexeme)
     }
 }

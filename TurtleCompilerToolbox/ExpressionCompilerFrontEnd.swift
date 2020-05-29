@@ -57,19 +57,13 @@ public class ExpressionCompilerFrontEnd: NSObject {
     }
     
     private func compile(identifier: Expression.Identifier) throws -> [StackIR] {
-        guard let sym = symbols[identifier.identifier.lexeme] else {
-            throw Expression.MustBeCompileTimeConstantError(line: identifier.identifier.lineNumber)
-        }
-        return compile(symbol: sym)
-    }
-    
-    private func compile(symbol: Symbol) -> [StackIR] {
-        let result: [StackIR]
+        let symbol = try symbols.resolve(identifierToken: identifier.identifier)
         switch symbol {
-        case .constant(let value):
-            result = compile(intValue: value)
+        case .constantAddress(let address):
+            return compile(intValue: address.value)
+        case .constantWord(let word):
+            return compile(intValue: Int(word.value))
         }
-        return result
     }
     
     private func unsupportedError(expression: Expression) -> Error {

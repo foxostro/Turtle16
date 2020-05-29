@@ -31,7 +31,8 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
     
     func testEvaluateConstantIdentifier() {
         let expression = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        let eval = ExpressionEvaluatorCompileTime(symbols: SymbolTable(["foo" : .constant(1)]))
+        let symbols = SymbolTable(["foo" : .constantAddress(SymbolConstantAddress(identifier: "foo", value: 1))])
+        let eval = ExpressionEvaluatorCompileTime(symbols: symbols)
         let actual = try! eval.evaluate(expression: expression)
         XCTAssertEqual(1, actual)
     }

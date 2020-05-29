@@ -313,13 +313,23 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         if let immediate = node.parameters.parameters[1] as? TokenNumber {
             try self.assemblerBackEnd.li(node.destination, token: immediate)
         } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
-            let value = try symbols.resolve(identifier: identifier)
+            let value = try resolve(identifier: identifier)
             try self.assemblerBackEnd.li(node.destination,
                                       token: TokenNumber(lineNumber: identifier.lineNumber,
                                                          lexeme: identifier.lexeme,
                                                          literal: value))
         } else {
             throw operandTypeMismatchError(node.instruction)
+        }
+    }
+    
+    func resolve(identifier: TokenIdentifier) throws -> Int {
+        let symbol = try symbols.resolve(identifierToken: identifier)
+        switch symbol {
+        case .constantAddress(let address):
+            return address.value
+        case .constantWord(let word):
+            return Int(word.value)
         }
     }
     
@@ -408,22 +418,22 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     
     func visit(node: LabelDeclarationNode) throws {
         let name = node.identifier.lexeme
-        guard symbols[name] == nil else {
+        guard symbols.exists(identifier: name) == false else {
             throw CompilerError(line: node.identifier.lineNumber,
-                                 format: "label redefines existing symbol: `%@'",
-                                 node.identifier.lexeme)
+                                format: "label redefines existing symbol: `%@'",
+                                name)
         }
-        symbols[name] = .constant(assemblerBackEnd.programCounter)
+        symbols.bindConstantAddress(identifier: name, value: assemblerBackEnd.programCounter)
     }
     
     func visit(node: ConstantDeclarationNode) throws {
         let name = node.identifier.lexeme
-        guard symbols[name] == nil else {
+        guard symbols.exists(identifier: name) == false else {
             throw CompilerError(line: node.identifier.lineNumber,
-                                 format: "constant redefines existing symbol: `%@'",
-                                 node.identifier.lexeme)
+                                format: "constant redefines existing symbol: `%@'",
+                                name)
         }
-        symbols[name] = .constant(node.number.literal)
+        symbols.bindConstantWord(identifier: name, value: UInt8(node.number.literal))
     }
     
     func setAddress(_ address: Int) throws {

@@ -71,7 +71,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors[1].message, "unexpected end of input")
     }
     
-    func testMalformedDeclaration_BareLetStatement() {
+    func testMalformedConstantDeclaration_BareLetStatement() {
         let parser = SnapParser(tokens: tokenize("let"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
@@ -79,7 +79,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in constant declaration")
     }
     
-    func testMalformedDeclaration_MissingAssignment() {
+    func testMalformedConstantDeclaration_MissingAssignment() {
         let parser = SnapParser(tokens: tokenize("let foo"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
@@ -87,7 +87,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "constants must be assigned a value")
     }
     
-    func testMalformedDeclaration_MissingValue() {
+    func testMalformedConstantDeclaration_MissingValue() {
         let tokens = tokenize("let foo =")
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -96,7 +96,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "expected value after '='")
     }
     
-    func testMalformedDeclaration_BadTypeForValue_TooManyTokens() {
+    func testMalformedConstantDeclaration_BadTypeForValue_TooManyTokens() {
         let parser = SnapParser(tokens: tokenize("let foo = 1 2"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
@@ -116,6 +116,7 @@ class SnapParserTests: XCTestCase {
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
+    
     
     func testMalformedEvalStatement_MissingExpression() {
         let parser = SnapParser(tokens: tokenize("eval"))

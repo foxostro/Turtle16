@@ -96,7 +96,8 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
     
     func testCompileIdentifierExpression_ValueIsKnownAtCompileTime() {
         let expr = makeIdentifier(name: "foo")
-        XCTAssertEqual(try compile(expression: expr, symbols: SymbolTable(["foo" : .constant(42)])), [
+        let symbols = SymbolTable(["foo" : .constantAddress(SymbolConstantAddress(identifier: "foo", value: 42))])
+        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42)
         ])
     }
@@ -104,7 +105,7 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
     func testCompileIdentifierExpression_UnresolvedIdentifier() {
         let expr = makeIdentifier(name: "foo")
         XCTAssertThrowsError(try compile(expression: expr)) {
-            XCTAssertNotNil($0 as? Expression.MustBeCompileTimeConstantError)
+            XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
         }
     }
 }

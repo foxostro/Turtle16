@@ -21,7 +21,7 @@ public class ExpressionEvaluatorCompileTime: NSObject {
         if let literal = expression as? Expression.Literal {
             return literal.number.literal
         } else if let identifier = expression as? Expression.Identifier {
-            return try symbols.resolve(identifier: identifier.identifier)
+            return try evaluate(identifier: identifier)
         } else if let unary = expression as? Expression.Unary {
             return try evaluate(unary: unary)
         } else if let binary = expression as? Expression.Binary {
@@ -32,7 +32,17 @@ public class ExpressionEvaluatorCompileTime: NSObject {
         }
     }
     
-    public func evaluate(unary: Expression.Unary) throws -> Int {
+    private func evaluate(identifier: Expression.Identifier) throws -> Int {
+        let symbol = try symbols.resolve(identifierToken: identifier.identifier)
+        switch symbol {
+        case .constantAddress(let address):
+            return address.value
+        case .constantWord(let word):
+            return Int(word.value)
+        }
+    }
+    
+    private func evaluate(unary: Expression.Unary) throws -> Int {
         let result: Int
         let prior = try evaluate(expression: unary.child)
         if unary.op.op == .minus {
@@ -43,7 +53,7 @@ public class ExpressionEvaluatorCompileTime: NSObject {
         return result
     }
     
-    public func evaluate(binary: Expression.Binary) throws -> Int {
+    private func evaluate(binary: Expression.Binary) throws -> Int {
         let result: Int
         let left = try evaluate(expression: binary.left)
         let right = try evaluate(expression: binary.right)

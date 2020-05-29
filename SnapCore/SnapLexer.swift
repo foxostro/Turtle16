@@ -61,6 +61,12 @@ public class SnapLexer: LexerBase {
             Rule(pattern: "return") {[weak self] in
                 TokenReturn(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "var") {[weak self] in
+                TokenVar(lineNumber: self!.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "static") {[weak self] in
+                TokenStatic(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
             },

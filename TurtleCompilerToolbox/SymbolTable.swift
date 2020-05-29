@@ -11,6 +11,7 @@ public class SymbolTable: NSObject {
     public enum SymbolEnum: Equatable {
         case constantAddress(SymbolConstantAddress)
         case constantWord(SymbolConstantWord)
+        case staticWord(SymbolStaticWord)
     }
     
     var table: [String:SymbolEnum]
@@ -29,6 +30,10 @@ public class SymbolTable: NSObject {
     
     public func bindConstantWord(identifier: String, value: UInt8) {
         table[identifier] = .constantWord(SymbolConstantWord(identifier: identifier, value: value))
+    }
+    
+    public func bindStaticWord(identifier: String, address: Int) {
+        table[identifier] = .staticWord(SymbolStaticWord(identifier: identifier, address: address))
     }
     
     public func resolve(identifier: String) throws -> SymbolEnum {

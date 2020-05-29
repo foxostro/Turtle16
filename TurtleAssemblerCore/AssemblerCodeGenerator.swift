@@ -330,6 +330,8 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             return address.value
         case .constantWord(let word):
             return Int(word.value)
+        case .staticWord(_):
+            throw Expression.MustBeCompileTimeConstantError(line: identifier.lineNumber)
         }
     }
     

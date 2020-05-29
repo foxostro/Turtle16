@@ -50,6 +50,9 @@ public class Patcher: NSObject {
             return address.value
         case .constantWord(let word):
             return Int(word.value)
+        case .staticWord(_):
+            // TODO: Perhaps `MustBeCompileTimeConstantError' should be in some other namespace other than `Expression'.
+            throw Expression.MustBeCompileTimeConstantError(line: identifier.lineNumber)
         }
     }
 }

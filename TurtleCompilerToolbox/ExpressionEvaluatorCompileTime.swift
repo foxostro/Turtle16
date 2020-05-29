@@ -39,6 +39,8 @@ public class ExpressionEvaluatorCompileTime: NSObject {
             return address.value
         case .constantWord(let word):
             return Int(word.value)
+        case .staticWord(_):
+            throw Expression.MustBeCompileTimeConstantError(line: identifier.tokens.first!.lineNumber)
         }
     }
     

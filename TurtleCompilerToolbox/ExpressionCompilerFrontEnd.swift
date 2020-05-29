@@ -63,6 +63,8 @@ public class ExpressionCompilerFrontEnd: NSObject {
             return compile(intValue: address.value)
         case .constantWord(let word):
             return compile(intValue: Int(word.value))
+        case .staticWord(let word):
+            return [.load(word.address)]
         }
     }
     

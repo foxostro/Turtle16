@@ -55,4 +55,16 @@ class SymbolTableTests: XCTestCase {
         symbols.bindConstantAddress(identifier: "foo", value: 0xffff)
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
+
+    func testBindStaticWord() {
+        let symbols = SymbolTable()
+        symbols.bindStaticWord(identifier: "foo", address: 0x10)
+        let symbol = try! symbols.resolve(identifier: "foo")
+        switch symbol {
+        case .staticWord(let word):
+            XCTAssertEqual(word.address, 0x10)
+        default:
+            XCTFail()
+        }
+    }
 }

@@ -17,6 +17,8 @@ public class SnapParser: ParserBase {
             Production(symbol: TokenNewline.self,    generator: { _ in [] }),
             Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) }),
             Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) }),
+            Production(symbol: TokenStatic.self,     generator: { try self.consumeStatic($0 as! TokenStatic) }),
+            Production(symbol: TokenVar.self,        generator: { try self.consumeVar($0 as! TokenVar) }),
             Production(symbol: TokenEval.self,       generator: { try self.consumeEval($0 as! TokenEval) })
         ]
     }
@@ -48,6 +50,36 @@ public class SnapParser: ParserBase {
         try expectEndOfStatement()
         
         return [ConstantDeclaration(identifier: identifier, expression: expression)]
+    }
+    
+    private func consumeStatic(_ staticToken: TokenStatic) throws -> [AbstractSyntaxTreeNode] {
+        let varToken = try expect(type: TokenVar.self,
+                                  error: CompilerError(line: staticToken.lineNumber,
+                                                       message: "expected declaration"))
+        let identifier = try expect(type: TokenIdentifier.self,
+                                    error: CompilerError(line: varToken.lineNumber,
+                                                         format: "expected to find an identifier in variable declaration",
+                                                         varToken.lexeme)) as! TokenIdentifier
+        let equal = try expect(type: TokenEqual.self,
+                               error: CompilerError(line: identifier.lineNumber,
+                                                    message: "variables must be assigned an initial value"))
+        
+        if nil != acceptEndOfStatement() {
+            throw CompilerError(line: equal.lineNumber,
+                                format: "expected initial value after `%@'",
+                                equal.lexeme)
+        }
+        
+        let expression = try consumeExpression()
+        
+        try expectEndOfStatement()
+        
+        return [StaticDeclaration(identifier: identifier, expression: expression)]
+    }
+    
+    private func consumeVar(_ varToken: TokenVar) throws -> [AbstractSyntaxTreeNode] {
+        throw CompilerError(line: varToken.lineNumber,
+                            message: "currently only `static var' is supported")
     }
     
     private func consumeEval(_ evalToken: TokenEval) throws -> [AbstractSyntaxTreeNode] {

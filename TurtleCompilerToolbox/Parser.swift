@@ -36,7 +36,10 @@ open class ParserBase: NSObject, Parser {
             } catch let e {
                 let error = e as! CompilerError
                 errors.append(error)
-                advanceToNewline() // recover by skipping to the next line
+                
+                // recover by skipping to the next line
+                advanceToNewline()
+                advance()
             }
         }
         if hasError {
@@ -48,7 +51,9 @@ open class ParserBase: NSObject, Parser {
     
     public func advance() {
         previous = peek()
-        tokens.removeFirst()
+        if !tokens.isEmpty {
+            tokens.removeFirst()
+        }
     }
     
     public func advanceToNewline() {
@@ -126,11 +131,17 @@ open class ParserBase: NSObject, Parser {
     }
     
     open func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        throw unexpectedEndOfInputError() // override in a child class
+        throw CompilerError(format: "override consumeStatement() in a child class")
     }
     
     public func unexpectedEndOfInputError() -> CompilerError {
-        return CompilerError(line: peek()?.lineNumber ?? 1,
-                             format: "unexpected end of input")
+        let message = "unexpected end of input"
+        if let token = peek() {
+            return CompilerError(line: token.lineNumber, message: message)
+        } else if let previous = previous {
+            return CompilerError(line: previous.lineNumber, message: message)
+        }
+        
+        return CompilerError(message: message)
     }
 }

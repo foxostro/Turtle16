@@ -18,3 +18,4 @@ public class TokenLet: Token {}
 public class TokenParenLeft : Token {}
 public class TokenParenRight : Token {}
 public class TokenVar: Token {}
+public class TokenWhile : Token {}

@@ -285,4 +285,11 @@ class SnapLexerTests: XCTestCase {
                                           TokenCurlyRight(lineNumber: 1, lexeme: "}"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeWhile() {
+        let tokenizer = SnapLexer(withString: "while")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenWhile(lineNumber: 1, lexeme: "while"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

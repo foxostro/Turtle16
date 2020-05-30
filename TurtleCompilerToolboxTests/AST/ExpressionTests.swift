@@ -117,4 +117,30 @@ class ExpressionTests: XCTestCase {
                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue)
     }
+    
+    func testAssignmentEquality() {
+        // Different right expression
+        XCTAssertNotEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                          Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+        
+        // Different left identifier
+        XCTAssertNotEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                          Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+        
+        // Same
+        XCTAssertEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                       Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+        
+        // Hash
+        XCTAssertEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
+                       Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
+    }
 }

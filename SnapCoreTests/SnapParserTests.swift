@@ -369,4 +369,22 @@ class SnapParserTests: XCTestCase {
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected ')' after expression")
     }
+    
+    func testEvalStatement_AssignmentExpression() {
+        let tokens = tokenize("""
+static var foo = 1
+eval foo = 1
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 2)
+        
+        let expression = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                               expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)))
+        let expected = EvalStatement(token: TokenEval(lineNumber: 2, lexeme: "eval"), expression: expression)
+        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.last)
+    }
 }

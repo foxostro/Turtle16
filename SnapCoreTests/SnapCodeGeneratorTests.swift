@@ -184,31 +184,23 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         }
     }
     
-    func testEvalStatement_AdditionAndMultiplication() {
+    func testExpressionStatement_AdditionAndMultiplication() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                      left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)),
                                      right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                                               left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)),
                                                               right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
-        let ast = AbstractSyntaxTreeNode(children: [
-            EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
-                          expression: expr
-            )
-        ])
+        let ast = AbstractSyntaxTreeNode(children: [expr])
         let instructions = mustCompile(ast)
         let computer = execute(instructions: instructions)
         XCTAssertEqual(computer.cpuState.registerA.value, 20)
     }
     
-    func testEvalStatement_Modulus() {
+    func testExpressionStatement_Modulus() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
                                      left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
                                      right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
-        let ast = AbstractSyntaxTreeNode(children: [
-            EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
-                          expression: expr
-            )
-        ])
+        let ast = AbstractSyntaxTreeNode(children: [expr])
         let instructions = mustCompile(ast)
         let computer = execute(instructions: instructions)
         XCTAssertEqual(computer.cpuState.registerA.value, 3)

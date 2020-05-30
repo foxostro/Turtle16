@@ -36,19 +36,23 @@ class SnapParserTests: XCTestCase {
     }
 
     func testParseLabelNameIsANumber() {
+        // If we try to use a number as a label name then it will be interpreted
+        // as a malformed expression.
         let parser = SnapParser(tokens: tokenize("123:"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+        XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `:'")
     }
 
     func testParseExtraneousColon() {
+        // If we try to use a number as a label name then it will be interpreted
+        // as a malformed expression.
         let parser = SnapParser(tokens: tokenize(":"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `:'")
     }
     
     func testExtraneousComma() {
@@ -56,7 +60,7 @@ class SnapParserTests: XCTestCase {
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,'")
     }
 
     func testMultipleErrorsParsingInstructions() {
@@ -66,9 +70,9 @@ class SnapParserTests: XCTestCase {
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors[0].line, Optional<Int>(1))
-        XCTAssertEqual(parser.errors[0].message, "unexpected end of input")
+        XCTAssertEqual(parser.errors[0].message, "operand type mismatch: `,'")
         XCTAssertEqual(parser.errors[1].line, Optional<Int>(2))
-        XCTAssertEqual(parser.errors[1].message, "unexpected end of input")
+        XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `:'")
     }
     
     func testMalformedConstantDeclaration_BareLetStatement() {
@@ -179,201 +183,184 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testMalformedEvalStatement_MissingExpression() {
-        let parser = SnapParser(tokens: tokenize("eval"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected to find an expression following `eval' statement")
-    }
-    
-    func testWellformedEvalStatement() {
-        let parser = SnapParser(tokens: tokenize("eval 1"))
+    func testExpressionStatement_Literal() {
+        let parser = SnapParser(tokens: tokenize("1"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"),
-                                     expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Identifier() {
-        let parser = SnapParser(tokens: tokenize("eval foo"))
+    func testExpressionStatement_Identifier() {
+        let parser = SnapParser(tokens: tokenize("foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Unary() {
-        let parser = SnapParser(tokens: tokenize("eval -foo"))
+    func testExpressionStatement_Unary() {
+        let parser = SnapParser(tokens: tokenize("-foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus), expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus), expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Unary_OperandTypeMismatch() {
-        let parser = SnapParser(tokens: tokenize("eval -,"))
+    func testExpressionStatement_Unary_OperandTypeMismatch() {
+        let parser = SnapParser(tokens: tokenize("-,"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,\'")
     }
     
-    func testEvalStatement_Multiplication() {
-        let parser = SnapParser(tokens: tokenize("eval 1 * -foo"))
+    func testExpressionStatement_Multiplication() {
+        let parser = SnapParser(tokens: tokenize("1 * -foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                           right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                   expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Division() {
-        let parser = SnapParser(tokens: tokenize("eval 1 / -foo"))
+    func testExpressionStatement_Division() {
+        let parser = SnapParser(tokens: tokenize("1 / -foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                           right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                   expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Addition() {
-        let parser = SnapParser(tokens: tokenize("eval 1 + -foo"))
+    func testExpressionStatement_Addition() {
+        let parser = SnapParser(tokens: tokenize("1 + -foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                           right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                   expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Subtraction() {
-        let parser = SnapParser(tokens: tokenize("eval 1 - -foo"))
+    func testExpressionStatement_Subtraction() {
+        let parser = SnapParser(tokens: tokenize("1 - -foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                           right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                   expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_MultiplicationTakesPrecendenceOverAddition() {
-        let parser = SnapParser(tokens: tokenize("eval 1 + 2 * 4"))
+    func testExpressionStatement_MultiplicationTakesPrecendenceOverAddition() {
+        let parser = SnapParser(tokens: tokenize("1 + 2 * 4"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                           right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                                                    left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                    right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                                                  left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                                  right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_MultiplicationTakesPrecendenceOverSubtraction() {
-        let parser = SnapParser(tokens: tokenize("eval 1 - 2 * 4"))
+    func testExpressionStatement_MultiplicationTakesPrecendenceOverSubtraction() {
+        let parser = SnapParser(tokens: tokenize("1 - 2 * 4"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                           right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                                                    left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                    right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                                                  left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                                  right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_Modulus() {
-        let parser = SnapParser(tokens: tokenize("eval 7 % 3"))
+    func testExpressionStatement_Modulus() {
+        let parser = SnapParser(tokens: tokenize("7 % 3"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
-                                           left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
-                                           right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
+                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_ParenthesesProvideGrouping() {
-        let parser = SnapParser(tokens: tokenize("eval (2-1)*4"))
+    func testExpressionStatement_ParenthesesProvideGrouping() {
+        let parser = SnapParser(tokens: tokenize("(2-1)*4"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                           left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                   left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                   right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                                           right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 1, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.first)
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                         left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                                                 left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                                 right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testEvalStatement_RightParenthesesMissing() {
-        let parser = SnapParser(tokens: tokenize("eval (1+1"))
+    func testExpressionStatement_RightParenthesesMissing() {
+        let parser = SnapParser(tokens: tokenize("(1+1"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected ')' after expression")
     }
     
-    func testEvalStatement_AssignmentExpression() {
+    func testExpressionStatement_AssignmentExpression() {
         let tokens = tokenize("""
 static var foo = 1
-eval foo = 1
+foo = 1
 """)
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -382,9 +369,8 @@ eval foo = 1
         
         XCTAssertEqual(ast.children.count, 2)
         
-        let expression = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                               expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)))
-        let expected = EvalStatement(token: TokenEval(lineNumber: 2, lexeme: "eval"), expression: expression)
-        XCTAssertEqual(Optional<EvalStatement>(expected), ast.children.last)
+        let expected = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.last)
     }
 }

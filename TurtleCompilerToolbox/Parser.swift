@@ -27,6 +27,9 @@ open class ParserBase: NSObject, Parser {
         }
     }
     public var productions: [Production] = []
+    public var elseGenerator: () throws -> [AbstractSyntaxTreeNode] = {
+        return []
+    }
     public var tokens: [Token] = []
     public private(set) var previous: Token? = nil
     
@@ -36,21 +39,23 @@ open class ParserBase: NSObject, Parser {
     }
     public private(set) var syntaxTree: AbstractSyntaxTreeNode? = nil
     
+    public init(tokens: [Token] = []) {
+        self.tokens = tokens
+        super.init()
+        self.elseGenerator = { [weak self] in
+            throw self!.unexpectedEndOfInputError()
+        }
+    }
+    
     public func parse() {
         var statements: [AbstractSyntaxTreeNode] = []
-        while tokens.count > 0 {
+        while !tokens.isEmpty {
             do {
                 statements += try consumeStatement()
-            } catch let error as CompilerError {
+            } catch let e {
+                let error = e as! CompilerError
                 errors.append(error)
                 advanceToNewline() // recover by skipping to the next line
-            } catch {
-                // This catch block should be unreachable because
-                // consumeStatement() only throws CompilerError. Regardless,
-                // we need it to satisfy the compiler.
-                let lineNumber = peek()?.lineNumber ?? 1
-                errors.append(CompilerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
-                return
             }
         }
         if hasError {
@@ -61,7 +66,8 @@ open class ParserBase: NSObject, Parser {
     }
     
     public func advance() {
-        previous = tokens.removeFirst()
+        previous = peek()
+        tokens.removeFirst()
     }
     
     public func advanceToNewline() {
@@ -75,8 +81,12 @@ open class ParserBase: NSObject, Parser {
         }
     }
     
-    public func peek() -> Token? {
-        return tokens.first
+    public func peek(_ howMany: Int = 0) -> Token? {
+        if howMany < tokens.count {
+            return tokens[howMany]
+        } else {
+            return nil
+        }
     }
     
     public func accept(_ typeInQuestion: AnyClass) -> Token? {
@@ -141,7 +151,7 @@ open class ParserBase: NSObject, Parser {
                 return statements
             }
         }
-        throw unexpectedEndOfInputError()
+        return try elseGenerator()
     }
     
     func unexpectedEndOfInputError() -> CompilerError {

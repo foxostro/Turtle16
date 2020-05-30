@@ -68,7 +68,7 @@ public class SnapParser: ParserBase {
         
         try expectEndOfStatement()
         
-        return [StaticDeclaration(identifier: identifier, expression: expression)]
+        return [VarDeclaration(identifier: identifier, expression: expression)]
     }
     
     private func consumeVar(_ varToken: TokenVar) throws -> [AbstractSyntaxTreeNode] {

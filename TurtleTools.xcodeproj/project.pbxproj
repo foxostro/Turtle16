@@ -70,7 +70,7 @@
 		6F6DD21A24805032004B1703 /* SymbolConstantWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21924805032004B1703 /* SymbolConstantWordTests.swift */; };
 		6F6DD21C248064F4004B1703 /* SymbolStaticWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21B248064F4004B1703 /* SymbolStaticWord.swift */; };
 		6F6DD221248065C1004B1703 /* SymbolStaticWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD220248065C1004B1703 /* SymbolStaticWordTests.swift */; };
-		6F6DD223248096CB004B1703 /* StaticDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD222248096CB004B1703 /* StaticDeclaration.swift */; };
+		6F6DD223248096CB004B1703 /* VarDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD222248096CB004B1703 /* VarDeclaration.swift */; };
 		6F6DD22524809731004B1703 /* ExpressionSymbolDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD22424809731004B1703 /* ExpressionSymbolDeclaration.swift */; };
 		6F6DD2272480CEA3004B1703 /* TokenVar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD2262480CEA3004B1703 /* TokenVar.swift */; };
 		6F6DD2292480CFB8004B1703 /* TokenStatic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD2282480CFB8004B1703 /* TokenStatic.swift */; };
@@ -659,7 +659,7 @@
 		6F6DD21924805032004B1703 /* SymbolConstantWordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolConstantWordTests.swift; sourceTree = "<group>"; };
 		6F6DD21B248064F4004B1703 /* SymbolStaticWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolStaticWord.swift; sourceTree = "<group>"; };
 		6F6DD220248065C1004B1703 /* SymbolStaticWordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolStaticWordTests.swift; sourceTree = "<group>"; };
-		6F6DD222248096CB004B1703 /* StaticDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticDeclaration.swift; sourceTree = "<group>"; };
+		6F6DD222248096CB004B1703 /* VarDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclaration.swift; sourceTree = "<group>"; };
 		6F6DD22424809731004B1703 /* ExpressionSymbolDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSymbolDeclaration.swift; sourceTree = "<group>"; };
 		6F6DD2262480CEA3004B1703 /* TokenVar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenVar.swift; sourceTree = "<group>"; };
 		6F6DD2282480CFB8004B1703 /* TokenStatic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStatic.swift; sourceTree = "<group>"; };
@@ -988,7 +988,7 @@
 				6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */,
 				6F6DD22424809731004B1703 /* ExpressionSymbolDeclaration.swift */,
 				6FCB6845247241ED00798905 /* Return.swift */,
-				6F6DD222248096CB004B1703 /* StaticDeclaration.swift */,
+				6F6DD222248096CB004B1703 /* VarDeclaration.swift */,
 			);
 			path = AST;
 			sourceTree = "<group>";
@@ -1959,7 +1959,7 @@
 				6F41B6A5247872EC0043A8D7 /* ExpressionCompilerBackEnd.swift in Sources */,
 				6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */,
 				6FCB68222472069D00798905 /* SnapCodeGenerator.swift in Sources */,
-				6F6DD223248096CB004B1703 /* StaticDeclaration.swift in Sources */,
+				6F6DD223248096CB004B1703 /* VarDeclaration.swift in Sources */,
 				6F6DD22524809731004B1703 /* ExpressionSymbolDeclaration.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,

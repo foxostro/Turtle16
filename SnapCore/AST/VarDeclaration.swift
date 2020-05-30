@@ -1,5 +1,5 @@
 //
-//  StaticDeclaration.swift
+//  VarDeclaration.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/28/20.
@@ -8,4 +8,4 @@
 
 import TurtleCompilerToolbox
 
-public class StaticDeclaration: ExpressionSymbolDeclaration {}
+public class VarDeclaration: ExpressionSymbolDeclaration {}

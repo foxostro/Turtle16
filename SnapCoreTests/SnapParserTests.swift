@@ -178,7 +178,7 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }

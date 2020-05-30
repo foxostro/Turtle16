@@ -208,9 +208,9 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
     
     func testFailToCompileDueToRedefinitionOfSymbol() {
         let ast = AbstractSyntaxTreeNode(children: [
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                               expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                               expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "42", literal: 42))),
         ])
         let errors = mustFailToCompile(ast)
@@ -219,7 +219,7 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
     
     func testStaticVariableDeclarationCreatesAppropriateSymbol() {
         let ast = AbstractSyntaxTreeNode(children: [
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                               expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                             left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                                             right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
@@ -238,7 +238,7 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
     
     func testStaticVariableDeclarationCompilesToAnExpressionAssignment() {
         let ast = AbstractSyntaxTreeNode(children: [
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                               expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                             left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                                             right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
@@ -250,12 +250,12 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
     
     func testStaticVariableDeclarationWithTwoSymbols() {
         let ast = AbstractSyntaxTreeNode(children: [
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                               expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                             left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                                             right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))),
             
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
                               expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                             left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 1)),
                                                             right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 1))))
@@ -281,12 +281,12 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
     
     func testStaticVariableDeclarationWithTwoVariableCompilesToTwoExpressionAssignments() {
         let ast = AbstractSyntaxTreeNode(children: [
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                               expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                             left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                                             right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))),
             
-            StaticDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
                               expression: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                             left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
                                                             right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))

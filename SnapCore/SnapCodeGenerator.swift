@@ -106,7 +106,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         else if let node = genericNode as? Expression {
             try compile(expression: node)
         }
-        else if let node = genericNode as? StaticDeclaration {
+        else if let node = genericNode as? VarDeclaration {
             try compile(static: node)
         }
     }
@@ -133,7 +133,7 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         symbols.bindConstantWord(identifier: name, value: UInt8(value))
     }
     
-    func compile(static staticDeclaration: StaticDeclaration) throws {
+    func compile(static staticDeclaration: VarDeclaration) throws {
         let name = staticDeclaration.identifier.lexeme
         guard symbols.exists(identifier: name) == false else {
             throw CompilerError(line: staticDeclaration.identifier.lineNumber,

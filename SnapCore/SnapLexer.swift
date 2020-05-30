@@ -76,6 +76,9 @@ public class SnapLexer: LexerBase {
             Rule(pattern: "else") {[weak self] in
                 TokenElse(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "while") {[weak self] in
+                TokenWhile(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
             },

@@ -88,28 +88,15 @@ public class SnapParser: ParserBase {
             throw CompilerError(line: ifToken.lineNumber, message: "expected condition after `\(ifToken.lexeme)'")
         }
         let condition = try consumeExpression()
-        try expect(type: TokenCurlyLeft.self, error: CompilerError(line: ifToken.lineNumber, message: "expected `{' after `\(ifToken.lexeme)' condition"))
-        try expectEndOfStatement()
-        let thenBranchStatements = try consumeStatement()
-        let thenBranch: AbstractSyntaxTreeNode
-        if thenBranchStatements.count == 1 {
-            thenBranch = thenBranchStatements.first!
-        } else {
-            thenBranch = AbstractSyntaxTreeNode(children: thenBranchStatements)
-        }
-        try expect(type: TokenCurlyRight.self, error: CompilerError(line: ifToken.lineNumber, message: "expected `}' after `then' branch"))
+        let leftError = CompilerError(line: ifToken.lineNumber, message: "expected `{' after `\(ifToken.lexeme)' condition")
+        let rightError = CompilerError(line: ifToken.lineNumber, message: "expected `}' after `then' branch")
+        let thenBranch = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
         var elseBranch: AbstractSyntaxTreeNode? = nil
         let handleElse = {
             let elseToken = try self.expect(type: TokenElse.self, error: CompilerError(line: self.peek()!.lineNumber, message: "expected `else'"))
-            try self.expect(type: TokenCurlyLeft.self, error: CompilerError(line: ifToken.lineNumber, message: "expected `{' after `\(elseToken.lexeme)'"))
-            try self.expectEndOfStatement()
-            let elseBranchStatements = try self.consumeStatement()
-            if elseBranchStatements.count == 1 {
-                elseBranch = elseBranchStatements.first!
-            } else {
-                elseBranch = AbstractSyntaxTreeNode(children: elseBranchStatements)
-            }
-            try self.expect(type: TokenCurlyRight.self, error: CompilerError(line: ifToken.lineNumber, message: "expected `}' after `\(elseToken.lexeme)' branch"))
+            let leftError = CompilerError(line: elseToken.lineNumber, message: "expected `{' after `\(elseToken.lexeme)'")
+            let rightError = CompilerError(line: elseToken.lineNumber, message: "expected `}' after `\(elseToken.lexeme)' branch")
+            elseBranch = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
         }
         if (nil != peek(0) as? TokenElse) {
             try handleElse()
@@ -119,6 +106,29 @@ public class SnapParser: ParserBase {
         }
         try expectEndOfStatement()
         return [If(condition: condition, then: thenBranch, else: elseBranch)]
+    }
+    
+    private func consumeBlock(errorOnMissingCurlyLeft: CompilerError,
+                              errorOnMissingCurlyRight: CompilerError) throws -> AbstractSyntaxTreeNode {
+        try expect(type: TokenCurlyLeft.self, error: errorOnMissingCurlyLeft)
+        try expectEndOfStatement()
+        
+        var statements: [AbstractSyntaxTreeNode] = []
+        while nil == accept(TokenCurlyRight.self) {
+            if nil == peek() || nil != (peek() as? TokenEOF){
+                throw errorOnMissingCurlyRight
+            }
+            statements += try consumeStatement()
+        }
+        
+        let branch: AbstractSyntaxTreeNode
+        if statements.count == 1 {
+            branch = statements.first!
+        } else {
+            branch = AbstractSyntaxTreeNode(children: statements)
+        }
+        
+        return branch
     }
     
     private func consumeLabel() throws -> [AbstractSyntaxTreeNode] {

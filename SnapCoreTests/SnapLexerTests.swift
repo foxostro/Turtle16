@@ -98,6 +98,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeZero() {
+        let tokenizer = SnapLexer(withString: "0")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeDollarHexadecimalLiteral() {
         let tokenizer = SnapLexer(withString: "$ff")
         tokenizer.scanTokens()

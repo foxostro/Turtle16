@@ -9,9 +9,11 @@
 // A word-sized variable whose address is known statically at compile time.
 public class SymbolStaticWord: Symbol {
     public let address: Int
+    public let isMutable: Bool
     
-    public init(identifier: String, address: Int) {
+    public init(identifier: String, address: Int, isMutable: Bool = true) {
         self.address = address
+        self.isMutable = isMutable
         super.init(identifier: identifier)
     }
     
@@ -21,12 +23,14 @@ public class SymbolStaticWord: Symbol {
         let rhs = rhs as! SymbolStaticWord
         guard isBaseClassPartEqual(rhs) else { return false }
         guard address == rhs.address else { return false }
+        guard isMutable == rhs.isMutable else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(address)
+        hasher.combine(isMutable)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

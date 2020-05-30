@@ -34,6 +34,10 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
         return Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: name))
     }
     
+    func makeAssignment(_ name: String, right: Expression) -> Expression {
+        return Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: name), expression: right)
+    }
+    
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [StackIR] {
         let compiler = ExpressionCompilerFrontEnd(symbols: symbols)
         let ir = try compiler.compile(expression: expression)
@@ -107,5 +111,14 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
         XCTAssertThrowsError(try compile(expression: expr)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
         }
+    }
+    
+    func testCompileAssignment() {
+        let expr = makeAssignment("foo", right: makeLiteral(value: 42))
+        let symbols = SymbolTable(["foo" : .staticWord(SymbolStaticWord(identifier: "foo", address: 0x0010))])
+        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
+            .push(42),
+            .store(0x0010)
+        ])
     }
 }

@@ -15,6 +15,7 @@ class SymbolStaticWordTests: XCTestCase {
         XCTAssertNotEqual(SymbolStaticWord(identifier: "", address: 0), NSObject())
         XCTAssertNotEqual(SymbolStaticWord(identifier: "foo", address: 0), SymbolStaticWord(identifier: "bar", address: 0))
         XCTAssertNotEqual(SymbolStaticWord(identifier: "", address: 0), SymbolStaticWord(identifier: "", address: 1))
+        XCTAssertNotEqual(SymbolStaticWord(identifier: "", address: 0, isMutable: true), SymbolStaticWord(identifier: "", address: 0, isMutable: false))
         XCTAssertEqual(SymbolStaticWord(identifier: "", address: 0), SymbolStaticWord(identifier: "", address: 0))
     }
     

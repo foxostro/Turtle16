@@ -36,6 +36,7 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .div: try div()
             case .mod: try mod()
             case .load(let address): try load(from: address)
+            case .store(let address): try store(to: address)
             }
         }
     }

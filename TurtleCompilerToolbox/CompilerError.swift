@@ -29,6 +29,14 @@ open class CompilerError: Error {
         line = nil
         message = String(format:format, arguments:args)
     }
+    
+    public var description: String {
+        if let line = line {
+            return "\(line): \(message)"
+        } else {
+            return message
+        }
+    }
 }
 
 public func ==(lhs: CompilerError, rhs: CompilerError) -> Bool {

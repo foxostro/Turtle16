@@ -60,6 +60,8 @@ public class ExpressionEvaluatorCompileTime: NSObject {
         let left = try evaluate(expression: binary.left)
         let right = try evaluate(expression: binary.right)
         switch binary.op.op {
+        case .eq:
+            result = (left == right) ? 1 : 0
         case .plus:
             result = left + right
         case .minus:

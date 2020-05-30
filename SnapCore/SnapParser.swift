@@ -100,7 +100,16 @@ public class SnapParser: ParserBase {
     }
     
     private func consumeExpression() throws -> Expression {
-        return try consumeAssignment()
+        return try consumeComparison()
+    }
+    
+    private func consumeComparison() throws -> Expression {
+        var expression = try consumeAssignment()
+        while let tokenOperator = accept(operators: [.eq]) {
+            let right = try consumeAssignment()
+            expression = Expression.Binary(op: tokenOperator, left: expression, right: right)
+        }
+        return expression
     }
     
     private func consumeAssignment() throws -> Expression {

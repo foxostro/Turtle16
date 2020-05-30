@@ -30,6 +30,7 @@ public class ExpressionCompilerBackEnd: NSObject {
             switch instruction {
             case .push(let value): try push(value)
             case .pop: try pop()
+            case .eq:  try eq()
             case .add: try add()
             case .sub: try sub()
             case .mul: try mul()
@@ -146,6 +147,30 @@ public class ExpressionCompilerBackEnd: NSObject {
         try assembler.li(.U, kStackPointerLoHi)
         try assembler.li(.V, kStackPointerLoLo)
         try assembler.mov(.M, .Y)
+    }
+    
+    private func eq() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during EQ")
+        }
+        
+        let jumpTarget = assembler.programCounter + 9
+        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
+        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        assembler.cmp()
+        assembler.cmp()
+        try assembler.li(.A, 1)
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        assert(assembler.programCounter == jumpTarget)
+        
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        
+        stackDepth -= 1
     }
     
     private func add() throws {

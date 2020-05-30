@@ -100,4 +100,22 @@ class ExpressionEvaluatorCompileTimeTests: XCTestCase {
         let actual = try! eval.evaluate(expression: expression)
         XCTAssertEqual(3, actual)
     }
+    
+    func testEvaluateBinaryExpressionWithEqualsComparisonYieldingFalse() {
+        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
+                                          left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                          right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
+        let eval = ExpressionEvaluatorCompileTime()
+        let actual = try! eval.evaluate(expression: expression)
+        XCTAssertEqual(0, actual)
+    }
+    
+    func testEvaluateBinaryExpressionWithEqualsComparisonYieldingTrue() {
+        let expression = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
+                                          left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                          right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let eval = ExpressionEvaluatorCompileTime()
+        let actual = try! eval.evaluate(expression: expression)
+        XCTAssertEqual(1, actual)
+    }
 }

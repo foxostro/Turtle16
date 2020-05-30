@@ -30,12 +30,16 @@ open class CompilerError: Error {
         message = String(format:format, arguments:args)
     }
     
-    public var description: String {
+    public var localizedDescription: String {
         if let line = line {
             return "\(line): \(message)"
         } else {
             return message
         }
+    }
+    
+    public var debugDescription: String {
+        return localizedDescription
     }
 }
 

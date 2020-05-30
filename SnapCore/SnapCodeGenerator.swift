@@ -109,6 +109,9 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         else if let node = genericNode as? VarDeclaration {
             try compile(static: node)
         }
+        else if let node = genericNode as? If {
+            try compile(if: node)
+        }
     }
     
     func compile(label: LabelDeclarationNode) throws {
@@ -166,5 +169,60 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         
         let ir = try frontEnd.compile(expression: expression)
         try backEnd.compile(ir: ir)
+    }
+    
+    func compile(if ifStmt: If) throws {
+        // The way we evaluate the condition isn't very efficient. However, I
+        // expect I can improve this later.
+        try compile(expression: ifStmt.condition)
+        if let elseBranch = ifStmt.elseBranch {
+            try assemblerBackEnd.li(.B, 0)
+            assemblerBackEnd.cmp()
+            assemblerBackEnd.cmp()
+            let labelElse = makeTempLabel()
+            try setAddressToLabel(labelElse)
+            assemblerBackEnd.je()
+            assemblerBackEnd.nop()
+            assemblerBackEnd.nop()
+            try compile(genericNode: ifStmt.thenBranch)
+            let labelTail = makeTempLabel()
+            try setAddressToLabel(labelTail)
+            assemblerBackEnd.jmp()
+            assemblerBackEnd.nop()
+            assemblerBackEnd.nop()
+            bindLabelToProgramCounter(labelElse)
+            try compile(genericNode: elseBranch)
+            bindLabelToProgramCounter(labelTail)
+        } else {
+            try assemblerBackEnd.li(.B, 0)
+            assemblerBackEnd.cmp()
+            assemblerBackEnd.cmp()
+            let labelTail = makeTempLabel()
+            try setAddressToLabel(labelTail)
+            assemblerBackEnd.je()
+            assemblerBackEnd.nop()
+            assemblerBackEnd.nop()
+            try compile(genericNode: ifStmt.thenBranch)
+            bindLabelToProgramCounter(labelTail)
+        }
+    }
+    
+    func makeTempLabel() -> String {
+        return ".L\(assemblerBackEnd.programCounter)"
+    }
+    
+    func setAddressToLabel(_ name: String) throws {
+        patcherActions.append((index: assemblerBackEnd.programCounter,
+                               symbol: TokenIdentifier(lineNumber: -1, lexeme: name),
+                               shift: 8))
+        try assemblerBackEnd.li(.X, 0xff)
+        patcherActions.append((index: assemblerBackEnd.programCounter,
+                               symbol: TokenIdentifier(lineNumber: -1, lexeme: name),
+                               shift: 0))
+        try assemblerBackEnd.li(.Y, 0xff)
+    }
+    
+    func bindLabelToProgramCounter(_ name: String) {
+        symbols.bindConstantAddress(identifier: name, value: assemblerBackEnd.programCounter)
     }
 }

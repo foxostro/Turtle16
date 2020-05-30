@@ -337,4 +337,48 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "cannot assign to immutable variable `bar'")
     }
+    
+    func testIfStatementTakesTheThenBranch_ElseBranchIsMissing() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+            If(condition: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
+               then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
+               else: nil)
+        ])
+        let instructions = mustCompile(ast)
+        let computer = execute(instructions: instructions)
+        XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 0), 1)
+    }
+    
+    func testIfStatementTakesTheThenBranch_SkippingTheElseBranch() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+            If(condition: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
+               then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
+               else: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 5, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 5, lexeme: "2", literal: 2))))
+        ])
+        let instructions = mustCompile(ast)
+        let computer = execute(instructions: instructions)
+        XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 0), 1)
+    }
+    
+    func testIfStatementTakesTheElseBranch() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+            If(condition: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "0", literal: 0)),
+               then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
+               else: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 5, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 5, lexeme: "2", literal: 2))))
+        ])
+        let instructions = mustCompile(ast)
+        let computer = execute(instructions: instructions)
+        XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 0), 2)
+    }
 }

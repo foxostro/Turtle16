@@ -8,8 +8,12 @@
 
 public class TokenColon : Token {}
 public class TokenComma : Token {}
+public class TokenCurlyLeft : Token {}
+public class TokenCurlyRight : Token {}
+public class TokenElse: Token {}
 public class TokenEqual: Token {}
 public class TokenIdentifier : Token {}
+public class TokenIf: Token {}
 public class TokenLet: Token {}
 public class TokenParenLeft : Token {}
 public class TokenParenRight : Token {}

@@ -12,6 +12,8 @@
 		6F1718312471C56600AE60C2 /* TurtleCompilerToolbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F1718382471C58D00AE60C2 /* CompilerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BE175230D2E31008C2329 /* CompilerError.swift */; };
 		6F1D24B92482245E0095D7B4 /* TokenMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24B82482245E0095D7B4 /* TokenMisc.swift */; };
+		6F1D24C524823DD90095D7B4 /* If.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C424823DD90095D7B4 /* If.swift */; };
+		6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C624823EC60095D7B4 /* IfTests.swift */; };
 		6F34B7EF24745DE500B0D163 /* CodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F34B7EE24745DE500B0D163 /* CodeGenerator.swift */; };
 		6F34B7F02474607500B0D163 /* GenericCompilerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F34B7EA24743DC600B0D163 /* GenericCompilerFrontEnd.swift */; };
 		6F34B7F12474607C00B0D163 /* GenericCompilerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F34B7EC2474538C00B0D163 /* GenericCompilerFrontEndTests.swift */; };
@@ -580,6 +582,8 @@
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUStateSnapshot.swift; sourceTree = "<group>"; };
 		6F1D24B82482245E0095D7B4 /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
+		6F1D24C424823DD90095D7B4 /* If.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = If.swift; sourceTree = "<group>"; };
+		6F1D24C624823EC60095D7B4 /* IfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IfTests.swift; sourceTree = "<group>"; };
 		6F2EE664240C9D1D001FE46E /* SerialInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInput.swift; sourceTree = "<group>"; };
 		6F2EE666240C9D38001FE46E /* SerialInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputTests.swift; sourceTree = "<group>"; };
 		6F34B7EA24743DC600B0D163 /* GenericCompilerFrontEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericCompilerFrontEnd.swift; sourceTree = "<group>"; };
@@ -963,6 +967,7 @@
 			children = (
 				6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */,
 				6F6DD22424809731004B1703 /* ExpressionSymbolDeclaration.swift */,
+				6F1D24C424823DD90095D7B4 /* If.swift */,
 				6FCB6845247241ED00798905 /* Return.swift */,
 				6F6DD222248096CB004B1703 /* VarDeclaration.swift */,
 			);
@@ -981,6 +986,7 @@
 			isa = PBXGroup;
 			children = (
 				6F5337342474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift */,
+				6F1D24C624823EC60095D7B4 /* IfTests.swift */,
 				6FCB68472472448300798905 /* ReturnTests.swift */,
 			);
 			path = AST;
@@ -1924,6 +1930,7 @@
 				6FCB681A2472050900798905 /* SnapLexer.swift in Sources */,
 				6F4B5CB42471DE33000C57EB /* SnapCompilerFrontEnd.swift in Sources */,
 				6FCB68432472411000798905 /* TokenReturn.swift in Sources */,
+				6F1D24C524823DD90095D7B4 /* If.swift in Sources */,
 				6F41B6A5247872EC0043A8D7 /* ExpressionCompilerBackEnd.swift in Sources */,
 				6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */,
 				6FCB68222472069D00798905 /* SnapCodeGenerator.swift in Sources */,
@@ -1940,6 +1947,7 @@
 			files = (
 				6F41B6A2247872D30043A8D7 /* ExpressionCompilerBackEndTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift in Sources */,
+				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
 				6FCB6824247206C200798905 /* SnapCodeGeneratorTests.swift in Sources */,

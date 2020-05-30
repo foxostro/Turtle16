@@ -22,19 +22,19 @@ class IfTests: XCTestCase {
     func testDoesNotEqualNodeWithDifferentCondition() {
         XCTAssertNotEqual(If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                              then: AbstractSyntaxTreeNode(),
-                             else: nil).hashValue,
+                             else: nil),
                           If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
                              then: AbstractSyntaxTreeNode(),
-                             else: nil).hashValue)
+                             else: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentThenBranch() {
         XCTAssertNotEqual(If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                              then: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                             else: nil).hashValue,
+                             else: nil),
                           If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
                              then: AbstractSyntaxTreeNode(),
-                             else: nil).hashValue)
+                             else: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentElseBranch() {
@@ -46,12 +46,37 @@ class IfTests: XCTestCase {
                              else: nil))
     }
     
+    func testSame() {
+        XCTAssertEqual(If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: AbstractSyntaxTreeNode(),
+                          else: AbstractSyntaxTreeNode()),
+                       If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: AbstractSyntaxTreeNode(),
+                          else: AbstractSyntaxTreeNode()))
+    }
+    
     func testHash() {
         XCTAssertEqual(If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: AbstractSyntaxTreeNode(),
-                          else: nil).hashValue,
+                          else: nil).hash,
                        If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: AbstractSyntaxTreeNode(),
-                          else: nil).hashValue)
+                          else: nil).hash)
+    }
+    
+    func testGetters() {
+        let stmt = If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                      then: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                      else: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+        XCTAssertEqual(stmt.condition, Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        XCTAssertEqual(stmt.thenBranch, Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
+        XCTAssertEqual(stmt.elseBranch, Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+    }
+    
+    func testElseGetterWithNilBranch() {
+        let stmt = If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                      then: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                      else: nil)
+        XCTAssertNil(stmt.elseBranch)
     }
 }

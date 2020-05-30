@@ -15,21 +15,6 @@ public protocol Parser {
 }
 
 open class ParserBase: NSObject, Parser {
-    public struct Production {
-        public typealias Generator = (Token) throws -> [AbstractSyntaxTreeNode]?
-        
-        let symbol: Token.Type
-        let generator: Generator
-        
-        public init(symbol: Token.Type, generator: @escaping Generator) {
-            self.symbol = symbol
-            self.generator = generator
-        }
-    }
-    public var productions: [Production] = []
-    public var elseGenerator: () throws -> [AbstractSyntaxTreeNode] = {
-        return []
-    }
     public var tokens: [Token] = []
     public private(set) var previous: Token? = nil
     
@@ -41,10 +26,6 @@ open class ParserBase: NSObject, Parser {
     
     public init(tokens: [Token] = []) {
         self.tokens = tokens
-        super.init()
-        self.elseGenerator = { [weak self] in
-            throw self!.unexpectedEndOfInputError()
-        }
     }
     
     public func parse() {
@@ -144,17 +125,11 @@ open class ParserBase: NSObject, Parser {
         throw error
     }
     
-    func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        for production in productions {
-            guard let symbol = accept(production.symbol) else { continue }
-            if let statements = try production.generator(symbol) {
-                return statements
-            }
-        }
-        return try elseGenerator()
+    open func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
+        throw unexpectedEndOfInputError() // override in a child class
     }
     
-    func unexpectedEndOfInputError() -> CompilerError {
+    public func unexpectedEndOfInputError() -> CompilerError {
         return CompilerError(line: peek()?.lineNumber ?? 1,
                              format: "unexpected end of input")
     }

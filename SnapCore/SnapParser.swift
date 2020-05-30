@@ -9,16 +9,26 @@
 import TurtleCompilerToolbox
 
 public class SnapParser: ParserBase {
-    public override init(tokens: [Token]) {
-        super.init(tokens: tokens)
-        self.productions = [
-            Production(symbol: TokenEOF.self,        generator: { _ in [] }),
-            Production(symbol: TokenNewline.self,    generator: { _ in [] }),
-            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) }),
-            Production(symbol: TokenVar.self,        generator: { try self.consumeVar($0 as! TokenVar) })
-        ]
-        self.elseGenerator = { [weak self] in
-            try self!.consumeLabelOrExpression()
+    public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
+        if nil != accept(TokenEOF.self) {
+            return []
+        }
+        else if nil != accept(TokenNewline.self) {
+            return []
+        }
+        else if let token = accept(TokenLet.self) {
+            return try consumeLet(token as! TokenLet)
+        }
+        else if let token = accept(TokenVar.self) {
+            return try consumeVar(token as! TokenVar)
+        }
+        else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
+            return try consumeLabel()
+        }
+        else {
+            let expression = try consumeExpression()
+            try expectEndOfStatement()
+            return [expression]
         }
     }
     
@@ -67,25 +77,11 @@ public class SnapParser: ParserBase {
         return [VarDeclaration(identifier: identifier, expression: expression)]
     }
     
-    private func consumeLabelOrExpression() throws -> [AbstractSyntaxTreeNode] {
-        if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
-            return try consumeLabel()
-        } else {
-            return try consumeExpressionStatement()
-        }
-    }
-    
     private func consumeLabel() throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected to find an identifier in label declaration")) as! TokenIdentifier
         try expect(type: TokenColon.self, error: CompilerError(line: peek()!.lineNumber, message: "expected label declaration to end with a colon"))
         try expectEndOfStatement()
         return [LabelDeclarationNode(identifier: identifier)]
-    }
-    
-    private func consumeExpressionStatement() throws -> [AbstractSyntaxTreeNode] {
-        let expression = try consumeExpression()
-        try expectEndOfStatement()
-        return [expression]
     }
     
     private func acceptEndOfStatement() -> Token? {
@@ -157,10 +153,10 @@ public class SnapParser: ParserBase {
             return Expression.Identifier(identifier: identifierToken)
         }
         
-        if let leftParen = accept(TokenParenLeft.self) as? TokenParenLeft {
+        if (accept(TokenParenLeft.self) as? TokenParenLeft) != nil {
             let expression = try consumeExpression()
             try expect(type: TokenParenRight.self,
-                       error: CompilerError(line: previous?.lineNumber ?? leftParen.lineNumber,
+                       error: CompilerError(line: previous!.lineNumber,
                                             message: "expected ')' after expression"))
             return expression
         }

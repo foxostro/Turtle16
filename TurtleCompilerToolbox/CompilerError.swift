@@ -41,6 +41,10 @@ open class CompilerError: Error {
     public var debugDescription: String {
         return localizedDescription
     }
+    
+    public var description: String {
+        return localizedDescription
+    }
 }
 
 public func ==(lhs: CompilerError, rhs: CompilerError) -> Bool {

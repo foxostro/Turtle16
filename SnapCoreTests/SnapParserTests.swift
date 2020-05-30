@@ -404,7 +404,7 @@ foo = 2
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+        XCTAssertEqual(parser.errors.first?.message, "expected `}' after `then' branch")
     }
         
     func testMalformedIfStatement_MissingClosingBraceOfThenBranch() {
@@ -476,7 +476,7 @@ if 1 {
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+        XCTAssertEqual(parser.errors.first?.message, "expected `}' after `else' branch")
     }
         
     func testMalformedIfStatement_MissingClosingBraceOfElseBranch() {
@@ -499,8 +499,9 @@ if 1 {
     2
 } else {
     3
+    4
 }
-4
+5
 """)
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -510,7 +511,47 @@ if 1 {
         XCTAssertEqual(ast.children,
                        [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
-                          else: Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "3", literal: 3))),
-                        Expression.Literal(number: TokenNumber(lineNumber: 6, lexeme: "4", literal: 4))])
+                          else: AbstractSyntaxTreeNode(children: [
+                            Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "3", literal: 3)),
+                            Expression.Literal(number: TokenNumber(lineNumber: 5, lexeme: "4", literal: 4))
+                          ])),
+                        Expression.Literal(number: TokenNumber(lineNumber: 7, lexeme: "5", literal: 5))])
+    }
+        
+    func testWellformedIfStatement_IncludingElseBranch_2() {
+        let tokens = tokenize("""
+if 1 {
+} else {
+}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children,
+                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: AbstractSyntaxTreeNode(),
+                          else: AbstractSyntaxTreeNode())
+        ])
+    }
+        
+    func testWellformedIfStatement_IncludingElseBranch_3() {
+        let tokens = tokenize("""
+if 1 {
+}
+else {
+}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children,
+                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: AbstractSyntaxTreeNode(),
+                          else: AbstractSyntaxTreeNode())
+        ])
     }
 }

@@ -109,7 +109,21 @@ public class SnapParser: ParserBase {
     }
     
     private func consumeExpression() throws -> Expression {
-        return try consumeAddition()
+        return try consumeAssignment()
+    }
+    
+    private func consumeAssignment() throws -> Expression {
+        let lhs = try consumeAddition()
+        
+        if let identifier = lhs as? Expression.Identifier {
+            if nil != accept(TokenEqual.self) {
+                let rhs = try consumeAddition()
+                let expression = Expression.Assignment(identifier: identifier.identifier, expression: rhs)
+                return expression
+            }
+        }
+        
+        return lhs
     }
     
     private func consumeAddition() throws -> Expression {

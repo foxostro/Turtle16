@@ -15,4 +15,5 @@ public enum StackIR: Equatable {
     case div // pop two from the stack, A/B, push the result
     case mod // pop two from the stack, A%B, push the result
     case load(Int) // load from the specified address, push to the stack
+    case store(Int) // pop the stacka and store to the specified address
 }

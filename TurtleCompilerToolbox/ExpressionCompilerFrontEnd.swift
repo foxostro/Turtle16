@@ -22,6 +22,8 @@ public class ExpressionCompilerFrontEnd: NSObject {
             return try compile(binary: binary)
         } else if let identifier = expression as? Expression.Identifier {
             return try compile(identifier: identifier)
+        } else if let assignment = expression as? Expression.Assignment {
+            return try compile(assignment: assignment)
         } else {
             throw unsupportedError(expression: expression)
         }
@@ -65,6 +67,22 @@ public class ExpressionCompilerFrontEnd: NSObject {
             return compile(intValue: Int(word.value))
         case .staticWord(let word):
             return [.load(word.address)]
+        }
+    }
+    
+    private func compile(assignment: Expression.Assignment) throws -> [StackIR] {
+        let symbol = try symbols.resolve(identifierToken: assignment.identifier)
+        switch symbol {
+        case .constantAddress(let address):
+            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to label `\(address.identifier)'")
+        case .constantWord(let word):
+            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant `\(word.identifier)'")
+        case .staticWord(let word):
+            if word.isMutable {
+                return try compile(expression: assignment.child) + [.store(word.address)]
+            } else {
+                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
+            }
         }
     }
     

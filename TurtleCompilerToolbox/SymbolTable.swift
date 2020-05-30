@@ -32,8 +32,8 @@ public class SymbolTable: NSObject {
         table[identifier] = .constantWord(SymbolConstantWord(identifier: identifier, value: value))
     }
     
-    public func bindStaticWord(identifier: String, address: Int) {
-        table[identifier] = .staticWord(SymbolStaticWord(identifier: identifier, address: address))
+    public func bindStaticWord(identifier: String, address: Int, isMutable: Bool = true) {
+        table[identifier] = .staticWord(SymbolStaticWord(identifier: identifier, address: address, isMutable: isMutable))
     }
     
     public func resolve(identifier: String) throws -> SymbolEnum {

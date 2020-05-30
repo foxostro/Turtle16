@@ -296,4 +296,45 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 0), 2)
         XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 1), 4)
     }
+    
+    func testLetStatementMaterializesAnImmutableStaticWhenExpressionIsNotCompileTimeConstant() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+            ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "bar"),
+                                expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")))
+        ])
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        XCTAssertFalse(codeGenerator.hasError)
+        
+        switch try! codeGenerator.symbols.resolve(identifier: "foo") {
+        case .staticWord(let word):
+            XCTAssertTrue(word.isMutable)
+            XCTAssertEqual(word.address, SnapCodeGenerator.kStaticStorageStartAddress+0)
+        default:
+            XCTFail()
+        }
+        
+        switch try! codeGenerator.symbols.resolve(identifier: "bar") {
+        case .staticWord(let word):
+            XCTAssertFalse(word.isMutable)
+            XCTAssertEqual(word.address, SnapCodeGenerator.kStaticStorageStartAddress+1)
+        default:
+            XCTFail()
+        }
+    }
+    
+    func testCannotAssignToImmutableStaticVariable() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+            ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "bar"),
+                                expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"))),
+            Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "bar"),
+                                  expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "2", literal: 2)))
+        ])
+        let errors = mustFailToCompile(ast)
+        XCTAssertEqual(errors.first?.message, "cannot assign to immutable variable `bar'")
+    }
 }

@@ -440,4 +440,42 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xffff)
         XCTAssertEqual(computer.stackTop, 1)
     }
+    
+    func testStoreWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.store(0)])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during STORE")
+        }
+    }
+    
+    func testStoreWithStackDepthOne() {
+        let address = 0x0010
+        let computer = try! execute(ir: [.push(1), .store(address)])
+        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
+    }
+    
+    func testStoreWithStackDepthTwo() {
+        let address = 0x0010
+        let computer = try! execute(ir: [.push(2), .push(1), .store(address)])
+        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+    }
+    
+    func testStoreWithStackDepthThree() {
+        let address = 0x0010
+        let computer = try! execute(ir: [.push(3), .push(2), .push(1), .store(address)])
+        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+        XCTAssertEqual(computer.cpuState.registerB.value, 3)
+    }
+    
+    func testStoreWithStackDepthFour() {
+        let address = 0x0010
+        let computer = try! execute(ir: [.push(4), .push(3), .push(2), .push(1), .store(address)])
+        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
+        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+        XCTAssertEqual(computer.cpuState.registerB.value, 3)
+        XCTAssertEqual(computer.stackPointer, 0xffff)
+        XCTAssertEqual(computer.stackTop, 4)
+    }
 }

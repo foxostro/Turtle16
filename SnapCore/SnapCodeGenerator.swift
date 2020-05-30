@@ -129,8 +129,14 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
                                 constant.identifier.lexeme)
         }
         let eval = ExpressionEvaluatorCompileTime(symbols: symbols)
-        let value = try eval.evaluate(expression: constant.expression)
-        symbols.bindConstantWord(identifier: name, value: UInt8(value))
+        do {
+            let value = try eval.evaluate(expression: constant.expression)
+            symbols.bindConstantWord(identifier: name, value: UInt8(value))
+        } catch _ as Expression.MustBeCompileTimeConstantError {
+            symbols.bindStaticWord(identifier: name,
+                                   address: allocateStaticStorage(),
+                                   isMutable: false)
+        }
     }
     
     func compile(static staticDeclaration: VarDeclaration) throws {

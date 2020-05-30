@@ -9,24 +9,18 @@
 import TurtleCompilerToolbox
 
 public class SnapParser: ParserBase {
-    public init(tokens: [Token]) {
-        super.init()
-        self.tokens = tokens
+    public override init(tokens: [Token]) {
+        super.init(tokens: tokens)
         self.productions = [
             Production(symbol: TokenEOF.self,        generator: { _ in [] }),
             Production(symbol: TokenNewline.self,    generator: { _ in [] }),
-            Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) }),
             Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) }),
             Production(symbol: TokenStatic.self,     generator: { try self.consumeStatic($0 as! TokenStatic) }),
-            Production(symbol: TokenVar.self,        generator: { try self.consumeVar($0 as! TokenVar) }),
-            Production(symbol: TokenEval.self,       generator: { try self.consumeEval($0 as! TokenEval) })
+            Production(symbol: TokenVar.self,        generator: { try self.consumeVar($0 as! TokenVar) })
         ]
-    }
-    
-    private func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {
-        try expect(type: TokenColon.self, error: useOfUnresolvedIdentifierError(identifier))
-        try expectEndOfStatement()
-        return [LabelDeclarationNode(identifier: identifier)]
+        self.elseGenerator = { [weak self] in
+            try self!.consumeLabelOrExpression()
+        }
     }
     
     private func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
@@ -82,15 +76,25 @@ public class SnapParser: ParserBase {
                             message: "currently only `static var' is supported")
     }
     
-    private func consumeEval(_ evalToken: TokenEval) throws -> [AbstractSyntaxTreeNode] {
-        if nil != acceptEndOfStatement() {
-            throw CompilerError(line: evalToken.lineNumber,
-                                format: "expected to find an expression following `%@' statement",
-                                evalToken.lexeme)
+    private func consumeLabelOrExpression() throws -> [AbstractSyntaxTreeNode] {
+        if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
+            return try consumeLabel()
+        } else {
+            return try consumeExpressionStatement()
         }
+    }
+    
+    private func consumeLabel() throws -> [AbstractSyntaxTreeNode] {
+        let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected to find an identifier in label declaration")) as! TokenIdentifier
+        try expect(type: TokenColon.self, error: CompilerError(line: peek()!.lineNumber, message: "expected label declaration to end with a colon"))
+        try expectEndOfStatement()
+        return [LabelDeclarationNode(identifier: identifier)]
+    }
+    
+    private func consumeExpressionStatement() throws -> [AbstractSyntaxTreeNode] {
         let expression = try consumeExpression()
         try expectEndOfStatement()
-        return [EvalStatement(token: evalToken, expression: expression)]
+        return [expression]
     }
     
     private func acceptEndOfStatement() -> Token? {

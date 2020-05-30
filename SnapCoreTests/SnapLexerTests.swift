@@ -195,13 +195,6 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
-    func testTokenizeEval() {
-        let tokenizer = SnapLexer(withString: "eval")
-        tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenEval(lineNumber: 1, lexeme: "eval"),
-                                          TokenEOF(lineNumber: 1, lexeme: "")])
-    }
-    
     func testTokenizeUnaryNegation() {
         let tokenizer = SnapLexer(withString: "-foo")
         tokenizer.scanTokens()
@@ -247,10 +240,9 @@ class SnapLexerTests: XCTestCase {
     }
     
     func testTokenizeParentheses2() {
-        let tokenizer = SnapLexer(withString: "eval (2-1)")
+        let tokenizer = SnapLexer(withString: "(2-1)")
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenEval(lineNumber: 1, lexeme: "eval"),
-                                          TokenParenLeft(lineNumber: 1, lexeme: "("),
+        XCTAssertEqual(tokenizer.tokens, [TokenParenLeft(lineNumber: 1, lexeme: "("),
                                           TokenNumber(lineNumber: 1, lexeme: "2", literal: 2),
                                           TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                           TokenNumber(lineNumber: 1, lexeme: "1", literal: 1),

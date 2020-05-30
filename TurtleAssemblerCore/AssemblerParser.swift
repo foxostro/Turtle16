@@ -9,9 +9,8 @@
 import TurtleCompilerToolbox
 
 public class AssemblerParser: ParserBase {
-    public init(tokens: [Token]) {
-        super.init()
-        self.tokens = tokens
+    public override init(tokens: [Token]) {
+        super.init(tokens: tokens)
         self.productions = [
             Production(symbol: TokenEOF.self,        generator: { _ in [] }),
             Production(symbol: TokenNewline.self,    generator: { _ in [] }),

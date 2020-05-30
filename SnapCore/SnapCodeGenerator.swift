@@ -103,8 +103,8 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         else if let node = genericNode as? ConstantDeclaration {
             try compile(constant: node)
         }
-        else if let node = genericNode as? EvalStatement {
-            try compile(eval: node)
+        else if let node = genericNode as? Expression {
+            try compile(expression: node)
         }
         else if let node = genericNode as? StaticDeclaration {
             try compile(static: node)
@@ -131,10 +131,6 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         let eval = ExpressionEvaluatorCompileTime(symbols: symbols)
         let value = try eval.evaluate(expression: constant.expression)
         symbols.bindConstantWord(identifier: name, value: UInt8(value))
-    }
-    
-    func compile(eval: EvalStatement) throws {
-        try compile(expression: eval.expression)
     }
     
     func compile(static staticDeclaration: StaticDeclaration) throws {

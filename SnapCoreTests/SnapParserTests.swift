@@ -585,4 +585,92 @@ if 1
                           else: nil)
         ])
     }
+    
+    func testMalformedWhileStatement_MissingCondition_1() {
+        let parser = SnapParser(tokens: tokenize("while"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected condition after `while'")
+    }
+        
+    func testMalformedWhileStatement_MissingCondition_2() {
+        let parser = SnapParser(tokens: tokenize("while {"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected condition after `while'")
+    }
+        
+    func testMalformedWhileStatement_MissingOpeningBraceBeforeBody() {
+        let parser = SnapParser(tokens: tokenize("while 1"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected newline")
+    }
+        
+    func testMalformedWhileStatement_MissingStatementInBodyBlock() {
+        let parser = SnapParser(tokens: tokenize("while 1 {"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected `}' after `while' body")
+    }
+        
+    func testMalformedWhileStatement_MissingClosingBraceOfThenBranch() {
+        let tokens = tokenize("""
+while 1 {
+    var foo = 2
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected `}' after `while' body")
+    }
+        
+    func testWellformedWhileStatement() {
+        let tokens = tokenize("""
+while 1 {
+    var foo = 2
+}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                              body: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                                   expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))))])
+    }
+        
+    func testWellformedWhileStatement_EmptyBody_1() {
+        let tokens = tokenize("""
+while 1 {
+}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                              body: AbstractSyntaxTreeNode())
+        ])
+    }
+        
+    func testWellformedWhileStatement_EmptyBody_2() {
+        let tokens = tokenize("""
+while 1 {}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                              body: AbstractSyntaxTreeNode())
+        ])
+    }
 }

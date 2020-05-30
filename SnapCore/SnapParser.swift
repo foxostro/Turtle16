@@ -25,6 +25,9 @@ public class SnapParser: ParserBase {
         else if let token = accept(TokenIf.self) {
             return try consumeIf(token as! TokenIf)
         }
+        else if let token = accept(TokenWhile.self) {
+            return try consumeWhile(token as! TokenWhile)
+        }
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
             return try consumeLabel()
         }
@@ -159,6 +162,41 @@ public class SnapParser: ParserBase {
         } else {
             return [AbstractSyntaxTreeNode(children: statements)]
         }
+    }
+    
+    private func consumeWhile(_ whileToken: TokenWhile) throws -> [AbstractSyntaxTreeNode] {
+        if nil != acceptEndOfStatement() {
+            throw CompilerError(line: whileToken.lineNumber, message: "expected condition after `\(whileToken.lexeme)'")
+        }
+        if nil != accept(TokenCurlyLeft.self) {
+            throw CompilerError(line: whileToken.lineNumber, message: "expected condition after `\(whileToken.lexeme)'")
+        }
+        let condition = try consumeExpression()
+        
+        let bodyStatements: [AbstractSyntaxTreeNode]
+        if nil != (peek() as? TokenCurlyLeft) {
+            let leftError = CompilerError(line: whileToken.lineNumber, message: "expected `{' after `\(whileToken.lexeme)' condition")
+            let rightError = CompilerError(line: whileToken.lineNumber, message: "expected `}' after `\(whileToken.lexeme)' body")
+            bodyStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
+        } else {
+            try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
+            bodyStatements = try consumeStatement()
+        }
+        let body: AbstractSyntaxTreeNode
+        if bodyStatements.count == 1 {
+            body = bodyStatements.first!
+        } else {
+            body = AbstractSyntaxTreeNode(children: bodyStatements)
+        }
+        
+        // If the body or else-clause is at the very end of the token stream
+        // then the parsing of the clause may have already eaten the EOF token.
+        // We'll accept that as being a well formed end to the while stmt too.
+        if nil != peek() {
+            try expectEndOfStatement()
+        }
+        
+        return [While(condition: condition, body: body)]
     }
     
     private func consumeLabel() throws -> [AbstractSyntaxTreeNode] {

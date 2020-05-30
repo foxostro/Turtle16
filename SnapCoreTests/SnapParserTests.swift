@@ -321,16 +321,16 @@ class SnapParserTests: XCTestCase {
         let parser = SnapParser(tokens: tokenize("(2-1)*4"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
+        let ast = parser.syntaxTree
         
-        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast?.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                          left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                                                  left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
                                                                  right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
                                          right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
     
     func testExpressionStatement_RightParenthesesMissing() {
@@ -349,13 +349,13 @@ foo = 2
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
+        let ast = parser.syntaxTree
         
-        XCTAssertEqual(ast.children.count, 2)
+        XCTAssertEqual(ast?.children.count, 2)
         
         let expected = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                                              expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.last)
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.last)
     }
         
     func testExpressionStatement_Comparison_Equals() {
@@ -363,16 +363,16 @@ foo = 2
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
+        let ast = parser.syntaxTree
         
-        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast?.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
                                          left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                                                  left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                                                  right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
                                          right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.last)
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
     func testMalformedIfStatement_MissingCondition_1() {
@@ -396,7 +396,7 @@ foo = 2
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected `{' after `if' condition")
+        XCTAssertEqual(parser.errors.first?.message, "expected newline")
     }
         
     func testMalformedIfStatement_MissingStatementForThenBranch() {
@@ -428,18 +428,18 @@ if 1 {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
+        let ast = parser.syntaxTree
         
-        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast?.children.count, 1)
         
         let expected = If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))),
                           else: nil)
-        XCTAssertEqual(Optional<If>(expected), ast.children.first)
+        XCTAssertEqual(Optional<If>(expected), ast?.children.first)
     }
         
-    func testMalfformedIfStatement_MissingOpeningBraceForElseBranch_1() {
+    func testMalformedIfStatement_MissingOpeningBraceForElseBranch_1() {
         let tokens = tokenize("""
 if 1 {
     var foo = 2
@@ -449,10 +449,10 @@ if 1 {
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected `{' after `else'")
+        XCTAssertEqual(parser.errors.first?.message, "expected newline")
     }
         
-    func testMalfformedIfStatement_MissingOpeningBraceForElseBranch_2() {
+    func testMalformedIfStatement_MissingOpeningBraceForElseBranch_2() {
         let tokens = tokenize("""
 if 1 {
     var foo = 2
@@ -463,7 +463,7 @@ else
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected `{' after `else'")
+        XCTAssertEqual(parser.errors.first?.message, "expected newline")
     }
         
     func testMalformedIfStatement_MissingStatementForElseBranch() {
@@ -506,9 +506,8 @@ if 1 {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
         
-        XCTAssertEqual(ast.children,
+        XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
                           else: AbstractSyntaxTreeNode(children: [
@@ -527,9 +526,8 @@ if 1 {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
         
-        XCTAssertEqual(ast.children,
+        XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: AbstractSyntaxTreeNode(),
                           else: AbstractSyntaxTreeNode())
@@ -546,12 +544,45 @@ else {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
         
-        XCTAssertEqual(ast.children,
+        XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: AbstractSyntaxTreeNode(),
                           else: AbstractSyntaxTreeNode())
+        ])
+    }
+        
+    func testWellformedIfStatement_IncludingElseBranch_4() {
+        let tokens = tokenize("""
+if 1
+    let foo = 1
+else
+    let bar = 1
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
+                          else: ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"), expression: Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "1", literal: 1))))
+        ])
+    }
+        
+    func testWellformedIfStatement_SingleStatementBodyWithoutElseClause() {
+        let tokens = tokenize("""
+if 1
+    let foo = 1
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
+                          else: nil)
         ])
     }
 }

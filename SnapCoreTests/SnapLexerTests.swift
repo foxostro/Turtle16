@@ -263,4 +263,26 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenVar(lineNumber: 1, lexeme: "var"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeIf() {
+        let tokenizer = SnapLexer(withString: "if")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIf(lineNumber: 1, lexeme: "if"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeElse() {
+        let tokenizer = SnapLexer(withString: "else")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenElse(lineNumber: 1, lexeme: "else"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeCurlyBranches() {
+        let tokenizer = SnapLexer(withString: "{}")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenCurlyLeft(lineNumber: 1, lexeme: "{"),
+                                          TokenCurlyRight(lineNumber: 1, lexeme: "}"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

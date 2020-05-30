@@ -55,6 +55,12 @@ public class SnapLexer: LexerBase {
             Rule(pattern: "\\)") {[weak self] in
                 TokenParenRight(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "\\{") {[weak self] in
+                TokenCurlyLeft(lineNumber: self!.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "\\}") {[weak self] in
+                TokenCurlyRight(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "let") {[weak self] in
                 TokenLet(lineNumber: self!.lineNumber, lexeme: $0)
             },
@@ -63,6 +69,12 @@ public class SnapLexer: LexerBase {
             },
             Rule(pattern: "var") {[weak self] in
                 TokenVar(lineNumber: self!.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "if") {[weak self] in
+                TokenIf(lineNumber: self!.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "else") {[weak self] in
+                TokenElse(lineNumber: self!.lineNumber, lexeme: $0)
             },
             Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)

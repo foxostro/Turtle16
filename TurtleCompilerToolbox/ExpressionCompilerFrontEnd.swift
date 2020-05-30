@@ -45,6 +45,8 @@ public class ExpressionCompilerFrontEnd: NSObject {
     
     private func getOperator(binary: Expression.Binary) -> StackIR {
         switch binary.op.op {
+        case .eq:
+            return .eq
         case .plus:
             return .add
         case .minus:

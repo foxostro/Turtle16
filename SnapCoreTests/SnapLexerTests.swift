@@ -188,6 +188,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeDoubleEqual() {
+        let tokenizer = SnapLexer(withString: "==")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeReturn() {
         let tokenizer = SnapLexer(withString: "return")
         tokenizer.scanTokens()

@@ -9,14 +9,22 @@
 import TurtleCompilerToolbox
 
 public class AssemblerParser: ParserBase {
-    public override init(tokens: [Token]) {
-        super.init(tokens: tokens)
-        self.productions = [
-            Production(symbol: TokenEOF.self,        generator: { _ in [] }),
-            Production(symbol: TokenNewline.self,    generator: { _ in [] }),
-            Production(symbol: TokenIdentifier.self, generator: { try self.consumeIdentifier($0 as! TokenIdentifier) }),
-            Production(symbol: TokenLet.self,        generator: { try self.consumeLet($0 as! TokenLet) })
-        ]
+    public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
+        if nil != accept(TokenEOF.self) {
+            return []
+        }
+        else if nil != accept(TokenNewline.self) {
+            return []
+        }
+        else if let token = accept(TokenIdentifier.self) {
+            return try consumeIdentifier(token as! TokenIdentifier)
+        }
+        else if let token = accept(TokenLet.self) {
+            return try consumeLet(token as! TokenLet)
+        }
+        else {
+            throw unexpectedEndOfInputError()
+        }
     }
     
     func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {

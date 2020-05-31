@@ -1,5 +1,5 @@
 //
-//  SnapCompilerFrontEndTests.swift
+//  SnapCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/17/20.
@@ -9,9 +9,9 @@
 import XCTest
 import SnapCore
 
-class SnapCompilerFrontEndTests: XCTestCase {
+class SnapCompilerTests: XCTestCase {
     func testCompileFailsDuringLexing() {
-        let compiler = SnapCompilerFrontEnd()
+        let compiler = SnapCompiler()
         compiler.compile("@")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -20,7 +20,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
     }
     
     func testCompileFailsDuringParsing() {
-        let compiler = SnapCompilerFrontEnd()
+        let compiler = SnapCompiler()
         compiler.compile(":")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -29,7 +29,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
     }
     
     func testCompileFailsDuringCodeGeneration() {
-        let compiler = SnapCompilerFrontEnd()
+        let compiler = SnapCompiler()
         compiler.compile("foo")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -38,7 +38,7 @@ class SnapCompilerFrontEndTests: XCTestCase {
     }
     
     func testEnsureDisassemblyWorks() {
-        let compiler = SnapCompilerFrontEnd()
+        let compiler = SnapCompiler()
         compiler.compile("")
         XCTAssertFalse(compiler.hasError)
         XCTAssertGreaterThan(compiler.instructions.count, 0)

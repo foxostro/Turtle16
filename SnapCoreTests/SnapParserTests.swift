@@ -375,6 +375,23 @@ foo = 2
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
+    func testExpressionStatement_Comparison_LessThan() {
+        let tokens = tokenize("1 + 2 < 3")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree
+        
+        XCTAssertEqual(ast?.children.count, 1)
+        
+        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt),
+                                         left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                                                 left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                                 right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+    }
+        
     func testMalformedIfStatement_MissingCondition_1() {
         let parser = SnapParser(tokens: tokenize("if"))
         parser.parse()

@@ -34,6 +34,10 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
         return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq), left: left, right: right)
     }
     
+    func makeComparisonLt(left: Expression, right: Expression) -> Expression {
+        return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt), left: left, right: right)
+    }
+    
     func makeIdentifier(name: String) -> Expression {
         return Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: name))
     }
@@ -132,6 +136,15 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
             .push(1),
             .push(2),
             .eq
+        ])
+    }
+    
+    func testCompileComparisonLessThan() {
+        let expr = makeComparisonLt(left: makeLiteral(value: 2), right: makeLiteral(value: 1))
+        XCTAssertEqual(try compile(expression: expr), [
+            .push(1),
+            .push(2),
+            .lt
         ])
     }
 }

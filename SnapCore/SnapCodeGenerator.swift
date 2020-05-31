@@ -39,13 +39,9 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     public func compile(ast root: AbstractSyntaxTreeNode, base: Int) {
         do {
             try tryCompile(ast: root, base: base)
-        } catch let error as CompilerError {
+        } catch let e {
+            let error = e as! CompilerError
             errors.append(error)
-        } catch {
-            // This catch block should be unreachable because patch()
-            // only throws CompilerError. Regardless, we need it to satisfy
-            // the compiler.
-            errors.append(CompilerError(format: "unrecoverable error: %@", error.localizedDescription))
         }
     }
     
@@ -111,6 +107,9 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         }
         else if let node = genericNode as? If {
             try compile(if: node)
+        }
+        else if let node = genericNode as? While {
+            try compile(while: node)
         }
     }
     
@@ -224,5 +223,27 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
     
     func bindLabelToProgramCounter(_ name: String) {
         symbols.bindConstantAddress(identifier: name, value: assemblerBackEnd.programCounter)
+    }
+    
+    func compile(while stmt: While) throws {
+        // The way we evaluate the condition isn't very efficient. However, I
+        // expect I can improve this later.
+        let labelHead = makeTempLabel()
+        bindLabelToProgramCounter(labelHead)
+        try compile(expression: stmt.condition)
+        try assemblerBackEnd.li(.B, 0)
+        assemblerBackEnd.cmp()
+        assemblerBackEnd.cmp()
+        let labelTail = makeTempLabel()
+        try setAddressToLabel(labelTail)
+        assemblerBackEnd.je()
+        assemblerBackEnd.nop()
+        assemblerBackEnd.nop()
+        try compile(genericNode: stmt.body)
+        try setAddressToLabel(labelHead)
+        assemblerBackEnd.jmp()
+        assemblerBackEnd.nop()
+        assemblerBackEnd.nop()
+        bindLabelToProgramCounter(labelTail)
     }
 }

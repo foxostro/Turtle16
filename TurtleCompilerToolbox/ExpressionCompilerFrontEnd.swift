@@ -47,6 +47,8 @@ public class ExpressionCompilerFrontEnd: NSObject {
         switch binary.op.op {
         case .eq:
             return .eq
+        case .lt:
+            return .lt
         case .plus:
             return .add
         case .minus:

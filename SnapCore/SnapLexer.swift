@@ -31,6 +31,9 @@ public class SnapLexer: LexerBase {
             Rule(pattern: "==") {[weak self] in
                 TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .eq)
             },
+            Rule(pattern: "<") {[weak self] in
+                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .lt)
+            },
             Rule(pattern: "=") {[weak self] in
                 TokenEqual(lineNumber: self!.lineNumber, lexeme: $0)
             },

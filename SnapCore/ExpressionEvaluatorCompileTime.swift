@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCompilerToolbox
+
 // Evaluates an Expression at compile time.
 // Throws exceptions when this is not possible.
 public class ExpressionEvaluatorCompileTime: NSObject {

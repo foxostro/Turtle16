@@ -12,8 +12,8 @@ import TurtleSimulatorCore
 import TurtleCompilerToolbox
 import TurtleCore
 
-// Simulates execution of a program provided in StackIR.
-class StackIRExecutor: NSObject {
+// Simulates execution of a program written in the Yertle intermediate language.
+class YertleExecutor: NSObject {
     let isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
@@ -25,7 +25,7 @@ class StackIRExecutor: NSObject {
         assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
     }
     
-    func execute(ir: [StackIR]) throws -> Computer {
+    func execute(ir: [YertleInstruction]) throws -> Computer {
         assembler.begin()
         try assembler.li(.U, Int((SnapCodeGenerator.kStackPointerAddressHi & 0xff00) >> 8))
         try assembler.li(.V, Int((SnapCodeGenerator.kStackPointerAddressHi & 0x00ff)))
@@ -75,8 +75,8 @@ extension Computer {
 }
 
 class ExpressionCompilerBackEndTests: XCTestCase {
-    func execute(ir: [StackIR]) throws -> Computer {
-        let executor = StackIRExecutor()
+    func execute(ir: [YertleInstruction]) throws -> Computer {
+        let executor = YertleExecutor()
         let computer = try executor.execute(ir: ir)
         return computer
     }
@@ -132,7 +132,7 @@ class ExpressionCompilerBackEndTests: XCTestCase {
     }
     
     func pushMany(count: Int) {
-        var ir: [StackIR] = []
+        var ir: [YertleInstruction] = []
         for _ in 0...count {
             ir.append(.push(255))
         }
@@ -471,7 +471,7 @@ class ExpressionCompilerBackEndTests: XCTestCase {
     func testLoadWithEmptyStack() {
         let value: UInt8 = 0xab
         let address = 0x0010
-        let executor = StackIRExecutor()
+        let executor = YertleExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: value, to: address)
         }
@@ -482,7 +482,7 @@ class ExpressionCompilerBackEndTests: XCTestCase {
     func testLoadWithStackDepthOne() {
         let value: UInt8 = 0xab
         let address = 0x0010
-        let executor = StackIRExecutor()
+        let executor = YertleExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: value, to: address)
         }
@@ -494,7 +494,7 @@ class ExpressionCompilerBackEndTests: XCTestCase {
     func testLoadWithStackDepthTwo() {
         let value: UInt8 = 0xab
         let address = 0x0010
-        let executor = StackIRExecutor()
+        let executor = YertleExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: value, to: address)
         }

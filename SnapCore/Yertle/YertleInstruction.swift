@@ -1,12 +1,15 @@
 //
-//  StackIR.swift
-//  TurtleCompilerToolbox
+//  YertleInstruction.swift
+//  SnapCore
 //
 //  Created by Andrew Fox on 5/22/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public enum StackIR: Equatable {
+// Defines a stack-based intermediate representation, "Yertle" for the
+// Snap compiler. The intermediate language has no textual representation.
+// It's nothing more than a list of these instructions.
+public enum YertleInstruction: Equatable {
     case push(Int) // push the specified value to the stack
     case pop // pop the stack
     case eq  // pop two from the stack, (A==B)?1:0, push the result

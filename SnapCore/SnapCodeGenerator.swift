@@ -59,8 +59,20 @@ public class SnapCodeGenerator: NSObject, CodeGenerator {
         }
         insertProgramEpilogue()
         assemblerBackEnd.end()
+        let resolver: (TokenIdentifier) throws -> Int = {[weak self] (identifier: TokenIdentifier) in
+            let symbol = try self!.symbols.resolve(identifierToken: identifier)
+            switch symbol {
+            case .constantAddress(let address):
+                return address.value
+            case .constantWord(let word):
+                return Int(word.value)
+            case .staticWord(_):
+                // TODO: Perhaps `MustBeCompileTimeConstantError' should be in some other namespace other than `Expression'.
+                throw Expression.MustBeCompileTimeConstantError(line: identifier.lineNumber)
+            }
+        }
         let patcher = Patcher(inputInstructions: assemblerBackEnd.instructions,
-                              symbols: symbols,
+                              resolver: resolver,
                               actions: patcherActions,
                               base: base)
         instructions = try patcher.patch()

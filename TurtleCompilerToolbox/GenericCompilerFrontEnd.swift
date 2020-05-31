@@ -62,10 +62,6 @@ open class GenericCompilerFrontEnd: NSObject {
             return
         }
         
-        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
-        
-        for instruction in codeGenerator.instructions {
-            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
-        }
+        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: codeGenerator.instructions)
     }
 }

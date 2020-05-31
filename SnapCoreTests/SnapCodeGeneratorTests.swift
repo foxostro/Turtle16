@@ -12,6 +12,20 @@ import TurtleCompilerToolbox
 import TurtleSimulatorCore
 import TurtleCore
 
+extension SnapCodeGenerator {
+    func fetchAddressOfStatic(_ identifier: String) -> Int {
+        let address: Int
+        switch try! self.symbols.resolve(identifier: identifier) {
+        case .staticWord(let word):
+            address = word.address
+        default:
+            address = 0
+            XCTFail()
+        }
+        return address
+    }
+}
+
 class SnapCodeGeneratorTests: XCTestCase {
     let isVerboseLogging = false
     var kProgramPrologue = ""
@@ -380,5 +394,90 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         let instructions = mustCompile(ast)
         let computer = execute(instructions: instructions)
         XCTAssertEqual(computer.dataRAM.load(from: SnapCodeGenerator.kStaticStorageStartAddress + 0), 2)
+    }
+    
+    func testWhileStatementSkipsTheBodyEntirely() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+            While(condition: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
+                  body: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))))
+        ])
+        
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        if codeGenerator.hasError {
+            XCTFail()
+        }
+        
+        var instructions: [Instruction] = []
+        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+        for instruction in codeGenerator.instructions {
+            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
+        }
+        
+        let addressOfFoo = codeGenerator.fetchAddressOfStatic("foo")
+        
+        let computer = execute(instructions: instructions)
+        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 0)
+    }
+    
+    func testWhileStatementMayExecuteTheBodyAtLeastOneTime() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+            While(condition: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo")),
+                  body: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
+                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "0", literal: 0))))
+        ])
+        
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        if codeGenerator.hasError {
+            XCTFail()
+        } else {
+            var instructions: [Instruction] = []
+            let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+            for instruction in codeGenerator.instructions {
+                instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
+            }
+            
+            let addressOfFoo = codeGenerator.fetchAddressOfStatic("foo")
+            
+            let computer = execute(instructions: instructions)
+            XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 0)
+        }
+    }
+    
+    func testWhileStatementMayExecuteTheBodyMultipleTimes() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 0, lexeme: "foo"),
+                              expression: Expression.Literal(number: TokenNumber(lineNumber: 0, lexeme: "0", literal: 0))),
+            While(condition: Expression.Binary(op: TokenOperator(lineNumber: 0, lexeme: "<", op: .lt),
+                                               left: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 0, lexeme: "foo")),
+                                               right: Expression.Literal(number: TokenNumber(lineNumber: 0, lexeme: "3", literal: 3))),
+                  body: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 0, lexeme: "foo"),
+                                              expression: Expression.Binary(op: TokenOperator(lineNumber: 0, lexeme: "+", op: .plus),
+                                                                            left: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 0, lexeme: "foo")),
+                                                                            right: Expression.Literal(number: TokenNumber(lineNumber: 0, lexeme: "1", literal: 1)))))
+        ])
+        
+        let codeGenerator = makeCodeGenerator()
+        codeGenerator.compile(ast: ast, base: 0x0000)
+        if codeGenerator.hasError {
+            XCTFail()
+        } else {
+            var instructions: [Instruction] = []
+            let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+            for instruction in codeGenerator.instructions {
+                instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
+            }
+            
+            let addressOfFoo = codeGenerator.fetchAddressOfStatic("foo")
+            
+            let computer = execute(instructions: instructions)
+            XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 3)
+        }
     }
 }

@@ -227,6 +227,38 @@ class ExpressionCompilerBackEndTests: XCTestCase {
         XCTAssertEqual(computer.stackTop, 1)
     }
     
+    func testLtWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.lt])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during LT")
+        }
+    }
+    
+    func testLtWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.push(1), .lt])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "ExpressionCompilerBackEnd: stack underflow during LT")
+        }
+    }
+    
+    func testLtWithStackDepthTwo() {
+        let computer = try! execute(ir: [.push(1), .push(2), .lt])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+    }
+    
+    func testLtWithStackDepthThree() {
+        let computer = try! execute(ir: [.push(1), .push(42), .push(2), .lt])
+        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+    }
+    
+    func testLtWithStackDepthFour() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .lt])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.stackTop, 1)
+    }
+    
     func testAddWithEmptyStack() {
         XCTAssertThrowsError(try execute(ir: [.add])) {
             XCTAssertEqual(($0 as? CompilerError)?.message,

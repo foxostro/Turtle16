@@ -10,6 +10,7 @@ public enum StackIR: Equatable {
     case push(Int) // push the specified value to the stack
     case pop // pop the stack
     case eq  // pop two from the stack, (A==B)?1:0, push the result
+    case lt  // pop two from the stack, (A<B)?1:0, push the result
     case add // pop two from the stack, A+B, push the result
     case sub // pop two from the stack, A-B, push the result
     case mul // pop two from the stack, A*B, push the result

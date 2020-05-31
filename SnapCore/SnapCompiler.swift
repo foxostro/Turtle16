@@ -1,5 +1,5 @@
 //
-//  SnapCompilerFrontEnd.swift
+//  SnapCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/17/20.
@@ -9,7 +9,7 @@
 import TurtleCompilerToolbox
 import TurtleCore
 
-public class SnapCompilerFrontEnd: NSObject {
+public class SnapCompiler: NSObject {
     public var instructions: [Instruction] = []
     
     public private(set) var errors: [CompilerError] = []

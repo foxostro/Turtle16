@@ -60,7 +60,7 @@ public class SnapCommandLineDriver: NSObject {
         guard let text = maybeText else {
             throw SnapCommandLineDriverError(format: "Failed to read input file as UTF-8 text: %@", fileName)
         }
-        let frontEnd = SnapCompilerFrontEnd()
+        let frontEnd = SnapCompiler()
         frontEnd.compile(text)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)

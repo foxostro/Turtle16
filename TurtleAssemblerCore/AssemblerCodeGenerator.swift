@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 // Takes an AST and performs a pass that does final code generation.
 public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     let assemblerBackEnd: AssemblerBackEnd
-    public var symbols = SymbolTable()
+    public var symbols: [String:Int] = [:]
     var patcherActions: [Patcher.Action] = []
     
     public var instructions: [Instruction] = []
@@ -53,8 +53,11 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             }
         }
         assemblerBackEnd.end()
+        let resolver: (TokenIdentifier) throws -> Int = {[weak self] (identifier: TokenIdentifier) in
+            return try self!.resolve(identifier: identifier)
+        }
         let patcher = Patcher(inputInstructions: assemblerBackEnd.instructions,
-                              symbols: symbols,
+                              resolver: resolver,
                               actions: patcherActions,
                               base: base)
         instructions = try patcher.patch()
@@ -324,15 +327,12 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     }
     
     func resolve(identifier: TokenIdentifier) throws -> Int {
-        let symbol = try symbols.resolve(identifierToken: identifier)
-        switch symbol {
-        case .constantAddress(let address):
-            return address.value
-        case .constantWord(let word):
-            return Int(word.value)
-        case .staticWord(_):
-            throw Expression.MustBeCompileTimeConstantError(line: identifier.lineNumber)
+        guard let address = symbols[identifier.lexeme] else {
+            throw CompilerError(line: identifier.lineNumber,
+                                format: "use of unresolved identifier: `%@'",
+                                identifier.lexeme)
         }
+        return address
     }
     
     func lxy(_ node: InstructionNode) throws {
@@ -420,22 +420,22 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     
     func visit(node: LabelDeclarationNode) throws {
         let name = node.identifier.lexeme
-        guard symbols.exists(identifier: name) == false else {
+        guard symbols[name] == nil else {
             throw CompilerError(line: node.identifier.lineNumber,
                                 format: "label redefines existing symbol: `%@'",
                                 name)
         }
-        symbols.bindConstantAddress(identifier: name, value: assemblerBackEnd.programCounter)
+        symbols[name] = assemblerBackEnd.programCounter
     }
     
     func visit(node: ConstantDeclarationNode) throws {
         let name = node.identifier.lexeme
-        guard symbols.exists(identifier: name) == false else {
+        guard symbols[name] == nil else {
             throw CompilerError(line: node.identifier.lineNumber,
                                 format: "constant redefines existing symbol: `%@'",
                                 name)
         }
-        symbols.bindConstantWord(identifier: name, value: UInt8(node.number.literal))
+        symbols[name] = node.number.literal
     }
     
     func setAddress(_ address: Int) throws {

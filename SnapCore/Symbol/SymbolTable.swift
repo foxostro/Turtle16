@@ -1,10 +1,12 @@
 //
 //  SymbolTable.swift
-//  TurtleCompilerToolbox
+//  SnapCore
 //
 //  Created by Andrew Fox on 9/1/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
+
+import TurtleCompilerToolbox
 
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {

@@ -1,12 +1,13 @@
 //
 //  SymbolTableTests.swift
-//  TurtleCompilerToolboxTests
+//  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/27/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
 import XCTest
+import SnapCore
 import TurtleCompilerToolbox
 
 class SymbolTableTests: XCTestCase {

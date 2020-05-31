@@ -45,7 +45,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         return codeGenerator.errors
     }
     
-    func makeCodeGenerator(symbols: SymbolTable = SymbolTable()) -> AssemblerCodeGenerator {
+    func makeCodeGenerator(symbols: [String:Int] = [:]) -> AssemblerCodeGenerator {
         let assemblerBackEnd = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         let codeGenerator = AssemblerCodeGenerator(assemblerBackEnd: assemblerBackEnd)
         codeGenerator.symbols = symbols

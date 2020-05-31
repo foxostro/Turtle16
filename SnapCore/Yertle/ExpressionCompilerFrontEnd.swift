@@ -1,10 +1,12 @@
 //
 //  ExpressionCompilerFrontEnd.swift
-//  TurtleCompilerToolbox
+//  SnapCore
 //
 //  Created by Andrew Fox on 5/22/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
+
+import TurtleCompilerToolbox
 
 // Takes an expression and generates intermediate code which can be more easily
 // compiled to machine code. (see also ExpressionCompilerBackEnd)
@@ -15,7 +17,7 @@ public class ExpressionCompilerFrontEnd: NSObject {
         self.symbols = symbols
     }
     
-    public func compile(expression: Expression) throws -> [StackIR] {
+    public func compile(expression: Expression) throws -> [YertleInstruction] {
         if let literal = expression as? Expression.Literal {
             return compile(literal: literal)
         } else if let binary = expression as? Expression.Binary {
@@ -29,21 +31,21 @@ public class ExpressionCompilerFrontEnd: NSObject {
         }
     }
     
-    private func compile(literal: Expression.Literal) -> [StackIR] {
+    private func compile(literal: Expression.Literal) -> [YertleInstruction] {
         return compile(intValue: literal.number.literal)
     }
     
-    private func compile(intValue: Int) -> [StackIR] {
+    private func compile(intValue: Int) -> [YertleInstruction] {
         return [.push(intValue)]
     }
     
-    private func compile(binary: Expression.Binary) throws -> [StackIR] {
-        let right: [StackIR] = try compile(expression: binary.right)
-        let left: [StackIR] = try compile(expression: binary.left)
+    private func compile(binary: Expression.Binary) throws -> [YertleInstruction] {
+        let right: [YertleInstruction] = try compile(expression: binary.right)
+        let left: [YertleInstruction] = try compile(expression: binary.left)
         return right + left + [getOperator(binary: binary)]
     }
     
-    private func getOperator(binary: Expression.Binary) -> StackIR {
+    private func getOperator(binary: Expression.Binary) -> YertleInstruction {
         switch binary.op.op {
         case .eq:
             return .eq
@@ -62,7 +64,7 @@ public class ExpressionCompilerFrontEnd: NSObject {
         }
     }
     
-    private func compile(identifier: Expression.Identifier) throws -> [StackIR] {
+    private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
         switch symbol {
         case .constantAddress(let address):
@@ -74,7 +76,7 @@ public class ExpressionCompilerFrontEnd: NSObject {
         }
     }
     
-    private func compile(assignment: Expression.Assignment) throws -> [StackIR] {
+    private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: assignment.identifier)
         switch symbol {
         case .constantAddress(let address):

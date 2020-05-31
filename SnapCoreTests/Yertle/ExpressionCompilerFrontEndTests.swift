@@ -1,12 +1,13 @@
 //
 //  ExpressionCompilerFrontEndTests.swift
-//  TurtleCompilerToolboxTests
+//  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/22/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
 import XCTest
+import SnapCore
 import TurtleCompilerToolbox
 
 class ExpressionCompilerFrontEndTests: XCTestCase {
@@ -46,7 +47,7 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
         return Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: name), expression: right)
     }
     
-    func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [StackIR] {
+    func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [YertleInstruction] {
         let compiler = ExpressionCompilerFrontEnd(symbols: symbols)
         let ir = try compiler.compile(expression: expression)
         return ir

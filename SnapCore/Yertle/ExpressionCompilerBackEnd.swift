@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-// Takes some StackIR and generates corresponding machine code.
+// Takes some YertleInstruction and generates corresponding machine code.
 // For speed, we use the A and B registers as the top of the stack.
 // (see also ExpressionCompilerFrontEnd)
 public class ExpressionCompilerBackEnd: NSObject {
@@ -25,7 +25,7 @@ public class ExpressionCompilerBackEnd: NSObject {
         self.assembler = assembler
     }
     
-    public func compile(ir: [StackIR]) throws {
+    public func compile(ir: [YertleInstruction]) throws {
         for instruction in ir {
             switch instruction {
             case .push(let value): try push(value)

@@ -10,6 +10,7 @@ import Cocoa
 import TurtleSimulatorCore
 import TurtleAssemblerCore
 import TurtleCore
+import TurtleCompilerToolbox
 
 class ViewController: NSViewController {
     @IBOutlet var registerA:NSTextField!
@@ -124,7 +125,7 @@ class ViewController: NSViewController {
         let frontEnd = AssemblerFrontEnd()
         frontEnd.compile(loadExampleProgram())
         if frontEnd.hasError {
-            let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
             alert(withMessage: error.message)
         }
         return frontEnd.instructions
@@ -260,7 +261,7 @@ class ViewController: NSViewController {
                         let frontEnd = AssemblerFrontEnd()
                         frontEnd.compile(programText)
                         if frontEnd.hasError {
-                            let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
+                            let error = CompilerError.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
                             self.alert(withMessage: error.message)
                         } else {
                             self.executor.provideInstructions(frontEnd.instructions)

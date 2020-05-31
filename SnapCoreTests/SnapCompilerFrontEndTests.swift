@@ -10,7 +10,38 @@ import XCTest
 import SnapCore
 
 class SnapCompilerFrontEndTests: XCTestCase {
-    func testInit() {
-        let _ = SnapCompilerFrontEnd()
+    func testCompileFailsDuringLexing() {
+        let compiler = SnapCompilerFrontEnd()
+        compiler.compile("@")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
+        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("unexpected character: `@'"))
+    }
+    
+    func testCompileFailsDuringParsing() {
+        let compiler = SnapCompilerFrontEnd()
+        compiler.compile(":")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
+        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("operand type mismatch: `:'"))
+    }
+    
+    func testCompileFailsDuringCodeGeneration() {
+        let compiler = SnapCompilerFrontEnd()
+        compiler.compile("foo")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
+        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("use of unresolved identifier: `foo'"))
+    }
+    
+    func testEnsureDisassemblyWorks() {
+        let compiler = SnapCompilerFrontEnd()
+        compiler.compile("")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertGreaterThan(compiler.instructions.count, 0)
+        XCTAssertEqual(compiler.instructions.first?.disassembly, "NOP")
     }
 }

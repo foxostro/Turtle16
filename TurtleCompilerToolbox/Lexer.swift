@@ -6,15 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public protocol Lexer {
-    var hasError: Bool { get }
-    var errors: [CompilerError] { get }
-    var tokens: [Token] { get }
-    
-    func scanTokens()
-}
-
-open class LexerBase: NSObject, Lexer {
+open class Lexer: NSObject {
     public private(set) var string = ""
     public var isAtEnd:Bool {
         return string == ""

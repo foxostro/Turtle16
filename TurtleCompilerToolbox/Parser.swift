@@ -6,15 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public protocol Parser {
-    var hasError: Bool { get }
-    var errors: [CompilerError] { get }
-    var syntaxTree: AbstractSyntaxTreeNode? { get }
-    
-    func parse()
-}
-
-open class ParserBase: NSObject, Parser {
+open class Parser: NSObject {
     public var tokens: [Token] = []
     public private(set) var previous: Token? = nil
     

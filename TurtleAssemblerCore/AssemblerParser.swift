@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-public class AssemblerParser: ParserBase {
+public class AssemblerParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         if nil != accept(TokenEOF.self) {
             return []

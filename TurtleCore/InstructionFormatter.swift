@@ -67,4 +67,13 @@ public class InstructionFormatter: NSObject {
                            immediate: instruction.immediate,
                            disassembly: format(instruction: instruction))
     }
+    
+    public static func makeInstructionsWithDisassembly(instructions: [Instruction]) -> [Instruction] {
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
+        return instructions.map {
+            formatter.makeInstructionWithDisassembly(instruction: $0)
+        }
+    }
 }

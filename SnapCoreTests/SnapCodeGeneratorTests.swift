@@ -87,13 +87,7 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         if codeGenerator.hasError {
             XCTFail()
         }
-        
-        var instructions: [Instruction] = []
-        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
-        for instruction in codeGenerator.instructions {
-            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
-        }
-        
+        let instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: codeGenerator.instructions)
         return instructions
     }
     
@@ -411,11 +405,7 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
             XCTFail()
         }
         
-        var instructions: [Instruction] = []
-        let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
-        for instruction in codeGenerator.instructions {
-            instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
-        }
+        let instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: codeGenerator.instructions)
         
         let addressOfFoo = codeGenerator.fetchAddressOfStatic("foo")
         
@@ -437,14 +427,8 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         if codeGenerator.hasError {
             XCTFail()
         } else {
-            var instructions: [Instruction] = []
-            let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
-            for instruction in codeGenerator.instructions {
-                instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
-            }
-            
+            let instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: codeGenerator.instructions)
             let addressOfFoo = codeGenerator.fetchAddressOfStatic("foo")
-            
             let computer = execute(instructions: instructions)
             XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 0)
         }
@@ -468,14 +452,8 @@ LI M, \((SnapCodeGenerator.kStackPointerInitialValue & 0x00ff))
         if codeGenerator.hasError {
             XCTFail()
         } else {
-            var instructions: [Instruction] = []
-            let formatter = InstructionFormatter(microcodeGenerator: microcodeGenerator)
-            for instruction in codeGenerator.instructions {
-                instructions.append(formatter.makeInstructionWithDisassembly(instruction: instruction))
-            }
-            
+            let instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: codeGenerator.instructions)
             let addressOfFoo = codeGenerator.fetchAddressOfStatic("foo")
-            
             let computer = execute(instructions: instructions)
             XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 3)
         }

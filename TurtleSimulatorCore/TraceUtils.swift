@@ -8,6 +8,7 @@
 
 import TurtleCore
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 // Useful for building Traces of programs in unit test.
 public class TraceUtils: NSObject {
@@ -42,7 +43,7 @@ public class TraceUtils: NSObject {
         let assembler = AssemblerFrontEnd()
         assembler.compile(program: text, base: base)
         if assembler.hasError {
-            let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: assembler.errors)
             throw error
         }
         return assembler.instructions

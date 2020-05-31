@@ -25,6 +25,7 @@ public class SnapCompiler: NSObject {
         instructions = []
         errors = []
         
+        // Lexer pass
         let lexer = SnapLexer(withString: text)
         lexer.scanTokens()
         if lexer.hasError {
@@ -32,6 +33,7 @@ public class SnapCompiler: NSObject {
             return
         }
         
+        // Compile to an abstract syntac tree
         let parser = SnapParser(tokens: lexer.tokens)
         parser.parse()
         if parser.hasError {
@@ -40,17 +42,34 @@ public class SnapCompiler: NSObject {
         }
         let ast = parser.syntaxTree!
         
+        // Compile the AST to IR code
+        let snapToYertle = SnapToYertleCompiler()
+        snapToYertle.compile(ast: ast)
+        if snapToYertle.hasError {
+            errors = snapToYertle.errors
+            return
+        }
+        let symbols = snapToYertle.symbols
+        let yertleInstructions = snapToYertle.instructions
+        
+        // Compile the IR code to Turtle machine code
+        let assembler = makeAssembler()
+        let yertleToMachineCode = YertleToTurtleMachineCodeCompiler(assembler: assembler, symbols: symbols)
+        do {
+            try yertleToMachineCode.compile(ir: yertleInstructions, base: base)
+        } catch let error as CompilerError {
+            errors = [error]
+            return
+        } catch {
+            abort()
+        }
+        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: assembler.instructions)
+    }
+    
+    private func makeAssembler() -> AssemblerBackEnd {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
-        
-        let codeGenerator = SnapCodeGenerator(assemblerBackEnd: assembler)
-        codeGenerator.compile(ast: ast, base: base)
-        if codeGenerator.hasError {
-            errors = codeGenerator.errors
-            return
-        }
-        
-        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: codeGenerator.instructions)
+        return assembler
     }
 }

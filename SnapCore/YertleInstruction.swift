@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCompilerToolbox
+
 // Defines a stack-based intermediate representation, "Yertle" for the
 // Snap compiler. The intermediate language has no textual representation.
 // It's nothing more than a list of these instructions.
@@ -21,4 +23,7 @@ public enum YertleInstruction: Equatable {
     case mod // pop two from the stack, A%B, push the result
     case load(Int) // load from the specified address, push to the stack
     case store(Int) // pop the stack and store to the specified address
+    case label(TokenIdentifier) // declares a label
+    case jmp(TokenIdentifier) // unconditional jump, no change to the stack
+    case je(TokenIdentifier) // pop two from the stack, jump if they are equal
 }

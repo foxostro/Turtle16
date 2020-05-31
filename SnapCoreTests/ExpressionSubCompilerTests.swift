@@ -1,5 +1,5 @@
 //
-//  ExpressionCompilerFrontEndTests.swift
+//  ExpressionSubCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/22/20.
@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCompilerToolbox
 
-class ExpressionCompilerFrontEndTests: XCTestCase {
+class ExpressionSubCompilerTests: XCTestCase {
     func makeLiteral(value: Int) -> Expression {
         return Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "\(value)", literal: value))
     }
@@ -48,7 +48,7 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
     }
     
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [YertleInstruction] {
-        let compiler = ExpressionCompilerFrontEnd(symbols: symbols)
+        let compiler = ExpressionSubCompiler(symbols: symbols)
         let ir = try compiler.compile(expression: expression)
         return ir
     }
@@ -129,6 +129,16 @@ class ExpressionCompilerFrontEndTests: XCTestCase {
             .push(42),
             .store(0x0010)
         ])
+    }
+    
+    func testCannotAssignToAnImmutableValue() {
+        let expr = makeAssignment("foo", right: makeLiteral(value: 42))
+        let symbols = SymbolTable(["foo" : .staticWord(SymbolStaticWord(identifier: "foo", address: 0x0010, isMutable: false))])
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
+        }
     }
     
     func testCompileComparisonEquals() {

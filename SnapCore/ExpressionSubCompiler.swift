@@ -1,5 +1,5 @@
 //
-//  ExpressionCompilerFrontEnd.swift
+//  ExpressionSubCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/22/20.
@@ -9,8 +9,8 @@
 import TurtleCompilerToolbox
 
 // Takes an expression and generates intermediate code which can be more easily
-// compiled to machine code. (see also ExpressionCompilerBackEnd)
-public class ExpressionCompilerFrontEnd: NSObject {
+// compiled to machine code. (see also YertleToTurtleMachineCodeCompiler)
+public class ExpressionSubCompiler: NSObject {
     let symbols: SymbolTable
     
     public init(symbols: SymbolTable = SymbolTable()) {

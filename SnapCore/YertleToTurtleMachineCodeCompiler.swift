@@ -1,31 +1,48 @@
 //
-//  ExpressionCompilerBackEnd.swift
+//  YertleToTurtleMachineCodeCompiler.swift
 //  SnapCore
 //
-//  Created by Andrew Fox on 5/22/20.
+//  Created by Andrew Fox on 5/31/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
 import TurtleCompilerToolbox
 
 // Takes some YertleInstruction and generates corresponding machine code.
 // For speed, we use the A and B registers as the top of the stack.
-// (see also ExpressionCompilerFrontEnd)
-public class ExpressionCompilerBackEnd: NSObject {
+// (see also ExpressionSubCompiler)
+public class YertleToTurtleMachineCodeCompiler: NSObject {
+    // Programs written in Snap store the stack pointer in data RAM at
+    // addresses 0x0000 and 0x0001. This is initialized on launch to 0xffff.
+    public static let kStackPointerAddressHi: UInt16 = 0x0000
+    public static let kStackPointerAddressLo: UInt16 = 0x0001
+    public static let kStackPointerInitialValue: Int = 0x0000
+    
+    public let symbols: SymbolTable
+    public private(set) var instructions: [Instruction] = []
+    private var patcherActions: [Patcher.Action] = []
+    
     let kScratchHi = 0
     let kScratchLo = 2
-    let kStackPointerHiHi = Int((SnapCodeGenerator.kStackPointerAddressHi & 0xff00) >> 8)
-    let kStackPointerHiLo = Int( SnapCodeGenerator.kStackPointerAddressHi & 0x00ff)
-    let kStackPointerLoHi = Int((SnapCodeGenerator.kStackPointerAddressLo & 0xff00) >> 8)
-    let kStackPointerLoLo = Int( SnapCodeGenerator.kStackPointerAddressLo & 0x00ff)
+    let kStackPointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
+    let kStackPointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
+    let kStackPointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
+    let kStackPointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0x00ff)
+    let kStackPointerInitialValueHi: Int = (kStackPointerInitialValue & 0xff00) >> 8
+    let kStackPointerInitialValueLo: Int =  kStackPointerInitialValue & 0x00ff
     let assembler: AssemblerBackEnd
     var stackDepth = 0
     
-    public init(assembler: AssemblerBackEnd) {
+    public init(assembler: AssemblerBackEnd, symbols: SymbolTable = SymbolTable()) {
         self.assembler = assembler
+        self.symbols = symbols
     }
     
-    public func compile(ir: [YertleInstruction]) throws {
+    public func compile(ir: [YertleInstruction], base: Int) throws {
+        patcherActions = []
+        assembler.begin()
+        try insertProgramPrologue()
         for instruction in ir {
             switch instruction {
             case .push(let value): try push(value)
@@ -39,8 +56,50 @@ public class ExpressionCompilerBackEnd: NSObject {
             case .mod: try mod()
             case .load(let address): try load(from: address)
             case .store(let address): try store(to: address)
+            case .label(let token): try label(token: token)
+            case .jmp(let token): try jmp(to: token)
+            case .je(let token): try je(to: token)
             }
         }
+        insertProgramEpilogue()
+        assembler.end()
+        let resolver: (TokenIdentifier) throws -> Int = {[weak self] (identifier: TokenIdentifier) in
+            let symbol = try self!.symbols.resolve(identifierToken: identifier)
+            switch symbol {
+            case .constantAddress(let address):
+                return address.value
+            case .constantWord(let word):
+                return Int(word.value)
+            case .staticWord(_):
+                // TODO: Perhaps `MustBeCompileTimeConstantError' should be in some other namespace other than `Expression'.
+                throw Expression.MustBeCompileTimeConstantError(line: identifier.lineNumber)
+            }
+        }
+        let patcher = Patcher(inputInstructions: assembler.instructions,
+                              resolver: resolver,
+                              actions: patcherActions,
+                              base: base)
+        instructions = try patcher.patch()
+    }
+    
+    // Inserts prologue code into the program, presumably at the beginning.
+    // Insert a NOP at the beginning of every program because correct operation
+    // of the hardware reset cycle requires this.
+    // Likewise, correct operation of a program written in Snap requires some
+    // inititalization to be performed before anything else occurs.
+    func insertProgramPrologue() throws {
+        assembler.nop()
+        try assembler.li(.X, kStackPointerHiHi)
+        try assembler.li(.Y, kStackPointerHiLo)
+        try assembler.li(.M, kStackPointerInitialValueHi)
+        try assembler.li(.X, kStackPointerLoHi)
+        try assembler.li(.Y, kStackPointerLoLo)
+        try assembler.li(.M, kStackPointerInitialValueLo)
+    }
+    
+    // Inserts epilogue code into the program, presumably at the end.
+    func insertProgramEpilogue() {
+        assembler.hlt()
     }
     
     private func push(_ value: Int) throws {
@@ -110,7 +169,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func pop() throws {
         if stackDepth == 0 {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: cannot pop when stack is empty")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: cannot pop when stack is empty")
         } else if stackDepth == 1 {
             try assembler.li(.A, 0) // Clear A. This is not actually necessary.
         } else if stackDepth == 2 {
@@ -152,7 +211,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func eq() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during EQ")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during EQ")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -176,7 +235,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func lt() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during LT")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during LT")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -200,7 +259,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func add() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during ADD")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during ADD")
         }
         try assembler.add(.NONE)
         try assembler.add(.A)
@@ -212,7 +271,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func sub() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during SUB")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during SUB")
         }
         try assembler.sub(.NONE)
         try assembler.sub(.A)
@@ -224,7 +283,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func mul() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during MUL")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during MUL")
         }
         
         // A is the Multiplicand, B is the Multiplier
@@ -289,7 +348,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func div() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during DIV")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during DIV")
         }
         
         // A is the Dividend, B is the Divisor
@@ -370,7 +429,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func mod() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during MOD")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during MOD")
         }
         
         // A is the Dividend, B is the Divisor
@@ -488,7 +547,7 @@ public class ExpressionCompilerBackEnd: NSObject {
     
     private func store(to address: Int) throws {
         guard stackDepth > 0 else {
-            throw CompilerError(message: "ExpressionCompilerBackEnd: stack underflow during STORE")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during STORE")
         }
         
         try assembler.li(.U, (address & 0xff00) >> 8)
@@ -502,5 +561,48 @@ public class ExpressionCompilerBackEnd: NSObject {
         }
         
         stackDepth -= 1
+    }
+    
+    private func label(token: TokenIdentifier) throws {
+        let name = token.lexeme
+        guard symbols.exists(identifier: name) == false else {
+            throw CompilerError(line: token.lineNumber,
+                                format: "label redefines existing symbol: `%@'",
+                                token.lexeme)
+        }
+        symbols.bindConstantAddress(identifier: name, value: assembler.programCounter)
+    }
+    
+    private func jmp(to token: TokenIdentifier) throws {
+        try setAddressToLabel(token)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+    }
+    
+    private func je(to token: TokenIdentifier) throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during JE")
+        }
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(token)
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        try pop()
+        try pop()
+    }
+    
+    func setAddressToLabel(_ name: TokenIdentifier) throws {
+        patcherActions.append((index: assembler.programCounter,
+                               symbol: name,
+                               shift: 8))
+        try assembler.li(.X, 0xff)
+        patcherActions.append((index: assembler.programCounter,
+                               symbol: name,
+                               shift: 0))
+        try assembler.li(.Y, 0xff)
     }
 }

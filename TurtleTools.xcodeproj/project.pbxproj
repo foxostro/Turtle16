@@ -11,6 +11,11 @@
 		6F1718302471C56600AE60C2 /* TurtleCompilerToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; };
 		6F1718312471C56600AE60C2 /* TurtleCompilerToolbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F1718382471C58D00AE60C2 /* CompilerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BE175230D2E31008C2329 /* CompilerError.swift */; };
+		6F18DD8B248414DE0014C585 /* SnapToYertleCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD8A248414DE0014C585 /* SnapToYertleCompiler.swift */; };
+		6F18DD8D2484154F0014C585 /* SnapToYertleCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD8C2484154F0014C585 /* SnapToYertleCompilerTests.swift */; };
+		6F18DD8F248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD8E248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift */; };
+		6F18DD91248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD90248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift */; };
+		6F18DD94248463340014C585 /* YertleExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD92248463030014C585 /* YertleExecutor.swift */; };
 		6F1D24B92482245E0095D7B4 /* TokenMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24B82482245E0095D7B4 /* TokenMisc.swift */; };
 		6F1D24C524823DD90095D7B4 /* If.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C424823DD90095D7B4 /* If.swift */; };
 		6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C624823EC60095D7B4 /* IfTests.swift */; };
@@ -18,8 +23,8 @@
 		6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940AA2483070C00C50ABA /* WhileTests.swift */; };
 		6F2940B22483819E00C50ABA /* CompilerErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940B12483819E00C50ABA /* CompilerErrorTests.swift */; };
 		6F2940BB2483978E00C50ABA /* YertleInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940B62483970100C50ABA /* YertleInstruction.swift */; };
-		6F2940BC2483978E00C50ABA /* ExpressionCompilerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69524784B230043A8D7 /* ExpressionCompilerFrontEnd.swift */; };
-		6F2940BD2483979800C50ABA /* ExpressionCompilerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69724784B680043A8D7 /* ExpressionCompilerFrontEndTests.swift */; };
+		6F2940BC2483978E00C50ABA /* ExpressionSubCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69524784B230043A8D7 /* ExpressionSubCompiler.swift */; };
+		6F2940BD2483979800C50ABA /* ExpressionSubCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69724784B680043A8D7 /* ExpressionSubCompilerTests.swift */; };
 		6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */; };
 		6F2940C02483996900C50ABA /* SymbolConstantWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21924805032004B1703 /* SymbolConstantWordTests.swift */; };
 		6F2940C12483996900C50ABA /* SymbolStaticWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD220248065C1004B1703 /* SymbolStaticWordTests.swift */; };
@@ -45,8 +50,6 @@
 		6F38F9062471C8D400B5296D /* TokenNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */; };
 		6F41B66824762D2F0043A8D7 /* TokenOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B66724762D2F0043A8D7 /* TokenOperator.swift */; };
 		6F41B66C2476D6130043A8D7 /* TokenOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */; };
-		6F41B6A2247872D30043A8D7 /* ExpressionCompilerBackEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B6A0247865A00043A8D7 /* ExpressionCompilerBackEndTests.swift */; };
-		6F41B6A5247872EC0043A8D7 /* ExpressionCompilerBackEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69E2478658D0043A8D7 /* ExpressionCompilerBackEnd.swift */; };
 		6F4B5CB22471DE2D000C57EB /* SnapCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */; };
 		6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */; };
 		6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */; };
@@ -178,8 +181,6 @@
 		6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681B2472051200798905 /* SnapLexerTests.swift */; };
 		6FCB681E2472063900798905 /* SnapParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681D2472063900798905 /* SnapParser.swift */; };
 		6FCB68202472064800798905 /* SnapParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681F2472064800798905 /* SnapParserTests.swift */; };
-		6FCB68222472069D00798905 /* SnapCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB68212472069D00798905 /* SnapCodeGenerator.swift */; };
-		6FCB6824247206C200798905 /* SnapCodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6823247206C200798905 /* SnapCodeGeneratorTests.swift */; };
 		6FCB68252472077A00798905 /* AssemblerBackEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */; };
 		6FCB68262472077A00798905 /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
 		6FCB68272472079700798905 /* AssemblerBackEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */; };
@@ -581,6 +582,11 @@
 		6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleCompilerToolbox.h; sourceTree = "<group>"; };
 		6F17181E2471C56600AE60C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
+		6F18DD8A248414DE0014C585 /* SnapToYertleCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToYertleCompiler.swift; sourceTree = "<group>"; };
+		6F18DD8C2484154F0014C585 /* SnapToYertleCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToYertleCompilerTests.swift; sourceTree = "<group>"; };
+		6F18DD8E248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YertleToTurtleMachineCodeCompiler.swift; sourceTree = "<group>"; };
+		6F18DD90248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YertleToTurtleMachineCodeCompilerTests.swift; sourceTree = "<group>"; };
+		6F18DD92248463030014C585 /* YertleExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YertleExecutor.swift; sourceTree = "<group>"; };
 		6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUStateSnapshot.swift; sourceTree = "<group>"; };
 		6F1D24B82482245E0095D7B4 /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
 		6F1D24C424823DD90095D7B4 /* If.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = If.swift; sourceTree = "<group>"; };
@@ -599,10 +605,8 @@
 		6F41B663247625D20043A8D7 /* ExpressionEvaluatorCompileTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionEvaluatorCompileTimeTests.swift; sourceTree = "<group>"; };
 		6F41B66724762D2F0043A8D7 /* TokenOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperator.swift; sourceTree = "<group>"; };
 		6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperatorTests.swift; sourceTree = "<group>"; };
-		6F41B69524784B230043A8D7 /* ExpressionCompilerFrontEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionCompilerFrontEnd.swift; sourceTree = "<group>"; };
-		6F41B69724784B680043A8D7 /* ExpressionCompilerFrontEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionCompilerFrontEndTests.swift; sourceTree = "<group>"; };
-		6F41B69E2478658D0043A8D7 /* ExpressionCompilerBackEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionCompilerBackEnd.swift; sourceTree = "<group>"; };
-		6F41B6A0247865A00043A8D7 /* ExpressionCompilerBackEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionCompilerBackEndTests.swift; sourceTree = "<group>"; };
+		6F41B69524784B230043A8D7 /* ExpressionSubCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSubCompiler.swift; sourceTree = "<group>"; };
+		6F41B69724784B680043A8D7 /* ExpressionSubCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSubCompilerTests.swift; sourceTree = "<group>"; };
 		6F4ACBDA2400BCD900014F4B /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
 		6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
 		6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCommandLineDriver.swift; sourceTree = "<group>"; };
@@ -719,8 +723,6 @@
 		6FCB681B2472051200798905 /* SnapLexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLexerTests.swift; sourceTree = "<group>"; };
 		6FCB681D2472063900798905 /* SnapParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapParser.swift; sourceTree = "<group>"; };
 		6FCB681F2472064800798905 /* SnapParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapParserTests.swift; sourceTree = "<group>"; };
-		6FCB68212472069D00798905 /* SnapCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCodeGenerator.swift; sourceTree = "<group>"; };
-		6FCB6823247206C200798905 /* SnapCodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6FCB6845247241ED00798905 /* Return.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Return.swift; sourceTree = "<group>"; };
 		6FCB68472472448300798905 /* ReturnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnTests.swift; sourceTree = "<group>"; };
 		6FCB684924724B6300798905 /* Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
@@ -907,25 +909,6 @@
 			path = TurtleCompilerToolbox;
 			sourceTree = "<group>";
 		};
-		6F2940BA2483978300C50ABA /* Yertle */ = {
-			isa = PBXGroup;
-			children = (
-				6F2940B62483970100C50ABA /* YertleInstruction.swift */,
-				6F41B69524784B230043A8D7 /* ExpressionCompilerFrontEnd.swift */,
-				6F41B69E2478658D0043A8D7 /* ExpressionCompilerBackEnd.swift */,
-			);
-			path = Yertle;
-			sourceTree = "<group>";
-		};
-		6F2940BE2483979B00C50ABA /* Yertle */ = {
-			isa = PBXGroup;
-			children = (
-				6F41B69724784B680043A8D7 /* ExpressionCompilerFrontEndTests.swift */,
-				6F41B6A0247865A00043A8D7 /* ExpressionCompilerBackEndTests.swift */,
-			);
-			path = Yertle;
-			sourceTree = "<group>";
-		};
 		6F2940C4248399A400C50ABA /* Symbol */ = {
 			isa = PBXGroup;
 			children = (
@@ -1096,14 +1079,16 @@
 			isa = PBXGroup;
 			children = (
 				6F53372F2474BE0B00CFD33C /* AST */,
-				6F5337322474BE4B00CFD33C /* Token */,
 				6F2940CA248399D100C50ABA /* Symbol */,
-				6F2940BA2483978300C50ABA /* Yertle */,
+				6F5337322474BE4B00CFD33C /* Token */,
+				6F41B69524784B230043A8D7 /* ExpressionSubCompiler.swift */,
 				6F41B661247625520043A8D7 /* ExpressionEvaluatorCompileTime.swift */,
-				6FCB68212472069D00798905 /* SnapCodeGenerator.swift */,
 				6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */,
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
 				6FCB681D2472063900798905 /* SnapParser.swift */,
+				6F18DD8A248414DE0014C585 /* SnapToYertleCompiler.swift */,
+				6F18DD8E248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift */,
+				6F2940B62483970100C50ABA /* YertleInstruction.swift */,
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
 				6F9201E82471DAC7009E1410 /* Info.plist */,
 			);
@@ -1115,12 +1100,14 @@
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
 				6F2940C4248399A400C50ABA /* Symbol */,
-				6F2940BE2483979B00C50ABA /* Yertle */,
 				6F41B663247625D20043A8D7 /* ExpressionEvaluatorCompileTimeTests.swift */,
+				6F41B69724784B680043A8D7 /* ExpressionSubCompilerTests.swift */,
 				6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
-				6FCB6823247206C200798905 /* SnapCodeGeneratorTests.swift */,
+				6F18DD8C2484154F0014C585 /* SnapToYertleCompilerTests.swift */,
+				6F18DD92248463030014C585 /* YertleExecutor.swift */,
+				6F18DD90248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift */,
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
 			path = SnapCoreTests;
@@ -1948,13 +1935,12 @@
 				6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */,
 				6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */,
 				6F2940CC24839A1800C50ABA /* ExpressionEvaluatorCompileTime.swift in Sources */,
+				6F18DD8F248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift in Sources */,
 				6F2940A9248306EC00C50ABA /* While.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
 				6F1D24C524823DD90095D7B4 /* If.swift in Sources */,
-				6F41B6A5247872EC0043A8D7 /* ExpressionCompilerBackEnd.swift in Sources */,
 				6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */,
-				6FCB68222472069D00798905 /* SnapCodeGenerator.swift in Sources */,
-				6F2940BC2483978E00C50ABA /* ExpressionCompilerFrontEnd.swift in Sources */,
+				6F2940BC2483978E00C50ABA /* ExpressionSubCompiler.swift in Sources */,
 				6F2940C8248399BE00C50ABA /* SymbolConstantWord.swift in Sources */,
 				6F6DD223248096CB004B1703 /* VarDeclaration.swift in Sources */,
 				6F6DD22524809731004B1703 /* ExpressionSymbolDeclaration.swift in Sources */,
@@ -1962,6 +1948,7 @@
 				6F2940BB2483978E00C50ABA /* YertleInstruction.swift in Sources */,
 				6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */,
 				6F2940C7248399BE00C50ABA /* Symbol.swift in Sources */,
+				6F18DD8B248414DE0014C585 /* SnapToYertleCompiler.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
 				6F2940C9248399BE00C50ABA /* SymbolConstantAddress.swift in Sources */,
@@ -1972,20 +1959,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F2940BD2483979800C50ABA /* ExpressionCompilerFrontEndTests.swift in Sources */,
+				6F2940BD2483979800C50ABA /* ExpressionSubCompilerTests.swift in Sources */,
 				6F2940C12483996900C50ABA /* SymbolStaticWordTests.swift in Sources */,
 				6F2940CB248399FD00C50ABA /* ExpressionEvaluatorCompileTimeTests.swift in Sources */,
 				6F2940C32483998E00C50ABA /* SymbolTests.swift in Sources */,
-				6F41B6A2247872D30043A8D7 /* ExpressionCompilerBackEndTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift in Sources */,
 				6F2940C22483996900C50ABA /* SymbolConstantAddressTests.swift in Sources */,
+				6F18DD94248463340014C585 /* YertleExecutor.swift in Sources */,
+				6F18DD91248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift in Sources */,
 				6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
 				6F2940C02483996900C50ABA /* SymbolConstantWordTests.swift in Sources */,
-				6FCB6824247206C200798905 /* SnapCodeGeneratorTests.swift in Sources */,
 				6F2940D02483A15000C50ABA /* ExpressionTests.swift in Sources */,
+				6F18DD8D2484154F0014C585 /* SnapToYertleCompilerTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */,
 				6FCB68482472448300798905 /* ReturnTests.swift in Sources */,

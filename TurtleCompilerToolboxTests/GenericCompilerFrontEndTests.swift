@@ -96,36 +96,4 @@ class GenericCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(compiler.instructions.count, 1)
         XCTAssertEqual(compiler.instructions.first?.disassembly, "NOP")
     }
-    
-    func testOmnibusErrorWithNoErrors() {
-        let compiler = GenericCompilerFrontEnd(lexerFactory: { _ in NullLexer() },
-                                               parserFactory: { _ in NullParser() },
-                                               codeGeneratorFactory: { _ in NullCodeGenerator() } )
-        let error = compiler.makeOmnibusError(fileName: nil, errors: [])
-        XCTAssertEqual(error.line, nil)
-        XCTAssertEqual(error.message, "0 errors generated\n")
-    }
-    
-    func testOmnibusErrorWithOneError() {
-        let errors = [CompilerError(line: 1, message: "register cannot be used as a destination: `E'")]
-        let compiler = GenericCompilerFrontEnd(lexerFactory: { _ in NullLexer() },
-                                               parserFactory: { _ in NullParser() },
-                                               codeGeneratorFactory: { _ in NullCodeGenerator() } )
-        let omnibusError = compiler.makeOmnibusError(fileName: "foo.s", errors: errors)
-        XCTAssertEqual(omnibusError.line, nil)
-        XCTAssertEqual(omnibusError.message, "foo.s:1: error: register cannot be used as a destination: `E'\n1 error generated\n")
-    }
-    
-    func testOmnibusErrorWithMultipleErrors() {
-        let errors = [
-            CompilerError(line: 1, message: "register cannot be used as a destination: `E'"),
-            CompilerError(line: 2, message: "operand type mismatch: `MOV'")
-        ]
-        let compiler = GenericCompilerFrontEnd(lexerFactory: { _ in NullLexer() },
-                                               parserFactory: { _ in NullParser() },
-                                               codeGeneratorFactory: { _ in NullCodeGenerator() } )
-        let omnibusError = compiler.makeOmnibusError(fileName: "foo.s", errors: errors)
-        XCTAssertEqual(omnibusError.line, nil)
-        XCTAssertEqual(omnibusError.message, "foo.s:1: error: register cannot be used as a destination: `E'\nfoo.s:2: error: operand type mismatch: `MOV'\n2 errors generated\n")
-    }
 }

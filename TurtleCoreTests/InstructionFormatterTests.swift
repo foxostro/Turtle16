@@ -9,6 +9,7 @@
 import XCTest
 import TurtleCore
 import TurtleAssemblerCore
+import TurtleCompilerToolbox
 
 class InstructionFormatterTests: XCTestCase {
     let formatter = InstructionFormatter()
@@ -21,7 +22,7 @@ class InstructionFormatterTests: XCTestCase {
         let assembler = AssemblerFrontEnd()
         assembler.compile(line)
         if assembler.hasError {
-            let error = assembler.makeOmnibusError(fileName: nil, errors: assembler.errors)
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: assembler.errors)
             throw error
         }
         let instructions = assembler.instructions

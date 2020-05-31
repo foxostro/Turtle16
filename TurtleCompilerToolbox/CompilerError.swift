@@ -45,6 +45,28 @@ open class CompilerError: Error {
     public var description: String {
         return localizedDescription
     }
+    
+    public static func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError {
+        var message = ""
+        
+        for error in errors {
+            if fileName != nil {
+                message += fileName! + ":"
+            }
+            if let lineNumber = error.line {
+                message += String(lineNumber) + ": "
+            }
+            message += String(format: "error: %@\n", error.message)
+        }
+        
+        if errors.count == 1 {
+            message += String(format: "1 error generated\n")
+        } else {
+            message += String(format: "%d errors generated\n", errors.count)
+        }
+        
+        return CompilerError(message: message)
+    }
 }
 
 public func ==(lhs: CompilerError, rhs: CompilerError) -> Bool {

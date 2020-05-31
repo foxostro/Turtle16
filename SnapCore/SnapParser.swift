@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-public class SnapParser: ParserBase {
+public class SnapParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         if nil != accept(TokenEOF.self) {
             return []

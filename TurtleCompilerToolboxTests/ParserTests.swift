@@ -11,14 +11,14 @@ import TurtleCompilerToolbox
 
 class ParserTests: XCTestCase {
     func testParseEmptyProgramYieldsEmptyAST() {
-        let parser = ParserBase()
+        let parser = Parser()
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree, AbstractSyntaxTreeNode())
     }
     
     func testParseAnythingYieldsError() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenNewline(lineNumber: 2, lexeme: "\n"),
                                          TokenEOF(lineNumber: 3)])
         parser.parse()
@@ -37,7 +37,7 @@ class ParserTests: XCTestCase {
     }
     
     func testAdvanceSkipsPastNextToken() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
         parser.advance()
         XCTAssertEqual(parser.peek(), TokenEOF(lineNumber: 2))
@@ -45,7 +45,7 @@ class ParserTests: XCTestCase {
     }
     
     func testAdvanceWillNotAdvancePastTheEnd() {
-        let parser = ParserBase(tokens: [TokenEOF(lineNumber: 2)])
+        let parser = Parser(tokens: [TokenEOF(lineNumber: 2)])
         parser.advance()
         XCTAssertEqual(parser.previous, TokenEOF(lineNumber: 2))
         XCTAssertNil(parser.peek())
@@ -55,7 +55,7 @@ class ParserTests: XCTestCase {
     }
     
     func testPeekLooksAhead() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
         
         XCTAssertEqual(parser.peek(), TokenNewline(lineNumber: 1, lexeme: "\n"))
@@ -65,25 +65,25 @@ class ParserTests: XCTestCase {
     }
     
     func testAcceptYieldsNilWhenThereAreNoTokens() {
-        let parser = ParserBase()
+        let parser = Parser()
         XCTAssertNil(parser.accept(TokenNewline.self))
     }
     
     func testAcceptYieldsNilWhenNextTokenFailsToMatchGivenType() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
         XCTAssertNil(parser.accept(TokenLet.self))
     }
     
     func testWhenAcceptMatchesTheTypeThenItAdvances() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
         XCTAssertEqual(parser.accept(TokenNewline.self), TokenNewline(lineNumber: 1, lexeme: "\n"))
         XCTAssertEqual(parser.tokens, [TokenEOF(lineNumber: 2)])
     }
     
     func testAcceptCanMatchAnArrayOfTypes() {
-        let parser = ParserBase(tokens: [TokenLet(lineNumber: 1, lexeme: "let"),
+        let parser = Parser(tokens: [TokenLet(lineNumber: 1, lexeme: "let"),
                                          TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
@@ -94,7 +94,7 @@ class ParserTests: XCTestCase {
     }
     
     func testAcceptCanMatchASingleOperator() {
-        let parser = ParserBase(tokens: [TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+        let parser = Parser(tokens: [TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                          TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                          TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
@@ -104,7 +104,7 @@ class ParserTests: XCTestCase {
     }
     
     func testAcceptCanMatchAnArrayOfOperators() {
-        let parser = ParserBase(tokens: [TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+        let parser = Parser(tokens: [TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                          TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                          TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
@@ -115,14 +115,14 @@ class ParserTests: XCTestCase {
     }
     
     func testExpectThrowsWhenTokenTypeFailsToMatch() {
-        let parser = ParserBase(tokens: [TokenEOF(lineNumber: 1)])
+        let parser = Parser(tokens: [TokenEOF(lineNumber: 1)])
         XCTAssertThrowsError(try parser.expect(type: TokenLet.self, error: CompilerError(message: ""))) {
             XCTAssertNotNil($0 as? CompilerError)
         }
     }
     
     func testExpectCanMatchAgainstAnArrayOfTokenTypes() {
-        let parser = ParserBase(tokens: [TokenLet(lineNumber: 1, lexeme: "let"),
+        let parser = Parser(tokens: [TokenLet(lineNumber: 1, lexeme: "let"),
                                          TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          TokenNewline(lineNumber: 1, lexeme: "\n"),
                                          TokenEOF(lineNumber: 2)])
@@ -143,14 +143,14 @@ class ParserTests: XCTestCase {
     }
     
     func testUnexpectedEndOfInputErrorWithNoTokensRemaining() {
-        let parser = ParserBase()
+        let parser = Parser()
         let error = parser.unexpectedEndOfInputError()
         XCTAssertEqual(error.message, "unexpected end of input")
         XCTAssertNil(error.line)
     }
     
     func testUnexpectedEndOfInputErrorWithNoPreviousToken() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n")])
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 1, lexeme: "\n")])
         parser.advance()
         let error = parser.unexpectedEndOfInputError()
         XCTAssertEqual(error.message, "unexpected end of input")
@@ -158,7 +158,7 @@ class ParserTests: XCTestCase {
     }
     
     func testUnexpectedEndOfInputErrorWithRemainingTokens() {
-        let parser = ParserBase(tokens: [TokenNewline(lineNumber: 2, lexeme: "\n")])
+        let parser = Parser(tokens: [TokenNewline(lineNumber: 2, lexeme: "\n")])
         let error = parser.unexpectedEndOfInputError()
         XCTAssertEqual(error.message, "unexpected end of input")
         XCTAssertEqual(error.line, 2)

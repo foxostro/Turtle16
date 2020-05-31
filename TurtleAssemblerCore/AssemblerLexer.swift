@@ -8,7 +8,7 @@
 
 import TurtleCompilerToolbox
 
-public class AssemblerLexer: LexerBase {
+public class AssemblerLexer: Lexer {
     public required init(withString string: String) {
         super.init(withString: string)
         self.rules = [

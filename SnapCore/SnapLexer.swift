@@ -82,10 +82,10 @@ public class SnapLexer: Lexer {
             Rule(pattern: "while") {[weak self] in
                 TokenWhile(lineNumber: self!.lineNumber, lexeme: $0)
             },
-            Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]+\\b") {[weak self] in
+            Rule(pattern: "[a-zA-Z_][a-zA-Z0-9_]*") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
             },
-            Rule(pattern: "\\d+\\b") {[weak self] in
+            Rule(pattern: "[0-9]+\\b") {[weak self] in
                 let scanner = Scanner(string: $0)
                 var number: Int = 0
                 let result = scanner.scanInt(&number)

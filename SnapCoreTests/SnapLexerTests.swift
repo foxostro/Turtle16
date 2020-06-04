@@ -299,4 +299,11 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenWhile(lineNumber: 1, lexeme: "while"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeSingleCharacterIdentifier() {
+        let tokenizer = SnapLexer(withString: "a")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

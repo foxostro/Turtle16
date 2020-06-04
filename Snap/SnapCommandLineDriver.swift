@@ -16,8 +16,8 @@ public class SnapCommandLineDriver: NSObject {
     public struct SnapCommandLineDriverError: Error {
         public let message: String
         
-        public init(format: String, _ args: CVarArg...) {
-            message = String(format:format, arguments:args)
+        public init(_ message: String) {
+            self.message = message
         }
     }
     
@@ -25,8 +25,11 @@ public class SnapCommandLineDriver: NSObject {
     public var stdout: TextOutputStream = String()
     public var stderr: TextOutputStream = String()
     let arguments: [String]
-    public private(set) var inputFileName: URL?
-    public private(set) var outputFileName: URL?
+    public private(set) var inputFileName: URL? = nil
+    public private(set) var outputFileName: URL? = nil
+    public var shouldOutputIR = false
+    public var shouldOutputAssembly = false
+    public var shouldDoASTDump = false
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -50,22 +53,45 @@ public class SnapCommandLineDriver: NSObject {
     
     func tryRun() throws {
         try parseArguments()
-        try writeToFile(instructions: try compile())
-        status = 0
-    }
-    
-    func compile() throws -> [Instruction] {
+        
         let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
-            throw SnapCommandLineDriverError(format: "Failed to read input file as UTF-8 text: %@", fileName)
+            throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
         let frontEnd = SnapCompiler()
         frontEnd.compile(text)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
         }
-        return frontEnd.instructions
+        
+        if shouldDoASTDump {
+            stdout.write(frontEnd.ast.description)
+        }
+        
+        if shouldOutputAssembly {
+            try writeDisassemblyToFile(instructions: frontEnd.instructions)
+        } else if shouldOutputIR {
+            try writeToFile(ir: frontEnd.ir)
+        } else {
+            try writeToFile(instructions: frontEnd.instructions)
+        }
+        
+        status = 0
+    }
+    
+    func writeToFile(ir: [YertleInstruction]) throws {
+        let string = ir.description
+        try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
+    }
+    
+    func writeDisassemblyToFile(instructions: [Instruction]) throws {
+        var string = ""
+        for instruction in instructions {
+            string += instruction.disassembly ?? instruction.description
+            string += "\n"
+        }
+        try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     
     func writeToFile(instructions: [Instruction]) throws {
@@ -75,36 +101,115 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     public func parseArguments() throws {
-        if (arguments.count != 3) {
-            throw SnapCommandLineDriverError(format: "usage: Snap <INPUT> <OUTPUT>\nExpected two arguments, got \(arguments.count-1): \(arguments.debugDescription)")
+        let argParser = SnapCommandLineArgumentParser(args: arguments)
+        do {
+            try argParser.parse()
+        } catch let error as SnapCommandLineParserError {
+            switch error {
+            case .unexpectedEndOfInput:
+                throw SnapCommandLineDriverError(makeUsageMessage())
+            case .unknownOption(let option):
+                throw SnapCommandLineDriverError("unknown option `\(option)'\n\n\(makeUsageMessage())")
+            }
+        }
+        let options = argParser.options
+        
+        if options.contains(.printHelp) {
+            stdout.write(makeUsageMessage())
+            exit(0)
+        }
+            
+        for option in options {
+            switch option {
+            case .printHelp:
+                break // do nothing
+                
+            case .inputFileName(let fileName):
+                try parseInputFileName(fileName)
+                
+            case .outputFileName(let fileName):
+                try parseOutputFileName(fileName)
+                
+            case .S:
+                if shouldOutputIR {
+                    throw SnapCommandLineDriverError("-S and -ir are mutually exclusive")
+                }
+                shouldOutputAssembly = true
+                
+            case .ir:
+                if shouldOutputAssembly {
+                    throw SnapCommandLineDriverError("-S and -ir are mutually exclusive")
+                }
+                shouldOutputIR = true
+                
+            case .astDump:
+                shouldDoASTDump = true
+            }
         }
         
-        try parseInputFileName()
-        try parseOutputFileName()
-    }
-
-    func parseInputFileName() throws {
-        inputFileName = URL(fileURLWithPath: arguments[1])
-        var isDirectory: ObjCBool = false
-        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
-            throw SnapCommandLineDriverError(format: "Input file does not exist: %@", inputFileName!.relativePath)
+        if inputFileName == nil {
+            throw SnapCommandLineDriverError("expected input filename")
         }
-        if (isDirectory.boolValue) {
-            throw SnapCommandLineDriverError(format: "Input file is a directory: %@", inputFileName!.relativePath)
-        }
-        if !FileManager.default.isReadableFile(atPath: inputFileName!.relativePath) {
-            throw SnapCommandLineDriverError(format: "Input file is not readable: %@", inputFileName!.relativePath)
+        
+        if outputFileName == nil {
+            let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent
+            let ext: String
+            if shouldOutputAssembly {
+                ext = ".asm"
+            } else if shouldOutputIR {
+                ext = ".ir"
+            } else {
+                ext = ".program"
+            }
+            outputFileName = URL(fileURLWithPath: baseName + ext)
         }
     }
     
-    func parseOutputFileName() throws {
-        outputFileName = URL(fileURLWithPath: arguments[2])
+    func makeUsageMessage() -> String {
+        return """
+OVERVIEW: compiler for the Snap programming language
+
+USAGE: \(arguments[0]) [options] file...
+            
+OPTIONS:
+\t-h         Display available options
+\t-o <file>  Specify the output filename
+\t-S         Output assembly code
+\t-ir        Output intermediate representation
+\t-ast-dump  Print the abstract syntax tree to stdout.
+"""
+    }
+
+    func parseInputFileName(_ fileName: String) throws {
+        if inputFileName != nil {
+            throw SnapCommandLineDriverError("compiler currently only supports one input file at a time.")
+        }
+        inputFileName = URL(fileURLWithPath: fileName)
+        var isDirectory: ObjCBool = false
+        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
+            throw SnapCommandLineDriverError("input file does not exist: \(inputFileName!.relativePath)")
+        }
+        if (isDirectory.boolValue) {
+            throw SnapCommandLineDriverError("input file is a directory: \(inputFileName!.relativePath)")
+        }
+        if !FileManager.default.isReadableFile(atPath: inputFileName!.relativePath) {
+            throw SnapCommandLineDriverError("input file is not readable: \(inputFileName!.relativePath)")
+        }
+    }
+    
+    func parseOutputFileName(_ fileName: String) throws {
+        if outputFileName != nil {
+            throw SnapCommandLineDriverError("output filename can only be specified one time.")
+        }
+        outputFileName = URL(fileURLWithPath: fileName)
         if !FileManager.default.fileExists(atPath: outputFileName!.deletingLastPathComponent().relativePath) {
-            throw SnapCommandLineDriverError(format: "Specified output directory does not exist: %@", outputFileName!.deletingLastPathComponent().relativePath)
+            let name = outputFileName!.deletingLastPathComponent().relativePath
+            throw SnapCommandLineDriverError("specified output directory does not exist: \(name)")
         }
         if FileManager.default.fileExists(atPath: outputFileName!.relativePath) {
             if !FileManager.default.isWritableFile(atPath: outputFileName!.relativePath) {
-                throw SnapCommandLineDriverError(format: "Output file exists but is not writable: %@", outputFileName!.relativePath)
+                let name = outputFileName!.relativePath
+                throw SnapCommandLineDriverError("output file exists but is not writable: \(name)")
             }
         }
     }

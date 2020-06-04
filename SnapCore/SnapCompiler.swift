@@ -10,6 +10,8 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public class SnapCompiler: NSObject {
+    public var symbols: SymbolTable = SymbolTable()
+    public var ir: [YertleInstruction] = []
     public var instructions: [Instruction] = []
     
     public private(set) var errors: [CompilerError] = []
@@ -49,14 +51,14 @@ public class SnapCompiler: NSObject {
             errors = snapToYertle.errors
             return
         }
-        let symbols = snapToYertle.symbols
-        let yertleInstructions = snapToYertle.instructions
+        symbols = snapToYertle.symbols
+        ir = snapToYertle.instructions
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
         let yertleToMachineCode = YertleToTurtleMachineCodeCompiler(assembler: assembler, symbols: symbols)
         do {
-            try yertleToMachineCode.compile(ir: yertleInstructions, base: base)
+            try yertleToMachineCode.compile(ir: ir, base: base)
         } catch let error as CompilerError {
             errors = [error]
             return

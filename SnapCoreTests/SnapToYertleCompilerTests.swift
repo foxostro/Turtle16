@@ -103,6 +103,24 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, .word(.staticStorage(address: addressBar, isMutable: false)))
     }
     
+    func testCompileConstantDeclaration_TypeIsInferredFromTheExpression() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                           expression: ExprUtils.makeLiteralBoolean(value: true))
+        ])
+        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push(1),
+            .store(addressFoo)
+        ])
+        var symbol: SymbolTable.Symbol? = nil
+        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
+        XCTAssertEqual(symbol, .boolean(.staticStorage(address: addressFoo, isMutable: false)))
+    }
+    
     func testCompileVarDeclaration() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = AbstractSyntaxTreeNode(children: [
@@ -131,6 +149,24 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "variable redefines existing symbol: `foo'")
+    }
+    
+    func testCompileVarDeclaration_TypeIsInferredFromTheExpression() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                           expression: ExprUtils.makeLiteralBoolean(value: true))
+        ])
+        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push(1),
+            .store(addressFoo)
+        ])
+        var symbol: SymbolTable.Symbol? = nil
+        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
+        XCTAssertEqual(symbol, .boolean(.staticStorage(address: addressFoo, isMutable: true)))
     }
     
     func testCompileExpression() {

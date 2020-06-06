@@ -84,9 +84,22 @@ public class SnapToYertleCompiler: NSObject {
         }
         
         let address = allocateStaticStorage()
-        symbols.bind(identifier: name, symbol: .word(.staticStorage(address: address, isMutable: false)))
+        let symbol = try inferSymbolTypeFromExpressionType(expression: letDecl.expression, address: address, isMutable: false)
+        symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: letDecl.expression)
         instructions += [.store(address)]
+    }
+    
+    private func inferSymbolTypeFromExpressionType(expression: Expression, address: Int, isMutable: Bool) throws -> SymbolTable.Symbol {
+        let symbol: SymbolTable.Symbol
+        let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
+        switch inferredType {
+        case .boolean:
+            symbol = .boolean(.staticStorage(address: address, isMutable: isMutable))
+        case .word:
+            symbol = .word(.staticStorage(address: address, isMutable: isMutable))
+        }
+        return symbol
     }
     
     private func compile(varDecl: VarDeclaration) throws {
@@ -97,7 +110,8 @@ public class SnapToYertleCompiler: NSObject {
                                 varDecl.identifier.lexeme)
         }
         let address = allocateStaticStorage()
-        symbols.bind(identifier: name, symbol: .word(.staticStorage(address: address, isMutable: true)))
+        let symbol = try inferSymbolTypeFromExpressionType(expression: varDecl.expression, address: address, isMutable: true)
+        symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
         instructions += [.store(address)]
     }

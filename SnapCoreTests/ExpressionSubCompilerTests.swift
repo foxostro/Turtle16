@@ -122,7 +122,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_Word_Constant() {
         let expr = makeIdentifier(name: "foo")
-        let symbols = SymbolTable(["foo" : .word(.constantInt(42))])
+        let symbols = SymbolTable(["foo" : .word(.constant(42))])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42)
         ])
@@ -174,7 +174,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCannotAssignToAConstantValue() {
         let expr = makeAssignment("foo", right: makeLiteral(value: 42))
-        let symbols = SymbolTable(["foo" : .word(.constantInt(0))])
+        let symbols = SymbolTable(["foo" : .word(.constant(0))])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

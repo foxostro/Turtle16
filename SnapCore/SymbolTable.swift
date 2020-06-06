@@ -10,14 +10,20 @@ import TurtleCompilerToolbox
 
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
-    public enum Storage: Equatable {
-        case constantInt(Int)
+    public enum StorageInt: Equatable {
+        case constant(Int)
+        case staticStorage(address: Int, isMutable: Bool)
+    }
+    
+    public enum StorageBool: Equatable {
+        case constant(Bool)
         case staticStorage(address: Int, isMutable: Bool)
     }
     
     public enum Symbol: Equatable {
         case label(Int)
-        case word(Storage)
+        case word(StorageInt)
+        case boolean(StorageBool)
     }
     
     var symbolTable: [String:Symbol]

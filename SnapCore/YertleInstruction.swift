@@ -15,7 +15,11 @@ public enum YertleInstruction: Equatable {
     case push(Int) // push the specified value to the stack
     case pop // pop the stack
     case eq  // pop two from the stack, (A==B)?1:0, push the result
+    case ne  // pop two from the stack, (A!=B)?1:0, push the result
     case lt  // pop two from the stack, (A<B)?1:0, push the result
+    case gt  // pop two from the stack, (A>B)?1:0, push the result
+    case le  // pop two from the stack, (A<=B)?1:0, push the result
+    case ge  // pop two from the stack, (A>=B)?1:0, push the result
     case add // pop two from the stack, A+B, push the result
     case sub // pop two from the stack, A-B, push the result
     case mul // pop two from the stack, A*B, push the result
@@ -35,8 +39,16 @@ public enum YertleInstruction: Equatable {
             return "POP"
         case .eq:
             return "EQ"
+        case .ne:
+            return "NE"
         case .lt:
             return "LT"
+        case .gt:
+            return "GT"
+        case .le:
+            return "LE"
+        case .ge:
+            return "GE"
         case .add:
             return "ADD"
         case .sub:

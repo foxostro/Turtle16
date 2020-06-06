@@ -87,9 +87,8 @@ class ExpressionTypeCheckerTests: XCTestCase {
     
     func testBinary_Eq_Word() {
         let typeChecker = ExpressionTypeChecker()
-        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
-                                     left: ExprUtils.makeLiteralWord(value: 1),
-                                     right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralWord(value: 1),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
         var result: ExpressionTypeChecker.ExpressionType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
@@ -97,9 +96,26 @@ class ExpressionTypeCheckerTests: XCTestCase {
     
     func testBinary_Eq_Boolean() {
         let typeChecker = ExpressionTypeChecker()
-        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
-                                     left: ExprUtils.makeLiteralBoolean(value: false),
-                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralBoolean(value: true),
+                                              right: ExprUtils.makeLiteralBoolean(value: true))
+        var result: ExpressionTypeChecker.ExpressionType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .boolean)
+    }
+    
+    func testBinary_Ne_Word() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralWord(value: 1),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        var result: ExpressionTypeChecker.ExpressionType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .boolean)
+    }
+    
+    func testBinary_Ne_Boolean() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralBoolean(value: true),
+                                              right: ExprUtils.makeLiteralBoolean(value: true))
         var result: ExpressionTypeChecker.ExpressionType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
@@ -107,9 +123,8 @@ class ExpressionTypeCheckerTests: XCTestCase {
     
     func testBinary_Lt_Word() {
         let typeChecker = ExpressionTypeChecker()
-        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt),
-                                     left: ExprUtils.makeLiteralWord(value: 1),
-                                     right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralWord(value: 1),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
         var result: ExpressionTypeChecker.ExpressionType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
@@ -117,13 +132,72 @@ class ExpressionTypeCheckerTests: XCTestCase {
     
     func testBinary_Lt_Boolean() {
         let typeChecker = ExpressionTypeChecker()
-        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt),
-                                     left: ExprUtils.makeLiteralBoolean(value: false),
-                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralBoolean(value: true),
+                                              right: ExprUtils.makeLiteralBoolean(value: true))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "Binary operator `<' cannot be applied to two `boolean' operands")
+        }
+    }
+    
+    func testBinary_Gt_Word() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralWord(value: 1),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        var result: ExpressionTypeChecker.ExpressionType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .boolean)
+    }
+    
+    func testBinary_Gt_Boolean() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralBoolean(value: true),
+                                              right: ExprUtils.makeLiteralBoolean(value: true))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Binary operator `>' cannot be applied to two `boolean' operands")
+        }
+    }
+    
+    func testBinary_Le_Word() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralWord(value: 1),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        var result: ExpressionTypeChecker.ExpressionType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .boolean)
+    }
+    
+    func testBinary_Le_Boolean() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralBoolean(value: true),
+                                              right: ExprUtils.makeLiteralBoolean(value: true))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Binary operator `<=' cannot be applied to two `boolean' operands")
+        }
+    }
+    
+    func testBinary_Ge_Word() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralWord(value: 1),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        var result: ExpressionTypeChecker.ExpressionType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .boolean)
+    }
+    
+    func testBinary_Ge_Boolean() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralBoolean(value: true),
+                                              right: ExprUtils.makeLiteralBoolean(value: true))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Binary operator `>=' cannot be applied to two `boolean' operands")
         }
     }
     

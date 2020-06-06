@@ -393,11 +393,24 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
-                                         left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                                                 left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                                                 right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
-                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+        let expected = ExprUtils.makeComparisonEq(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
+                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+    }
+        
+    func testExpressionStatement_Comparison_NotEqual() {
+        let tokens = tokenize("1 + 2 != 3")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree
+        
+        XCTAssertEqual(ast?.children.count, 1)
+        
+        let expected = ExprUtils.makeComparisonNe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
+                                                  right: ExprUtils.makeLiteralWord(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -410,11 +423,54 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt),
-                                         left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                                                 left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                                                 right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
-                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+        let expected = ExprUtils.makeComparisonLt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
+                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+    }
+        
+    func testExpressionStatement_Comparison_GreaterThan() {
+        let tokens = tokenize("1 + 2 > 3")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree
+        
+        XCTAssertEqual(ast?.children.count, 1)
+        
+        let expected = ExprUtils.makeComparisonGt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
+                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+    }
+        
+    func testExpressionStatement_Comparison_LessThanOrEqualTo() {
+        let tokens = tokenize("1 + 2 <= 3")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree
+        
+        XCTAssertEqual(ast?.children.count, 1)
+        
+        let expected = ExprUtils.makeComparisonLe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
+                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+    }
+        
+    func testExpressionStatement_Comparison_GreaterThanOrEqualTo() {
+        let tokens = tokenize("1 + 2 >= 3")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree
+        
+        XCTAssertEqual(ast?.children.count, 1)
+        
+        let expected = ExprUtils.makeComparisonGe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
+                                                  right: ExprUtils.makeLiteralWord(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         

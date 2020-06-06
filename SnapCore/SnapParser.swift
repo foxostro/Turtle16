@@ -230,7 +230,7 @@ public class SnapParser: Parser {
     
     private func consumeComparison() throws -> Expression {
         var expression = try consumeAssignment()
-        while let tokenOperator = accept(operators: [.eq, .lt]) {
+        while let tokenOperator = accept(operators: [.eq, .ne, .lt, .gt, .le, .ge]) {
             let right = try consumeAssignment()
             expression = Expression.Binary(op: tokenOperator, left: expression, right: right)
         }

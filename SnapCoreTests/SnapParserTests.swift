@@ -167,7 +167,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testExpressionStatement_Literal() {
+    func testExpressionStatement_Literal_Number() {
         let parser = SnapParser(tokens: tokenize("1"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
@@ -176,6 +176,18 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+    }
+    
+    func testExpressionStatement_Literal_Boolean() {
+        let parser = SnapParser(tokens: tokenize("true"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
@@ -191,7 +203,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
-    func testExpressionStatement_Unary() {
+    func testExpressionStatement_Unary_Identifier() {
         let parser = SnapParser(tokens: tokenize("-foo"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
@@ -203,12 +215,26 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
+    func testExpressionStatement_Unary_Boolean() {
+        // We'll flag this as a type error during semantic analysis. The parser,
+        // however, has no problem with it.
+        let parser = SnapParser(tokens: tokenize("-false"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus), expression: Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "false", literal: false)))
+        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+    }
+    
     func testExpressionStatement_Unary_OperandTypeMismatch() {
         let parser = SnapParser(tokens: tokenize("-,"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,\'")
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,'")
     }
     
     func testExpressionStatement_Multiplication() {

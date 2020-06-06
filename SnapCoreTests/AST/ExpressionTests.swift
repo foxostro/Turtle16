@@ -26,6 +26,15 @@ class ExpressionTests: XCTestCase {
                        Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)).hashValue)
     }
     
+    func testLiteralBooleanEquality() {
+        XCTAssertNotEqual(Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true)),
+                          Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "false", literal: false)))
+        XCTAssertEqual(Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true)),
+                       Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true)))
+        XCTAssertEqual(Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true)).hashValue,
+                       Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true)).hashValue)
+    }
+    
     func testIdentifierEquality() {
         XCTAssertNotEqual(Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
                           Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar")))

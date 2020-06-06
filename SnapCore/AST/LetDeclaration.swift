@@ -1,5 +1,5 @@
 //
-//  ConstantDeclaration.swift
+//  LetDeclaration.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/19/20.
@@ -8,4 +8,4 @@
 
 import TurtleCompilerToolbox
 
-public class ConstantDeclaration: ExpressionSymbolDeclaration {}
+public class LetDeclaration: ExpressionSymbolDeclaration {}

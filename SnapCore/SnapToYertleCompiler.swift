@@ -54,11 +54,11 @@ public class SnapToYertleCompiler: NSObject {
         if let node = genericNode as? LabelDeclarationNode {
             compile(label: node)
         }
-        else if let node = genericNode as? ConstantDeclaration {
-            try compile(constant: node)
+        else if let node = genericNode as? LetDeclaration {
+            try compile(letDecl: node)
         }
         else if let node = genericNode as? VarDeclaration {
-            try compile(static: node)
+            try compile(varDecl: node)
         }
         else if let node = genericNode as? Expression {
             try compile(expression: node)
@@ -75,37 +75,30 @@ public class SnapToYertleCompiler: NSObject {
         instructions += [.label(node.identifier)]
     }
     
-    private func compile(constant: ConstantDeclaration) throws {
-        let name = constant.identifier.lexeme
+    private func compile(letDecl: LetDeclaration) throws {
+        let name = letDecl.identifier.lexeme
         guard symbols.exists(identifier: name) == false else {
-            throw CompilerError(line: constant.identifier.lineNumber,
+            throw CompilerError(line: letDecl.identifier.lineNumber,
                                 format: "constant redefines existing symbol: `%@'",
-                                constant.identifier.lexeme)
+                                letDecl.identifier.lexeme)
         }
-        let eval = ExpressionEvaluatorCompileTime(symbols: symbols)
-        do {
-            let value = try eval.evaluate(expression: constant.expression)
-            symbols.bindConstantWord(identifier: name, value: UInt8(value))
-        } catch _ as Expression.MustBeCompileTimeConstantError {
-            let address = allocateStaticStorage()
-            symbols.bindStaticWord(identifier: name,
-                                   address: address,
-                                   isMutable: false)
-            try compile(expression: constant.expression)
-            instructions += [.store(address)]
-        }
+        
+        let address = allocateStaticStorage()
+        symbols.bind(identifier: name, symbol: .word(.staticStorage(address: address, isMutable: false)))
+        try compile(expression: letDecl.expression)
+        instructions += [.store(address)]
     }
     
-    private func compile(static staticDeclaration: VarDeclaration) throws {
-        let name = staticDeclaration.identifier.lexeme
+    private func compile(varDecl: VarDeclaration) throws {
+        let name = varDecl.identifier.lexeme
         guard symbols.exists(identifier: name) == false else {
-            throw CompilerError(line: staticDeclaration.identifier.lineNumber,
+            throw CompilerError(line: varDecl.identifier.lineNumber,
                                 format: "variable redefines existing symbol: `%@'",
-                                staticDeclaration.identifier.lexeme)
+                                varDecl.identifier.lexeme)
         }
         let address = allocateStaticStorage()
-        symbols.bindStaticWord(identifier: name, address: address)
-        try compile(expression: staticDeclaration.expression)
+        symbols.bind(identifier: name, symbol: .word(.staticStorage(address: address, isMutable: true)))
+        try compile(expression: varDecl.expression)
         instructions += [.store(address)]
     }
     

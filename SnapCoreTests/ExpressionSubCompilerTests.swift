@@ -53,6 +53,11 @@ class ExpressionSubCompilerTests: XCTestCase {
         return ir
     }
     
+    func testCompileUnsupportedExpression() {
+        XCTAssertEqual(try compile(expression: makeLiteral(value: 1)), [.push(1)])
+        XCTAssertEqual(try compile(expression: makeLiteral(value: 2)), [.push(2)])
+    }
+    
     func testCompileLiteralExpression() {
         XCTAssertEqual(try compile(expression: makeLiteral(value: 1)), [.push(1)])
         XCTAssertEqual(try compile(expression: makeLiteral(value: 2)), [.push(2)])
@@ -107,11 +112,27 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
-    func testCompileIdentifierExpression_ValueIsKnownAtCompileTime() {
+    func testCompileIdentifierExpression_UseOfLabelInExpression() {
         let expr = makeIdentifier(name: "foo")
-        let symbols = SymbolTable(["foo" : .constantAddress(SymbolConstantAddress(identifier: "foo", value: 42))])
+        let symbols = SymbolTable(["foo" : .label(42)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42)
+        ])
+    }
+    
+    func testCompileIdentifierExpression_Word_Constant() {
+        let expr = makeIdentifier(name: "foo")
+        let symbols = SymbolTable(["foo" : .word(.constantInt(42))])
+        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
+            .push(42)
+        ])
+    }
+    
+    func testCompileIdentifierExpression_Word_Static() {
+        let expr = makeIdentifier(name: "foo")
+        let symbols = SymbolTable(["foo" : .word(.staticStorage(address: 0x0010, isMutable: false))])
+        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
+            .load(0x0010)
         ])
     }
     
@@ -124,20 +145,40 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCompileAssignment() {
         let expr = makeAssignment("foo", right: makeLiteral(value: 42))
-        let symbols = SymbolTable(["foo" : .staticWord(SymbolStaticWord(identifier: "foo", address: 0x0010))])
+        let symbols = SymbolTable(["foo" : .word(.staticStorage(address: 0x0010, isMutable: true))])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
             .store(0x0010)
         ])
     }
     
+    func testCannotAssignToALabel() {
+        let expr = makeAssignment("foo", right: makeLiteral(value: 42))
+        let symbols = SymbolTable(["foo" : .label(0)])
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign to label `foo'")
+        }
+    }
+    
     func testCannotAssignToAnImmutableValue() {
         let expr = makeAssignment("foo", right: makeLiteral(value: 42))
-        let symbols = SymbolTable(["foo" : .staticWord(SymbolStaticWord(identifier: "foo", address: 0x0010, isMutable: false))])
+        let symbols = SymbolTable(["foo" : .word(.staticStorage(address: 0x0010, isMutable: false))])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
+        }
+    }
+    
+    func testCannotAssignToAConstantValue() {
+        let expr = makeAssignment("foo", right: makeLiteral(value: 42))
+        let symbols = SymbolTable(["foo" : .word(.constantInt(0))])
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant value `foo'")
         }
     }
     
@@ -157,5 +198,14 @@ class ExpressionSubCompilerTests: XCTestCase {
             .push(2),
             .lt
         ])
+    }
+    
+    func testCannotCompileUnsupportedExpression() {
+        let expr = Expression.UnsupportedExpression()
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression: children=[]>")
+        }
     }
 }

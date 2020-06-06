@@ -67,27 +67,33 @@ public class ExpressionSubCompiler: NSObject {
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
         switch symbol {
-        case .constantAddress(let address):
-            return compile(intValue: address.value)
-        case .constantWord(let word):
-            return compile(intValue: Int(word.value))
-        case .staticWord(let word):
-            return [.load(word.address)]
+        case .label(let value):
+            return compile(intValue: value)
+        case .word(let storage):
+            switch storage {
+            case .constantInt(let value):
+                return compile(intValue: value)
+            case .staticStorage(let address, _):
+                return [.load(address)]
+            }
         }
     }
     
     private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: assignment.identifier)
         switch symbol {
-        case .constantAddress(let address):
-            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to label `\(address.identifier)'")
-        case .constantWord(let word):
-            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant `\(word.identifier)'")
-        case .staticWord(let word):
-            if word.isMutable {
-                return try compile(expression: assignment.child) + [.store(word.address)]
-            } else {
-                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
+        case .label(_):
+            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to label `\(assignment.identifier.lexeme)'")
+        case .word(let storage):
+            switch storage {
+            case .constantInt(_):
+                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
+            case .staticStorage(let address, let isMutable):
+                if isMutable {
+                    return try compile(expression: assignment.child) + [.store(address)]
+                } else {
+                    throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
+                }
             }
         }
     }

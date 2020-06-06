@@ -41,11 +41,11 @@ public class SnapParser: Parser {
     private func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
                                     error: CompilerError(line: letToken.lineNumber,
-                                                          format: "expected to find an identifier in constant declaration",
+                                                          format: "expected to find an identifier in let declaration",
                                                           letToken.lexeme)) as! TokenIdentifier
         let equal = try expect(type: TokenEqual.self,
                                error: CompilerError(line: letToken.lineNumber,
-                                                    format: "constants must be assigned a value",
+                                                    format: "immutable variables must be assigned a value",
                                                     letToken.lexeme))
         
         if nil != acceptEndOfStatement() {
@@ -58,7 +58,7 @@ public class SnapParser: Parser {
         
         try expectEndOfStatement()
         
-        return [ConstantDeclaration(identifier: identifier, expression: expression)]
+        return [LetDeclaration(identifier: identifier, expression: expression)]
     }
     
     private func consumeVar(_ varToken: TokenVar) throws -> [AbstractSyntaxTreeNode] {

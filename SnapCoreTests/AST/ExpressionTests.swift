@@ -14,16 +14,16 @@ class ExpressionTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertNotEqual(Expression.Literal(number: a), LabelDeclarationNode(identifier: foo))
+        XCTAssertNotEqual(Expression.LiteralWord(number: a), LabelDeclarationNode(identifier: foo))
     }
     
-    func testLiteralEquality() {
-        XCTAssertNotEqual(Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
-        XCTAssertEqual(Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                       Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
-        XCTAssertEqual(Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)).hashValue,
-                       Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)).hashValue)
+    func testLiteralWordEquality() {
+        XCTAssertNotEqual(Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
+        XCTAssertEqual(Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        XCTAssertEqual(Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)).hashValue,
+                       Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)).hashValue)
     }
     
     func testIdentifierEquality() {
@@ -38,110 +38,110 @@ class ExpressionTests: XCTestCase {
     func testUnaryEquality() {
         // Different tokens
         XCTAssertNotEqual(Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                              lexeme: "1",
-                                                                                              literal: 1))),
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                                  lexeme: "1",
+                                                                                                  literal: 1))),
                           Expression.Unary(op: TokenOperator(lineNumber: 2, lexeme: "-", op: .minus),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                              lexeme: "1",
-                                                                                              literal: 1))))
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                                  lexeme: "1",
+                                                                                                  literal: 1))))
         
         // Different expressions
         XCTAssertNotEqual(Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                              lexeme: "1",
-                                                                                              literal: 1))),
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                                  lexeme: "1",
+                                                                                                  literal: 1))),
                           Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 2,
-                                                                                              lexeme: "2",
-                                                                                              literal: 2))))
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2,
+                                                                                                  lexeme: "2",
+                                                                                                  literal: 2))))
         
         // Same
         XCTAssertEqual(Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                        expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                           lexeme: "1",
-                                                                                           literal: 1))),
+                                        expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                               lexeme: "1",
+                                                                                               literal: 1))),
                        Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                        expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                           lexeme: "1",
-                                                                                           literal: 1))))
+                                        expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                               lexeme: "1",
+                                                                                               literal: 1))))
         
         // Same
         XCTAssertEqual(Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                        expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                           lexeme: "1",
-                                                                                           literal: 1))).hashValue,
+                                        expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                               lexeme: "1",
+                                                                                               literal: 1))).hashValue,
                        Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                        expression: Expression.Literal(number: TokenNumber(lineNumber: 1,
-                                                                                           lexeme: "1",
-                                                                                           literal: 1))).hashValue)
+                                        expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
+                                                                                               lexeme: "1",
+                                                                                               literal: 1))).hashValue)
     }
     
     func testBinaryEquality() {
         // Different right expression
         XCTAssertNotEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
                        Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "9", literal: 9))))
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "9", literal: 9))))
         
         // Different left expression
         XCTAssertNotEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
                        Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
         
         // Different tokens
         XCTAssertNotEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
                        Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
         
         // Same
         XCTAssertEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
                        Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
         
         // Hash
         XCTAssertEqual(Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue,
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue,
                        Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                        left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                        right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue)
+                                        left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                        right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))).hashValue)
     }
     
     func testAssignmentEquality() {
         // Different right expression
         XCTAssertNotEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
                           Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
-                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
         
         // Different left identifier
         XCTAssertNotEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
                           Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
-                                                expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
         
         // Same
         XCTAssertEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
                        Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
         
         // Hash
         XCTAssertEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
+                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
                        Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
+                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
     }
 }

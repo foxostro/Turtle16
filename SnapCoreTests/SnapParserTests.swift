@@ -116,7 +116,7 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let expected = LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
@@ -162,7 +162,7 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
@@ -175,7 +175,7 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let expected = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
@@ -220,7 +220,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                          right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                                                  expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
@@ -235,7 +235,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                          right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                                                  expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
@@ -250,7 +250,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                          right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                                                  expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
@@ -265,7 +265,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                          right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                                                  expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
@@ -280,10 +280,10 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                          right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                                                  left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                  right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
+                                                                  left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                                  right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
@@ -296,10 +296,10 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                          right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                                                  left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                  right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
+                                                                  left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                                  right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
@@ -312,8 +312,8 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
-                                         left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
-                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
+                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
         XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
     }
     
@@ -327,9 +327,9 @@ class SnapParserTests: XCTestCase {
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                          left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                 left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                 right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
+                                                                 left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                                                 right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
     
@@ -354,7 +354,7 @@ foo = 2
         XCTAssertEqual(ast?.children.count, 2)
         
         let expected = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                             expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
+                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.last)
     }
         
@@ -369,9 +369,9 @@ foo = 2
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq),
                                          left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                                                 left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                                                 right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
-                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+                                                                 left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                                 right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -386,9 +386,9 @@ foo = 2
         
         let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt),
                                          left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                                                 left: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                                                 right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
-                                         right: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
+                                                                 left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                                 right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))),
+                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -449,9 +449,9 @@ if 1 {
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+        let expected = If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                               expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))),
+                                               expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))),
                           else: nil)
         XCTAssertEqual(Optional<If>(expected), ast?.children.first)
     }
@@ -525,13 +525,13 @@ if 1 {
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
+                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
                           else: AbstractSyntaxTreeNode(children: [
-                            Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "3", literal: 3)),
-                            Expression.Literal(number: TokenNumber(lineNumber: 5, lexeme: "4", literal: 4))
+                            Expression.LiteralWord(number: TokenNumber(lineNumber: 4, lexeme: "3", literal: 3)),
+                            Expression.LiteralWord(number: TokenNumber(lineNumber: 5, lexeme: "4", literal: 4))
                           ])),
-                        Expression.Literal(number: TokenNumber(lineNumber: 7, lexeme: "5", literal: 5))])
+                        Expression.LiteralWord(number: TokenNumber(lineNumber: 7, lexeme: "5", literal: 5))])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_2() {
@@ -545,7 +545,7 @@ if 1 {
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: AbstractSyntaxTreeNode(),
                           else: AbstractSyntaxTreeNode())
         ])
@@ -563,7 +563,7 @@ else {
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: AbstractSyntaxTreeNode(),
                           else: AbstractSyntaxTreeNode())
         ])
@@ -581,9 +581,9 @@ else
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
-                          else: LetDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"), expression: Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "1", literal: 1))))
+                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
+                          else: LetDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 4, lexeme: "1", literal: 1))))
         ])
     }
         
@@ -597,8 +597,8 @@ if 1
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
+                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
                           else: nil)
         ])
     }
@@ -657,9 +657,9 @@ while 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                               body: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                                   expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))))])
+                                                   expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))))])
     }
         
     func testWellformedWhileStatement_EmptyBody_1() {
@@ -672,7 +672,7 @@ while 1 {
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                               body: AbstractSyntaxTreeNode())
         ])
     }
@@ -686,7 +686,7 @@ while 1 {}
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                       [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                               body: AbstractSyntaxTreeNode())
         ])
     }

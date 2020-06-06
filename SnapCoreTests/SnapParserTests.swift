@@ -75,23 +75,23 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `:'")
     }
     
-    func testMalformedConstantDeclaration_BareLetStatement() {
+    func testMalformedLetDeclaration_JustLet() {
         let parser = SnapParser(tokens: tokenize("let"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in constant declaration")
+        XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in let declaration")
     }
     
-    func testMalformedConstantDeclaration_MissingAssignment() {
+    func testMalformedLetDeclaration_MissingAssignment() {
         let parser = SnapParser(tokens: tokenize("let foo"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "constants must be assigned a value")
+        XCTAssertEqual(parser.errors.first?.message, "immutable variables must be assigned a value")
     }
     
-    func testMalformedConstantDeclaration_MissingValue() {
+    func testMalformedLetDeclaration_MissingValue() {
         let tokens = tokenize("let foo =")
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -100,7 +100,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "expected value after '='")
     }
     
-    func testMalformedConstantDeclaration_BadTypeForValue_TooManyTokens() {
+    func testMalformedLetDeclaration_BadTypeForValue_TooManyTokens() {
         let parser = SnapParser(tokens: tokenize("let foo = 1 2"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
@@ -108,7 +108,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `2'")
     }
     
-    func testWellFormedConstantDeclaration() {
+    func testWellFormedLetDeclaration() {
         let parser = SnapParser(tokens: tokenize("let foo = 1"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
@@ -116,7 +116,7 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        let expected = LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
@@ -582,8 +582,8 @@ else
         
         XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
-                          else: ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"), expression: Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "1", literal: 1))))
+                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
+                          else: LetDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"), expression: Expression.Literal(number: TokenNumber(lineNumber: 4, lexeme: "1", literal: 1))))
         ])
     }
         
@@ -598,7 +598,7 @@ if 1
         
         XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: ConstantDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
+                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
                           else: nil)
         ])
     }

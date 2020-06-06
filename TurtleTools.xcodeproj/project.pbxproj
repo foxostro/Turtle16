@@ -27,17 +27,7 @@
 		6F2940BC2483978E00C50ABA /* ExpressionSubCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69524784B230043A8D7 /* ExpressionSubCompiler.swift */; };
 		6F2940BD2483979800C50ABA /* ExpressionSubCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69724784B680043A8D7 /* ExpressionSubCompilerTests.swift */; };
 		6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */; };
-		6F2940C02483996900C50ABA /* SymbolConstantWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21924805032004B1703 /* SymbolConstantWordTests.swift */; };
-		6F2940C12483996900C50ABA /* SymbolStaticWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD220248065C1004B1703 /* SymbolStaticWordTests.swift */; };
-		6F2940C22483996900C50ABA /* SymbolConstantAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21524803C78004B1703 /* SymbolConstantAddressTests.swift */; };
-		6F2940C32483998E00C50ABA /* SymbolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21124803B7C004B1703 /* SymbolTests.swift */; };
 		6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
-		6F2940C6248399BE00C50ABA /* SymbolStaticWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21B248064F4004B1703 /* SymbolStaticWord.swift */; };
-		6F2940C7248399BE00C50ABA /* Symbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD20F24803B62004B1703 /* Symbol.swift */; };
-		6F2940C8248399BE00C50ABA /* SymbolConstantWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21724804FE2004B1703 /* SymbolConstantWord.swift */; };
-		6F2940C9248399BE00C50ABA /* SymbolConstantAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD21324803C02004B1703 /* SymbolConstantAddress.swift */; };
-		6F2940CB248399FD00C50ABA /* ExpressionEvaluatorCompileTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B663247625D20043A8D7 /* ExpressionEvaluatorCompileTimeTests.swift */; };
-		6F2940CC24839A1800C50ABA /* ExpressionEvaluatorCompileTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B661247625520043A8D7 /* ExpressionEvaluatorCompileTime.swift */; };
 		6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940CD2483A0DB00C50ABA /* TokenMisc.swift */; };
 		6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB684924724B6300798905 /* Expression.swift */; };
 		6F2940D02483A15000C50ABA /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB684B24724B7F00798905 /* ExpressionTests.swift */; };
@@ -61,7 +51,7 @@
 		6F5337292474BCCE00CFD33C /* ParameterListNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8F9FE2360CAC5005A1856 /* ParameterListNodeTests.swift */; };
 		6F53372C2474BD2A00CFD33C /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
 		6F53372E2474BD4900CFD33C /* InstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* InstructionNodeTests.swift */; };
-		6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */; };
+		6F5337312474BE1800CFD33C /* LetDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337302474BE1800CFD33C /* LetDeclaration.swift */; };
 		6F5337352474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337342474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift */; };
 		6F5337362474C18800CFD33C /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
 		6F59F053246D2E0B005C7348 /* Oscillator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F052246D2E0B005C7348 /* Oscillator.swift */; };
@@ -605,8 +595,6 @@
 		6F34B7EE24745DE500B0D163 /* CodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeGenerator.swift; sourceTree = "<group>"; };
 		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
 		6F37BA462305D903009754D3 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
-		6F41B661247625520043A8D7 /* ExpressionEvaluatorCompileTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionEvaluatorCompileTime.swift; sourceTree = "<group>"; };
-		6F41B663247625D20043A8D7 /* ExpressionEvaluatorCompileTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionEvaluatorCompileTimeTests.swift; sourceTree = "<group>"; };
 		6F41B66724762D2F0043A8D7 /* TokenOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperator.swift; sourceTree = "<group>"; };
 		6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperatorTests.swift; sourceTree = "<group>"; };
 		6F41B69524784B230043A8D7 /* ExpressionSubCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSubCompiler.swift; sourceTree = "<group>"; };
@@ -618,7 +606,7 @@
 		6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerTests.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
 		6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTableTests.swift; sourceTree = "<group>"; };
-		6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantDeclaration.swift; sourceTree = "<group>"; };
+		6F5337302474BE1800CFD33C /* LetDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetDeclaration.swift; sourceTree = "<group>"; };
 		6F5337342474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSymbolDeclarationTests.swift; sourceTree = "<group>"; };
 		6F59F052246D2E0B005C7348 /* Oscillator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Oscillator.swift; sourceTree = "<group>"; };
 		6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteToneGenerator.swift; sourceTree = "<group>"; };
@@ -654,14 +642,6 @@
 		6F6A024223FF7926003876BD /* InstructionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionFormatter.swift; sourceTree = "<group>"; };
 		6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionFormatterTests.swift; sourceTree = "<group>"; };
 		6F6A024623FF8C60003876BD /* ConsoleLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleLogger.swift; sourceTree = "<group>"; };
-		6F6DD20F24803B62004B1703 /* Symbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbol.swift; sourceTree = "<group>"; };
-		6F6DD21124803B7C004B1703 /* SymbolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTests.swift; sourceTree = "<group>"; };
-		6F6DD21324803C02004B1703 /* SymbolConstantAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolConstantAddress.swift; sourceTree = "<group>"; };
-		6F6DD21524803C78004B1703 /* SymbolConstantAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolConstantAddressTests.swift; sourceTree = "<group>"; };
-		6F6DD21724804FE2004B1703 /* SymbolConstantWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolConstantWord.swift; sourceTree = "<group>"; };
-		6F6DD21924805032004B1703 /* SymbolConstantWordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolConstantWordTests.swift; sourceTree = "<group>"; };
-		6F6DD21B248064F4004B1703 /* SymbolStaticWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolStaticWord.swift; sourceTree = "<group>"; };
-		6F6DD220248065C1004B1703 /* SymbolStaticWordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolStaticWordTests.swift; sourceTree = "<group>"; };
 		6F6DD222248096CB004B1703 /* VarDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclaration.swift; sourceTree = "<group>"; };
 		6F6DD22424809731004B1703 /* ExpressionSymbolDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSymbolDeclaration.swift; sourceTree = "<group>"; };
 		6F78DA3C23D947F4000ACA88 /* Computer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computer.swift; sourceTree = "<group>"; };
@@ -915,30 +895,6 @@
 			path = TurtleCompilerToolbox;
 			sourceTree = "<group>";
 		};
-		6F2940C4248399A400C50ABA /* Symbol */ = {
-			isa = PBXGroup;
-			children = (
-				6F6DD21124803B7C004B1703 /* SymbolTests.swift */,
-				6F6DD21524803C78004B1703 /* SymbolConstantAddressTests.swift */,
-				6F6DD21924805032004B1703 /* SymbolConstantWordTests.swift */,
-				6F6DD220248065C1004B1703 /* SymbolStaticWordTests.swift */,
-				6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */,
-			);
-			path = Symbol;
-			sourceTree = "<group>";
-		};
-		6F2940CA248399D100C50ABA /* Symbol */ = {
-			isa = PBXGroup;
-			children = (
-				6F6DD20F24803B62004B1703 /* Symbol.swift */,
-				6F6DD21324803C02004B1703 /* SymbolConstantAddress.swift */,
-				6F6DD21724804FE2004B1703 /* SymbolConstantWord.swift */,
-				6F6DD21B248064F4004B1703 /* SymbolStaticWord.swift */,
-				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
-			);
-			path = Symbol;
-			sourceTree = "<group>";
-		};
 		6F38F9072471C8F100B5296D /* Token */ = {
 			isa = PBXGroup;
 			children = (
@@ -990,10 +946,10 @@
 		6F53372F2474BE0B00CFD33C /* AST */ = {
 			isa = PBXGroup;
 			children = (
-				6F5337302474BE1800CFD33C /* ConstantDeclaration.swift */,
 				6FCB684924724B6300798905 /* Expression.swift */,
 				6F6DD22424809731004B1703 /* ExpressionSymbolDeclaration.swift */,
 				6F1D24C424823DD90095D7B4 /* If.swift */,
+				6F5337302474BE1800CFD33C /* LetDeclaration.swift */,
 				6FCB6845247241ED00798905 /* Return.swift */,
 				6F6DD222248096CB004B1703 /* VarDeclaration.swift */,
 				6F2940A8248306EC00C50ABA /* While.swift */,
@@ -1085,15 +1041,14 @@
 			isa = PBXGroup;
 			children = (
 				6F53372F2474BE0B00CFD33C /* AST */,
-				6F2940CA248399D100C50ABA /* Symbol */,
 				6F5337322474BE4B00CFD33C /* Token */,
 				6F41B69524784B230043A8D7 /* ExpressionSubCompiler.swift */,
-				6F41B661247625520043A8D7 /* ExpressionEvaluatorCompileTime.swift */,
 				6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */,
 				6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */,
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
 				6FCB681D2472063900798905 /* SnapParser.swift */,
 				6F18DD8A248414DE0014C585 /* SnapToYertleCompiler.swift */,
+				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
 				6F18DD8E248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift */,
 				6F2940B62483970100C50ABA /* YertleInstruction.swift */,
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
@@ -1106,14 +1061,13 @@
 			isa = PBXGroup;
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
-				6F2940C4248399A400C50ABA /* Symbol */,
-				6F41B663247625D20043A8D7 /* ExpressionEvaluatorCompileTimeTests.swift */,
 				6F41B69724784B680043A8D7 /* ExpressionSubCompilerTests.swift */,
 				6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */,
 				6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
 				6F18DD8C2484154F0014C585 /* SnapToYertleCompilerTests.swift */,
+				6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */,
 				6F18DD92248463030014C585 /* YertleExecutor.swift */,
 				6F13CB052489DD2300ADB1BE /* YertleInstructionTests.swift */,
 				6F18DD90248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift */,
@@ -1943,25 +1897,20 @@
 				6FCB681A2472050900798905 /* SnapLexer.swift in Sources */,
 				6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */,
 				6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */,
-				6F2940CC24839A1800C50ABA /* ExpressionEvaluatorCompileTime.swift in Sources */,
 				6F18DD8F248462C30014C585 /* YertleToTurtleMachineCodeCompiler.swift in Sources */,
 				6F2940A9248306EC00C50ABA /* While.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,
 				6F1D24C524823DD90095D7B4 /* If.swift in Sources */,
-				6F5337312474BE1800CFD33C /* ConstantDeclaration.swift in Sources */,
+				6F5337312474BE1800CFD33C /* LetDeclaration.swift in Sources */,
 				6F2940BC2483978E00C50ABA /* ExpressionSubCompiler.swift in Sources */,
-				6F2940C8248399BE00C50ABA /* SymbolConstantWord.swift in Sources */,
 				6F6DD223248096CB004B1703 /* VarDeclaration.swift in Sources */,
 				6F6DD22524809731004B1703 /* ExpressionSymbolDeclaration.swift in Sources */,
-				6F2940C6248399BE00C50ABA /* SymbolStaticWord.swift in Sources */,
 				6F2940BB2483978E00C50ABA /* YertleInstruction.swift in Sources */,
 				6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */,
-				6F2940C7248399BE00C50ABA /* Symbol.swift in Sources */,
 				6F18DD8B248414DE0014C585 /* SnapToYertleCompiler.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
-				6F2940C9248399BE00C50ABA /* SymbolConstantAddress.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1970,18 +1919,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F2940BD2483979800C50ABA /* ExpressionSubCompilerTests.swift in Sources */,
-				6F2940C12483996900C50ABA /* SymbolStaticWordTests.swift in Sources */,
-				6F2940CB248399FD00C50ABA /* ExpressionEvaluatorCompileTimeTests.swift in Sources */,
-				6F2940C32483998E00C50ABA /* SymbolTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* ExpressionSymbolDeclarationTests.swift in Sources */,
-				6F2940C22483996900C50ABA /* SymbolConstantAddressTests.swift in Sources */,
 				6F18DD94248463340014C585 /* YertleExecutor.swift in Sources */,
 				6F18DD91248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift in Sources */,
 				6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
-				6F2940C02483996900C50ABA /* SymbolConstantWordTests.swift in Sources */,
 				6F2940D02483A15000C50ABA /* ExpressionTests.swift in Sources */,
 				6F18DD8D2484154F0014C585 /* SnapToYertleCompilerTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,

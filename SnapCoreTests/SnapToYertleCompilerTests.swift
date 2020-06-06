@@ -221,4 +221,16 @@ class SnapToYertleCompilerTests: XCTestCase {
             .label(L1)
         ])
     }
+    
+    func testCompilationFailsDueToTypeErrorInExpression() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                           expression: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                                         right: ExprUtils.makeLiteralBoolean(value: true)))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
+    }
 }

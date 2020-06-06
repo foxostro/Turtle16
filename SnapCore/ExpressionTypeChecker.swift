@@ -92,7 +92,7 @@ public class ExpressionTypeChecker: NSObject {
         switch symbol {
         case .label(_):
             let lineNumber = identifier.tokens.first!.lineNumber
-            throw CompilerError(line: lineNumber, message: "Label `\(identifier.identifier.lexeme)' cannot be used in an expression")
+            throw CompilerError(line: lineNumber, message: "label `\(identifier.identifier.lexeme)' cannot be used in an expression")
         case .word(_):
             return .word
         case .boolean(_):

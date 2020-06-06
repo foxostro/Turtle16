@@ -76,11 +76,11 @@ class SnapLexerTests: XCTestCase {
     }
     
     func testFailToTokenizeInvalidIdentifier() {
-        let tokenizer = SnapLexer(withString: ";")
+        let tokenizer = SnapLexer(withString: "@")
         tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
         XCTAssertEqual(tokenizer.errors.first?.line, 1)
-        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `;'")
+        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `@'")
     }
     
     func testTokenizeDecimalLiteral() {
@@ -152,6 +152,13 @@ class SnapLexerTests: XCTestCase {
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "label"),
                                           TokenColon(lineNumber: 1, lexeme: ":"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeSemicolon() {
+        let tokenizer = SnapLexer(withString: ";")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenSemicolon(lineNumber: 1, lexeme: ";"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
@@ -325,6 +332,13 @@ class SnapLexerTests: XCTestCase {
         let tokenizer = SnapLexer(withString: "while")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenWhile(lineNumber: 1, lexeme: "while"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeFor() {
+        let tokenizer = SnapLexer(withString: "for")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenFor(lineNumber: 1, lexeme: "for"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     

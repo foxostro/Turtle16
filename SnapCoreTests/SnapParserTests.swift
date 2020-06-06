@@ -499,7 +499,7 @@ foo = 2
     }
         
     func testMalformedIfStatement_MissingStatementForThenBranch() {
-        let parser = SnapParser(tokens: tokenize("if 1 {"))
+        let parser = SnapParser(tokens: tokenize("if 1 {\n"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
@@ -570,6 +570,7 @@ else
 if 1 {
     var foo = 2
 } else {
+
 """)
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -710,7 +711,7 @@ if 1
     }
         
     func testMalformedWhileStatement_MissingStatementInBodyBlock() {
-        let parser = SnapParser(tokens: tokenize("while 1 {"))
+        let parser = SnapParser(tokens: tokenize("while 1 {\n"))
         parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
@@ -770,6 +771,27 @@ while 1 {}
         XCTAssertEqual(parser.syntaxTree?.children,
                        [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                               body: AbstractSyntaxTreeNode())
+        ])
+    }
+        
+    func testWellformedForLoopStatement() {
+        let tokens = tokenize("""
+for var i = 0; i < 10; i = i + 1 {
+    var foo = i
+}
+
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
+                                                      expression: ExprUtils.makeLiteralWord(value: 0)),
+                    conditionClause: ExprUtils.makeComparisonLt(left: ExprUtils.makeIdentifier(name: "i"),
+                                                                right: ExprUtils.makeLiteralWord(value: 10)),
+                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralWord(value: 1))),
+                    body: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                         expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i")))
         ])
     }
 }

@@ -25,14 +25,22 @@ open class AbstractSyntaxTreeNode : NSObject {
     }
     
     open override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
         return isBaseClassPartEqual(rhs)
     }
     
     public final func isBaseClassPartEqual(_ rhs: Any?) -> Bool {
-        guard let rhs = rhs as? AbstractSyntaxTreeNode else { return false }
-        guard children == rhs.children else { return false }
+        guard let rhs = rhs as? AbstractSyntaxTreeNode else {
+            return false
+        }
+        guard children == rhs.children else {
+            return false
+        }
         return true
     }
     

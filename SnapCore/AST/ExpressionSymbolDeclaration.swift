@@ -20,11 +20,21 @@ public class ExpressionSymbolDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? ExpressionSymbolDeclaration else { return false }
-        guard isBaseClassPartEqual(rhs) else { return false }
-        guard identifier == rhs.identifier else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? ExpressionSymbolDeclaration else {
+            return false
+        }
+        guard isBaseClassPartEqual(rhs) else {
+            return false
+        }
+        guard identifier == rhs.identifier else {
+            return false
+        }
         return true
     }
     

@@ -17,3 +17,4 @@ public class TokenParenRight : Token {}
 public class TokenReturn: Token {}
 public class TokenVar: Token {}
 public class TokenWhile : Token {}
+public class TokenFor : Token {}

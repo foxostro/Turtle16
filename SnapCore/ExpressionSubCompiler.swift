@@ -19,7 +19,9 @@ public class ExpressionSubCompiler: NSObject {
     
     public func compile(expression: Expression) throws -> [YertleInstruction] {
         if let literal = expression as? Expression.LiteralWord {
-            return compile(literal: literal)
+            return compile(literalWord: literal)
+        } else if let literal = expression as? Expression.LiteralBoolean {
+            return compile(literalBoolean: literal)
         } else if let binary = expression as? Expression.Binary {
             return try compile(binary: binary)
         } else if let identifier = expression as? Expression.Identifier {
@@ -31,16 +33,20 @@ public class ExpressionSubCompiler: NSObject {
         }
     }
     
-    private func compile(literal: Expression.LiteralWord) -> [YertleInstruction] {
-        return compile(intValue: literal.number.literal)
-    }
-    
-    private func compile(boolValue: Bool) -> [YertleInstruction] {
-        return compile(intValue: boolValue ? 1 : 0)
+    private func compile(literalWord: Expression.LiteralWord) -> [YertleInstruction] {
+        return compile(intValue: literalWord.number.literal)
     }
     
     private func compile(intValue: Int) -> [YertleInstruction] {
         return [.push(intValue)]
+    }
+    
+    private func compile(literalBoolean: Expression.LiteralBoolean) -> [YertleInstruction] {
+        return compile(boolValue: literalBoolean.boolean.literal)
+    }
+    
+    private func compile(boolValue: Bool) -> [YertleInstruction] {
+        return compile(intValue: boolValue ? 1 : 0)
     }
     
     private func compile(binary: Expression.Binary) throws -> [YertleInstruction] {

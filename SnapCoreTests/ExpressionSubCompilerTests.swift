@@ -15,6 +15,10 @@ class ExpressionSubCompilerTests: XCTestCase {
         return Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "\(value)", literal: value))
     }
     
+    func makeLiteralBoolean(value: Bool) -> Expression {
+        return Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "\(value)", literal: value))
+    }
+    
     func makeAdd(left: Expression, right: Expression) -> Expression {
         return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus), left: left, right: right)
     }
@@ -53,14 +57,23 @@ class ExpressionSubCompilerTests: XCTestCase {
         return ir
     }
     
-    func testCompileUnsupportedExpression() {
+    func testCannotCompileUnsupportedExpression() {
+        let expr = Expression.UnsupportedExpression()
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression: children=[]>")
+        }
+    }
+    
+    func testCompileLiteralWordExpression() {
         XCTAssertEqual(try compile(expression: makeLiteralWord(value: 1)), [.push(1)])
         XCTAssertEqual(try compile(expression: makeLiteralWord(value: 2)), [.push(2)])
     }
     
-    func testCompileLiteralExpression() {
-        XCTAssertEqual(try compile(expression: makeLiteralWord(value: 1)), [.push(1)])
-        XCTAssertEqual(try compile(expression: makeLiteralWord(value: 2)), [.push(2)])
+    func testCompileLiteralBooleanExpression() {
+        XCTAssertEqual(try compile(expression: makeLiteralBoolean(value: true)), [.push(1)])
+        XCTAssertEqual(try compile(expression: makeLiteralBoolean(value: false)), [.push(0)])
     }
     
     func testCompileBinaryExpression_Add_1() {
@@ -198,14 +211,5 @@ class ExpressionSubCompilerTests: XCTestCase {
             .push(2),
             .lt
         ])
-    }
-    
-    func testCannotCompileUnsupportedExpression() {
-        let expr = Expression.UnsupportedExpression()
-        XCTAssertThrowsError(try compile(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression: children=[]>")
-        }
     }
 }

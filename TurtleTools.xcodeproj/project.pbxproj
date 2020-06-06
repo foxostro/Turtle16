@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F13CB062489DD2300ADB1BE /* YertleInstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13CB052489DD2300ADB1BE /* YertleInstructionTests.swift */; };
 		6F17182D2471C56600AE60C2 /* TurtleCompilerToolbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6F1718302471C56600AE60C2 /* TurtleCompilerToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; };
 		6F1718312471C56600AE60C2 /* TurtleCompilerToolbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -580,6 +581,7 @@
 		6F0880A0230FBDFF00AB2339 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6F0880A2230FC09B00AB2339 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
 		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
+		6F13CB052489DD2300ADB1BE /* YertleInstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YertleInstructionTests.swift; sourceTree = "<group>"; };
 		6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleCompilerToolbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleCompilerToolbox.h; sourceTree = "<group>"; };
 		6F17181E2471C56600AE60C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1113,6 +1115,7 @@
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
 				6F18DD8C2484154F0014C585 /* SnapToYertleCompilerTests.swift */,
 				6F18DD92248463030014C585 /* YertleExecutor.swift */,
+				6F13CB052489DD2300ADB1BE /* YertleInstructionTests.swift */,
 				6F18DD90248462D50014C585 /* YertleToTurtleMachineCodeCompilerTests.swift */,
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
@@ -1983,6 +1986,7 @@
 				6F18DD8D2484154F0014C585 /* SnapToYertleCompilerTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */,
+				6F13CB062489DD2300ADB1BE /* YertleInstructionTests.swift in Sources */,
 				6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */,
 				6FCB68482472448300798905 /* ReturnTests.swift in Sources */,
 			);

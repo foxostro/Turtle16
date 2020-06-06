@@ -13,43 +13,43 @@ import TurtleCompilerToolbox
 class WhileTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertNotEqual(While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+        XCTAssertNotEqual(While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                 body: AbstractSyntaxTreeNode()),
                           LabelDeclarationNode(identifier: foo))
     }
     
     func testDoesNotEqualNodeWithDifferentCondition() {
-        XCTAssertNotEqual(While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+        XCTAssertNotEqual(While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                  body: AbstractSyntaxTreeNode()),
-                          While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                          While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
                           body: AbstractSyntaxTreeNode()))
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {
-        XCTAssertNotEqual(While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                body: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                          While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+        XCTAssertNotEqual(While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                body: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                          While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                 body: AbstractSyntaxTreeNode()))
     }
     
     func testSame() {
-        XCTAssertEqual(While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                             body: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                       While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                             body: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+        XCTAssertEqual(While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                             body: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                       While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                             body: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
     }
     
     func testHash() {
-        XCTAssertEqual(While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                             body: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
-                       While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                             body: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
+        XCTAssertEqual(While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                             body: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
+                       While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                             body: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
     }
     
     func testGetters() {
-        let stmt = While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                         body: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
-        XCTAssertEqual(stmt.condition, Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
-        XCTAssertEqual(stmt.body, Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
+        let stmt = While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                         body: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
+        XCTAssertEqual(stmt.condition, Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+        XCTAssertEqual(stmt.body, Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)))
     }
 }

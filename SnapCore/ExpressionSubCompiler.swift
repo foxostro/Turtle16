@@ -18,7 +18,7 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     public func compile(expression: Expression) throws -> [YertleInstruction] {
-        if let literal = expression as? Expression.Literal {
+        if let literal = expression as? Expression.LiteralWord {
             return compile(literal: literal)
         } else if let binary = expression as? Expression.Binary {
             return try compile(binary: binary)
@@ -31,7 +31,7 @@ public class ExpressionSubCompiler: NSObject {
         }
     }
     
-    private func compile(literal: Expression.Literal) -> [YertleInstruction] {
+    private func compile(literal: Expression.LiteralWord) -> [YertleInstruction] {
         return compile(intValue: literal.number.literal)
     }
     

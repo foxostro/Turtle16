@@ -25,7 +25,7 @@ class ReturnTests: XCTestCase {
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)
-        XCTAssertNotEqual(Return(token: token, expression: Expression.Literal(number: a)), Return(token: token, expression: Expression.Literal(number: b)))
+        XCTAssertNotEqual(Return(token: token, expression: Expression.LiteralWord(number: a)), Return(token: token, expression: Expression.LiteralWord(number: b)))
     }
     
     func testDoesEqualNodeWithSameLineNumberAndValue() {
@@ -33,7 +33,7 @@ class ReturnTests: XCTestCase {
         let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         XCTAssertEqual(Return(token: token, expression: nil), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil))
-        XCTAssertEqual(Return(token: token, expression: Expression.Literal(number: a)), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: b)))
+        XCTAssertEqual(Return(token: token, expression: Expression.LiteralWord(number: a)), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.LiteralWord(number: b)))
     }
     
     func testHash() {
@@ -42,7 +42,7 @@ class ReturnTests: XCTestCase {
         let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
         XCTAssertEqual(Return(token: token, expression: nil).hashValue,
                        Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil).hashValue)
-        XCTAssertEqual(Return(token: token, expression: Expression.Literal(number: a)).hashValue,
-                       Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.Literal(number: b)).hashValue)
+        XCTAssertEqual(Return(token: token, expression: Expression.LiteralWord(number: a)).hashValue,
+                       Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.LiteralWord(number: b)).hashValue)
     }
 }

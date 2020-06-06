@@ -280,7 +280,7 @@ public class SnapParser: Parser {
     
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
-            return Expression.Literal(number: numberToken)
+            return Expression.LiteralWord(number: numberToken)
         }
         
         if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {

@@ -53,7 +53,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileLetDeclaration_CompileTimeConstant() {
         let ast = AbstractSyntaxTreeNode(children: [
             LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -69,7 +69,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_CompileTimeConstant_RedefinesExistingSymbol() {
-        let one = Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = AbstractSyntaxTreeNode(children: [
             LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: one),
             LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: one)
@@ -83,7 +83,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileConstantDeclaration_NotCompileTimeConstant() {
         let ast = AbstractSyntaxTreeNode(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                           expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
             LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "bar"),
                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
         ])
@@ -104,7 +104,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration() {
-        let one = Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = AbstractSyntaxTreeNode(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: one)
         ])
@@ -122,7 +122,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_RedefinesExistingSymbol() {
-        let one = Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = AbstractSyntaxTreeNode(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"), expression: one),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: one)
@@ -136,7 +136,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileExpression() {
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
-        let ast = Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let ast = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -146,10 +146,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileIfStatementWithoutElseBranch() {
         let ast = AbstractSyntaxTreeNode(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
-            If(condition: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
+                              expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+            If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
                then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
                else: nil)
         ])
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
@@ -172,12 +172,12 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileIfStatementIncludingElseBranch() {
         let ast = AbstractSyntaxTreeNode(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                              expression: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
-            If(condition: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
+                              expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+            If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
                then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
                else: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 5, lexeme: "foo"),
-                                           expression: Expression.Literal(number: TokenNumber(lineNumber: 5, lexeme: "2", literal: 2))))
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 5, lexeme: "2", literal: 2))))
         ])
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
         let compiler = SnapToYertleCompiler()
@@ -203,8 +203,8 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileWhileStatement() {
         let ast = AbstractSyntaxTreeNode(children: [
-            While(condition: Expression.Literal(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                  body: Expression.Literal(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
+            While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                  body: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)

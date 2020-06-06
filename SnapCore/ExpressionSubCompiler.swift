@@ -24,13 +24,14 @@ public class ExpressionSubCompiler: NSObject {
             return compile(literalBoolean: literal)
         } else if let binary = expression as? Expression.Binary {
             return try compile(binary: binary)
+        } else if let binary = expression as? Expression.Unary {
+            return try compile(unary: binary)
         } else if let identifier = expression as? Expression.Identifier {
             return try compile(identifier: identifier)
         } else if let assignment = expression as? Expression.Assignment {
             return try compile(assignment: assignment)
-        } else {
-            throw unsupportedError(expression: expression)
         }
+        throw unsupportedError(expression: expression)
     }
     
     private func compile(literalWord: Expression.LiteralWord) -> [YertleInstruction] {
@@ -47,6 +48,14 @@ public class ExpressionSubCompiler: NSObject {
     
     private func compile(boolValue: Bool) -> [YertleInstruction] {
         return compile(intValue: boolValue ? 1 : 0)
+    }
+    
+    private func compile(unary: Expression.Unary) throws -> [YertleInstruction] {
+        var result: [YertleInstruction] = []
+        result += [.push(0)]
+        result += try compile(expression: unary.child)
+        result += [try getOperator(unary: unary)]
+        return result
     }
     
     private func compile(binary: Expression.Binary) throws -> [YertleInstruction] {
@@ -71,6 +80,16 @@ public class ExpressionSubCompiler: NSObject {
             return .div
         case .modulus:
             return .mod
+        }
+    }
+    
+    private func getOperator(unary: Expression.Unary) throws -> YertleInstruction {
+        switch unary.op.op {
+        case .minus:
+            return .sub
+        default:
+            let lineNumber = unary.tokens.first?.lineNumber ?? -1
+            throw CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
         }
     }
     

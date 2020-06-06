@@ -306,4 +306,18 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "a"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeBooleanTrue() {
+        let tokenizer = SnapLexer(withString: "true")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenBoolean(lineNumber: 1, lexeme: "true", literal: true),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeBooleanFalse() {
+        let tokenizer = SnapLexer(withString: "false")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenBoolean(lineNumber: 1, lexeme: "false", literal: false),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

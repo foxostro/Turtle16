@@ -282,20 +282,20 @@ public class SnapParser: Parser {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
             return Expression.LiteralWord(number: numberToken)
         }
-        
-        if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
+        else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
+            return Expression.LiteralBoolean(boolean: booleanToken)
+        }
+        else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Expression.Identifier(identifier: identifierToken)
         }
-        
-        if (accept(TokenParenLeft.self) as? TokenParenLeft) != nil {
+        else if (accept(TokenParenLeft.self) as? TokenParenLeft) != nil {
             let expression = try consumeExpression()
             try expect(type: TokenParenRight.self,
                        error: CompilerError(line: previous!.lineNumber,
                                             message: "expected ')' after expression"))
             return expression
         }
-        
-        if let token = peek() {
+        else if let token = peek() {
             throw operandTypeMismatchError(token)
         } else {
             throw unexpectedEndOfInputError()

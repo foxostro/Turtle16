@@ -68,6 +68,41 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class LiteralBoolean: Expression {
+        public let boolean: TokenBoolean
+        public override var tokens: [Token] {
+            return [boolean]
+        }
+        
+        public init(boolean: TokenBoolean) {
+            self.boolean = boolean
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? LiteralBoolean else { return false }
+            guard isBaseClassPartEqual(rhs) else { return false }
+            guard boolean == rhs.boolean else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(boolean)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int = 0) -> String {
+            return String(format: "%@<%@: boolean=%@, children=[%@]>",
+                          makeIndent(depth: depth),
+                          String(describing: type(of: self)),
+                          boolean.lexeme,
+                          makeChildDescriptions(depth: depth + 1))
+        }
+    }
+    
     public class Identifier: Expression {
         public let identifier: TokenIdentifier
         public override var tokens: [Token] {

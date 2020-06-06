@@ -81,40 +81,7 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     func writeToFile(ir: [YertleInstruction]) throws {
-        var string = ""
-        for instruction in ir {
-            switch instruction {
-            case .push(let value):
-                string += "PUSH \(value)"
-            case .pop:
-                string += "POP"
-            case .eq:
-                string += "EQ"
-            case .lt:
-                string += "LT"
-            case .add:
-                string += "ADD"
-            case .sub:
-                string += "SUB"
-            case .mul:
-                string += "MUL"
-            case .div:
-                string += "DIV"
-            case .mod:
-                string += "MOD"
-            case .load(let address):
-                string += String(format: "LOAD 0x%04x", address)
-            case .store(let address):
-                string += String(format: "STORE 0x%04x", address)
-            case .label(let token):
-                string += "\(token.lexeme):"
-            case .jmp(let token):
-                string += "JMP \(token.lexeme)"
-            case .je(let token):
-                string += "JE \(token.lexeme)"
-            }
-            string += "\n"
-        }
+        let string = YertleInstruction.makeListing(instructions: ir)
         try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     

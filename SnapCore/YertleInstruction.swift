@@ -26,4 +26,41 @@ public enum YertleInstruction: Equatable {
     case label(TokenIdentifier) // declares a label
     case jmp(TokenIdentifier) // unconditional jump, no change to the stack
     case je(TokenIdentifier) // pop two from the stack, jump if they are equal
+    
+    public var description: String {
+        switch self {
+        case .push(let value):
+            return "PUSH \(value)"
+        case .pop:
+            return "POP"
+        case .eq:
+            return "EQ"
+        case .lt:
+            return "LT"
+        case .add:
+            return "ADD"
+        case .sub:
+            return "SUB"
+        case .mul:
+            return "MUL"
+        case .div:
+            return "DIV"
+        case .mod:
+            return "MOD"
+        case .load(let address):
+            return String(format: "LOAD 0x%04x", address)
+        case .store(let address):
+            return String(format: "STORE 0x%04x", address)
+        case .label(let token):
+            return "\(token.lexeme):"
+        case .jmp(let token):
+            return "JMP \(token.lexeme)"
+        case .je(let token):
+            return "JE \(token.lexeme)"
+        }
+    }
+    
+    public static func makeListing(instructions: [YertleInstruction]) -> String {
+        return instructions.map{ $0.description }.joined(separator: "\n") + "\n"
+    }
 }

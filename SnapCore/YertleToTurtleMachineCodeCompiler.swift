@@ -13,12 +13,6 @@ import TurtleCompilerToolbox
 // For speed, we use the A and B registers as the top of the stack.
 // (see also ExpressionSubCompiler)
 public class YertleToTurtleMachineCodeCompiler: NSObject {
-    public class MustBeCompileTimeConstantError: CompilerError {
-        public init(line lineNumber: Int) {
-            super.init(line: lineNumber, message: "symbol must be a compile time constant")
-        }
-    }
-    
     // Programs written in Snap store the stack pointer in data RAM at
     // addresses 0x0000 and 0x0001. This is initialized on launch to 0xffff.
     public static let kStackPointerAddressHi: UInt16 = 0x0000
@@ -74,13 +68,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             switch symbol {
             case .label(let value):
                 return value
-            case .word(let storage):
-                switch storage {
-                case .constantInt(let value):
-                    return value
-                case .staticStorage(_):
-                    throw MustBeCompileTimeConstantError(line: identifier.lineNumber)
-                }
+            default:
+                throw CompilerError(line: identifier.lineNumber, message: "cannot resolve a label with the symbol `\(identifier.lexeme)' of type `\(String(describing: symbol))'")
             }
         }
         let patcher = Patcher(inputInstructions: assembler.instructions,

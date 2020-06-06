@@ -35,6 +35,10 @@ public class ExpressionSubCompiler: NSObject {
         return compile(intValue: literal.number.literal)
     }
     
+    private func compile(boolValue: Bool) -> [YertleInstruction] {
+        return compile(intValue: boolValue ? 1 : 0)
+    }
+    
     private func compile(intValue: Int) -> [YertleInstruction] {
         return [.push(intValue)]
     }
@@ -71,8 +75,15 @@ public class ExpressionSubCompiler: NSObject {
             return compile(intValue: value)
         case .word(let storage):
             switch storage {
-            case .constantInt(let value):
+            case .constant(let value):
                 return compile(intValue: value)
+            case .staticStorage(let address, _):
+                return [.load(address)]
+            }
+        case .boolean(let storage):
+            switch storage {
+            case .constant(let value):
+                return compile(boolValue: value)
             case .staticStorage(let address, _):
                 return [.load(address)]
             }
@@ -86,7 +97,18 @@ public class ExpressionSubCompiler: NSObject {
             throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to label `\(assignment.identifier.lexeme)'")
         case .word(let storage):
             switch storage {
-            case .constantInt(_):
+            case .constant(_):
+                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
+            case .staticStorage(let address, let isMutable):
+                if isMutable {
+                    return try compile(expression: assignment.child) + [.store(address)]
+                } else {
+                    throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
+                }
+            }
+        case .boolean(let storage):
+            switch storage {
+            case .constant(_):
                 throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
             case .staticStorage(let address, let isMutable):
                 if isMutable {

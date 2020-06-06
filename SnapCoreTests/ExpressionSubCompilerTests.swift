@@ -216,6 +216,16 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
+    func testCompileComparisonNotEqual() {
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralWord(value: 2),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        XCTAssertEqual(try compile(expression: expr), [
+            .push(1),
+            .push(2),
+            .ne
+        ])
+    }
+    
     func testCompileComparisonLessThan() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralWord(value: 2),
                                               right: ExprUtils.makeLiteralWord(value: 1))
@@ -223,6 +233,36 @@ class ExpressionSubCompilerTests: XCTestCase {
             .push(1),
             .push(2),
             .lt
+        ])
+    }
+    
+    func testCompileComparisonGreaterThan() {
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralWord(value: 2),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        XCTAssertEqual(try compile(expression: expr), [
+            .push(1),
+            .push(2),
+            .gt
+        ])
+    }
+    
+    func testCompileComparisonLessThanOrEqualTo() {
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralWord(value: 2),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        XCTAssertEqual(try compile(expression: expr), [
+            .push(1),
+            .push(2),
+            .le
+        ])
+    }
+    
+    func testCompileComparisonGreaterThanOrEqualTo() {
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralWord(value: 2),
+                                              right: ExprUtils.makeLiteralWord(value: 1))
+        XCTAssertEqual(try compile(expression: expr), [
+            .push(1),
+            .push(2),
+            .ge
         ])
     }
     

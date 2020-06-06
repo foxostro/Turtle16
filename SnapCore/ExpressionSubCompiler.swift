@@ -71,8 +71,16 @@ public class ExpressionSubCompiler: NSObject {
         switch binary.op.op {
         case .eq:
             return .eq
+        case .ne:
+            return .ne
         case .lt:
             return .lt
+        case .gt:
+            return .gt
+        case .le:
+            return .le
+        case .ge:
+            return .ge
         case .plus:
             return .add
         case .minus:
@@ -99,8 +107,10 @@ public class ExpressionSubCompiler: NSObject {
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
         switch symbol {
-        case .label(let value):
-            return compile(intValue: value)
+        case .label(_):
+            // This is unreachable because any such expression will be discarded
+            // by the type checker before reaching this point.
+            abort()
         case .word(let storage):
             switch storage {
             case .constant(let value):

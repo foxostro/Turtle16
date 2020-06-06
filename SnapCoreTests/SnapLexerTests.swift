@@ -195,10 +195,38 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeNotEqual() {
+        let tokenizer = SnapLexer(withString: "!=")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "!=", op: .ne),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeLessThan() {
         let tokenizer = SnapLexer(withString: "<")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "<", op: .lt),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeGreaterThan() {
+        let tokenizer = SnapLexer(withString: ">")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: ">", op: .gt),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeLessThanOrEqual() {
+        let tokenizer = SnapLexer(withString: "<=")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: "<=", op: .le),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeGreaterThanOrEqual() {
+        let tokenizer = SnapLexer(withString: ">=")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(lineNumber: 1, lexeme: ">=", op: .ge),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     

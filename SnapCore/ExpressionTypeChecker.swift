@@ -65,15 +65,33 @@ public class ExpressionTypeChecker: NSObject {
         }
         switch binary.op.op {
         case .eq:
+            fallthrough
+        case .ne:
             return .boolean
+        
         case .lt:
+            fallthrough
+        case .gt:
+            fallthrough
+        case .le:
+            fallthrough
+        case .ge:
             switch right {
             case .word:
                 return .boolean
             case .boolean:
                 throw CompilerError(line: lineNumber, message: "Binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
-        default:
+            
+        case .plus:
+            fallthrough
+        case .minus:
+            fallthrough
+        case .multiply:
+            fallthrough
+        case .divide:
+            fallthrough
+        case .modulus:
             switch right {
             case .word:
                 return .word

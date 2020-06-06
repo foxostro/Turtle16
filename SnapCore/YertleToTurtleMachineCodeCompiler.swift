@@ -48,7 +48,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .push(let value): try push(value)
             case .pop: try pop()
             case .eq:  try eq()
+            case .ne:  try ne()
             case .lt:  try lt()
+            case .gt:  try gt()
+            case .le:  try le()
+            case .ge:  try ge()
             case .add: try add()
             case .sub: try sub()
             case .mul: try mul()
@@ -230,6 +234,30 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         stackDepth -= 1
     }
     
+    private func ne() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during NE")
+        }
+        
+        let jumpTarget = assembler.programCounter + 9
+        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
+        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        assembler.cmp()
+        assembler.cmp()
+        try assembler.li(.A, 1)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        assert(assembler.programCounter == jumpTarget)
+        
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        
+        stackDepth -= 1
+    }
+    
     private func lt() throws {
         guard stackDepth >= 2 else {
             throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during LT")
@@ -242,6 +270,78 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.cmp()
         try assembler.li(.A, 1)
         assembler.jl()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        assert(assembler.programCounter == jumpTarget)
+        
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        
+        stackDepth -= 1
+    }
+    
+    private func gt() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during GT")
+        }
+        
+        let jumpTarget = assembler.programCounter + 9
+        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
+        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        assembler.cmp()
+        assembler.cmp()
+        try assembler.li(.A, 1)
+        assembler.jg()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        assert(assembler.programCounter == jumpTarget)
+        
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        
+        stackDepth -= 1
+    }
+    
+    private func le() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during LE")
+        }
+        
+        let jumpTarget = assembler.programCounter + 9
+        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
+        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        assembler.cmp()
+        assembler.cmp()
+        try assembler.li(.A, 1)
+        assembler.jle()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        assert(assembler.programCounter == jumpTarget)
+        
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        
+        stackDepth -= 1
+    }
+    
+    private func ge() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during GE")
+        }
+        
+        let jumpTarget = assembler.programCounter + 9
+        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
+        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        assembler.cmp()
+        assembler.cmp()
+        try assembler.li(.A, 1)
+        assembler.jge()
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)

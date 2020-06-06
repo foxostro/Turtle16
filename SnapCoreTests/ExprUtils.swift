@@ -38,8 +38,24 @@ public class ExprUtils: NSObject {
         return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "==", op: .eq), left: left, right: right)
     }
     
+    public static func makeComparisonNe(left: Expression, right: Expression) -> Expression {
+        return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "!=", op: .ne), left: left, right: right)
+    }
+    
     public static func makeComparisonLt(left: Expression, right: Expression) -> Expression {
         return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<", op: .lt), left: left, right: right)
+    }
+    
+    public static func makeComparisonGt(left: Expression, right: Expression) -> Expression {
+        return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: ">", op: .gt), left: left, right: right)
+    }
+    
+    public static func makeComparisonLe(left: Expression, right: Expression) -> Expression {
+        return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "<=", op: .le), left: left, right: right)
+    }
+    
+    public static func makeComparisonGe(left: Expression, right: Expression) -> Expression {
+        return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: ">=", op: .ge), left: left, right: right)
     }
     
     public static func makeIdentifier(name: String) -> Expression {

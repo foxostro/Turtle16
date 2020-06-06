@@ -252,7 +252,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             .push(1),
             .push(0),
             .je(L1),
-            .push(2),
+            .push(2), // TODO: This means that each expression statement increases the stack size by one, without bound. That's a problem.
             .jmp(L0),
             .label(L1)
         ])
@@ -268,5 +268,44 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
+    }
+    
+    func testCompileForLoopStatement() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                           expression: ExprUtils.makeLiteralWord(value: 0)),
+            ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
+                                                      expression: ExprUtils.makeLiteralWord(value: 0)),
+                    conditionClause: ExprUtils.makeComparisonLt(left: ExprUtils.makeIdentifier(name: "i"),
+                                                                right: ExprUtils.makeLiteralWord(value: 10)),
+                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralWord(value: 1))),
+                    body: ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeIdentifier(name: "i")))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let L0 = TokenIdentifier(lineNumber: -1, lexeme: ".L0")
+        let L1 = TokenIdentifier(lineNumber: -1, lexeme: ".L1")
+        let expected: [YertleInstruction] = [
+            .push(0),
+            .store(0x0010),
+            .push(0),
+            .store(0x0011),
+            .label(L0),
+            .push(10),
+            .load(0x0011),
+            .lt,
+            .push(0),
+            .je(L1),
+            .load(0x0011),
+            .store(0x0010),
+            .push(1),
+            .load(0x0011),
+            .add,
+            .store(0x0011),
+            .jmp(L0),
+            .label(L1)
+        ]
+        XCTAssertEqual(compiler.instructions, expected)
     }
 }

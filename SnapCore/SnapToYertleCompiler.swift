@@ -69,6 +69,9 @@ public class SnapToYertleCompiler: NSObject {
         else if let node = genericNode as? While {
             try compile(while: node)
         }
+        else if let node = genericNode as? ForLoop {
+            try compile(forLoop: node)
+        }
     }
     
     private func compile(label node: LabelDeclarationNode) {
@@ -160,6 +163,24 @@ public class SnapToYertleCompiler: NSObject {
             .je(labelTail)
         ]
         try compile(genericNode: stmt.body)
+        instructions += [
+            .jmp(labelHead),
+            .label(labelTail)
+        ]
+    }
+    
+    func compile(forLoop stmt: ForLoop) throws {
+        let labelHead = makeTempLabel()
+        let labelTail = makeTempLabel()
+        try compile(genericNode: stmt.initializerClause)
+        instructions += [.label(labelHead)]
+        try compile(genericNode: stmt.conditionClause)
+        instructions += [
+            .push(0),
+            .je(labelTail)
+        ]
+        try compile(genericNode: stmt.body)
+        try compile(genericNode: stmt.incrementClause)
         instructions += [
             .jmp(labelHead),
             .label(labelTail)

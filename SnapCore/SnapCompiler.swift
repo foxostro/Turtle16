@@ -36,7 +36,7 @@ public class SnapCompiler: NSObject {
             return
         }
         
-        // Compile to an abstract syntac tree
+        // Compile to an abstract syntax tree
         let parser = SnapParser(tokens: lexer.tokens)
         parser.parse()
         if parser.hasError {

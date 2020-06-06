@@ -89,12 +89,14 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
-    func testCompileIdentifierExpression_UseOfLabelInExpression() {
+    func testFailToCompileBecauseOfUseOfLabelInExpression() {
         let expr = ExprUtils.makeIdentifier(name: "foo")
         let symbols = SymbolTable(["foo" : .label(42)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .push(42)
-        ])
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "label `foo' cannot be used in an expression")
+        }
     }
     
     func testCompileIdentifierExpression_Word_Constant() {
@@ -240,6 +242,17 @@ class ExpressionSubCompilerTests: XCTestCase {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`*' is not a prefix unary operator")
+        }
+    }
+    
+    func testFailToCompileBecauseAdditionCannotBeAppliedToBooleanAndWord() {
+        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                     right: ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                       right: ExprUtils.makeLiteralWord(value: 1)))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
         }
     }
 }

@@ -18,6 +18,8 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     public func compile(expression: Expression) throws -> [YertleInstruction] {
+        try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
+        
         if let literal = expression as? Expression.LiteralWord {
             return compile(literalWord: literal)
         } else if let literal = expression as? Expression.LiteralBoolean {
@@ -31,6 +33,7 @@ public class ExpressionSubCompiler: NSObject {
         } else if let assignment = expression as? Expression.Assignment {
             return try compile(assignment: assignment)
         }
+        
         throw unsupportedError(expression: expression)
     }
     

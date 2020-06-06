@@ -280,7 +280,19 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "Label `foo' cannot be used in an expression")
+            XCTAssertEqual(compilerError?.message, "label `foo' cannot be used in an expression")
+        }
+    }
+    
+    func testFailBecauseAdditionCannotBeAppliedToBooleanAndWord() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                                     right: ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralWord(value: 1),
+                                                                       right: ExprUtils.makeLiteralWord(value: 1)))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
         }
     }
 }

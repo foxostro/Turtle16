@@ -7,6 +7,7 @@
 //
 
 public class TokenColon : Token {}
+public class TokenSemicolon : Token {}
 public class TokenComma : Token {}
 public class TokenEqual: Token {}
 public class TokenIdentifier : Token {}

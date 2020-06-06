@@ -28,6 +28,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: ":") {[weak self] in
                 TokenColon(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: ";") {[weak self] in
+                TokenSemicolon(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "==") {[weak self] in
                 TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .eq)
             },
@@ -93,6 +96,9 @@ public class SnapLexer: Lexer {
             },
             Rule(pattern: "while") {[weak self] in
                 TokenWhile(lineNumber: self!.lineNumber, lexeme: $0)
+            },
+            Rule(pattern: "for") {[weak self] in
+                TokenFor(lineNumber: self!.lineNumber, lexeme: $0)
             },
             Rule(pattern: "true") {[weak self] in
                 TokenBoolean(lineNumber: self!.lineNumber, lexeme: $0, literal: true)

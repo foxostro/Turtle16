@@ -10,32 +10,43 @@ import TurtleCompilerToolbox
 
 public class SnapParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
+        let result: [AbstractSyntaxTreeNode] = try consumeStatementWithoutTerminator()
+        if nil != peek() {
+            try expectEndOfStatement()
+        }
+        return result
+    }
+    
+    public final func consumeStatementWithoutTerminator() throws -> [AbstractSyntaxTreeNode] {
+        let result: [AbstractSyntaxTreeNode]
         if nil != accept(TokenEOF.self) {
-            return []
+            result = []
         }
         else if nil != accept(TokenNewline.self) {
-            return []
+            result = []
         }
         else if let token = accept(TokenLet.self) {
-            return try consumeLet(token as! TokenLet)
+            result = try consumeLet(token as! TokenLet)
         }
         else if let token = accept(TokenVar.self) {
-            return try consumeVar(token as! TokenVar)
+            result = try consumeVar(token as! TokenVar)
         }
         else if let token = accept(TokenIf.self) {
-            return try consumeIf(token as! TokenIf)
+            result = try consumeIf(token as! TokenIf)
         }
         else if let token = accept(TokenWhile.self) {
-            return try consumeWhile(token as! TokenWhile)
+            result = try consumeWhile(token as! TokenWhile)
+        }
+        else if let token = accept(TokenFor.self) {
+            result = try consumeForLoop(token as! TokenFor)
         }
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
-            return try consumeLabel()
+            result = try consumeLabel()
         }
         else {
-            let expression = try consumeExpression()
-            try expectEndOfStatement()
-            return [expression]
+            result = [try consumeExpression()]
         }
+        return result
     }
     
     private func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
@@ -56,8 +67,6 @@ public class SnapParser: Parser {
         
         let expression = try consumeExpression()
         
-        try expectEndOfStatement()
-        
         return [LetDeclaration(identifier: identifier, expression: expression)]
     }
     
@@ -77,8 +86,6 @@ public class SnapParser: Parser {
         }
         
         let expression = try consumeExpression()
-        
-        try expectEndOfStatement()
         
         return [VarDeclaration(identifier: identifier, expression: expression)]
     }
@@ -134,20 +141,18 @@ public class SnapParser: Parser {
             try handleElse()
         }
         
-        // If the then-clause or else-clause is at the very end of the token
-        // stream then the parsing of the clause may have already eaten the EOF
-        // token. We'll accept that as being a well formed end to the if
-        // statement too.
-        if nil != peek() {
-            try expectEndOfStatement()
-        }
-        
         return [If(condition: condition, then: thenBranch, else: elseBranch)]
     }
     
     private func consumeBlock(errorOnMissingCurlyLeft: CompilerError,
                               errorOnMissingCurlyRight: CompilerError) throws -> [AbstractSyntaxTreeNode] {
         try expect(type: TokenCurlyLeft.self, error: errorOnMissingCurlyLeft)
+        
+        if nil != accept(TokenCurlyRight.self) {
+            return [AbstractSyntaxTreeNode()]
+        }
+        
+        try expect(type: TokenNewline.self, error: CompilerError(line: previous!.lineNumber, message: "expected newline"))
         
         var statements: [AbstractSyntaxTreeNode] = []
         while nil == accept(TokenCurlyRight.self) {
@@ -189,20 +194,36 @@ public class SnapParser: Parser {
             body = AbstractSyntaxTreeNode(children: bodyStatements)
         }
         
-        // If the body or else-clause is at the very end of the token stream
-        // then the parsing of the clause may have already eaten the EOF token.
-        // We'll accept that as being a well formed end to the while stmt too.
-        if nil != peek() {
-            try expectEndOfStatement()
+        return [While(condition: condition, body: body)]
+    }
+    
+    private func consumeForLoop(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
+        let initializerClause = try consumeStatementWithoutTerminator().first!
+        try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
+        let conditionClause = try consumeStatementWithoutTerminator().first!
+        try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
+        let incrementClause = try consumeStatementWithoutTerminator().first!
+        
+        let leftError = CompilerError(line: forToken.lineNumber, message: "expected `{' after `\(forToken.lexeme)' increment clause")
+        let rightError = CompilerError(line: forToken.lineNumber, message: "expected `}' after `\(forToken.lexeme)' body")
+        let bodyStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
+        
+        let body: AbstractSyntaxTreeNode
+        if bodyStatements.count == 1 {
+            body = bodyStatements.first!
+        } else {
+            body = AbstractSyntaxTreeNode(children: bodyStatements)
         }
         
-        return [While(condition: condition, body: body)]
+        return [ForLoop(initializerClause: initializerClause,
+                        conditionClause: conditionClause,
+                        incrementClause: incrementClause,
+                        body: body)]
     }
     
     private func consumeLabel() throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected to find an identifier in label declaration")) as! TokenIdentifier
         try expect(type: TokenColon.self, error: CompilerError(line: peek()!.lineNumber, message: "expected label declaration to end with a colon"))
-        try expectEndOfStatement()
         return [LabelDeclarationNode(identifier: identifier)]
     }
     

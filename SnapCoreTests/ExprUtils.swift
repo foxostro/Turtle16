@@ -58,12 +58,12 @@ public class ExprUtils: NSObject {
         return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: ">=", op: .ge), left: left, right: right)
     }
     
-    public static func makeIdentifier(name: String) -> Expression {
-        return Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: name))
+    public static func makeIdentifier(lineNumber: Int = 1, name: String) -> Expression {
+        return Expression.Identifier(identifier: TokenIdentifier(lineNumber: lineNumber, lexeme: name))
     }
     
-    public static func makeAssignment(_ name: String, right: Expression) -> Expression {
-        return Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: name), expression: right)
+    public static func makeAssignment(lineNumber: Int = 1, name: String, right: Expression) -> Expression {
+        return Expression.Assignment(identifier: TokenIdentifier(lineNumber: lineNumber, lexeme: name), expression: right)
     }
     
     public static func makeNeg(expr: Expression) -> Expression {

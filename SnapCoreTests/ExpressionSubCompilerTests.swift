@@ -139,7 +139,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileAssignmentToWord() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
         let symbols = SymbolTable(["foo" : .word(.staticStorage(address: 0x0010, isMutable: true))])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
@@ -148,7 +148,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToALabel() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
         let symbols = SymbolTable(["foo" : .label(0)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -158,7 +158,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToAnImmutableValue_Word() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
         let symbols = SymbolTable(["foo" : .word(.staticStorage(address: 0x0010, isMutable: false))])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -168,7 +168,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToAConstantValue_Word() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
         let symbols = SymbolTable(["foo" : .word(.constant(0))])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -178,7 +178,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileAssignmentToBoolean() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralBoolean(value: true))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
         let symbols = SymbolTable(["foo" : .boolean(.staticStorage(address: 0x0010, isMutable: true))])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(1),
@@ -187,7 +187,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToAnImmutableValue_Boolean() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralBoolean(value: true))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
         let symbols = SymbolTable(["foo" : .boolean(.staticStorage(address: 0x0010, isMutable: false))])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -197,7 +197,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToAConstantValue_Boolean() {
-        let expr = ExprUtils.makeAssignment("foo", right: ExprUtils.makeLiteralBoolean(value: true))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
         let symbols = SymbolTable(["foo" : .boolean(.constant(true))])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError

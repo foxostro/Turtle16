@@ -44,4 +44,38 @@ class SnapCompilerTests: XCTestCase {
         XCTAssertGreaterThan(compiler.instructions.count, 0)
         XCTAssertEqual(compiler.instructions.first?.disassembly, "NOP")
     }
+    
+    func test_EndToEndIntegration_SimplestProgram() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let a = 42
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
+    }
+    
+    func test_EndToEndIntegration_ForLoop() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 255
+for var i = 0; i < 10; i = i + 1 {
+    a = i
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 9)
+    }
+    
+    func test_EndToEndIntegration_Fibonacci() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 1
+var b = 1
+for var i = 0; i < 10; i = i + 1 {
+    var fib = b + a
+    a = b
+    b = fib
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 89)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 144)
+    }
 }

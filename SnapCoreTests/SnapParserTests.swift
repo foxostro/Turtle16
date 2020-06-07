@@ -532,8 +532,10 @@ if 1 {
         XCTAssertEqual(ast?.children.count, 1)
         
         let expected = If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                               expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))),
+                          then: Block(children: [
+                            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
+                          ]),
                           else: nil)
         XCTAssertEqual(Optional<If>(expected), ast?.children.first)
     }
@@ -607,14 +609,16 @@ if 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         
-        XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
-                          else: AbstractSyntaxTreeNode(children: [
-                            Expression.LiteralWord(number: TokenNumber(lineNumber: 4, lexeme: "3", literal: 3)),
-                            Expression.LiteralWord(number: TokenNumber(lineNumber: 5, lexeme: "4", literal: 4))
-                          ])),
-                        Expression.LiteralWord(number: TokenNumber(lineNumber: 7, lexeme: "5", literal: 5))])
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            If(condition: ExprUtils.makeLiteralWord(lineNumber: 1, value: 1),
+               then: Block(children: [
+                ExprUtils.makeLiteralWord(lineNumber: 2, value: 2)
+               ]),
+               else: Block(children: [
+                ExprUtils.makeLiteralWord(lineNumber: 4, value: 3),
+                ExprUtils.makeLiteralWord(lineNumber: 5, value: 4)
+               ])),
+            ExprUtils.makeLiteralWord(lineNumber: 7, value: 5)])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_2() {
@@ -629,8 +633,8 @@ if 1 {
         
         XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: AbstractSyntaxTreeNode(),
-                          else: AbstractSyntaxTreeNode())
+                          then: Block(),
+                          else: Block())
         ])
     }
         
@@ -647,8 +651,8 @@ else {
         
         XCTAssertEqual(parser.syntaxTree?.children,
                        [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: AbstractSyntaxTreeNode(),
-                          else: AbstractSyntaxTreeNode())
+                          then: Block(),
+                          else: Block())
         ])
     }
         
@@ -663,10 +667,16 @@ else
         parser.parse()
         XCTAssertFalse(parser.hasError)
         
-        XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
-                          else: LetDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 4, lexeme: "1", literal: 1))))
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            If(condition: ExprUtils.makeLiteralWord(lineNumber: 1, value: 1),
+               then: Block(children: [
+                LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                               expression: ExprUtils.makeLiteralWord(lineNumber: 2, value: 1))
+               ]),
+               else: Block(children: [
+                LetDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"),
+                               expression: ExprUtils.makeLiteralWord(lineNumber: 4, value: 1))
+               ]))
         ])
     }
         
@@ -679,10 +689,13 @@ if 1
         parser.parse()
         XCTAssertFalse(parser.hasError)
         
-        XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"), expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1))),
-                          else: nil)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            If(condition: ExprUtils.makeLiteralWord(lineNumber: 1, value: 1),
+               then: Block(children: [
+                LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                               expression: ExprUtils.makeLiteralWord(lineNumber: 2, value: 1))
+               ]),
+               else: nil)
         ])
     }
     
@@ -739,10 +752,13 @@ while 1 {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        XCTAssertEqual(parser.syntaxTree?.children,
-                       [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                              body: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                                   expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))))])
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                  body: Block(children: [
+                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                   expression: ExprUtils.makeLiteralWord(lineNumber: 2, value: 2))
+                  ]))
+        ])
     }
         
     func testWellformedWhileStatement_EmptyBody_1() {
@@ -754,9 +770,8 @@ while 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         
-        XCTAssertEqual(parser.syntaxTree?.children,
-                       [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                              body: AbstractSyntaxTreeNode())
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            While(condition: ExprUtils.makeLiteralWord(value: 1), body: Block())
         ])
     }
         
@@ -768,9 +783,8 @@ while 1 {}
         parser.parse()
         XCTAssertFalse(parser.hasError)
         
-        XCTAssertEqual(parser.syntaxTree?.children,
-                       [While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                              body: AbstractSyntaxTreeNode())
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            While(condition: ExprUtils.makeLiteralWord(value: 1), body: Block())
         ])
     }
         
@@ -789,8 +803,10 @@ for var i = 0; i < 10; i = i + 1 {
                     conditionClause: ExprUtils.makeComparisonLt(left: ExprUtils.makeIdentifier(name: "i"),
                                                                 right: ExprUtils.makeLiteralWord(value: 10)),
                     incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralWord(value: 1))),
-                    body: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                         expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i")))
+                    body: Block(children: [
+                        VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                       expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"))
+                    ]))
         ])
     }
         
@@ -804,7 +820,7 @@ for var i = 0; i < 10; i = i + 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            AbstractSyntaxTreeNode(children: [
+            Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                 expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"))
             ])
@@ -817,7 +833,7 @@ for var i = 0; i < 10; i = i + 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            AbstractSyntaxTreeNode(children: [
+            Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                expression: ExprUtils.makeIdentifier(lineNumber: 1, name: "i"))
             ])
@@ -830,7 +846,7 @@ for var i = 0; i < 10; i = i + 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            AbstractSyntaxTreeNode(children: [])
+            Block(children: [])
         ])
     }
     
@@ -846,8 +862,8 @@ for var i = 0; i < 10; i = i + 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            AbstractSyntaxTreeNode(children: [
-                AbstractSyntaxTreeNode(children: [
+            Block(children: [
+                Block(children: [
                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 3, lexeme: "bar"),
                                    expression: ExprUtils.makeIdentifier(lineNumber: 3, name: "i"))
                 ])
@@ -861,8 +877,8 @@ for var i = 0; i < 10; i = i + 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            AbstractSyntaxTreeNode(children: [
-                AbstractSyntaxTreeNode(children: [
+            Block(children: [
+                Block(children: [
                 ])
             ])
         ])

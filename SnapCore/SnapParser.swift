@@ -10,20 +10,19 @@ import TurtleCompilerToolbox
 
 public class SnapParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        let result: [AbstractSyntaxTreeNode] = try consumeStatementWithoutTerminator()
-        if nil != peek() {
-            try expectEndOfStatement()
-        }
-        return result
+        return try consumeStatement(shouldExpectEndOfStatement: true)
     }
-    
-    public final func consumeStatementWithoutTerminator() throws -> [AbstractSyntaxTreeNode] {
+        
+    public final func consumeStatement(shouldExpectEndOfStatement: Bool) throws -> [AbstractSyntaxTreeNode] {
+        var shouldExpectEndOfStatement = shouldExpectEndOfStatement
         let result: [AbstractSyntaxTreeNode]
         if nil != accept(TokenEOF.self) {
             result = []
+            shouldExpectEndOfStatement = false
         }
         else if nil != accept(TokenNewline.self) {
             result = []
+            shouldExpectEndOfStatement = false
         }
         else if let token = accept(TokenLet.self) {
             result = try consumeLet(token as! TokenLet)
@@ -40,11 +39,17 @@ public class SnapParser: Parser {
         else if let token = accept(TokenFor.self) {
             result = try consumeForLoop(token as! TokenFor)
         }
+        else if let _ = accept(TokenCurlyLeft.self) {
+            result = try consumeBlock()
+        }
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
             result = try consumeLabel()
         }
         else {
             result = [try consumeExpression()]
+        }
+        if shouldExpectEndOfStatement {
+            try expectEndOfStatement()
         }
         return result
     }
@@ -101,8 +106,8 @@ public class SnapParser: Parser {
         
         let thenStatements: [AbstractSyntaxTreeNode]
         if nil != (peek() as? TokenCurlyLeft) {
-            let leftError = CompilerError(line: ifToken.lineNumber, message: "expected `{' after `\(ifToken.lexeme)' condition")
-            let rightError = CompilerError(line: ifToken.lineNumber, message: "expected `}' after `then' branch")
+            let leftError = "expected `{' after `\(ifToken.lexeme)' condition"
+            let rightError = "expected `}' after `then' branch"
             thenStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
         } else {
             try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
@@ -121,8 +126,8 @@ public class SnapParser: Parser {
             
             let elseStatements: [AbstractSyntaxTreeNode]
             if nil != (self.peek() as? TokenCurlyLeft) {
-                let leftError = CompilerError(line: elseToken.lineNumber, message: "expected `{' after `\(elseToken.lexeme)'")
-                let rightError = CompilerError(line: elseToken.lineNumber, message: "expected `}' after `\(elseToken.lexeme)' branch")
+                let leftError = "expected `{' after `\(elseToken.lexeme)'"
+                let rightError = "expected `}' after `\(elseToken.lexeme)' branch"
                 elseStatements = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
             } else {
                 try self.expect(type: TokenNewline.self, error: CompilerError(line: self.peek()!.lineNumber, message: "expected newline"))
@@ -144,9 +149,21 @@ public class SnapParser: Parser {
         return [If(condition: condition, then: thenBranch, else: elseBranch)]
     }
     
-    private func consumeBlock(errorOnMissingCurlyLeft: CompilerError,
-                              errorOnMissingCurlyRight: CompilerError) throws -> [AbstractSyntaxTreeNode] {
-        try expect(type: TokenCurlyLeft.self, error: errorOnMissingCurlyLeft)
+    private func consumeBlock() throws -> [AbstractSyntaxTreeNode] {
+        var statements: [AbstractSyntaxTreeNode] = []
+        while nil == accept(TokenCurlyRight.self) {
+            if nil == peek() || nil != (peek() as? TokenEOF){
+                throw CompilerError(line: previous!.lineNumber, message: "expected `}' after block")
+            }
+            statements += try consumeStatement()
+        }
+        
+        return [AbstractSyntaxTreeNode(children: statements)]
+    }
+    
+    private func consumeBlock(errorOnMissingCurlyLeft: String,
+                              errorOnMissingCurlyRight: String) throws -> [AbstractSyntaxTreeNode] {
+        try expect(type: TokenCurlyLeft.self, error: CompilerError(line: previous!.lineNumber, message: errorOnMissingCurlyLeft))
         
         if nil != accept(TokenCurlyRight.self) {
             return [AbstractSyntaxTreeNode()]
@@ -157,7 +174,7 @@ public class SnapParser: Parser {
         var statements: [AbstractSyntaxTreeNode] = []
         while nil == accept(TokenCurlyRight.self) {
             if nil == peek() || nil != (peek() as? TokenEOF){
-                throw errorOnMissingCurlyRight
+                throw CompilerError(line: previous!.lineNumber, message: errorOnMissingCurlyRight)
             }
             statements += try consumeStatement()
         }
@@ -180,8 +197,8 @@ public class SnapParser: Parser {
         
         let bodyStatements: [AbstractSyntaxTreeNode]
         if nil != (peek() as? TokenCurlyLeft) {
-            let leftError = CompilerError(line: whileToken.lineNumber, message: "expected `{' after `\(whileToken.lexeme)' condition")
-            let rightError = CompilerError(line: whileToken.lineNumber, message: "expected `}' after `\(whileToken.lexeme)' body")
+            let leftError = "expected `{' after `\(whileToken.lexeme)' condition"
+            let rightError = "expected `}' after `\(whileToken.lexeme)' body"
             bodyStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
         } else {
             try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
@@ -198,14 +215,14 @@ public class SnapParser: Parser {
     }
     
     private func consumeForLoop(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
-        let initializerClause = try consumeStatementWithoutTerminator().first!
+        let initializerClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
-        let conditionClause = try consumeStatementWithoutTerminator().first!
+        let conditionClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
-        let incrementClause = try consumeStatementWithoutTerminator().first!
+        let incrementClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         
-        let leftError = CompilerError(line: forToken.lineNumber, message: "expected `{' after `\(forToken.lexeme)' increment clause")
-        let rightError = CompilerError(line: forToken.lineNumber, message: "expected `}' after `\(forToken.lexeme)' body")
+        let leftError = "expected `{' after `\(forToken.lexeme)' increment clause"
+        let rightError = "expected `}' after `\(forToken.lexeme)' body"
         let bodyStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
         
         let body: AbstractSyntaxTreeNode
@@ -228,15 +245,44 @@ public class SnapParser: Parser {
     }
     
     private func acceptEndOfStatement() -> Token? {
+        // If we've progressed past the end of the token stream then consider
+        // the statement to have been terminated. This can occur at the end of
+        // a block at the end of the file.
+        guard let next = peek() else {
+            return nil
+        }
+        
+        // Reaching the end of a block ends the current statement too.
+        // In this case, do not consume the curly brace. It will be expected
+        // by the enclosing block momentarily.
+        guard nil == (next as? TokenCurlyRight) else {
+            return nil
+        }
+        
+        // The current statement can be terminated by a newline.
+        // The statement is obviously terminated if we reach the end.
         return accept([TokenNewline.self, TokenEOF.self])
     }
     
     private func expectEndOfStatement() throws {
-        if nil == peek() {
-            throw unexpectedEndOfInputError()
+        // If we've progressed past the end of the token stream then consider
+        // the statement to have been terminated. This can occur at the end of
+        // a block at the end of the file.
+        guard let next = peek() else {
+            return
         }
+        
+        // Reaching the end of a block ends the current statement too.
+        // In this case, do not consume the curly brace. It will be expected
+        // by the enclosing block momentarily.
+        guard nil == (next as? TokenCurlyRight) else {
+            return
+        }
+        
+        // The current statement can be terminated by a newline.
+        // The statement is obviously terminated if we reach the end.
         try expect(types: [TokenNewline.self, TokenEOF.self],
-                          error: expectedEndOfStatementError(peek()!))
+                   error: expectedEndOfStatementError(next))
     }
     
     private func expectedEndOfStatementError(_ token: Token) -> Error {

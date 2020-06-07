@@ -172,17 +172,19 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileExpression() {
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
+        // When an expression is compiled as an independent statement, the
+        // result on the top of the stack must be cleaned up with a POP.
         let ast = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [ .push(1) ])
+        XCTAssertEqual(compiler.instructions, [ .push(1), .pop ])
     }
     
     func testCompileIfStatementWithoutElseBranch() {
         let ast = AbstractSyntaxTreeNode(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                              expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
+                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))),
             If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
                then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
                                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
@@ -201,6 +203,8 @@ class SnapToYertleCompilerTests: XCTestCase {
             .je(L0),
             .push(1),
             .store(addressFoo),
+            .load(addressFoo),
+            .pop,
             .label(L0)
         ])
     }
@@ -229,10 +233,14 @@ class SnapToYertleCompilerTests: XCTestCase {
             .je(L0),
             .push(1),
             .store(addressFoo),
+            .load(addressFoo),
+            .pop,
             .jmp(L1),
             .label(L0),
             .push(2),
             .store(addressFoo),
+            .load(addressFoo),
+            .pop,
             .label(L1)
         ])
     }
@@ -252,7 +260,8 @@ class SnapToYertleCompilerTests: XCTestCase {
             .push(1),
             .push(0),
             .je(L1),
-            .push(2), // TODO: This means that each expression statement increases the stack size by one, without bound. That's a problem.
+            .push(2),
+            .pop,
             .jmp(L0),
             .label(L1)
         ])
@@ -299,10 +308,14 @@ class SnapToYertleCompilerTests: XCTestCase {
             .je(L1),
             .load(0x0011),
             .store(0x0010),
+            .load(0x0010),
+            .pop,
             .push(1),
             .load(0x0011),
             .add,
             .store(0x0011),
+            .load(0x0011),
+            .pop,
             .jmp(L0),
             .label(L1)
         ]

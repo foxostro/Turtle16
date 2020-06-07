@@ -1,8 +1,8 @@
 //
-//  YertleExecutor.swift
-//  SnapCore
+//  SnapExecutor.swift
+//  SnapCoreTests
 //
-//  Created by Andrew Fox on 5/31/20.
+//  Created by Andrew Fox on 6/6/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
@@ -11,23 +11,31 @@ import TurtleCore
 import TurtleCompilerToolbox
 import TurtleSimulatorCore
 
-// Simulates execution of a program written in the Yertle intermediate language.
-class YertleExecutor: NSObject {
-    let isVerboseLogging = false
+// Simulates execution of a program written in the Snap programming language.
+class SnapExecutor: NSObject {
+    let isVerboseLogging = true
     let microcodeGenerator: MicrocodeGenerator
-    let assembler: AssemblerBackEnd
+    let compiler = SnapCompiler()
     var configure: (Computer)->Void = {_ in}
     
     override init() {
         microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
     }
     
-    func execute(ir: [YertleInstruction]) throws -> Computer {
-        let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
-        try compiler.compile(ir: ir, base: 0)
+    func execute(program: String) throws -> Computer {
+        compiler.compile(program: program, base: 0)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            abort()
+        }
         let instructions = compiler.instructions
+        
+        if isVerboseLogging {
+            print("AST:\n" + compiler.ast.description + "\n\n")
+            print("IR:\n" + YertleInstruction.makeListing(instructions: compiler.ir) + "\n\n")
+        }
+
         let computer = try execute(instructions: instructions)
         return computer
     }

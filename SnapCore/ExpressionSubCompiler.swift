@@ -10,6 +10,8 @@ import TurtleCompilerToolbox
 
 // Takes an expression and generates intermediate code which can be more easily
 // compiled to machine code. (see also YertleToTurtleMachineCodeCompiler)
+// The expression will push the result onto the stack. The client assumes the
+// responsibility of cleaning up.
 public class ExpressionSubCompiler: NSObject {
     let symbols: SymbolTable
     
@@ -139,7 +141,8 @@ public class ExpressionSubCompiler: NSObject {
                 throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
             case .staticStorage(let address, let isMutable):
                 if isMutable {
-                    return try compile(expression: assignment.child) + [.store(address)]
+                    // TODO: The STORE followed by LOAD is surely not the most efficient way to handle this. Perhaps the STORE instruction can be modified to store the top of the stack without changing the stack.
+                    return try compile(expression: assignment.child) + [.store(address), .load(address)]
                 } else {
                     throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
                 }
@@ -150,7 +153,8 @@ public class ExpressionSubCompiler: NSObject {
                 throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
             case .staticStorage(let address, let isMutable):
                 if isMutable {
-                    return try compile(expression: assignment.child) + [.store(address)]
+                    // TODO: The STORE followed by LOAD is surely not the most efficient way to handle this. Perhaps the STORE instruction can be modified to store the top of the stack without changing the stack.
+                    return try compile(expression: assignment.child) + [.store(address), .load(address)]
                 } else {
                     throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
                 }

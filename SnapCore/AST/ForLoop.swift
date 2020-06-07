@@ -13,8 +13,8 @@ public class ForLoop: AbstractSyntaxTreeNode {
         children[0]
     }
     
-    public var conditionClause: AbstractSyntaxTreeNode {
-        children[1]
+    public var conditionClause: Expression {
+        children[1] as! Expression
     }
     
     public var incrementClause: AbstractSyntaxTreeNode {
@@ -26,7 +26,7 @@ public class ForLoop: AbstractSyntaxTreeNode {
     }
     
     public required init(initializerClause: AbstractSyntaxTreeNode,
-                         conditionClause: AbstractSyntaxTreeNode,
+                         conditionClause: Expression,
                          incrementClause: AbstractSyntaxTreeNode,
                          body: AbstractSyntaxTreeNode) {
         super.init(children: [initializerClause,

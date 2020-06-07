@@ -143,7 +143,8 @@ class ExpressionSubCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : .word(.staticStorage(address: 0x0010, isMutable: true))])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
-            .store(0x0010)
+            .store(0x0010),
+            .load(0x0010)
         ])
     }
     
@@ -182,7 +183,8 @@ class ExpressionSubCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : .boolean(.staticStorage(address: 0x0010, isMutable: true))])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(1),
-            .store(0x0010)
+            .store(0x0010),
+            .load(0x0010)
         ])
     }
     

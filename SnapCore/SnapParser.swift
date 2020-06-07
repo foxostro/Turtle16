@@ -195,7 +195,7 @@ public class SnapParser: Parser {
     private func consumeForLoop(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
         let initializerClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
-        let conditionClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
+        let conditionClause = try consumeExpression()
         try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
         let incrementClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         

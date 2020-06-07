@@ -62,6 +62,7 @@ public class SnapToYertleCompiler: NSObject {
         }
         else if let node = genericNode as? Expression {
             try compile(expression: node)
+            instructions += [.pop] // Clean up the expression result
         }
         else if let node = genericNode as? If {
             try compile(if: node)
@@ -71,6 +72,11 @@ public class SnapToYertleCompiler: NSObject {
         }
         else if let node = genericNode as? ForLoop {
             try compile(forLoop: node)
+        }
+        else if let node = genericNode as? Block {
+            for child in node.children {
+                try compile(genericNode: child)
+            }
         }
     }
     
@@ -119,6 +125,8 @@ public class SnapToYertleCompiler: NSObject {
         instructions += [.store(address)]
     }
     
+    // The expression will push the result onto the stack. The client assumes the
+    // responsibility of cleaning up.
     private func compile(expression: Expression) throws {
         let exprCompiler = ExpressionSubCompiler(symbols: symbols)
         let ir = try exprCompiler.compile(expression: expression)
@@ -174,7 +182,7 @@ public class SnapToYertleCompiler: NSObject {
         let labelTail = makeTempLabel()
         try compile(genericNode: stmt.initializerClause)
         instructions += [.label(labelHead)]
-        try compile(genericNode: stmt.conditionClause)
+        try compile(expression: stmt.conditionClause)
         instructions += [
             .push(0),
             .je(labelTail)

@@ -104,39 +104,27 @@ public class SnapParser: Parser {
         }
         let condition = try consumeExpression()
         
-        let thenStatements: [AbstractSyntaxTreeNode]
+        let thenBranch: AbstractSyntaxTreeNode
         if nil != (peek() as? TokenCurlyLeft) {
             let leftError = "expected `{' after `\(ifToken.lexeme)' condition"
             let rightError = "expected `}' after `then' branch"
-            thenStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
+            thenBranch = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
         } else {
             try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
-            thenStatements = try consumeStatement()
-        }
-        let thenBranch: AbstractSyntaxTreeNode
-        if thenStatements.count == 1 {
-            thenBranch = thenStatements.first!
-        } else {
-            thenBranch = AbstractSyntaxTreeNode(children: thenStatements)
+            thenBranch = Block(children: try consumeStatement())
         }
         
         var elseBranch: AbstractSyntaxTreeNode? = nil
         let handleElse = {
             let elseToken = try self.expect(type: TokenElse.self, error: CompilerError(line: self.peek()!.lineNumber, message: "expected `else'"))
             
-            let elseStatements: [AbstractSyntaxTreeNode]
             if nil != (self.peek() as? TokenCurlyLeft) {
                 let leftError = "expected `{' after `\(elseToken.lexeme)'"
                 let rightError = "expected `}' after `\(elseToken.lexeme)' branch"
-                elseStatements = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
+                elseBranch = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
             } else {
                 try self.expect(type: TokenNewline.self, error: CompilerError(line: self.peek()!.lineNumber, message: "expected newline"))
-                elseStatements = try self.consumeStatement()
-            }
-            if elseStatements.count == 1 {
-                elseBranch = elseStatements.first!
-            } else {
-                elseBranch = AbstractSyntaxTreeNode(children: elseStatements)
+                elseBranch = Block(children: try self.consumeStatement())
             }
         }
         if (nil != peek(0) as? TokenElse) {
@@ -158,7 +146,7 @@ public class SnapParser: Parser {
             statements += try consumeStatement()
         }
         
-        return [AbstractSyntaxTreeNode(children: statements)]
+        return [Block(children: statements)]
     }
     
     private func consumeBlock(errorOnMissingCurlyLeft: String,
@@ -166,7 +154,7 @@ public class SnapParser: Parser {
         try expect(type: TokenCurlyLeft.self, error: CompilerError(line: previous!.lineNumber, message: errorOnMissingCurlyLeft))
         
         if nil != accept(TokenCurlyRight.self) {
-            return [AbstractSyntaxTreeNode()]
+            return [Block()]
         }
         
         try expect(type: TokenNewline.self, error: CompilerError(line: previous!.lineNumber, message: "expected newline"))
@@ -179,11 +167,7 @@ public class SnapParser: Parser {
             statements += try consumeStatement()
         }
         
-        if statements.count == 1 {
-            return [statements.first!]
-        } else {
-            return [AbstractSyntaxTreeNode(children: statements)]
-        }
+        return [Block(children: statements)]
     }
     
     private func consumeWhile(_ whileToken: TokenWhile) throws -> [AbstractSyntaxTreeNode] {
@@ -195,20 +179,14 @@ public class SnapParser: Parser {
         }
         let condition = try consumeExpression()
         
-        let bodyStatements: [AbstractSyntaxTreeNode]
+        let body: AbstractSyntaxTreeNode
         if nil != (peek() as? TokenCurlyLeft) {
             let leftError = "expected `{' after `\(whileToken.lexeme)' condition"
             let rightError = "expected `}' after `\(whileToken.lexeme)' body"
-            bodyStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
+            body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
         } else {
             try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
-            bodyStatements = try consumeStatement()
-        }
-        let body: AbstractSyntaxTreeNode
-        if bodyStatements.count == 1 {
-            body = bodyStatements.first!
-        } else {
-            body = AbstractSyntaxTreeNode(children: bodyStatements)
+            body = Block(children: try consumeStatement())
         }
         
         return [While(condition: condition, body: body)]

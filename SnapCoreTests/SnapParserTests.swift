@@ -779,7 +779,6 @@ while 1 {}
 for var i = 0; i < 10; i = i + 1 {
     var foo = i
 }
-
 """)
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -792,6 +791,80 @@ for var i = 0; i < 10; i = i + 1 {
                     incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralWord(value: 1))),
                     body: VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                                          expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i")))
+        ])
+    }
+        
+    func testStandaloneBlockStatements() {
+        let tokens = tokenize("""
+{
+    var foo = i
+}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            AbstractSyntaxTreeNode(children: [
+                VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"))
+            ])
+        ])
+    }
+        
+    func testStandaloneBlockStatementsWithoutNewlines() {
+        let tokens = tokenize("{var foo = i}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            AbstractSyntaxTreeNode(children: [
+                VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                               expression: ExprUtils.makeIdentifier(lineNumber: 1, name: "i"))
+            ])
+        ])
+    }
+        
+    func testStandaloneBlockStatementIsEmpty() {
+        let tokens = tokenize("{}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            AbstractSyntaxTreeNode(children: [])
+        ])
+    }
+    
+    func testStandaloneBlockStatementsAreNested() {
+        let tokens = tokenize("""
+{
+    {
+        var bar = i
+    }
+}
+""")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            AbstractSyntaxTreeNode(children: [
+                AbstractSyntaxTreeNode(children: [
+                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 3, lexeme: "bar"),
+                                   expression: ExprUtils.makeIdentifier(lineNumber: 3, name: "i"))
+                ])
+            ])
+        ])
+    }
+    
+    func testStandaloneBlockStatementsAreNestedAndEmpty() {
+        let tokens = tokenize("{{}}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            AbstractSyntaxTreeNode(children: [
+                AbstractSyntaxTreeNode(children: [
+                ])
+            ])
         ])
     }
 }

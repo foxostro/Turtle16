@@ -12,9 +12,7 @@ import TurtleCompilerToolbox
 
 class ExpressionTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertNotEqual(Expression.LiteralWord(number: a), LabelDeclarationNode(identifier: foo))
+        XCTAssertNotEqual(ExprUtils.makeLiteralWord(value: 1), AbstractSyntaxTreeNode())
     }
     
     func testLiteralWordEquality() {

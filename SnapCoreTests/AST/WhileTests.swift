@@ -12,10 +12,9 @@ import TurtleCompilerToolbox
 
 class WhileTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         XCTAssertNotEqual(While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                 body: AbstractSyntaxTreeNode()),
-                          LabelDeclarationNode(identifier: foo))
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentCondition() {

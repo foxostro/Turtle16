@@ -29,20 +29,9 @@ class SnapParserTests: XCTestCase {
     func testLabelDeclaration() {
         let parser = SnapParser(tokens: tokenize("label:"))
         parser.parse()
-        XCTAssertFalse(parser.hasError)
-        let ast = parser.syntaxTree!
-        XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
-    }
-
-    func testParseLabelNameIsANumber() {
-        // If we try to use a number as a label name then it will be interpreted
-        // as a malformed expression.
-        let parser = SnapParser(tokens: tokenize("123:"))
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `:'")
+        XCTAssertEqual(parser.errors.first?.message, "labels are not supported")
     }
 
     func testParseExtraneousColon() {

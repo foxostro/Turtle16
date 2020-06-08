@@ -39,17 +39,6 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testCompileLabelDeclaration() {
-        let ast = AbstractSyntaxTreeNode(children: [
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        ])
-        let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: ast)
-        XCTAssertFalse(compiler.hasError)
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertEqual(compiler.instructions, [.label(foo)])
-    }
-    
     func testCompileLetDeclaration_CompileTimeConstant() {
         let ast = AbstractSyntaxTreeNode(children: [
             LetDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),

@@ -12,12 +12,11 @@ import TurtleCompilerToolbox
 
 class ForLoopTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         XCTAssertNotEqual(ForLoop(initializerClause: ExprUtils.makeLiteralWord(value: 1),
                                   conditionClause: ExprUtils.makeLiteralWord(value: 1),
                                   incrementClause: ExprUtils.makeLiteralWord(value: 1),
                                   body: AbstractSyntaxTreeNode()),
-                          LabelDeclarationNode(identifier: foo))
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentInitializerClause() {

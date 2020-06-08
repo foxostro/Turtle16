@@ -51,10 +51,7 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
-        if let node = genericNode as? LabelDeclarationNode {
-            compile(label: node)
-        }
-        else if let node = genericNode as? LetDeclaration {
+        if let node = genericNode as? LetDeclaration {
             try compile(letDecl: node)
         }
         else if let node = genericNode as? VarDeclaration {
@@ -78,10 +75,6 @@ public class SnapToYertleCompiler: NSObject {
                 try compile(genericNode: child)
             }
         }
-    }
-    
-    private func compile(label node: LabelDeclarationNode) {
-        instructions += [.label(node.identifier)]
     }
     
     private func compile(letDecl: LetDeclaration) throws {

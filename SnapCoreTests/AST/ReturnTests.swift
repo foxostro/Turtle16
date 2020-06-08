@@ -13,8 +13,7 @@ import TurtleCompilerToolbox
 class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertNotEqual(Return(token: token, expression: nil), LabelDeclarationNode(identifier: foo))
+        XCTAssertNotEqual(Return(token: token, expression: nil), AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentLineNumber() {

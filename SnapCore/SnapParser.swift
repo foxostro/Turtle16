@@ -43,7 +43,7 @@ public class SnapParser: Parser {
             result = try consumeBlock()
         }
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
-            result = try consumeLabel()
+            throw CompilerError(line: peek()!.lineNumber, message: "labels are not supported")
         }
         else {
             result = [try consumeExpression()]
@@ -214,12 +214,6 @@ public class SnapParser: Parser {
                         conditionClause: conditionClause,
                         incrementClause: incrementClause,
                         body: body)]
-    }
-    
-    private func consumeLabel() throws -> [AbstractSyntaxTreeNode] {
-        let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected to find an identifier in label declaration")) as! TokenIdentifier
-        try expect(type: TokenColon.self, error: CompilerError(line: peek()!.lineNumber, message: "expected label declaration to end with a colon"))
-        return [LabelDeclarationNode(identifier: identifier)]
     }
     
     private func acceptEndOfStatement() -> Token? {

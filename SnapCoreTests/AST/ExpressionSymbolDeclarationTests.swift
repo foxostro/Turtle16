@@ -14,7 +14,7 @@ class ExpressionSymbolDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        XCTAssertNotEqual(ExpressionSymbolDeclaration(identifier: foo, expression: one), LabelDeclarationNode(identifier: foo))
+        XCTAssertNotEqual(ExpressionSymbolDeclaration(identifier: foo, expression: one), AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {

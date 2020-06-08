@@ -26,7 +26,7 @@ public enum YertleInstruction: Equatable {
     case div // pop two from the stack, A/B, push the result
     case mod // pop two from the stack, A%B, push the result
     case load(Int) // load from the specified address, push to the stack
-    case store(Int) // pop the stack and store to the specified address
+    case store(Int) // peek at the stack top and store that value to the specified address
     case label(TokenIdentifier) // declares a label
     case jmp(TokenIdentifier) // unconditional jump, no change to the stack
     case je(TokenIdentifier) // pop two from the stack, jump if they are equal

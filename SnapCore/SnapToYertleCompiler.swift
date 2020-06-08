@@ -96,7 +96,7 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try inferSymbolTypeFromExpressionType(expression: letDecl.expression, address: address, isMutable: false)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: letDecl.expression)
-        instructions += [.store(address)]
+        instructions += [.store(address), .pop]
     }
     
     private func inferSymbolTypeFromExpressionType(expression: Expression, address: Int, isMutable: Bool) throws -> SymbolTable.Symbol {
@@ -122,7 +122,7 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try inferSymbolTypeFromExpressionType(expression: varDecl.expression, address: address, isMutable: true)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
-        instructions += [.store(address)]
+        instructions += [.store(address), .pop]
     }
     
     // The expression will push the result onto the stack. The client assumes the

@@ -78,4 +78,19 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 89)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 144)
     }
+    
+    func testLocalVariablesDoNotSurviveTheLocalScope() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+{
+    var a = 1
+    a = 2
+}
+a = 3
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 5)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `a'")
+    }
 }

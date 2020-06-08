@@ -101,4 +101,19 @@ class SymbolTableTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func testExistsInParentScope() {
+        let parent = SymbolTable()
+        parent.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        let symbols = SymbolTable(parent: parent, dict: [:])
+        XCTAssertTrue(symbols.exists(identifier: "foo"))
+    }
+    
+    func testResolveSymbolInParentScope() {
+        let parent = SymbolTable()
+        parent.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        let symbols = SymbolTable(parent: parent, dict: [:])
+        let symbol = try! symbols.resolve(identifier: "foo")
+        XCTAssertEqual(symbol, Symbol(type: .boolean, offset: 0x10, isMutable: false))
+    }
 }

@@ -27,13 +27,23 @@ public struct Symbol: Equatable {
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
     private var symbolTable: [String:Symbol]
+    public let parent: SymbolTable?
     
-    public init(_ dict: [String:Symbol] = [:]) {
+    public convenience init(_ dict: [String:Symbol] = [:]) {
+        self.init(parent: nil, dict: dict)
+    }
+    
+    public init(parent p: SymbolTable?, dict: [String:Symbol] = [:]) {
+        parent = p
         symbolTable = dict
     }
     
     public func exists(identifier: String) -> Bool {
-        return nil != symbolTable[identifier]
+        if nil == symbolTable[identifier] {
+            return parent?.exists(identifier: identifier) ?? false
+        } else {
+            return true
+        }
     }
     
     public func bind(identifier: String, symbol: Symbol) {
@@ -41,18 +51,26 @@ public class SymbolTable: NSObject {
     }
     
     public func resolve(identifier: String) throws -> Symbol {
-        guard let symbol = symbolTable[identifier] else {
+        guard let symbol = maybeResolve(identifier: identifier) else {
             throw CompilerError(message: "use of unresolved identifier: `\(identifier)'")
         }
         return symbol
     }
     
     public func resolve(identifierToken: TokenIdentifier) throws -> Symbol {
-        guard let symbol = symbolTable[identifierToken.lexeme] else {
+        guard let symbol = maybeResolve(identifier: identifierToken.lexeme) else {
             throw CompilerError(line: identifierToken.lineNumber,
                                 format: "use of unresolved identifier: `%@'",
                                 identifierToken.lexeme)
         }
         return symbol
+    }
+    
+    private func maybeResolve(identifier: String) -> Symbol? {
+        if let symbol = symbolTable[identifier] {
+            return symbol
+        } else {
+            return parent?.maybeResolve(identifier: identifier) ?? nil
+        }
     }
 }

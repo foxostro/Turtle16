@@ -92,16 +92,9 @@ public class SnapToYertleCompiler: NSObject {
         instructions += [.store(address), .pop]
     }
     
-    private func inferSymbolTypeFromExpressionType(expression: Expression, address: Int, isMutable: Bool) throws -> SymbolTable.Symbol {
-        let symbol: SymbolTable.Symbol
+    private func inferSymbolTypeFromExpressionType(expression: Expression, address: Int, isMutable: Bool) throws -> Symbol {
         let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
-        switch inferredType {
-        case .boolean:
-            symbol = .boolean(.staticStorage(address: address, isMutable: isMutable))
-        case .word:
-            symbol = .word(.staticStorage(address: address, isMutable: isMutable))
-        }
-        return symbol
+        return Symbol(type: inferredType, offset: address, isMutable: isMutable)
     }
     
     private func compile(varDecl: VarDeclaration) throws {

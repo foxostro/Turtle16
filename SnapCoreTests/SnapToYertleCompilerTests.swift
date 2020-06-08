@@ -53,9 +53,9 @@ class SnapToYertleCompilerTests: XCTestCase {
             .store(addressFoo),
             .pop
         ])
-        var symbol: SymbolTable.Symbol? = nil
+        var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, .word(.staticStorage(address: addressFoo, isMutable: false)))
+        XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: false))
     }
     
     func testCompileConstantDeclaration_CompileTimeConstant_RedefinesExistingSymbol() {
@@ -90,9 +90,9 @@ class SnapToYertleCompilerTests: XCTestCase {
             .store(addressBar),
             .pop
         ])
-        var symbol: SymbolTable.Symbol? = nil
+        var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "bar"))
-        XCTAssertEqual(symbol, .word(.staticStorage(address: addressBar, isMutable: false)))
+        XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressBar, isMutable: false))
     }
     
     func testCompileConstantDeclaration_TypeIsInferredFromTheExpression() {
@@ -109,9 +109,9 @@ class SnapToYertleCompilerTests: XCTestCase {
             .store(addressFoo),
             .pop
         ])
-        var symbol: SymbolTable.Symbol? = nil
+        var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, .boolean(.staticStorage(address: addressFoo, isMutable: false)))
+        XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: false))
     }
     
     func testCompileVarDeclaration() {
@@ -123,9 +123,9 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
-        var symbol: SymbolTable.Symbol? = nil
+        var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, .word(.staticStorage(address: addressFoo, isMutable: true)))
+        XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: true))
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
@@ -159,9 +159,9 @@ class SnapToYertleCompilerTests: XCTestCase {
             .store(addressFoo),
             .pop
         ])
-        var symbol: SymbolTable.Symbol? = nil
+        var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, .boolean(.staticStorage(address: addressFoo, isMutable: true)))
+        XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: true))
     }
     
     func testCompileExpression() {
@@ -270,7 +270,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
+        XCTAssertEqual(compiler.errors.first?.message, "Binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
     }
     
     func testCompileForLoopStatement() {

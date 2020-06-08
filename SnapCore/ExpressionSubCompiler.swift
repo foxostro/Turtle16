@@ -108,48 +108,20 @@ public class ExpressionSubCompiler: NSObject {
     
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
-        switch symbol {
-        case .word(let storage):
-            switch storage {
-            case .constant(let value):
-                return compile(intValue: value)
-            case .staticStorage(let address, _):
-                return [.load(address)]
-            }
-        case .boolean(let storage):
-            switch storage {
-            case .constant(let value):
-                return compile(boolValue: value)
-            case .staticStorage(let address, _):
-                return [.load(address)]
-            }
+        switch symbol.type {
+        case .u8, .boolean:
+            return [.load(symbol.offset)]
         }
     }
     
     private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: assignment.identifier)
-        switch symbol {
-        case .word(let storage):
-            switch storage {
-            case .constant(_):
-                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
-            case .staticStorage(let address, let isMutable):
-                if isMutable {
-                    return try compile(expression: assignment.child) + [.store(address)]
-                } else {
-                    throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
-                }
-            }
-        case .boolean(let storage):
-            switch storage {
-            case .constant(_):
-                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
-            case .staticStorage(let address, let isMutable):
-                if isMutable {
-                    return try compile(expression: assignment.child) + [.store(address)]
-                } else {
-                    throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
-                }
+        switch symbol.type {
+        case .u8, .boolean:
+            if symbol.isMutable {
+                return try compile(expression: assignment.child) + [.store(symbol.offset)]
+            } else {
+                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
             }
         }
     }

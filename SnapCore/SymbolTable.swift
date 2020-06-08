@@ -8,24 +8,25 @@
 
 import TurtleCompilerToolbox
 
+public enum SymbolType: Equatable {
+    case u8, boolean
+}
+
+public struct Symbol: Equatable {
+    public let type: SymbolType
+    public let offset: Int
+    public let isMutable: Bool
+    
+    public init(type: SymbolType, offset: Int, isMutable: Bool) {
+        self.type = type
+        self.offset = offset
+        self.isMutable = isMutable
+    }
+}
+
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
-    public enum StorageInt: Equatable {
-        case constant(Int)
-        case staticStorage(address: Int, isMutable: Bool)
-    }
-    
-    public enum StorageBool: Equatable {
-        case constant(Bool)
-        case staticStorage(address: Int, isMutable: Bool)
-    }
-    
-    public enum Symbol: Equatable {
-        case word(StorageInt)
-        case boolean(StorageBool)
-    }
-    
-    var symbolTable: [String:Symbol]
+    private var symbolTable: [String:Symbol]
     
     public init(_ dict: [String:Symbol] = [:]) {
         symbolTable = dict

@@ -12,8 +12,8 @@ import TurtleCompilerToolbox
 
 class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {
-        XCTAssertNotEqual(SymbolTable.Symbol.word(.staticStorage(address: 0x10, isMutable: true)),
-                          SymbolTable.Symbol.word(.constant(1)))
+        XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10, isMutable: true),
+                          Symbol(type: .boolean, offset: 0x10, isMutable: true))
     }
     
     func testUseOfUnresolvedIdentifier() {
@@ -34,42 +34,30 @@ class SymbolTableTests: XCTestCase {
     func testSuccessfullyResolveAnIdentifierByToken() {
         let symbols = SymbolTable()
         let token = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        symbols.bind(identifier: "foo", symbol: .word(.staticStorage(address: 0x10, isMutable: true)))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
         let symbol = try! symbols.resolve(identifierToken: token)
-        switch symbol {
-        case .word(let storage):
-            switch storage {
-            case .staticStorage(let address, let isMutable):
-                XCTAssertEqual(address, 0x10)
-                XCTAssertEqual(isMutable, true)
-            default:
-                XCTFail()
-            }
-        default:
-            XCTFail()
+        switch symbol.type {
+        case .boolean, .u8:
+            XCTAssertEqual(symbol.offset, 0x10)
+            XCTAssertEqual(symbol.isMutable, true)
         }
     }
     
     func testExists() {
         let symbols = SymbolTable()
         XCTAssertFalse(symbols.exists(identifier: "foo"))
-        symbols.bind(identifier: "foo", symbol: .word(.staticStorage(address: 0x10, isMutable: true)))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
 
     func testBindWord_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: .word(.staticStorage(address: 0x10, isMutable: true)))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
         let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .word(let storage):
-            switch storage {
-            case .staticStorage(let address, let isMutable):
-                XCTAssertEqual(address, 0x10)
-                XCTAssertEqual(isMutable, true)
-            default:
-                XCTFail()
-            }
+        switch symbol.type {
+        case .u8:
+            XCTAssertEqual(symbol.offset, 0x10)
+            XCTAssertTrue(symbol.isMutable)
         default:
             XCTFail()
         }
@@ -77,34 +65,12 @@ class SymbolTableTests: XCTestCase {
 
     func testBindWord_Static_Immutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: .word(.staticStorage(address: 0x10, isMutable: false)))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: false))
         let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .word(let storage):
-            switch storage {
-            case .staticStorage(let address, let isMutable):
-                XCTAssertEqual(address, 0x10)
-                XCTAssertEqual(isMutable, false)
-            default:
-                XCTFail()
-            }
-        default:
-            XCTFail()
-        }
-    }
-
-    func testBindWord_Constant() {
-        let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: .word(.constant(42)))
-        let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .word(let storage):
-            switch storage {
-            case .constant(let value):
-                XCTAssertEqual(value, 42)
-            default:
-                XCTFail()
-            }
+        switch symbol.type {
+        case .u8:
+            XCTAssertEqual(symbol.offset, 0x10)
+            XCTAssertFalse(symbol.isMutable)
         default:
             XCTFail()
         }
@@ -112,17 +78,12 @@ class SymbolTableTests: XCTestCase {
 
     func testBindBoolean_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: .boolean(.staticStorage(address: 0x10, isMutable: true)))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: true))
         let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .boolean(let storage):
-            switch storage {
-            case .staticStorage(let address, let isMutable):
-                XCTAssertEqual(address, 0x10)
-                XCTAssertEqual(isMutable, true)
-            default:
-                XCTFail()
-            }
+        switch symbol.type {
+        case .boolean:
+            XCTAssertEqual(symbol.offset, 0x10)
+            XCTAssertTrue(symbol.isMutable)
         default:
             XCTFail()
         }
@@ -130,34 +91,12 @@ class SymbolTableTests: XCTestCase {
 
     func testBindBoolean_Static_Immutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: .boolean(.staticStorage(address: 0x10, isMutable: false)))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
         let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .boolean(let storage):
-            switch storage {
-            case .staticStorage(let address, let isMutable):
-                XCTAssertEqual(address, 0x10)
-                XCTAssertEqual(isMutable, false)
-            default:
-                XCTFail()
-            }
-        default:
-            XCTFail()
-        }
-    }
-
-    func testBindBoolean_Constant() {
-        let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: .boolean(.constant(false)))
-        let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .boolean(let storage):
-            switch storage {
-            case .constant(let value):
-                XCTAssertEqual(value, false)
-            default:
-                XCTFail()
-            }
+        switch symbol.type {
+        case .boolean:
+            XCTAssertEqual(symbol.offset, 0x10)
+            XCTAssertFalse(symbol.isMutable)
         default:
             XCTFail()
         }

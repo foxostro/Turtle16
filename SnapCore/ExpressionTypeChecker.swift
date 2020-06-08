@@ -108,9 +108,6 @@ public class ExpressionTypeChecker: NSObject {
     public func check(identifier: Expression.Identifier) throws -> ExpressionType {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
         switch symbol {
-        case .label(_):
-            let lineNumber = identifier.tokens.first!.lineNumber
-            throw CompilerError(line: lineNumber, message: "label `\(identifier.identifier.lexeme)' cannot be used in an expression")
         case .word(_):
             return .word
         case .boolean(_):

@@ -21,7 +21,6 @@ public class SymbolTable: NSObject {
     }
     
     public enum Symbol: Equatable {
-        case label(Int)
         case word(StorageInt)
         case boolean(StorageBool)
     }
@@ -34,10 +33,6 @@ public class SymbolTable: NSObject {
     
     public func exists(identifier: String) -> Bool {
         return nil != symbolTable[identifier]
-    }
-    
-    public func bindLabel(identifier: String, value: Int) {
-        bind(identifier: identifier, symbol: .label(value))
     }
     
     public func bind(identifier: String, symbol: Symbol) {

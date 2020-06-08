@@ -109,10 +109,6 @@ public class ExpressionSubCompiler: NSObject {
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
         switch symbol {
-        case .label(_):
-            // This is unreachable because any such expression will be discarded
-            // by the type checker before reaching this point.
-            abort()
         case .word(let storage):
             switch storage {
             case .constant(let value):
@@ -133,8 +129,6 @@ public class ExpressionSubCompiler: NSObject {
     private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: assignment.identifier)
         switch symbol {
-        case .label(_):
-            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to label `\(assignment.identifier.lexeme)'")
         case .word(let storage):
             switch storage {
             case .constant(_):

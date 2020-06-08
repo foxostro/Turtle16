@@ -16,18 +16,6 @@ class SymbolTableTests: XCTestCase {
                           SymbolTable.Symbol.word(.constant(1)))
     }
     
-    func testBindLabel() {
-        let symbols = SymbolTable()
-        symbols.bindLabel(identifier: "foo", value: 0xffff)
-        let symbol = try! symbols.resolve(identifier: "foo")
-        switch symbol {
-        case .label(let value):
-            XCTAssertEqual(value, 0xffff)
-        default:
-            XCTFail()
-        }
-    }
-    
     func testUseOfUnresolvedIdentifier() {
         let symbols = SymbolTable()
         let token = TokenIdentifier(lineNumber: 1, lexeme: "foo")
@@ -65,7 +53,7 @@ class SymbolTableTests: XCTestCase {
     func testExists() {
         let symbols = SymbolTable()
         XCTAssertFalse(symbols.exists(identifier: "foo"))
-        symbols.bindLabel(identifier: "foo", value: 0xffff)
+        symbols.bind(identifier: "foo", symbol: .word(.staticStorage(address: 0x10, isMutable: true)))
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
 

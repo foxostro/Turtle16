@@ -30,14 +30,14 @@ class ExpressionTypeCheckerTests: XCTestCase {
     
     func testTypeOfALiteralWordIsWord() {
         let typeChecker = ExpressionTypeChecker()
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: makeLiteralWord(value: 1)))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testTypeOfALiteralBooleanIsBoolean() {
         let typeChecker = ExpressionTypeChecker()
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: makeLiteralBoolean(value: true)))
         XCTAssertEqual(result, .boolean)
     }
@@ -57,9 +57,9 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                     expression: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testUnaryNegationOfBooleanIsInvalid() {
@@ -81,7 +81,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
+            XCTAssertEqual(compilerError?.message, "Binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
         }
     }
     
@@ -89,7 +89,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralWord(value: 1),
                                               right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -98,7 +98,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralBoolean(value: true),
                                               right: ExprUtils.makeLiteralBoolean(value: true))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -107,7 +107,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralWord(value: 1),
                                               right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -116,7 +116,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralBoolean(value: true),
                                               right: ExprUtils.makeLiteralBoolean(value: true))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -125,7 +125,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralWord(value: 1),
                                               right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -145,7 +145,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralWord(value: 1),
                                               right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -165,7 +165,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralWord(value: 1),
                                               right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -185,7 +185,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralWord(value: 1),
                                               right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -206,9 +206,9 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                      left: ExprUtils.makeLiteralWord(value: 1),
                                      right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testBinary_Plus_Boolean() {
@@ -228,9 +228,9 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                      left: ExprUtils.makeLiteralWord(value: 1),
                                      right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testBinary_Minus_Boolean() {
@@ -250,9 +250,9 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                      left: ExprUtils.makeLiteralWord(value: 1),
                                      right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testBinary_Multiply_Boolean() {
@@ -272,9 +272,9 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
                                      left: ExprUtils.makeLiteralWord(value: 1),
                                      right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testBinary_Divide_Boolean() {
@@ -294,9 +294,9 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
                                      left: ExprUtils.makeLiteralWord(value: 1),
                                      right: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testBinary_Modulus_Boolean() {
@@ -315,34 +315,34 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          expression: ExprUtils.makeLiteralWord(value: 1))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testAssignment_Boolean() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          expression: ExprUtils.makeLiteralBoolean(value: false))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
     
     func testIdentifier_Word() {
-        let symbols = SymbolTable(["foo" : .word(.constant(0))])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .word)
+        XCTAssertEqual(result, .u8)
     }
     
     func testIdentifier_Boolean() {
-        let symbols = SymbolTable(["foo" : .boolean(.constant(true))])
+        let symbols = SymbolTable(["foo" : Symbol(type: .boolean, offset: 0x0010, isMutable: false)])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        var result: ExpressionTypeChecker.ExpressionType? = nil
+        var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .boolean)
     }
@@ -355,7 +355,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "Binary operator `+' cannot be applied to operands of types `word' and `boolean'")
+            XCTAssertEqual(compilerError?.message, "Binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
         }
     }
 }

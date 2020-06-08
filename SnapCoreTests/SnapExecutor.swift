@@ -13,7 +13,7 @@ import TurtleSimulatorCore
 
 // Simulates execution of a program written in the Snap programming language.
 class SnapExecutor: NSObject {
-    let isVerboseLogging = true
+    let isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let compiler = SnapCompiler()
     var configure: (Computer)->Void = {_ in}

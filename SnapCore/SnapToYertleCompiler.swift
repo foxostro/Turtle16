@@ -13,9 +13,15 @@ public class SnapToYertleCompiler: NSObject {
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool { !errors.isEmpty }
     public private(set) var instructions: [YertleInstruction] = []
-    public let symbols = SymbolTable()
+    public let globalSymbols = SymbolTable()
     
+    private var symbols: SymbolTable
     private var tempLabelCounter = 0
+    
+    public override init() {
+        symbols = globalSymbols
+        super.init()
+    }
     
     // The generated program will need unique, temporary labels.
     private func makeTempLabel() -> TokenIdentifier {
@@ -71,9 +77,7 @@ public class SnapToYertleCompiler: NSObject {
             try compile(forLoop: node)
         }
         else if let node = genericNode as? Block {
-            for child in node.children {
-                try compile(genericNode: child)
-            }
+            try compile(block: node)
         }
     }
     
@@ -147,7 +151,7 @@ public class SnapToYertleCompiler: NSObject {
         }
     }
     
-    func compile(while stmt: While) throws {
+    private func compile(while stmt: While) throws {
         let labelHead = makeTempLabel()
         let labelTail = makeTempLabel()
         instructions += [.label(labelHead)]
@@ -163,7 +167,7 @@ public class SnapToYertleCompiler: NSObject {
         ]
     }
     
-    func compile(forLoop stmt: ForLoop) throws {
+    private func compile(forLoop stmt: ForLoop) throws {
         let labelHead = makeTempLabel()
         let labelTail = makeTempLabel()
         try compile(genericNode: stmt.initializerClause)
@@ -179,5 +183,26 @@ public class SnapToYertleCompiler: NSObject {
             .jmp(labelHead),
             .label(labelTail)
         ]
+    }
+    
+    private func compile(block: Block) throws {
+        pushScope()
+        for child in block.children {
+            try compile(genericNode: child)
+        }
+        popScope()
+    }
+    
+    private func pushScope() {
+        symbols = SymbolTable(parent: symbols)
+    }
+    
+    private func popScope() {
+        assert(!isInGlobalScope)
+        symbols = symbols.parent!
+    }
+    
+    private var isInGlobalScope: Bool {
+        return symbols.parent == nil
     }
 }

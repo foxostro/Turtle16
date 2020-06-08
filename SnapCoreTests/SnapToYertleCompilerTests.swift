@@ -54,7 +54,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             .clear
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: false))
     }
     
@@ -91,7 +91,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             .clear
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "bar"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "bar"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressBar, isMutable: false))
     }
     
@@ -110,7 +110,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             .clear
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: false))
     }
     
@@ -124,7 +124,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: true))
         XCTAssertEqual(compiler.instructions, [
             .push(1),
@@ -160,7 +160,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             .clear
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: true))
     }
     
@@ -315,5 +315,19 @@ class SnapToYertleCompilerTests: XCTestCase {
             .label(L1)
         ]
         XCTAssertEqual(compiler.instructions, expected)
+    }
+    
+    func testCompilationFailsBecauseLocalVarDoesntSurviveLocalScope() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            Block(children: [
+                VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                               expression: ExprUtils.makeLiteralWord(value: 0)),
+            ]),
+            ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 0))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
     }
 }

@@ -89,16 +89,6 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
-    func testFailToCompileBecauseOfUseOfLabelInExpression() {
-        let expr = ExprUtils.makeIdentifier(name: "foo")
-        let symbols = SymbolTable(["foo" : .label(42)])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "label `foo' cannot be used in an expression")
-        }
-    }
-    
     func testCompileIdentifierExpression_Word_Constant() {
         let expr = ExprUtils.makeIdentifier(name: "foo")
         let symbols = SymbolTable(["foo" : .word(.constant(42))])
@@ -145,16 +135,6 @@ class ExpressionSubCompilerTests: XCTestCase {
             .push(42),
             .store(0x0010)
         ])
-    }
-    
-    func testCannotAssignToALabel() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
-        let symbols = SymbolTable(["foo" : .label(0)])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to label `foo'")
-        }
     }
     
     func testCannotAssignToAnImmutableValue_Word() {

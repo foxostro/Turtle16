@@ -347,17 +347,6 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .boolean)
     }
     
-    func testIdentifier_Label() {
-        let symbols = SymbolTable(["foo" : .label(0)])
-        let typeChecker = ExpressionTypeChecker(symbols: symbols)
-        let expr = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "label `foo' cannot be used in an expression")
-        }
-    }
-    
     func testFailBecauseAdditionCannotBeAppliedToBooleanAndWord() {
         let typeChecker = ExpressionTypeChecker()
         let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),

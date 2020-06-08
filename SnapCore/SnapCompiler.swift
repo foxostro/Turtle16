@@ -55,7 +55,7 @@ public class SnapCompiler: NSObject {
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
-        let yertleToMachineCode = YertleToTurtleMachineCodeCompiler(assembler: assembler, symbols: SymbolTable())
+        let yertleToMachineCode = YertleToTurtleMachineCodeCompiler(assembler: assembler)
         do {
             try yertleToMachineCode.compile(ir: ir, base: base)
         } catch let error as CompilerError {

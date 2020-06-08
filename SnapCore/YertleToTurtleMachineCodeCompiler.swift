@@ -19,7 +19,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     public static let kStackPointerAddressLo: UInt16 = 0x0001
     public static let kStackPointerInitialValue: Int = 0x0000
     
-    public let symbols: SymbolTable
+    public private(set) var labelTable: [String:Int] = [:]
     public private(set) var instructions: [Instruction] = []
     private var patcherActions: [Patcher.Action] = []
     
@@ -34,9 +34,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     let assembler: AssemblerBackEnd
     var stackDepth = 0
     
-    public init(assembler: AssemblerBackEnd, symbols: SymbolTable = SymbolTable()) {
+    public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
-        self.symbols = symbols
     }
     
     public func compile(ir: [YertleInstruction], base: Int) throws {
@@ -68,12 +67,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         insertProgramEpilogue()
         assembler.end()
         let resolver: (TokenIdentifier) throws -> Int = {[weak self] (identifier: TokenIdentifier) in
-            let symbol = try self!.symbols.resolve(identifierToken: identifier)
-            switch symbol {
-            case .label(let value):
-                return value
-            default:
-                throw CompilerError(line: identifier.lineNumber, message: "cannot resolve a label with the symbol `\(identifier.lexeme)' of type `\(String(describing: symbol))'")
+            if let address = self!.labelTable[identifier.lexeme] {
+                return address
+            } else {
+                throw CompilerError(line: identifier.lineNumber, message: "cannot resolve label `\(identifier.lexeme)'")
             }
         }
         let patcher = Patcher(inputInstructions: assembler.instructions,
@@ -654,12 +651,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func label(token: TokenIdentifier) throws {
         let name = token.lexeme
-        guard symbols.exists(identifier: name) == false else {
+        guard labelTable[name] == nil else {
             throw CompilerError(line: token.lineNumber,
                                 format: "label redefines existing symbol: `%@'",
                                 token.lexeme)
         }
-        symbols.bindLabel(identifier: name, value: assembler.programCounter)
+        labelTable[name] = assembler.programCounter
     }
     
     private func jmp(to token: TokenIdentifier) throws {

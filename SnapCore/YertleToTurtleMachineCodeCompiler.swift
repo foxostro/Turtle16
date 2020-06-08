@@ -644,20 +644,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func store(to address: Int) throws {
         guard stackDepth > 0 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during STORE")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: cannot STORE while stack is empty")
         }
         
         try assembler.li(.U, (address & 0xff00) >> 8)
         try assembler.li(.V,  address & 0x00ff)
         try assembler.mov(.M, .A)
-        
-        try assembler.mov(.A, .B)
-        
-        if stackDepth > 1 {
-            try popInMemoryStackIntoRegisterB()
-        }
-        
-        stackDepth -= 1
     }
     
     private func label(token: TokenIdentifier) throws {

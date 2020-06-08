@@ -141,8 +141,7 @@ public class ExpressionSubCompiler: NSObject {
                 throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
             case .staticStorage(let address, let isMutable):
                 if isMutable {
-                    // TODO: The STORE followed by LOAD is surely not the most efficient way to handle this. Perhaps the STORE instruction can be modified to store the top of the stack without changing the stack.
-                    return try compile(expression: assignment.child) + [.store(address), .load(address)]
+                    return try compile(expression: assignment.child) + [.store(address)]
                 } else {
                     throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
                 }
@@ -153,8 +152,7 @@ public class ExpressionSubCompiler: NSObject {
                 throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to constant value `\(assignment.identifier.lexeme)'")
             case .staticStorage(let address, let isMutable):
                 if isMutable {
-                    // TODO: The STORE followed by LOAD is surely not the most efficient way to handle this. Perhaps the STORE instruction can be modified to store the top of the stack without changing the stack.
-                    return try compile(expression: assignment.child) + [.store(address), .load(address)]
+                    return try compile(expression: assignment.child) + [.store(address)]
                 } else {
                     throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
                 }

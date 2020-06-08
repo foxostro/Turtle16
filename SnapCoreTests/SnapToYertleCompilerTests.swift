@@ -61,7 +61,8 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .push(1),
-            .store(addressFoo)
+            .store(addressFoo),
+            .pop
         ])
         var symbol: SymbolTable.Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
@@ -85,7 +86,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
             LetDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "bar"),
-                                expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
+                           expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
         ])
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
         let addressBar = SnapToYertleCompiler.kStaticStorageStartAddress+1
@@ -95,8 +96,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
+            .pop,
             .load(addressFoo),
-            .store(addressBar)
+            .store(addressBar),
+            .pop
         ])
         var symbol: SymbolTable.Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "bar"))
@@ -114,7 +117,8 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .push(1),
-            .store(addressFoo)
+            .store(addressFoo),
+            .pop
         ])
         var symbol: SymbolTable.Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
@@ -135,7 +139,8 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, .word(.staticStorage(address: addressFoo, isMutable: true)))
         XCTAssertEqual(compiler.instructions, [
             .push(1),
-            .store(addressFoo)
+            .store(addressFoo),
+            .pop
         ])
     }
     
@@ -162,7 +167,8 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .push(1),
-            .store(addressFoo)
+            .store(addressFoo),
+            .pop
         ])
         var symbol: SymbolTable.Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.symbols.resolve(identifier: "foo"))
@@ -198,12 +204,12 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(0),
             .store(addressFoo),
+            .pop,
             .push(1),
             .push(0),
             .je(L0),
             .push(1),
             .store(addressFoo),
-            .load(addressFoo),
             .pop,
             .label(L0)
         ])
@@ -228,18 +234,17 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(0),
             .store(addressFoo),
+            .pop,
             .push(1),
             .push(0),
             .je(L0),
             .push(1),
             .store(addressFoo),
-            .load(addressFoo),
             .pop,
             .jmp(L1),
             .label(L0),
             .push(2),
             .store(addressFoo),
-            .load(addressFoo),
             .pop,
             .label(L1)
         ])
@@ -298,8 +303,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         let expected: [YertleInstruction] = [
             .push(0),
             .store(0x0010),
+            .pop,
             .push(0),
             .store(0x0011),
+            .pop,
             .label(L0),
             .push(10),
             .load(0x0011),
@@ -308,13 +315,11 @@ class SnapToYertleCompilerTests: XCTestCase {
             .je(L1),
             .load(0x0011),
             .store(0x0010),
-            .load(0x0010),
             .pop,
             .push(1),
             .load(0x0011),
             .add,
             .store(0x0011),
-            .load(0x0011),
             .pop,
             .jmp(L0),
             .label(L1)

@@ -12,24 +12,27 @@ import TurtleCompilerToolbox
 // Snap compiler. The intermediate language has no textual representation.
 // It's nothing more than a list of these instructions.
 public enum YertleInstruction: Equatable {
-    case push(Int) // push the specified value to the stack
-    case pop // pop the stack
-    case eq  // pop two from the stack, (A==B)?1:0, push the result
-    case ne  // pop two from the stack, (A!=B)?1:0, push the result
-    case lt  // pop two from the stack, (A<B)?1:0, push the result
-    case gt  // pop two from the stack, (A>B)?1:0, push the result
-    case le  // pop two from the stack, (A<=B)?1:0, push the result
-    case ge  // pop two from the stack, (A>=B)?1:0, push the result
-    case add // pop two from the stack, A+B, push the result
-    case sub // pop two from the stack, A-B, push the result
-    case mul // pop two from the stack, A*B, push the result
-    case div // pop two from the stack, A/B, push the result
-    case mod // pop two from the stack, A%B, push the result
-    case load(Int) // load from the specified address, push to the stack
-    case store(Int) // peek at the stack top and store that value to the specified address
+    case push(Int) // push the specified value to the expression stack
+    case pop // pop the expression stack
+    case clear // resets the expression stack pointer
+    case eq  // pop two from the expression stack, (A==B)?1:0, push the result
+    case ne  // pop two from the expression stack, (A!=B)?1:0, push the result
+    case lt  // pop two from the expression stack, (A<B)?1:0, push the result
+    case gt  // pop two from the expression stack, (A>B)?1:0, push the result
+    case le  // pop two from the expression stack, (A<=B)?1:0, push the result
+    case ge  // pop two from the expression stack, (A>=B)?1:0, push the result
+    case add // pop two from the expression stack, A+B, push the result
+    case sub // pop two from the expression stack, A-B, push the result
+    case mul // pop two from the expression stack, A*B, push the result
+    case div // pop two from the expression stack, A/B, push the result
+    case mod // pop two from the expression stack, A%B, push the result
+    case load(Int) // load from the specified address, push to the expression stack
+    case store(Int) // peek at the expression stack top and store that value to the specified address
     case label(TokenIdentifier) // declares a label
-    case jmp(TokenIdentifier) // unconditional jump, no change to the stack
-    case je(TokenIdentifier) // pop two from the stack, jump if they are equal
+    case jmp(TokenIdentifier) // unconditional jump, no change to the expression stack
+    case je(TokenIdentifier) // pop two from the expression stack, jump if they are equal
+    case enter // push fp in two bytes ; fp <- sp
+    case leave // sp <- fp ; fp <- pop two bytes from the stack
     
     public var description: String {
         switch self {
@@ -37,6 +40,8 @@ public enum YertleInstruction: Equatable {
             return "PUSH \(value)"
         case .pop:
             return "POP"
+        case .clear:
+            return "CLEAR"
         case .eq:
             return "EQ"
         case .ne:
@@ -69,6 +74,10 @@ public enum YertleInstruction: Equatable {
             return "JMP \(token.lexeme)"
         case .je(let token):
             return "JE \(token.lexeme)"
+        case .enter:
+            return "ENTER"
+        case .leave:
+            return "LEAVE"
         }
     }
     

@@ -13,26 +13,53 @@ import TurtleCompilerToolbox
 // For speed, we use the A and B registers as the top of the stack.
 // (see also ExpressionSubCompiler)
 public class YertleToTurtleMachineCodeCompiler: NSObject {
-    // Programs written in Snap store the stack pointer in data RAM at
-    // addresses 0x0000 and 0x0001. This is initialized on launch to 0xffff.
-    public static let kStackPointerAddressHi: UInt16 = 0x0000
-    public static let kStackPointerAddressLo: UInt16 = 0x0001
-    public static let kStackPointerInitialValue: Int = 0x0000
+    // In the Snap language, computation of expressions involve an expression
+    // stack. This stack has a fixed capacity of 256 elements and has its bottom
+    // at address 0x0000, growing down to 0xff00. The upper byte of the stack
+    // pointer is always 0xff. The lower byte of the stack pointer is stored in
+    // memory at address 0x0001 and is initialized to 0x00 on launch.
+    public static let kExpressionStackPointerHi = 0xff
+    public static let kExpressionStackPointerAddress: UInt16 = 0x0001
+    public static let kExpressionStackPointerInitialValue = 0x00
+    let kExpressionStackPointerHi = YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi
+    let kExpressionStackPointerAddressHi = Int((YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddress & 0xff00) >> 8)
+    let kExpressionStackPointerAddressLo = Int( YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddress & 0x00ff)
+    let kExpressionStackPointerInitialValue = YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
     
-    public private(set) var labelTable: [String:Int] = [:]
-    public private(set) var instructions: [Instruction] = []
-    private var patcherActions: [Patcher.Action] = []
-    
-    let kScratchHi = 0
-    let kScratchLo = 2
+    // Programs written in Snap store a control stack pointer in data RAM at
+    // addresses 0x0002 and 0x0003. This is initialized on launch to 0xff00.
+    // The control stack is used for stack frames and local variables.
+    public static let kStackPointerAddressHi: UInt16 = 0x0002
+    public static let kStackPointerAddressLo: UInt16 = 0x0003
+    public static let kStackPointerInitialValue: Int = 0xff00
     let kStackPointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
     let kStackPointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
     let kStackPointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
     let kStackPointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0x00ff)
     let kStackPointerInitialValueHi: Int = (kStackPointerInitialValue & 0xff00) >> 8
     let kStackPointerInitialValueLo: Int =  kStackPointerInitialValue & 0x00ff
+    
+    // Programs written in Snap store the frame pointer in data RAM at
+    // addresses 0x0004 and 0x0005. This is initialized on launch to 0xff00.
+    public static let kFramePointerAddressHi: UInt16 = 0x0004
+    public static let kFramePointerAddressLo: UInt16 = 0x0005
+    public static let kFramePointerInitialValue: Int = 0xff00
+    let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+    let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
+    let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+    let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+    let kFramePointerInitialValueHi: Int = (kFramePointerInitialValue & 0xff00) >> 8
+    let kFramePointerInitialValueLo: Int =  kFramePointerInitialValue & 0x00ff
+    
+    let kScratchHi = 0
+    let kScratchLo = 6
+    
     let assembler: AssemblerBackEnd
+    var patcherActions: [Patcher.Action] = []
     var stackDepth = 0
+    
+    public private(set) var labelTable: [String:Int] = [:]
+    public private(set) var instructions: [Instruction] = []
     
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
@@ -46,6 +73,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             switch instruction {
             case .push(let value): try push(value)
             case .pop: try pop()
+            case .clear: try clearExpressionStack()
             case .eq:  try eq()
             case .ne:  try ne()
             case .lt:  try lt()
@@ -62,6 +90,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .label(let token): try label(token: token)
             case .jmp(let token): try jmp(to: token)
             case .je(let token): try je(to: token)
+            case .enter: try enter()
+            case .leave: try leave()
             }
         }
         insertProgramEpilogue()
@@ -87,12 +117,19 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     // inititalization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
         assembler.nop()
-        try assembler.li(.X, kStackPointerHiHi)
-        try assembler.li(.Y, kStackPointerHiLo)
+        try assembler.li(.U, 0)
+        try assembler.li(.V, 0)
+        try assembler.li(.M, 0)
+        assembler.inuv()
+        try assembler.li(.M, kExpressionStackPointerInitialValue)
+        assembler.inuv()
         try assembler.li(.M, kStackPointerInitialValueHi)
-        try assembler.li(.X, kStackPointerLoHi)
-        try assembler.li(.Y, kStackPointerLoLo)
+        assembler.inuv()
         try assembler.li(.M, kStackPointerInitialValueLo)
+        assembler.inuv()
+        try assembler.li(.M, kFramePointerInitialValueHi)
+        assembler.inuv()
+        try assembler.li(.M, kFramePointerInitialValueLo)
     }
     
     // Inserts epilogue code into the program, presumably at the end.
@@ -106,6 +143,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         } else if stackDepth == 1 {
             try assembler.mov(.B, .A)
             try assembler.li(.A, value)
+        } else if stackDepth > 257 {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack overflow during PUSH")
         } else {
             try pushToStackInMemory(value)
         }
@@ -115,15 +154,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func pushToStackInMemory(_ value: Int) throws {
         try decrementStackPointer()
         
-        // Load the 16-bit stack pointer into UV.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
-        try assembler.mov(.X, .M)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
-        try assembler.mov(.Y, .M)
-        try assembler.mov(.U, .X)
-        try assembler.mov(.V, .Y)
+        // Load the expression stack pointer into UV.
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
         
         // Store B to the top of the in-memory stack.
         try assembler.mov(.M, .B)
@@ -136,43 +171,30 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func decrementStackPointer() throws {
-        // Save A in a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo)
-        try assembler.mov(.M, .A)
+        // Save A in a the X register for a moment.
+        // This trashes the value of the X register, but that's OK.
+        try assembler.mov(.X, .A)
         
-        // Decrement the low byte of the 16-bit stack pointer.
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        // Decrement the low byte of the expression stack pointer.
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
         try assembler.mov(.A, .M)
         try assembler.dea(.NONE)
         try assembler.dea(.A)
         try assembler.mov(.M, .A)
         
-        // Decrement the high byte of the 16-bit stack pointer, but only if the
-        // above decrement set the carry flag.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
-        try assembler.mov(.A, .M)
-        try assembler.dca(.NONE)
-        try assembler.dca(.A)
-        try assembler.mov(.M, .A)
-        
-        // Restore A
-        // (We saved this to a well-known scratch location earlier.)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo)
-        try assembler.mov(.A, .M)
+        // Restore A from the value we stashed in the X register.
+        try assembler.mov(.A, .X)
     }
     
     private func pop() throws {
         if stackDepth == 0 {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: cannot pop when stack is empty")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: cannot pop when expression stack is empty")
         } else if stackDepth == 1 {
-            try assembler.li(.A, 0) // Clear A. This is not actually necessary.
+            // It is not necessary to actually clear A. Leave stale.
         } else if stackDepth == 2 {
             try assembler.mov(.A, .B)
-            try assembler.li(.B, 0) // Clear B. This is not actually necessary.
+            // It is not necessary to actually clear B. Leave stale.
         } else {
             try assembler.mov(.A, .B)
             try popInMemoryStackIntoRegisterB()
@@ -182,12 +204,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func popInMemoryStackIntoRegisterB() throws {
-        // Load the 16-bit stack pointer into XY.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
-        try assembler.mov(.X, .M)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        // Load the expression stack pointer into XY.
+        try assembler.li(.X, kExpressionStackPointerHi)
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
         try assembler.mov(.Y, .M)
         
         // Shift the top of the in-memory stack into B.
@@ -198,18 +218,32 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         // Increment the stack pointer.
         assembler.inxy()
         
-        // Write the modified stack pointer back to memory.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
-        try assembler.mov(.M, .X)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        // Write the lower byte of the modified expression stack pointer back
+        // to memory. The high byte is asseumed to be fixed since the expression
+        // stack has a fixed capacity of 256 elements.
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
         try assembler.mov(.M, .Y)
+    }
+    
+    private func clearExpressionStack() throws {
+        if stackDepth > 2 {
+            // Load the expression stack pointer into UV.
+            try assembler.li(.U, kExpressionStackPointerAddressHi)
+            try assembler.li(.V, kExpressionStackPointerAddressLo)
+            try assembler.mov(.V, .M)
+            try assembler.li(.U, kExpressionStackPointerHi)
+            
+            // Reset
+            try assembler.li(.M, kExpressionStackPointerInitialValue)
+        }
+        
+        stackDepth = 0
     }
     
     private func eq() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during EQ")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during EQ")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -233,7 +267,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func ne() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during NE")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during NE")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -257,7 +291,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func lt() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during LT")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during LT")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -281,7 +315,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func gt() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during GT")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during GT")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -305,7 +339,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func le() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during LE")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during LE")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -329,7 +363,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func ge() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during GE")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during GE")
         }
         
         let jumpTarget = assembler.programCounter + 9
@@ -353,7 +387,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func add() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during ADD")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during ADD")
         }
         try assembler.add(.NONE)
         try assembler.add(.A)
@@ -365,7 +399,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func sub() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during SUB")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during SUB")
         }
         try assembler.sub(.NONE)
         try assembler.sub(.A)
@@ -377,7 +411,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func mul() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during MUL")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during MUL")
         }
         
         // A is the Multiplicand, B is the Multiplier
@@ -442,7 +476,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func div() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during DIV")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during DIV")
         }
         
         // A is the Dividend, B is the Divisor
@@ -523,7 +557,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func mod() throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during MOD")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during MOD")
         }
         
         // A is the Dividend, B is the Divisor
@@ -615,15 +649,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         } else {
             try decrementStackPointer()
             
-            // Load the 16-bit stack pointer into UV.
-            try assembler.li(.U, kStackPointerHiHi)
-            try assembler.li(.V, kStackPointerHiLo)
-            try assembler.mov(.X, .M)
-            try assembler.li(.U, kStackPointerLoHi)
-            try assembler.li(.V, kStackPointerLoLo)
-            try assembler.mov(.Y, .M)
-            try assembler.mov(.U, .X)
-            try assembler.mov(.V, .Y)
+            // Load the expression stack pointer into UV.
+            try assembler.li(.U, kExpressionStackPointerAddressHi)
+            try assembler.li(.V, kExpressionStackPointerAddressLo)
+            try assembler.mov(.V, .M)
+            try assembler.li(.U, kExpressionStackPointerHi)
             
             // Store B to the top of the in-memory stack.
             try assembler.mov(.M, .B)
@@ -641,7 +671,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func store(to address: Int) throws {
         guard stackDepth > 0 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: cannot STORE while stack is empty")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: cannot STORE while expression stack is empty")
         }
         
         try assembler.li(.U, (address & 0xff00) >> 8)
@@ -668,7 +698,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func je(to token: TokenIdentifier) throws {
         guard stackDepth >= 2 else {
-            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: stack underflow during JE")
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during JE")
         }
         assembler.cmp()
         assembler.cmp()
@@ -677,8 +707,44 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         assembler.nop()
         
-        try pop()
-        try pop()
+        try popTwo()
+    }
+    
+    private func popTwo() throws {
+        assert(stackDepth >= 2)
+        
+        if stackDepth > 2 {
+            // Load the expression stack pointer into XY.
+            try assembler.li(.X, kExpressionStackPointerHi)
+            try assembler.li(.U, kExpressionStackPointerAddressHi)
+            try assembler.li(.V, kExpressionStackPointerAddressLo)
+            try assembler.mov(.Y, .M)
+            
+            // Shift the top of the in-memory stack into B.
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.A, .M)
+            
+            // Increment the stack pointer.
+            assembler.inxy()
+            
+            // Shift the next item on the in-memory stack into B.
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.B, .M)
+            
+            // Increment the stack pointer.
+            assembler.inxy()
+            
+            // Write the lower byte of the modified expression stack pointer back
+            // to memory. The high byte is asseumed to be fixed since the expression
+            // stack has a fixed capacity of 256 elements.
+            try assembler.li(.U, kExpressionStackPointerAddressHi)
+            try assembler.li(.V, kExpressionStackPointerAddressLo)
+            try assembler.mov(.M, .Y)
+        }
+        
+        stackDepth -= 2
     }
     
     func setAddressToLabel(_ name: TokenIdentifier) throws {
@@ -690,5 +756,130 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
                                symbol: name,
                                shift: 0))
         try assembler.li(.Y, 0xff)
+    }
+    
+    private func enter() throws {
+        // push fp in two bytes ; fp <- sp
+        
+        try assembler.li(.U, kFramePointerHiHi)
+        try assembler.li(.V, kFramePointerHiLo)
+        try assembler.mov(.A, .M)
+        try pushAToControlStack()
+        
+        try assembler.li(.U, kFramePointerLoHi)
+        try assembler.li(.V, kFramePointerLoLo)
+        try assembler.mov(.A, .M)
+        try pushAToControlStack()
+        
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.X, .M)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.Y, .M)
+
+        try assembler.li(.U, kFramePointerHiHi)
+        try assembler.li(.V, kFramePointerHiLo)
+        try assembler.mov(.M, .X)
+        try assembler.li(.U, kFramePointerLoHi)
+        try assembler.li(.V, kFramePointerLoLo)
+        try assembler.mov(.M, .Y)
+    }
+    
+    private func pushAToControlStack() throws {
+        // First, save A in a well-known scratch location.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo)
+        try assembler.mov(.M, .A)
+        
+        // Decrement the low byte of the 16-bit stack pointer.
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.A)
+        try assembler.mov(.M, .A)
+        
+        // While we have it in A, stash a copy of the low byte to Y.
+        // This prevents the need for another memory load below.
+        try assembler.mov(.Y, .A)
+        
+        // Decrement the high byte of the 16-bit stack pointer, but only if the
+        // above decrement set the carry flag.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.A, .M)
+        try assembler.dca(.NONE)
+        try assembler.dca(.A)
+        try assembler.mov(.M, .A)
+        
+        // While we have it in A, stash a copy of the high byte to X.
+        // This prevents the need for another memory load below.
+        try assembler.mov(.X, .A)
+        
+        // Restore A
+        // (We saved this to a well-known scratch location earlier.)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo)
+        try assembler.mov(.A, .M)
+        
+        // Store A to the top of the control stack in data RAM.
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.M, .A)
+    }
+    
+    private func leave() throws {
+        // sp <- fp ; fp <- pop two bytes from the stack
+        
+        try assembler.li(.U, kFramePointerHiHi)
+        try assembler.li(.V, kFramePointerHiLo)
+        try assembler.mov(.X, .M)
+        try assembler.li(.U, kFramePointerLoHi)
+        try assembler.li(.V, kFramePointerLoLo)
+        try assembler.mov(.Y, .M)
+        
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.M, .X)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.M, .Y)
+        
+        try popControlStackToA()
+        try assembler.li(.U, kFramePointerLoHi)
+        try assembler.li(.V, kFramePointerLoLo)
+        try assembler.mov(.M, .A)
+        
+        try popControlStackToA()
+        try assembler.li(.U, kFramePointerHiHi)
+        try assembler.li(.V, kFramePointerHiLo)
+        try assembler.mov(.M, .A)
+    }
+    
+    private func popControlStackToA() throws {
+        // Load the 16-bit stack pointer into XY.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.X, .M)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.Y, .M)
+        
+        // Load the top of the control stack into A.
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.A, .M)
+        
+        // Increment the stack pointer.
+        assembler.inxy()
+        
+        // Write the modified stack pointer back to memory.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.M, .X)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.M, .Y)
     }
 }

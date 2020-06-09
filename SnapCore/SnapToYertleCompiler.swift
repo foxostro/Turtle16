@@ -59,7 +59,7 @@ public class SnapToYertleCompiler: NSObject {
         }
         else if let node = genericNode as? Expression {
             try compile(expression: node)
-            instructions += [.pop] // Clean up the expression result
+            instructions += [.clear]
         }
         else if let node = genericNode as? If {
             try compile(if: node)
@@ -89,7 +89,7 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try inferSymbolTypeFromExpressionType(expression: letDecl.expression, address: address, isMutable: false)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: letDecl.expression)
-        instructions += [.store(address), .pop]
+        instructions += [.store(address), .clear]
     }
     
     private func inferSymbolTypeFromExpressionType(expression: Expression, address: Int, isMutable: Bool) throws -> Symbol {
@@ -108,7 +108,7 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try inferSymbolTypeFromExpressionType(expression: varDecl.expression, address: address, isMutable: true)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
-        instructions += [.store(address), .pop]
+        instructions += [.store(address), .clear]
     }
     
     // The expression will push the result onto the stack. The client assumes the

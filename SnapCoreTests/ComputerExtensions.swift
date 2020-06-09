@@ -11,6 +11,17 @@ import SnapCore
 import TurtleSimulatorCore
 
 extension Computer {
+    public var expressionStackPointer: Int {
+        let stackPointerHi = Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi)
+        let stackPointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddress)))
+        let stackPointer = (stackPointerHi << 8) + stackPointerLo
+        return stackPointer
+    }
+    
+    public var expressionStackTop: UInt8 {
+        return dataRAM.load(from: expressionStackPointer)
+    }
+    
     public var stackPointer: Int {
         let stackPointerHi = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi)))
         let stackPointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo)))
@@ -20,5 +31,12 @@ extension Computer {
     
     public var stackTop: UInt8 {
         return dataRAM.load(from: stackPointer)
+    }
+    
+    public var framePointer: Int {
+        let framePointerHi = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)))
+        let framePointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)))
+        let framePointer = (framePointerHi << 8) + framePointerLo
+        return framePointer
     }
 }

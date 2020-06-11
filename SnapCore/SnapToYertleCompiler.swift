@@ -51,10 +51,7 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
-        if let node = genericNode as? LetDeclaration {
-            try compile(letDecl: node)
-        }
-        else if let node = genericNode as? VarDeclaration {
+        if let node = genericNode as? VarDeclaration {
             try compile(varDecl: node)
         }
         else if let node = genericNode as? Expression {
@@ -75,37 +72,24 @@ public class SnapToYertleCompiler: NSObject {
         }
     }
     
-    private func compile(letDecl: LetDeclaration) throws {
-        let name = letDecl.identifier.lexeme
-        guard symbols.exists(identifier: name) == false else {
-            throw CompilerError(line: letDecl.identifier.lineNumber,
-                                format: "constant redefines existing symbol: `%@'",
-                                letDecl.identifier.lexeme)
-        }
-        let symbol = try makeSymbolWithInferredType(expression: letDecl.expression, isMutable: false)
-        symbols.bind(identifier: name, symbol: symbol)
-        try compile(expression: letDecl.expression)
-        storeSymbol(symbol)
-        instructions += [.clear]
-    }
-    
     private func compile(varDecl: VarDeclaration) throws {
         let name = varDecl.identifier.lexeme
         guard symbols.exists(identifier: name) == false else {
             throw CompilerError(line: varDecl.identifier.lineNumber,
-                                format: "variable redefines existing symbol: `%@'",
+                                format: "%@ redefines existing symbol: `%@'",
+                                varDecl.isMutable ? "variable" : "constant",
                                 varDecl.identifier.lexeme)
         }
-        let symbol = try makeSymbolWithInferredType(expression: varDecl.expression, isMutable: true)
+        let symbol = try makeSymbolWithInferredType(expression: varDecl.expression, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
         storeSymbol(symbol)
         instructions += [.clear]
     }
     
-    private func makeSymbolWithInferredType(expression: Expression, isMutable: Bool) throws -> Symbol {
+    private func makeSymbolWithInferredType(expression: Expression, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
         let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
-        let storage: SymbolStorage = isInGlobalScope ? .staticStorage : .stackStorage
+        let storage: SymbolStorage = isInGlobalScope ? .staticStorage : storage
         let offset = symbols.storagePointer
         symbols.storagePointer += 1
         let symbol = Symbol(type: inferredType, offset: offset, isMutable: isMutable, storage: storage)

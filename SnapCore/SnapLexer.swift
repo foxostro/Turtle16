@@ -100,6 +100,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "for") {[weak self] in
                 TokenFor(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "static") {[weak self] in
+                TokenStatic(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "true") {[weak self] in
                 TokenBoolean(lineNumber: self!.lineNumber, lexeme: $0, literal: true)
             },

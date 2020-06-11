@@ -20,6 +20,7 @@ public class SnapToYertleCompiler: NSObject {
     
     public override init() {
         symbols = globalSymbols
+        globalSymbols.storagePointer = SnapToYertleCompiler.kStaticStorageStartAddress
         super.init()
     }
     
@@ -33,13 +34,6 @@ public class SnapToYertleCompiler: NSObject {
     // Static storage is allocated in a region starting at this address.
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress: Int = 0x0010
-    private var staticStoragePointer = kStaticStorageStartAddress
-    
-    private func allocateStaticStorage(_ size: Int = 1) -> Int {
-        let result = staticStoragePointer
-        staticStoragePointer += size
-        return result
-    }
     
     public func compile(ast: AbstractSyntaxTreeNode) {
         instructions = []
@@ -88,17 +82,11 @@ public class SnapToYertleCompiler: NSObject {
                                 format: "constant redefines existing symbol: `%@'",
                                 letDecl.identifier.lexeme)
         }
-        
-        let address = allocateStaticStorage()
-        let symbol = try inferSymbolTypeFromExpressionType(expression: letDecl.expression, address: address, isMutable: false)
+        let symbol = try makeSymbolWithInferredType(expression: letDecl.expression, isMutable: false)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: letDecl.expression)
-        instructions += [.store(address), .clear]
-    }
-    
-    private func inferSymbolTypeFromExpressionType(expression: Expression, address: Int, isMutable: Bool) throws -> Symbol {
-        let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
-        return Symbol(type: inferredType, offset: address, isMutable: isMutable)
+        storeSymbol(symbol)
+        instructions += [.clear]
     }
     
     private func compile(varDecl: VarDeclaration) throws {
@@ -108,11 +96,54 @@ public class SnapToYertleCompiler: NSObject {
                                 format: "variable redefines existing symbol: `%@'",
                                 varDecl.identifier.lexeme)
         }
-        let address = allocateStaticStorage()
-        let symbol = try inferSymbolTypeFromExpressionType(expression: varDecl.expression, address: address, isMutable: true)
+        let symbol = try makeSymbolWithInferredType(expression: varDecl.expression, isMutable: true)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
-        instructions += [.store(address), .clear]
+        storeSymbol(symbol)
+        instructions += [.clear]
+    }
+    
+    private func makeSymbolWithInferredType(expression: Expression, isMutable: Bool) throws -> Symbol {
+        let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
+        let storage: SymbolStorage = isInGlobalScope ? .staticStorage : .stackStorage
+        let offset = symbols.storagePointer
+        symbols.storagePointer += 1
+        let symbol = Symbol(type: inferredType, offset: offset, isMutable: isMutable, storage: storage)
+        return symbol
+    }
+    
+    private func storeSymbol(_ symbol: Symbol) {
+        switch symbol.type {
+        case .boolean, .u8:
+            storeOneWord(symbol)
+        }
+    }
+    
+    private func storeOneWord(_ symbol: Symbol) {
+        switch symbol.storage {
+        case .staticStorage:
+            instructions += [
+                .store(symbol.offset)
+            ]
+        case .stackStorage:
+            let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+            let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
+            let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+            let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+            instructions += [
+                .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
+                .push(symbol.offset),
+                .push(kFramePointerHiHi),
+                .push(kFramePointerHiLo),
+                .loadIndirect,
+                .push(kFramePointerLoHi),
+                .push(kFramePointerLoLo),
+                .loadIndirect,
+                .loadIndirect,
+                .sub,
+                .storeIndirect
+            ]
+        }
     }
     
     // The expression will push the result onto the stack. The client assumes the
@@ -187,14 +218,17 @@ public class SnapToYertleCompiler: NSObject {
     
     private func compile(block: Block) throws {
         pushScope()
+//        instructions += [.enter]
         for child in block.children {
             try compile(genericNode: child)
         }
+//        instructions += [.leave]
         popScope()
     }
     
     private func pushScope() {
         symbols = SymbolTable(parent: symbols)
+        symbols.storagePointer = 2
     }
     
     private func popScope() {

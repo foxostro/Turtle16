@@ -108,22 +108,97 @@ public class ExpressionSubCompiler: NSObject {
     
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let symbol = try symbols.resolve(identifierToken: identifier.identifier)
+        switch symbol.storage {
+        case .staticStorage:
+            return loadStaticSymbol(symbol)
+        case .stackStorage:
+            return loadStackSymbol(symbol)
+        }
+    }
+    
+    private func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
         switch symbol.type {
         case .u8, .boolean:
             return [.load(symbol.offset)]
         }
     }
     
-    private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
-        let symbol = try symbols.resolve(identifierToken: assignment.identifier)
+    private func loadStackSymbol(_ symbol: Symbol) -> [YertleInstruction] {
         switch symbol.type {
         case .u8, .boolean:
-            if symbol.isMutable {
-                return try compile(expression: assignment.child) + [.store(symbol.offset)]
-            } else {
-                throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
-            }
+            return loadOneWord(symbol: symbol)
         }
+    }
+    
+    private func loadOneWord(symbol: Symbol) -> [YertleInstruction] {
+        let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+        let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
+        let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+        let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+        return [
+            .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
+            .push(symbol.offset),
+            .push(kFramePointerHiHi),
+            .push(kFramePointerHiLo),
+            .loadIndirect,
+            .push(kFramePointerLoHi),
+            .push(kFramePointerLoLo),
+            .loadIndirect,
+            .loadIndirect,
+            .sub,
+            .loadIndirect,
+        ]
+    }
+    
+    private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
+        let symbol = try symbols.resolve(identifierToken: assignment.identifier)
+        
+        guard symbol.isMutable else {
+            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
+        }
+        
+        switch symbol.type {
+        case .u8, .boolean:
+            return try compile(expression: assignment.child) + storeOneWord(symbol: symbol)
+        }
+    }
+    
+    private func storeOneWord(symbol: Symbol) -> [YertleInstruction] {
+        assert(symbol.isMutable)
+        switch symbol.storage {
+        case .staticStorage:
+            return storeOneWordStatic(symbol: symbol)
+        case .stackStorage:
+            return storeOneWordStack(symbol: symbol)
+        }
+    }
+    
+    private func storeOneWordStatic(symbol: Symbol) -> [YertleInstruction] {
+        assert(symbol.isMutable)
+        assert(symbol.storage == .staticStorage)
+        return [.store(symbol.offset)]
+    }
+    
+    private func storeOneWordStack(symbol: Symbol) -> [YertleInstruction] {
+        assert(symbol.isMutable)
+        assert(symbol.storage == .stackStorage)
+        let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+        let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
+        let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+        let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+        return [
+            .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
+            .push(symbol.offset),
+            .push(kFramePointerHiHi),
+            .push(kFramePointerHiLo),
+            .loadIndirect,
+            .push(kFramePointerLoHi),
+            .push(kFramePointerLoLo),
+            .loadIndirect,
+            .loadIndirect,
+            .sub,
+            .storeIndirect,
+        ]
     }
     
     private func unsupportedError(expression: Expression) -> Error {

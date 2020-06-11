@@ -69,8 +69,9 @@ for var i = 0; i < 10; i = i + 1 {
         let computer = try! executor.execute(program: """
 var a = 1
 var b = 1
+var fib = 0
 for var i = 0; i < 10; i = i + 1 {
-    var fib = b + a
+    fib = b + a
     a = b
     b = fib
 }
@@ -92,5 +93,18 @@ a = 3
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 5)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `a'")
+    }
+    
+    func test_EndToEndIntegration_AccessToStackBasedVariable() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 10
+{
+    var b = a
+    a = b
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 10) // var b
     }
 }

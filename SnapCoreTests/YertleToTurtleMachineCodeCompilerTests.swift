@@ -775,4 +775,132 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: kFramePointerLo), 0x00)
         XCTAssertEqual(computer.stackPointer, 0xff00)
     }
+    
+    func testLoadIndirectWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.loadIndirect])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LOAD-INDIRECT")
+        }
+    }
+    
+    func testLoadIndirectWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.push(1), .loadIndirect])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LOAD-INDIRECT")
+        }
+    }
+    
+    func testLoadIndirectWithStackDepthTwo() {
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: 0xaa, to: 0x0010)
+        }
+        let computer = try! executor.execute(ir: [.push(0x00), .push(0x10), .loadIndirect])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+    }
+    
+    func testLoadIndirectWithStackDepthThree() {
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: 0xaa, to: 0x0010)
+        }
+        let computer = try! executor.execute(ir: [.push(1), .push(0x00), .push(0x10), .loadIndirect])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+    }
+    
+    func testLoadIndirectWithStackDepthFour() {
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: 0xaa, to: 0x0010)
+        }
+        let computer = try! executor.execute(ir: [.push(1), .push(2), .push(0x00), .push(0x10), .loadIndirect])
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.expressionStackTop, 1)
+    }
+    
+    func testStoreIndirectWithEmptyStack() {
+        XCTAssertThrowsError(try execute(ir: [.storeIndirect])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
+        }
+    }
+    
+    func testStoreIndirectWithStackDepthOne() {
+        XCTAssertThrowsError(try execute(ir: [.push(1), .storeIndirect])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
+        }
+    }
+    
+    func testStoreIndirectWithStackDepthTwo() {
+        XCTAssertThrowsError(try execute(ir: [.push(1), .push(2), .storeIndirect])) {
+            XCTAssertEqual(($0 as? CompilerError)?.message,
+                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
+        }
+    }
+    
+    func testStoreIndirectWithStackDepthThree() {
+        let computer = try! execute(ir: [
+            .push(0xaa),
+            .push(0x00),
+            .push(0x10),
+            .storeIndirect
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+    }
+    
+    func testStoreIndirectWithStackDepthFour() {
+        let computer = try! execute(ir: [
+            .push(0xbb),
+            .push(0xaa),
+            .push(0x00),
+            .push(0x10),
+            .storeIndirect
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.cpuState.registerB.value, 0xbb)
+    }
+    
+    func testStoreIndirectWithStackDepthFive() {
+        let computer = try! execute(ir: [
+            .push(0xcc),
+            .push(0xbb),
+            .push(0xaa),
+            .push(0xfe),
+            .push(0xfe),
+            .storeIndirect
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0xaa)
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.cpuState.registerB.value, 0xbb)
+        XCTAssertEqual(computer.expressionStackTop, 0xcc)
+    }
+    
+    func testCalculateLocalVariableAddress() {
+        let offset = 2
+        let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+        let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
+        let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+        let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: [
+            .push(0xaa), // The value to store
+            .push(0xfe), // The target destination's high byte
+            .push(offset), // An offset from the frame pointer
+            .push(kFramePointerHiHi),
+            .push(kFramePointerHiLo),
+            .loadIndirect, // Load the frame pointer high byte
+            .push(kFramePointerLoHi),
+            .push(kFramePointerLoLo),
+            .loadIndirect, // Load the frame pointer low byte
+            .loadIndirect, // Load the value at the frame pointer
+            .sub,
+            .storeIndirect
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0xaa)
+    }
 }

@@ -97,6 +97,22 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
+    func testCompileIdentifierExpression_Word_Stack() {
+        let expr = ExprUtils.makeIdentifier(name: "foo")
+        let symbol = Symbol(type: .u8, offset: 0x0004, isMutable: false, storage: .stackStorage)
+        let symbols = SymbolTable(["foo" : symbol])
+        let ir = try! compile(expression: expr, symbols: symbols)
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            // Set the value of the local variable on the stack.
+            // We're going to assume the initial value of the frame pointer,
+            // which is 0xff00.
+            computer.dataRAM.store(value: 0xaa, to: 0xff00 - 4)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+    }
+    
     func testCompileIdentifierExpression_Boolean_Static() {
         let expr = ExprUtils.makeIdentifier(name: "foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .boolean, offset: 0x0010, isMutable: false)])
@@ -112,13 +128,23 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
-    func testCompileAssignmentToWord() {
+    func testCompileAssignmentToWord_Static() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
             .store(0x0010)
         ])
+    }
+    
+    func testCompileAssignmentToWord_Stack() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 0xaa))
+        let symbol = Symbol(type: .u8, offset: 0x0004, isMutable: true, storage: .stackStorage)
+        let symbols = SymbolTable(["foo" : symbol])
+        let ir = try! compile(expression: expr, symbols: symbols)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xff00 - 4), 0xaa)
     }
     
     func testCannotAssignToAnImmutableValue_Word() {

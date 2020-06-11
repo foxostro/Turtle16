@@ -28,6 +28,8 @@ public enum YertleInstruction: Equatable {
     case mod // pop two from the expression stack, A%B, push the result
     case load(Int) // load from the specified address, push to the expression stack
     case store(Int) // peek at the expression stack top and store that value to the specified address
+    case loadIndirect // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Load the eight-bit value at that address and push it to the expression stack.
+    case storeIndirect // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Peek at the eight-bit value on the top of the stack. Store that eight-bit value at the specified address.
     case label(TokenIdentifier) // declares a label
     case jmp(TokenIdentifier) // unconditional jump, no change to the expression stack
     case je(TokenIdentifier) // pop two from the expression stack, jump if they are equal
@@ -68,6 +70,10 @@ public enum YertleInstruction: Equatable {
             return String(format: "LOAD 0x%04x", address)
         case .store(let address):
             return String(format: "STORE 0x%04x", address)
+        case .loadIndirect:
+            return "LOAD-INDIRECT"
+        case .storeIndirect:
+            return "STORE-INDIRECT"
         case .label(let token):
             return "\(token.lexeme):"
         case .jmp(let token):

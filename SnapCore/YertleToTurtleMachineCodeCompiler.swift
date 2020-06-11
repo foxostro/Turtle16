@@ -87,6 +87,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .mod: try mod()
             case .load(let address): try load(from: address)
             case .store(let address): try store(to: address)
+            case .loadIndirect: try loadIndirect()
+            case .storeIndirect: try storeIndirect()
             case .label(let token): try label(token: token)
             case .jmp(let token): try jmp(to: token)
             case .je(let token): try je(to: token)
@@ -228,13 +230,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func clearExpressionStack() throws {
         if stackDepth > 2 {
-            // Load the expression stack pointer into UV.
+            // Reset the expression stack pointer.
             try assembler.li(.U, kExpressionStackPointerAddressHi)
             try assembler.li(.V, kExpressionStackPointerAddressLo)
-            try assembler.mov(.V, .M)
-            try assembler.li(.U, kExpressionStackPointerHi)
-            
-            // Reset
             try assembler.li(.M, kExpressionStackPointerInitialValue)
         }
         
@@ -689,6 +687,46 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         labelTable[name] = assembler.programCounter
     }
     
+    private func loadIndirect() throws {
+        guard stackDepth >= 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during LOAD-INDIRECT")
+        }
+        try assembler.mov(.V, .A)
+        try assembler.mov(.U, .B)
+        try assembler.mov(.A, .M)
+        if stackDepth > 2 {
+            try popInMemoryStackIntoRegisterB()
+        }
+        stackDepth -= 1
+    }
+    
+    private func storeIndirect() throws {
+        guard stackDepth > 2 else {
+            throw CompilerError(message: "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
+        }
+        
+        // Save the destination address to a well-known scratch location.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .A) // Low byte
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .B) // High byte
+        
+        try popTwo()
+        
+        // Set the destination address in UV.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.Y, .M) // Low byte
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.X, .M) // High byte
+        
+        // Store A (the top of the expression stack) to the destination address.
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.M, .A)
+    }
+    
     private func jmp(to token: TokenIdentifier) throws {
         try setAddressToLabel(token)
         assembler.jmp()
@@ -713,29 +751,37 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func popTwo() throws {
         assert(stackDepth >= 2)
         
-        if stackDepth > 2 {
+        if stackDepth == 2 {
+            try assembler.mov(.A, .B)
+            // It is not necessary to actually clear B. Leave stale.
+        } else if stackDepth == 3 {
+            try assembler.mov(.A, .B)
+            try popInMemoryStackIntoRegisterB()
+            try assembler.mov(.A, .B)
+            // It is not necessary to actually clear B. Leave stale.
+        } else {
             // Load the expression stack pointer into XY.
             try assembler.li(.X, kExpressionStackPointerHi)
             try assembler.li(.U, kExpressionStackPointerAddressHi)
             try assembler.li(.V, kExpressionStackPointerAddressLo)
             try assembler.mov(.Y, .M)
-            
+
             // Shift the top of the in-memory stack into B.
             try assembler.mov(.U, .X)
             try assembler.mov(.V, .Y)
             try assembler.mov(.A, .M)
-            
+
             // Increment the stack pointer.
             assembler.inxy()
-            
+
             // Shift the next item on the in-memory stack into B.
             try assembler.mov(.U, .X)
             try assembler.mov(.V, .Y)
             try assembler.mov(.B, .M)
-            
+
             // Increment the stack pointer.
             assembler.inxy()
-            
+
             // Write the lower byte of the modified expression stack pointer back
             // to memory. The high byte is asseumed to be fixed since the expression
             // stack has a fixed capacity of 256 elements.

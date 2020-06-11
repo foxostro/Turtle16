@@ -12,15 +12,21 @@ public enum SymbolType: Equatable {
     case u8, boolean
 }
 
+public enum SymbolStorage: Equatable {
+    case staticStorage, stackStorage
+}
+
 public struct Symbol: Equatable {
     public let type: SymbolType
     public let offset: Int
     public let isMutable: Bool
+    public let storage: SymbolStorage
     
-    public init(type: SymbolType, offset: Int, isMutable: Bool) {
+    public init(type: SymbolType, offset: Int, isMutable: Bool, storage: SymbolStorage = .staticStorage) {
         self.type = type
         self.offset = offset
         self.isMutable = isMutable
+        self.storage = storage
     }
 }
 
@@ -28,6 +34,7 @@ public struct Symbol: Equatable {
 public class SymbolTable: NSObject {
     private var symbolTable: [String:Symbol]
     public let parent: SymbolTable?
+    public var storagePointer: Int = 0
     
     public convenience init(_ dict: [String:Symbol] = [:]) {
         self.init(parent: nil, dict: dict)

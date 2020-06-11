@@ -29,6 +29,8 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.mod.description, "MOD")
         XCTAssertEqual(YertleInstruction.load(0xffff).description, "LOAD 0xffff")
         XCTAssertEqual(YertleInstruction.store(0xffff).description, "STORE 0xffff")
+        XCTAssertEqual(YertleInstruction.loadIndirect.description, "LOAD-INDIRECT")
+        XCTAssertEqual(YertleInstruction.storeIndirect.description, "STORE-INDIRECT")
         XCTAssertEqual(YertleInstruction.label(L0).description, ".L0:")
         XCTAssertEqual(YertleInstruction.jmp(L0).description, "JMP .L0")
         XCTAssertEqual(YertleInstruction.je(L0).description, "JE .L0")

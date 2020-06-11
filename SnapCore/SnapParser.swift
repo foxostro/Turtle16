@@ -24,6 +24,9 @@ public class SnapParser: Parser {
             result = []
             shouldExpectEndOfStatement = false
         }
+        else if let token = accept(TokenStatic.self) {
+            result = try consumeStatic(token as! TokenStatic)
+        }
         else if let token = accept(TokenLet.self) {
             result = try consumeLet(token as! TokenLet)
         }
@@ -54,7 +57,16 @@ public class SnapParser: Parser {
         return result
     }
     
-    private func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeStatic(_ staticToken: TokenStatic) throws -> [AbstractSyntaxTreeNode] {
+        if let token = accept(TokenLet.self) {
+            return try consumeLet(token as! TokenLet, storage: .staticStorage)
+        }
+        
+        let token = try expect(type: TokenVar.self, error: CompilerError(line: staticToken.lineNumber, message: "expected declaration"))
+        return try consumeVar(token as! TokenVar, storage: .staticStorage)
+    }
+    
+    private func consumeLet(_ letToken: TokenLet, storage: SymbolStorage = .stackStorage) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
                                     error: CompilerError(line: letToken.lineNumber,
                                                           format: "expected to find an identifier in let declaration",
@@ -72,10 +84,13 @@ public class SnapParser: Parser {
         
         let expression = try consumeExpression()
         
-        return [LetDeclaration(identifier: identifier, expression: expression)]
+        return [VarDeclaration(identifier: identifier,
+                               expression: expression,
+                               storage: storage,
+                               isMutable: false)]
     }
     
-    private func consumeVar(_ varToken: TokenVar) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeVar(_ varToken: TokenVar, storage: SymbolStorage = .stackStorage) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
                                     error: CompilerError(line: varToken.lineNumber,
                                                          format: "expected to find an identifier in variable declaration",
@@ -92,7 +107,10 @@ public class SnapParser: Parser {
         
         let expression = try consumeExpression()
         
-        return [VarDeclaration(identifier: identifier, expression: expression)]
+        return [VarDeclaration(identifier: identifier,
+                               expression: expression,
+                               storage: storage,
+                               isMutable: true)]
     }
     
     private func consumeIf(_ ifToken: TokenIf) throws -> [AbstractSyntaxTreeNode] {
@@ -199,21 +217,24 @@ public class SnapParser: Parser {
         try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
         let incrementClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         
-        let leftError = "expected `{' after `\(forToken.lexeme)' increment clause"
-        let rightError = "expected `}' after `\(forToken.lexeme)' body"
-        let bodyStatements = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError)
-        
         let body: AbstractSyntaxTreeNode
-        if bodyStatements.count == 1 {
-            body = bodyStatements.first!
+        if nil != (peek() as? TokenCurlyLeft) {
+            let leftError = "expected `{' after `\(forToken.lexeme)' increment clause"
+            let rightError = "expected `}' after `\(forToken.lexeme)' body"
+            body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
         } else {
-            body = AbstractSyntaxTreeNode(children: bodyStatements)
+            try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
+            body = Block(children: try consumeStatement())
         }
         
-        return [ForLoop(initializerClause: initializerClause,
+        return [
+            Block(children: [
+                ForLoop(initializerClause: initializerClause,
                         conditionClause: conditionClause,
                         incrementClause: incrementClause,
-                        body: body)]
+                        body: body)
+            ])
+        ]
     }
     
     private func acceptEndOfStatement() -> Token? {

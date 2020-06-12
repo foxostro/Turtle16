@@ -28,8 +28,8 @@ public class ExpressionSubCompiler: NSObject {
             return compile(literalBoolean: literal)
         } else if let binary = expression as? Expression.Binary {
             return try compile(binary: binary)
-        } else if let binary = expression as? Expression.Unary {
-            return try compile(unary: binary)
+        } else if let unary = expression as? Expression.Unary {
+            return try compile(unary: unary)
         } else if let identifier = expression as? Expression.Identifier {
             return try compile(identifier: identifier)
         } else if let assignment = expression as? Expression.Assignment {

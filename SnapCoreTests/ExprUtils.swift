@@ -18,8 +18,8 @@ public class ExprUtils: NSObject {
         return Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "\(value)", literal: value))
     }
     
-    public static func makeAdd(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus), left: left, right: right)
+    public static func makeAdd(lineNumber: Int = 1, left: Expression, right: Expression) -> Expression {
+        return Expression.Binary(op: TokenOperator(lineNumber: lineNumber, lexeme: "+", op: .plus), left: left, right: right)
     }
     
     public static func makeSub(left: Expression, right: Expression) -> Expression {

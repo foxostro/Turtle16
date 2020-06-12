@@ -302,7 +302,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "Binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
     }
     
     func testCompileForLoopStatement() {

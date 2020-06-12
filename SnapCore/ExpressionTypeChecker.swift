@@ -56,7 +56,7 @@ public class ExpressionTypeChecker: NSObject {
         let left = try check(expression: binary.left)
         let lineNumber = binary.tokens.first!.lineNumber
         guard right == left else {
-            throw CompilerError(line: lineNumber, message: "Binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
+            throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
         }
         switch binary.op.op {
         case .eq:
@@ -75,7 +75,7 @@ public class ExpressionTypeChecker: NSObject {
             case .u8:
                 return .boolean
             case .boolean:
-                throw CompilerError(line: lineNumber, message: "Binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
+                throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
             
         case .plus:
@@ -91,7 +91,7 @@ public class ExpressionTypeChecker: NSObject {
             case .u8:
                 return .u8
             case .boolean:
-                throw CompilerError(line: lineNumber, message: "Binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
+                throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
         }
     }

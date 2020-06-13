@@ -212,7 +212,7 @@ public class SnapToYertleCompiler: NSObject {
     
     private func pushScope() {
         symbols = SymbolTable(parent: symbols)
-        symbols.storagePointer = 2
+        symbols.storagePointer = 3
     }
     
     private func popScope() {

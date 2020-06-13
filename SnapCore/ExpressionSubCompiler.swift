@@ -14,6 +14,8 @@ import TurtleCompilerToolbox
 // responsibility of cleaning up.
 public class ExpressionSubCompiler: NSObject {
     let symbols: SymbolTable
+    let kFramePointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+    let kFramePointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
@@ -131,19 +133,11 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func loadOneWord(symbol: Symbol) -> [YertleInstruction] {
-        let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
-        let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
-        let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
-        let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
         return [
             .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
             .push(symbol.offset),
-            .push(kFramePointerHiHi),
-            .push(kFramePointerHiLo),
-            .loadIndirect,
-            .push(kFramePointerLoHi),
-            .push(kFramePointerLoLo),
-            .loadIndirect,
+            .load(kFramePointerAddressHi),
+            .load(kFramePointerAddressLo),
             .loadIndirect,
             .sub,
             .loadIndirect,
@@ -182,19 +176,11 @@ public class ExpressionSubCompiler: NSObject {
     private func storeOneWordStack(symbol: Symbol) -> [YertleInstruction] {
         assert(symbol.isMutable)
         assert(symbol.storage == .stackStorage)
-        let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
-        let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
-        let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
-        let kFramePointerLoLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
         return [
             .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
             .push(symbol.offset),
-            .push(kFramePointerHiHi),
-            .push(kFramePointerHiLo),
-            .loadIndirect,
-            .push(kFramePointerLoHi),
-            .push(kFramePointerLoLo),
-            .loadIndirect,
+            .load(kFramePointerAddressHi),
+            .load(kFramePointerAddressLo),
             .loadIndirect,
             .sub,
             .storeIndirect,

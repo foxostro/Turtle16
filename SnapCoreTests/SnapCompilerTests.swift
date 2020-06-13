@@ -134,16 +134,13 @@ i = 3
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `i'")
     }
     
-    func test_EndToEndIntegration_AccessToStackBasedVariable() {
+    func test_EndToEndIntegration_StaticVarInABlockIsStoredInStaticDataArea() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var a = 10
 {
-    var b = a
-    a = b
+    static var a = 0xaa
 }
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 10) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
     }
 }

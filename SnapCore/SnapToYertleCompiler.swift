@@ -17,10 +17,10 @@ public class SnapToYertleCompiler: NSObject {
     
     private var symbols: SymbolTable
     private var tempLabelCounter = 0
+    private var staticStoragePointer = SnapToYertleCompiler.kStaticStorageStartAddress
     
     public override init() {
         symbols = globalSymbols
-        globalSymbols.storagePointer = SnapToYertleCompiler.kStaticStorageStartAddress
         super.init()
     }
     
@@ -90,8 +90,17 @@ public class SnapToYertleCompiler: NSObject {
     private func makeSymbolWithInferredType(expression: Expression, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
         let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
         let storage: SymbolStorage = isInGlobalScope ? .staticStorage : storage
-        let offset = symbols.storagePointer
-        symbols.storagePointer += 1
+        
+        let offset: Int
+        switch storage {
+        case .staticStorage:
+            offset = staticStoragePointer
+            staticStoragePointer += 1
+        case .stackStorage:
+            offset = symbols.storagePointer
+            symbols.storagePointer += 1
+        }
+        
         let symbol = Symbol(type: inferredType, offset: offset, isMutable: isMutable, storage: storage)
         return symbol
     }

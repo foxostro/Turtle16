@@ -279,6 +279,30 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class Call: Expression {
+        public let callee: Expression
+        public let arguments: [Expression]
+        
+        public override var tokens: [Token] {
+            return callee.tokens + arguments.flatMap({$0.tokens})
+        }
+        
+        public required init(callee: Expression, arguments: [Expression]) {
+            self.callee = callee
+            self.arguments = arguments
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? Call else { return false }
+            guard callee == rhs.callee else { return false }
+            guard arguments == rhs.arguments else { return false }
+            guard isBaseClassPartEqual(rhs) else { return false }
+            return true
+        }
+    }
+    
     // Useful for testing
     public class UnsupportedExpression : Expression {}
 }

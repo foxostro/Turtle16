@@ -335,7 +335,24 @@ public class SnapParser: Parser {
             return Expression.Unary(op: token, expression: right)
         }
         
-        return try consumePrimary()
+        return try consumeCall()
+    }
+    
+    private func consumeCall() throws -> Expression {
+        var expr = try consumePrimary()
+        if nil != accept(TokenParenLeft.self) as? TokenParenLeft {
+            var arguments: [Expression] = []
+            if nil == accept(TokenParenRight.self) as? TokenParenRight {
+                repeat {
+                    while nil != accept(TokenNewline.self) {}
+                    arguments.append(try consumeExpression())
+                    while nil != accept(TokenNewline.self) {}
+                } while nil != accept(TokenComma.self)
+            }
+            try expect(type: TokenParenRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `)'"))
+            expr = Expression.Call(callee: expr, arguments: arguments)
+        }
+        return expr
     }
     
     private func consumePrimary() throws -> Expression {

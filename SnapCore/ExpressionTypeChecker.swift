@@ -31,20 +31,22 @@ public class ExpressionTypeChecker: NSObject {
             return try check(identifier: identifier)
         } else if let assignment = expression as? Expression.Assignment {
             return try check(assignment: assignment)
+        } else if let call = expression as? Expression.Call {
+            return try check(call: call)
         }
         throw unsupportedError(expression: expression)
     }
         
     public func check(unary: Expression.Unary) throws -> SymbolType {
         let lineNumber = unary.tokens.first!.lineNumber
-        let expr: SymbolType = try check(expression: unary.child)
+        let expressionType = try check(expression: unary.child)
         switch unary.op.op {
         case .minus:
-            switch expr {
+            switch expressionType {
             case .u8:
                 return .u8
-            case .boolean:
-                throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(String(describing: expr))'")
+            case .boolean, .function:
+                throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(String(describing: expressionType))'")
             }
         default:
             throw CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
@@ -59,38 +61,22 @@ public class ExpressionTypeChecker: NSObject {
             throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
         }
         switch binary.op.op {
-        case .eq:
-            fallthrough
-        case .ne:
+        case .eq, .ne:
             return .boolean
         
-        case .lt:
-            fallthrough
-        case .gt:
-            fallthrough
-        case .le:
-            fallthrough
-        case .ge:
+        case .lt, .gt, .le, .ge:
             switch right {
             case .u8:
                 return .boolean
-            case .boolean:
+            case .boolean, .function:
                 throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
             
-        case .plus:
-            fallthrough
-        case .minus:
-            fallthrough
-        case .multiply:
-            fallthrough
-        case .divide:
-            fallthrough
-        case .modulus:
+        case .plus, .minus, .multiply, .divide, .modulus:
             switch right {
             case .u8:
                 return .u8
-            case .boolean:
+            case .boolean, .function:
                 throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
         }
@@ -102,6 +88,10 @@ public class ExpressionTypeChecker: NSObject {
         
     public func check(identifier: Expression.Identifier) throws -> SymbolType {
         return try symbols.resolve(identifierToken: identifier.identifier).type
+    }
+        
+    public func check(call: Expression.Call) throws -> SymbolType {
+        return .u8
     }
     
     private func unsupportedError(expression: Expression) -> Error {

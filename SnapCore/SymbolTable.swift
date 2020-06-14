@@ -9,7 +9,7 @@
 import TurtleCompilerToolbox
 
 public enum SymbolType: Equatable {
-    case u8, boolean
+    case u8, boolean, function
 }
 
 public enum SymbolStorage: Equatable {
@@ -48,9 +48,8 @@ public class SymbolTable: NSObject {
     public func exists(identifier: String) -> Bool {
         if nil == symbolTable[identifier] {
             return parent?.exists(identifier: identifier) ?? false
-        } else {
-            return true
         }
+        return true
     }
     
     public func bind(identifier: String, symbol: Symbol) {
@@ -87,8 +86,7 @@ public class SymbolTable: NSObject {
             return (symbol, 0)
         } else if let parentResolution = parent?.maybeResolve(identifier: identifier) {
             return (parentResolution.0, parentResolution.1 + 1)
-        } else {
-            return nil
         }
+        return nil
     }
 }

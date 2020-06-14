@@ -265,4 +265,42 @@ class ExpressionSubCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
         }
     }
+    
+    func testCompilationFailsDueToUseOfUnresolvedIdentifierInFunctionCall() {
+        let expr = Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
+        }
+    }
+    
+    func testCompilationFailsBecauseCannotCallValueOfNonFunctionType() {
+        let expr = Expression.Call(callee: ExprUtils.makeIdentifier(name: "fn"), arguments: [])
+        let symbols = SymbolTable([
+            "fn" : Symbol(type: .u8, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        ])
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            XCTAssertEqual(($0 as? CompilerError)?.message, "cannot call value of non-function type `u8'")
+        }
+    }
+    
+    func testMakeAFunctionCallWithNoArgumentsAndASimpleReturnValue() {
+        let expr = ExprUtils.makeAssignment(name: "result", right: Expression.Call(callee: ExprUtils.makeIdentifier(name: "fn"), arguments: []))
+        let symbols = SymbolTable([
+            "result" : Symbol(type: .u8, offset: 0x0010, isMutable: true, storage: .staticStorage),
+            "fn" : Symbol(type: .function, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        ])
+        // This test does not concern itself with how the Snap language prepares
+        // and compiles the body of the function. Instead, manually insert an
+        // appropriate function at the end of the instruction listing.
+        let ir = try! compile(expression: expr, symbols: symbols) + [
+            .hlt,
+            .label(TokenIdentifier(lineNumber: -1, lexeme: "fn")),
+            .push(0xaa),
+            .leaf_ret
+        ]
+        let executor = YertleExecutor()
+        print(YertleInstruction.makeListing(instructions: ir))
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
 }

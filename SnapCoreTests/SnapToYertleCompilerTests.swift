@@ -189,6 +189,24 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: true))
     }
     
+    func testCompileVarDeclaration_StackLocalVariable() {
+        let ast = AbstractSyntaxTreeNode(children: [
+            Block(children: [
+                VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                               expression: ExprUtils.makeLiteralWord(value: 0xaa),
+                               storage: .stackStorage,
+                               isMutable: true)
+            ])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xaa)
+    }
+    
     func testCompileExpression() {
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.

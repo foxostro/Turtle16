@@ -36,6 +36,8 @@ public class ExpressionSubCompiler: NSObject {
             return try compile(identifier: identifier)
         } else if let assignment = expression as? Expression.Assignment {
             return try compile(assignment: assignment)
+        } else if let call = expression as? Expression.Call {
+            return try compile(call: call)
         }
         
         throw unsupportedError(expression: expression)
@@ -124,6 +126,8 @@ public class ExpressionSubCompiler: NSObject {
         switch symbol.type {
         case .u8, .boolean:
             return [.load(symbol.offset)]
+        case .function:
+            abort()
         }
     }
     
@@ -131,6 +135,8 @@ public class ExpressionSubCompiler: NSObject {
         switch symbol.type {
         case .u8, .boolean:
             return loadOneWord(symbol, depth)
+        case .function:
+            abort()
         }
     }
     
@@ -171,6 +177,8 @@ public class ExpressionSubCompiler: NSObject {
         switch symbol.type {
         case .u8, .boolean:
             return try compile(expression: assignment.child) + storeOneWord(symbol, depth)
+        case .function:
+            abort()
         }
     }
     
@@ -197,6 +205,24 @@ public class ExpressionSubCompiler: NSObject {
         instructions += computeAddressOfLocalVariable(symbol, depth)
         instructions += [.storeIndirect] // store the value at the final computed address
         return instructions
+    }
+    
+    private func compile(call node: Expression.Call) throws -> [YertleInstruction] {
+        let identifierToken = (node.callee as! Expression.Identifier).identifier
+        let symbol = try symbols.resolve(identifierToken: identifierToken)
+        switch symbol.type {
+        case .function:
+            return [
+                .jalr(identifierToken)
+            ]
+        default:
+            let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
+            if let lineNumber = node.tokens.first?.lineNumber {
+                throw CompilerError(line: lineNumber, message: message)
+            } else {
+                throw CompilerError(message: message)
+            }
+        }
     }
     
     private func unsupportedError(expression: Expression) -> Error {

@@ -705,6 +705,18 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
     }
     
+    func testJalr() {
+        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
+        let instructions: [YertleInstruction] = [
+            .push(1),
+            .jalr(foo),
+            .push(42),
+            .label(foo)
+        ]
+        let computer = try! execute(ir: instructions)
+        XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
+    }
+    
     func testJe_TakeTheBranch() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [

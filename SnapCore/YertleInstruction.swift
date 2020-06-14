@@ -33,8 +33,11 @@ public enum YertleInstruction: Equatable {
     case label(TokenIdentifier) // declares a label
     case jmp(TokenIdentifier) // unconditional jump, no change to the expression stack
     case je(TokenIdentifier) // pop two from the expression stack, jump if they are equal
+    case jalr(TokenIdentifier) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the expression stack save for whatever value was in the A register.
     case enter // push fp in two bytes ; fp <- sp
     case leave // sp <- fp ; fp <- pop two bytes from the stack
+    case leaf_ret // Jump back to the address in the link register to return from the function
+    case hlt // Halt execution
     
     public var description: String {
         switch self {
@@ -80,10 +83,16 @@ public enum YertleInstruction: Equatable {
             return "JMP \(token.lexeme)"
         case .je(let token):
             return "JE \(token.lexeme)"
+        case .jalr(let token):
+            return "JALR \(token.lexeme)"
         case .enter:
             return "ENTER"
         case .leave:
             return "LEAVE"
+        case .leaf_ret:
+            return "LEAF-RET"
+        case .hlt:
+            return "HLT"
         }
     }
     

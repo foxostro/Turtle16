@@ -34,6 +34,11 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.label(L0).description, ".L0:")
         XCTAssertEqual(YertleInstruction.jmp(L0).description, "JMP .L0")
         XCTAssertEqual(YertleInstruction.je(L0).description, "JE .L0")
+        XCTAssertEqual(YertleInstruction.jalr(L0).description, "JALR .L0")
+        XCTAssertEqual(YertleInstruction.enter.description, "ENTER")
+        XCTAssertEqual(YertleInstruction.leave.description, "LEAVE")
+        XCTAssertEqual(YertleInstruction.leaf_ret.description, "LEAF-RET")
+        XCTAssertEqual(YertleInstruction.hlt.description, "HLT")
     }
     
     func testMakeListing_Empty() {

@@ -92,8 +92,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .label(let token): try label(token: token)
             case .jmp(let token): try jmp(to: token)
             case .je(let token): try je(to: token)
+            case .jalr(let token): try jalr(to: token)
             case .enter: try enter()
             case .leave: try leave()
+            case .leaf_ret: try leaf_ret()
+            case .hlt: hlt()
             }
         }
         insertProgramEpilogue()
@@ -748,6 +751,15 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try popTwo()
     }
     
+    private func jalr(to token: TokenIdentifier) throws {
+        try setAddressToLabel(token)
+        assembler.jalr()
+        assembler.nop()
+        assembler.nop()
+        try clearExpressionStack()
+        stackDepth = 1
+    }
+    
     private func popTwo() throws {
         assert(stackDepth >= 2)
         
@@ -927,5 +939,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.U, kStackPointerLoHi)
         try assembler.li(.V, kStackPointerLoLo)
         try assembler.mov(.M, .Y)
+    }
+    
+    private func leaf_ret() throws {
+        try assembler.mov(.X, .G)
+        try assembler.mov(.Y, .H)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+    }
+    
+    private func hlt() {
+        assembler.hlt()
     }
 }

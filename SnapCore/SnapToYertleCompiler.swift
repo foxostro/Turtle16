@@ -109,6 +109,8 @@ public class SnapToYertleCompiler: NSObject {
         switch symbol.type {
         case .boolean, .u8:
             storeOneWord(symbol)
+        case .function:
+            abort()
         }
     }
     

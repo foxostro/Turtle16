@@ -108,7 +108,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
             microState = kMicroStateWaitingForFallingSCK
             
         default:
-            assert(false)
+            abort()
         }
     }
     
@@ -122,7 +122,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
             nextState = doStateWaiting(mosi: inputBuffer)
               
         default:
-              assert(false)
+              abort()
         }
         state = nextState
     }
@@ -143,7 +143,7 @@ public class SerialInterfacePeripheral: ComputerPeripheral {
             nextState = doCommandGetNumBytes()
 
         default:
-            assert(false)
+            abort()
         }
         return nextState
     }

@@ -29,6 +29,11 @@ class SymbolTableTests: XCTestCase {
             XCTAssertNotNil(error)
             XCTAssertEqual(error?.message, "use of unresolved identifier: `foo'")
         }
+        XCTAssertThrowsError(try symbols.resolveWithDepth(identifierToken: token)) {
+            let error = $0 as? CompilerError
+            XCTAssertNotNil(error)
+            XCTAssertEqual(error?.message, "use of unresolved identifier: `foo'")
+        }
     }
     
     func testSuccessfullyResolveAnIdentifierByToken() {
@@ -37,9 +42,11 @@ class SymbolTableTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
         let symbol = try! symbols.resolve(identifierToken: token)
         switch symbol.type {
-        case .boolean, .u8:
+        case .u8:
             XCTAssertEqual(symbol.offset, 0x10)
             XCTAssertEqual(symbol.isMutable, true)
+        default:
+            XCTFail()
         }
     }
     

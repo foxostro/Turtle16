@@ -348,8 +348,8 @@ public class SnapParser: Parser {
                     arguments.append(try consumeExpression())
                     while nil != accept(TokenNewline.self) {}
                 } while nil != accept(TokenComma.self)
+                try expect(type: TokenParenRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `)'"))
             }
-            try expect(type: TokenParenRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `)'"))
             expr = Expression.Call(callee: expr, arguments: arguments)
         }
         return expr

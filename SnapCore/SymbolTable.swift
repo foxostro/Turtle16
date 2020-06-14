@@ -58,26 +58,37 @@ public class SymbolTable: NSObject {
     }
     
     public func resolve(identifier: String) throws -> Symbol {
-        guard let symbol = maybeResolve(identifier: identifier) else {
+        guard let resolution = maybeResolve(identifier: identifier) else {
             throw CompilerError(message: "use of unresolved identifier: `\(identifier)'")
         }
-        return symbol
+        return resolution.0
     }
     
     public func resolve(identifierToken: TokenIdentifier) throws -> Symbol {
-        guard let symbol = maybeResolve(identifier: identifierToken.lexeme) else {
+        guard let resolution = maybeResolve(identifier: identifierToken.lexeme) else {
             throw CompilerError(line: identifierToken.lineNumber,
                                 format: "use of unresolved identifier: `%@'",
                                 identifierToken.lexeme)
         }
-        return symbol
+        return resolution.0
     }
     
-    private func maybeResolve(identifier: String) -> Symbol? {
+    public func resolveWithDepth(identifierToken: TokenIdentifier) throws -> (Symbol, Int) {
+        guard let resolution = maybeResolve(identifier: identifierToken.lexeme) else {
+            throw CompilerError(line: identifierToken.lineNumber,
+                                format: "use of unresolved identifier: `%@'",
+                                identifierToken.lexeme)
+        }
+        return resolution
+    }
+    
+    private func maybeResolve(identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
-            return symbol
+            return (symbol, 0)
+        } else if let parentResolution = parent?.maybeResolve(identifier: identifier) {
+            return (parentResolution.0, parentResolution.1 + 1)
         } else {
-            return parent?.maybeResolve(identifier: identifier) ?? nil
+            return nil
         }
     }
 }

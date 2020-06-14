@@ -221,17 +221,17 @@ public class SnapToYertleCompiler: NSObject {
     
     private func compile(block: Block) throws {
         pushScope()
-//        instructions += [.enter]
+        instructions += [.enter]
         for child in block.children {
             try compile(genericNode: child)
         }
-//        instructions += [.leave]
+        instructions += [.leave]
         popScope()
     }
     
     private func pushScope() {
         symbols = SymbolTable(parent: symbols)
-        symbols.storagePointer = 3
+        symbols.storagePointer = 1
     }
     
     private func popScope() {

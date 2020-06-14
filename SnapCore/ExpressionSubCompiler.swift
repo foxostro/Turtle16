@@ -109,12 +109,14 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
-        let symbol = try symbols.resolve(identifierToken: identifier.identifier)
+        let resolution = try symbols.resolveWithDepth(identifierToken: identifier.identifier)
+        let symbol = resolution.0
+        let depth = resolution.1
         switch symbol.storage {
         case .staticStorage:
             return loadStaticSymbol(symbol)
         case .stackStorage:
-            return loadStackSymbol(symbol)
+            return loadStackSymbol(symbol, depth)
         }
     }
     
@@ -125,45 +127,60 @@ public class ExpressionSubCompiler: NSObject {
         }
     }
     
-    private func loadStackSymbol(_ symbol: Symbol) -> [YertleInstruction] {
+    private func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         switch symbol.type {
         case .u8, .boolean:
-            return loadOneWord(symbol: symbol)
+            return loadOneWord(symbol, depth)
         }
     }
     
-    private func loadOneWord(symbol: Symbol) -> [YertleInstruction] {
-        return [
-            .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
-            .push(symbol.offset),
-            .load(kFramePointerAddressHi),
-            .load(kFramePointerAddressLo),
-            .loadIndirect,
-            .sub,
-            .loadIndirect,
+    private func loadOneWord(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        instructions += computeAddressOfLocalVariable(symbol, depth)
+        instructions += [.loadIndirect] // load the value at the final computed address
+        return instructions
+    }
+    
+    private func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
+        let kFramePointerHighByte = 0xfe
+        var instructions: [YertleInstruction] = []
+        instructions += [
+            .push(kFramePointerHighByte), // HACK: just assume the high byte of the frame pointer one level up is 0xfe
+            .push(symbol.offset)
         ]
+        instructions += [YertleInstruction].init(repeating: .push(kFramePointerHighByte), count: depth)
+        instructions += [
+            .load(kFramePointerAddressLo)
+        ]
+        instructions += [YertleInstruction].init(repeating: .loadIndirect, count: depth)
+        instructions += [
+            .sub, // apply the offset to get the final address
+        ]
+        return instructions
     }
     
     private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
-        let symbol = try symbols.resolve(identifierToken: assignment.identifier)
-        
+        let resolution = try symbols.resolveWithDepth(identifierToken: assignment.identifier)
+        let symbol = resolution.0
+        let depth = resolution.1
         guard symbol.isMutable else {
             throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
         }
         
         switch symbol.type {
         case .u8, .boolean:
-            return try compile(expression: assignment.child) + storeOneWord(symbol: symbol)
+            return try compile(expression: assignment.child) + storeOneWord(symbol, depth)
         }
     }
     
-    private func storeOneWord(symbol: Symbol) -> [YertleInstruction] {
+    private func storeOneWord(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         assert(symbol.isMutable)
         switch symbol.storage {
         case .staticStorage:
             return storeOneWordStatic(symbol: symbol)
         case .stackStorage:
-            return storeOneWordStack(symbol: symbol)
+            return storeOneWordStack(symbol, depth)
         }
     }
     
@@ -173,18 +190,13 @@ public class ExpressionSubCompiler: NSObject {
         return [.store(symbol.offset)]
     }
     
-    private func storeOneWordStack(symbol: Symbol) -> [YertleInstruction] {
+    private func storeOneWordStack(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         assert(symbol.isMutable)
         assert(symbol.storage == .stackStorage)
-        return [
-            .push(0xfe), // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
-            .push(symbol.offset),
-            .load(kFramePointerAddressHi),
-            .load(kFramePointerAddressLo),
-            .loadIndirect,
-            .sub,
-            .storeIndirect,
-        ]
+        var instructions: [YertleInstruction] = []
+        instructions += computeAddressOfLocalVariable(symbol, depth)
+        instructions += [.storeIndirect] // store the value at the final computed address
+        return instructions
     }
     
     private func unsupportedError(expression: Expression) -> Error {

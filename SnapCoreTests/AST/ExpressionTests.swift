@@ -151,4 +151,29 @@ class ExpressionTests: XCTestCase {
                        Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                              expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
     }
+    
+    func testCallEquality() {
+        // Different callee
+        XCTAssertNotEqual(Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                          arguments: [ExprUtils.makeLiteralWord(value: 1)]),
+                          Expression.Call(callee: ExprUtils.makeIdentifier(name: "bar"),
+                                          arguments: [ExprUtils.makeLiteralWord(value: 1)]))
+        // Different arguments
+        XCTAssertNotEqual(Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                          arguments: [ExprUtils.makeLiteralWord(value: 1)]),
+                          Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                          arguments: [ExprUtils.makeLiteralWord(value: 2)]))
+        
+        // Same
+        XCTAssertEqual(Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                       arguments: [ExprUtils.makeLiteralWord(value: 1)]),
+                       Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                       arguments: [ExprUtils.makeLiteralWord(value: 1)]))
+        
+        // Hash
+        XCTAssertEqual(Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                       arguments: [ExprUtils.makeLiteralWord(value: 1)]).hash,
+                       Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                        arguments: [ExprUtils.makeLiteralWord(value: 1)]).hash)
+    }
 }

@@ -940,4 +940,52 @@ for var i = 0; i < 10; i = i + 1 {
             ])
         ])
     }
+    
+    func testParseFunctionCallWithNoArguments() {
+        let tokens = tokenize("foo()")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
+        ])
+    }
+    
+    func testParseFunctionCallWithOneArgument() {
+        let tokens = tokenize("foo(1)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                            arguments: [ExprUtils.makeLiteralWord(value: 1)])
+        ])
+    }
+    
+    func testParseFunctionCallWithTwoArgument() {
+        let tokens = tokenize("foo(1, 2)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                            arguments: [ExprUtils.makeLiteralWord(value: 1),
+                                        ExprUtils.makeLiteralWord(value: 2)])
+        ])
+    }
+    
+    func testParseFunctionInExpression() {
+        let tokens = tokenize("1 + foo(1, 2)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                              left: ExprUtils.makeLiteralWord(value: 1),
+                              right: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                                     arguments: [ExprUtils.makeLiteralWord(value: 1),
+                                                                 ExprUtils.makeLiteralWord(value: 2)]))
+            
+        ])
+    }
 }

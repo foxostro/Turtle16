@@ -143,4 +143,138 @@ i = 3
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
     }
+    
+    func test_EndToEndIntegration_DeclaringLocalVarsStoresThemOnTheStack() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 0xaa
+{
+    var b = 0xbb
+    {
+        var c = 0xcc
+    }
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xcc) // var c
+    }
+    
+    func test_EndToEndIntegration_ReadingStackLocalVariable() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 0xaa
+{
+    var b = 0xbb
+    a = b
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb) // var a
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
+    }
+    
+    func test_EndToEndIntegration_StoringStackLocalVariable() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+{
+    var b = 0
+    b = 0xbb
+}
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
+    }
+    
+    func test_EndToEndIntegration_ChaseTheFramePointer_LoadLocalVariable() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 0xaa
+{
+    var b = a
+    {
+        {
+            {
+                var d = b // chase the frame pointer three times
+            }
+        }
+    }
+}
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xaa) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef9), 0xfb) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef8), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef7), 0xf9) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef6), 0xaa) // var d
+    }
+    
+    func test_EndToEndIntegration_ChaseTheFramePointer_StoreLocalVariable() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 0xaa
+{
+    var b = 0
+    {
+        {
+            {
+                b = 0xbb
+            }
+        }
+    }
+}
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef9), 0xfb) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef8), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef7), 0xf9) // fp[lo]
+    }
+    
+    func test_EndToEndIntegration_NestedBlocksAndReadVarsOneLevelUp() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 0xaa
+{
+    var b = a
+    {
+        var c = b
+        {
+            var d = c
+        }
+    }
+}
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xaa) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xaa) // var c
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef9), 0xfe) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef8), 0xfb) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfef7), 0xaa) // var d
+    }
 }

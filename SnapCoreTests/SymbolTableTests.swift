@@ -116,4 +116,14 @@ class SymbolTableTests: XCTestCase {
         let symbol = try! symbols.resolve(identifier: "foo")
         XCTAssertEqual(symbol, Symbol(type: .boolean, offset: 0x10, isMutable: false))
     }
+    
+    func testResolveSymbolWithDepth() {
+        let token = TokenIdentifier(lineNumber: 1, lexeme: "foo")
+        let parent = SymbolTable()
+        parent.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        let symbols = SymbolTable(parent: parent, dict: [:])
+        let resolution = try! symbols.resolveWithDepth(identifierToken: token)
+        XCTAssertEqual(resolution.0, Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        XCTAssertEqual(resolution.1, 1)
+    }
 }

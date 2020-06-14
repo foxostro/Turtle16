@@ -193,6 +193,7 @@ public class Interpreter: NSObject {
     private func handleControlSignalMO() {
         if (.active == cpuState.controlWord.MO) {
             let value = dataRAM.load(from: cpuState.valueOfUVPair())
+//            print(String(format: "load 0x%02x from RAM at 0x%04x", value, cpuState.valueOfUVPair()))
             cpuState.bus = Register(withValue: value)
         }
     }
@@ -346,6 +347,7 @@ public class Interpreter: NSObject {
     
     private func handleControlSignalMI() {
         if (.active == cpuState.controlWord.MI) {
+//            print(String(format: "store 0x%02x to RAM at 0x%04x", cpuState.bus.value, cpuState.valueOfUVPair()))
             dataRAM.store(value: cpuState.bus.value,
                           to: cpuState.valueOfUVPair())
         }

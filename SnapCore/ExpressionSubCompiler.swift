@@ -212,9 +212,13 @@ public class ExpressionSubCompiler: NSObject {
         let symbol = try symbols.resolve(identifierToken: identifierToken)
         switch symbol.type {
         case .function:
-            return [
-                .jalr(identifierToken)
-            ]
+            var instructions: [YertleInstruction] = []
+            for expr in node.arguments {
+                let compiledExpr = try compile(expression: expr)
+                instructions += compiledExpr
+            }
+            instructions += [.jalr(identifierToken)]
+            return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
             if let lineNumber = node.tokens.first?.lineNumber {

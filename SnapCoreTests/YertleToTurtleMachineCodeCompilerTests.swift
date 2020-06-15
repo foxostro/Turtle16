@@ -75,18 +75,17 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3)])
         XCTAssertEqual(computer.cpuState.registerA.value, 3)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackPointer, 0xffff)
-        let topOfMemoryStack = computer.dataRAM.load(from: 0xffff)
-        XCTAssertEqual(topOfMemoryStack, 1)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
+        XCTAssertEqual(computer.expressionStackTop, 1)
     }
     
     func testPushFourValues() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4)])
         XCTAssertEqual(computer.cpuState.registerA.value, 4)
         XCTAssertEqual(computer.cpuState.registerB.value, 3)
-        XCTAssertEqual(computer.expressionStackPointer, 0xfffe)
-        let memoryStack0 = computer.dataRAM.load(from: 0xfffe)
-        let memoryStack1 = computer.dataRAM.load(from: 0xffff)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffc)
+        let memoryStack0 = computer.dataRAM.load(from: 0xfffc)
+        let memoryStack1 = computer.dataRAM.load(from: 0xfffd)
         XCTAssertEqual(memoryStack0, 2)
         XCTAssertEqual(memoryStack1, 1)
     }
@@ -94,113 +93,34 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     // Push values until just before the point where the expression stack would
     // overflow.
     func testPushUntilJustBeforeExpressionStackOverflows() {
-        let count = 257
+        let kExpressionStackPointerInitialValue = UInt16(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue)
+        let count = 3
         var ir: [YertleInstruction] = []
-        for _ in 0...count {
-            ir.append(.push(255))
+        for i in 0..<count {
+            ir.append(.push(i))
         }
         let computer = try! execute(ir: ir)
-        XCTAssertEqual(Int(computer.cpuState.registerA.value), 255)
-        XCTAssertEqual(Int(computer.cpuState.registerB.value), 255)
-        for i in 2...count {
-            let address = UInt16(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue) &- UInt16(count - i + 1)
-            let actual = computer.dataRAM.load(from: Int(address))
-            XCTAssertEqual(actual, 255)
-        }
-        let expectedStackPointer = UInt16(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue) &- UInt16(count - 1)
+        XCTAssertEqual(Int(computer.cpuState.registerA.value), count-1)
+        XCTAssertEqual(Int(computer.cpuState.registerB.value), count-2)
+        
+        let expectedStackPointer = kExpressionStackPointerInitialValue &- UInt16(count)
         XCTAssertEqual(computer.expressionStackPointer, Int(expectedStackPointer))
-    }
-    
-    // Push values until just before the point where the expression stack would
-    // overflow.
-    func testPushUntilExpressionStackOverflows() {
-        let count = 258
-        var ir: [YertleInstruction] = []
-        for _ in 0...count {
-            ir.append(.push(255))
+        
+        for i in 0..<count-3 {
+            let address = computer.expressionStackPointer + i
+            let actual = computer.dataRAM.load(from: Int(address))
+            XCTAssertEqual(actual, UInt8(count-3 - i))
         }
-        XCTAssertThrowsError(try execute(ir: ir)) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack overflow during PUSH")
-        }
-    }
-    
-    func testPopWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.pop])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: cannot pop when expression stack is empty")
-        }
-    }
-    
-    func testPopWithStackDepthOneAndStackPointerDoesNotChange() {
-        // The top two stack slots are in registers A and B.
-        let computer = try! execute(ir: [.push(1), .pop])
-        let expressionStackPointerInitialValue = (YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi << 8) + YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
-        XCTAssertEqual(computer.expressionStackPointer, expressionStackPointerInitialValue)
-        // Do not test A. It's stale and we don't care what's in it.
-        XCTAssertEqual(computer.cpuState.registerB.value, 0)
-    }
-    
-    func testPopWithStackDepthTwoAndStackPointerDoesNotChange() {
-        // The top two stack slots are in registers A and B.
-        let computer = try! execute(ir: [.push(1), .push(2), .pop])
-        let expressionStackPointerInitialValue = (YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi << 8) + YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
-        XCTAssertEqual(computer.expressionStackPointer, expressionStackPointerInitialValue)
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        // Do not test B. It's stale and we don't care what's in it.
-    }
-    
-    func testPopWithStackDepthThreeAndStackPointerDoesNotChange() {
-        // The third stack slot is in memory at 0xffff. When we pop that, the
-        // stack pointer returns to the initial value.
-        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .pop])
-        let expressionStackPointerInitialValue = (YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi << 8) + YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
-        XCTAssertEqual(computer.expressionStackPointer, expressionStackPointerInitialValue)
-        XCTAssertEqual(computer.cpuState.registerA.value, 2)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
-    }
-    
-    func testPopWithStackDepthFour() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .pop])
-        XCTAssertEqual(computer.cpuState.registerA.value, 3)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
-        XCTAssertEqual(UInt16(computer.expressionStackPointer), UInt16(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue) &- 1)
     }
     
     func testPopWithStackDepthFive() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .push(5), .pop])
         XCTAssertEqual(computer.cpuState.registerA.value, 4)
         XCTAssertEqual(computer.cpuState.registerB.value, 3)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 1)
         XCTAssertEqual(computer.expressionStackTop, 2)
-        XCTAssertEqual(computer.expressionStackPointer, 0xfffe)
-    }
-    
-    func testEqWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.eq])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during EQ")
-        }
-    }
-    
-    func testEqWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .eq])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during EQ")
-        }
-    }
-    
-    func testEqWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .eq])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-    }
-    
-    func testEqWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(42), .push(42), .eq])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffc)
     }
     
     func testEqWithStackDepthFour() {
@@ -210,61 +130,11 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.expressionStackTop, 1)
     }
     
-    func testNeWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.ne])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during NE")
-        }
-    }
-    
-    func testNeWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .ne])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during NE")
-        }
-    }
-    
-    func testNeWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .ne])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-    }
-    
-    func testNeWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(42), .push(42), .ne])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
-    }
-    
     func testNeWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .ne])
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
         XCTAssertEqual(computer.expressionStackTop, 1)
-    }
-    
-    func testLtWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.lt])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LT")
-        }
-    }
-    
-    func testLtWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .lt])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LT")
-        }
-    }
-    
-    func testLtWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .lt])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-    }
-    
-    func testLtWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(42), .push(2), .lt])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
     }
     
     func testLtWithStackDepthFour() {
@@ -274,61 +144,11 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.expressionStackTop, 1)
     }
     
-    func testGtWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.gt])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during GT")
-        }
-    }
-    
-    func testGtWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .gt])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during GT")
-        }
-    }
-    
-    func testGtWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .gt])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-    }
-    
-    func testGtWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(42), .push(2), .gt])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
-    }
-    
     func testGtWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .gt])
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
         XCTAssertEqual(computer.expressionStackTop, 1)
-    }
-    
-    func testLeWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.le])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LE")
-        }
-    }
-    
-    func testLeWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .le])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LE")
-        }
-    }
-    
-    func testLeWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .le])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-    }
-    
-    func testLeWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(42), .push(2), .le])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
     }
     
     func testLeWithStackDepthFour() {
@@ -338,31 +158,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.expressionStackTop, 1)
     }
     
-    func testGeWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.ge])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during GE")
-        }
-    }
-    
-    func testGeWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .ge])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during GE")
-        }
-    }
-    
-    func testGeWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .ge])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-    }
-    
-    func testGeWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(42), .push(2), .ge])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
-    }
-    
     func testGeWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .ge])
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
@@ -370,61 +165,11 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.expressionStackTop, 1)
     }
     
-    func testAddWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.add])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during ADD")
-        }
-    }
-    
-    func testAddWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .add])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during ADD")
-        }
-    }
-    
-    func testAddWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .add])
-        XCTAssertEqual(computer.cpuState.registerA.value, 3)
-    }
-    
-    func testAddWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .add])
-        XCTAssertEqual(computer.cpuState.registerA.value, 5)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
-    }
-    
     func testAddWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .add])
         XCTAssertEqual(computer.cpuState.registerA.value, 7)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
         XCTAssertEqual(computer.expressionStackTop, 1)
-    }
-    
-    func testSubWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.sub])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during SUB")
-        }
-    }
-    
-    func testSubWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .sub])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during SUB")
-        }
-    }
-    
-    func testSubWithStackDepthTwo() {
-        let computer = try! execute(ir: [.push(1), .push(2), .sub])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-    }
-    
-    func testSubWithStackDepthThree() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
     }
     
     func testSubWithStackDepthFour() {
@@ -437,20 +182,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testSubTwice() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub, .sub])
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
-    }
-    
-    func testMulWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.mul])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during MUL")
-        }
-    }
-    
-    func testMulWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.mul])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during MUL")
-        }
     }
     
     func testMul_0x0() {
@@ -484,20 +215,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.cpuState.registerA.value, 4)
         XCTAssertEqual(computer.cpuState.registerB.value, 254)
         XCTAssertEqual(computer.expressionStackTop, 255)
-    }
-    
-    func testDivWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.div])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during DIV")
-        }
-    }
-    
-    func testDivWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.div])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during DIV")
-        }
     }
     
     func testDiv_1div0() {
@@ -534,13 +251,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.expressionStackTop, 255)
     }
     
-    func testModWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.mod])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during MOD")
-        }
-    }
-    
     func testMod_1mod0() {
         // There's a check in the MOD command to ensure that all division by
         // zero yields a result of zero.
@@ -552,16 +262,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! execute(ir: [.push(255), .push(1), .push(1), .mod])
         XCTAssertEqual(computer.cpuState.registerA.value, 0)
         XCTAssertEqual(computer.cpuState.registerB.value, 255)
-        let expressionStackPointerInitialValue = (YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi << 8) + YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
-        XCTAssertEqual(computer.expressionStackPointer, expressionStackPointerInitialValue)
-    }
-    
-    func testMod_modulus_pops_the_stack() {
-        let computer = try! execute(ir: [.push(255), .push(1), .push(1), .mod])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 255)
-        let expressionStackPointerInitialValue = (YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi << 8) + YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
-        XCTAssertEqual(computer.expressionStackPointer, expressionStackPointerInitialValue)
     }
     
     func testMod_1mod2() {
@@ -614,15 +314,8 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: [.push(1), .push(2), .load(address)])
         XCTAssertEqual(computer.cpuState.registerA.value, value)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackPointer, 0xffff)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
         XCTAssertEqual(computer.expressionStackTop, 1)
-    }
-    
-    func testStoreWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.store(0)])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: cannot STORE while expression stack is empty")
-        }
     }
     
     func testStoreWithStackDepthOne() {
@@ -645,7 +338,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: address), 1)
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackPointer, 0xffff)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
         XCTAssertEqual(computer.expressionStackTop, 3)
     }
     
@@ -655,7 +348,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: address), 1)
         XCTAssertEqual(computer.cpuState.registerA.value, 1)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackPointer, 0xfffe)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffc)
         XCTAssertEqual(computer.expressionStackTop, 3)
     }
     
@@ -674,22 +367,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "label redefines existing symbol: `foo'")
-        }
-    }
-    
-    func testJeWithEmptyStack() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertThrowsError(try execute(ir: [.je(foo)])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during JE")
-        }
-    }
-    
-    func testJeWithStackDepthOne() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        XCTAssertThrowsError(try execute(ir: [.push(1), .je(foo)])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during JE")
         }
     }
     
@@ -750,7 +427,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testJe_StackDepthThree() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [
-            .push(5), // will end up in 0xffff
+            .push(5), // will end up in 0xfffd
             .push(4), // will end up in B
             .push(3), // will end up in A
             .push(2), // will be popped
@@ -761,7 +438,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! execute(ir: instructions)
         XCTAssertEqual(computer.cpuState.registerA.value, 3)
         XCTAssertEqual(computer.cpuState.registerB.value, 4)
-        XCTAssertEqual(computer.expressionStackPointer, 0xffff)
+        XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
         XCTAssertEqual(computer.expressionStackTop, 5)
     }
     
@@ -786,20 +463,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: kFramePointerHi), 0xff)
         XCTAssertEqual(computer.dataRAM.load(from: kFramePointerLo), 0x00)
         XCTAssertEqual(computer.stackPointer, 0xff00)
-    }
-    
-    func testLoadIndirectWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.loadIndirect])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LOAD-INDIRECT")
-        }
-    }
-    
-    func testLoadIndirectWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .loadIndirect])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during LOAD-INDIRECT")
-        }
     }
     
     func testLoadIndirectWithStackDepthTwo() {
@@ -830,27 +493,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
         XCTAssertEqual(computer.cpuState.registerB.value, 2)
         XCTAssertEqual(computer.expressionStackTop, 1)
-    }
-    
-    func testStoreIndirectWithEmptyStack() {
-        XCTAssertThrowsError(try execute(ir: [.storeIndirect])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
-        }
-    }
-    
-    func testStoreIndirectWithStackDepthOne() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .storeIndirect])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
-        }
-    }
-    
-    func testStoreIndirectWithStackDepthTwo() {
-        XCTAssertThrowsError(try execute(ir: [.push(1), .push(2), .storeIndirect])) {
-            XCTAssertEqual(($0 as? CompilerError)?.message,
-                           "YertleToTurtleMachineCodeCompiler: expression stack underflow during STORE-INDIRECT")
-        }
     }
     
     func testStoreIndirectWithStackDepthThree() {

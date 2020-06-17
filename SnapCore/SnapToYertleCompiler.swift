@@ -84,7 +84,6 @@ public class SnapToYertleCompiler: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
         storeSymbol(symbol)
-        instructions += [.pop]
     }
     
     private func makeSymbolWithInferredType(expression: Expression, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
@@ -106,48 +105,19 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func storeSymbol(_ symbol: Symbol) {
-        switch symbol.type {
-        case .boolean, .u8:
-            storeOneWord(symbol)
-        case .function:
-            abort()
-        }
-    }
-    
-    private func storeOneWord(_ symbol: Symbol) {
         switch symbol.storage {
         case .staticStorage:
-            instructions += [
-                .store(symbol.offset)
-            ]
+            switch symbol.type {
+            case .boolean, .u8:
+                instructions += [
+                    .store(symbol.offset),
+                    .pop
+                ]
+            case .function:
+                abort()
+            }
         case .stackStorage:
-            // A local variable has a static offset from the frame pointer.
-            // Given this offset, calculate the variable's address and then
-            // store the initial value to that address. The initial value is
-            // assumed to be at the top of the expression stack going into this
-            // method.
-            // Finally, decrement the stack pointer by one to ensure space for
-            // the local variable is allocated on the stack frame.
-            let kStackPointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
-            let kStackPointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo)
-            
-            instructions += [
-                // TODO: This whole sequence of instructions could (perhaps should) be replaced by a single, new instruction to push an eight-bit value to the control stack.
-                
-                .push(0xfe), // TODO: Assume the stack pointer high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
-                .store(kStackPointerAddressHi),
-                .pop,
-                
-                .push(1),
-                .load(kStackPointerAddressLo),
-                .sub,
-                .store(kStackPointerAddressLo),
-                .pop,
-                
-                .load(kStackPointerAddressHi),
-                .load(kStackPointerAddressLo),
-                .storeIndirect
-            ]
+            break
         }
     }
     

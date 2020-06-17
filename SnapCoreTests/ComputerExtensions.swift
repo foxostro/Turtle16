@@ -18,8 +18,9 @@ extension Computer {
         return stackPointer
     }
     
-    public var expressionStackTop: UInt8 {
-        return dataRAM.load(from: expressionStackPointer)
+    public func expressionStack(_ index: Int) -> UInt8 {
+        let address = UInt16(expressionStackPointer) + UInt16(index)
+        return dataRAM.load(from: Int(address))
     }
     
     public var stackPointer: Int {

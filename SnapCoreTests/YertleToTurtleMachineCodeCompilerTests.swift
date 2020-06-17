@@ -59,35 +59,34 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     
     func testPushOneValue() {
         let computer1 = try! execute(ir: [.push(1)])
-        XCTAssertEqual(computer1.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer1.expressionStack(0), 1)
         
         let computer2 = try! execute(ir: [.push(2)])
-        XCTAssertEqual(computer2.cpuState.registerA.value, 2)
+        XCTAssertEqual(computer2.expressionStack(0), 2)
     }
     
     func testPushTwoValues() {
         let computer = try! execute(ir: [.push(1), .push(2)])
-        XCTAssertEqual(computer.cpuState.registerA.value, 2)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+        XCTAssertEqual(computer.expressionStack(0), 2)
+        XCTAssertEqual(computer.expressionStack(1), 1)
     }
     
     func testPushThreeValues() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3)])
-        XCTAssertEqual(computer.cpuState.registerA.value, 3)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), 3)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        
     }
     
     func testPushFourValues() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4)])
-        XCTAssertEqual(computer.cpuState.registerA.value, 4)
-        XCTAssertEqual(computer.cpuState.registerB.value, 3)
+        XCTAssertEqual(computer.expressionStack(0), 4)
+        XCTAssertEqual(computer.expressionStack(1), 3)
+        XCTAssertEqual(computer.expressionStack(2), 2)
+        XCTAssertEqual(computer.expressionStack(3), 1)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffc)
-        let memoryStack0 = computer.dataRAM.load(from: 0xfffc)
-        let memoryStack1 = computer.dataRAM.load(from: 0xfffd)
-        XCTAssertEqual(memoryStack0, 2)
-        XCTAssertEqual(memoryStack1, 1)
     }
     
     // Push values until just before the point where the expression stack would
@@ -100,185 +99,180 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             ir.append(.push(i))
         }
         let computer = try! execute(ir: ir)
-        XCTAssertEqual(Int(computer.cpuState.registerA.value), count-1)
-        XCTAssertEqual(Int(computer.cpuState.registerB.value), count-2)
         
         let expectedStackPointer = kExpressionStackPointerInitialValue &- UInt16(count)
         XCTAssertEqual(computer.expressionStackPointer, Int(expectedStackPointer))
         
         for i in 0..<count-3 {
-            let address = computer.expressionStackPointer + i
-            let actual = computer.dataRAM.load(from: Int(address))
-            XCTAssertEqual(actual, UInt8(count-3 - i))
+            XCTAssertEqual(computer.expressionStack(i), UInt8(count-3 - i))
         }
     }
     
     func testPopWithStackDepthFive() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .push(5), .pop])
-        XCTAssertEqual(computer.cpuState.registerA.value, 4)
-        XCTAssertEqual(computer.cpuState.registerB.value, 3)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 1)
-        XCTAssertEqual(computer.expressionStackTop, 2)
+        XCTAssertEqual(computer.expressionStack(0), 4)
+        XCTAssertEqual(computer.expressionStack(1), 3)
+        XCTAssertEqual(computer.expressionStack(2), 2)
+        XCTAssertEqual(computer.expressionStack(3), 1)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffc)
     }
     
     func testEqWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .eq])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 0)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testNeWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .ne])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testLtWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .lt])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 0)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testGtWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .gt])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testLeWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .le])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 0)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testGeWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .ge])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testAddWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .add])
-        XCTAssertEqual(computer.cpuState.registerA.value, 7)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 7)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testSubWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .sub])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testSubTwice() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub, .sub])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testMul_0x0() {
         let computer = try! execute(ir: [.push(0), .push(0), .mul])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testMul_1x0() {
         let computer = try! execute(ir: [.push(1), .push(0), .mul])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testMul_1x1() {
         let computer = try! execute(ir: [.push(1), .push(1), .mul])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.expressionStack(0), 1)
     }
     
     func testMul_4x3() {
         let computer = try! execute(ir: [.push(4), .push(3), .mul])
-        XCTAssertEqual(computer.cpuState.registerA.value, 12)
+        XCTAssertEqual(computer.expressionStack(0), 12)
     }
     
     func testMul_255x2() {
         // Multiplication is basically modulo 255.
         let computer = try! execute(ir: [.push(255), .push(2), .mul])
-        XCTAssertEqual(computer.cpuState.registerA.value, 254)
+        XCTAssertEqual(computer.expressionStack(0), 254)
     }
     
     func testMul_PopsTheStackToo() {
         let computer = try! execute(ir: [.push(255), .push(254), .push(2), .push(2), .mul])
-        XCTAssertEqual(computer.cpuState.registerA.value, 4)
-        XCTAssertEqual(computer.cpuState.registerB.value, 254)
-        XCTAssertEqual(computer.expressionStackTop, 255)
+        XCTAssertEqual(computer.expressionStack(0), 4)
+        XCTAssertEqual(computer.expressionStack(1), 254)
+        XCTAssertEqual(computer.expressionStack(2), 255)
     }
     
     func testDiv_1div0() {
         // There's a check in the DIV command to ensure that all division by
         // zero yields a result of zero.
         let computer = try! execute(ir: [.push(1), .push(0), .div])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testDiv_0div1() {
         let computer = try! execute(ir: [.push(1), .push(0), .div])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testDiv_2div1() {
         let computer = try! execute(ir: [.push(1), .push(2), .div])
-        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), 2)
     }
     
     func testDiv_4div2() {
         let computer = try! execute(ir: [.push(2), .push(4), .div])
-        XCTAssertEqual(computer.cpuState.registerA.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), 2)
     }
     
     func testDiv_3div4() {
         let computer = try! execute(ir: [.push(4), .push(3), .div])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testDiv_PopsTheStackToo() {
         let computer = try! execute(ir: [.push(255), .push(254), .push(2), .push(2), .div])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 254)
-        XCTAssertEqual(computer.expressionStackTop, 255)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 254)
+        XCTAssertEqual(computer.expressionStack(2), 255)
     }
     
     func testMod_1mod0() {
         // There's a check in the MOD command to ensure that all division by
         // zero yields a result of zero.
         let computer = try! execute(ir: [.push(1), .push(0), .mod])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
+        XCTAssertEqual(computer.expressionStack(0), 0)
     }
     
     func testMod_1mod1() {
         let computer = try! execute(ir: [.push(255), .push(1), .push(1), .mod])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0)
-        XCTAssertEqual(computer.cpuState.registerB.value, 255)
+        XCTAssertEqual(computer.expressionStack(0), 0)
+        XCTAssertEqual(computer.expressionStack(1), 255)
     }
     
     func testMod_1mod2() {
         let computer = try! execute(ir: [.push(2), .push(1), .mod])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
+        XCTAssertEqual(computer.expressionStack(0), 1)
     }
     
     func testMod_7mod4() {
         let computer = try! execute(ir: [.push(4), .push(7), .mod])
-        XCTAssertEqual(computer.cpuState.registerA.value, 3)
+        XCTAssertEqual(computer.expressionStack(0), 3)
     }
     
     func testMod_PopsTheStackToo() {
         let computer = try! execute(ir: [.push(255), .push(254), .push(2), .push(3), .mod])
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 254)
-        XCTAssertEqual(computer.expressionStackTop, 255)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 254)
+        XCTAssertEqual(computer.expressionStack(2), 255)
     }
     
     func testLoadWithEmptyStack() {
@@ -289,7 +283,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: value, to: address)
         }
         let computer = try! executor.execute(ir: [.load(address)])
-        XCTAssertEqual(computer.cpuState.registerA.value, value)
+        XCTAssertEqual(computer.expressionStack(0), value)
     }
     
     func testLoadWithStackDepthOne() {
@@ -300,8 +294,8 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: value, to: address)
         }
         let computer = try! executor.execute(ir: [.push(1), .load(address)])
-        XCTAssertEqual(computer.cpuState.registerA.value, value)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+        XCTAssertEqual(computer.expressionStack(0), value)
+        XCTAssertEqual(computer.expressionStack(1), 1)
     }
     
     func testLoadWithStackDepthTwo() {
@@ -312,10 +306,10 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: value, to: address)
         }
         let computer = try! executor.execute(ir: [.push(1), .push(2), .load(address)])
-        XCTAssertEqual(computer.cpuState.registerA.value, value)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), value)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
-        XCTAssertEqual(computer.expressionStackTop, 1)
     }
     
     func testStoreWithStackDepthOne() {
@@ -328,28 +322,28 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         let address = 0x0010
         let computer = try! execute(ir: [.push(2), .push(1), .store(address)])
         XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
     }
     
     func testStoreWithStackDepthThree() {
         let address = 0x0010
         let computer = try! execute(ir: [.push(3), .push(2), .push(1), .store(address)])
         XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 3)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
-        XCTAssertEqual(computer.expressionStackTop, 3)
     }
     
     func testStoreWithStackDepthFour() {
         let address = 0x0010
         let computer = try! execute(ir: [.push(4), .push(3), .push(2), .push(1), .store(address)])
         XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-        XCTAssertEqual(computer.cpuState.registerA.value, 1)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
+        XCTAssertEqual(computer.expressionStack(0), 1)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 3)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffc)
-        XCTAssertEqual(computer.expressionStackTop, 3)
     }
     
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {
@@ -379,7 +373,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .label(foo)
         ]
         let computer = try! execute(ir: instructions)
-        XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
+        XCTAssertEqual(computer.expressionStack(0), 1)
     }
     
     func testJalr() {
@@ -391,7 +385,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .label(foo)
         ]
         let computer = try! execute(ir: instructions)
-        XCTAssertNotEqual(computer.cpuState.registerA.value, 42)
+        XCTAssertEqual(computer.expressionStack(0), 1)
     }
     
     func testJe_TakeTheBranch() {
@@ -405,8 +399,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .push(100)
         ]
         let computer = try! execute(ir: instructions)
-        XCTAssertEqual(computer.cpuState.registerA.value, 100)
-        XCTAssertNotEqual(computer.cpuState.registerB.value, 42)
+        XCTAssertEqual(computer.expressionStack(0), 100)
     }
     
     func testJe_DoNotTakeTheBranch() {
@@ -420,8 +413,8 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .push(100)
         ]
         let computer = try! execute(ir: instructions)
-        XCTAssertEqual(computer.cpuState.registerA.value, 100)
-        XCTAssertEqual(computer.cpuState.registerB.value, 42)
+        XCTAssertEqual(computer.expressionStack(0), 100)
+        XCTAssertEqual(computer.expressionStack(1), 42)
     }
     
     func testJe_StackDepthThree() {
@@ -436,10 +429,10 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .label(foo)
         ]
         let computer = try! execute(ir: instructions)
-        XCTAssertEqual(computer.cpuState.registerA.value, 3)
-        XCTAssertEqual(computer.cpuState.registerB.value, 4)
+        XCTAssertEqual(computer.expressionStack(0), 3)
+        XCTAssertEqual(computer.expressionStack(1), 4)
+        XCTAssertEqual(computer.expressionStack(2), 5)
         XCTAssertEqual(computer.expressionStackPointer, 0xfffd)
-        XCTAssertEqual(computer.expressionStackTop, 5)
     }
     
     func testEnter() {
@@ -471,7 +464,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
         let computer = try! executor.execute(ir: [.push(0x00), .push(0x10), .loadIndirect])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.expressionStack(0), 0xaa)
     }
     
     func testLoadIndirectWithStackDepthThree() {
@@ -480,8 +473,8 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
         let computer = try! executor.execute(ir: [.push(1), .push(0x00), .push(0x10), .loadIndirect])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
-        XCTAssertEqual(computer.cpuState.registerB.value, 1)
+        XCTAssertEqual(computer.expressionStack(0), 0xaa)
+        XCTAssertEqual(computer.expressionStack(1), 1)
     }
     
     func testLoadIndirectWithStackDepthFour() {
@@ -490,9 +483,9 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
         let computer = try! executor.execute(ir: [.push(1), .push(2), .push(0x00), .push(0x10), .loadIndirect])
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
-        XCTAssertEqual(computer.cpuState.registerB.value, 2)
-        XCTAssertEqual(computer.expressionStackTop, 1)
+        XCTAssertEqual(computer.expressionStack(0), 0xaa)
+        XCTAssertEqual(computer.expressionStack(1), 2)
+        XCTAssertEqual(computer.expressionStack(2), 1)
     }
     
     func testStoreIndirectWithStackDepthThree() {
@@ -503,7 +496,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .storeIndirect
         ])
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.expressionStack(0), 0xaa)
     }
     
     func testStoreIndirectWithStackDepthFour() {
@@ -515,8 +508,8 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .storeIndirect
         ])
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
-        XCTAssertEqual(computer.cpuState.registerB.value, 0xbb)
+        XCTAssertEqual(computer.expressionStack(0), 0xaa)
+        XCTAssertEqual(computer.expressionStack(1), 0xbb)
     }
     
     func testStoreIndirectWithStackDepthFive() {
@@ -529,9 +522,9 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .storeIndirect
         ])
         XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0xaa)
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
-        XCTAssertEqual(computer.cpuState.registerB.value, 0xbb)
-        XCTAssertEqual(computer.expressionStackTop, 0xcc)
+        XCTAssertEqual(computer.expressionStack(0), 0xaa)
+        XCTAssertEqual(computer.expressionStack(1), 0xbb)
+        XCTAssertEqual(computer.expressionStack(2), 0xcc)
     }
     
     func testCalculateLocalVariableAddress() {

@@ -71,7 +71,6 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             switch instruction {
             case .push(let value): try push(value)
             case .pop: try pop()
-            case .clear: try clearExpressionStack()
             case .eq:  try eq()
             case .ne:  try ne()
             case .lt:  try lt()
@@ -233,16 +232,6 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.U, kExpressionStackPointerLoHi)
         try assembler.li(.V, kExpressionStackPointerLoLo)
         try assembler.mov(.M, .Y)
-    }
-    
-    private func clearExpressionStack() throws {
-        // Reset the expression stack pointer.
-        try assembler.li(.U, kExpressionStackPointerHiHi)
-        try assembler.li(.V, kExpressionStackPointerHiLo)
-        try assembler.li(.M, kExpressionStackPointerInitialValueHi)
-        try assembler.li(.U, kExpressionStackPointerLoHi)
-        try assembler.li(.V, kExpressionStackPointerLoLo)
-        try assembler.li(.M, kExpressionStackPointerInitialValueLo)
     }
     
     private func popTwoDecrementStackPointerAndLeaveInUVandXY() throws {

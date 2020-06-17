@@ -56,7 +56,7 @@ public class SnapToYertleCompiler: NSObject {
         }
         else if let node = genericNode as? Expression {
             try compile(expression: node)
-            instructions += [.clear]
+            instructions += [.pop]
         }
         else if let node = genericNode as? If {
             try compile(if: node)
@@ -84,7 +84,7 @@ public class SnapToYertleCompiler: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
         storeSymbol(symbol)
-        instructions += [.clear]
+        instructions += [.pop]
     }
     
     private func makeSymbolWithInferredType(expression: Expression, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {

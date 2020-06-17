@@ -1,14 +1,12 @@
 //
-//  Block.swift
+//  TopLevel.swift
 //  SnapCore
 //
-//  Created by Andrew Fox on 6/6/20.
+//  Created by Andrew Fox on 6/17/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
-public class Block: AbstractSyntaxTreeNode {
+public class TopLevel: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
     public init(children: [AbstractSyntaxTreeNode] = []) {
@@ -18,7 +16,7 @@ public class Block: AbstractSyntaxTreeNode {
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? Block else { return false }
+        guard let rhs = rhs as? TopLevel else { return false }
         guard children == rhs.children else { return false }
         return true
     }

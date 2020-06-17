@@ -24,7 +24,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: Expression.UnsupportedExpression())) {
             var error: CompilerError? = nil
             XCTAssertNotNil(error = $0 as? CompilerError)
-            XCTAssertEqual(error?.message, "unsupported expression: <UnsupportedExpression: children=[]>")
+            XCTAssertEqual(error?.message, "unsupported expression: <UnsupportedExpression>")
         }
     }
     

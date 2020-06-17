@@ -13,14 +13,12 @@ public class ParameterListNode: AbstractSyntaxTreeNode {
     
     public required init(parameters: [Any]) {
         self.parameters = parameters
-        super.init(children: [])
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? ParameterListNode else { return false }
-        guard isBaseClassPartEqual(rhs) else { return false }
         guard parameters.count == rhs.parameters.count else { return false }
         
         for i in 0..<parameters.count {

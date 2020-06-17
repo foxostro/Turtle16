@@ -35,7 +35,7 @@ public class SnapToYertleCompiler: NSObject {
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress: Int = 0x0010
     
-    public func compile(ast: AbstractSyntaxTreeNode) {
+    public func compile(ast: TopLevel) {
         instructions = []
         do {
             try tryCompile(ast: ast)
@@ -44,9 +44,9 @@ public class SnapToYertleCompiler: NSObject {
         }
     }
     
-    private func tryCompile(ast: AbstractSyntaxTreeNode) throws {
-        try ast.iterate {
-            try compile(genericNode: $0)
+    private func tryCompile(ast: TopLevel) throws {
+        for node in ast.children {
+            try compile(genericNode: node)
         }
     }
     

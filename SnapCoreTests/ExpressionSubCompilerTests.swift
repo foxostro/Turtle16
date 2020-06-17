@@ -22,7 +22,7 @@ class ExpressionSubCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression: children=[]>")
+            XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression>")
         }
     }
     

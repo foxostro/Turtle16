@@ -14,7 +14,6 @@ import TurtleCompilerToolbox
 public enum YertleInstruction: Equatable {
     case push(Int) // push the specified value to the expression stack
     case pop // pop the expression stack
-    case clear // resets the expression stack pointer
     case eq  // pop two from the expression stack, (A==B)?1:0, push the result
     case ne  // pop two from the expression stack, (A!=B)?1:0, push the result
     case lt  // pop two from the expression stack, (A<B)?1:0, push the result
@@ -45,8 +44,6 @@ public enum YertleInstruction: Equatable {
             return "PUSH \(value)"
         case .pop:
             return "POP"
-        case .clear:
-            return "CLEAR"
         case .eq:
             return "EQ"
         case .ne:

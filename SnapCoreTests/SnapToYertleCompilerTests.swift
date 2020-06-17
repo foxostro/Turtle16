@@ -53,7 +53,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
-            .clear
+            .pop
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -97,10 +97,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
-            .clear,
+            .pop,
             .load(addressFoo),
             .store(addressBar),
-            .clear
+            .pop
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "bar"))
@@ -121,7 +121,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
-            .clear
+            .pop
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -146,7 +146,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
-            .clear
+            .pop
         ])
     }
     
@@ -182,7 +182,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(1),
             .store(addressFoo),
-            .clear
+            .pop
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -217,7 +217,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [ .push(1), .clear ])
+        XCTAssertEqual(compiler.instructions, [ .push(1), .pop ])
     }
     
     func testCompileIfStatementWithoutElseBranch() {
@@ -239,13 +239,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(0),
             .store(addressFoo),
-            .clear,
+            .pop,
             .push(1),
             .push(0),
             .je(L0),
             .push(1),
             .store(addressFoo),
-            .clear,
+            .pop,
             .label(L0)
         ])
     }
@@ -271,18 +271,18 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .push(0),
             .store(addressFoo),
-            .clear,
+            .pop,
             .push(1),
             .push(0),
             .je(L0),
             .push(1),
             .store(addressFoo),
-            .clear,
+            .pop,
             .jmp(L1),
             .label(L0),
             .push(2),
             .store(addressFoo),
-            .clear,
+            .pop,
             .label(L1)
         ])
     }
@@ -303,7 +303,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             .push(0),
             .je(L1),
             .push(2),
-            .clear,
+            .pop,
             .jmp(L0),
             .label(L1)
         ])
@@ -346,10 +346,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         let expected: [YertleInstruction] = [
             .push(0),
             .store(0x0010),
-            .clear,
+            .pop,
             .push(0),
             .store(0x0011),
-            .clear,
+            .pop,
             .label(L0),
             .push(10),
             .load(0x0011),
@@ -358,12 +358,12 @@ class SnapToYertleCompilerTests: XCTestCase {
             .je(L1),
             .load(0x0011),
             .store(0x0010),
-            .clear,
+            .pop,
             .push(1),
             .load(0x0011),
             .add,
             .store(0x0011),
-            .clear,
+            .pop,
             .jmp(L0),
             .label(L1)
         ]

@@ -15,7 +15,6 @@ class YertleInstructionTests: XCTestCase {
         let L0 = TokenIdentifier(lineNumber: -1, lexeme: ".L0")
         XCTAssertEqual(YertleInstruction.push(0).description, "PUSH 0")
         XCTAssertEqual(YertleInstruction.pop.description, "POP")
-        XCTAssertEqual(YertleInstruction.clear.description, "CLEAR")
         XCTAssertEqual(YertleInstruction.eq.description, "EQ")
         XCTAssertEqual(YertleInstruction.ne.description, "NE")
         XCTAssertEqual(YertleInstruction.lt.description, "LT")

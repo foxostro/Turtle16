@@ -150,14 +150,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.V, .M)
         try assembler.li(.U, kExpressionStackPointerHi)
         
-        // Store B to the top of the in-memory stack.
-        try assembler.mov(.M, .B)
-        
-        // Move A into B
-        try assembler.mov(.B, .A)
-        
-        // Finally, move the new value to push into A.
-        try assembler.li(.A, value)
+        // Write the new value to the top of the stack.
+        try assembler.li(.M, value)
     }
     
     private func decrementStackPointer() throws {
@@ -178,8 +172,20 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func pop() throws {
-        try assembler.mov(.A, .B)
         try popInMemoryStackIntoRegisterB()
+    }
+    
+    private func pushAToExpressionStack() throws {
+        try decrementStackPointer()
+        
+        // Load the expression stack pointer into UV.
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
+        // Write the new value to the top of the stack.
+        try assembler.mov(.M, .A)
     }
     
     private func popInMemoryStackIntoRegisterB() throws {
@@ -213,114 +219,176 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func eq() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
+        try decrementStackPointer()
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
         let jumpTarget = assembler.programCounter + 9
         try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
         try assembler.li(.Y,  jumpTarget & 0x00ff)
         assembler.cmp()
         assembler.cmp()
-        try assembler.li(.A, 1)
+        try assembler.li(.M, 1)
         assembler.je()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.A, 0)
+        try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
-        
-        try popInMemoryStackIntoRegisterB()
     }
     
     private func ne() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
+        try decrementStackPointer()
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
         let jumpTarget = assembler.programCounter + 9
         try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
         try assembler.li(.Y,  jumpTarget & 0x00ff)
         assembler.cmp()
         assembler.cmp()
-        try assembler.li(.A, 1)
+        try assembler.li(.M, 1)
         assembler.jne()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.A, 0)
+        try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
-        
-        try popInMemoryStackIntoRegisterB()
     }
     
     private func lt() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
+        try decrementStackPointer()
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
         let jumpTarget = assembler.programCounter + 9
         try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
         try assembler.li(.Y,  jumpTarget & 0x00ff)
         assembler.cmp()
         assembler.cmp()
-        try assembler.li(.A, 1)
+        try assembler.li(.M, 1)
         assembler.jl()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.A, 0)
+        try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
-        
-        try popInMemoryStackIntoRegisterB()
     }
     
     private func gt() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
+        try decrementStackPointer()
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
         let jumpTarget = assembler.programCounter + 9
         try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
         try assembler.li(.Y,  jumpTarget & 0x00ff)
         assembler.cmp()
         assembler.cmp()
-        try assembler.li(.A, 1)
+        try assembler.li(.M, 1)
         assembler.jg()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.A, 0)
+        try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
-        
-        try popInMemoryStackIntoRegisterB()
     }
     
     private func le() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
+        try decrementStackPointer()
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
         let jumpTarget = assembler.programCounter + 9
         try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
         try assembler.li(.Y,  jumpTarget & 0x00ff)
         assembler.cmp()
         assembler.cmp()
-        try assembler.li(.A, 1)
+        try assembler.li(.M, 1)
         assembler.jle()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.A, 0)
+        try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
-        
-        try popInMemoryStackIntoRegisterB()
     }
     
     private func ge() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
+        try decrementStackPointer()
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
         let jumpTarget = assembler.programCounter + 9
         try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
         try assembler.li(.Y,  jumpTarget & 0x00ff)
         assembler.cmp()
         assembler.cmp()
-        try assembler.li(.A, 1)
+        try assembler.li(.M, 1)
         assembler.jge()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.A, 0)
+        try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
-        
-        try popInMemoryStackIntoRegisterB()
     }
     
     private func add() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         try assembler.add(.NONE)
         try assembler.add(.A)
-        try popInMemoryStackIntoRegisterB()
+        
+        try pushAToExpressionStack()
     }
     
     private func sub() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         try assembler.sub(.NONE)
         try assembler.sub(.A)
-        try popInMemoryStackIntoRegisterB()
+        
+        try pushAToExpressionStack()
     }
     
     private func mul() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         // A is the Multiplicand, B is the Multiplier
         let multiplierAddress = kScratchLo
         let multiplicandAddress = kScratchLo+1
@@ -375,10 +443,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, resultAddress)
         try assembler.mov(.A, .M)
         
-        try popInMemoryStackIntoRegisterB()
+        try pushAToExpressionStack()
     }
     
     private func div() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         // A is the Dividend, B is the Divisor
         let a = kScratchLo+0
         let b = kScratchLo+1
@@ -449,10 +521,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, counter)
         try assembler.mov(.A, .M)
         
-        try popInMemoryStackIntoRegisterB()
+        try pushAToExpressionStack()
     }
     
     private func mod() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         // A is the Dividend, B is the Divisor
         let a = kScratchLo+0
         let b = kScratchLo+1
@@ -523,11 +599,16 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, a)
         try assembler.mov(.A, .M)
         
-        try popInMemoryStackIntoRegisterB()
+        try pushAToExpressionStack()
     }
     
     private func load(from address: Int) throws {
         try decrementStackPointer()
+        
+        // Load the value from RAM to A.
+        try assembler.li(.U, (address & 0xff00) >> 8)
+        try assembler.li(.V,  address & 0x00ff)
+        try assembler.mov(.A, .M)
         
         // Load the expression stack pointer into UV.
         try assembler.li(.U, kExpressionStackPointerAddressHi)
@@ -535,19 +616,21 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.V, .M)
         try assembler.li(.U, kExpressionStackPointerHi)
         
-        // Store B to the top of the in-memory stack.
-        try assembler.mov(.M, .B)
-        
-        // Move A into B
-        try assembler.mov(.B, .A)
-        
-        // Finally, load the value from RAM and push into A.
-        try assembler.li(.U, (address & 0xff00) >> 8)
-        try assembler.li(.V,  address & 0x00ff)
-        try assembler.mov(.A, .M)
+        // Write A (the value we loaded) to the new top of the stack.
+        try assembler.mov(.M, .A)
     }
     
     private func store(to address: Int) throws {
+        // Load the expression stack pointer into UV.
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
+        
+        // Copy the stop of the expression stack into A.
+        try assembler.mov(.A, .M)
+        
+        // Now write A into the specified address.
         try assembler.li(.U, (address & 0xff00) >> 8)
         try assembler.li(.V,  address & 0x00ff)
         try assembler.mov(.M, .A)
@@ -564,30 +647,36 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func loadIndirect() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         try assembler.mov(.V, .A)
         try assembler.mov(.U, .B)
         try assembler.mov(.A, .M)
-        try popInMemoryStackIntoRegisterB()
+        
+        try pushAToExpressionStack()
     }
     
     private func storeIndirect() throws {
-        // Save the destination address to a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.M, .A) // Low byte
-        try assembler.li(.V, kScratchLo+0)
-        try assembler.mov(.M, .B) // High byte
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
         
-        try popTwo()
+        // Stash the destination address in XY.
+        try assembler.mov(.X, .B)
+        try assembler.mov(.Y, .A)
         
-        // Set the destination address in UV.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.Y, .M) // Low byte
-        try assembler.li(.V, kScratchLo+0)
-        try assembler.mov(.X, .M) // High byte
+        // Load the expression stack pointer into UV.
+        try assembler.li(.U, kExpressionStackPointerAddressHi)
+        try assembler.li(.V, kExpressionStackPointerAddressLo)
+        try assembler.mov(.V, .M)
+        try assembler.li(.U, kExpressionStackPointerHi)
         
-        // Store A (the top of the expression stack) to the destination address.
+        // Copy the stop of the expression stack into A.
+        try assembler.mov(.A, .M)
+        
+        // Store A to the destination address.
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
         try assembler.mov(.M, .A)
@@ -601,14 +690,16 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func je(to token: TokenIdentifier) throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.A, .B)
+        try popInMemoryStackIntoRegisterB()
+        
         assembler.cmp()
         assembler.cmp()
         try setAddressToLabel(token)
         assembler.je()
         assembler.nop()
         assembler.nop()
-        
-        try popTwo()
     }
     
     private func jalr(to token: TokenIdentifier) throws {
@@ -616,38 +707,6 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jalr()
         assembler.nop()
         assembler.nop()
-        try clearExpressionStack()
-    }
-    
-    private func popTwo() throws {
-        // Load the expression stack pointer into XY.
-        try assembler.li(.X, kExpressionStackPointerHi)
-        try assembler.li(.U, kExpressionStackPointerAddressHi)
-        try assembler.li(.V, kExpressionStackPointerAddressLo)
-        try assembler.mov(.Y, .M)
-
-        // Shift the top of the in-memory stack into B.
-        try assembler.mov(.U, .X)
-        try assembler.mov(.V, .Y)
-        try assembler.mov(.A, .M)
-
-        // Increment the stack pointer.
-        assembler.inxy()
-
-        // Shift the next item on the in-memory stack into B.
-        try assembler.mov(.U, .X)
-        try assembler.mov(.V, .Y)
-        try assembler.mov(.B, .M)
-
-        // Increment the stack pointer.
-        assembler.inxy()
-
-        // Write the lower byte of the modified expression stack pointer back
-        // to memory. The high byte is asseumed to be fixed since the expression
-        // stack has a fixed capacity of 256 elements.
-        try assembler.li(.U, kExpressionStackPointerAddressHi)
-        try assembler.li(.V, kExpressionStackPointerAddressLo)
-        try assembler.mov(.M, .Y)
     }
     
     func setAddressToLabel(_ name: TokenIdentifier) throws {

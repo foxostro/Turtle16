@@ -25,6 +25,10 @@ class YertleExecutor: NSObject {
     }
     
     func execute(ir: [YertleInstruction]) throws -> Computer {
+        if isVerboseLogging {
+            print("IR:\n" + YertleInstruction.makeListing(instructions: ir) + "\n\n")
+        }
+        
         let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
         try compiler.compile(ir: ir, base: 0)
         let instructions = compiler.instructions

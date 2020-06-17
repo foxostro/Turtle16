@@ -12,8 +12,8 @@ import TurtleSimulatorCore
 
 extension Computer {
     public var expressionStackPointer: Int {
-        let stackPointerHi = Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi)
-        let stackPointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddress)))
+        let stackPointerHi = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddressHi)))
+        let stackPointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddressLo)))
         let stackPointer = (stackPointerHi << 8) + stackPointerLo
         return stackPointer
     }

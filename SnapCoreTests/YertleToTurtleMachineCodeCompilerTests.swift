@@ -50,7 +50,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testEmptyProgram() {
         let kFramePointerInitialValue = YertleToTurtleMachineCodeCompiler.kFramePointerInitialValue
         let kStackPointerInitialValue = YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue
-        let kExpressionStackPointerInitialValue = (Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerHi) << 8) + YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
+        let kExpressionStackPointerInitialValue = YertleToTurtleMachineCodeCompiler.kExpressionStackPointerInitialValue
         let computer = try! execute(ir: [])
         XCTAssertEqual(computer.framePointer, kFramePointerInitialValue)
         XCTAssertEqual(computer.stackPointer, kStackPointerInitialValue)

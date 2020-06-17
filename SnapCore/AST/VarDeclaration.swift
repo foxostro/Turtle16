@@ -12,9 +12,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     public let storage: SymbolStorage
     public let isMutable: Bool
     public let identifier: TokenIdentifier
-    public var expression: Expression {
-        children.first! as! Expression
-    }
+    public let expression: Expression
     
     public required init(identifier: TokenIdentifier,
                          expression: Expression,
@@ -23,7 +21,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         self.identifier = identifier
         self.storage = storage
         self.isMutable = isMutable
-        super.init(children: [expression])
+        self.expression = expression
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -36,9 +34,6 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         guard let rhs = rhs as? VarDeclaration else {
             return false
         }
-        guard isBaseClassPartEqual(rhs) else {
-            return false
-        }
         guard identifier == rhs.identifier else {
             return false
         }
@@ -46,6 +41,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
             return false
         }
         guard storage == rhs.storage else {
+            return false
+        }
+        guard expression == rhs.expression else {
             return false
         }
         return true
@@ -56,17 +54,18 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(identifier)
         hasher.combine(storage)
         hasher.combine(isMutable)
+        hasher.combine(expression)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
-    open override func makeIndentedDescription(depth: Int = 0) -> String {
-        return String(format: "%@<%@: identifier=%@, storage=%@, isMutable=%@, children=[%@]>",
-                      makeIndent(depth: depth),
+    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+        return String(format: "%@<%@: identifier=%@, storage=%@, isMutable=%@, expression=%@>",
+                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       identifier.lexeme,
                       String(describing: storage),
                       isMutable ? "true" : "false",
-                      makeChildDescriptions(depth: depth + 1))
+                      expression.makeIndentedDescription(depth: depth + 1))
     }
 }

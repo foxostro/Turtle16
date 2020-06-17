@@ -10,18 +10,13 @@ import TurtleCompilerToolbox
 
 public class Expression: AbstractSyntaxTreeNode {
     public var tokens: [Token] {
-        var result: [Token] = []
-        for child in children {
-            result += (child as! Expression).tokens
-        }
-        return result
+        return []
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? Expression else { return false }
-        guard isBaseClassPartEqual(rhs) else { return false }
         guard tokens == rhs.tokens else { return false }
         return true
     }
@@ -53,9 +48,6 @@ public class Expression: AbstractSyntaxTreeNode {
             guard let rhs = rhs as? LiteralWord else {
                 return false
             }
-            guard isBaseClassPartEqual(rhs) else {
-                return false
-            }
             guard number == rhs.number else {
                 return false
             }
@@ -69,12 +61,11 @@ public class Expression: AbstractSyntaxTreeNode {
             return hasher.finalize()
         }
         
-        open override func makeIndentedDescription(depth: Int = 0) -> String {
-            return String(format: "%@<%@: number=%@, children=[%@]>",
-                          makeIndent(depth: depth),
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: number=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          number.lexeme,
-                          makeChildDescriptions(depth: depth + 1))
+                          number.lexeme)
         }
     }
     
@@ -92,7 +83,6 @@ public class Expression: AbstractSyntaxTreeNode {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? LiteralBoolean else { return false }
-            guard isBaseClassPartEqual(rhs) else { return false }
             guard boolean == rhs.boolean else { return false }
             return true
         }
@@ -104,12 +94,11 @@ public class Expression: AbstractSyntaxTreeNode {
             return hasher.finalize()
         }
         
-        open override func makeIndentedDescription(depth: Int = 0) -> String {
-            return String(format: "%@<%@: boolean=%@, children=[%@]>",
-                          makeIndent(depth: depth),
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: boolean=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          boolean.lexeme,
-                          makeChildDescriptions(depth: depth + 1))
+                          boolean.lexeme)
         }
     }
     
@@ -127,7 +116,6 @@ public class Expression: AbstractSyntaxTreeNode {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? Identifier else { return false }
-            guard isBaseClassPartEqual(rhs) else { return false }
             guard identifier == rhs.identifier else { return false }
             return true
         }
@@ -139,21 +127,17 @@ public class Expression: AbstractSyntaxTreeNode {
             return hasher.finalize()
         }
         
-        open override func makeIndentedDescription(depth: Int = 0) -> String {
-            return String(format: "%@<%@: identifier='%@', children=[%@]>",
-                          makeIndent(depth: depth),
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: identifier='%@'>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          identifier.lexeme,
-                          makeChildDescriptions(depth: depth + 1))
+                          identifier.lexeme)
         }
     }
     
     public class Unary: Expression {
         public let op: TokenOperator
-        
-        public var child: Expression {
-            children.first as! Expression
-        }
+        public let child: Expression
         
         public override var tokens: [Token] {
             return [op] + child.tokens
@@ -161,44 +145,39 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public required init(op: TokenOperator, expression: Expression) {
             self.op = op
-            super.init(children: [expression])
+            self.child = expression
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? Unary else { return false }
-            guard isBaseClassPartEqual(rhs) else { return false }
             guard op == rhs.op else { return false }
+            guard child == rhs.child else { return false }
             return true
         }
         
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(op)
+            hasher.combine(child)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
-        open override func makeIndentedDescription(depth: Int = 0) -> String {
-            return String(format: "%@<%@: op='%@', children=[%@]>",
-                          makeIndent(depth: depth),
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: op='%@', expression=\n%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           op.lexeme,
-                          makeChildDescriptions(depth: depth + 1))
+                          child.makeIndentedDescription(depth: depth+1))
         }
     }
     
     public class Binary: Expression {
         public let op: TokenOperator
-        
-        public var left: Expression {
-            children[0] as! Expression
-        }
-        
-        public var right: Expression {
-            children[1] as! Expression
-        }
+        public let left: Expression
+        public let right: Expression
         
         public override var tokens: [Token] {
             return left.tokens + [op] + right.tokens
@@ -206,16 +185,16 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public required init(op: TokenOperator, left: Expression, right: Expression) {
             self.op = op
-            super.init(children: [left, right])
+            self.left = left
+            self.right = right
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? Binary else { return false }
-            guard isBaseClassPartEqual(rhs) else { return false }
-            guard left == rhs.left else { return false }
             guard op == rhs.op else { return false }
+            guard left == rhs.left else { return false }
             guard right == rhs.right else { return false }
             return true
         }
@@ -223,59 +202,61 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(op)
+            hasher.combine(left)
+            hasher.combine(right)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
-        open override func makeIndentedDescription(depth: Int = 0) -> String {
-            return String(format: "%@<%@: op='%@', children=[%@]>",
-                          makeIndent(depth: depth),
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: op='%@',\n%@left=%@,\n%@right=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           op.lexeme,
-                          makeChildDescriptions(depth: depth + 1))
+                          makeIndent(depth: depth + 1),
+                          left.makeIndentedDescription(depth: depth + 1),
+                          makeIndent(depth: depth + 1),
+                          right.makeIndentedDescription(depth: depth + 1))
         }
     }
     
     public class Assignment: Expression {
         public let identifier: TokenIdentifier
-        
-        public var child: Expression {
-            children.first as! Expression
-        }
+        public let child: Expression
         
         public override var tokens: [Token] {
-            // TODO: The equal token is not included here. Is that a problem?
             return [identifier] + child.tokens
         }
         
         public required init(identifier: TokenIdentifier,
                              expression: Expression) {
             self.identifier = identifier
-            super.init(children: [expression])
+            self.child = expression
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? Assignment else { return false }
-            guard isBaseClassPartEqual(rhs) else { return false }
             guard identifier == rhs.identifier else { return false }
+            guard child == rhs.child else { return false }
             return true
         }
         
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(identifier)
+            hasher.combine(child)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
-        open override func makeIndentedDescription(depth: Int = 0) -> String {
-            return String(format: "%@<%@: identifier='%@', children=[%@]>",
-                          makeIndent(depth: depth),
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: identifier='%@', children=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           identifier.lexeme,
-                          makeChildDescriptions(depth: depth + 1))
+                          child.makeIndentedDescription(depth: depth + 1))
         }
     }
     
@@ -298,7 +279,6 @@ public class Expression: AbstractSyntaxTreeNode {
             guard let rhs = rhs as? Call else { return false }
             guard callee == rhs.callee else { return false }
             guard arguments == rhs.arguments else { return false }
-            guard isBaseClassPartEqual(rhs) else { return false }
             return true
         }
     }

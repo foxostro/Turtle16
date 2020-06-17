@@ -14,7 +14,7 @@ class ParserTests: XCTestCase {
         let parser = Parser()
         parser.parse()
         XCTAssertFalse(parser.hasError)
-        XCTAssertEqual(parser.syntaxTree, AbstractSyntaxTreeNode())
+        XCTAssertEqual(parser.syntaxTree, TopLevel())
     }
     
     func testParseAnythingYieldsError() {

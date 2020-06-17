@@ -27,7 +27,7 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         super.init()
     }
     
-    public func compile(ast root: AbstractSyntaxTreeNode, base: Int) {
+    public func compile(ast root: TopLevel, base: Int) {
         do {
             try tryCompile(ast: root, base: base)
         } catch let error as CompilerError {
@@ -40,14 +40,14 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         }
     }
     
-    func tryCompile(ast root: AbstractSyntaxTreeNode, base: Int) throws {
+    func tryCompile(ast root: TopLevel, base: Int) throws {
         instructions = []
         patcherActions = []
         assemblerBackEnd.begin()
         insertProgramPrologue()
-        try root.iterate {
+        for child in root.children {
             do {
-                try visit(genericNode: $0)
+                try visit(genericNode: child)
             } catch let error as CompilerError {
                 errors.append(error)
             }

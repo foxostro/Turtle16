@@ -81,6 +81,8 @@
 		6F924E7A248B42D400F43741 /* ExpressionTypeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E79248B42D400F43741 /* ExpressionTypeChecker.swift */; };
 		6F924E7C248B42E100F43741 /* ExpressionTypeCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E7B248B42E100F43741 /* ExpressionTypeCheckerTests.swift */; };
 		6F924E7E248B4CCA00F43741 /* ExprUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E7D248B4CCA00F43741 /* ExprUtils.swift */; };
+		6FA1A716249A829500D2DB57 /* TopLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA1A712249A816200D2DB57 /* TopLevel.swift */; };
+		6FA1A717249A82A200D2DB57 /* TopLevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA1A714249A817F00D2DB57 /* TopLevelTests.swift */; };
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
 		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
@@ -694,6 +696,8 @@
 		6F924E7B248B42E100F43741 /* ExpressionTypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTypeCheckerTests.swift; sourceTree = "<group>"; };
 		6F924E7D248B4CCA00F43741 /* ExprUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExprUtils.swift; sourceTree = "<group>"; };
 		6F94B1E122F3FA5F00726C9A /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
+		6FA1A712249A816200D2DB57 /* TopLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevel.swift; sourceTree = "<group>"; };
+		6FA1A714249A817F00D2DB57 /* TopLevelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevelTests.swift; sourceTree = "<group>"; };
 		6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleVMBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurtleVMBenchmarkDriver.swift; sourceTree = "<group>"; };
@@ -1009,6 +1013,7 @@
 			isa = PBXGroup;
 			children = (
 				6F8F22E62471CB5100AFD574 /* AbstractSyntaxTreeNode.swift */,
+				6FA1A712249A816200D2DB57 /* TopLevel.swift */,
 			);
 			path = AST;
 			sourceTree = "<group>";
@@ -1028,6 +1033,7 @@
 		6F9201C82471D82C009E1410 /* TurtleCompilerToolboxTests */ = {
 			isa = PBXGroup;
 			children = (
+				6FA1A718249A82E300D2DB57 /* AST */,
 				6F8F22F22471D03300AFD574 /* Token */,
 				6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */,
 				6F2940B12483819E00C50ABA /* CompilerErrorTests.swift */,
@@ -1090,6 +1096,14 @@
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
 			path = SnapCoreTests;
+			sourceTree = "<group>";
+		};
+		6FA1A718249A82E300D2DB57 /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				6FA1A714249A817F00D2DB57 /* TopLevelTests.swift */,
+			);
+			path = AST;
 			sourceTree = "<group>";
 		};
 		6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */ = {
@@ -1866,6 +1880,7 @@
 				6F38F8F62471C77800B5296D /* Parser.swift in Sources */,
 				6F1718382471C58D00AE60C2 /* CompilerError.swift in Sources */,
 				6F34B7EF24745DE500B0D163 /* CodeGenerator.swift in Sources */,
+				6FA1A716249A829500D2DB57 /* TopLevel.swift in Sources */,
 				6F41B66824762D2F0043A8D7 /* TokenOperator.swift in Sources */,
 				6F38F9062471C8D400B5296D /* TokenNumber.swift in Sources */,
 				6F1D24B92482245E0095D7B4 /* TokenMisc.swift in Sources */,
@@ -1884,6 +1899,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FA1A717249A82A200D2DB57 /* TopLevelTests.swift in Sources */,
 				6F41B66C2476D6130043A8D7 /* TokenOperatorTests.swift in Sources */,
 				6FCB68272472079700798905 /* AssemblerBackEndTests.swift in Sources */,
 				6FCB682F24720AD000798905 /* TokenEOFTests.swift in Sources */,

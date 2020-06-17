@@ -15,14 +15,12 @@ public class ConstantDeclarationNode: AbstractSyntaxTreeNode {
     public required init(identifier: TokenIdentifier, number: TokenNumber) {
         self.identifier = identifier
         self.number = number
-        super.init(children: [])
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? ConstantDeclarationNode else { return false }
-        guard isBaseClassPartEqual(rhs) else { return false }
         guard identifier == rhs.identifier else { return false }
         guard number == rhs.number else { return false }
         return true

@@ -27,7 +27,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         hlt = UInt8(microcodeGenerator.getOpcode(mnemonic: "HLT")!)
     }
     
-    func mustCompile(_ root: AbstractSyntaxTreeNode) -> [Instruction] {
+    func mustCompile(_ root: TopLevel) -> [Instruction] {
         let codeGenerator = makeCodeGenerator()
         codeGenerator.compile(ast: root, base: 0x0000)
         if codeGenerator.hasError {
@@ -36,7 +36,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         return codeGenerator.instructions
     }
     
-    func mustFailToCompile(_ root: AbstractSyntaxTreeNode) -> [CompilerError] {
+    func mustFailToCompile(_ root: TopLevel) -> [CompilerError] {
         let codeGenerator = makeCodeGenerator()
         codeGenerator.compile(ast: root, base: 0x0000)
         if !codeGenerator.hasError {
@@ -53,13 +53,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testEmptyProgram() {
-        let instructions = mustCompile(AbstractSyntaxTreeNode())
+        let instructions = mustCompile(TopLevel())
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
     func testNop() {
-        let ast = AbstractSyntaxTreeNode(children: [InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: []))])
+        let ast = TopLevel(children: [InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: []))])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
@@ -67,7 +67,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testHlt() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "HLT"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -78,7 +78,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithNoOperands() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -88,7 +88,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithOneOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
@@ -100,7 +100,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithTooManyOperands() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -114,7 +114,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithNumberInFirstOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
@@ -127,7 +127,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithNumberInSecondOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -140,7 +140,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithInvalidDestinationRegisterE() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
@@ -153,7 +153,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithInvalidDestinationRegisterC() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
@@ -166,7 +166,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithInvalidSourceRegisterD() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -179,7 +179,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testMov() throws {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
@@ -198,7 +198,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileLIWithNoOperands() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -208,7 +208,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWithOneOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: [
                                 TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
@@ -220,7 +220,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWhereDestinationIsANumber() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: [
                                 TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
@@ -233,7 +233,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWhereSourceIsARegister() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
@@ -246,7 +246,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWithTooManyOperands() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -260,7 +260,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testLoadImmediate() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
@@ -280,7 +280,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileADDWithIdentifierOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
                     parameters: ParameterListNode(parameters: [
                         TokenIdentifier(lineNumber: 1, lexeme: "label")
@@ -291,7 +291,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileADDWithInvalidDestinationRegisterE() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
                     parameters: ParameterListNode(parameters: [
                         TokenRegister(lineNumber: 1, lexeme: "E", literal: .E)
@@ -302,7 +302,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileADDWithInvalidDestinationRegisterC() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
                     parameters: ParameterListNode(parameters: [
                         TokenRegister(lineNumber: 1, lexeme: "C", literal: .C)
@@ -313,7 +313,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testAdd() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "ADD"),
                     parameters: ParameterListNode(parameters: [
                         TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
@@ -334,7 +334,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmp() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 2, lexeme: "foo")])),
@@ -368,7 +368,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testForwardJmp() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 1, lexeme: "foo")])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
@@ -408,7 +408,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressZero() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
@@ -442,7 +442,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressNegative() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
@@ -458,7 +458,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressTooLarge() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0x10000", literal: 0x10000)])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
@@ -474,7 +474,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJC() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 2, lexeme: "foo")])),
@@ -510,7 +510,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressZero() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
                             parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
@@ -544,7 +544,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressNegative() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
             parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
@@ -560,7 +560,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressTooLarge() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
             parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0x10000", literal: 0x10000)])),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
@@ -576,7 +576,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testCMP() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "CMP"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -594,7 +594,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testINUV() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "INUV"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -608,7 +608,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testINXY() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "INXY"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -622,7 +622,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileBLTWithNoOperands() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: []))
         ])
@@ -632,7 +632,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithOneOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
@@ -644,7 +644,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithTooManyOperands() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -658,7 +658,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithNumberInFirstOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
@@ -671,7 +671,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithNumberInSecondOperand() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -684,7 +684,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithInvalidDestinationRegisterE() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
@@ -697,7 +697,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithInvalidDestinationRegisterC() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
@@ -710,7 +710,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithInvalidSourceRegisterD() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
@@ -723,7 +723,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testBLT() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "P", literal: .P),
@@ -744,7 +744,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileDueToRedefinitionOfLabel() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
             LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
         ])
@@ -753,7 +753,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileDueToRedefinitionOfConstant() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                     number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
             ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
@@ -764,7 +764,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testLICannotUseUndeclaredSymbolAsSource() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
@@ -777,7 +777,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testLIWithConstantSource() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                     number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)),
             InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LI"),
@@ -799,7 +799,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testDEA() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DEA"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
@@ -820,7 +820,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testDCA() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DCA"),
                             parameters: ParameterListNode(parameters: [
                                 TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)

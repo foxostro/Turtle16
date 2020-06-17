@@ -14,7 +14,7 @@ open class Parser: NSObject {
     public var hasError:Bool {
         return errors.count != 0
     }
-    public private(set) var syntaxTree: AbstractSyntaxTreeNode? = nil
+    public private(set) var syntaxTree: TopLevel? = nil
     
     public init(tokens: [Token] = []) {
         self.tokens = tokens
@@ -37,7 +37,7 @@ open class Parser: NSObject {
         if hasError {
             syntaxTree = nil
         } else {
-            syntaxTree = AbstractSyntaxTreeNode(children: statements)
+            syntaxTree = TopLevel(children: statements)
         }
     }
     

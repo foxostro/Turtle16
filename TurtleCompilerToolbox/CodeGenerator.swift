@@ -13,5 +13,5 @@ public protocol CodeGenerator {
     var errors: [CompilerError] { get }
     var instructions: [Instruction] { get }
     
-    func compile(ast root: AbstractSyntaxTreeNode, base: Int)
+    func compile(ast root: TopLevel, base: Int)
 }

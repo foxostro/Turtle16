@@ -10,7 +10,7 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public class SnapCompiler: NSObject {
-    public var ast: AbstractSyntaxTreeNode! = nil
+    public var ast: TopLevel! = nil
     public var ir: [YertleInstruction] = []
     public var instructions: [Instruction] = []
     

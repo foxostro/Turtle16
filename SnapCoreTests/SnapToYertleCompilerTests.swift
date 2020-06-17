@@ -19,14 +19,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileEmptyProgram() {
         let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: AbstractSyntaxTreeNode())
+        compiler.compile(ast: TopLevel())
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
     
     func testAbstractSyntaxTreeNodeIsIgnoredInProgramCompilation() {
         let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: AbstractSyntaxTreeNode(children: [AbstractSyntaxTreeNode()]))
+        compiler.compile(ast: TopLevel(children: [AbstractSyntaxTreeNode()]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
@@ -34,13 +34,13 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationIgnoresUnknownNodes() {
         class UnknownNode: AbstractSyntaxTreeNode {}
         let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: UnknownNode())
+        compiler.compile(ast: TopLevel(children: [UnknownNode()]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
     
     func testCompileLetDeclaration_CompileTimeConstant() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                            storage: .staticStorage,
@@ -62,7 +62,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileConstantDeclaration_CompileTimeConstant_RedefinesExistingSymbol() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: one,
                            storage: .staticStorage,
@@ -79,7 +79,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_NotCompileTimeConstant() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                            storage: .staticStorage,
@@ -108,7 +108,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_TypeIsInferredFromTheExpression() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            expression: ExprUtils.makeLiteralBoolean(value: true),
                            storage: .staticStorage,
@@ -130,7 +130,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileVarDeclaration() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: one,
                            storage: .staticStorage,
@@ -152,7 +152,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileVarDeclaration_RedefinesExistingSymbol() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: one,
                            storage: .staticStorage,
@@ -169,7 +169,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_TypeIsInferredFromTheExpression() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            expression: ExprUtils.makeLiteralBoolean(value: true),
                            storage: .staticStorage,
@@ -190,7 +190,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_StackLocalVariable() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                expression: ExprUtils.makeLiteralWord(value: 0xaa),
@@ -213,7 +213,9 @@ class SnapToYertleCompilerTests: XCTestCase {
         // When an expression is compiled as an independent statement, the
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
-        let ast = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let ast = TopLevel(children: [
+            Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -221,7 +223,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileIfStatementWithoutElseBranch() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)),
                            storage: .staticStorage,
@@ -251,7 +253,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileIfStatementIncludingElseBranch() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                               expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)),
                               storage: .staticStorage,
@@ -288,7 +290,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileWhileStatement() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                   body: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)))
         ])
@@ -310,7 +312,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsDueToTypeErrorInExpression() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            expression: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
                                                          right: ExprUtils.makeLiteralBoolean(value: true)),
@@ -324,7 +326,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileForLoopStatement() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            expression: ExprUtils.makeLiteralWord(value: 0),
                            storage: .staticStorage,
@@ -371,7 +373,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseLocalVarDoesntSurviveLocalScope() {
-        let ast = AbstractSyntaxTreeNode(children: [
+        let ast = TopLevel(children: [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                expression: ExprUtils.makeLiteralWord(value: 0),

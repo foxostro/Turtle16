@@ -106,11 +106,11 @@ class ExpressionSubCompilerTests: XCTestCase {
         executor.configure = {computer in
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
-            // which is 0xff00.
-            computer.dataRAM.store(value: 0xaa, to: 0xff00 - 4)
+            // which is 0x0000.
+            computer.dataRAM.store(value: 0xaa, to: 0xfffc)
         }
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.cpuState.registerA.value, 0xaa)
+        XCTAssertEqual(computer.stack(at: 0), 0xaa)
     }
     
     func testCompileIdentifierExpression_Boolean_Static() {
@@ -144,7 +144,7 @@ class ExpressionSubCompilerTests: XCTestCase {
         let ir = try! compile(expression: expr, symbols: symbols)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xff00 - 4), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xaa)
     }
     
     func testCannotAssignToAnImmutableValue_Word() {

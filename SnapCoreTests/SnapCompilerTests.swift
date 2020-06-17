@@ -156,12 +156,12 @@ var a = 0xaa
 }
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xcc) // var c
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x00) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffa), 0xcc) // var c
     }
     
     func test_EndToEndIntegration_ReadingStackLocalVariable() {
@@ -175,9 +175,9 @@ var a = 0xaa
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb) // var a
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x00) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xbb) // var b
     }
     
     func test_EndToEndIntegration_StoringStackLocalVariable() {
@@ -189,9 +189,9 @@ var a = 0xaa
 }
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x00) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xbb) // var b
     }
     
     func test_EndToEndIntegration_ChaseTheFramePointer_LoadLocalVariable() {
@@ -211,16 +211,16 @@ var a = 0xaa
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xaa) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef9), 0xfb) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef8), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef7), 0xf9) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef6), 0xaa) // var d
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x00) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xaa) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffa), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff9), 0xfb) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff8), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff7), 0xf9) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff6), 0xaa) // var d
     }
     
     func test_EndToEndIntegration_ChaseTheFramePointer_StoreLocalVariable() {
@@ -240,15 +240,15 @@ var a = 0xaa
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xbb) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef9), 0xfb) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef8), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef7), 0xf9) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x00) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffa), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff9), 0xfb) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff8), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff7), 0xf9) // fp[lo]
     }
     
     func test_EndToEndIntegration_NestedBlocksAndReadVarsOneLevelUp() {
@@ -267,14 +267,14 @@ var a = 0xaa
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfeff), 0xff) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0x00) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xaa) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefc), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefb), 0xfe) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefa), 0xaa) // var c
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef9), 0xfe) // fp[hi]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef8), 0xfb) // fp[lo]
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfef7), 0xaa) // var d
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x00) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x00) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xaa) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0xfe) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffa), 0xaa) // var c
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff9), 0xff) // fp[hi]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff8), 0xfb) // fp[lo]
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff7), 0xaa) // var d
     }
 }

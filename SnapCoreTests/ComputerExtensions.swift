@@ -10,19 +10,7 @@
 import SnapCore
 import TurtleSimulatorCore
 
-extension Computer {
-    public var expressionStackPointer: Int {
-        let stackPointerHi = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddressHi)))
-        let stackPointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kExpressionStackPointerAddressLo)))
-        let stackPointer = (stackPointerHi << 8) + stackPointerLo
-        return stackPointer
-    }
-    
-    public func expressionStack(_ index: Int) -> UInt8 {
-        let address = UInt16(expressionStackPointer) + UInt16(index)
-        return dataRAM.load(from: Int(address))
-    }
-    
+extension Computer {    
     public var stackPointer: Int {
         let stackPointerHi = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi)))
         let stackPointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo)))
@@ -30,8 +18,9 @@ extension Computer {
         return stackPointer
     }
     
-    public var stackTop: UInt8 {
-        return dataRAM.load(from: stackPointer)
+    public func stack(at index: Int) -> UInt8 {
+        let address = UInt16(stackPointer) + UInt16(index)
+        return dataRAM.load(from: Int(address))
     }
     
     public var framePointer: Int {

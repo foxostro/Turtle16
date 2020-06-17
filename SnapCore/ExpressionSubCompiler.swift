@@ -148,11 +148,11 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        // TODO: Assume the high byte is 0xfe. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
-        let kFramePointerHighByte = 0xfe
+        // TODO: Assume the high byte is 0xff. This will not work if the stack grows larger than 256 bytes. To fix this, the IR language needs to support 16-bit math.
+        let kFramePointerHighByte = 0xff
         var instructions: [YertleInstruction] = []
         instructions += [
-            .push(kFramePointerHighByte), // HACK: just assume the high byte of the frame pointer one level up is 0xfe
+            .push(kFramePointerHighByte), // HACK: just assume the high byte of the frame pointer one level up is 0xff
             .push(symbol.offset)
         ]
         instructions += [YertleInstruction].init(repeating: .push(kFramePointerHighByte), count: depth)

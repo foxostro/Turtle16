@@ -204,7 +204,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfefd), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xaa)
     }
     
     func testCompileExpression() {

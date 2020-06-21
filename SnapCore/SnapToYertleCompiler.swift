@@ -70,6 +70,9 @@ public class SnapToYertleCompiler: NSObject {
         else if let node = genericNode as? Block {
             try compile(block: node)
         }
+        else if let node = genericNode as? Return {
+            try compile(return: node)
+        }
         else if let node = genericNode as? FunctionDeclaration {
             try compile(func: node)
         }
@@ -219,9 +222,10 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(func node: FunctionDeclaration) throws {
+        try expectFunctionReturnExpressionIsCorrectType(func: node)
+        
         let name = node.identifier.lexeme
         let symbol = Symbol(type: .function, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        
         symbols.bind(identifier: name, symbol: symbol)
         
         let labelHead = TokenIdentifier(lineNumber: -1, lexeme: name)
@@ -236,6 +240,123 @@ public class SnapToYertleCompiler: NSObject {
         instructions += [
             .leaf_ret,
             .label(labelTail),
+        ]
+    }
+    
+    private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {
+        let returnStatements = try findReturnStatements(block: node.body)
+        if returnStatements.isEmpty && node.returnType != .void {
+            throw makeErrorForMissingReturn(node)
+        }
+        for stmt in returnStatements {
+            let returnExpressionType = try checkReturnExpressionType(stmt)
+            if returnExpressionType != node.returnType {
+                throw makeErrorForReturnExpressionTypeError(returnToken: stmt.token,
+                                                            actual: returnExpressionType,
+                                                            expected: node.returnType)
+            }
+        }
+    }
+    
+    private func checkReturnExpressionType(_ stmt: Return) throws -> SymbolType {
+        let returnExpressionType: SymbolType
+        if let expr = stmt.expression {
+            returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
+        } else {
+            returnExpressionType = .void
+        }
+        return returnExpressionType
+    }
+    
+    private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
+        return CompilerError(line: node.identifier.lineNumber,
+                             format: "missing return in a function expected to return `%@'",
+                             String(describing: node.returnType))
+    }
+    
+    private func makeErrorForReturnExpressionTypeError(returnToken: Token,
+                                                       actual: SymbolType,
+                                                       expected: SymbolType) -> CompilerError {
+        if actual == .void {
+            return CompilerError(line: returnToken.lineNumber, message: "non-void function should return a value")
+        }
+        return CompilerError(line: returnToken.lineNumber,
+                             format: "cannot convert return expression of type `%@' to return type `%@'",
+                             String(describing: actual),
+                             String(describing: expected))
+    }
+    
+    private func findReturnStatements(genericNode: AbstractSyntaxTreeNode) throws -> [Return] {
+        if let node = genericNode as? Block {
+            return try findReturnStatements(block: node)
+        }
+        else if let node = genericNode as? If {
+            return try findReturnStatements(if: node)
+        }
+        else if let node = genericNode as? While {
+            return try findReturnStatements(while: node)
+        }
+        else if let node = genericNode as? ForLoop {
+            return try findReturnStatements(for: node)
+        }
+        else if let node = genericNode as? Return {
+            return [node]
+        }
+        else {
+            return []
+        }
+    }
+    
+    private func findReturnStatements(block: Block) throws -> [Return] {
+        try expectBlockDoesntHaveCodeAfterReturn(block: block)
+        var returnStatements: [Return] = []
+        for stmt in block.children {
+            returnStatements += try findReturnStatements(genericNode: stmt)
+        }
+        return returnStatements
+    }
+    
+    private func expectBlockDoesntHaveCodeAfterReturn(block: Block) throws {
+        var theReturn: TokenReturn? = nil
+        for stmt in block.children {
+            if let theReturn = theReturn {
+                throw makeErrorForCodeAfterReturn(theReturn)
+            }
+            if let r = stmt as? Return {
+                theReturn = r.token
+            }
+        }
+    }
+    
+    private func findReturnStatements(if node: If) throws -> [Return] {
+        let returnStatementsInThenBranch = try findReturnStatements(genericNode: node.thenBranch)
+        let returnStatementsInElseBranch = try findReturnStatements(genericNode: node.elseBranch ?? AbstractSyntaxTreeNode())
+        return returnStatementsInThenBranch + returnStatementsInElseBranch
+    }
+    
+    private func findReturnStatements(while node: While) throws -> [Return] {
+        return try findReturnStatements(genericNode: node.body)
+    }
+    
+    private func findReturnStatements(for node: ForLoop) throws -> [Return] {
+        return try findReturnStatements(genericNode: node.body)
+    }
+    
+    private func makeErrorForCodeAfterReturn(_ returnToken: Token) -> CompilerError {
+        return CompilerError(line: returnToken.lineNumber,
+                             message: "code after return will never be executed")
+    }
+    
+    private func compile(return node: Return) throws {
+        let scratch = 0x0004
+        if let expr = node.expression {
+            try compile(expression: expr)
+        }
+        instructions += [
+            .store(scratch),
+            .leave,
+            .load(scratch),
+            .leaf_ret
         ]
     }
 }

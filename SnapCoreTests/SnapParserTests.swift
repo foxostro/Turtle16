@@ -974,7 +974,7 @@ for var i = 0; i < 10; i = i + 1 {
         ])
     }
     
-    func testParseFunctionInExpression() {
+    func testParseFunctionCallInExpression() {
         let tokens = tokenize("1 + foo(1, 2)")
         let parser = SnapParser(tokens: tokens)
         parser.parse()
@@ -987,5 +987,157 @@ for var i = 0; i < 10; i = i + 1 {
                                                                  ExprUtils.makeLiteralWord(value: 2)]))
             
         ])
+    }
+    
+    func testFailToParseFunctionDefinition_MissingIdentifier_1() {
+        let tokens = tokenize("func")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected identifier in function declaration")
+    }
+    
+    func testFailToParseFunctionDefinition_MissingIdentifier_2() {
+        let tokens = tokenize("func 123")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected identifier in function declaration")
+    }
+    
+    func testFailToParseFunctionDefinition_MissingArgumentListLeftParen() {
+        let tokens = tokenize("func foo")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected `(' in argument list of function declaration")
+    }
+    
+    func testFailToParseFunctionDefinition_MissingArgumentListRightParen() {
+        let tokens = tokenize("func foo(")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected parameter name followed by `:'")
+    }
+    
+    func testFailToParseFunctionDefinition_MissingFunctionBody() {
+        let tokens = tokenize("func foo()")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected `{' in body of function declaration")
+    }
+    
+    func testFailToParseFunctionDefinition_MalformedFunctionBody() {
+        let tokens = tokenize("func foo() {\n")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected `}' after function body")
+    }
+    
+    func testParseFunctionDefinition_ZeroArgsAndVoidReturnValue() {
+        let tokens = tokenize("func foo() {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
+            FunctionDeclaration(returnType: .void, arguments: [], body: Block())
+        ]))
+    }
+    
+    func testFailToParseFunctionDefinition_InvalidReturnType() {
+        let tokens = tokenize("func foo() -> wat {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "use of undeclared type `wat'")
+    }
+    
+    func testParseFunctionDefinition_ZeroArgsAndUInt8ReturnValue() {
+        let tokens = tokenize("func foo() -> u8 {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
+            FunctionDeclaration(returnType: .u8, arguments: [], body: Block())
+        ]))
+    }
+    
+    func testParseFunctionDefinition_ZeroArgsAndExplicitVoidReturnValue() {
+        let tokens = tokenize("func foo() -> void {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
+            FunctionDeclaration(returnType: .void, arguments: [], body: Block())
+        ]))
+    }
+    
+    func testFailToParseFunctionDefinition_ParameterIsNotAnIdentifier() {
+        let tokens = tokenize("func foo(123) {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "expected parameter name followed by `:'")
+    }
+    
+    func testFailToParseFunctionDefinition_ParameterIsMissingAnExplicitType() {
+        let tokens = tokenize("func foo(bar) {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.message, "parameter requires an explicit type")
+    }
+    
+    func testParseFunctionDefinition_OneArg() {
+        let tokens = tokenize("func foo(bar: u8) {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            FunctionDeclaration(returnType: .void,
+                                arguments: [FunctionDeclaration.Argument(name: "bar", type: .u8)],
+                                body: Block())
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
+    
+    func testParseFunctionDefinition_TwoArgs() {
+        let tokens = tokenize("func foo(bar: u8, baz: bool) {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            FunctionDeclaration(returnType: .void,
+                                arguments: [FunctionDeclaration.Argument(name: "bar", type: .u8), FunctionDeclaration.Argument(name: "baz", type: .bool)],
+                                body: Block())
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
+    
+    func testParseFunctionDefinition_ArgWithVoidType() {
+        // The parser will permit the following.
+        // The typechecker should reject it later.
+        let tokens = tokenize("func foo(bar: void) {}")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            FunctionDeclaration(returnType: .void,
+                                arguments: [FunctionDeclaration.Argument(name: "bar", type: .void)],
+                                body: Block())
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
     }
 }

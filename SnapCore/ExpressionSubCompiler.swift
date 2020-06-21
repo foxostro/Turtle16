@@ -124,18 +124,18 @@ public class ExpressionSubCompiler: NSObject {
     
     private func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
         switch symbol.type {
-        case .u8, .boolean:
+        case .u8, .bool:
             return [.load(symbol.offset)]
-        case .function:
+        case .function, .void:
             abort()
         }
     }
     
     private func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         switch symbol.type {
-        case .u8, .boolean:
+        case .u8, .bool:
             return loadOneWord(symbol, depth)
-        case .function:
+        case .function, .void:
             abort()
         }
     }
@@ -175,9 +175,9 @@ public class ExpressionSubCompiler: NSObject {
         }
         
         switch symbol.type {
-        case .u8, .boolean:
+        case .u8, .bool:
             return try compile(expression: assignment.child) + storeOneWord(symbol, depth)
-        case .function:
+        case .function, .void:
             abort()
         }
     }

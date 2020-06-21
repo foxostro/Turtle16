@@ -31,11 +31,10 @@ public class Block: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: children=[%@\n%@]>",
+        return String(format: "%@<%@: children=[%@]>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
-                      makeChildDescriptions(depth: depth),
-                      makeIndent(depth: depth))
+                      makeChildDescriptions(depth: depth + 1))
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {

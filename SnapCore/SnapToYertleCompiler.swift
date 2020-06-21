@@ -108,12 +108,12 @@ public class SnapToYertleCompiler: NSObject {
         switch symbol.storage {
         case .staticStorage:
             switch symbol.type {
-            case .boolean, .u8:
+            case .bool, .u8:
                 instructions += [
                     .store(symbol.offset),
                     .pop
                 ]
-            case .function:
+            case .function, .void:
                 abort()
             }
         case .stackStorage:

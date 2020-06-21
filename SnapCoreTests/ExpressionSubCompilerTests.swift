@@ -115,7 +115,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_Boolean_Static() {
         let expr = ExprUtils.makeIdentifier(name: "foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .boolean, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .load(0x0010)
         ])
@@ -159,7 +159,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCompileAssignmentToBoolean() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .boolean, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(1),
             .store(0x0010)
@@ -168,7 +168,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCannotAssignToAnImmutableValue_Boolean() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .boolean, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -262,7 +262,7 @@ class ExpressionSubCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -320,7 +320,7 @@ class ExpressionSubCompilerTests: XCTestCase {
             .leaf_ret
         ]
         let executor = YertleExecutor()
-        print(YertleInstruction.makeListing(instructions: ir))
+//        print(YertleInstruction.makeListing(instructions: ir))
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 8)
     }

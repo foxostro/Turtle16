@@ -48,6 +48,9 @@ public class SnapParser: Parser {
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
             throw CompilerError(line: peek()!.lineNumber, message: "labels are not supported")
         }
+        else if let token = accept(TokenFunc.self) {
+            result = try consumeFunc(token as! TokenFunc)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -235,6 +238,41 @@ public class SnapParser: Parser {
                         body: body)
             ])
         ]
+    }
+    
+    private func consumeFunc(_ token: TokenFunc) throws -> [AbstractSyntaxTreeNode] {
+        let returnType: SymbolType
+        try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected identifier in function declaration"))
+        try expect(type: TokenParenLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `(' in argument list of function declaration"))
+        
+        var arguments: [FunctionDeclaration.Argument] = []
+        
+        if type(of: peek()!) != TokenParenRight.self {
+            repeat {
+                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected parameter name followed by `:'")) as! TokenIdentifier
+                if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
+                    throw CompilerError(line: peek()!.lineNumber, message: "parameter requires an explicit type")
+                }
+                try expect(type: TokenColon.self, error: CompilerError(line: peek()!.lineNumber, message: "expected parameter name followed by `:'"))
+                let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+                let name = tokenIdentifier.lexeme
+                let type = tokenType.representedType
+                arguments.append(FunctionDeclaration.Argument(name: name, type: type))
+            } while nil != accept(TokenComma.self)
+        }
+        
+        try expect(type: TokenParenRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `)' in argument list of function declaration"))
+        
+        if nil == accept(TokenArrow.self) {
+            returnType = .void
+        } else {
+            let typeToken = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "use of undeclared type `\(peek()!.lexeme)'")) as! TokenType
+            returnType = typeToken.representedType
+        }
+        let leftError = "expected `{' in body of function declaration"
+        let rightError = "expected `}' after function body"
+        let body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first as! Block
+        return [FunctionDeclaration(returnType: returnType, arguments: arguments, body: body)]
     }
     
     private func acceptEndOfStatement() -> Token? {

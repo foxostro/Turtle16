@@ -39,7 +39,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = ExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: makeLiteralBoolean(value: true)))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testExpressionUsesInvalidUnaryPrefixOperator() {
@@ -69,7 +69,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "Unary operator `-' cannot be applied to an operand of type `boolean'")
+            XCTAssertEqual(compilerError?.message, "Unary operator `-' cannot be applied to an operand of type `bool'")
         }
     }
     
@@ -81,7 +81,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -91,7 +91,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralWord(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Eq_Boolean() {
@@ -100,7 +100,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralBoolean(value: true))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Ne_Word() {
@@ -109,7 +109,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralWord(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Ne_Boolean() {
@@ -118,7 +118,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralBoolean(value: true))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Lt_Word() {
@@ -127,7 +127,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralWord(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Lt_Boolean() {
@@ -137,7 +137,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to two `bool' operands")
         }
     }
     
@@ -147,7 +147,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralWord(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Gt_Boolean() {
@@ -157,7 +157,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to two `bool' operands")
         }
     }
     
@@ -167,7 +167,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralWord(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Le_Boolean() {
@@ -177,7 +177,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to two `bool' operands")
         }
     }
     
@@ -187,7 +187,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeLiteralWord(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testBinary_Ge_Boolean() {
@@ -197,7 +197,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to two `bool' operands")
         }
     }
     
@@ -219,7 +219,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to two `bool' operands")
         }
     }
     
@@ -241,7 +241,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to two `bool' operands")
         }
     }
     
@@ -263,7 +263,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to two `bool' operands")
         }
     }
     
@@ -285,7 +285,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to two `bool' operands")
         }
     }
     
@@ -307,7 +307,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to two `boolean' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to two `bool' operands")
         }
     }
     
@@ -326,7 +326,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
                                          expression: ExprUtils.makeLiteralBoolean(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testIdentifier_Word() {
@@ -339,12 +339,12 @@ class ExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_Boolean() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .boolean, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .boolean)
+        XCTAssertEqual(result, .bool)
     }
     
     func testFailBecauseAdditionCannotBeAppliedToBooleanAndWord() {
@@ -355,7 +355,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
         }
     }
 }

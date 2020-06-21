@@ -199,11 +199,9 @@ public class SnapToYertleCompiler: NSObject {
     
     private func compile(block: Block) throws {
         pushScope()
-        instructions += [.enter]
         for child in block.children {
             try compile(genericNode: child)
         }
-        instructions += [.leave]
         popScope()
     }
     
@@ -232,12 +230,14 @@ public class SnapToYertleCompiler: NSObject {
         let labelTail = TokenIdentifier(lineNumber: -1, lexeme: "\(name)_tail")
         instructions += [
             .jmp(labelTail),
-            .label(labelHead)
+            .label(labelHead),
+            .enter
         ]
         
         try compile(block: node.body)
         
         instructions += [
+            .leave,
             .leaf_ret,
             .label(labelTail),
         ]

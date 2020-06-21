@@ -70,6 +70,9 @@ public class SnapToYertleCompiler: NSObject {
         else if let node = genericNode as? Block {
             try compile(block: node)
         }
+        else if let node = genericNode as? FunctionDeclaration {
+            try compile(func: node)
+        }
     }
     
     private func compile(varDecl: VarDeclaration) throws {
@@ -213,5 +216,26 @@ public class SnapToYertleCompiler: NSObject {
     
     private var isInGlobalScope: Bool {
         return symbols.parent == nil
+    }
+    
+    private func compile(func node: FunctionDeclaration) throws {
+        let name = node.identifier.lexeme
+        let symbol = Symbol(type: .function, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        
+        symbols.bind(identifier: name, symbol: symbol)
+        
+        let labelHead = TokenIdentifier(lineNumber: -1, lexeme: name)
+        let labelTail = TokenIdentifier(lineNumber: -1, lexeme: "\(name)_tail")
+        instructions += [
+            .jmp(labelTail),
+            .label(labelHead)
+        ]
+        
+        try compile(block: node.body)
+        
+        instructions += [
+            .leaf_ret,
+            .label(labelTail),
+        ]
     }
 }

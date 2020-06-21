@@ -432,4 +432,169 @@ class SnapToYertleCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
     }
+    
+    func testCompilationFailsBecauseFunctionIsMissingAReturnStatement() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: []))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
+    
+    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralBoolean(value: true))
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
+    }
+    
+    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnVoid() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "non-void function should return a value")
+    }
+    
+    func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralBoolean(value: true)),
+                                    ExprUtils.makeLiteralBoolean(value: false)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "code after return will never be executed")
+    }
+    
+    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideIf() {
+        let ret = TokenReturn(lineNumber: 1, lexeme: "return")
+        let tr = ExprUtils.makeLiteralBoolean(value: true)
+        let one = ExprUtils.makeLiteralWord(value: 1)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    If(condition: tr,
+                                       then: Return(token: ret, expression: tr),
+                                       else: nil),
+                                    Return(token: ret, expression: one)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
+    }
+    
+    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideElse() {
+        let ret = TokenReturn(lineNumber: 1, lexeme: "return")
+        let tr = ExprUtils.makeLiteralBoolean(value: true)
+        let one = ExprUtils.makeLiteralWord(value: 1)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    If(condition: tr,
+                                       then: AbstractSyntaxTreeNode(),
+                                       else: Return(token: ret, expression: tr)),
+                                    Return(token: ret, expression: one)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
+    }
+    
+    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideWhile() {
+        let ret = TokenReturn(lineNumber: 1, lexeme: "return")
+        let tr = ExprUtils.makeLiteralBoolean(value: true)
+        let one = ExprUtils.makeLiteralWord(value: 1)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    While(condition: tr, body: Return(token: ret, expression: tr)),
+                                    Return(token: ret, expression: one)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
+    }
+    
+    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideFor() {
+        let ret = TokenReturn(lineNumber: 1, lexeme: "return")
+        let tr = ExprUtils.makeLiteralBoolean(value: true)
+        let one = ExprUtils.makeLiteralWord(value: 1)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    ForLoop(initializerClause: AbstractSyntaxTreeNode(),
+                                            conditionClause: tr,
+                                            incrementClause: AbstractSyntaxTreeNode(),
+                                            body: Return(token: ret, expression: tr)),
+                                    Return(token: ret, expression: one)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
+    }
+    
+    func testCompileFunctionWithReturnValue() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeLiteralWord(value: 0xaa))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
 }

@@ -22,7 +22,7 @@ public class ExpressionTypeChecker: NSObject {
         if let _ = expression as? Expression.LiteralWord {
             return .u8
         } else if let _ = expression as? Expression.LiteralBoolean {
-            return .boolean
+            return .bool
         } else if let expr = expression as? Expression.Unary {
             return try check(unary: expr)
         } else if let expr = expression as? Expression.Binary {
@@ -45,7 +45,7 @@ public class ExpressionTypeChecker: NSObject {
             switch expressionType {
             case .u8:
                 return .u8
-            case .boolean, .function:
+            case .bool, .function, .void:
                 throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(String(describing: expressionType))'")
             }
         default:
@@ -62,13 +62,13 @@ public class ExpressionTypeChecker: NSObject {
         }
         switch binary.op.op {
         case .eq, .ne:
-            return .boolean
+            return .bool
         
         case .lt, .gt, .le, .ge:
             switch right {
             case .u8:
-                return .boolean
-            case .boolean, .function:
+                return .bool
+            case .bool, .function, .void:
                 throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
             
@@ -76,7 +76,7 @@ public class ExpressionTypeChecker: NSObject {
             switch right {
             case .u8:
                 return .u8
-            case .boolean, .function:
+            case .bool, .function, .void:
                 throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
             }
         }

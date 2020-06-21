@@ -9,7 +9,7 @@
 import TurtleCompilerToolbox
 
 public enum SymbolType: Equatable {
-    case u8, boolean, function
+    case void, u8, bool, function
 }
 
 public enum SymbolStorage: Equatable {

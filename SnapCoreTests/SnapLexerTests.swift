@@ -369,4 +369,39 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenStatic(lineNumber: 1, lexeme: "static"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeFunc() {
+        let tokenizer = SnapLexer(withString: "func")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenFunc(lineNumber: 1, lexeme: "func"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeArrow() {
+        let tokenizer = SnapLexer(withString: "->")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenArrow(lineNumber: 1, lexeme: "->"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeUInt8() {
+        let tokenizer = SnapLexer(withString: "u8")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenType(lineNumber: 1, lexeme: "u8", type: .u8),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeBool() {
+        let tokenizer = SnapLexer(withString: "bool")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenType(lineNumber: 1, lexeme: "bool", type: .bool),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeVoid() {
+        let tokenizer = SnapLexer(withString: "void")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenType(lineNumber: 1, lexeme: "void", type: .void),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

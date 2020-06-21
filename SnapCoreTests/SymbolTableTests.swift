@@ -13,7 +13,7 @@ import TurtleCompilerToolbox
 class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {
         XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10, isMutable: true),
-                          Symbol(type: .boolean, offset: 0x10, isMutable: true))
+                          Symbol(type: .bool, offset: 0x10, isMutable: true))
     }
     
     func testUseOfUnresolvedIdentifier() {
@@ -85,10 +85,10 @@ class SymbolTableTests: XCTestCase {
 
     func testBindBoolean_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: true))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: true))
         let symbol = try! symbols.resolve(identifier: "foo")
         switch symbol.type {
-        case .boolean:
+        case .bool:
             XCTAssertEqual(symbol.offset, 0x10)
             XCTAssertTrue(symbol.isMutable)
         default:
@@ -98,10 +98,10 @@ class SymbolTableTests: XCTestCase {
 
     func testBindBoolean_Static_Immutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbol = try! symbols.resolve(identifier: "foo")
         switch symbol.type {
-        case .boolean:
+        case .bool:
             XCTAssertEqual(symbol.offset, 0x10)
             XCTAssertFalse(symbol.isMutable)
         default:
@@ -111,26 +111,26 @@ class SymbolTableTests: XCTestCase {
     
     func testExistsInParentScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbols = SymbolTable(parent: parent, dict: [:])
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
     func testResolveSymbolInParentScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbols = SymbolTable(parent: parent, dict: [:])
         let symbol = try! symbols.resolve(identifier: "foo")
-        XCTAssertEqual(symbol, Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .bool, offset: 0x10, isMutable: false))
     }
     
     func testResolveSymbolWithDepth() {
         let token = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbols = SymbolTable(parent: parent, dict: [:])
         let resolution = try! symbols.resolveWithDepth(identifierToken: token)
-        XCTAssertEqual(resolution.0, Symbol(type: .boolean, offset: 0x10, isMutable: false))
+        XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
         XCTAssertEqual(resolution.1, 1)
     }
 }

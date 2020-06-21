@@ -125,7 +125,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: false))
     }
     
     func testCompileVarDeclaration() {
@@ -186,7 +186,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .boolean, offset: addressFoo, isMutable: true))
+        XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: true))
     }
     
     func testCompileVarDeclaration_StackLocalVariable() {
@@ -322,7 +322,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `boolean'")
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
     }
     
     func testCompileForLoopStatement() {

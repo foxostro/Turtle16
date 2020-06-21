@@ -8,9 +8,11 @@
 
 import TurtleCompilerToolbox
 
+public class TokenArrow : Token {}
 public class TokenCurlyLeft : Token {}
 public class TokenCurlyRight : Token {}
 public class TokenElse: Token {}
+public class TokenFunc : Token {}
 public class TokenIf: Token {}
 public class TokenParenLeft : Token {}
 public class TokenParenRight : Token {}

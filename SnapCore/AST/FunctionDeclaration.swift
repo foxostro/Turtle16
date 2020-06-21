@@ -9,6 +9,8 @@
 import TurtleCompilerToolbox
 
 public class FunctionDeclaration: AbstractSyntaxTreeNode {
+    public let identifier: TokenIdentifier
+    public let returnType: SymbolType
     public struct Argument: Equatable, Hashable {
         let name: String
         let type: SymbolType
@@ -18,11 +20,14 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
             self.type = type
         }
     }
-    public let returnType: SymbolType
     public let arguments: [Argument]
     public let body: Block
     
-    public required init(returnType: SymbolType, arguments: [Argument], body: Block) {
+    public required init(identifier: TokenIdentifier,
+                         returnType: SymbolType,
+                         arguments: [Argument],
+                         body: Block) {
+        self.identifier = identifier
         self.returnType = returnType
         self.arguments = arguments
         self.body = body
@@ -32,6 +37,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
         guard let rhs = rhs as? FunctionDeclaration else { return false }
+        guard identifier == rhs.identifier else { return false }
         guard returnType == rhs.returnType else { return false }
         guard arguments == rhs.arguments else { return false }
         guard body == rhs.body else { return false }
@@ -40,6 +46,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     
     public override var hash: Int {
         var hasher = Hasher()
+        hasher.combine(identifier)
         hasher.combine(returnType)
         hasher.combine(arguments)
         hasher.combine(body)
@@ -48,9 +55,10 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: returnType=%@, arguments=[%@], body=%@>",
+        return String(format: "%@<%@: identifier=\"%@\", returnType=%@, arguments=[%@], body=%@>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      identifier.lexeme,
                       String(describing: returnType),
                       makeArgumentDescriptions(depth: depth + 1),
                       body.makeIndentedDescription(depth: depth + 1))

@@ -387,4 +387,49 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
     }
+    
+    func testCompileFunctionDeclaration_Simplest() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .void,
+                                arguments: [],
+                                body: Block())
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let L0 = TokenIdentifier(lineNumber: -1, lexeme: "foo")
+        let L1 = TokenIdentifier(lineNumber: -1, lexeme: "foo_tail")
+        XCTAssertEqual(compiler.instructions, [
+            .jmp(L1),
+            .label(L0),
+            .enter,
+            .leave,
+            .leaf_ret,
+            .label(L1)
+        ])
+    }
+    
+    func testCompileFunctionDeclaration_WithSideEffects() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: ExprUtils.makeLiteralWord(value: 0),
+                           storage: .staticStorage,
+                           isMutable: true),
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .void,
+                                arguments: [],
+                                body: Block(children: [
+                                    ExprUtils.makeAssignment(name: "a", right: ExprUtils.makeLiteralWord(value: 1))
+                                ])),
+            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+    }
 }

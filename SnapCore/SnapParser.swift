@@ -51,6 +51,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenFunc.self) {
             result = try consumeFunc(token as! TokenFunc)
         }
+        else if let token = accept(TokenReturn.self) {
+            result = try consumeReturn(token as! TokenReturn)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -427,5 +430,9 @@ public class SnapParser: Parser {
         return CompilerError(line: instruction.lineNumber,
                               format: "operand type mismatch: `%@'",
                               instruction.lexeme)
+    }
+    
+    private func consumeReturn(_ token: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
+        return [Return(token: token, expression: try consumeExpression())]
     }
 }

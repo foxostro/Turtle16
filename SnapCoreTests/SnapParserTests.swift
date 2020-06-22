@@ -1152,4 +1152,15 @@ for var i = 0; i < 10; i = i + 1 {
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
+    
+    func testParseReturn() {
+        let tokens = tokenize("return 1")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralWord(value: 1))
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
 }

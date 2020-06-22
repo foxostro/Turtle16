@@ -1050,8 +1050,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block())
         ]))
     }
@@ -1072,8 +1071,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block())
         ]))
     }
@@ -1085,8 +1083,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block())
         ]))
     }
@@ -1116,8 +1113,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [FunctionDeclaration.Argument(name: "bar", type: .u8)],
+                                functionType: FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
                                 body: Block())
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
@@ -1130,8 +1126,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [FunctionDeclaration.Argument(name: "bar", type: .u8), FunctionDeclaration.Argument(name: "baz", type: .bool)],
+                                functionType: FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "bar", type: .u8), FunctionType.Argument(name: "baz", type: .bool)]),
                                 body: Block())
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
@@ -1146,8 +1141,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [FunctionDeclaration.Argument(name: "bar", type: .void)],
+                                functionType: FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "bar", type: .void)]),
                                 body: Block())
         ])
         XCTAssertEqual(parser.syntaxTree, expected)

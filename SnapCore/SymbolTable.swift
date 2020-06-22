@@ -8,12 +8,81 @@
 
 import TurtleCompilerToolbox
 
-public enum SymbolType: Equatable {
-    case void, u8, bool, function
+public indirect enum SymbolType: Equatable, Hashable {
+    case void, u8, bool, function(FunctionType)
 }
 
 public enum SymbolStorage: Equatable {
     case staticStorage, stackStorage
+}
+
+public class FunctionType: NSObject {
+    public class Argument: NSObject {
+        public let name: String
+        public let argumentType: SymbolType
+        
+        public init(name: String, type: SymbolType) {
+            self.name = name
+            self.argumentType = type
+        }
+        
+        public static func ==(lhs: Argument, rhs: Argument) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? Argument else { return false }
+            guard name == rhs.name else { return false }
+            guard argumentType == rhs.argumentType else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(name)
+            hasher.combine(argumentType)
+            return hasher.finalize()
+        }
+    }
+    
+    public let returnType: SymbolType
+    public let arguments: [Argument]
+    
+    public init(returnType: SymbolType, arguments: [Argument]) {
+        self.returnType = returnType
+        self.arguments = arguments
+    }
+    
+    public override var description: String {
+        return "(\(makeArgumentsDescription())) -> \(String(describing: returnType))"
+    }
+    
+    public func makeArgumentsDescription() -> String {
+        let result = arguments.map({"\($0.name) : \(String(describing: $0.argumentType))"}).joined(separator: ", ")
+        return result
+    }
+    
+    public static func ==(lhs: FunctionType, rhs: FunctionType) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? FunctionType else { return false }
+        guard returnType == rhs.returnType else { return false }
+        guard arguments == rhs.arguments else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(returnType)
+        hasher.combine(arguments)
+        return hasher.finalize()
+    }
 }
 
 public struct Symbol: Equatable {

@@ -239,7 +239,7 @@ public class SnapToYertleCompiler: NSObject {
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
         let name = node.identifier.lexeme
-        let symbol = Symbol(type: .function, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        let symbol = Symbol(type: .function(node.functionType), offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         
         let labelHead = TokenIdentifier(lineNumber: -1, lexeme: name)
@@ -269,17 +269,17 @@ public class SnapToYertleCompiler: NSObject {
             if let last = trace.last {
                 switch last {
                 case .Return(let token, let returnExpressionType):
-                    if returnExpressionType != node.returnType {
+                    if returnExpressionType != node.functionType.returnType {
                         throw makeErrorForReturnExpressionTypeError(returnToken: token,
                                                                     actual: returnExpressionType,
-                                                                    expected: node.returnType)
+                                                                    expected: node.functionType.returnType)
                     }
                 default:
-                    if node.returnType != .void {
+                    if node.functionType.returnType != .void {
                         throw makeErrorForMissingReturn(node)
                     }
                 }
-            } else if node.returnType != .void {
+            } else if node.functionType.returnType != .void {
                 throw makeErrorForMissingReturn(node)
             }
         }
@@ -288,7 +288,7 @@ public class SnapToYertleCompiler: NSObject {
     private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
         return CompilerError(line: node.identifier.lineNumber,
                              format: "missing return in a function expected to return `%@'",
-                             String(describing: node.returnType))
+                             String(describing: node.functionType.returnType))
     }
     
     private func makeErrorForReturnExpressionTypeError(returnToken: Token,
@@ -312,7 +312,7 @@ public class SnapToYertleCompiler: NSObject {
                 case .Return(_, _):
                     break
                 default:
-                    if node.returnType != .void {
+                    if node.functionType.returnType != .void {
                         return false
                     }
                 }

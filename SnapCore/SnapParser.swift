@@ -248,7 +248,7 @@ public class SnapParser: Parser {
         let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected identifier in function declaration")) as! TokenIdentifier
         try expect(type: TokenParenLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `(' in argument list of function declaration"))
         
-        var arguments: [FunctionDeclaration.Argument] = []
+        var arguments: [FunctionType.Argument] = []
         
         if type(of: peek()!) != TokenParenRight.self {
             repeat {
@@ -260,7 +260,7 @@ public class SnapParser: Parser {
                 let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
                 let name = tokenIdentifier.lexeme
                 let type = tokenType.representedType
-                arguments.append(FunctionDeclaration.Argument(name: name, type: type))
+                arguments.append(FunctionType.Argument(name: name, type: type))
             } while nil != accept(TokenComma.self)
         }
         
@@ -275,7 +275,10 @@ public class SnapParser: Parser {
         let leftError = "expected `{' in body of function declaration"
         let rightError = "expected `}' after function body"
         let body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first as! Block
-        return [FunctionDeclaration(identifier: tokenIdentifier, returnType: returnType, arguments: arguments, body: body)]
+        return [FunctionDeclaration(identifier: tokenIdentifier,
+                                    functionType: FunctionType(returnType: returnType,
+                                                               arguments: arguments),
+                                    body: body)]
     }
     
     private func acceptEndOfStatement() -> Token? {

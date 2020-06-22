@@ -246,4 +246,16 @@ var a = 0xaa
         XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0xaa) // var c
         XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xaa) // var d
     }
+    
+    func test_EndToEndIntegration_FunctionCall_NoArgs() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u8 {
+    return 0xaa
+}
+let a = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
 }

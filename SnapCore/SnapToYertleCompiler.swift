@@ -220,17 +220,22 @@ public class SnapToYertleCompiler: NSObject {
         return symbols.parent == nil
     }
     
-    private func compile(func node: FunctionDeclaration) throws {
-        var shouldSynthesizeTerminalReturnStatement = false
-        let isReturnStatementPresent = try isFunctionReturnStatementIsPresent(func: node)
-        if !isReturnStatementPresent {
-            if node.returnType == .void {
-                shouldSynthesizeTerminalReturnStatement = true
-            } else {
-                throw makeErrorForMissingReturn(node)
-            }
+    private func compile(return node: Return) throws {
+        if let expr = node.expression {
+            try compile(expression: expr)
         }
-        
+        if nil != node.expression {
+            instructions += [
+                .store(SnapToYertleCompiler.kReturnValueScratchLocation)
+            ]
+        }
+        instructions += [
+            .leave,
+            .ret
+        ]
+    }
+    
+    private func compile(func node: FunctionDeclaration) throws {
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
         let name = node.identifier.lexeme
@@ -248,7 +253,7 @@ public class SnapToYertleCompiler: NSObject {
         
         try compile(block: node.body)
         
-        if shouldSynthesizeTerminalReturnStatement {
+        if shouldSynthesizeTerminalReturnStatement(func: node) {
             try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
         }
         
@@ -257,31 +262,27 @@ public class SnapToYertleCompiler: NSObject {
         ]
     }
     
-    private func isFunctionReturnStatementIsPresent(func node: FunctionDeclaration) throws -> Bool {
-        let returnStatements = try findReturnStatements(block: node.body)
-        return !returnStatements.isEmpty
-    }
-    
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {
-        let returnStatements = try findReturnStatements(block: node.body)
-        for stmt in returnStatements {
-            let returnExpressionType = try checkReturnExpressionType(stmt)
-            if returnExpressionType != node.returnType {
-                throw makeErrorForReturnExpressionTypeError(returnToken: stmt.token,
-                                                            actual: returnExpressionType,
-                                                            expected: node.returnType)
+        let tracer = StatementTracer(symbols: symbols)
+        let traces = try tracer.trace(ast: node.body)
+        for trace in traces {
+            if let last = trace.last {
+                switch last {
+                case .Return(let token, let returnExpressionType):
+                    if returnExpressionType != node.returnType {
+                        throw makeErrorForReturnExpressionTypeError(returnToken: token,
+                                                                    actual: returnExpressionType,
+                                                                    expected: node.returnType)
+                    }
+                default:
+                    if node.returnType != .void {
+                        throw makeErrorForMissingReturn(node)
+                    }
+                }
+            } else if node.returnType != .void {
+                throw makeErrorForMissingReturn(node)
             }
         }
-    }
-    
-    private func checkReturnExpressionType(_ stmt: Return) throws -> SymbolType {
-        let returnExpressionType: SymbolType
-        if let expr = stmt.expression {
-            returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
-        } else {
-            returnExpressionType = .void
-        }
-        return returnExpressionType
     }
     
     private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
@@ -302,79 +303,21 @@ public class SnapToYertleCompiler: NSObject {
                              String(describing: expected))
     }
     
-    private func findReturnStatements(genericNode: AbstractSyntaxTreeNode) throws -> [Return] {
-        if let node = genericNode as? Block {
-            return try findReturnStatements(block: node)
-        }
-        else if let node = genericNode as? If {
-            return try findReturnStatements(if: node)
-        }
-        else if let node = genericNode as? While {
-            return try findReturnStatements(while: node)
-        }
-        else if let node = genericNode as? ForLoop {
-            return try findReturnStatements(for: node)
-        }
-        else if let node = genericNode as? Return {
-            return [node]
-        }
-        else {
-            return []
-        }
-    }
-    
-    private func findReturnStatements(block: Block) throws -> [Return] {
-        try expectBlockDoesntHaveCodeAfterReturn(block: block)
-        var returnStatements: [Return] = []
-        for stmt in block.children {
-            returnStatements += try findReturnStatements(genericNode: stmt)
-        }
-        return returnStatements
-    }
-    
-    private func expectBlockDoesntHaveCodeAfterReturn(block: Block) throws {
-        var theReturn: TokenReturn? = nil
-        for stmt in block.children {
-            if let theReturn = theReturn {
-                throw makeErrorForCodeAfterReturn(theReturn)
-            }
-            if let r = stmt as? Return {
-                theReturn = r.token
+    private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) -> Bool {
+        let tracer = StatementTracer(symbols: symbols)
+        let traces = try! tracer.trace(ast: node.body)
+        for trace in traces {
+            if let last = trace.last {
+                switch last {
+                case .Return(_, _):
+                    break
+                default:
+                    if node.returnType != .void {
+                        return false
+                    }
+                }
             }
         }
-    }
-    
-    private func findReturnStatements(if node: If) throws -> [Return] {
-        let returnStatementsInThenBranch = try findReturnStatements(genericNode: node.thenBranch)
-        let returnStatementsInElseBranch = try findReturnStatements(genericNode: node.elseBranch ?? AbstractSyntaxTreeNode())
-        return returnStatementsInThenBranch + returnStatementsInElseBranch
-    }
-    
-    private func findReturnStatements(while node: While) throws -> [Return] {
-        return try findReturnStatements(genericNode: node.body)
-    }
-    
-    private func findReturnStatements(for node: ForLoop) throws -> [Return] {
-        return try findReturnStatements(genericNode: node.body)
-    }
-    
-    private func makeErrorForCodeAfterReturn(_ returnToken: Token) -> CompilerError {
-        return CompilerError(line: returnToken.lineNumber,
-                             message: "code after return will never be executed")
-    }
-    
-    private func compile(return node: Return) throws {
-        if let expr = node.expression {
-            try compile(expression: expr)
-        }
-        if nil != node.expression {
-            instructions += [
-                .store(SnapToYertleCompiler.kReturnValueScratchLocation)
-            ]
-        }
-        instructions += [
-            .leave,
-            .ret
-        ]
+        return true
     }
 }

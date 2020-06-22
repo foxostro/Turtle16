@@ -258,4 +258,61 @@ let a = foo()
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
+    
+    func test_EndToEndIntegration_NestedFunctionDeclarations() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u8 {
+    let val = 0xaa
+    func bar() -> u8 {
+        return val
+    }
+    return bar()
+}
+let a = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    func test_EndToEndIntegration_ReturnFromInsideIfStmt() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u8 {
+    if 1 + 1 == 2 {
+        return 0xaa
+    } else {
+        return 0xbb
+    }
+}
+let a = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    func testMissingReturn_1() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+func foo() -> u8 {
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
+    
+    func testMissingReturn_2() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+func foo() -> u8 {
+    if false {
+        return 1
+    }
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
 }

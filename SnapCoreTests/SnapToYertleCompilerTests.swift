@@ -599,4 +599,35 @@ class SnapToYertleCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
+    
+    func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block(children: [
+                                    If(condition: ExprUtils.makeLiteralBoolean(value: true),
+                                       then: Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                                    expression: ExprUtils.makeLiteralWord(value: 1)),
+                                       else: nil)
+                                ]))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
+    
+    func testCompilationFailsBecauseThereExistsAPathMissingAReturn_2() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                returnType: .u8,
+                                arguments: [],
+                                body: Block())
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
 }

@@ -391,8 +391,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileFunctionDeclaration_Simplest() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block())
         ])
         let compiler = SnapToYertleCompiler()
@@ -418,8 +417,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true),
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .void,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block(children: [
                                     ExprUtils.makeAssignment(name: "a", right: ExprUtils.makeLiteralWord(value: 1))
                                 ])),
@@ -437,8 +435,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionIsMissingAReturnStatement() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: []))
         ])
         let compiler = SnapToYertleCompiler()
@@ -450,8 +447,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralBoolean(value: true))
                                 ]))
@@ -465,8 +461,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnVoid() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil)
                                 ]))
@@ -480,8 +475,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralBoolean(value: true)),
                                     ExprUtils.makeLiteralBoolean(value: false)
@@ -499,8 +493,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let one = ExprUtils.makeLiteralWord(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     If(condition: tr,
                                        then: Return(token: ret, expression: tr),
@@ -520,8 +513,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let one = ExprUtils.makeLiteralWord(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     If(condition: tr,
                                        then: AbstractSyntaxTreeNode(),
@@ -541,8 +533,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let one = ExprUtils.makeLiteralWord(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     While(condition: tr, body: Return(token: ret, expression: tr)),
                                     Return(token: ret, expression: one)
@@ -560,8 +551,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let one = ExprUtils.makeLiteralWord(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     ForLoop(initializerClause: AbstractSyntaxTreeNode(),
                                             conditionClause: tr,
@@ -579,8 +569,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileFunctionWithReturnValue() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
                                            expression: ExprUtils.makeLiteralWord(value: 0xaa))
@@ -603,8 +592,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     If(condition: ExprUtils.makeLiteralBoolean(value: true),
                                        then: Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
@@ -621,8 +609,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_2() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                returnType: .u8,
-                                arguments: [],
+                                functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block())
         ])
         let compiler = SnapToYertleCompiler()

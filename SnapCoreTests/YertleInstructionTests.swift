@@ -36,8 +36,9 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.jalr(L0).description, "JALR .L0")
         XCTAssertEqual(YertleInstruction.enter.description, "ENTER")
         XCTAssertEqual(YertleInstruction.leave.description, "LEAVE")
-        XCTAssertEqual(YertleInstruction.leaf_ret.description, "LEAF-RET")
-        XCTAssertEqual(YertleInstruction.hlt.description, "HLT")
+        XCTAssertEqual(YertleInstruction.pushReturnAddress.description, "PUSH-RETURN-ADDRESS")
+        XCTAssertEqual(YertleInstruction.ret.description, "RET")
+        XCTAssertEqual(YertleInstruction.leafRet.description, "LEAF-RET")
     }
     
     func testMakeListing_Empty() {

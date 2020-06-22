@@ -403,9 +403,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .jmp(L1),
             .label(L0),
+            .pushReturnAddress,
             .enter,
             .leave,
-            .leaf_ret,
+            .ret,
             .label(L1)
         ])
     }
@@ -593,6 +594,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
+//        print(YertleInstruction.makeListing(instructions: ir))
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)

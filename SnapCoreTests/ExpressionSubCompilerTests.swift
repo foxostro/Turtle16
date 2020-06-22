@@ -282,46 +282,4 @@ class ExpressionSubCompilerTests: XCTestCase {
             XCTAssertEqual(($0 as? CompilerError)?.message, "cannot call value of non-function type `u8'")
         }
     }
-    
-    func testMakeAFunctionCallWithNoArgumentsAndASimpleReturnValue() {
-        let expr = ExprUtils.makeAssignment(name: "result", right: Expression.Call(callee: ExprUtils.makeIdentifier(name: "fn"), arguments: []))
-        let symbols = SymbolTable([
-            "result" : Symbol(type: .u8, offset: 0x0010, isMutable: true, storage: .staticStorage),
-            "fn" : Symbol(type: .function, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        ])
-        // This test does not concern itself with how the Snap language prepares
-        // and compiles the body of the function. Instead, manually insert an
-        // appropriate function at the end of the instruction listing.
-        let ir = try! compile(expression: expr, symbols: symbols) + [
-            .hlt,
-            .label(TokenIdentifier(lineNumber: -1, lexeme: "fn")),
-            .push(0xaa),
-            .leaf_ret
-        ]
-        let executor = YertleExecutor()
-        print(YertleInstruction.makeListing(instructions: ir))
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
-    }
-    
-    func testMakeAFunctionCallWithSomeArgumentsAndReturnValue() {
-        let expr = ExprUtils.makeAssignment(name: "result", right: Expression.Call(callee: ExprUtils.makeIdentifier(name: "add"), arguments: [ExprUtils.makeLiteralWord(value: 3), ExprUtils.makeLiteralWord(value: 5)]))
-        let symbols = SymbolTable([
-            "result" : Symbol(type: .u8, offset: 0x0010, isMutable: true, storage: .staticStorage),
-            "add" : Symbol(type: .function, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        ])
-        // This test does not concern itself with how the Snap language prepares
-        // and compiles the body of the function. Instead, manually insert an
-        // appropriate function at the end of the instruction listing.
-        let ir = try! compile(expression: expr, symbols: symbols) + [
-            .hlt,
-            .label(TokenIdentifier(lineNumber: -1, lexeme: "add")),
-            .add,
-            .leaf_ret
-        ]
-        let executor = YertleExecutor()
-//        print(YertleInstruction.makeListing(instructions: ir))
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 8)
-    }
 }

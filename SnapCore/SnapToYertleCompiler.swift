@@ -18,6 +18,7 @@ public class SnapToYertleCompiler: NSObject {
     private var symbols: SymbolTable
     private var tempLabelCounter = 0
     private var staticStoragePointer = SnapToYertleCompiler.kStaticStorageStartAddress
+    public static let kReturnValueScratchLocation = 0x0004
     
     public override init() {
         symbols = globalSymbols
@@ -220,6 +221,16 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(func node: FunctionDeclaration) throws {
+        var shouldSynthesizeTerminalReturnStatement = false
+        let isReturnStatementPresent = try isFunctionReturnStatementIsPresent(func: node)
+        if !isReturnStatementPresent {
+            if node.returnType == .void {
+                shouldSynthesizeTerminalReturnStatement = true
+            } else {
+                throw makeErrorForMissingReturn(node)
+            }
+        }
+        
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
         let name = node.identifier.lexeme
@@ -231,23 +242,28 @@ public class SnapToYertleCompiler: NSObject {
         instructions += [
             .jmp(labelTail),
             .label(labelHead),
+            .pushReturnAddress,
             .enter
         ]
         
         try compile(block: node.body)
         
+        if shouldSynthesizeTerminalReturnStatement {
+            try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
+        }
+        
         instructions += [
-            .leave,
-            .leaf_ret,
             .label(labelTail),
         ]
     }
     
+    private func isFunctionReturnStatementIsPresent(func node: FunctionDeclaration) throws -> Bool {
+        let returnStatements = try findReturnStatements(block: node.body)
+        return !returnStatements.isEmpty
+    }
+    
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {
         let returnStatements = try findReturnStatements(block: node.body)
-        if returnStatements.isEmpty && node.returnType != .void {
-            throw makeErrorForMissingReturn(node)
-        }
         for stmt in returnStatements {
             let returnExpressionType = try checkReturnExpressionType(stmt)
             if returnExpressionType != node.returnType {
@@ -348,15 +364,17 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(return node: Return) throws {
-        let scratch = 0x0004
         if let expr = node.expression {
             try compile(expression: expr)
         }
+        if nil != node.expression {
+            instructions += [
+                .store(SnapToYertleCompiler.kReturnValueScratchLocation)
+            ]
+        }
         instructions += [
-            .store(scratch),
             .leave,
-            .load(scratch),
-            .leaf_ret
+            .ret
         ]
     }
 }

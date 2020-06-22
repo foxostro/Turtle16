@@ -35,8 +35,9 @@ public enum YertleInstruction: Equatable {
     case jalr(TokenIdentifier) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the expression stack save for whatever value was in the A register.
     case enter // push fp in two bytes ; fp <- sp
     case leave // sp <- fp ; fp <- pop two bytes from the stack
-    case leaf_ret // Jump back to the address in the link register to return from the function
-    case hlt // Halt execution
+    case pushReturnAddress // push the link register (two bytes) to the stack
+    case ret // pop the two byte return address and jump to that address
+    case leafRet // Jump back to the address in the link register to return from the function
     
     public var description: String {
         switch self {
@@ -86,10 +87,12 @@ public enum YertleInstruction: Equatable {
             return "ENTER"
         case .leave:
             return "LEAVE"
-        case .leaf_ret:
+        case .pushReturnAddress:
+            return "PUSH-RETURN-ADDRESS"
+        case .ret:
+            return "RET"
+        case .leafRet:
             return "LEAF-RET"
-        case .hlt:
-            return "HLT"
         }
     }
     

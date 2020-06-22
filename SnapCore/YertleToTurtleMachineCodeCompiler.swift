@@ -80,8 +80,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .jalr(let token): try jalr(to: token)
             case .enter: try enter()
             case .leave: try leave()
-            case .leaf_ret: try leaf_ret()
-            case .hlt: hlt()
+            case .pushReturnAddress: try pushReturnAddress()
+            case .leafRet: try leafRet()
+            case .ret: try ret()
             }
         }
         insertProgramEpilogue()
@@ -717,7 +718,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .B)
     }
     
-    private func leaf_ret() throws {
+    private func pushReturnAddress() throws {
+        try assembler.mov(.A, .G)
+        try pushAToExpressionStack()
+        try assembler.mov(.A, .H)
+        try pushAToExpressionStack()
+    }
+    
+    private func leafRet() throws {
         try assembler.mov(.X, .G)
         try assembler.mov(.Y, .H)
         assembler.jmp()
@@ -725,7 +733,21 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
-    private func hlt() {
-        assembler.hlt()
+    private func ret() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo)
+        try assembler.mov(.M, .B)
+        
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.X, .B)
+        
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo)
+        try assembler.mov(.Y, .M)
+        
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
     }
 }

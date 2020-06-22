@@ -217,7 +217,10 @@ public class ExpressionSubCompiler: NSObject {
                 let compiledExpr = try compile(expression: expr)
                 instructions += compiledExpr
             }
-            instructions += [.jalr(identifierToken)]
+            instructions += [
+                .jalr(identifierToken),
+                .load(SnapToYertleCompiler.kReturnValueScratchLocation), // TODO: should only load this is the function return type is non-void
+            ]
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"

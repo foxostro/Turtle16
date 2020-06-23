@@ -91,7 +91,38 @@ public class ExpressionTypeChecker: NSObject {
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
-        return .u8
+        let callee = call.callee as! Expression.Identifier
+        let symbol = try symbols.resolve(identifierToken: callee.identifier)
+        switch symbol.type {
+        case .function(let typ):
+            if call.arguments.count != typ.arguments.count {
+                let message = "missing argument in call"
+                if let lineNumber = call.tokens.first?.lineNumber {
+                    throw CompilerError(line: lineNumber, message: message)
+                } else {
+                    throw CompilerError(message: message)
+                }
+            }
+            for i in 0..<typ.arguments.count {
+                let argumentType = try check(expression: call.arguments[i])
+                if typ.arguments[i].argumentType != argumentType {
+                    let message = String(format: "cannot convert value of type `%@' to expected argument type `%@'", String(describing: argumentType), String(describing: typ.arguments[i].argumentType))
+                    if let lineNumber = call.tokens.first?.lineNumber {
+                        throw CompilerError(line: lineNumber, message: message)
+                    } else {
+                        throw CompilerError(message: message)
+                    }
+                }
+            }
+            return typ.returnType
+        default:
+            let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
+            if let lineNumber = call.tokens.first?.lineNumber {
+                throw CompilerError(line: lineNumber, message: message)
+            } else {
+                throw CompilerError(message: message)
+            }
+        }
     }
     
     private func unsupportedError(expression: Expression) -> Error {

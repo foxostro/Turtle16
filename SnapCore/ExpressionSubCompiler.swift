@@ -113,7 +113,7 @@ public class ExpressionSubCompiler: NSObject {
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
         let resolution = try symbols.resolveWithDepth(identifierToken: identifier.identifier)
         let symbol = resolution.0
-        let depth = resolution.1
+        let depth = symbols.stackFrameIndex - resolution.1
         switch symbol.storage {
         case .staticStorage:
             return loadStaticSymbol(symbol)

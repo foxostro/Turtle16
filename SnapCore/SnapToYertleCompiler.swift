@@ -268,6 +268,7 @@ public class SnapToYertleCompiler: NSObject {
         ]
         
         pushScope(enclosingFunctionType: node.functionType)
+        symbols.stackFrameIndex += 1
         for child in node.body.children {
             try compile(genericNode: child)
         }

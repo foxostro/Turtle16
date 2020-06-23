@@ -226,6 +226,24 @@ var a = 0xaa
         XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xbb) // var b
     }
     
+    func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u8 {
+    var b = 0xaa
+    func bar() -> u8 {
+        {
+            return b
+        }
+    }
+    return bar()
+}
+let a = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+    }
+    
     func test_EndToEndIntegration_NestedBlocksAndReadVarsOneLevelUp() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """

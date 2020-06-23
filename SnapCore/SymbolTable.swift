@@ -105,6 +105,7 @@ public class SymbolTable: NSObject {
     public let parent: SymbolTable?
     public var storagePointer: Int = 0
     public var enclosingFunctionType: FunctionType? = nil
+    public var stackFrameIndex = 0
     
     public convenience init(_ dict: [String:Symbol] = [:]) {
         self.init(parent: nil, dict: dict)
@@ -114,6 +115,7 @@ public class SymbolTable: NSObject {
         parent = p
         symbolTable = dict
         enclosingFunctionType = p?.enclosingFunctionType
+        stackFrameIndex = p?.stackFrameIndex ?? 0
     }
     
     public func exists(identifier: String) -> Bool {
@@ -154,10 +156,8 @@ public class SymbolTable: NSObject {
     
     private func maybeResolve(identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
-            return (symbol, 0)
-        } else if let parentResolution = parent?.maybeResolve(identifier: identifier) {
-            return (parentResolution.0, parentResolution.1 + 1)
+            return (symbol, stackFrameIndex)
         }
-        return nil
+        return parent?.maybeResolve(identifier: identifier)
     }
 }

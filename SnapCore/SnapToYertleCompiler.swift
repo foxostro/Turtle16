@@ -267,6 +267,11 @@ public class SnapToYertleCompiler: NSObject {
             .enter
         ]
         
+        // Function arguments aren't inside the stack frame, but they are local
+        // to the function. So, we define two scopes and only bind the inner
+        // one to the stack frame.
+        pushScope(enclosingFunctionType: node.functionType)
+        bindFunctionArguments(node.functionType.arguments)
         pushScope(enclosingFunctionType: node.functionType)
         symbols.stackFrameIndex += 1
         for child in node.body.children {
@@ -276,10 +281,20 @@ public class SnapToYertleCompiler: NSObject {
             try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
         }
         popScope()
+        popScope()
         
         instructions += [
             .label(labelTail),
         ]
+    }
+    
+    private func bindFunctionArguments(_ arguments: [FunctionType.Argument]) {
+        for i in 0..<arguments.count {
+            let argument = arguments[i]
+            let offset = symbols.storagePointer + i
+            let symbol = Symbol(type: argument.argumentType, offset: offset, isMutable: false, storage: .stackStorage)
+            symbols.bind(identifier: argument.name, symbol: symbol)
+        }
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {

@@ -206,9 +206,12 @@ public class SnapToYertleCompiler: NSObject {
         popScope()
     }
     
-    private func pushScope() {
+    private func pushScope(enclosingFunctionType: FunctionType? = nil) {
         symbols = SymbolTable(parent: symbols)
         symbols.storagePointer = 1
+        if enclosingFunctionType != nil {
+            symbols.enclosingFunctionType = enclosingFunctionType
+        }
     }
     
     private func popScope() {
@@ -221,8 +224,21 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(return node: Return) throws {
+        guard let enclosingFunctionType = symbols.enclosingFunctionType else {
+            throw CompilerError(line: node.token.lineNumber, message: "return is invalid outside of a function")
+        }
         if let expr = node.expression {
+            let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
+            if returnExpressionType != enclosingFunctionType.returnType {
+                throw CompilerError(line: node.token.lineNumber,
+                                    format: "cannot convert return expression of type `%@' to return type `%@'",
+                                    String(describing: returnExpressionType),
+                                    String(describing: enclosingFunctionType.returnType))
+            }
+            
             try compile(expression: expr)
+        } else if .void != enclosingFunctionType.returnType {
+            throw CompilerError(line: node.token.lineNumber, message: "non-void function should return a value")
         }
         if nil != node.expression {
             instructions += [
@@ -251,11 +267,14 @@ public class SnapToYertleCompiler: NSObject {
             .enter
         ]
         
-        try compile(block: node.body)
-        
+        pushScope(enclosingFunctionType: node.functionType)
+        for child in node.body.children {
+            try compile(genericNode: child)
+        }
         if shouldSynthesizeTerminalReturnStatement(func: node) {
             try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
         }
+        popScope()
         
         instructions += [
             .label(labelTail),
@@ -268,12 +287,8 @@ public class SnapToYertleCompiler: NSObject {
         for trace in traces {
             if let last = trace.last {
                 switch last {
-                case .Return(let token, let returnExpressionType):
-                    if returnExpressionType != node.functionType.returnType {
-                        throw makeErrorForReturnExpressionTypeError(returnToken: token,
-                                                                    actual: returnExpressionType,
-                                                                    expected: node.functionType.returnType)
-                    }
+                case .Return:
+                    break
                 default:
                     if node.functionType.returnType != .void {
                         throw makeErrorForMissingReturn(node)
@@ -291,33 +306,25 @@ public class SnapToYertleCompiler: NSObject {
                              String(describing: node.functionType.returnType))
     }
     
-    private func makeErrorForReturnExpressionTypeError(returnToken: Token,
-                                                       actual: SymbolType,
-                                                       expected: SymbolType) -> CompilerError {
-        if actual == .void {
-            return CompilerError(line: returnToken.lineNumber, message: "non-void function should return a value")
-        }
-        return CompilerError(line: returnToken.lineNumber,
-                             format: "cannot convert return expression of type `%@' to return type `%@'",
-                             String(describing: actual),
-                             String(describing: expected))
-    }
-    
     private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) -> Bool {
+        guard node.functionType.returnType == .void else {
+            return false
+        }
         let tracer = StatementTracer(symbols: symbols)
         let traces = try! tracer.trace(ast: node.body)
+        var allTracesEndInReturnStatement = true
         for trace in traces {
             if let last = trace.last {
                 switch last {
-                case .Return(_, _):
+                case .Return:
                     break
                 default:
-                    if node.functionType.returnType != .void {
-                        return false
-                    }
+                    allTracesEndInReturnStatement = false
                 }
+            } else {
+                allTracesEndInReturnStatement = false
             }
         }
-        return true
+        return !allTracesEndInReturnStatement
     }
 }

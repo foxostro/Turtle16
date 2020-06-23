@@ -617,4 +617,34 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
+    
+    func testCompilationFailsBecauseFunctionCallUsesIncorrectParameterType() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)]),
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeLiteralWord(value: 1))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
+                                                       arguments: [ExprUtils.makeLiteralBoolean(value: true)]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8'")
+    }
+    
+    func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
+        let ast = TopLevel(children: [
+            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralBoolean(value: true))
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
+    }
 }

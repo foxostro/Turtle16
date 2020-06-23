@@ -16,10 +16,9 @@ public class StatementTracer: NSObject {
         case IfSkipped
         case LoopBody
         case LoopSkipped
-        case Return(TokenReturn, SymbolType)
+        case Return
     }
     public typealias Trace = [TraceElement]
-    public private(set) var shouldSynthesizeTerminalReturnStatement = false
     private let symbols: SymbolTable
     
     public init(symbols: SymbolTable = SymbolTable()) {
@@ -78,7 +77,7 @@ public class StatementTracer: NSObject {
     
     private func trace(currentTrace: Trace, if node: If) throws -> [Trace] {
         switch currentTrace.last {
-        case .Return(_):
+        case .Return:
             return [currentTrace]
         default:
             let thenTraces = try trace(currentTrace: currentTrace + [.IfThen], genericNode: node.thenBranch)
@@ -94,7 +93,7 @@ public class StatementTracer: NSObject {
     
     private func trace(currentTrace: Trace, while node: While) throws -> [Trace] {
         switch currentTrace.last {
-        case .Return(_):
+        case .Return:
             return [currentTrace]
         default:
             let bodyTraces = try trace(currentTrace: currentTrace + [.LoopBody], genericNode: node.body)
@@ -105,7 +104,7 @@ public class StatementTracer: NSObject {
     
     private func trace(currentTrace: Trace, forLoop node: ForLoop) throws -> [Trace] {
         switch currentTrace.last {
-        case .Return(_):
+        case .Return:
             return [currentTrace]
         default:
             let bodyTraces = try trace(currentTrace: currentTrace + [.LoopBody], genericNode: node.body)
@@ -116,7 +115,7 @@ public class StatementTracer: NSObject {
     
     private func trace(currentTrace: Trace, stmt: AbstractSyntaxTreeNode) -> [Trace] {
         switch currentTrace.last {
-        case .Return(_):
+        case .Return:
             return [currentTrace]
         default:
             return [currentTrace + [.Statement(String(describing: type(of: stmt)))]]
@@ -125,17 +124,10 @@ public class StatementTracer: NSObject {
     
     private func trace(currentTrace: Trace, return node: Return) throws -> [Trace] {
         switch currentTrace.last {
-        case .Return(_):
+        case .Return:
             return [currentTrace]
         default:
-            let returnType: SymbolType
-            if let expression = node.expression {
-                let typeChecker = ExpressionTypeChecker(symbols: symbols)
-                returnType = try typeChecker.check(expression: expression)
-            } else {
-                returnType = .void
-            }
-            return [currentTrace + [.Return(node.token, returnType)]]
+            return [currentTrace + [.Return]]
         }
     }
 }

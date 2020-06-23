@@ -104,6 +104,7 @@ public class SymbolTable: NSObject {
     private var symbolTable: [String:Symbol]
     public let parent: SymbolTable?
     public var storagePointer: Int = 0
+    public var enclosingFunctionType: FunctionType? = nil
     
     public convenience init(_ dict: [String:Symbol] = [:]) {
         self.init(parent: nil, dict: dict)
@@ -112,6 +113,7 @@ public class SymbolTable: NSObject {
     public init(parent p: SymbolTable?, dict: [String:Symbol] = [:]) {
         parent = p
         symbolTable = dict
+        enclosingFunctionType = p?.enclosingFunctionType
     }
     
     public func exists(identifier: String) -> Bool {

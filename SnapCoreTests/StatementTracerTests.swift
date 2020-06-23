@@ -16,7 +16,7 @@ class StatementTracerTests: XCTestCase {
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let one = ExprUtils.makeLiteralWord(value: 1)
         let traces = try! tracer.trace(ast: Return(token: token, expression: one))
-        XCTAssertEqual(traces[0], [.Return(token, .u8)])
+        XCTAssertEqual(traces[0], [.Return])
     }
     
     func testTraceBlockContainingSingleReturnStatement() {
@@ -26,7 +26,7 @@ class StatementTracerTests: XCTestCase {
         let traces = try! tracer.trace(ast: Block(children: [
             Return(token: token, expression: one)
         ]))
-        XCTAssertEqual(traces, [[.Return(token, .u8)]])
+        XCTAssertEqual(traces, [[.Return]])
     }
     
     func testThrowErrorWhenStatementAfterReturnInBlock() {
@@ -56,8 +56,8 @@ class StatementTracerTests: XCTestCase {
             If(condition: tr, then: Return(token: token, expression: one), else: nil),
             Return(token: token, expression: two)
         ]))
-        XCTAssertEqual(traces[0], [.IfThen, .Return(token, .u8)])
-        XCTAssertEqual(traces[1], [.IfSkipped, .Return(token, .u8)])
+        XCTAssertEqual(traces[0], [.IfThen, .Return])
+        XCTAssertEqual(traces[1], [.IfSkipped, .Return])
     }
     
     func testTraceReturnStatementsThroughElse() {
@@ -70,7 +70,7 @@ class StatementTracerTests: XCTestCase {
         ]))
         XCTAssertEqual(traces.count, 2)
         XCTAssertEqual(traces[0], [.IfThen])
-        XCTAssertEqual(traces[1], [.IfElse, .Return(token, .u8)])
+        XCTAssertEqual(traces[1], [.IfElse, .Return])
     }
     
     func testTraceReturnStatementsThroughWhile() {
@@ -82,7 +82,7 @@ class StatementTracerTests: XCTestCase {
             While(condition: tr, body: Return(token: token, expression: one))
         ]))
         XCTAssertEqual(traces.count, 2)
-        XCTAssertEqual(traces[0], [.LoopBody, .Return(token, .u8)])
+        XCTAssertEqual(traces[0], [.LoopBody, .Return])
         XCTAssertEqual(traces[1], [.LoopSkipped])
     }
     
@@ -98,7 +98,7 @@ class StatementTracerTests: XCTestCase {
                     body: Return(token: token, expression: one))
         ]))
         XCTAssertEqual(traces.count, 2)
-        XCTAssertEqual(traces[0], [.LoopBody, .Return(token, .u8)])
+        XCTAssertEqual(traces[0], [.LoopBody, .Return])
         XCTAssertEqual(traces[1], [.LoopSkipped])
     }
 }

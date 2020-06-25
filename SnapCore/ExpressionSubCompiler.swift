@@ -111,7 +111,7 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
-        let resolution = try symbols.resolveWithDepth(identifierToken: identifier.identifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: identifier.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         switch symbol.storage {
@@ -167,7 +167,7 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
-        let resolution = try symbols.resolveWithDepth(identifierToken: assignment.identifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: assignment.identifier)
         let symbol = resolution.0
         let depth = resolution.1
         guard symbol.isMutable else {

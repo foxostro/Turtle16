@@ -168,6 +168,30 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "variable redefines existing symbol: `foo'")
     }
     
+    func testCompileVarDeclaration_ShadowsExistingSymbolInEnclosingScope() {
+        let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
+        let two = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                           expression: one,
+                           storage: .staticStorage,
+                           isMutable: false),
+            Block(children: [
+                VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                               expression: two,
+                               storage: .staticStorage,
+                               isMutable: false)
+            ])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+    }
+    
     func testCompileVarDeclaration_TypeIsInferredFromTheExpression() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),

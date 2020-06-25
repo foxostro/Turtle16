@@ -29,7 +29,7 @@ class SymbolTableTests: XCTestCase {
             XCTAssertNotNil(error)
             XCTAssertEqual(error?.message, "use of unresolved identifier: `foo'")
         }
-        XCTAssertThrowsError(try symbols.resolveWithDepth(identifierToken: token)) {
+        XCTAssertThrowsError(try symbols.resolveWithStackFrameDepth(identifierToken: token)) {
             let error = $0 as? CompilerError
             XCTAssertNotNil(error)
             XCTAssertEqual(error?.message, "use of unresolved identifier: `foo'")
@@ -116,6 +116,19 @@ class SymbolTableTests: XCTestCase {
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
+    func testSymbolCanBeShadowedInLocalScope() {
+        let parent = SymbolTable()
+        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        let symbols = SymbolTable(parent: parent, dict: [:])
+        XCTAssertFalse(symbols.existsAndCannotBeShadowed(identifier: "foo"))
+    }
+    
+    func testSymbolCannotBeShadowedInLocalScope() {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        XCTAssertTrue(symbols.existsAndCannotBeShadowed(identifier: "foo"))
+    }
+    
     func testResolveSymbolInParentScope() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
@@ -124,13 +137,23 @@ class SymbolTableTests: XCTestCase {
         XCTAssertEqual(symbol, Symbol(type: .bool, offset: 0x10, isMutable: false))
     }
     
-    func testResolveSymbolWithDepth() {
+    func testResolveSymbolWithStackFrameDepth() {
         let token = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbols = SymbolTable(parent: parent, dict: [:])
-        let resolution = try! symbols.resolveWithDepth(identifierToken: token)
+        let resolution = try! symbols.resolveWithStackFrameDepth(identifierToken: token)
         XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
         XCTAssertEqual(resolution.1, 0)
+    }
+    
+    func testResolveSymbolWithScopeDepth() {
+        let token = TokenIdentifier(lineNumber: 1, lexeme: "foo")
+        let parent = SymbolTable()
+        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        let symbols = SymbolTable(parent: parent, dict: [:])
+        let resolution = try! symbols.resolveWithScopeDepth(identifierToken: token)
+        XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
+        XCTAssertEqual(resolution.1, 1)
     }
 }

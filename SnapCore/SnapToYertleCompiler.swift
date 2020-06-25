@@ -81,7 +81,7 @@ public class SnapToYertleCompiler: NSObject {
     
     private func compile(varDecl: VarDeclaration) throws {
         let name = varDecl.identifier.lexeme
-        guard symbols.exists(identifier: name) == false else {
+        guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
             throw CompilerError(line: varDecl.identifier.lineNumber,
                                 format: "%@ redefines existing symbol: `%@'",
                                 varDecl.isMutable ? "variable" : "constant",

@@ -168,6 +168,84 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "variable redefines existing symbol: `foo'")
     }
     
+    func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_1() {
+        let one = ExprUtils.makeLiteralWord(value: 1)
+        let two = ExprUtils.makeLiteralWord(value: 2)
+        let three = ExprUtils.makeLiteralWord(value: 3)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u8, arguments: []),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                                                   expression: one,
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
+                                                   expression: two,
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "c"),
+                                                   expression: three,
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeIdentifier(name: "b"))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 2)
+    }
+    
+    func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_2() {
+        let one = ExprUtils.makeLiteralWord(value: 1)
+        let two = ExprUtils.makeLiteralWord(value: 2)
+        let three = ExprUtils.makeLiteralWord(value: 3)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u8, arguments: []),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                                                   expression: one,
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    Block(children: [
+                                        VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
+                                                       expression: two,
+                                                       storage: .stackStorage,
+                                                       isMutable: false),
+                                        Block(children: [
+                                            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "c"),
+                                                           expression: three,
+                                                           storage: .stackStorage,
+                                                           isMutable: false),
+                                            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                                   expression: ExprUtils.makeIdentifier(name: "c"))
+                                        ]),
+                                    ]),
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
+    }
+    
     func testCompileVarDeclaration_ShadowsExistingSymbolInEnclosingScope() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let two = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))
@@ -672,7 +750,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
     }
     
-    func testCompileFunctionWithParameters() {
+    func testCompileFunctionWithParameters_1() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
@@ -690,6 +768,33 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
 //        print(YertleInstruction.makeListing(instructions: ir))
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    // We take steps to ensure parameters and local variables do not overlap.
+    func testCompileFunctionWithParameters_2() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "baz"),
+                                                   expression: ExprUtils.makeLiteralWord(value: 0xbb),
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeIdentifier(name: "bar"))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralWord(value: 0xaa)]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)

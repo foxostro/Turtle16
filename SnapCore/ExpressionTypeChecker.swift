@@ -94,9 +94,9 @@ public class ExpressionTypeChecker: NSObject {
         let callee = call.callee as! Expression.Identifier
         let symbol = try symbols.resolve(identifierToken: callee.identifier)
         switch symbol.type {
-        case .function(let typ):
+        case .function(name: let name, mangledName: _, functionType: let typ):
             if call.arguments.count != typ.arguments.count {
-                let message = "missing argument in call"
+                let message = "incorrect number of arguments in call to `\(name)'"
                 if let lineNumber = call.tokens.first?.lineNumber {
                     throw CompilerError(line: lineNumber, message: message)
                 } else {
@@ -106,7 +106,7 @@ public class ExpressionTypeChecker: NSObject {
             for i in 0..<typ.arguments.count {
                 let argumentType = try check(expression: call.arguments[i])
                 if typ.arguments[i].argumentType != argumentType {
-                    let message = String(format: "cannot convert value of type `%@' to expected argument type `%@'", String(describing: argumentType), String(describing: typ.arguments[i].argumentType))
+                    let message = "cannot convert value of type `\(String(describing: argumentType))' to expected argument type `\(String(describing: typ.arguments[i].argumentType))' in call to `\(name)'"
                     if let lineNumber = call.tokens.first?.lineNumber {
                         throw CompilerError(line: lineNumber, message: message)
                     } else {

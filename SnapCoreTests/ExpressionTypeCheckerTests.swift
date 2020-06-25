@@ -362,24 +362,24 @@ class ExpressionTypeCheckerTests: XCTestCase {
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {
         let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])
         let expr = Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralBoolean(value: true)])
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(functionType), offset: 0x0000, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: functionType), offset: 0x0000, isMutable: false)])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to expected argument type `u8'")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to expected argument type `u8' in call to `foo'")
         }
     }
     
     func testFailBecauseFunctionCallUsesIncorrectNumberOfParameters() {
         let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(functionType), offset: 0x0000, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: functionType), offset: 0x0000, isMutable: false)])
         let expr = Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "missing argument in call")
+            XCTAssertEqual(compilerError?.message, "incorrect number of arguments in call to `foo'")
         }
     }
 }

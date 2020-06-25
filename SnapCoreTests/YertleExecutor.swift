@@ -29,10 +29,17 @@ class YertleExecutor: NSObject {
             print("IR:\n" + YertleInstruction.makeListing(instructions: ir) + "\n\n")
         }
         
-        let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
-        try compiler.compile(ir: ir, base: 0)
-        let instructions = compiler.instructions
-        let computer = try execute(instructions: instructions)
+        var computer: Computer!
+        
+        do {
+            let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
+            try compiler.compile(ir: ir, base: 0)
+            let instructions = compiler.instructions
+            computer = try execute(instructions: instructions)
+        } catch let e as CompilerError {
+            print(e.message)
+            throw e
+        }
         return computer
     }
     

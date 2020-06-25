@@ -27,17 +27,18 @@ class SnapExecutor: NSObject {
         compiler.compile(program: program, base: 0)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
-            abort()
-        }
-        let instructions = compiler.instructions
-        
-        if isVerboseLogging {
-            print("AST:\n" + compiler.ast.description + "\n\n")
-            print("IR:\n" + YertleInstruction.makeListing(instructions: compiler.ir) + "\n\n")
-        }
+            return Computer()
+        } else {
+            let instructions = compiler.instructions
+            
+            if isVerboseLogging {
+                print("AST:\n" + compiler.ast.description + "\n\n")
+                print("IR:\n" + YertleInstruction.makeListing(instructions: compiler.ir) + "\n\n")
+            }
 
-        let computer = try execute(instructions: instructions)
-        return computer
+            let computer = try execute(instructions: instructions)
+            return computer
+        }
     }
     
     func execute(instructions: [Instruction]) throws -> Computer {

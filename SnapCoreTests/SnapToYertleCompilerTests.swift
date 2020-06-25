@@ -868,9 +868,66 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-//        print(YertleInstruction.makeListing(instructions: ir))
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb)
+    }
+    
+    func testMutuallyRecursiveFunctions() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "isEven"),
+                                functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "n", type: .u8)]),
+                                body: Block(children: [
+                                    If(condition: ExprUtils.makeComparisonEq(left: ExprUtils.makeIdentifier(name: "n"),
+                                                                             right: ExprUtils.makeLiteralWord(value: 0)),
+                                       then: Block(children: [
+                                        Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                               expression: ExprUtils.makeLiteralBoolean(value: true))
+                                       ]),
+                                       else: Block(children: [
+                                        Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                               expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isOdd"),
+                                                                    arguments: [
+                                                                        ExprUtils.makeSub(left: ExprUtils.makeIdentifier(name: "n"),
+                                                                                          right: ExprUtils.makeLiteralWord(value: 1))
+                                               ]))
+                                       ]))
+                                ])),
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "isOdd"),
+                                functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "n", type: .u8)]),
+                                body: Block(children: [
+                                    If(condition: ExprUtils.makeComparisonEq(left: ExprUtils.makeIdentifier(name: "n"),
+                                                                             right: ExprUtils.makeLiteralWord(value: 0)),
+                                       then: Block(children: [
+                                        Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                               expression: ExprUtils.makeLiteralBoolean(value: false))
+                                       ]),
+                                       else: Block(children: [
+                                        Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                               expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isEven"),
+                                                                    arguments: [
+                                                                        ExprUtils.makeSub(left: ExprUtils.makeIdentifier(name: "n"),
+                                                                                          right: ExprUtils.makeLiteralWord(value: 1))
+                                               ]))
+                                       ]))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isOdd"),
+                                                       arguments: [ExprUtils.makeLiteralWord(value: 7)]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+        } else {
+            let ir = compiler.instructions
+            let executor = YertleExecutor()
+            let computer = try! executor.execute(ir: ir)
+            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        }
     }
 }

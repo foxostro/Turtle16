@@ -95,7 +95,8 @@ public class SnapToYertleCompiler: NSObject {
     
     private func makeSymbolWithInferredType(expression: Expression, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
         let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
-        let storage: SymbolStorage = isInGlobalScope ? .staticStorage : storage
+        
+        let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
         
         let offset: Int
         switch storage {
@@ -206,22 +207,19 @@ public class SnapToYertleCompiler: NSObject {
         popScope()
     }
     
-    private func pushScope(enclosingFunctionInfo: (String, FunctionType)? = nil) {
+    private func pushScopeForFunctionArguments(enclosingFunctionName: String, enclosingFunctionType: FunctionType) {
         symbols = SymbolTable(parent: symbols)
         symbols.storagePointer = 1 // XXX: I'm not sure this is correct since scopes are not the same thing as stack frames anymore.
-        if let (name, typ) = enclosingFunctionInfo {
-            symbols.enclosingFunctionName = name
-            symbols.enclosingFunctionType = typ
-        }
+        symbols.enclosingFunctionName = enclosingFunctionName
+        symbols.enclosingFunctionType = enclosingFunctionType
+    }
+    
+    private func pushScope() {
+        symbols = SymbolTable(parent: symbols)
     }
     
     private func popScope() {
-        assert(!isInGlobalScope)
         symbols = symbols.parent!
-    }
-    
-    private var isInGlobalScope: Bool {
-        return symbols.parent == nil
     }
     
     private func compile(return node: Return) throws {
@@ -279,9 +277,9 @@ public class SnapToYertleCompiler: NSObject {
         // Function arguments aren't inside the stack frame, but they are local
         // to the function. So, we define two scopes and only bind the inner
         // one to the stack frame.
-        pushScope(enclosingFunctionInfo: (node.identifier.lexeme, node.functionType))
+        pushScopeForFunctionArguments(enclosingFunctionName: node.identifier.lexeme, enclosingFunctionType: node.functionType)
         bindFunctionArguments(node.functionType.arguments)
-        pushScope(enclosingFunctionInfo: (node.identifier.lexeme, node.functionType))
+        pushScope()
         symbols.stackFrameIndex += 1
         for child in node.body.children {
             try compile(genericNode: child)

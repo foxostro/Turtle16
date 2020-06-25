@@ -207,12 +207,6 @@ public class SnapToYertleCompiler: NSObject {
         popScope()
     }
     
-    private func pushScopeForFunctionArguments(enclosingFunctionName: String, enclosingFunctionType: FunctionType) {
-        symbols = SymbolTable(parent: symbols)
-        symbols.enclosingFunctionName = enclosingFunctionName
-        symbols.enclosingFunctionType = enclosingFunctionType
-    }
-    
     private func pushScope() {
         symbols = SymbolTable(parent: symbols)
     }
@@ -278,9 +272,7 @@ public class SnapToYertleCompiler: NSObject {
         // one to the stack frame.
         pushScopeForFunctionArguments(enclosingFunctionName: node.identifier.lexeme, enclosingFunctionType: node.functionType)
         bindFunctionArguments(node.functionType.arguments)
-        pushScope()
-        symbols.storagePointer = 1
-        symbols.stackFrameIndex += 1
+        pushScopeForNewStackFrame()
         for child in node.body.children {
             try compile(genericNode: child)
         }
@@ -295,6 +287,12 @@ public class SnapToYertleCompiler: NSObject {
         ]
     }
     
+    private func pushScopeForFunctionArguments(enclosingFunctionName: String, enclosingFunctionType: FunctionType) {
+        symbols = SymbolTable(parent: symbols)
+        symbols.enclosingFunctionName = enclosingFunctionName
+        symbols.enclosingFunctionType = enclosingFunctionType
+    }
+    
     private func bindFunctionArguments(_ arguments: [FunctionType.Argument]) {
         for i in 0..<arguments.count {
             let argument = arguments[i]
@@ -302,6 +300,12 @@ public class SnapToYertleCompiler: NSObject {
             let symbol = Symbol(type: argument.argumentType, offset: offset, isMutable: false, storage: .stackStorage)
             symbols.bind(identifier: argument.name, symbol: symbol)
         }
+    }
+    
+    private func pushScopeForNewStackFrame() {
+        pushScope()
+        symbols.storagePointer = 1
+        symbols.stackFrameIndex += 1
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {

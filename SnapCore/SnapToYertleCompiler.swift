@@ -46,9 +46,44 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func tryCompile(ast: TopLevel) throws {
-        for node in ast.children {
+        try compile(topLevel: ast)
+    }
+    
+    private func compile(topLevel: TopLevel) throws {
+        for node in topLevel.children {
+            performDeclPass(genericNode: node)
+        }
+        for node in topLevel.children {
             try compile(genericNode: node)
         }
+    }
+    
+    private func performDeclPass(genericNode: AbstractSyntaxTreeNode) {
+        if let node = genericNode as? FunctionDeclaration {
+            performDeclPass(func: node)
+        }
+        else if let node = genericNode as? Block {
+            performDeclPass(block: node)
+        }
+    }
+    
+    private func performDeclPass(block: Block) {
+        for node in block.children {
+            performDeclPass(genericNode: node)
+        }
+    }
+    
+    private func performDeclPass(func funDecl: FunctionDeclaration) {
+        let name = funDecl.identifier.lexeme
+        let mangledName = makeMangledFunctionName(funDecl)
+        let typ: SymbolType = .function(name: name, mangledName: mangledName, functionType: funDecl.functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+    }
+    
+    private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {
+        let name = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [node.identifier.lexeme])).map{$0 as! String}.joined(separator: "_")
+        return name
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
@@ -201,6 +236,7 @@ public class SnapToYertleCompiler: NSObject {
     
     private func compile(block: Block) throws {
         pushScope()
+        performDeclPass(block: block)
         for child in block.children {
             try compile(genericNode: child)
         }
@@ -243,21 +279,10 @@ public class SnapToYertleCompiler: NSObject {
         ]
     }
     
-    private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {
-        let name = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [node.identifier.lexeme])).map{$0 as! String}.joined(separator: "::")
-        return name
-    }
-    
     private func compile(func node: FunctionDeclaration) throws {
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
-        let name = node.identifier.lexeme
         let mangledName = makeMangledFunctionName(node)
-        
-        let typ: SymbolType = .function(name: name, mangledName: mangledName, functionType: node.functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-        
         let labelHead = TokenIdentifier(lineNumber: -1, lexeme: mangledName)
         let labelTail = TokenIdentifier(lineNumber: -1, lexeme: "__\(mangledName)_tail")
         instructions += [
@@ -273,6 +298,7 @@ public class SnapToYertleCompiler: NSObject {
         pushScopeForFunctionArguments(enclosingFunctionName: node.identifier.lexeme, enclosingFunctionType: node.functionType)
         bindFunctionArguments(node.functionType.arguments)
         pushScopeForNewStackFrame()
+        performDeclPass(block: node.body)
         for child in node.body.children {
             try compile(genericNode: child)
         }

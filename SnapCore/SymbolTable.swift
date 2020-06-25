@@ -125,19 +125,26 @@ public class SymbolTable: NSObject {
         return true
     }
     
+    public func existsAndCannotBeShadowed(identifier: String) -> Bool {
+        guard let resolution = maybeResolveWithScopeDepth(identifier: identifier) else {
+            return false
+        }
+        return resolution.1 == 0
+    }
+    
     public func bind(identifier: String, symbol: Symbol) {
         symbolTable[identifier] = symbol
     }
     
     public func resolve(identifier: String) throws -> Symbol {
-        guard let resolution = maybeResolve(identifier: identifier) else {
+        guard let resolution = maybeResolveWithStackFrameDepth(identifier: identifier) else {
             throw CompilerError(message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution.0
     }
     
     public func resolve(identifierToken: TokenIdentifier) throws -> Symbol {
-        guard let resolution = maybeResolve(identifier: identifierToken.lexeme) else {
+        guard let resolution = maybeResolveWithStackFrameDepth(identifier: identifierToken.lexeme) else {
             throw CompilerError(line: identifierToken.lineNumber,
                                 format: "use of unresolved identifier: `%@'",
                                 identifierToken.lexeme)
@@ -145,8 +152,8 @@ public class SymbolTable: NSObject {
         return resolution.0
     }
     
-    public func resolveWithDepth(identifierToken: TokenIdentifier) throws -> (Symbol, Int) {
-        guard let resolution = maybeResolve(identifier: identifierToken.lexeme) else {
+    public func resolveWithStackFrameDepth(identifierToken: TokenIdentifier) throws -> (Symbol, Int) {
+        guard let resolution = maybeResolveWithStackFrameDepth(identifier: identifierToken.lexeme) else {
             throw CompilerError(line: identifierToken.lineNumber,
                                 format: "use of unresolved identifier: `%@'",
                                 identifierToken.lexeme)
@@ -154,10 +161,28 @@ public class SymbolTable: NSObject {
         return resolution
     }
     
-    private func maybeResolve(identifier: String) -> (Symbol, Int)? {
+    private func maybeResolveWithStackFrameDepth(identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             return (symbol, stackFrameIndex)
         }
-        return parent?.maybeResolve(identifier: identifier)
+        return parent?.maybeResolveWithStackFrameDepth(identifier: identifier)
+    }
+    
+    public func resolveWithScopeDepth(identifierToken: TokenIdentifier) throws -> (Symbol, Int) {
+        guard let resolution = maybeResolveWithScopeDepth(identifier: identifierToken.lexeme) else {
+            throw CompilerError(line: identifierToken.lineNumber,
+                                format: "use of unresolved identifier: `%@'",
+                                identifierToken.lexeme)
+        }
+        return resolution
+    }
+    
+    private func maybeResolveWithScopeDepth(identifier: String) -> (Symbol, Int)? {
+        if let symbol = symbolTable[identifier] {
+            return (symbol, 0)
+        } else if let parentResolution = parent?.maybeResolveWithScopeDepth(identifier: identifier) {
+            return (parentResolution.0, parentResolution.1 + 1)
+        }
+        return nil
     }
 }

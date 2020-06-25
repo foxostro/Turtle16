@@ -103,10 +103,10 @@ public struct Symbol: Equatable {
 public class SymbolTable: NSObject {
     private var symbolTable: [String:Symbol]
     public let parent: SymbolTable?
-    public var storagePointer: Int = 0
+    public var storagePointer: Int
     public var enclosingFunctionType: FunctionType? = nil
     public var enclosingFunctionName: String? = nil
-    public var stackFrameIndex = 0
+    public var stackFrameIndex: Int
     
     public convenience init(_ dict: [String:Symbol] = [:]) {
         self.init(parent: nil, dict: dict)
@@ -115,7 +115,9 @@ public class SymbolTable: NSObject {
     public init(parent p: SymbolTable?, dict: [String:Symbol] = [:]) {
         parent = p
         symbolTable = dict
+        storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
+        enclosingFunctionName = p?.enclosingFunctionName
         stackFrameIndex = p?.stackFrameIndex ?? 0
     }
     

@@ -134,17 +134,21 @@ i = 3
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `i'")
     }
     
-    func test_EndToEndIntegration_StaticVarInABlockIsStoredInStaticDataArea() {
+    func test_EndToEndIntegration_StaticVarInAFunctionContextIsStoredInStaticDataArea() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-{
+func foo() {
     static var a = 0xaa
 }
+foo()
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
     }
     
-    func test_EndToEndIntegration_DeclaringLocalVarsStoresThemOnTheStack() {
+    // Local variables declared in a local scope are not necessarily associated
+    // with a new stack frame. In many cases, these variables are allocated in
+    // the same stack frame, or in the next slot of the static storage area.
+    func test_EndToEndIntegration_BlocksAreNotStackFrames_0() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var a = 0xaa
@@ -156,36 +160,14 @@ var a = 0xaa
 }
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xbb) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0xcc) // var c
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 0xcc) // var c
     }
     
-    func test_EndToEndIntegration_ReadingStackLocalVariable() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
-var a = 0xaa
-{
-    var b = 0xbb
-    a = b
-}
-""")
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xbb) // var b
-    }
-    
-    func test_EndToEndIntegration_StoringStackLocalVariable() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
-{
-    var b = 0
-    b = 0xbb
-}
-""")
-        
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xbb) // var b
-    }
-    
-    func test_EndToEndIntegration_LoadLocalVariableDefinedSeveralScopesUp() {
+    // Local variables declared in a local scope are not necessarily associated
+    // with a new stack frame. In many cases, these variables are allocated in
+    // the same stack frame, or in the next slot of the static storage area.
+    func test_EndToEndIntegration_BlocksAreNotStackFrames_1() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var a = 0xaa
@@ -194,7 +176,7 @@ var a = 0xaa
     {
         {
             {
-                var d = b // chase the frame pointer three times
+                var c = b
             }
         }
     }
@@ -202,28 +184,8 @@ var a = 0xaa
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0xaa) // var d
-    }
-    
-    func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
-var a = 0xaa
-{
-    var b = 0
-    {
-        {
-            {
-                b = 0xbb
-            }
-        }
-    }
-}
-""")
-        
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xaa) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 0xaa) // var c
     }
     
     func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes() {
@@ -242,27 +204,6 @@ let a = foo()
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-    }
-    
-    func test_EndToEndIntegration_NestedBlocksAndReadVarsOneLevelUp() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
-var a = 0xaa
-{
-    var b = a
-    {
-        var c = b
-        {
-            var d = c
-        }
-    }
-}
-""")
-        
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0xaa) // var c
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0xaa) // var d
     }
     
     func test_EndToEndIntegration_FunctionCall_NoArgs() {

@@ -274,4 +274,29 @@ func foo() -> u8 {
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
+    
+func test_EndToEndIntegration_MutuallyRecursiveFunctions() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func isEven(n: u8) -> bool {
+    if n == 0 {
+        return true
+    } else {
+        return isOdd(n - 1)
+    }
+}
+
+func isOdd(n: u8) -> bool {
+    if n == 0 {
+        return false
+    } else {
+        return isEven(n - 1)
+    }
+}
+
+let a = isOdd(7)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+    }
 }

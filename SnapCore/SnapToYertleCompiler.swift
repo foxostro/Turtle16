@@ -209,7 +209,6 @@ public class SnapToYertleCompiler: NSObject {
     
     private func pushScopeForFunctionArguments(enclosingFunctionName: String, enclosingFunctionType: FunctionType) {
         symbols = SymbolTable(parent: symbols)
-        symbols.storagePointer = 1 // XXX: I'm not sure this is correct since scopes are not the same thing as stack frames anymore.
         symbols.enclosingFunctionName = enclosingFunctionName
         symbols.enclosingFunctionType = enclosingFunctionType
     }
@@ -280,6 +279,7 @@ public class SnapToYertleCompiler: NSObject {
         pushScopeForFunctionArguments(enclosingFunctionName: node.identifier.lexeme, enclosingFunctionType: node.functionType)
         bindFunctionArguments(node.functionType.arguments)
         pushScope()
+        symbols.storagePointer = 1
         symbols.stackFrameIndex += 1
         for child in node.body.children {
             try compile(genericNode: child)

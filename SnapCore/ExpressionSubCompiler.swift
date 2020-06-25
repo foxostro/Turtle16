@@ -211,16 +211,20 @@ public class ExpressionSubCompiler: NSObject {
         let identifierToken = (node.callee as! Expression.Identifier).identifier
         let symbol = try symbols.resolve(identifierToken: identifierToken)
         switch symbol.type {
-        case .function:
+        case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [YertleInstruction] = []
             for expr in node.arguments {
                 let compiledExpr = try compile(expression: expr)
                 instructions += compiledExpr
             }
             instructions += [
-                .jalr(identifierToken),
-                .load(SnapToYertleCompiler.kReturnValueScratchLocation), // TODO: should only load this is the function return type is non-void
+                .jalr(TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName))
             ]
+            if typ.returnType != .void {
+                instructions += [
+                    .load(SnapToYertleCompiler.kReturnValueScratchLocation)
+                ]
+            }
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"

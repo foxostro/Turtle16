@@ -422,7 +422,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = TokenIdentifier(lineNumber: -1, lexeme: "foo")
-        let L1 = TokenIdentifier(lineNumber: -1, lexeme: "foo_tail")
+        let L1 = TokenIdentifier(lineNumber: -1, lexeme: "__foo_tail")
         XCTAssertEqual(compiler.instructions, [
             .jmp(L1),
             .label(L0),
@@ -659,7 +659,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8' in call to `foo'")
     }
     
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
@@ -693,5 +693,79 @@ class SnapToYertleCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    func testCompileNestedFunction() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u8, arguments: []),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                                                   expression: ExprUtils.makeLiteralWord(value: 0xaa),
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                                        functionType: FunctionType(returnType: .u8, arguments: []),
+                                                        body: Block(children: [
+                                                            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                                                   expression: ExprUtils.makeIdentifier(name: "a"))
+                                                        ])),
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "bar"),
+                                                                       arguments: []))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+//        print(YertleInstruction.makeListing(instructions: ir))
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    func testFunctionNamesAreNotUnique() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u8, arguments: []),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                                                   expression: ExprUtils.makeLiteralWord(value: 0xaa),
+                                                   storage: .stackStorage,
+                                                   isMutable: false),
+                                    FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                                        functionType: FunctionType(returnType: .u8, arguments: []),
+                                                        body: Block(children: [
+                                                            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                                                   expression: ExprUtils.makeIdentifier(name: "a"))
+                                                        ])),
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "bar"),
+                                                                       arguments: []))
+                                ])),
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                functionType: FunctionType(returnType: .u8, arguments: []),
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeLiteralWord(value: 0xbb))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "bar"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+//        print(YertleInstruction.makeListing(instructions: ir))
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb)
     }
 }

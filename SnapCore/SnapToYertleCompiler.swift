@@ -206,11 +206,12 @@ public class SnapToYertleCompiler: NSObject {
         popScope()
     }
     
-    private func pushScope(enclosingFunctionType: FunctionType? = nil) {
+    private func pushScope(enclosingFunctionInfo: (String, FunctionType)? = nil) {
         symbols = SymbolTable(parent: symbols)
-        symbols.storagePointer = 1
-        if enclosingFunctionType != nil {
-            symbols.enclosingFunctionType = enclosingFunctionType
+        symbols.storagePointer = 1 // XXX: I'm not sure this is correct since scopes are not the same thing as stack frames anymore.
+        if let (name, typ) = enclosingFunctionInfo {
+            symbols.enclosingFunctionName = name
+            symbols.enclosingFunctionType = typ
         }
     }
     
@@ -251,15 +252,23 @@ public class SnapToYertleCompiler: NSObject {
         ]
     }
     
+    private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {
+        let name = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [node.identifier.lexeme])).map{$0 as! String}.joined(separator: "::")
+        return name
+    }
+    
     private func compile(func node: FunctionDeclaration) throws {
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
         let name = node.identifier.lexeme
-        let symbol = Symbol(type: .function(node.functionType), offset: 0x0000, isMutable: false, storage: .staticStorage)
+        let mangledName = makeMangledFunctionName(node)
+        
+        let typ: SymbolType = .function(name: name, mangledName: mangledName, functionType: node.functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         
-        let labelHead = TokenIdentifier(lineNumber: -1, lexeme: name)
-        let labelTail = TokenIdentifier(lineNumber: -1, lexeme: "\(name)_tail")
+        let labelHead = TokenIdentifier(lineNumber: -1, lexeme: mangledName)
+        let labelTail = TokenIdentifier(lineNumber: -1, lexeme: "__\(mangledName)_tail")
         instructions += [
             .jmp(labelTail),
             .label(labelHead),
@@ -270,9 +279,9 @@ public class SnapToYertleCompiler: NSObject {
         // Function arguments aren't inside the stack frame, but they are local
         // to the function. So, we define two scopes and only bind the inner
         // one to the stack frame.
-        pushScope(enclosingFunctionType: node.functionType)
+        pushScope(enclosingFunctionInfo: (node.identifier.lexeme, node.functionType))
         bindFunctionArguments(node.functionType.arguments)
-        pushScope(enclosingFunctionType: node.functionType)
+        pushScope(enclosingFunctionInfo: (node.identifier.lexeme, node.functionType))
         symbols.stackFrameIndex += 1
         for child in node.body.children {
             try compile(genericNode: child)

@@ -9,7 +9,7 @@
 import TurtleCompilerToolbox
 
 public indirect enum SymbolType: Equatable, Hashable {
-    case void, u8, bool, function(FunctionType)
+    case void, u8, bool, function(name: String, mangledName: String, functionType: FunctionType)
 }
 
 public enum SymbolStorage: Equatable {
@@ -105,6 +105,7 @@ public class SymbolTable: NSObject {
     public let parent: SymbolTable?
     public var storagePointer: Int = 0
     public var enclosingFunctionType: FunctionType? = nil
+    public var enclosingFunctionName: String? = nil
     public var stackFrameIndex = 0
     
     public convenience init(_ dict: [String:Symbol] = [:]) {
@@ -184,5 +185,17 @@ public class SymbolTable: NSObject {
             return (parentResolution.0, parentResolution.1 + 1)
         }
         return nil
+    }
+    
+    public func allEnclosingFunctionNames() -> [String] {
+        if let enclosingFunctionName = enclosingFunctionName {
+            if let parent = parent {
+                return parent.allEnclosingFunctionNames() + [enclosingFunctionName]
+            } else {
+                return [enclosingFunctionName]
+            }
+        } else {
+            return []
+        }
     }
 }

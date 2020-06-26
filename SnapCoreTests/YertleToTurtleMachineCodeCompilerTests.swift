@@ -136,6 +136,15 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
+    func testPop16WithStackDepthFive() {
+        let computer = try! execute(ir: [.push16(1000), .push16(2000), .push16(3000), .push16(4000), .push16(5000), .pop16])
+        XCTAssertEqual(computer.stack16(at: 0), 4000)
+        XCTAssertEqual(computer.stack16(at: 2), 3000)
+        XCTAssertEqual(computer.stack16(at: 4), 2000)
+        XCTAssertEqual(computer.stack16(at: 6), 1000)
+        XCTAssertEqual(computer.stackPointer, 0xfff8)
+    }
+    
     func testEqWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .eq])
         XCTAssertEqual(computer.stack(at: 0), 0)

@@ -15,6 +15,7 @@ public enum YertleInstruction: Equatable {
     case push(Int) // push the specified word-sized value to the stack
     case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack (push high byte, then push low byte)
     case pop // pop the stack
+    case pop16 // pop a sixteen-bit value from the expression stack (pop low byte, then pop high byte)
     case eq  // pop two from the stack, (A==B)?1:0, push the result
     case ne  // pop two from the stack, (A!=B)?1:0, push the result
     case lt  // pop two from the stack, (A<B)?1:0, push the result
@@ -48,6 +49,8 @@ public enum YertleInstruction: Equatable {
             return String(format: "PUSH16 0x%04x", value)
         case .pop:
             return "POP"
+        case .pop16:
+            return "POP16"
         case .eq:
             return "EQ"
         case .ne:

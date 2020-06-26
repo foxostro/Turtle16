@@ -60,6 +60,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .push(let value): try push(value)
             case .push16(let value): try push16(value)
             case .pop: try pop()
+            case .pop16: try pop16()
             case .eq:  try eq()
             case .ne:  try ne()
             case .lt:  try lt()
@@ -228,12 +229,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func popTwoDecrementStackPointerAndLeaveInUVandXY() throws {
-        try popTwo()
+        try pop16()
         try decrementStackPointer()
         try loadExpressionStackPointerIntoUVandXY()
     }
     
-    private func popTwo() throws {
+    private func pop16() throws {
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.A, .B)
         try popInMemoryStackIntoRegisterB()
@@ -350,7 +351,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func mul() throws {
-        try popTwo()
+        try pop16()
         
         // A is the Multiplicand, B is the Multiplier
         let multiplierAddress = kScratchLo
@@ -410,7 +411,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func div() throws {
-        try popTwo()
+        try pop16()
         
         // A is the Dividend, B is the Divisor
         let a = kScratchLo+0
@@ -486,7 +487,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func mod() throws {
-        try popTwo()
+        try pop16()
         
         // A is the Dividend, B is the Divisor
         let a = kScratchLo+0
@@ -598,7 +599,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func loadIndirect() throws {
-        try popTwo()
+        try pop16()
         
         try assembler.mov(.V, .A)
         try assembler.mov(.U, .B)
@@ -608,7 +609,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func storeIndirect() throws {
-        try popTwo()
+        try pop16()
         
         // Stash the destination address in a well-known scratch location.
         try assembler.li(.U, kScratchHi)
@@ -642,7 +643,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func je(to token: TokenIdentifier) throws {
-        try popTwo()
+        try pop16()
         
         assembler.cmp()
         assembler.cmp()

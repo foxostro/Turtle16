@@ -23,6 +23,13 @@ extension Computer {
         return dataRAM.load(from: Int(address))
     }
     
+    public func stack16(at index: Int) -> UInt16 {
+        let lo = dataRAM.load(from: Int(stackPointer+index+0))
+        let hi = dataRAM.load(from: Int(stackPointer+index+1))
+        let result = UInt16(hi)<<8 + UInt16(lo)
+        return result
+    }
+    
     public var framePointer: Int {
         let framePointerHi = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)))
         let framePointerLo = Int(dataRAM.load(from: Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)))

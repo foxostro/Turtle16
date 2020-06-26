@@ -87,8 +87,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
-    // Push many values to the stack
-    func testPushUntilJustBeforeExpressionStackOverflows() {
+    func testPushManyValues() {
         let kStackPointerInitialValue = UInt16(YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue)
         let count = 300
         var ir: [YertleInstruction] = []
@@ -103,6 +102,28 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         
         for i in 0..<count {
             XCTAssertEqual(computer.stack(at: i), UInt8((count-i-1) % 256))
+        }
+    }
+    
+    func testPushOneDoubleWordValue() {
+        let computer = try! execute(ir: [.push16(1024)])
+        XCTAssertEqual(computer.stack16(at: 0), 1024)
+    }
+    
+    func testPushManyDoubleWordValues() {
+        let kStackPointerInitialValue = UInt16(YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue)
+        let count = 1000
+        var ir: [YertleInstruction] = []
+        for i in 0..<count {
+            ir.append(.push16(i))
+        }
+        let computer = try! execute(ir: ir)
+        
+        let expectedStackPointer = kStackPointerInitialValue &- UInt16(count*2)
+        XCTAssertEqual(computer.stackPointer, Int(expectedStackPointer))
+        
+        for i in 0..<count {
+            XCTAssertEqual(computer.stack16(at: i*2), UInt16(count-i-1))
         }
     }
     

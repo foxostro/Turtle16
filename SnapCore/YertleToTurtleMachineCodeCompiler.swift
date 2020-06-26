@@ -58,6 +58,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         for instruction in ir {
             switch instruction {
             case .push(let value): try push(value)
+            case .push16(let value): try push16(value)
             case .pop: try pop()
             case .eq:  try eq()
             case .ne:  try ne()
@@ -130,6 +131,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         
         // Write the new value to the top of the stack.
         try assembler.li(.M, value)
+    }
+    
+    private func push16(_ value: Int) throws {
+        let hi = (value>>8) & 0xff
+        let lo =  value & 0xff
+        try push(hi)
+        try push(lo)
     }
     
     private func loadExpressionStackPointerIntoUVandXY() throws {

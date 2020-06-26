@@ -13,7 +13,8 @@ import TurtleCompilerToolbox
 class YertleInstructionTests: XCTestCase {
     func testDescription() {
         let L0 = TokenIdentifier(lineNumber: -1, lexeme: ".L0")
-        XCTAssertEqual(YertleInstruction.push(0).description, "PUSH 0")
+        XCTAssertEqual(YertleInstruction.push(0xff).description, "PUSH 0xff")
+        XCTAssertEqual(YertleInstruction.push16(0xffff).description, "PUSH16 0xffff")
         XCTAssertEqual(YertleInstruction.pop.description, "POP")
         XCTAssertEqual(YertleInstruction.eq.description, "EQ")
         XCTAssertEqual(YertleInstruction.ne.description, "NE")
@@ -48,6 +49,6 @@ class YertleInstructionTests: XCTestCase {
     
     func testMakeListing_Example() {
         let actual = YertleInstruction.makeListing(instructions: [.push(0), .pop])
-        XCTAssertEqual(actual, "PUSH 0\nPOP\n")
+        XCTAssertEqual(actual, "PUSH 0x00\nPOP\n")
     }
 }

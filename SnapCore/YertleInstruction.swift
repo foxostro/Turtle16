@@ -17,7 +17,9 @@ public enum YertleInstruction: Equatable {
     case pop // pop the stack
     case pop16 // pop a sixteen-bit value from the expression stack (pop low byte, then pop high byte)
     case eq  // pop two from the stack, (A==B)?1:0, push the result
+    case eq16  // pop two 16-bit values from the stack, (A==B)?1:0, push the result in one word
     case ne  // pop two from the stack, (A!=B)?1:0, push the result
+    case ne16  // pop two 16-bit values from the stack, (A!=B)?1:0, push the result in one word
     case lt  // pop two from the stack, (A<B)?1:0, push the result
     case gt  // pop two from the stack, (A>B)?1:0, push the result
     case le  // pop two from the stack, (A<=B)?1:0, push the result
@@ -53,8 +55,12 @@ public enum YertleInstruction: Equatable {
             return "POP16"
         case .eq:
             return "EQ"
+        case .eq16:
+            return "EQ16"
         case .ne:
             return "NE"
+        case .ne16:
+            return "NE16"
         case .lt:
             return "LT"
         case .gt:

@@ -75,7 +75,6 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
         XCTAssertEqual(computer.stackPointer, 0xfffd)
-        
     }
     
     func testPushFourValues() {
@@ -145,6 +144,18 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfff8)
     }
     
+    func testEq16_0x0000_and_0x0000() {
+        let computer = try! execute(ir: [.push16(0), .push16(0), .eq16])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testEq16_0xffff_and_0x00ff() {
+        let computer = try! execute(ir: [.push(3), .push(2), .push16(0xffff), .push16(0x00ff), .eq16])
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 3)
+    }
+    
     func testEqWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .eq])
         XCTAssertEqual(computer.stack(at: 0), 0)
@@ -157,6 +168,13 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testNe16_0xffff_and_0x00ff() {
+        let computer = try! execute(ir: [.push(3), .push(2), .push16(0xffff), .push16(0x00ff), .ne16])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 3)
     }
     
     func testLtWithStackDepthFour() {

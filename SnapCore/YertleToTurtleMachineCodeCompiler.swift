@@ -62,7 +62,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .pop: try pop()
             case .pop16: try pop16()
             case .eq:  try eq()
+            case .eq16:  try eq16()
             case .ne:  try ne()
+            case .ne16:  try ne16()
             case .lt:  try lt()
             case .gt:  try gt()
             case .le:  try le()
@@ -128,7 +130,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func push(_ value: Int) throws {
         try decrementStackPointer()
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
         
         // Write the new value to the top of the stack.
         try assembler.li(.M, value)
@@ -141,7 +143,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try push(lo)
     }
     
-    private func loadExpressionStackPointerIntoUVandXY() throws {
+    private func loadStackPointerIntoUVandXY() throws {
         // Load the 16-bit stack pointer into XY.
         try assembler.li(.U, kStackPointerHiHi)
         try assembler.li(.V, kStackPointerHiLo)
@@ -197,14 +199,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func pushAToExpressionStack() throws {
         try decrementStackPointer()
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
         
         // Write the new value to the top of the stack.
         try assembler.mov(.M, .A)
     }
     
     private func popInMemoryStackIntoRegisterB() throws {
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
         
         // Load the top of the stack into B.
         try assembler.mov(.U, .X)
@@ -231,7 +233,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func popTwoDecrementStackPointerAndLeaveInUVandXY() throws {
         try pop16()
         try decrementStackPointer()
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
     }
     
     private func pop16() throws {
@@ -256,6 +258,72 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
+     private var tempLabelCounter = 0
+    
+    // The generated program will need unique, temporary labels.
+    private func makeTempLabel() -> TokenIdentifier {
+        let label = ".LL\(tempLabelCounter)"
+        tempLabelCounter += 1
+        return TokenIdentifier(lineNumber: -1, lexeme: label)
+    }
+    
+    private func eq16() throws {
+        try eq16(valueOnPass: 1, valueOnFail: 0)
+    }
+    
+    private func eq16(valueOnPass: Int, valueOnFail: Int) throws {
+        let label_fail_test = makeTempLabel()
+        let label_tail = makeTempLabel()
+        
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.M, .B)
+        
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .B)
+        
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        
+        try setAddressToLabel(label_fail_test)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        
+        try setAddressToLabel(label_fail_test)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        try push(valueOnPass)
+        try jmp(to: label_tail)
+        
+        try label(token: label_fail_test)
+        try push(valueOnFail)
+        
+        try label(token: label_tail)
+    }
+    
     private func ne() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
@@ -270,6 +338,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
+    }
+    
+    private func ne16() throws {
+        try eq16(valueOnPass: 0, valueOnFail: 1)
     }
     
     private func lt() throws {
@@ -570,14 +642,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V,  address & 0x00ff)
         try assembler.mov(.A, .M)
         
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
         
         // Write A (the value we loaded) to the new top of the stack.
         try assembler.mov(.M, .A)
     }
     
     private func store(to address: Int) throws {
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
         
         // Copy the stop of the expression stack into A.
         try assembler.mov(.A, .M)
@@ -619,7 +691,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
         
         // Copy the stop of the expression stack into A.
-        try loadExpressionStackPointerIntoUVandXY()
+        try loadStackPointerIntoUVandXY()
         try assembler.mov(.A, .M)
         
         // Restore the stashed destination address to UV and XY.

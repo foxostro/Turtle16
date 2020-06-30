@@ -70,6 +70,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .gt:  try gt()
             case .le:  try le()
             case .ge:  try ge()
+            case .ge16:  try ge16()
             case .add: try add()
             case .add16: try add16()
             case .sub: try sub()
@@ -471,6 +472,67 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
+    }
+    
+    private func ge16() throws {
+        let addressOfA = kScratchLo+0
+        let addressOfB = kScratchLo+2
+
+        // Pop `b' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .A)
+
+        // Pop `a' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .A)
+
+        // Load the low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+
+        // Compare the low bytes.
+        try assembler.sub(.NONE)
+        try assembler.sub(.NONE)
+
+        // Load the high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+
+        // Compare the high bytes.
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.NONE)
+        
+        // A <- (carry_flag) ? 0 : 1
+        let labelTail = makeTempLabel()
+        let labelThen = makeTempLabel()
+        try setAddressToLabel(labelThen)
+        assembler.jc()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        try setAddressToLabel(labelTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(token: labelThen)
+        try assembler.li(.A, 1)
+        try label(token: labelTail)
+        
+        try pushAToStack()
     }
     
     private func add() throws {

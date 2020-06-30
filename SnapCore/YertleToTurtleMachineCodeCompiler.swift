@@ -80,6 +80,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .div: try div()
             case .div16: try div16()
             case .mod: try mod()
+            case .mod16: try mod16()
             case .load(let address): try load(from: address)
             case .store(let address): try store(to: address)
             case .loadIndirect: try loadIndirect()
@@ -1080,6 +1081,146 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, a)
         try assembler.mov(.A, .M)
         
+        try pushAToStack()
+    }
+    
+    private func mod16() throws {
+        let addressOfB = kScratchLo+0
+        let addressOfA = kScratchLo+2
+        let counterAddress = kScratchLo+4
+
+        // Pop the divisor and store in scratch memory.
+        // `b' is the Divisor
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .A)
+
+        // Pop the dividend and store in scratch memory.
+        // `a' is the Dividend
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .A)
+
+        // Initialize the counter to zero.
+        // `c' is the counter
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, counterAddress+0)
+        try assembler.li(.M, 0)
+        try assembler.li(.V, counterAddress+1)
+        try assembler.li(.M, 0)
+
+        let loopHead = makeTempLabel()
+        let loopTail = makeTempLabel()
+
+        // if b == 0 then bail because it's division by zero
+        try setAddressToLabel(loopHead)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.A, .M)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.li(.M, 0)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.li(.M, 0)
+        try setAddressToLabel(loopTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+
+        // while a >= b
+        try label(token: loopHead)
+
+        // Load the low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+
+        // Compare the low bytes.
+        try assembler.sub(.NONE)
+        try assembler.sub(.NONE)
+
+        // Load the high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+
+        // Compare the high bytes.
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.NONE)
+
+        try setAddressToLabel(loopTail)
+        assembler.jnc()
+        assembler.nop()
+        assembler.nop()
+
+        // a = a - b
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.M)
+
+        // c += 1
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, counterAddress+0)
+        try assembler.mov(.X, .M)
+        try assembler.li(.V, counterAddress+1)
+        try assembler.mov(.Y, .M)
+        assembler.inxy()
+        try assembler.li(.V, counterAddress+0)
+        try assembler.mov(.M, .X)
+        try assembler.li(.V, counterAddress+1)
+        try assembler.mov(.M, .Y)
+
+        // loop
+        try setAddressToLabel(loopHead)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(token: loopTail)
+
+        // The result is in `a'. Push it to the stack.
+        // First the high byte, then the low byte.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
         try pushAToStack()
     }
     

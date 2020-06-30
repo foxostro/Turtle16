@@ -502,6 +502,44 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 255)
     }
     
+    func testMod16_1_mod_0() {
+        // There's a check in the MOD16 command to ensure that all division by
+        // zero yields a result of zero.
+        let a = 1
+        let b = 0
+        let computer = try! execute(ir: [.push(255), .push(254), .push16(a), .push16(b), .mod16])
+        XCTAssertEqual(computer.stack16(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 2), 254)
+        XCTAssertEqual(computer.stack(at: 3), 255)
+    }
+    
+    func testMod16_1_mod_1() {
+        let a = 1
+        let b = 1
+        let computer = try! execute(ir: [.push(255), .push(254), .push16(a), .push16(b), .mod16])
+        XCTAssertEqual(computer.stack16(at: 0), UInt16(a%b))
+        XCTAssertEqual(computer.stack(at: 2), 254)
+        XCTAssertEqual(computer.stack(at: 3), 255)
+    }
+    
+    func testMod16_1000_mod_10() {
+        let a = 1000
+        let b = 10
+        let computer = try! execute(ir: [.push(255), .push(254), .push16(a), .push16(b), .mod16])
+        XCTAssertEqual(computer.stack16(at: 0), UInt16(a%b))
+        XCTAssertEqual(computer.stack(at: 2), 254)
+        XCTAssertEqual(computer.stack(at: 3), 255)
+    }
+    
+    func testMod16_10_mod_1000() {
+        let a = 10
+        let b = 1000
+        let computer = try! execute(ir: [.push(255), .push(254), .push16(a), .push16(b), .mod16])
+        XCTAssertEqual(computer.stack16(at: 0), UInt16(a%b))
+        XCTAssertEqual(computer.stack(at: 2), 254)
+        XCTAssertEqual(computer.stack(at: 3), 255)
+    }
+    
     func testLoadWithEmptyStack() {
         let value: UInt8 = 0xab
         let address = 0x0010

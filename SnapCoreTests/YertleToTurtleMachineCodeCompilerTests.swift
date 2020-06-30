@@ -184,6 +184,37 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
+    func testLt16_0_lt_0_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(0), .lt16])
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLt16_0_lt_1_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .lt16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLt16_1_lt_0_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .lt16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLt16_1000_lt_2000_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1000), .push16(2000), .lt16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
     func testGtWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .gt])
         XCTAssertEqual(computer.stack(at: 0), 1)

@@ -22,6 +22,7 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.ne.description, "NE")
         XCTAssertEqual(YertleInstruction.ne16.description, "NE16")
         XCTAssertEqual(YertleInstruction.lt.description, "LT")
+        XCTAssertEqual(YertleInstruction.lt16.description, "LT16")
         XCTAssertEqual(YertleInstruction.gt.description, "GT")
         XCTAssertEqual(YertleInstruction.le.description, "LE")
         XCTAssertEqual(YertleInstruction.ge.description, "GE")

@@ -34,6 +34,7 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.mul.description, "MUL")
         XCTAssertEqual(YertleInstruction.mul16.description, "MUL16")
         XCTAssertEqual(YertleInstruction.div.description, "DIV")
+        XCTAssertEqual(YertleInstruction.div16.description, "DIV16")
         XCTAssertEqual(YertleInstruction.mod.description, "MOD")
         XCTAssertEqual(YertleInstruction.load(0xffff).description, "LOAD 0xffff")
         XCTAssertEqual(YertleInstruction.store(0xffff).description, "STORE 0xffff")

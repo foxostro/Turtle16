@@ -33,6 +33,7 @@ public enum YertleInstruction: Equatable {
     case mul // pop two from the stack, A*B, push the result
     case mul16 // pop two 16-bit values from the stack, A*B, push the result in two words (push high byte, then push low byte)
     case div // pop two from the stack, A/B, push the result
+    case div16 // pop two 16-bit values from the stack, A/B, push the result in two words (push high byte, then push low byte)
     case mod // pop two from the stack, A%B, push the result
     case load(Int) // load from the specified address, push to the stack
     case store(Int) // peek at the stack top and store that value to the specified address
@@ -92,6 +93,8 @@ public enum YertleInstruction: Equatable {
             return "MUL16"
         case .div:
             return "DIV"
+        case .div16:
+            return "DIV16"
         case .mod:
             return "MOD"
         case .load(let address):

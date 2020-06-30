@@ -407,6 +407,71 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 255)
     }
     
+    func testDiv16_0x0001_div_0x0000() {
+        // There's a check in the DIV command to ensure that all division by
+        // zero yields a result of zero.
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0001), .push16(0x0000), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testDiv16_0x0001_div_0x0100() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0001), .push16(0x0100), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testDiv16_0x0001_div_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0001), .push16(0x0001), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0x0001)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testDiv16_0x0080_div_0x0002() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0080), .push16(0x0002), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0x0040)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testDiv16_0x00ff_div_0x00ff() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x00ff), .push16(0x00ff), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0x0001)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testDiv16_0x0100_div_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0100), .push16(0x0001), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0x0100)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testDiv16_0xffff_div_0xffff() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0xffff), .push16(0xffff), .div16])
+        //                                                   ^^^dividend      ^^^divisor
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0x0001)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
     func testMod_1mod0() {
         // There's a check in the MOD command to ensure that all division by
         // zero yields a result of zero.

@@ -15,7 +15,7 @@ public enum YertleInstruction: Equatable {
     case push(Int) // push the specified word-sized value to the stack
     case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack (push high byte, then push low byte)
     case pop // pop the stack
-    case pop16 // pop a sixteen-bit value from the expression stack (pop low byte, then pop high byte)
+    case pop16 // pop a sixteen-bit value from the stack (pop low byte, then pop high byte)
     case eq  // pop two from the stack, (A==B)?1:0, push the result
     case eq16  // pop two 16-bit values from the stack, (A==B)?1:0, push the result in one word
     case ne  // pop two from the stack, (A!=B)?1:0, push the result
@@ -25,8 +25,11 @@ public enum YertleInstruction: Equatable {
     case le  // pop two from the stack, (A<=B)?1:0, push the result
     case ge  // pop two from the stack, (A>=B)?1:0, push the result
     case add // pop two from the stack, A+B, push the result
+    case add16 // pop two 16-bit values from the stack, A+B, push the result in two words (push high byte, then push low byte)
     case sub // pop two from the stack, A-B, push the result
+    case sub16 // pop two 16-bit values from the stack, A-B, push the result in two words (push high byte, then push low byte)
     case mul // pop two from the stack, A*B, push the result
+    case mul16 // pop two 16-bit values from the stack, A*B, push the result in two words (push high byte, then push low byte)
     case div // pop two from the stack, A/B, push the result
     case mod // pop two from the stack, A%B, push the result
     case load(Int) // load from the specified address, push to the stack
@@ -71,10 +74,16 @@ public enum YertleInstruction: Equatable {
             return "GE"
         case .add:
             return "ADD"
+        case .add16:
+            return "ADD16"
         case .sub:
             return "SUB"
+        case .sub16:
+            return "SUB16"
         case .mul:
             return "MUL"
+        case .mul16:
+            return "MUL16"
         case .div:
             return "DIV"
         case .mod:

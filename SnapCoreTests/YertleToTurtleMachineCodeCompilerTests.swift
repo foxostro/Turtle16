@@ -212,6 +212,35 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
+    func testAdd16_0x0000_and_0x0000() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0000), .push16(0x0000), .add16])
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testAdd16_0x0001_and_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0001), .push16(0x0001), .add16])
+        XCTAssertEqual(computer.stack16(at: 0), 0x0002)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testAdd16_0xfffe_and_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0xfffe), .push16(0x0001), .add16])
+        XCTAssertEqual(computer.stack16(at: 0), 0xffff)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testAdd16_0xffff_and_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0xffff), .push16(0x0001), .add16])
+        // TODO: ADD16 does not set the carry flag. Should it?
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
     func testSubWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .sub])
         XCTAssertEqual(computer.stack(at: 0), 1)
@@ -222,6 +251,21 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testSubTwice() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .sub, .sub])
         XCTAssertEqual(computer.stack(at: 0), 0)
+    }
+    
+    func testSub16_0x0001_and_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0001), .push16(0x0001), .sub16])
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+    }
+    
+    func testSub16_0x0000_and_0x0001() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0000), .push16(0x0001), .sub16])
+        // TODO: SUB16 does not set the carry flag. Should it?
+        XCTAssertEqual(computer.stack16(at: 0), 0xffff)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
     }
     
     func testMul_0x0() {
@@ -248,6 +292,26 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         // Multiplication is basically modulo 255.
         let computer = try! execute(ir: [.push(255), .push(2), .mul])
         XCTAssertEqual(computer.stack(at: 0), 254)
+    }
+    
+    func testMul16_0x0() {
+        let computer = try! execute(ir: [.push16(0x0000), .push16(0x0000), .mul16])
+        XCTAssertEqual(computer.stack(at: 0), 0x0000)
+    }
+    
+    func testMul16_255x2() {
+        let computer = try! execute(ir: [.push16(0x00ff), .push16(0x0002), .mul16])
+        XCTAssertEqual(computer.stack16(at: 0), 0x01fe)
+    }
+    
+    func testMul16_2000x2000() {
+        // Multiplication is basically modulo 65536.
+        let a = 2000
+        let b = 2000
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(a), .push16(b), .mul16])
+        XCTAssertEqual(computer.stack16(at: 0), UInt16((a*b)%65536))
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
     }
     
     func testMul_PopsTheStackToo() {

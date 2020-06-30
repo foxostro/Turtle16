@@ -25,6 +25,7 @@ public enum YertleInstruction: Equatable {
     case gt  // pop two from the stack, (A>B)?1:0, push the result
     case le  // pop two from the stack, (A<=B)?1:0, push the result
     case ge  // pop two from the stack, (A>=B)?1:0, push the result
+    case ge16  // pop two 16-bit values from the stack, (A>=B)?1:0, push the result in one word
     case add // pop two from the stack, A+B, push the result
     case add16 // pop two 16-bit values from the stack, A+B, push the result in two words (push high byte, then push low byte)
     case sub // pop two from the stack, A-B, push the result
@@ -75,6 +76,8 @@ public enum YertleInstruction: Equatable {
             return "LE"
         case .ge:
             return "GE"
+        case .ge16:
+            return "GE16"
         case .add:
             return "ADD"
         case .add16:

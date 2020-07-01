@@ -222,9 +222,85 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
+    func testGt16_0_gt_0_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(0), .gt16])
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testGt16_300_gt_300_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(300), .push16(300), .gt16])
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testGt16_0_gt_1_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .gt16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testGt16_1_gt_0_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .gt16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testGt16_1000_gt_2000_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1000), .push16(2000), .gt16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
     func testLeWithStackDepthFour() {
         let computer = try! execute(ir: [.push(1), .push(2), .push(3), .push(4), .le])
         XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLe16_0_le_0_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(0), .le16])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLe16_300_le_300_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(300), .push16(300), .le16])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLe16_0_le_1_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .le16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 1)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLe16_1_le_0_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .le16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
+    func testLe16_1000_le_2000_is_true() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1000), .push16(2000), .le16])
+        
+        XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
@@ -577,6 +653,21 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfffd)
     }
     
+    func testLoad16() {
+        let value: UInt16 = 0xabcd
+        let address = 0x0010
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: UInt8((value>>8)&0xff), to: address+0)
+            computer.dataRAM.store(value: UInt8(value&0xff), to: address+1)
+        }
+        let computer = try! executor.execute(ir: [.push(1), .push(2), .load16(address)])
+        XCTAssertEqual(computer.stack16(at: 0), value)
+        XCTAssertEqual(computer.stack(at: 2), 2)
+        XCTAssertEqual(computer.stack(at: 3), 1)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
+    }
+    
     func testStoreWithStackDepthOne() {
         let address = 0x0010
         let computer = try! execute(ir: [.push(1), .store(address)])
@@ -608,6 +699,17 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 3)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
+    }
+    
+    func testStore16() {
+        let address = 0x0010
+        let computer = try! execute(ir: [.push(2), .push(1), .push16(0x1234), .store16(address)])
+        XCTAssertEqual(computer.dataRAM.load(from: address+0), 0x12)
+        XCTAssertEqual(computer.dataRAM.load(from: address+1), 0x34)
+        XCTAssertEqual(computer.stack16(at: 0), 0x1234)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+        XCTAssertEqual(computer.stack(at: 3), 2)
         XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     

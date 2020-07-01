@@ -23,9 +23,11 @@ public enum YertleInstruction: Equatable {
     case lt  // pop two from the stack, (A<B)?1:0, push the result
     case lt16  // pop two 16-bit values from the stack, (A<B)?1:0, push the result in one word
     case gt  // pop two from the stack, (A>B)?1:0, push the result
+    case gt16 // pop two 16-bit values from the stack, (A>B)?1:0, push the result in one word
     case le  // pop two from the stack, (A<=B)?1:0, push the result
+    case le16 // pop two 16-bit values from the stack, (A<=B)?1:0, push the result in one word
     case ge  // pop two from the stack, (A>=B)?1:0, push the result
-    case ge16  // pop two 16-bit values from the stack, (A>=B)?1:0, push the result in one word
+    case ge16 // pop two 16-bit values from the stack, (A>=B)?1:0, push the result in one word
     case add // pop two from the stack, A+B, push the result
     case add16 // pop two 16-bit values from the stack, A+B, push the result in two words (push high byte, then push low byte)
     case sub // pop two from the stack, A-B, push the result
@@ -37,7 +39,9 @@ public enum YertleInstruction: Equatable {
     case mod // pop two from the stack, A%B, push the result
     case mod16 // pop two 16-bit values from the stack, A%B, push the result in two words (push high byte, then push low byte)
     case load(Int) // load from the specified address, push to the stack
+    case load16(Int) // load a 16-bit value from the specified address, push to the stack in two words (push high byte, then push low byte)
     case store(Int) // peek at the stack top and store that value to the specified address
+    case store16(Int) // peek at the top two bytes of the stack and store that 16-bit value to the specified address (store the high byte followed by the low byte)
     case loadIndirect // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Load the eight-bit value at that address and push it to the stack.
     case storeIndirect // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Peek at the eight-bit value on the top of the stack. Store that eight-bit value at the specified address.
     case label(TokenIdentifier) // declares a label
@@ -74,8 +78,12 @@ public enum YertleInstruction: Equatable {
             return "LT16"
         case .gt:
             return "GT"
+        case .gt16:
+            return "GT16"
         case .le:
             return "LE"
+        case .le16:
+            return "LE16"
         case .ge:
             return "GE"
         case .ge16:
@@ -102,8 +110,12 @@ public enum YertleInstruction: Equatable {
             return "MOD16"
         case .load(let address):
             return String(format: "LOAD 0x%04x", address)
+        case .load16(let address):
+            return String(format: "LOAD16 0x%04x", address)
         case .store(let address):
             return String(format: "STORE 0x%04x", address)
+        case .store16(let address):
+            return String(format: "STORE16 0x%04x", address)
         case .loadIndirect:
             return "LOAD-INDIRECT"
         case .storeIndirect:

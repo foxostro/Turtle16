@@ -68,7 +68,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .lt:  try lt()
             case .lt16:  try lt16()
             case .gt:  try gt()
+            case .gt16:  try gt16()
             case .le:  try le()
+            case .le16:  try le16()
             case .ge:  try ge()
             case .ge16:  try ge16()
             case .add: try add()
@@ -82,7 +84,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .mod: try mod()
             case .mod16: try mod16()
             case .load(let address): try load(from: address)
+            case .load16(let address): try load16(from: address)
             case .store(let address): try store(to: address)
+            case .store16(let address): try store16(to: address)
             case .loadIndirect: try loadIndirect()
             case .storeIndirect: try storeIndirect()
             case .label(let token): try label(token: token)
@@ -444,6 +448,100 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
+    private func gt16() throws {
+        let labelFailEqualityTest = makeTempLabel()
+        let labelTail = makeTempLabel()
+        let labelThen = makeTempLabel()
+        
+        let addressOfA = kScratchLo+0
+        let addressOfB = kScratchLo+2
+
+        // Pop `b' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .A)
+
+        // Pop `a' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .A)
+        
+        // Compare low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // Compare high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // The two operands are equal so return true.
+        try jmp(to: labelThen)
+        
+        try label(token: labelFailEqualityTest)
+        
+        // Load the low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+
+        // Compare the low bytes.
+        try assembler.sub(.NONE)
+        try assembler.sub(.NONE)
+
+        // Load the high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+
+        // Compare the high bytes.
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.NONE)
+        
+        // A <- (carry_flag) ? 0 : 1
+        try setAddressToLabel(labelThen)
+        assembler.jnc()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 1)
+        try setAddressToLabel(labelTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(token: labelThen)
+        try assembler.li(.A, 0)
+        try label(token: labelTail)
+        
+        try pushAToStack()
+    }
+    
     private func le() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
@@ -458,6 +556,100 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         try assembler.li(.M, 0)
         assert(assembler.programCounter == jumpTarget)
+    }
+    
+    private func le16() throws {
+        let labelFailEqualityTest = makeTempLabel()
+        let labelTail = makeTempLabel()
+        let labelThen = makeTempLabel()
+        
+        let addressOfA = kScratchLo+0
+        let addressOfB = kScratchLo+2
+
+        // Pop `b' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .A)
+
+        // Pop `a' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .A)
+        
+        // Compare low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // Compare high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // The two operands are equal so return true.
+        try jmp(to: labelThen)
+        
+        try label(token: labelFailEqualityTest)
+        
+        // Load the low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+
+        // Compare the low bytes.
+        try assembler.sub(.NONE)
+        try assembler.sub(.NONE)
+
+        // Load the high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+
+        // Compare the high bytes.
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.NONE)
+        
+        // A <- (carry_flag) ? 1 : 0
+        try setAddressToLabel(labelThen)
+        assembler.jnc()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 0)
+        try setAddressToLabel(labelTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(token: labelThen)
+        try assembler.li(.A, 1)
+        try label(token: labelTail)
+        
+        try pushAToStack()
     }
     
     private func ge() throws {
@@ -1238,6 +1430,18 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
+    private func load16(from address: Int) throws {
+        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+0) & 0x00ff)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        
+        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+1) & 0x00ff)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+    }
+    
     private func store(to address: Int) throws {
         try loadStackPointerIntoUVandXY()
         
@@ -1247,6 +1451,22 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         // Now write A into the specified address.
         try assembler.li(.U, (address & 0xff00) >> 8)
         try assembler.li(.V,  address & 0x00ff)
+        try assembler.mov(.M, .A)
+    }
+    
+    private func store16(to address: Int) throws {
+        try loadStackPointerIntoUVandXY()
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+1) & 0x00ff)
+        try assembler.mov(.M, .A)
+        
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        assembler.inuv()
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+0) & 0x00ff)
         try assembler.mov(.M, .A)
     }
     

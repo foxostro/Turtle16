@@ -13,9 +13,9 @@ import TurtleCompilerToolbox
 // It's nothing more than a list of these instructions.
 public enum YertleInstruction: Equatable {
     case push(Int) // push the specified word-sized value to the stack
-    case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack (push high byte, then push low byte)
+    case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack
     case pop // pop the stack
-    case pop16 // pop a sixteen-bit value from the stack (pop low byte, then pop high byte)
+    case pop16 // pop a sixteen-bit value from the stack
     case eq  // pop two from the stack, (A==B)?1:0, push the result
     case eq16  // pop two 16-bit values from the stack, (A==B)?1:0, push the result in one word
     case ne  // pop two from the stack, (A!=B)?1:0, push the result
@@ -29,22 +29,22 @@ public enum YertleInstruction: Equatable {
     case ge  // pop two from the stack, (A>=B)?1:0, push the result
     case ge16 // pop two 16-bit values from the stack, (A>=B)?1:0, push the result in one word
     case add // pop two from the stack, A+B, push the result
-    case add16 // pop two 16-bit values from the stack, A+B, push the result in two words (push high byte, then push low byte)
+    case add16 // pop two 16-bit values from the stack, A+B, push the result in two words
     case sub // pop two from the stack, A-B, push the result
-    case sub16 // pop two 16-bit values from the stack, A-B, push the result in two words (push high byte, then push low byte)
+    case sub16 // pop two 16-bit values from the stack, A-B, push the result in two words
     case mul // pop two from the stack, A*B, push the result
-    case mul16 // pop two 16-bit values from the stack, A*B, push the result in two words (push high byte, then push low byte)
+    case mul16 // pop two 16-bit values from the stack, A*B, push the result in two words
     case div // pop two from the stack, A/B, push the result
-    case div16 // pop two 16-bit values from the stack, A/B, push the result in two words (push high byte, then push low byte)
+    case div16 // pop two 16-bit values from the stack, A/B, push the result in two words
     case mod // pop two from the stack, A%B, push the result
-    case mod16 // pop two 16-bit values from the stack, A%B, push the result in two words (push high byte, then push low byte)
+    case mod16 // pop two 16-bit values from the stack, A%B, push the result in two words
     case load(Int) // load from the specified address, push to the stack
-    case load16(Int) // load a 16-bit value from the specified address, push to the stack in two words (push high byte, then push low byte)
+    case load16(Int) // load a 16-bit value from the specified address, push to the stack in two words
     case store(Int) // peek at the stack top and store that value to the specified address
-    case store16(Int) // peek at the top two bytes of the stack and store that 16-bit value to the specified address (store the high byte followed by the low byte)
-    case loadIndirect // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Load the eight-bit value at that address and push it to the stack.
-    case loadIndirect16 // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Load the sixteen-bit value at that address and push it to the stack. (push high byte, then push low byte)
-    case storeIndirect // Pop a sixteen-bit address from the stack (pop low byte, then pop high byte). Peek at the eight-bit value on the top of the stack. Store that eight-bit value at the specified address.
+    case store16(Int) // peek at the top two bytes of the stack and store that 16-bit value to the specified address
+    case loadIndirect // Pop a sixteen-bit address from the stack. Load the eight-bit value at that address and push it to the stack.
+    case loadIndirect16 // Pop a sixteen-bit address from the stack. Load the sixteen-bit value at that address and push it to the stack.
+    case storeIndirect // Pop a sixteen-bit address from the stack. Peek at the eight-bit value on the top of the stack. Store that eight-bit value at the specified address.
     case label(TokenIdentifier) // declares a label
     case jmp(TokenIdentifier) // unconditional jump, no change to the stack
     case je(TokenIdentifier) // pop two from the stack, jump if they are equal

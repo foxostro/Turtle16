@@ -46,9 +46,10 @@ public class Memory: NSObject {
     }
     
     public func load16(from address: Int) -> UInt16 {
-        let lo = load(from: address+1)
         let hi = load(from: address+0)
-        return UInt16((hi<<8) + lo)
+        let lo = load(from: address+1)
+        let result = UInt16(hi)<<8 + UInt16(lo)
+        return result
     }
     
     public var data: Data {

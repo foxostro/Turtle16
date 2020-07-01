@@ -109,6 +109,27 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack16(at: 0), 1024)
     }
     
+    func testPushTwoDoubleWordValues() {
+        let computer = try! execute(ir: [.push16(0x5678), .push16(0x1234)])
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0x12)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0x34)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x56)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x78)
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffe), 0x5678)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), 0x1234)
+        
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
+    
+        XCTAssertEqual(computer.stack(at: 0), 0x12)
+        XCTAssertEqual(computer.stack(at: 1), 0x34)
+        XCTAssertEqual(computer.stack(at: 2), 0x56)
+        XCTAssertEqual(computer.stack(at: 3), 0x78)
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0x1234)
+        XCTAssertEqual(computer.stack16(at: 2), 0x5678)
+    }
+    
     func testPushManyDoubleWordValues() {
         let kStackPointerInitialValue = UInt16(YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue)
         let count = 1000
@@ -804,8 +825,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     
     func testEnter() {
         let computer = try! execute(ir: [.enter])
-        XCTAssertEqual(computer.stack(at: 0), 0x00)
-        XCTAssertEqual(computer.stack(at: 1), 0x00)
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
         XCTAssertEqual(computer.stackPointer, 0xfffe)
         XCTAssertEqual(computer.framePointer, 0xfffe)
     }
@@ -818,18 +838,15 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     
     func testEnterEnter() {
         let computer = try! execute(ir: [.enter, .enter])
-        XCTAssertEqual(computer.stack(at: 3), 0x00)
-        XCTAssertEqual(computer.stack(at: 2), 0x00)
-        XCTAssertEqual(computer.stack(at: 1), 0xff)
-        XCTAssertEqual(computer.stack(at: 0), 0xfe)
+        XCTAssertEqual(computer.stack16(at: 2), 0x0000)
+        XCTAssertEqual(computer.stack16(at: 0), 0xfffe)
         XCTAssertEqual(computer.stackPointer, 0xfffc)
         XCTAssertEqual(computer.framePointer, 0xfffc)
     }
     
     func testEnterEnterLeave() {
         let computer = try! execute(ir: [.enter, .enter, .leave])
-        XCTAssertEqual(computer.stack(at: 1), 0x00)
-        XCTAssertEqual(computer.stack(at: 0), 0x00)
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
         XCTAssertEqual(computer.stackPointer, 0xfffe)
         XCTAssertEqual(computer.framePointer, 0xfffe)
     }
@@ -845,7 +862,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = {computer in
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
-        let computer = try! executor.execute(ir: [.push(0x00), .push(0x10), .loadIndirect])
+        let computer = try! executor.execute(ir: [.push16(0x0010), .loadIndirect])
         XCTAssertEqual(computer.stack(at: 0), 0xaa)
     }
     
@@ -854,7 +871,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = {computer in
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
-        let computer = try! executor.execute(ir: [.push(1), .push(0x00), .push(0x10), .loadIndirect])
+        let computer = try! executor.execute(ir: [.push(1), .push16(0x0010), .loadIndirect])
         XCTAssertEqual(computer.stack(at: 0), 0xaa)
         XCTAssertEqual(computer.stack(at: 1), 1)
     }
@@ -873,10 +890,10 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testLoadIndirect16() {
         let executor = YertleExecutor()
         executor.configure = {computer in
-            computer.dataRAM.store(value: 0x12, to: 0x0010)
-            computer.dataRAM.store(value: 0x34, to: 0x0011)
+            computer.dataRAM.store16(value: 0x1234, to: 0x0010)
         }
         let computer = try! executor.execute(ir: [.push(0xbb), .push(0xaa), .push16(0x0010), .loadIndirect16])
+        
         XCTAssertEqual(computer.stack16(at: 0), 0x1234)
         XCTAssertEqual(computer.stack(at: 2), 0xaa)
         XCTAssertEqual(computer.stack(at: 3), 0xbb)

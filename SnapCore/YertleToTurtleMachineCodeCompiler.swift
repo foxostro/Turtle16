@@ -152,8 +152,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func push16(_ value: Int) throws {
         let hi = (value>>8) & 0xff
         let lo =  value & 0xff
-        try push(hi)
         try push(lo)
+        try push(hi)
     }
     
     private func loadStackPointerIntoUVandXY() throws {
@@ -381,17 +381,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
 
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -462,17 +462,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
         
         // Compare low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -572,17 +572,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
         
         // Compare low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -678,17 +678,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
 
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -742,16 +742,16 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+3)
-        try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+2)
         try assembler.mov(.M, .B)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.M, .A)
         
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+0)
         try assembler.mov(.M, .B)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .A)
         
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+1)
@@ -770,12 +770,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.adc(.M)
         
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.V, kScratchLo+3)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.V, kScratchLo+2)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -790,16 +790,16 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func sub16() throws {
         try pop16()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
-        try assembler.mov(.M, .A)
         try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+3)
         try assembler.mov(.M, .B)
         
         try pop16()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.M, .A)
         try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+1)
         try assembler.mov(.M, .B)
         
         try assembler.li(.U, kScratchHi)
@@ -819,12 +819,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sbc(.M)
         
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.V, kScratchLo+3)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.V, kScratchLo+2)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -898,17 +898,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, multiplicandAddress+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, multiplicandAddress+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, multiplicandAddress+1)
+        try assembler.mov(.M, .B)
         
         // Pop the multiplier and store in scratch memory.
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, multiplierAddress+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, multiplierAddress+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, multiplierAddress+1)
+        try assembler.mov(.M, .B)
         
         // Initialize the result to zero.
         try assembler.li(.V, resultAddress+0)
@@ -979,15 +979,15 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try label(token: loopTail)
         
         // Push the result onto the stack.
-        // First the high byte
+        // First the low byte
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, resultAddress+0)
+        try assembler.li(.V, resultAddress+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        // Then the low byte
+        // Then the high byte
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, resultAddress+1)
+        try assembler.li(.V, resultAddress+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1078,18 +1078,18 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .B)
 
         // Pop the dividend and store in scratch memory.
         // `a' is the Dividend
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
 
         // Initialize the counter to zero.
         // `c' is the counter
@@ -1191,13 +1191,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         try label(token: loopTail)
 
-        // Push the result to the stack. First the high byte, then the low byte.
+        // Push the result to the stack. First the low byte, then the high byte.
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+0)
+        try assembler.li(.V, counterAddress+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+1)
+        try assembler.li(.V, counterAddress+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1288,18 +1288,18 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.M, .B)
 
         // Pop the dividend and store in scratch memory.
         // `a' is the Dividend
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
 
         // Initialize the counter to zero.
         // `c' is the counter
@@ -1407,13 +1407,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try label(token: loopTail)
 
         // The result is in `a'. Push it to the stack.
-        // First the high byte, then the low byte.
+        // First the low byte, then the high byte.
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try assembler.li(.V, addressOfA+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try assembler.li(.V, addressOfA+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1433,13 +1433,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func load16(from address: Int) throws {
-        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+0) & 0x00ff)
+        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+1) & 0x00ff)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+1) & 0x00ff)
+        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+0) & 0x00ff)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1459,16 +1459,16 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func store16(to address: Int) throws {
         try loadStackPointerIntoUVandXY()
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+1) & 0x00ff)
+        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+0) & 0x00ff)
         try assembler.mov(.M, .A)
         
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
         assembler.inuv()
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+0) & 0x00ff)
+        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
+        try assembler.li(.V,  (address+1) & 0x00ff)
         try assembler.mov(.M, .A)
     }
     
@@ -1485,8 +1485,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func loadIndirect() throws {
         try pop16()
         
-        try assembler.mov(.V, .A)
-        try assembler.mov(.U, .B)
+        try assembler.mov(.U, .A)
+        try assembler.mov(.V, .B)
         try assembler.mov(.A, .M)
         
         try pushAToStack()
@@ -1498,13 +1498,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         // Stash the address in scratch memory.
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+2)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, kScratchLo+3)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.M, .B)
         
-        // Load the high word and push to the stack.
-        try assembler.mov(.U, .B)
-        try assembler.mov(.V, .A)
+        // Load the low word and push to the stack.
+        try assembler.mov(.U, .A)
+        try assembler.mov(.V, .B)
+        assembler.inuv()
         try assembler.mov(.A, .M)
         try pushAToStack()
         
@@ -1515,10 +1516,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, kScratchLo+3)
         try assembler.mov(.Y, .M)
         
-        // Increment the address to point to the next word.
-        assembler.inxy()
-        
-        // Load the low word and push to the stack.
+        // Load the high word and push to the stack.
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
         try assembler.mov(.A, .M)
@@ -1531,9 +1529,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         // Stash the destination address in a well-known scratch location.
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+0)
-        try assembler.mov(.M, .B)
-        try assembler.li(.V, kScratchLo+1)
         try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .B)
         
         // Copy the stop of the stack into A.
         try loadStackPointerIntoUVandXY()
@@ -1591,13 +1589,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func enter() throws {
         // push fp in two bytes ; fp <- sp
         
-        try assembler.li(.U, kFramePointerHiHi)
-        try assembler.li(.V, kFramePointerHiLo)
+        try assembler.li(.U, kFramePointerLoHi)
+        try assembler.li(.V, kFramePointerLoLo)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, kFramePointerLoHi)
-        try assembler.li(.V, kFramePointerLoLo)
+        try assembler.li(.U, kFramePointerHiHi)
+        try assembler.li(.V, kFramePointerHiLo)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
@@ -1634,20 +1632,20 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .Y)
         
         try popInMemoryStackIntoRegisterB()
-        try assembler.li(.U, kFramePointerLoHi)
-        try assembler.li(.V, kFramePointerLoLo)
+        try assembler.li(.U, kFramePointerHiHi)
+        try assembler.li(.V, kFramePointerHiLo)
         try assembler.mov(.M, .B)
         
         try popInMemoryStackIntoRegisterB()
-        try assembler.li(.U, kFramePointerHiHi)
-        try assembler.li(.V, kFramePointerHiLo)
+        try assembler.li(.U, kFramePointerLoHi)
+        try assembler.li(.V, kFramePointerLoLo)
         try assembler.mov(.M, .B)
     }
     
     private func pushReturnAddress() throws {
-        try assembler.mov(.A, .G)
-        try pushAToStack()
         try assembler.mov(.A, .H)
+        try pushAToStack()
+        try assembler.mov(.A, .G)
         try pushAToStack()
     }
     
@@ -1666,11 +1664,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .B)
         
         try popInMemoryStackIntoRegisterB()
-        try assembler.mov(.X, .B)
+        try assembler.mov(.Y, .B)
         
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo)
-        try assembler.mov(.Y, .M)
+        try assembler.mov(.X, .M)
         
         assembler.jmp()
         assembler.nop()

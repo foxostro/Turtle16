@@ -99,7 +99,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_Word_Stack() {
         let expr = ExprUtils.makeIdentifier(name: "foo")
-        let symbol = Symbol(type: .u8, offset: 0x0004, isMutable: false, storage: .stackStorage)
+        let symbol = Symbol(type: .u8, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
         let executor = YertleExecutor()
@@ -107,7 +107,7 @@ class ExpressionSubCompilerTests: XCTestCase {
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
-            computer.dataRAM.store(value: 0xaa, to: 0xfffc)
+            computer.dataRAM.store(value: 0xaa, to: 0xfff0)
         }
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack(at: 0), 0xaa)

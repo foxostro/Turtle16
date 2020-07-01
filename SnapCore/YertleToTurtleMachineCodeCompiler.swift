@@ -88,6 +88,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .store(let address): try store(to: address)
             case .store16(let address): try store16(to: address)
             case .loadIndirect: try loadIndirect()
+            case .loadIndirect16: try loadIndirect16()
             case .storeIndirect: try storeIndirect()
             case .label(let token): try label(token: token)
             case .jmp(let token): try jmp(to: token)
@@ -1487,6 +1488,39 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.U, .B)
         try assembler.mov(.A, .M)
         
+        try pushAToStack()
+    }
+    
+    private func loadIndirect16() throws {
+        try pop16()
+        
+        // Stash the address in scratch memory.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.M, .B)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.M, .A)
+        
+        // Load the high word and push to the stack.
+        try assembler.mov(.U, .B)
+        try assembler.mov(.V, .A)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        
+        // Retrieve the address from scratch memory.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.X, .M)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.Y, .M)
+        
+        // Increment the address to point to the next word.
+        assembler.inxy()
+        
+        // Load the low word and push to the stack.
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.A, .M)
         try pushAToStack()
     }
     

@@ -864,17 +864,28 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = {computer in
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
-        let computer = try! executor.execute(ir: [.push(1), .push(2), .push(0x00), .push(0x10), .loadIndirect])
+        let computer = try! executor.execute(ir: [.push(1), .push(2), .push16(0x0010), .loadIndirect])
         XCTAssertEqual(computer.stack(at: 0), 0xaa)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
+    func testLoadIndirect16() {
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: 0x12, to: 0x0010)
+            computer.dataRAM.store(value: 0x34, to: 0x0011)
+        }
+        let computer = try! executor.execute(ir: [.push(0xbb), .push(0xaa), .push16(0x0010), .loadIndirect16])
+        XCTAssertEqual(computer.stack16(at: 0), 0x1234)
+        XCTAssertEqual(computer.stack(at: 2), 0xaa)
+        XCTAssertEqual(computer.stack(at: 3), 0xbb)
+    }
+    
     func testStoreIndirectWithStackDepthThree() {
         let computer = try! execute(ir: [
             .push(0xaa),
-            .push(0x00),
-            .push(0x10),
+            .push16(0x0010),
             .storeIndirect
         ])
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
@@ -885,8 +896,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! execute(ir: [
             .push(0xbb),
             .push(0xaa),
-            .push(0x00),
-            .push(0x10),
+            .push16(0x0010),
             .storeIndirect
         ])
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
@@ -899,8 +909,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
             .push(0xcc),
             .push(0xbb),
             .push(0xaa),
-            .push(0xfe),
-            .push(0xfe),
+            .push16(0xfefe),
             .storeIndirect
         ])
         XCTAssertEqual(computer.dataRAM.load(from: 0xfefe), 0xaa)

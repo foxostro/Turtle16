@@ -54,6 +54,7 @@ public enum YertleInstruction: Equatable {
     case pushReturnAddress // push the link register (two bytes) to the stack
     case ret // pop the two byte return address and jump to that address
     case leafRet // Jump back to the address in the link register to return from the function
+    case hlt // Halt the machine. This is useful for debugging.
     
     public var description: String {
         switch self {
@@ -141,6 +142,8 @@ public enum YertleInstruction: Equatable {
             return "RET"
         case .leafRet:
             return "LEAF-RET"
+        case .hlt:
+            return "HLT"
         }
     }
     

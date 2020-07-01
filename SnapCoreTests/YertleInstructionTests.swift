@@ -55,6 +55,7 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.pushReturnAddress.description, "PUSH-RETURN-ADDRESS")
         XCTAssertEqual(YertleInstruction.ret.description, "RET")
         XCTAssertEqual(YertleInstruction.leafRet.description, "LEAF-RET")
+        XCTAssertEqual(YertleInstruction.hlt.description, "HLT")
     }
     
     func testMakeListing_Empty() {

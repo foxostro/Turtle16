@@ -99,6 +99,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .pushReturnAddress: try pushReturnAddress()
             case .leafRet: try leafRet()
             case .ret: try ret()
+            case .hlt: assembler.hlt()
             }
         }
         insertProgramEpilogue()

@@ -24,8 +24,8 @@ extension Computer {
     }
     
     public func stack16(at index: Int) -> UInt16 {
-        let lo = dataRAM.load(from: Int(stackPointer+index+0))
-        let hi = dataRAM.load(from: Int(stackPointer+index+1))
+        let hi = stack(at: index+0)
+        let lo = stack(at: index+1)
         let result = UInt16(hi)<<8 + UInt16(lo)
         return result
     }

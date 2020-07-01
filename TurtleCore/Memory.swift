@@ -36,8 +36,19 @@ public class Memory: NSObject {
         storage.storeBytes(of: value, toByteOffset: address, as: UInt8.self)
     }
     
+    public func store16(value: UInt16, to address: Int) {
+        store(value: UInt8((value >> 8) & 0xff), to: address+0)
+        store(value: UInt8(value & 0xff), to: address+1)
+    }
+    
     public func load(from address: Int) -> UInt8 {
         return storage.load(fromByteOffset: address, as: UInt8.self)
+    }
+    
+    public func load16(from address: Int) -> UInt16 {
+        let lo = load(from: address+1)
+        let hi = load(from: address+0)
+        return UInt16((hi<<8) + lo)
     }
     
     public var data: Data {

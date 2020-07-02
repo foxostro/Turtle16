@@ -934,4 +934,18 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 1), 0xbb)
         XCTAssertEqual(computer.stack(at: 2), 0xcc)
     }
+    
+    func testStoreIndirect16() {
+        let computer = try! execute(ir: [
+            .push(0xcc),
+            .push(0xbb),
+            .push16(0xabcd),
+            .push16(0xfefe),
+            .storeIndirect16
+        ])
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfefe), 0xabcd)
+        XCTAssertEqual(computer.stack16(at: 0), 0xabcd)
+        XCTAssertEqual(computer.stack(at: 2), 0xbb)
+        XCTAssertEqual(computer.stack(at: 3), 0xcc)
+    }
 }

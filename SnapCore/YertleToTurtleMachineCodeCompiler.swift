@@ -90,6 +90,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .loadIndirect: try loadIndirect()
             case .loadIndirect16: try loadIndirect16()
             case .storeIndirect: try storeIndirect()
+            case .storeIndirect16: try storeIndirect16()
             case .label(let token): try label(token: token)
             case .jmp(let token): try jmp(to: token)
             case .je(let token): try je(to: token)
@@ -1533,7 +1534,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, kScratchLo+1)
         try assembler.mov(.M, .B)
         
-        // Copy the stop of the stack into A.
+        // Copy the top of the stack into A.
         try loadStackPointerIntoUVandXY()
         try assembler.mov(.A, .M)
         
@@ -1548,6 +1549,37 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         
         // Store A to the destination address.
         try assembler.mov(.M, .A)
+    }
+    
+    private func storeIndirect16() throws {
+        try pop16()
+        
+        // Stash the destination address in a well-known scratch location.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .B)
+        
+        // Copy the two bytes at the top of the stack into A and B
+        try loadStackPointerIntoUVandXY()
+        try assembler.mov(.A, .M)
+        assembler.inuv()
+        try assembler.mov(.B, .M)
+        
+        // Restore the stashed destination address to UV and XY.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.X, .M)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.Y, .M)
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        
+        // Store A and B to the destination address.
+        try assembler.mov(.M, .A)
+        assembler.inuv()
+        try assembler.mov(.M, .B)
     }
     
     private func jmp(to token: TokenIdentifier) throws {

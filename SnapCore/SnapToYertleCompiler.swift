@@ -92,7 +92,17 @@ public class SnapToYertleCompiler: NSObject {
         }
         else if let node = genericNode as? Expression {
             try compile(expression: node)
-            instructions += [.pop]
+            let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: node)
+            switch returnExpressionType {
+            case .u16:
+                abort() // instructions += [.pop16]
+            case .u8, .bool:
+                instructions += [.pop]
+            case .void:
+                break
+            case .function(name: _, mangledName: _, functionType: _):
+                abort()
+            }
         }
         else if let node = genericNode as? If {
             try compile(if: node)
@@ -151,6 +161,12 @@ public class SnapToYertleCompiler: NSObject {
         switch symbol.storage {
         case .staticStorage:
             switch symbol.type {
+            case .u16:
+                abort()
+                //instructions += [
+                //    .store16(symbol.offset),
+                //    .pop16
+                //]
             case .bool, .u8:
                 instructions += [
                     .store(symbol.offset),
@@ -160,6 +176,8 @@ public class SnapToYertleCompiler: NSObject {
                 abort()
             }
         case .stackStorage:
+            // Evaluation of the expression has left the stack symbol's value
+            // on the stack already. Nothing to do here.
             break
         }
     }

@@ -124,6 +124,8 @@ public class ExpressionSubCompiler: NSObject {
     
     private func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
         switch symbol.type {
+        case .u16:
+            abort() // return [.load16(symbol.offset)]
         case .u8, .bool:
             return [.load(symbol.offset)]
         case .function, .void:
@@ -132,18 +134,16 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        instructions += computeAddressOfLocalVariable(symbol, depth)
         switch symbol.type {
+        case .u16:
+            abort() // instructions += [.loadIndirect16]
         case .u8, .bool:
-            return loadOneWord(symbol, depth)
+            instructions += [.loadIndirect]
         case .function, .void:
             abort()
         }
-    }
-    
-    private func loadOneWord(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        instructions += computeAddressOfLocalVariable(symbol, depth)
-        instructions += [.loadIndirect] // load the value at the final computed address
         return instructions
     }
     
@@ -173,36 +173,46 @@ public class ExpressionSubCompiler: NSObject {
             throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
         }
         
+        var instructions: [YertleInstruction] = []
+        
         switch symbol.type {
+        case .u16:
+            abort()
         case .u8, .bool:
-            return try compile(expression: assignment.child) + storeOneWord(symbol, depth)
+            instructions += try compile(expression: assignment.child)
         case .function, .void:
             abort()
         }
+        
+        instructions += storeSymbol(symbol, depth)
+        
+        return instructions
     }
     
-    private func storeOneWord(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    private func storeSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         assert(symbol.isMutable)
+        var instructions: [YertleInstruction] = []
         switch symbol.storage {
         case .staticStorage:
-            return storeOneWordStatic(symbol: symbol)
+            switch symbol.type {
+            case .u16:
+                abort() // instructions += [.store16(symbol.offset)]
+            case .u8, .bool:
+                instructions += [.store(symbol.offset)]
+            case .function, .void:
+                abort()
+            }
         case .stackStorage:
-            return storeOneWordStack(symbol, depth)
+            instructions += computeAddressOfLocalVariable(symbol, depth)
+            switch symbol.type {
+            case .u16:
+                abort() // instructions += [.storeIndirect16]
+            case .u8, .bool:
+                instructions += [.storeIndirect]
+            case .function, .void:
+                abort()
+            }
         }
-    }
-    
-    private func storeOneWordStatic(symbol: Symbol) -> [YertleInstruction] {
-        assert(symbol.isMutable)
-        assert(symbol.storage == .staticStorage)
-        return [.store(symbol.offset)]
-    }
-    
-    private func storeOneWordStack(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        assert(symbol.isMutable)
-        assert(symbol.storage == .stackStorage)
-        var instructions: [YertleInstruction] = []
-        instructions += computeAddressOfLocalVariable(symbol, depth)
-        instructions += [.storeIndirect] // store the value at the final computed address
         return instructions
     }
     

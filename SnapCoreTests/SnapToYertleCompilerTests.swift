@@ -169,9 +169,9 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_1() {
-        let one = ExprUtils.makeLiteralWord(value: 1)
-        let two = ExprUtils.makeLiteralWord(value: 2)
-        let three = ExprUtils.makeLiteralWord(value: 3)
+        let one = ExprUtils.makeLiteralInt(value: 1)
+        let two = ExprUtils.makeLiteralInt(value: 2)
+        let three = ExprUtils.makeLiteralInt(value: 3)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -206,9 +206,9 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_2() {
-        let one = ExprUtils.makeLiteralWord(value: 1)
-        let two = ExprUtils.makeLiteralWord(value: 2)
-        let three = ExprUtils.makeLiteralWord(value: 3)
+        let one = ExprUtils.makeLiteralInt(value: 1)
+        let two = ExprUtils.makeLiteralInt(value: 2)
+        let three = ExprUtils.makeLiteralInt(value: 3)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -295,7 +295,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                               expression: ExprUtils.makeLiteralWord(value: 0xaa),
+                               expression: ExprUtils.makeLiteralInt(value: 0xaa),
                                storage: .stackStorage,
                                isMutable: true)
             ])
@@ -416,7 +416,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsDueToTypeErrorInExpression() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                           expression: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
+                           expression: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
                                                          right: ExprUtils.makeLiteralBoolean(value: true)),
                            storage: .staticStorage,
                            isMutable: false)
@@ -430,16 +430,16 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileForLoopStatement() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                           expression: ExprUtils.makeLiteralWord(value: 0),
+                           expression: ExprUtils.makeLiteralInt(value: 0),
                            storage: .staticStorage,
                            isMutable: true),
             ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
-                                                      expression: ExprUtils.makeLiteralWord(value: 0),
+                                                      expression: ExprUtils.makeLiteralInt(value: 0),
                                                       storage: .staticStorage,
                                                       isMutable: true),
                     conditionClause: ExprUtils.makeComparisonLt(left: ExprUtils.makeIdentifier(name: "i"),
-                                                                right: ExprUtils.makeLiteralWord(value: 10)),
-                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralWord(value: 1))),
+                                                                right: ExprUtils.makeLiteralInt(value: 10)),
+                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralInt(value: 1))),
                     body: ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeIdentifier(name: "i")))
         ])
         let compiler = SnapToYertleCompiler()
@@ -478,11 +478,11 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                               expression: ExprUtils.makeLiteralWord(value: 0),
+                               expression: ExprUtils.makeLiteralInt(value: 0),
                                storage: .staticStorage,
                                isMutable: true),
             ]),
-            ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 0))
+            ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 0))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -515,13 +515,13 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompileFunctionDeclaration_WithSideEffects() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
-                           expression: ExprUtils.makeLiteralWord(value: 0),
+                           expression: ExprUtils.makeLiteralInt(value: 0),
                            storage: .staticStorage,
                            isMutable: true),
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block(children: [
-                                    ExprUtils.makeAssignment(name: "a", right: ExprUtils.makeLiteralWord(value: 1))
+                                    ExprUtils.makeAssignment(name: "a", right: ExprUtils.makeLiteralInt(value: 1))
                                 ])),
             Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
         ])
@@ -592,7 +592,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideIf() {
         let ret = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -612,7 +612,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideElse() {
         let ret = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -632,7 +632,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideWhile() {
         let ret = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -650,7 +650,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideFor() {
         let ret = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -674,7 +674,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
-                                           expression: ExprUtils.makeLiteralWord(value: 0xaa))
+                                           expression: ExprUtils.makeLiteralInt(value: 0xaa))
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
@@ -698,7 +698,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     If(condition: ExprUtils.makeLiteralBoolean(value: true),
                                        then: Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
-                                                    expression: ExprUtils.makeLiteralWord(value: 1)),
+                                                    expression: ExprUtils.makeLiteralInt(value: 1)),
                                        else: nil)
                                 ]))
         ])
@@ -726,7 +726,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)]),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
-                                           expression: ExprUtils.makeLiteralWord(value: 1))
+                                           expression: ExprUtils.makeLiteralInt(value: 1))
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
@@ -759,7 +759,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                            expression: ExprUtils.makeIdentifier(name: "bar"))
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
-                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralWord(value: 0xaa)]),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralInt(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -780,14 +780,14 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "baz"),
-                                                   expression: ExprUtils.makeLiteralWord(value: 0xbb),
+                                                   expression: ExprUtils.makeLiteralInt(value: 0xbb),
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
                                            expression: ExprUtils.makeIdentifier(name: "bar"))
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
-                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralWord(value: 0xaa)]),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralInt(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -806,7 +806,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
-                                                   expression: ExprUtils.makeLiteralWord(value: 0xaa),
+                                                   expression: ExprUtils.makeLiteralInt(value: 0xaa),
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
@@ -840,7 +840,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
-                                                   expression: ExprUtils.makeLiteralWord(value: 0xaa),
+                                                   expression: ExprUtils.makeLiteralInt(value: 0xaa),
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
@@ -857,7 +857,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block(children: [
                                     Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
-                                           expression: ExprUtils.makeLiteralWord(value: 0xbb))
+                                           expression: ExprUtils.makeLiteralInt(value: 0xbb))
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "bar"), arguments: []),
@@ -879,7 +879,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "n", type: .u8)]),
                                 body: Block(children: [
                                     If(condition: ExprUtils.makeComparisonEq(left: ExprUtils.makeIdentifier(name: "n"),
-                                                                             right: ExprUtils.makeLiteralWord(value: 0)),
+                                                                             right: ExprUtils.makeLiteralInt(value: 0)),
                                        then: Block(children: [
                                         Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
                                                expression: ExprUtils.makeLiteralBoolean(value: true))
@@ -889,7 +889,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                                expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isOdd"),
                                                                     arguments: [
                                                                         ExprUtils.makeSub(left: ExprUtils.makeIdentifier(name: "n"),
-                                                                                          right: ExprUtils.makeLiteralWord(value: 1))
+                                                                                          right: ExprUtils.makeLiteralInt(value: 1))
                                                ]))
                                        ]))
                                 ])),
@@ -897,7 +897,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "n", type: .u8)]),
                                 body: Block(children: [
                                     If(condition: ExprUtils.makeComparisonEq(left: ExprUtils.makeIdentifier(name: "n"),
-                                                                             right: ExprUtils.makeLiteralWord(value: 0)),
+                                                                             right: ExprUtils.makeLiteralInt(value: 0)),
                                        then: Block(children: [
                                         Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
                                                expression: ExprUtils.makeLiteralBoolean(value: false))
@@ -907,13 +907,13 @@ class SnapToYertleCompilerTests: XCTestCase {
                                                expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isEven"),
                                                                     arguments: [
                                                                         ExprUtils.makeSub(left: ExprUtils.makeIdentifier(name: "n"),
-                                                                                          right: ExprUtils.makeLiteralWord(value: 1))
+                                                                                          right: ExprUtils.makeLiteralInt(value: 1))
                                                ]))
                                        ]))
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isOdd"),
-                                                       arguments: [ExprUtils.makeLiteralWord(value: 7)]),
+                                                       arguments: [ExprUtils.makeLiteralInt(value: 7)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])

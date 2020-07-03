@@ -27,8 +27,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileLiteralWordExpression() {
-        XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralWord(value: 1)), [.push(1)])
-        XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralWord(value: 2)), [.push(2)])
+        XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 1)), [.push(1)])
+        XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 2)), [.push(2)])
     }
     
     func testCompileLiteralBooleanExpression() {
@@ -37,8 +37,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileBinaryExpression_Add_1() {
-        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                     right: ExprUtils.makeLiteralWord(value: 2))
+        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 2))
         XCTAssertEqual(try compile(expression: expr), [
             .push(2),
             .push(1),
@@ -47,9 +47,9 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileBinaryExpression_Add_2() {
-        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                     right: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 2),
-                                                              right: ExprUtils.makeLiteralWord(value: 3)))
+        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 2),
+                                                              right: ExprUtils.makeLiteralInt(value: 3)))
         XCTAssertEqual(try compile(expression: expr), [
             .push(3),
             .push(2),
@@ -60,8 +60,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileBinaryExpression_Subtract() {
-        let expr = ExprUtils.makeSub(left: ExprUtils.makeLiteralWord(value: 2),
-                                     right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeSub(left: ExprUtils.makeLiteralInt(value: 2),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -70,8 +70,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileBinaryExpression_Multiply() {
-        let expr = ExprUtils.makeMul(left: ExprUtils.makeLiteralWord(value: 2),
-                                     right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeMul(left: ExprUtils.makeLiteralInt(value: 2),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -80,8 +80,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileBinaryExpression_Divide() {
-        let expr = ExprUtils.makeDiv(left: ExprUtils.makeLiteralWord(value: 1),
-                                     right: ExprUtils.makeLiteralWord(value: 2))
+        let expr = ExprUtils.makeDiv(left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 2))
         XCTAssertEqual(try compile(expression: expr), [
             .push(2),
             .push(1),
@@ -129,7 +129,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileAssignmentToWord_Static() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 42))
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
@@ -138,7 +138,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileAssignmentToWord_Stack() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 0xaa))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 0xaa))
         let symbol = Symbol(type: .u8, offset: 0x0004, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
@@ -148,7 +148,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToAnImmutableValue_Word() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 42))
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -177,8 +177,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileComparisonEquals() {
-        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralWord(value: 2),
-                                              right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 2),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -187,8 +187,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileComparisonNotEqual() {
-        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralWord(value: 2),
-                                              right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 2),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -197,8 +197,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileComparisonLessThan() {
-        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralWord(value: 2),
-                                              right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 2),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -207,8 +207,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileComparisonGreaterThan() {
-        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralWord(value: 2),
-                                              right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 2),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -217,8 +217,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileComparisonLessThanOrEqualTo() {
-        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralWord(value: 2),
-                                              right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 2),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -227,8 +227,8 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileComparisonGreaterThanOrEqualTo() {
-        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralWord(value: 2),
-                                              right: ExprUtils.makeLiteralWord(value: 1))
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 2),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1),
             .push(2),
@@ -237,7 +237,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testCompileUnaryNegation() {
-        let expr = ExprUtils.makeNeg(expr: ExprUtils.makeLiteralWord(value: 42))
+        let expr = ExprUtils.makeNeg(expr: ExprUtils.makeLiteralInt(value: 42))
         XCTAssertEqual(try compile(expression: expr), [
             .push(0),
             .push(42),
@@ -247,7 +247,7 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testFailToCompileInvalidPrefixUnaryOperator() {
         let expr = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                    expression: ExprUtils.makeLiteralWord(value: 1))
+                                    expression: ExprUtils.makeLiteralInt(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -256,9 +256,9 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testFailToCompileBecauseAdditionCannotBeAppliedToBooleanAndWord() {
-        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                     right: ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                       right: ExprUtils.makeLiteralWord(value: 1)))
+        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                       right: ExprUtils.makeLiteralInt(value: 1)))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

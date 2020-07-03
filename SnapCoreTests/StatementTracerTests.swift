@@ -14,7 +14,7 @@ class StatementTracerTests: XCTestCase {
     func testTraceSingleReturnStatement() {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let traces = try! tracer.trace(ast: Return(token: token, expression: one))
         XCTAssertEqual(traces[0], [.Return])
     }
@@ -22,7 +22,7 @@ class StatementTracerTests: XCTestCase {
     func testTraceBlockContainingSingleReturnStatement() {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let traces = try! tracer.trace(ast: Block(children: [
             Return(token: token, expression: one)
         ]))
@@ -32,7 +32,7 @@ class StatementTracerTests: XCTestCase {
     func testThrowErrorWhenStatementAfterReturnInBlock() {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let ast = Block(children: [
             Return(token: token, expression: one),
             ExprUtils.makeAssignment(name: "foo", right: one)
@@ -50,8 +50,8 @@ class StatementTracerTests: XCTestCase {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
-        let two = ExprUtils.makeLiteralWord(value: 2)
+        let one = ExprUtils.makeLiteralInt(value: 1)
+        let two = ExprUtils.makeLiteralInt(value: 2)
         let traces = try! tracer.trace(ast: Block(children: [
             If(condition: tr, then: Return(token: token, expression: one), else: nil),
             Return(token: token, expression: two)
@@ -64,7 +64,7 @@ class StatementTracerTests: XCTestCase {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let traces = try! tracer.trace(ast: Block(children: [
             If(condition: tr, then: Block(), else: Return(token: token, expression: one))
         ]))
@@ -77,7 +77,7 @@ class StatementTracerTests: XCTestCase {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let traces = try! tracer.trace(ast: Block(children: [
             While(condition: tr, body: Return(token: token, expression: one))
         ]))
@@ -90,7 +90,7 @@ class StatementTracerTests: XCTestCase {
         let tracer = StatementTracer()
         let token = TokenReturn(lineNumber: 1, lexeme: "return")
         let tr = ExprUtils.makeLiteralBoolean(value: true)
-        let one = ExprUtils.makeLiteralWord(value: 1)
+        let one = ExprUtils.makeLiteralInt(value: 1)
         let traces = try! tracer.trace(ast: Block(children: [
             ForLoop(initializerClause: AbstractSyntaxTreeNode(),
                     conditionClause: tr,

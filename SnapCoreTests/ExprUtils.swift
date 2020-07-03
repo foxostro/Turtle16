@@ -10,7 +10,7 @@ import SnapCore
 import TurtleCompilerToolbox
 
 public class ExprUtils: NSObject {
-    public static func makeLiteralWord(lineNumber: Int = 1, value: Int) -> Expression {
+    public static func makeLiteralInt(lineNumber: Int = 1, value: Int) -> Expression {
         return Expression.LiteralWord(number: TokenNumber(lineNumber: lineNumber, lexeme: "\(value)", literal: value))
     }
     

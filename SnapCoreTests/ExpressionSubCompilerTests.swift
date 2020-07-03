@@ -26,9 +26,18 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
-    func testCompileLiteralWordExpression() {
+    func testCompileLiteralIntExpression_FitsIntoU8() {
         XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 1)), [.push(1)])
         XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 2)), [.push(2)])
+    }
+    
+    func testCompileLiteralIntExpression_TooLarge() {
+        let expr = ExprUtils.makeLiteralInt(value: 256)
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "literal int `256' is too large")
+        }
     }
     
     func testCompileLiteralBooleanExpression() {

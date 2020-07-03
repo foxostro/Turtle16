@@ -25,7 +25,7 @@ public class ExpressionSubCompiler: NSObject {
         try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
         
         if let literal = expression as? Expression.LiteralWord {
-            return compile(literalWord: literal)
+            return try compile(literalInt: literal)
         } else if let literal = expression as? Expression.LiteralBoolean {
             return compile(literalBoolean: literal)
         } else if let binary = expression as? Expression.Binary {
@@ -43,8 +43,12 @@ public class ExpressionSubCompiler: NSObject {
         throw unsupportedError(expression: expression)
     }
     
-    private func compile(literalWord: Expression.LiteralWord) -> [YertleInstruction] {
-        return compile(intValue: literalWord.number.literal)
+    private func compile(literalInt: Expression.LiteralWord) throws -> [YertleInstruction] {
+        let value = literalInt.number.literal
+        if value >= 0 && value < 256 {
+            return [.push(value)]
+        }
+        throw CompilerError(line: literalInt.number.lineNumber, message: "literal int `\(literalInt.number.lexeme)' is too large")
     }
     
     private func compile(intValue: Int) -> [YertleInstruction] {

@@ -43,6 +43,8 @@ public class ExpressionTypeChecker: NSObject {
         switch unary.op.op {
         case .minus:
             switch expressionType {
+            case .u16:
+                abort() // return .u16
             case .u8:
                 return .u8
             case .bool, .function, .void:
@@ -66,6 +68,8 @@ public class ExpressionTypeChecker: NSObject {
         
         case .lt, .gt, .le, .ge:
             switch right {
+            case .u16:
+                abort()
             case .u8:
                 return .bool
             case .bool, .function, .void:
@@ -74,6 +78,8 @@ public class ExpressionTypeChecker: NSObject {
             
         case .plus, .minus, .multiply, .divide, .modulus:
             switch right {
+            case .u16:
+                abort() // return .u16
             case .u8:
                 return .u8
             case .bool, .function, .void:

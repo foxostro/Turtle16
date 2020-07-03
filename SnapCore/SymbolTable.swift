@@ -9,7 +9,7 @@
 import TurtleCompilerToolbox
 
 public indirect enum SymbolType: Equatable, Hashable {
-    case void, u8, bool, function(name: String, mangledName: String, functionType: FunctionType)
+    case void, u16, u8, bool, function(name: String, mangledName: String, functionType: FunctionType)
 }
 
 public enum SymbolStorage: Equatable {

@@ -24,7 +24,7 @@ class FunctionDeclarationTests: XCTestCase {
                                               body: Block()),
                           FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])))
+                                              body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])))
     }
     
     func testDoesNotEqualNodeWithDifferentReturnType() {
@@ -48,27 +48,27 @@ class FunctionDeclarationTests: XCTestCase {
     func testDoesNotEqualNodeWithDifferentIdentifier() {
         XCTAssertNotEqual(FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])),
+                                              body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])),
                           FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])))
+                                              body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])))
     }
     
     func testSame() {
         XCTAssertEqual(FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])),
+                                           body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])),
                        FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])))
+                                           body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])))
     }
     
     func testHash() {
         XCTAssertEqual(FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])).hash,
+                                           body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])).hash,
                        FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(children: [ExprUtils.makeLiteralWord(value: 1)])).hash)
+                                           body: Block(children: [ExprUtils.makeLiteralInt(value: 1)])).hash)
     }
 }

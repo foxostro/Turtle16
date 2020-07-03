@@ -428,9 +428,9 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = ExprUtils.makeComparisonEq(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
-                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        let expected = ExprUtils.makeComparisonEq(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
+                                                  right: ExprUtils.makeLiteralInt(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -443,9 +443,9 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = ExprUtils.makeComparisonNe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
-                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        let expected = ExprUtils.makeComparisonNe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
+                                                  right: ExprUtils.makeLiteralInt(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -458,9 +458,9 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = ExprUtils.makeComparisonLt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
-                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        let expected = ExprUtils.makeComparisonLt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
+                                                  right: ExprUtils.makeLiteralInt(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -473,9 +473,9 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = ExprUtils.makeComparisonGt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
-                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        let expected = ExprUtils.makeComparisonGt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
+                                                  right: ExprUtils.makeLiteralInt(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -488,9 +488,9 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = ExprUtils.makeComparisonLe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
-                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        let expected = ExprUtils.makeComparisonLe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
+                                                  right: ExprUtils.makeLiteralInt(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -503,9 +503,9 @@ foo = 2
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = ExprUtils.makeComparisonGe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralWord(value: 1),
-                                                                          right: ExprUtils.makeLiteralWord(value: 2)),
-                                                  right: ExprUtils.makeLiteralWord(value: 3))
+        let expected = ExprUtils.makeComparisonGe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
+                                                  right: ExprUtils.makeLiteralInt(value: 3))
         XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
     }
         
@@ -647,15 +647,15 @@ if 1 {
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            If(condition: ExprUtils.makeLiteralWord(lineNumber: 1, value: 1),
+            If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
                then: Block(children: [
-                ExprUtils.makeLiteralWord(lineNumber: 2, value: 2)
+                ExprUtils.makeLiteralInt(lineNumber: 2, value: 2)
                ]),
                else: Block(children: [
-                ExprUtils.makeLiteralWord(lineNumber: 4, value: 3),
-                ExprUtils.makeLiteralWord(lineNumber: 5, value: 4)
+                ExprUtils.makeLiteralInt(lineNumber: 4, value: 3),
+                ExprUtils.makeLiteralInt(lineNumber: 5, value: 4)
                ])),
-            ExprUtils.makeLiteralWord(lineNumber: 7, value: 5)])
+            ExprUtils.makeLiteralInt(lineNumber: 7, value: 5)])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_2() {
@@ -705,16 +705,16 @@ else
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            If(condition: ExprUtils.makeLiteralWord(lineNumber: 1, value: 1),
+            If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
                then: Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                               expression: ExprUtils.makeLiteralWord(lineNumber: 2, value: 1),
+                               expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
                else: Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"),
-                               expression: ExprUtils.makeLiteralWord(lineNumber: 4, value: 1),
+                               expression: ExprUtils.makeLiteralInt(lineNumber: 4, value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]))
@@ -731,10 +731,10 @@ if 1
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            If(condition: ExprUtils.makeLiteralWord(lineNumber: 1, value: 1),
+            If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
                then: Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                               expression: ExprUtils.makeLiteralWord(lineNumber: 2, value: 1),
+                               expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
@@ -799,7 +799,7 @@ while 1 {
             While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                   body: Block(children: [
                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                   expression: ExprUtils.makeLiteralWord(lineNumber: 2, value: 2),
+                                   expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 2),
                                    storage: .stackStorage,
                                    isMutable: true)
                   ]))
@@ -816,7 +816,7 @@ while 1 {
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            While(condition: ExprUtils.makeLiteralWord(value: 1), body: Block())
+            While(condition: ExprUtils.makeLiteralInt(value: 1), body: Block())
         ])
     }
         
@@ -829,7 +829,7 @@ while 1 {}
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            While(condition: ExprUtils.makeLiteralWord(value: 1), body: Block())
+            While(condition: ExprUtils.makeLiteralInt(value: 1), body: Block())
         ])
     }
         
@@ -845,12 +845,12 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Block(children: [
                 ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
-                                                          expression: ExprUtils.makeLiteralWord(value: 0),
+                                                          expression: ExprUtils.makeLiteralInt(value: 0),
                                                           storage: .stackStorage,
                                                           isMutable: true),
                         conditionClause: ExprUtils.makeComparisonLt(left: ExprUtils.makeIdentifier(name: "i"),
-                                                                    right: ExprUtils.makeLiteralWord(value: 10)),
-                        incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralWord(value: 1))),
+                                                                    right: ExprUtils.makeLiteralInt(value: 10)),
+                        incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralInt(value: 1))),
                         body: Block(children: [
                             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                                            expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"),
@@ -958,7 +958,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
-                            arguments: [ExprUtils.makeLiteralWord(value: 1)])
+                            arguments: [ExprUtils.makeLiteralInt(value: 1)])
         ])
     }
     
@@ -969,8 +969,8 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
-                            arguments: [ExprUtils.makeLiteralWord(value: 1),
-                                        ExprUtils.makeLiteralWord(value: 2)])
+                            arguments: [ExprUtils.makeLiteralInt(value: 1),
+                                        ExprUtils.makeLiteralInt(value: 2)])
         ])
     }
     
@@ -981,10 +981,10 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                              left: ExprUtils.makeLiteralWord(value: 1),
+                              left: ExprUtils.makeLiteralInt(value: 1),
                               right: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
-                                                     arguments: [ExprUtils.makeLiteralWord(value: 1),
-                                                                 ExprUtils.makeLiteralWord(value: 2)]))
+                                                     arguments: [ExprUtils.makeLiteralInt(value: 1),
+                                                                 ExprUtils.makeLiteralInt(value: 2)]))
             
         ])
     }
@@ -1153,7 +1153,7 @@ for var i = 0; i < 10; i = i + 1 {
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(children: [
-            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralWord(value: 1))
+            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralInt(value: 1))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }

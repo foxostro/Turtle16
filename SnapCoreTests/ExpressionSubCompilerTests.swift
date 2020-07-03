@@ -31,12 +31,17 @@ class ExpressionSubCompilerTests: XCTestCase {
         XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 2)), [.push(2)])
     }
     
+    func testCompileLiteralIntExpression_FitsIntoU16() {
+        XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 0xffff)), [.push16(0xffff)])
+        XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralInt(value: 256)), [.push16(256)])
+    }
+    
     func testCompileLiteralIntExpression_TooLarge() {
-        let expr = ExprUtils.makeLiteralInt(value: 256)
+        let expr = ExprUtils.makeLiteralInt(value: 0x10000)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "literal int `256' is too large")
+            XCTAssertEqual(compilerError?.message, "literal int `0x10000' is too large")
         }
     }
     

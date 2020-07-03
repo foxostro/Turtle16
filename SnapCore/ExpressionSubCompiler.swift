@@ -48,6 +48,9 @@ public class ExpressionSubCompiler: NSObject {
         if value >= 0 && value < 256 {
             return [.push(value)]
         }
+        if value >= 256 && value < 65536 {
+            return [.push16(value)]
+        }
         throw CompilerError(line: literalInt.number.lineNumber, message: "literal int `\(literalInt.number.lexeme)' is too large")
     }
     

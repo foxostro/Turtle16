@@ -68,66 +68,55 @@ public class ExpressionTypeChecker: NSObject {
         let right = try check(expression: binary.right)
         let left = try check(expression: binary.left)
         let lineNumber = binary.tokens.first!.lineNumber
-        switch binary.op.op {
-        case .eq, .ne:
-            switch right {
-            case .u16:
-                switch left {
-                case .u16, .u8:
-                    return .bool
-                default:
-                    throw invalidBinaryExpr(lineNumber, binary, left, right)
-                }
-            case .u8:
-                switch left {
-                case .u16, .u8:
-                    return .bool
-                default:
-                    throw invalidBinaryExpr(lineNumber, binary, left, right)
-                }
-            case .bool:
-                switch left {
-                case .bool:
-                    return .bool
-                default:
-                    throw invalidBinaryExpr(lineNumber, binary, left, right)
-                }
-            default:
-                throw invalidBinaryExpr(lineNumber, binary, left, right)
-            }
-        case .lt, .gt, .le, .ge:
-            switch right {
-            case .u16, .u8:
-                switch left {
-                case .u16, .u8:
-                    return .bool
-                default:
-                    throw invalidBinaryExpr(lineNumber, binary, left, right)
-                }
-            default:
-                throw invalidBinaryExpr(lineNumber, binary, left, right)
-            }
-        case .plus, .minus, .multiply, .divide, .modulus:
-            switch right {
-            case .u16:
-                switch left {
-                case .u16, .u8:
-                    return .u16
-                default:
-                    throw invalidBinaryExpr(lineNumber, binary, left, right)
-                }
-            case .u8:
-                switch left {
-                case .u16:
-                    return .u16
-                case .u8:
-                    return .u8
-                default:
-                    throw invalidBinaryExpr(lineNumber, binary, left, right)
-                }
-            default:
-                throw invalidBinaryExpr(lineNumber, binary, left, right)
-            }
+        switch (binary.op.op, left, right) {
+        case (.eq, .u8, .u8):         return .bool
+        case (.eq, .u8, .u16):        return .bool
+        case (.eq, .u16, .u8):        return .bool
+        case (.eq, .u16, .u16):       return .bool
+        case (.eq, .bool, .bool):     return .bool
+        case (.ne, .u8, .u8):         return .bool
+        case (.ne, .u8, .u16):        return .bool
+        case (.ne, .u16, .u8):        return .bool
+        case (.ne, .u16, .u16):       return .bool
+        case (.ne, .bool, .bool):     return .bool
+        case (.lt, .u8, .u8):         return .bool
+        case (.lt, .u8, .u16):        return .bool
+        case (.lt, .u16, .u8):        return .bool
+        case (.lt, .u16, .u16):       return .bool
+        case (.gt, .u8, .u8):         return .bool
+        case (.gt, .u8, .u16):        return .bool
+        case (.gt, .u16, .u8):        return .bool
+        case (.gt, .u16, .u16):       return .bool
+        case (.le, .u8, .u8):         return .bool
+        case (.le, .u8, .u16):        return .bool
+        case (.le, .u16, .u8):        return .bool
+        case (.le, .u16, .u16):       return .bool
+        case (.ge, .u8, .u8):         return .bool
+        case (.ge, .u8, .u16):        return .bool
+        case (.ge, .u16, .u8):        return .bool
+        case (.ge, .u16, .u16):       return .bool
+        case (.plus, .u8, .u8):       return .u8
+        case (.plus, .u8, .u16):      return .u16
+        case (.plus, .u16, .u8):      return .u16
+        case (.plus, .u16, .u16):     return .u16
+        case (.minus, .u8, .u8):      return .u8
+        case (.minus, .u8, .u16):     return .u16
+        case (.minus, .u16, .u8):     return .u16
+        case (.minus, .u16, .u16):    return .u16
+        case (.multiply, .u8, .u8):   return .u8
+        case (.multiply, .u8, .u16):  return .u16
+        case (.multiply, .u16, .u8):  return .u16
+        case (.multiply, .u16, .u16): return .u16
+        case (.divide, .u8, .u8):     return .u8
+        case (.divide, .u8, .u16):    return .u16
+        case (.divide, .u16, .u8):    return .u16
+        case (.divide, .u16, .u16):   return .u16
+        case (.modulus, .u8, .u8):    return .u8
+        case (.modulus, .u8, .u16):   return .u16
+        case (.modulus, .u16, .u8):   return .u16
+        case (.modulus, .u16, .u16):  return .u16
+        default:
+            throw invalidBinaryExpr(lineNumber, binary, left, right)
         }
     }
     

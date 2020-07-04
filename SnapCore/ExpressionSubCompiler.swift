@@ -67,53 +67,314 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func compile(unary: Expression.Unary) throws -> [YertleInstruction] {
+        let childExpr = try compile(expression: unary.child)
+        let childType = try ExpressionTypeChecker(symbols: symbols).check(expression: unary.child)
         var result: [YertleInstruction] = []
-        result += [.push(0)]
-        result += try compile(expression: unary.child)
-        result += [try getOperator(unary: unary)]
+        switch childType {
+        case .u16:
+            result += [.push16(0)]
+            result += childExpr
+            switch unary.op.op {
+            case .minus:
+                result += [.sub16]
+            default:
+                throw invalidUnaryOperator(unary)
+            }
+        case .u8:
+            result += [.push(0)]
+            result += childExpr
+            switch unary.op.op {
+            case .minus:
+                result += [.sub]
+            default:
+                throw invalidUnaryOperator(unary)
+            }
+        default:
+            throw unsupportedError(expression: unary)
+        }
         return result
+    }
+    
+    private func invalidUnaryOperator(_ unary: Expression.Unary) -> CompilerError {
+        let lineNumber = unary.tokens.first?.lineNumber ?? -1
+        return CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
     }
     
     private func compile(binary: Expression.Binary) throws -> [YertleInstruction] {
         let right: [YertleInstruction] = try compile(expression: binary.right)
+        let rightType = try ExpressionTypeChecker(symbols: symbols).check(expression: binary.right)
+        
         let left: [YertleInstruction] = try compile(expression: binary.left)
-        return right + left + [getOperator(binary: binary)]
-    }
-    
-    private func getOperator(binary: Expression.Binary) -> YertleInstruction {
+        let leftType = try ExpressionTypeChecker(symbols: symbols).check(expression: binary.left)
+        
         switch binary.op.op {
         case .eq:
-            return .eq
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.eq16]
+                case .u8:
+                    return right + [.push(0)] + left + [.eq16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u8:
+                    return right + left + [.eq]
+                case .u16:
+                    return right + left + [.push(0), .eq16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .bool:
+                switch rightType {
+                case .bool:
+                    return right + left + [.eq]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .ne:
-            return .ne
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.ne16]
+                case .u8:
+                    return right + [.push(0)] + left + [.ne16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .ne16]
+                case .u8:
+                    return right + left + [.ne]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .bool:
+                switch rightType {
+                case .bool:
+                    return right + left + [.ne]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .lt:
-            return .lt
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.lt16]
+                case .u8:
+                    return right + [.push(0)] + left + [.lt16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .lt16]
+                case .u8:
+                    return right + left + [.lt]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .gt:
-            return .gt
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.gt16]
+                case .u8:
+                    return right + [.push(0)] + left + [.gt16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .gt16]
+                case .u8:
+                    return right + left + [.gt]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .le:
-            return .le
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.le16]
+                case .u8:
+                    return right + [.push(0)] + left + [.le16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .le16]
+                case .u8:
+                    return right + left + [.le]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .ge:
-            return .ge
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.ge16]
+                case .u8:
+                    return right + [.push(0)] + left + [.ge16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .ge16]
+                case .u8:
+                    return right + left + [.ge]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .plus:
-            return .add
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.add16]
+                case .u8:
+                    return right + [.push(0)] + left + [.add16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u8:
+                    return right + left + [.add]
+                case .u16:
+                    return right + left + [.push(0), .add16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .minus:
-            return .sub
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.sub16]
+                case .u8:
+                    return right + [.push(0)] + left + [.sub16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .sub16]
+                case .u8:
+                    return right + left + [.sub]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .multiply:
-            return .mul
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.mul16]
+                case .u8:
+                    return right + [.push(0)] + left + [.mul16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .mul16]
+                case .u8:
+                    return right + left + [.mul]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .divide:
-            return .div
+           switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.div16]
+                case .u8:
+                    return right + [.push(0)] + left + [.div16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .div16]
+                case .u8:
+                    return right + left + [.div]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         case .modulus:
-            return .mod
-        }
-    }
-    
-    private func getOperator(unary: Expression.Unary) throws -> YertleInstruction {
-        switch unary.op.op {
-        case .minus:
-            return .sub
-        default:
-            let lineNumber = unary.tokens.first?.lineNumber ?? -1
-            throw CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
+            switch leftType {
+            case .u16:
+                switch rightType {
+                case .u16:
+                    return right + left + [.mod16]
+                case .u8:
+                    return right + [.push(0)] + left + [.mod16]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            case .u8:
+                switch rightType {
+                case .u16:
+                    return right + left + [.push(0), .mod16]
+                case .u8:
+                    return right + left + [.mod]
+                default:
+                    throw unsupportedError(expression: binary)
+                }
+            default:
+                throw unsupportedError(expression: binary)
+            }
         }
     }
     
@@ -132,7 +393,7 @@ public class ExpressionSubCompiler: NSObject {
     private func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
         switch symbol.type {
         case .u16:
-            abort() // return [.load16(symbol.offset)]
+            return [.load16(symbol.offset)]
         case .u8, .bool:
             return [.load(symbol.offset)]
         case .function, .void:
@@ -145,7 +406,7 @@ public class ExpressionSubCompiler: NSObject {
         instructions += computeAddressOfLocalVariable(symbol, depth)
         switch symbol.type {
         case .u16:
-            abort() // instructions += [.loadIndirect16]
+            instructions += [.loadIndirect16]
         case .u8, .bool:
             instructions += [.loadIndirect]
         case .function, .void:
@@ -183,15 +444,12 @@ public class ExpressionSubCompiler: NSObject {
         var instructions: [YertleInstruction] = []
         
         switch symbol.type {
-        case .u16:
-            abort()
-        case .u8, .bool:
+        case .u16, .u8, .bool:
             instructions += try compile(expression: assignment.child)
+            instructions += storeSymbol(symbol, depth)
         case .function, .void:
             abort()
         }
-        
-        instructions += storeSymbol(symbol, depth)
         
         return instructions
     }
@@ -203,7 +461,7 @@ public class ExpressionSubCompiler: NSObject {
         case .staticStorage:
             switch symbol.type {
             case .u16:
-                abort() // instructions += [.store16(symbol.offset)]
+                instructions += [.store16(symbol.offset)]
             case .u8, .bool:
                 instructions += [.store(symbol.offset)]
             case .function, .void:
@@ -213,7 +471,7 @@ public class ExpressionSubCompiler: NSObject {
             instructions += computeAddressOfLocalVariable(symbol, depth)
             switch symbol.type {
             case .u16:
-                abort() // instructions += [.storeIndirect16]
+                instructions += [.storeIndirect16]
             case .u8, .bool:
                 instructions += [.storeIndirect]
             case .function, .void:

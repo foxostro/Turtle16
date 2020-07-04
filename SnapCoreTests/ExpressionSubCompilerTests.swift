@@ -1140,6 +1140,15 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
+    func testCompileAssignment_Bool_Static() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
+        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
+            .push(1),
+            .store(0x0010)
+        ])
+    }
+    
     func testCompileAssignment_U8_Static() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 42))
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
@@ -1156,6 +1165,16 @@ class ExpressionSubCompilerTests: XCTestCase {
             .push16(0xabcd),
             .store16(0x0010)
         ])
+    }
+    
+    func testCompileAssignment_Bool_Stack() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: false))
+        let symbol = Symbol(type: .bool, offset: 0x0004, isMutable: true, storage: .stackStorage)
+        let symbols = SymbolTable(["foo" : symbol])
+        let ir = try! compile(expression: expr, symbols: symbols)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0)
     }
     
     func testCompileAssignment_U8_Stack() {
@@ -1186,15 +1205,6 @@ class ExpressionSubCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
         }
-    }
-    
-    func testCompileAssignmentToBoolean() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .push(1),
-            .store(0x0010)
-        ])
     }
     
     func testCannotAssignToAnImmutableValue_Boolean() {

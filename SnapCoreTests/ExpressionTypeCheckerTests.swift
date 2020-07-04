@@ -11,14 +11,6 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class ExpressionTypeCheckerTests: XCTestCase {
-    func makeLiteralWord(value: Int) -> Expression {
-        return Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "\(value)", literal: value))
-    }
-    
-    func makeLiteralBoolean(value: Bool) -> Expression {
-        return Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "\(value)", literal: value))
-    }
-    
     func testUnsupportedExpressionThrows() {
         let typeChecker = ExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: Expression.UnsupportedExpression())) {
@@ -28,17 +20,24 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testTypeOfALiteralWordIsWord() {
+    func testLiteralIntIsU8Sometimes() {
         let typeChecker = ExpressionTypeChecker()
         var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: makeLiteralWord(value: 1)))
+        XCTAssertNoThrow(result = try typeChecker.check(expression: ExprUtils.makeLiteralInt(value: 1)))
         XCTAssertEqual(result, .u8)
+    }
+    
+    func testLiteralIntIsU16Sometimes() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: ExprUtils.makeLiteralInt(value: 256)))
+        XCTAssertEqual(result, .u16)
     }
     
     func testTypeOfALiteralBooleanIsBoolean() {
         let typeChecker = ExpressionTypeChecker()
         var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: makeLiteralBoolean(value: true)))
+        XCTAssertNoThrow(result = try typeChecker.check(expression: ExprUtils.makeLiteralBoolean(value: true)))
         XCTAssertEqual(result, .bool)
     }
     
@@ -53,13 +52,22 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testUnaryNegationOfWordIsWord() {
+    func testUnaryNegationOfU8IsU8() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                     expression: ExprUtils.makeLiteralInt(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
+    }
+    
+    func testUnaryNegationOfU16IsU16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                    expression: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
     }
     
     func testUnaryNegationOfBooleanIsInvalid() {
@@ -73,7 +81,535 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testBinaryWithMismatchedOperandTypes() {
+    func testBinary_U16_Eq_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Eq_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Eq_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Eq_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Eq_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Eq_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Eq_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_Bool_Eq_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_Ne_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Ne_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Ne_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Ne_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Ne_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Ne_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Ne_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_Bool_Ne_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_Lt_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Lt_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Lt_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Lt_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Lt_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Lt_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Lt_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to two `bool' operands")
+        }
+    }
+    
+    func testBinary_Bool_Lt_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_Gt_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Gt_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Gt_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Gt_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Gt_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Gt_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Gt_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to two `bool' operands")
+        }
+    }
+    
+    func testBinary_Bool_Gt_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_Le_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Le_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Le_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Le_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Le_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Le_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Le_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to two `bool' operands")
+        }
+    }
+    
+    func testBinary_Bool_Le_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_Ge_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Ge_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U16_Ge_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Ge_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Ge_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_U8_Ge_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Ge_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to two `bool' operands")
+        }
+    }
+    
+    func testBinary_Bool_Ge_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralBoolean(value: false),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_Plus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Plus_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Plus_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Plus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_Plus_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_Plus_Bool() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                      left: ExprUtils.makeLiteralInt(value: 1),
@@ -85,145 +621,85 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testBinary_Eq_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1),
-                                              right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Eq_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralBoolean(value: true),
-                                              right: ExprUtils.makeLiteralBoolean(value: true))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Ne_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralInt(value: 1),
-                                              right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Ne_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeLiteralBoolean(value: true),
-                                              right: ExprUtils.makeLiteralBoolean(value: true))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Lt_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1),
-                                              right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Lt_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralBoolean(value: true),
-                                              right: ExprUtils.makeLiteralBoolean(value: true))
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to two `bool' operands")
-        }
-    }
-    
-    func testBinary_Gt_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1),
-                                              right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Gt_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralBoolean(value: true),
-                                              right: ExprUtils.makeLiteralBoolean(value: true))
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to two `bool' operands")
-        }
-    }
-    
-    func testBinary_Le_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1),
-                                              right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Le_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralBoolean(value: true),
-                                              right: ExprUtils.makeLiteralBoolean(value: true))
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to two `bool' operands")
-        }
-    }
-    
-    func testBinary_Ge_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralInt(value: 1),
-                                              right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
-    }
-    
-    func testBinary_Ge_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeLiteralBoolean(value: true),
-                                              right: ExprUtils.makeLiteralBoolean(value: true))
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to two `bool' operands")
-        }
-    }
-    
-    func testBinary_Plus_Word() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                     left: ExprUtils.makeLiteralInt(value: 1),
-                                     right: ExprUtils.makeLiteralInt(value: 1))
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .u8)
-    }
-    
-    func testBinary_Plus_Boolean() {
+    func testBinary_Bool_Plus_U16() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                      left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_Plus_U8() {
+       let typeChecker = ExpressionTypeChecker()
+       let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                    left: ExprUtils.makeLiteralBoolean(value: false),
+                                    right: ExprUtils.makeLiteralInt(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `bool' and `u8'")
+       }
+   }
+    
+    func testBinary_Bool_Plus_Bool() {
+       let typeChecker = ExpressionTypeChecker()
+       let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
+                                    left: ExprUtils.makeLiteralBoolean(value: false),
+                                    right: ExprUtils.makeLiteralBoolean(value: false))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to two `bool' operands")
+       }
+   }
+    
+    func testBinary_U16_Minus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Minus_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Minus_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
                                      right: ExprUtils.makeLiteralBoolean(value: false))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to two `bool' operands")
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
-    func testBinary_Minus_Word() {
+    func testBinary_U8_Minus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_Minus_U8() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                      left: ExprUtils.makeLiteralInt(value: 1),
@@ -233,7 +709,43 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u8)
     }
     
-    func testBinary_Minus_Boolean() {
+    func testBinary_U8_Minus_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Minus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_Minus_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_Bool_Minus_Bool() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
                                      left: ExprUtils.makeLiteralBoolean(value: false),
@@ -245,7 +757,49 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testBinary_Multiply_Word() {
+    func testBinary_U16_Multiply_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Multiply_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Multiply_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Multiply_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_Multiply_U8() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                      left: ExprUtils.makeLiteralInt(value: 1),
@@ -255,7 +809,43 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u8)
     }
     
-    func testBinary_Multiply_Boolean() {
+    func testBinary_U8_Multiply_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Multiply_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_Multiply_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_Bool_Multiply_Bool() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                      left: ExprUtils.makeLiteralBoolean(value: false),
@@ -267,7 +857,49 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testBinary_Divide_Word() {
+    func testBinary_U16_Divide_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Divide_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Divide_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Divide_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_Divide_U8() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
                                      left: ExprUtils.makeLiteralInt(value: 1),
@@ -277,7 +909,43 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u8)
     }
     
-    func testBinary_Divide_Boolean() {
+    func testBinary_U8_Divide_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Divide_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_Divide_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_Bool_Divide_Bool() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
                                      left: ExprUtils.makeLiteralBoolean(value: false),
@@ -289,7 +957,49 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testBinary_Modulus_Word() {
+    func testBinary_U16_Modulus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Modulus_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_Modulus_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralInt(value: 1000),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_Modulus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_Modulus_U8() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
                                      left: ExprUtils.makeLiteralInt(value: 1),
@@ -299,7 +1009,43 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u8)
     }
     
-    func testBinary_Modulus_Boolean() {
+    func testBinary_U8_Modulus_Bool() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralInt(value: 1),
+                                     right: ExprUtils.makeLiteralBoolean(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_Modulus_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_Modulus_U8() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
+                                     left: ExprUtils.makeLiteralBoolean(value: false),
+                                     right: ExprUtils.makeLiteralInt(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `bool' and `u8'")
+        }
+    }
+    
+    func testBinary_Bool_Modulus_Bool() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1,  lexeme: "%", op: .modulus),
                                      left: ExprUtils.makeLiteralBoolean(value: false),
@@ -311,7 +1057,16 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testAssignment_Word() {
+    func testAssignment_U16() {
+        let typeChecker = ExpressionTypeChecker()
+        let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                         expression: ExprUtils.makeLiteralInt(value: 0xabcd))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testAssignment_U8() {
         let typeChecker = ExpressionTypeChecker()
         let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          expression: ExprUtils.makeLiteralInt(value: 1))
@@ -329,7 +1084,16 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .bool)
     }
     
-    func testIdentifier_Word() {
+    func testIdentifier_U16() {
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: false)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testIdentifier_U8() {
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
@@ -345,18 +1109,6 @@ class ExpressionTypeCheckerTests: XCTestCase {
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .bool)
-    }
-    
-    func testFailBecauseAdditionCannotBeAppliedToBooleanAndWord() {
-        let typeChecker = ExpressionTypeChecker()
-        let expr = ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                     right: ExprUtils.makeComparisonEq(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                       right: ExprUtils.makeLiteralInt(value: 1)))
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
-        }
     }
     
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {

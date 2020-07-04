@@ -19,8 +19,8 @@ public class ExpressionTypeChecker: NSObject {
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
-        if let _ = expression as? Expression.LiteralWord {
-            return .u8
+        if let expr = expression as? Expression.LiteralWord {
+            return check(literalWord: expr)
         } else if let _ = expression as? Expression.LiteralBoolean {
             return .bool
         } else if let expr = expression as? Expression.Unary {
@@ -36,6 +36,15 @@ public class ExpressionTypeChecker: NSObject {
         }
         throw unsupportedError(expression: expression)
     }
+    
+    public func check(literalWord: Expression.LiteralWord) -> SymbolType {
+        if literalWord.number.literal > 255 {
+            return .u16
+        }
+        else {
+            return .u8
+        }
+    }
         
     public func check(unary: Expression.Unary) throws -> SymbolType {
         let lineNumber = unary.tokens.first!.lineNumber
@@ -44,7 +53,7 @@ public class ExpressionTypeChecker: NSObject {
         case .minus:
             switch expressionType {
             case .u16:
-                abort() // return .u16
+                return .u16
             case .u8:
                 return .u8
             case .bool, .function, .void:
@@ -59,32 +68,74 @@ public class ExpressionTypeChecker: NSObject {
         let right = try check(expression: binary.right)
         let left = try check(expression: binary.left)
         let lineNumber = binary.tokens.first!.lineNumber
-        guard right == left else {
-            throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
-        }
         switch binary.op.op {
         case .eq, .ne:
-            return .bool
-        
-        case .lt, .gt, .le, .ge:
             switch right {
             case .u16:
-                abort()
+                switch left {
+                case .u16, .u8:
+                    return .bool
+                default:
+                    throw invalidBinaryExpr(lineNumber, binary, left, right)
+                }
             case .u8:
-                return .bool
-            case .bool, .function, .void:
-                throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
+                switch left {
+                case .u16, .u8:
+                    return .bool
+                default:
+                    throw invalidBinaryExpr(lineNumber, binary, left, right)
+                }
+            case .bool:
+                switch left {
+                case .bool:
+                    return .bool
+                default:
+                    throw invalidBinaryExpr(lineNumber, binary, left, right)
+                }
+            default:
+                throw invalidBinaryExpr(lineNumber, binary, left, right)
             }
-            
+        case .lt, .gt, .le, .ge:
+            switch right {
+            case .u16, .u8:
+                switch left {
+                case .u16, .u8:
+                    return .bool
+                default:
+                    throw invalidBinaryExpr(lineNumber, binary, left, right)
+                }
+            default:
+                throw invalidBinaryExpr(lineNumber, binary, left, right)
+            }
         case .plus, .minus, .multiply, .divide, .modulus:
             switch right {
             case .u16:
-                abort() // return .u16
+                switch left {
+                case .u16, .u8:
+                    return .u16
+                default:
+                    throw invalidBinaryExpr(lineNumber, binary, left, right)
+                }
             case .u8:
-                return .u8
-            case .bool, .function, .void:
-                throw CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
+                switch left {
+                case .u16:
+                    return .u16
+                case .u8:
+                    return .u8
+                default:
+                    throw invalidBinaryExpr(lineNumber, binary, left, right)
+                }
+            default:
+                throw invalidBinaryExpr(lineNumber, binary, left, right)
             }
+        }
+    }
+    
+    private func invalidBinaryExpr(_ lineNumber: Int, _ binary: Expression.Binary, _ left: SymbolType, _ right: SymbolType) -> CompilerError {
+        if left == right {
+            return CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
+        } else {
+            return CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
         }
     }
         

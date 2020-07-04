@@ -279,11 +279,18 @@ public class ExpressionSubCompiler: NSObject {
             instructions += [
                 .jalr(TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName))
             ]
-            if typ.returnType != .void {
-                instructions += [
-                    .load(SnapToYertleCompiler.kReturnValueScratchLocation)
-                ]
+            
+            switch typ.returnType {
+            case .u16:
+                instructions += [.load16(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case .u8, .bool:
+                instructions += [.load(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case .void:
+                break
+            default:
+                abort()
             }
+            
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"

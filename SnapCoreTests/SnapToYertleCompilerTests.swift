@@ -668,7 +668,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
     }
     
-    func testCompileFunctionWithReturnValue() {
+    func testCompileFunctionWithReturnValueU8() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
@@ -689,6 +689,52 @@ class SnapToYertleCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    func testCompileFunctionWithReturnValueU16() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u16, arguments: []),
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeLiteralInt(value: 0xabcd))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        print(YertleInstruction.makeListing(instructions: ir))
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xabcd)
+    }
+    
+    func testCompileFunctionWithReturnValueU8PromotedToU16() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .u16, arguments: []),
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeLiteralInt(value: 0xaa))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        print(YertleInstruction.makeListing(instructions: ir))
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x00aa)
     }
     
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {

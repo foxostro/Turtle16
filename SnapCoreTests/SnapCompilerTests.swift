@@ -206,7 +206,7 @@ let a = foo()
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
     }
     
-    func test_EndToEndIntegration_FunctionCall_NoArgs() {
+    func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU8() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 func foo() -> u8 {
@@ -216,6 +216,30 @@ let a = foo()
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+    }
+    
+    func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u16 {
+    return 0xabcd
+}
+let a = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xabcd)
+    }
+    
+    func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU8PromotedToU16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u16 {
+    return 0xaa
+}
+let a = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x00aa)
     }
     
     func test_EndToEndIntegration_NestedFunctionDeclarations() {

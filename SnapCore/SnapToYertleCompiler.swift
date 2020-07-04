@@ -18,7 +18,7 @@ public class SnapToYertleCompiler: NSObject {
     private var symbols: SymbolTable
     private var tempLabelCounter = 0
     private var staticStoragePointer = SnapToYertleCompiler.kStaticStorageStartAddress
-    public static let kReturnValueScratchLocation = 0x0004
+    public static let kReturnValueScratchLocation = 0x0005
     
     public override init() {
         symbols = globalSymbols
@@ -162,11 +162,10 @@ public class SnapToYertleCompiler: NSObject {
         case .staticStorage:
             switch symbol.type {
             case .u16:
-                abort()
-                //instructions += [
-                //    .store16(symbol.offset),
-                //    .pop16
-                //]
+                instructions += [
+                    .store16(symbol.offset),
+                    .pop16
+                ]
             case .bool, .u8:
                 instructions += [
                     .store(symbol.offset),
@@ -274,22 +273,27 @@ public class SnapToYertleCompiler: NSObject {
             throw CompilerError(line: node.token.lineNumber, message: "return is invalid outside of a function")
         }
         if let expr = node.expression {
+            try compile(expression: expr)
             let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
-            if returnExpressionType != enclosingFunctionType.returnType {
+            switch (returnExpressionType, enclosingFunctionType.returnType) {
+            case (.void, .void):
+                instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case (.bool, .bool):
+                instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case (.u8, .u8):
+                instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case (.u8, .u16):
+                instructions += [.push(0), .store16(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case (.u16, .u16):
+                instructions += [.store16(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            default:
                 throw CompilerError(line: node.token.lineNumber,
                                     format: "cannot convert return expression of type `%@' to return type `%@'",
                                     String(describing: returnExpressionType),
                                     String(describing: enclosingFunctionType.returnType))
             }
-            
-            try compile(expression: expr)
         } else if .void != enclosingFunctionType.returnType {
             throw CompilerError(line: node.token.lineNumber, message: "non-void function should return a value")
-        }
-        if nil != node.expression {
-            instructions += [
-                .store(SnapToYertleCompiler.kReturnValueScratchLocation)
-            ]
         }
         instructions += [
             .leave,

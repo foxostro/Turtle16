@@ -391,6 +391,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
     
+    func testTokenizeUInt16() {
+        let tokenizer = SnapLexer(withString: "u16")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenType(lineNumber: 1, lexeme: "u16", type: .u16),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
     func testTokenizeBool() {
         let tokenizer = SnapLexer(withString: "bool")
         tokenizer.scanTokens()

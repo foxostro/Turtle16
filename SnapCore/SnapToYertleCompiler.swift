@@ -95,7 +95,7 @@ public class SnapToYertleCompiler: NSObject {
             let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: node)
             switch returnExpressionType {
             case .u16:
-                abort() // instructions += [.pop16]
+                instructions += [.pop16]
             case .u8, .bool:
                 instructions += [.pop]
             case .void:
@@ -143,14 +143,21 @@ public class SnapToYertleCompiler: NSObject {
         
         let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
         
+        let size: Int
+        switch inferredType {
+        case .u8, .bool: size = 1
+        case .u16:       size = 2
+        default:         size = 0
+        }
+        
         let offset: Int
         switch storage {
         case .staticStorage:
             offset = staticStoragePointer
-            staticStoragePointer += 1
+            staticStoragePointer += size
         case .stackStorage:
             offset = symbols.storagePointer
-            symbols.storagePointer += 1
+            symbols.storagePointer += size
         }
         
         let symbol = Symbol(type: inferredType, offset: offset, isMutable: isMutable, storage: storage)

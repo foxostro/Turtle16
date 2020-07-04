@@ -150,6 +150,43 @@ class SnapToYertleCompilerTests: XCTestCase {
         ])
     }
     
+    func testCompileVarDeclaration_IncrementsStoragePointer() {
+        let val = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xabcd", literal: 0xabcd))
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                           expression: val,
+                           storage: .staticStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                           expression: val,
+                           storage: .staticStorage,
+                           isMutable: true)
+        ])
+        
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        
+        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        var symbolFoo: Symbol? = nil
+        XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(identifier: "foo"))
+        XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo, isMutable: true))
+        
+        let addressBar = SnapToYertleCompiler.kStaticStorageStartAddress+2
+        var symbolBar: Symbol? = nil
+        XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(identifier: "bar"))
+        XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar, isMutable: true))
+        
+        XCTAssertEqual(compiler.instructions, [
+            .push16(0xabcd),
+            .store16(addressFoo),
+            .pop16,
+            .push16(0xabcd),
+            .store16(addressBar),
+            .pop16
+        ])
+    }
+    
     func testCompileVarDeclaration_RedefinesExistingSymbol() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = TopLevel(children: [

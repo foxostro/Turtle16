@@ -107,274 +107,59 @@ public class ExpressionSubCompiler: NSObject {
         let left: [YertleInstruction] = try compile(expression: binary.left)
         let leftType = try ExpressionTypeChecker(symbols: symbols).check(expression: binary.left)
         
-        switch binary.op.op {
-        case .eq:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.eq16]
-                case .u8:
-                    return right + [.push(0)] + left + [.eq16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u8:
-                    return right + left + [.eq]
-                case .u16:
-                    return right + left + [.push(0), .eq16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .bool:
-                switch rightType {
-                case .bool:
-                    return right + left + [.eq]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .ne:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.ne16]
-                case .u8:
-                    return right + [.push(0)] + left + [.ne16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .ne16]
-                case .u8:
-                    return right + left + [.ne]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .bool:
-                switch rightType {
-                case .bool:
-                    return right + left + [.ne]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .lt:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.lt16]
-                case .u8:
-                    return right + [.push(0)] + left + [.lt16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .lt16]
-                case .u8:
-                    return right + left + [.lt]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .gt:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.gt16]
-                case .u8:
-                    return right + [.push(0)] + left + [.gt16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .gt16]
-                case .u8:
-                    return right + left + [.gt]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .le:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.le16]
-                case .u8:
-                    return right + [.push(0)] + left + [.le16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .le16]
-                case .u8:
-                    return right + left + [.le]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .ge:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.ge16]
-                case .u8:
-                    return right + [.push(0)] + left + [.ge16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .ge16]
-                case .u8:
-                    return right + left + [.ge]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .plus:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.add16]
-                case .u8:
-                    return right + [.push(0)] + left + [.add16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u8:
-                    return right + left + [.add]
-                case .u16:
-                    return right + left + [.push(0), .add16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .minus:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.sub16]
-                case .u8:
-                    return right + [.push(0)] + left + [.sub16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .sub16]
-                case .u8:
-                    return right + left + [.sub]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .multiply:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.mul16]
-                case .u8:
-                    return right + [.push(0)] + left + [.mul16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .mul16]
-                case .u8:
-                    return right + left + [.mul]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .divide:
-           switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.div16]
-                case .u8:
-                    return right + [.push(0)] + left + [.div16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .div16]
-                case .u8:
-                    return right + left + [.div]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
-        case .modulus:
-            switch leftType {
-            case .u16:
-                switch rightType {
-                case .u16:
-                    return right + left + [.mod16]
-                case .u8:
-                    return right + [.push(0)] + left + [.mod16]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            case .u8:
-                switch rightType {
-                case .u16:
-                    return right + left + [.push(0), .mod16]
-                case .u8:
-                    return right + left + [.mod]
-                default:
-                    throw unsupportedError(expression: binary)
-                }
-            default:
-                throw unsupportedError(expression: binary)
-            }
+        switch (binary.op.op, leftType, rightType) {
+        case (.eq, .u8, .u8):         return right + left + [.eq]
+        case (.eq, .u8, .u16):        return right + left + [.push(0), .eq16]
+        case (.eq, .u16, .u8):        return right + [.push(0)] + left + [.eq16]
+        case (.eq, .u16, .u16):       return right + left + [.eq16]
+        case (.eq, .bool, .bool):     return right + left + [.eq]
+        case (.ne, .u8, .u8):         return right + left + [.ne]
+        case (.ne, .u8, .u16):        return right + left + [.push(0), .ne16]
+        case (.ne, .u16, .u8):        return right + [.push(0)] + left + [.ne16]
+        case (.ne, .u16, .u16):       return right + left + [.ne16]
+        case (.ne, .bool, .bool):     return right + left + [.ne]
+        case (.lt, .u8, .u8):         return right + left + [.lt]
+        case (.lt, .u8, .u16):        return right + left + [.push(0), .lt16]
+        case (.lt, .u16, .u8):        return right + [.push(0)] + left + [.lt16]
+        case (.lt, .u16, .u16):       return right + left + [.lt16]
+        case (.lt, .bool, .bool):     return right + left + [.lt]
+        case (.gt, .u8, .u8):         return right + left + [.gt]
+        case (.gt, .u8, .u16):        return right + left + [.push(0), .gt16]
+        case (.gt, .u16, .u8):        return right + [.push(0)] + left + [.gt16]
+        case (.gt, .u16, .u16):       return right + left + [.gt16]
+        case (.gt, .bool, .bool):     return right + left + [.gt]
+        case (.le, .u8, .u8):         return right + left + [.le]
+        case (.le, .u8, .u16):        return right + left + [.push(0), .le16]
+        case (.le, .u16, .u8):        return right + [.push(0)] + left + [.le16]
+        case (.le, .u16, .u16):       return right + left + [.le16]
+        case (.le, .bool, .bool):     return right + left + [.le]
+        case (.ge, .u8, .u8):         return right + left + [.ge]
+        case (.ge, .u8, .u16):        return right + left + [.push(0), .ge16]
+        case (.ge, .u16, .u8):        return right + [.push(0)] + left + [.ge16]
+        case (.ge, .u16, .u16):       return right + left + [.ge16]
+        case (.ge, .bool, .bool):     return right + left + [.ge]
+        case (.plus, .u8, .u8):       return right + left + [.add]
+        case (.plus, .u8, .u16):      return right + left + [.push(0), .add16]
+        case (.plus, .u16, .u8):      return right + [.push(0)] + left + [.add16]
+        case (.plus, .u16, .u16):     return right + left + [.add16]
+        case (.minus, .u8, .u8):      return right + left + [.sub]
+        case (.minus, .u8, .u16):     return right + left + [.push(0), .sub16]
+        case (.minus, .u16, .u8):     return right + [.push(0)] + left + [.sub16]
+        case (.minus, .u16, .u16):    return right + left + [.sub16]
+        case (.multiply, .u8, .u8):   return right + left + [.mul]
+        case (.multiply, .u8, .u16):  return right + left + [.push(0), .mul16]
+        case (.multiply, .u16, .u8):  return right + [.push(0)] + left + [.mul16]
+        case (.multiply, .u16, .u16): return right + left + [.mul16]
+        case (.divide, .u8, .u8):     return right + left + [.div]
+        case (.divide, .u8, .u16):    return right + left + [.push(0), .div16]
+        case (.divide, .u16, .u8):    return right + [.push(0)] + left + [.div16]
+        case (.divide, .u16, .u16):   return right + left + [.div16]
+        case (.modulus, .u8, .u8):    return right + left + [.mod]
+        case (.modulus, .u8, .u16):   return right + left + [.push(0), .mod16]
+        case (.modulus, .u16, .u8):   return right + [.push(0)] + left + [.mod16]
+        case (.modulus, .u16, .u16):  return right + left + [.mod16]
+        default:
+            throw unsupportedError(expression: binary)
         }
     }
     

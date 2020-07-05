@@ -230,7 +230,17 @@ public class ExpressionSubCompiler: NSObject {
         
         switch symbol.type {
         case .u16, .u8, .bool:
-            instructions += try compile(expression: assignment.child)
+            let expr = assignment.child
+            let exprType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
+            let compiledInstructions = try compile(expression: expr)
+            switch (exprType, symbol.type) {
+            case (.bool, .bool): instructions += compiledInstructions
+            case (.u8, .u8):     instructions += compiledInstructions
+            case (.u8, .u16):    instructions += compiledInstructions + [.push(0)]
+            case (.u16, .u16):   instructions += compiledInstructions
+            default:
+                abort()
+            }
             instructions += storeSymbol(symbol, depth)
         case .function, .void:
             abort()
@@ -272,9 +282,19 @@ public class ExpressionSubCompiler: NSObject {
         switch symbol.type {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [YertleInstruction] = []
-            for expr in node.arguments {
-                let compiledExpr = try compile(expression: expr)
-                instructions += compiledExpr
+            for i in 0..<typ.arguments.count {
+                let argExpr = node.arguments[i]
+                let arg = try compile(expression: argExpr)
+                let expectedType = typ.arguments[i].argumentType
+                let actualType = try ExpressionTypeChecker(symbols: symbols).check(expression: argExpr)
+                switch (actualType, expectedType) {
+                case (.bool, .bool): instructions += arg
+                case (.u8, .u8):     instructions += arg
+                case (.u8, .u16):    instructions += arg + [.push(0)]
+                case (.u16, .u16):   instructions += arg
+                default:
+                    abort()
+                }
             }
             instructions += [
                 .jalr(TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName))

@@ -1167,6 +1167,16 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
+    func testCompileAssignment_PromoteU8ToU16() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 42))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
+            .push(42),
+            .push(0),
+            .store16(0x0010)
+        ])
+    }
+    
     func testCompileAssignment_Bool_Stack() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: false))
         let symbol = Symbol(type: .bool, offset: 0x0004, isMutable: true, storage: .stackStorage)

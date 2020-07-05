@@ -299,6 +299,41 @@ func foo() -> u8 {
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
     
+    func test_EndToEndIntegration_PromoteInAssignmentStatement() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var result = 0xabcd
+result = 42
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+    }
+    
+    func test_EndToEndIntegration_PromoteParameterInCall() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var result = 0xabcd
+func foo(n: u16) {
+    result = n
+}
+foo(42)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+    }
+    
+    func test_EndToEndIntegration_PromoteReturnValue() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo(n: u8) -> u16 {
+    return n
+}
+let result = foo(42)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+    }
+    
 func test_EndToEndIntegration_MutuallyRecursiveFunctions() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """

@@ -151,7 +151,13 @@ public class ExpressionTypeChecker: NSObject {
             }
             for i in 0..<typ.arguments.count {
                 let argumentType = try check(expression: call.arguments[i])
-                if typ.arguments[i].argumentType != argumentType {
+                switch (argumentType, typ.arguments[i].argumentType) {
+                case (.bool, .bool): break
+                case (.void, .void): break
+                case (.u8, .u8):     break
+                case (.u8, .u16):    break
+                case (.u16, .u16):   break
+                default:
                     let message = "cannot convert value of type `\(String(describing: argumentType))' to expected argument type `\(String(describing: typ.arguments[i].argumentType))' in call to `\(name)'"
                     if let lineNumber = call.tokens.first?.lineNumber {
                         throw CompilerError(line: lineNumber, message: message)

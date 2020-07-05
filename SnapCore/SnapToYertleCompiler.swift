@@ -91,18 +91,7 @@ public class SnapToYertleCompiler: NSObject {
             try compile(varDecl: node)
         }
         else if let node = genericNode as? Expression {
-            try compile(expression: node)
-            let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: node)
-            switch returnExpressionType {
-            case .u16:
-                instructions += [.pop16]
-            case .u8, .bool:
-                instructions += [.pop]
-            case .void:
-                break
-            case .function(name: _, mangledName: _, functionType: _):
-                abort()
-            }
+            try compile(expressionStatement: node)
         }
         else if let node = genericNode as? If {
             try compile(if: node)
@@ -185,6 +174,23 @@ public class SnapToYertleCompiler: NSObject {
             // Evaluation of the expression has left the stack symbol's value
             // on the stack already. Nothing to do here.
             break
+        }
+    }
+    
+    // A statement can be a bare expression. The expression value is popped
+    // from the stack at the end.
+    private func compile(expressionStatement node: Expression) throws {
+        try compile(expression: node)
+        let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: node)
+        switch returnExpressionType {
+        case .u16:
+            instructions += [.pop16]
+        case .u8, .bool:
+            instructions += [.pop]
+        case .void:
+            break
+        case .function(name: _, mangledName: _, functionType: _):
+            abort()
         }
     }
     
@@ -349,10 +355,20 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func bindFunctionArguments(_ arguments: [FunctionType.Argument]) {
+        var storagePointer = symbols.storagePointer - 1
         for i in 0..<arguments.count {
             let argument = arguments[i]
-            let offset = symbols.storagePointer + i
-            let symbol = Symbol(type: argument.argumentType, offset: offset, isMutable: false, storage: .stackStorage)
+            
+            let argSize: Int
+            switch argument.argumentType {
+            case .u16: argSize = 2
+            case .u8, .bool: argSize = 1
+            default:
+                abort()
+            }
+            storagePointer += argSize
+            
+            let symbol = Symbol(type: argument.argumentType, offset: storagePointer, isMutable: false, storage: .stackStorage)
             symbols.bind(identifier: argument.name, symbol: symbol)
         }
     }

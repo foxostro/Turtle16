@@ -1227,6 +1227,15 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
+    func testAssignmentWhichConvertsU8ToU16() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 0xaa))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let ir = try! compile(expression: expr, symbols: symbols)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xaa)
+    }
+    
     func testCompilationFailsDueToUseOfUnresolvedIdentifierInFunctionCall() {
         let expr = Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
         XCTAssertThrowsError(try compile(expression: expr)) {

@@ -300,6 +300,15 @@ public class ExpressionSubCompiler: NSObject {
                 .jalr(TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName))
             ]
             
+            for arg in typ.arguments.reversed() {
+                switch arg.argumentType {
+                case .u16:       instructions += [.pop16]
+                case .u8, .bool: instructions += [.pop]
+                default:
+                    abort()
+                }
+            }
+            
             switch typ.returnType {
             case .u16:
                 instructions += [.load16(SnapToYertleCompiler.kReturnValueScratchLocation)]

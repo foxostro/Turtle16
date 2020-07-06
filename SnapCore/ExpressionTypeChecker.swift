@@ -129,7 +129,18 @@ public class ExpressionTypeChecker: NSObject {
     }
         
     public func check(assignment: Expression.Assignment) throws -> SymbolType {
-        return try check(expression: assignment.child)
+        let symbol = try symbols.resolve(identifierToken: assignment.identifier)
+        let rtype = try check(expression: assignment.child)
+        if rtype != symbol.type {
+            if rtype == .u8 && symbol.type == .u16 {
+                // nothing to do
+            } else {
+                let lineNumber = assignment.tokens.first!.lineNumber
+                let message = "cannot assign value of type `\(String(describing: rtype))' to type `\(String(describing: symbol.type))'"
+                throw CompilerError(line: lineNumber, message: message)
+            }
+        }
+        return symbol.type
     }
         
     public func check(identifier: Expression.Identifier) throws -> SymbolType {

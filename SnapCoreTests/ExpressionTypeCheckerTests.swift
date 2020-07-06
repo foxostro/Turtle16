@@ -1058,7 +1058,8 @@ class ExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_U16() {
-        let typeChecker = ExpressionTypeChecker()
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          expression: ExprUtils.makeLiteralInt(value: 0xabcd))
         var result: SymbolType? = nil
@@ -1067,7 +1068,8 @@ class ExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_U8() {
-        let typeChecker = ExpressionTypeChecker()
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          expression: ExprUtils.makeLiteralInt(value: 1))
         var result: SymbolType? = nil
@@ -1076,7 +1078,8 @@ class ExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_Boolean() {
-        let typeChecker = ExpressionTypeChecker()
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                          expression: ExprUtils.makeLiteralBoolean(value: false))
         var result: SymbolType? = nil
@@ -1133,5 +1136,36 @@ class ExpressionTypeCheckerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "incorrect number of arguments in call to `foo'")
         }
+    }
+    
+    func testFailBecauseAssignmentCannotConvertU16ToU8() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 0xabcd))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign value of type `u16' to type `u8'")
+        }
+    }
+    
+    func testFailBecauseAssignmentCannotConvertBoolToU8() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: false))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign value of type `bool' to type `u8'")
+        }
+    }
+    
+    func testAssignmentWhichConvertsU8ToU16() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 42))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
     }
 }

@@ -77,6 +77,15 @@ public class SnapParser: Parser {
                                     error: CompilerError(line: letToken.lineNumber,
                                                           format: "expected to find an identifier in let declaration",
                                                           letToken.lexeme)) as! TokenIdentifier
+        
+        let explicitType: SymbolType?
+        if nil != accept(TokenColon.self) {
+            let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+            explicitType = tokenType.representedType
+        } else {
+            explicitType = nil
+        }
+        
         let equal = try expect(type: TokenEqual.self,
                                error: CompilerError(line: letToken.lineNumber,
                                                     format: "immutable variables must be assigned a value",
@@ -91,6 +100,7 @@ public class SnapParser: Parser {
         let expression = try consumeExpression()
         
         return [VarDeclaration(identifier: identifier,
+                               explicitType: explicitType,
                                expression: expression,
                                storage: storage,
                                isMutable: false)]
@@ -101,6 +111,14 @@ public class SnapParser: Parser {
                                     error: CompilerError(line: varToken.lineNumber,
                                                          format: "expected to find an identifier in variable declaration",
                                                          varToken.lexeme)) as! TokenIdentifier
+        let explicitType: SymbolType?
+        if nil != accept(TokenColon.self) {
+            let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+            explicitType = tokenType.representedType
+        } else {
+            explicitType = nil
+        }
+        
         let equal = try expect(type: TokenEqual.self,
                                error: CompilerError(line: identifier.lineNumber,
                                                     message: "variables must be assigned an initial value"))
@@ -114,6 +132,7 @@ public class SnapParser: Parser {
         let expression = try consumeExpression()
         
         return [VarDeclaration(identifier: identifier,
+                               explicitType: explicitType,
                                expression: expression,
                                storage: storage,
                                isMutable: true)]

@@ -121,24 +121,39 @@ public class SnapToYertleCompiler: NSObject {
                                 varDecl.isMutable ? "variable" : "constant",
                                 varDecl.identifier.lexeme)
         }
-        let symbol = try makeSymbolWithInferredType(expression: varDecl.expression, storage: varDecl.storage, isMutable: varDecl.isMutable)
+        let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: varDecl.expression)
+        let symbol = try makeSymbolWithExplicitType(explicitType: varDecl.explicitType ?? inferredType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
+        
+        if let explicitType = varDecl.explicitType {
+            switch symbol.type {
+            case .u16, .u8, .bool:
+                switch (inferredType, explicitType) {
+                case (.bool, .bool): break
+                case (.u8, .u8):     break
+                case (.u8, .u16):    instructions += [.push(0)]
+                case (.u16, .u16):   break
+                default:
+                    abort()
+                }
+            case .function, .void:
+                abort()
+            }
+        }
+        
         storeSymbol(symbol)
     }
     
-    private func makeSymbolWithInferredType(expression: Expression, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
-        let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
-        
+    private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
         let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
-        
-        let size: Int
-        switch inferredType {
-        case .u8, .bool: size = 1
-        case .u16:       size = 2
-        default:         size = 0
-        }
-        
+        let offset = bumpStoragePointer(explicitType, storage)
+        let symbol = Symbol(type: explicitType, offset: offset, isMutable: isMutable, storage: storage)
+        return symbol
+    }
+    
+    private func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
+        let size = sizeof(symbolType)
         let offset: Int
         switch storage {
         case .staticStorage:
@@ -148,9 +163,15 @@ public class SnapToYertleCompiler: NSObject {
             offset = symbols.storagePointer
             symbols.storagePointer += size
         }
-        
-        let symbol = Symbol(type: inferredType, offset: offset, isMutable: isMutable, storage: storage)
-        return symbol
+        return offset
+    }
+    
+    private func sizeof(_ type: SymbolType) -> Int {
+        switch type {
+        case .u8, .bool: return 1
+        case .u16:       return 2
+        default:         return 0
+        }
     }
     
     private func storeSymbol(_ symbol: Symbol) {

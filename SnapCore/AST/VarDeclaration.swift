@@ -60,7 +60,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=%@, storage=%@, isMutable=%@, expression=%@>",
+        return String(format: "%@<%@: identifier=\"%@\", storage=%@, isMutable=%@, expression=%@>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       identifier.lexeme,

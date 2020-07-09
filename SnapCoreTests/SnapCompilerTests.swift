@@ -383,6 +383,38 @@ let a = isOdd(2)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
     }
+    
+    func test_EndToEndIntegration_RecursiveFunctions_u8() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var count = 0
+func foo(n: u8) {
+    if n > 0 {
+        count = count + 1
+        return foo(n - 1)
+    }
+}
+foo(10)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
+    }
+    
+    func test_EndToEndIntegration_RecursiveFunctions_u16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var count = 0
+func foo(n: u16) {
+    if n > 0 {
+        count = count + 1
+        foo(n - 1)
+    }
+}
+foo(10)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
+    }
         
     func test_EndToEndIntegration_ReturnInVoidFunction() {
         let executor = SnapExecutor()

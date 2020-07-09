@@ -558,7 +558,6 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func le16() throws {
         let labelFailEqualityTest = makeTempLabel()
         let labelTail = makeTempLabel()
-        let labelThen = makeTempLabel()
         
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
@@ -606,7 +605,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // The two operands are equal so return true.
-        try jmp(to: labelThen)
+        try assembler.li(.A, 1)
+        try jmp(to: labelTail)
         
         try label(token: labelFailEqualityTest)
         
@@ -628,22 +628,18 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, addressOfB+0)
         try assembler.mov(.B, .M)
 
+        try setAddressToLabel(labelTail)
+        
         // Compare the high bytes.
         try assembler.sbc(.NONE)
         try assembler.sbc(.NONE)
         
         // A <- (carry_flag) ? 1 : 0
-        try setAddressToLabel(labelThen)
-        assembler.jnc()
+        try assembler.li(.A, 1)
+        assembler.jc()
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)
-        try setAddressToLabel(labelTail)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        try label(token: labelThen)
-        try assembler.li(.A, 1)
         try label(token: labelTail)
         
         try pushAToStack()

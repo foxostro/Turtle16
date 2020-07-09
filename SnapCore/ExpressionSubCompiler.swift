@@ -72,8 +72,8 @@ public class ExpressionSubCompiler: NSObject {
         var result: [YertleInstruction] = []
         switch childType {
         case .u16:
-            result += [.push16(0)]
             result += childExpr
+            result += [.push16(0)]
             switch unary.op.op {
             case .minus:
                 result += [.sub16]
@@ -81,8 +81,8 @@ public class ExpressionSubCompiler: NSObject {
                 throw invalidUnaryOperator(unary)
             }
         case .u8:
-            result += [.push(0)]
             result += childExpr
+            result += [.push(0)]
             switch unary.op.op {
             case .minus:
                 result += [.sub]

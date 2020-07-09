@@ -49,25 +49,36 @@ class ExpressionSubCompilerTests: XCTestCase {
         XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralBoolean(value: true)), [.push(1)])
         XCTAssertEqual(try compile(expression: ExprUtils.makeLiteralBoolean(value: false)), [.push(0)])
     }
-    
+        
     func testUnaryNegationOfU8() {
-        let expr = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                    expression: ExprUtils.makeLiteralInt(value: 42))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
+        let minus = TokenOperator(lineNumber: 1, lexeme: "-", op: .minus)
+        let expr = Expression.Unary(op: minus, expression: ExprUtils.makeLiteralInt(value: 42))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push(42),
+            .push(0),
             .sub
         ])
+        XCTAssertEqual(ir, try compile(expression: Expression.Binary(op: minus, left: ExprUtils.makeLiteralInt(value: 0), right: ExprUtils.makeLiteralInt(value: 42))))
+        let expected = UInt8(0) &- UInt8(42)
+        XCTAssertEqual(computer.stack(at: 0), expected)
     }
     
     func testUnaryNegationOfU16() {
-        let expr = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                    expression: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(0),
+        let minus = TokenOperator(lineNumber: 1, lexeme: "-", op: .minus)
+        let expr = Expression.Unary(op: minus, expression: ExprUtils.makeLiteralInt(value: 1000))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push16(1000),
+            .push16(0),
             .sub16
         ])
+        let expected = UInt16(0) &- UInt16(1000)
+        XCTAssertEqual(computer.stack16(at: 0), expected)
     }
     
     func testFailToCompileInvalidPrefixUnaryOperator() {

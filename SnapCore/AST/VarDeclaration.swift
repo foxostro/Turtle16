@@ -9,16 +9,19 @@
 import TurtleCompilerToolbox
 
 public class VarDeclaration: AbstractSyntaxTreeNode {
+    public let identifier: TokenIdentifier
+    public let explicitType: SymbolType?
+    public let expression: Expression
     public let storage: SymbolStorage
     public let isMutable: Bool
-    public let identifier: TokenIdentifier
-    public let expression: Expression
     
     public required init(identifier: TokenIdentifier,
+                         explicitType: SymbolType?,
                          expression: Expression,
                          storage: SymbolStorage,
                          isMutable: Bool) {
         self.identifier = identifier
+        self.explicitType = explicitType
         self.storage = storage
         self.isMutable = isMutable
         self.expression = expression
@@ -37,6 +40,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         guard identifier == rhs.identifier else {
             return false
         }
+        guard explicitType == rhs.explicitType else {
+            return false
+        }
         guard isMutable == rhs.isMutable else {
             return false
         }
@@ -52,6 +58,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(identifier)
+        hasher.combine(explicitType)
         hasher.combine(storage)
         hasher.combine(isMutable)
         hasher.combine(expression)
@@ -60,10 +67,11 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=\"%@\", storage=%@, isMutable=%@, expression=%@>",
+        return String(format: "%@<%@: identifier=\"%@\", explicitType=%@, storage=%@, isMutable=%@, expression=%@>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       identifier.lexeme,
+                      String(describing: explicitType),
                       String(describing: storage),
                       isMutable ? "true" : "false",
                       expression.makeIndentedDescription(depth: depth + 1))

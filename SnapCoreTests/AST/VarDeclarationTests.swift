@@ -14,64 +14,71 @@ class VarDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        XCTAssertNotEqual(VarDeclaration(identifier: foo, expression: one, storage: .staticStorage, isMutable: true), AbstractSyntaxTreeNode())
+        XCTAssertNotEqual(VarDeclaration(identifier: foo, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: true), AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let bar = TokenIdentifier(lineNumber: 2, lexeme: "bar")
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        XCTAssertNotEqual(VarDeclaration(identifier: foo, expression: one, storage: .staticStorage, isMutable: true),
-                          VarDeclaration(identifier: bar, expression: one, storage: .staticStorage, isMutable: true))
+        XCTAssertNotEqual(VarDeclaration(identifier: foo, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: true),
+                          VarDeclaration(identifier: bar, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: true))
     }
     
     func testDoesNotEqualNodeWithDifferentStorage() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let bar = TokenIdentifier(lineNumber: 2, lexeme: "bar")
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        XCTAssertNotEqual(VarDeclaration(identifier: foo, expression: one, storage: .staticStorage, isMutable: true),
-                          VarDeclaration(identifier: bar, expression: one, storage: .stackStorage, isMutable: true))
+        XCTAssertNotEqual(VarDeclaration(identifier: foo, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: true),
+                          VarDeclaration(identifier: bar, explicitType: .u8, expression: one, storage: .stackStorage, isMutable: true))
     }
     
     func testDoesNotEqualNodeWithDifferentMutability() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let bar = TokenIdentifier(lineNumber: 2, lexeme: "bar")
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        XCTAssertNotEqual(VarDeclaration(identifier: foo, expression: one, storage: .staticStorage, isMutable: true),
-                          VarDeclaration(identifier: bar, expression: one, storage: .staticStorage, isMutable: false))
+        XCTAssertNotEqual(VarDeclaration(identifier: foo, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: true),
+                          VarDeclaration(identifier: bar, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: false))
     }
     
     func testDoesNotEqualNodeWithDifferentNumber() {
         let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let two = Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2))
-        XCTAssertNotEqual(VarDeclaration(identifier: foo, expression: one, storage: .staticStorage, isMutable: true),
-                          VarDeclaration(identifier: foo, expression: two, storage: .staticStorage, isMutable: true))
+        XCTAssertNotEqual(VarDeclaration(identifier: foo, explicitType: .u8, expression: one, storage: .staticStorage, isMutable: true),
+                          VarDeclaration(identifier: foo, explicitType: .u8, expression: two, storage: .staticStorage, isMutable: true))
+    }
+    
+    func testDoesNotEqualNodeWithDifferentExplicitType() {
+        XCTAssertNotEqual(VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                         explicitType: .u8,
+                                         expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                                   storage: .staticStorage, isMutable: true),
+                          VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                         explicitType: .u16,
+                                         expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         storage: .staticStorage, isMutable: true))
     }
     
     func testNodesActuallyAreTheSame() {
         XCTAssertEqual(VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                   expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
-                                                                                                          lexeme: "1",
-                                                                                                          literal: 1)),
-                                                   storage: .staticStorage, isMutable: true),
+                                      explicitType: .u8,
+                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      storage: .staticStorage, isMutable: true),
                        VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                   expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
-                                                                                                          lexeme: "1",
-                                                                                                          literal: 1)),
-                                                   storage: .staticStorage, isMutable: true))
+                                      explicitType: .u8,
+                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      storage: .staticStorage, isMutable: true))
     }
     
     func testHash() {
         XCTAssertNotEqual(VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
-                                                                                                             lexeme: "1",
-                                                                                                             literal: 1)),
-                                                      storage: .staticStorage, isMutable: true).hashValue,
+                                         explicitType: .u8,
+                                         expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                         storage: .staticStorage, isMutable: true).hashValue,
                           VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1,
-                                                                                                             lexeme: "2",
-                                                                                                             literal: 2)),
-                                                      storage: .staticStorage, isMutable: true).hashValue)
+                                         explicitType: .u8,
+                                         expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
+                                         storage: .staticStorage, isMutable: true).hashValue)
     }
 }

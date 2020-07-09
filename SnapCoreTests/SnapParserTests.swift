@@ -106,6 +106,24 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedLetDeclaration_WithExplicitType() {
+        let parser = SnapParser(tokens: tokenize("let foo: u8 = 1"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: .u8,
                                       expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -155,6 +173,24 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      storage: .stackStorage,
+                                      isMutable: true)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedVariableDeclaration_WithExplicitType() {
+        let parser = SnapParser(tokens: tokenize("var foo: u8 = 1"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: .u8,
                                       expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                       storage: .stackStorage,
                                       isMutable: true)
@@ -179,6 +215,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: nil,
                                       expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                       storage: .staticStorage,
                                       isMutable: true)
@@ -195,6 +232,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: nil,
                                       expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                                       storage: .staticStorage,
                                       isMutable: false)
@@ -569,6 +607,7 @@ if 1 {
         let expected = If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                           then: Block(children: [
                             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                           explicitType: nil,
                                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
                                            storage: .stackStorage,
                                            isMutable: true)
@@ -708,12 +747,14 @@ else
             If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
                then: Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                               explicitType: nil,
                                expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
                else: Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"),
+                               explicitType: nil,
                                expression: ExprUtils.makeLiteralInt(lineNumber: 4, value: 1),
                                storage: .stackStorage,
                                isMutable: false)
@@ -734,6 +775,7 @@ if 1
             If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
                then: Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                               explicitType: nil,
                                expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 1),
                                storage: .stackStorage,
                                isMutable: false)
@@ -799,6 +841,7 @@ while 1 {
             While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                   body: Block(children: [
                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                   explicitType: nil,
                                    expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 2),
                                    storage: .stackStorage,
                                    isMutable: true)
@@ -845,6 +888,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Block(children: [
                 ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
+                                                          explicitType: nil,
                                                           expression: ExprUtils.makeLiteralInt(value: 0),
                                                           storage: .stackStorage,
                                                           isMutable: true),
@@ -853,6 +897,7 @@ for var i = 0; i < 10; i = i + 1 {
                         incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralInt(value: 1))),
                         body: Block(children: [
                             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                                           explicitType: nil,
                                            expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"),
                                            storage: .stackStorage,
                                            isMutable: true)
@@ -873,6 +918,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                               explicitType: nil,
                                expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"),
                                storage: .stackStorage,
                                isMutable: true)
@@ -888,6 +934,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                               explicitType: nil,
                                expression: ExprUtils.makeIdentifier(lineNumber: 1, name: "i"),
                                storage: .stackStorage,
                                isMutable: true)
@@ -920,6 +967,7 @@ for var i = 0; i < 10; i = i + 1 {
             Block(children: [
                 Block(children: [
                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 3, lexeme: "bar"),
+                                   explicitType: nil,
                                    expression: ExprUtils.makeIdentifier(lineNumber: 3, name: "i"),
                                    storage: .stackStorage,
                                    isMutable: true)

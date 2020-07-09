@@ -452,4 +452,60 @@ func foo() {
 foo()
 """)
     }
+        
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_Let() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let foo: u16 = 0xffff
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xffff)
+    }
+        
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_Var() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var foo: u16 = 0xffff
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xffff)
+    }
+        
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_PromoteU8ToU16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let foo: u16 = 10
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
+    }
+        
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_Bool() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let foo: bool = true
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+    }
+        
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_CannotConvertU16ToBool() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+let foo: bool = 0xffff
+""")
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `u16' to return type `bool'")
+    }
+    
+    func test_EndToEndIntegration_CastU16DownToU8() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var foo: u16 = 1
+let bar: u8 = foo as u8
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+    }
 }

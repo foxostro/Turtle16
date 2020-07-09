@@ -1013,4 +1013,25 @@ class SnapToYertleCompilerTests: XCTestCase {
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         }
     }
+        
+    func test_SixteenBitGreaterThan() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           expression: ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 0x1000), right: ExprUtils.makeLiteralInt(value: 0x0001)),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+        } else {
+            let ir = compiler.instructions
+            let executor = YertleExecutor()
+            let computer = try! executor.execute(ir: ir)
+            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        }
+    }
 }

@@ -378,7 +378,7 @@ func isOdd(n: u16) -> bool {
     }
 }
 
-let a = isOdd(2)
+let a = isOdd(3)
 """)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)

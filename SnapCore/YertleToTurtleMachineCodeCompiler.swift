@@ -1475,11 +1475,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func loadIndirect() throws {
         try pop16()
-        
         try assembler.mov(.U, .A)
         try assembler.mov(.V, .B)
         try assembler.mov(.A, .M)
-        
         try pushAToStack()
     }
     

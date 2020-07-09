@@ -203,17 +203,31 @@ public class ExpressionSubCompiler: NSObject {
     private func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         
-        // Push the symbol offset. This is used in the subtraction below.
-        instructions += [.push16(symbol.offset)]
-        
-        // Load the frame pointer.
-        instructions += [.load16(kFramePointerAddressHi)]
-        
-        // Follow the frame pointer `depth' times.
-        instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
-        
-        // Apply the offset to get the final address.
-        instructions += [.sub16]
+        if symbol.offset >= 0 {
+            // Push the symbol offset. This is used in the subtraction below.
+            instructions += [.push16(symbol.offset)]
+            
+            // Load the frame pointer.
+            instructions += [.load16(kFramePointerAddressHi)]
+            
+            // Follow the frame pointer `depth' times.
+            instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
+            
+            // Apply the offset to get the final address.
+            instructions += [.sub16]
+        } else {
+            // Push the symbol offset. This is used in the subtraction below.
+            instructions += [.push16(-symbol.offset)]
+            
+            // Load the frame pointer.
+            instructions += [.load16(kFramePointerAddressHi)]
+            
+            // Follow the frame pointer `depth' times.
+            instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
+            
+            // Apply the offset to get the final address.
+            instructions += [.add16]
+        }
         
         return instructions
     }

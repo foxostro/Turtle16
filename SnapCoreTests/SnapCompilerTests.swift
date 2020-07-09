@@ -415,6 +415,33 @@ foo(10)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
     }
+    
+    func test_EndToEndIntegration_FunctionCallsInExpression() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo(n: u8) -> u8 {
+    return n
+}
+let r = foo(2) + 1
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
+    }
+    
+    func test_EndToEndIntegration_RecursiveFunctions_() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo(n: u8) -> u8 {
+    if n == 0 {
+        return 0
+    }
+    return foo(n - 1) + 1
+}
+let count = foo(1)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+    }
         
     func test_EndToEndIntegration_ReturnInVoidFunction() {
         let executor = SnapExecutor()

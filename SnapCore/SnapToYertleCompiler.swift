@@ -327,12 +327,9 @@ public class SnapToYertleCompiler: NSObject {
             .enter
         ]
         
-        // Function arguments aren't inside the stack frame, but they are local
-        // to the function. So, we define two scopes and only bind the inner
-        // one to the stack frame.
-        pushScopeForFunctionArguments(enclosingFunctionName: node.identifier.lexeme, enclosingFunctionType: node.functionType)
+        pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.lexeme,
+                                  enclosingFunctionType: node.functionType)
         bindFunctionArguments(node.functionType.arguments)
-        pushScopeForNewStackFrame()
         performDeclPass(block: node.body)
         for child in node.body.children {
             try compile(genericNode: child)
@@ -341,24 +338,32 @@ public class SnapToYertleCompiler: NSObject {
             try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
         }
         popScope()
-        popScope()
         
         instructions += [
             .label(labelTail),
         ]
     }
     
-    private func pushScopeForFunctionArguments(enclosingFunctionName: String, enclosingFunctionType: FunctionType) {
-        symbols = SymbolTable(parent: symbols)
+    private func pushScopeForNewStackFrame(enclosingFunctionName: String,
+                                           enclosingFunctionType: FunctionType) {
+        pushScope()
+        symbols.storagePointer = 1
+        symbols.stackFrameIndex += 1
         symbols.enclosingFunctionName = enclosingFunctionName
         symbols.enclosingFunctionType = enclosingFunctionType
     }
     
     private func bindFunctionArguments(_ arguments: [FunctionType.Argument]) {
-        var storagePointer = symbols.storagePointer - 1
+        let kReturnAddressSize = 2
+        let kFramePointerSize = 2
+        var offset = kReturnAddressSize + kFramePointerSize
         for i in 0..<arguments.count {
             let argument = arguments[i]
-            
+            let symbol = Symbol(type: argument.argumentType,
+                                offset: -offset,
+                                isMutable: false,
+                                storage: .stackStorage)
+            symbols.bind(identifier: argument.name, symbol: symbol)
             let argSize: Int
             switch argument.argumentType {
             case .u16: argSize = 2
@@ -366,17 +371,8 @@ public class SnapToYertleCompiler: NSObject {
             default:
                 abort()
             }
-            storagePointer += argSize
-            
-            let symbol = Symbol(type: argument.argumentType, offset: storagePointer, isMutable: false, storage: .stackStorage)
-            symbols.bind(identifier: argument.name, symbol: symbol)
+            offset += argSize
         }
-    }
-    
-    private func pushScopeForNewStackFrame() {
-        pushScope()
-        symbols.storagePointer = 1
-        symbols.stackFrameIndex += 1
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {

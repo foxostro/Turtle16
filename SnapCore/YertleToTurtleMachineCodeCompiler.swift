@@ -375,6 +375,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func lt16() throws {
+        let labelFailEqualityTest = makeTempLabel()
+        let labelTail = makeTempLabel()
+        
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
 
@@ -393,7 +396,39 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
         try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .B)
-
+        
+        // Compare low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+1)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // Compare high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfA+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // The two operands are equal so return false.
+        try assembler.li(.A, 0)
+        try jmp(to: labelTail)
+        
+        try label(token: labelFailEqualityTest)
+        
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+1)
@@ -411,21 +446,21 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         try assembler.li(.V, addressOfB+0)
         try assembler.mov(.B, .M)
-        
-        let labelThen = makeTempLabel()
-        try setAddressToLabel(labelThen)
 
+        try setAddressToLabel(labelTail)
+        
         // Compare the high bytes.
         try assembler.sbc(.NONE)
         try assembler.sbc(.NONE)
         
-        // A <- (carry_flag==active) ? 1 : 0
+        // A <- (carry_flag) ? 1 : 0
         try assembler.li(.A, 1)
         assembler.jc()
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)
-        try label(token: labelThen)
+        try label(token: labelTail)
+        
         try pushAToStack()
     }
     
@@ -556,9 +591,6 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func le16() throws {
-        let labelFailEqualityTest = makeTempLabel()
-        let labelTail = makeTempLabel()
-        
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
 
@@ -577,39 +609,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
         try assembler.li(.V, addressOfA+1)
         try assembler.mov(.M, .B)
-        
-        // Compare low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        try setAddressToLabel(labelFailEqualityTest)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        
-        // Compare high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        try setAddressToLabel(labelFailEqualityTest)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        
-        // The two operands are equal so return true.
-        try assembler.li(.A, 1)
-        try jmp(to: labelTail)
-        
-        try label(token: labelFailEqualityTest)
-        
+
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+1)
@@ -627,21 +627,21 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         try assembler.li(.V, addressOfB+0)
         try assembler.mov(.B, .M)
-
-        try setAddressToLabel(labelTail)
         
+        let labelThen = makeTempLabel()
+        try setAddressToLabel(labelThen)
+
         // Compare the high bytes.
         try assembler.sbc(.NONE)
         try assembler.sbc(.NONE)
         
-        // A <- (carry_flag) ? 1 : 0
+        // A <- (carry_flag==active) ? 1 : 0
         try assembler.li(.A, 1)
         assembler.jc()
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)
-        try label(token: labelTail)
-        
+        try label(token: labelThen)
         try pushAToStack()
     }
     

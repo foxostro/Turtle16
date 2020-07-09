@@ -881,11 +881,15 @@ class ExpressionSubCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                      left: ExprUtils.makeLiteralInt(value: 1000),
                                      right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push16(1000),
             .push16(1000),
             .add16
         ])
+        XCTAssertEqual(computer.stack16(at: 0), 2000)
     }
     
     func testBinary_U16_Plus_U8() {
@@ -927,11 +931,15 @@ class ExpressionSubCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
                                      left: ExprUtils.makeLiteralInt(value: 1),
                                      right: ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push(1),
             .push(1),
             .add
         ])
+        XCTAssertEqual(computer.stack(at: 0), 2)
     }
     
     func testBinary_U8_Plus_Bool() {

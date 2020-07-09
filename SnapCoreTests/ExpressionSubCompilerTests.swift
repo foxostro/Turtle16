@@ -1206,13 +1206,17 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testBinary_U16_Divide_U16() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
-                                     left: ExprUtils.makeLiteralInt(value: 1000),
-                                     right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push16(1000),
+                                     left: ExprUtils.makeLiteralInt(value: 0x1000),
+                                     right: ExprUtils.makeLiteralInt(value: 0x1000))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(0x1000),
+            .push16(0x1000),
             .div16
         ])
+        XCTAssertEqual(computer.stack16(at: 0), 1)
     }
     
     func testBinary_U16_Divide_U8() {
@@ -1252,13 +1256,17 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testBinary_U8_Divide_U8() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
-                                     left: ExprUtils.makeLiteralInt(value: 1),
-                                     right: ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(1),
+                                     left: ExprUtils.makeLiteralInt(value: 12),
+                                     right: ExprUtils.makeLiteralInt(value: 4))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push(4),
+            .push(12),
             .div
         ])
+        XCTAssertEqual(computer.stack(at: 0), 3)
     }
     
     func testBinary_U8_Divide_Bool() {

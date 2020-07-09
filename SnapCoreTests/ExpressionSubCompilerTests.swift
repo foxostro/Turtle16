@@ -331,14 +331,34 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
-    func testBinary_U16_Lt_U16() {
+    func testBinary_U16_Lt_U16_1() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1000),
-                                              right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
+                                              right: ExprUtils.makeLiteralInt(value: 500))
+        let expectedIr: [YertleInstruction] = [
+            .push16(500),
             .push16(1000),
             .lt16
-        ])
+        ]
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, expectedIr)
+        XCTAssertEqual(computer.stack(at: 0), 0)
+    }
+    
+    func testBinary_U16_Lt_U16_2() {
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 1001))
+        let expectedIr: [YertleInstruction] = [
+            .push16(1001),
+            .push16(1000),
+            .lt16
+        ]
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, expectedIr)
+        XCTAssertEqual(computer.stack(at: 0), 1)
     }
     
     func testBinary_U16_Lt_U8() {
@@ -373,14 +393,34 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
-    func testBinary_U8_Lt_U8() {
+    func testBinary_U8_Lt_U8_1() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 1),
                                               right: ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
+        let expectedIr: [YertleInstruction] = [
             .push(1),
             .push(1),
             .lt
-        ])
+        ]
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, expectedIr)
+        XCTAssertEqual(computer.stack(at: 0), 0)
+    }
+    
+    func testBinary_U8_Lt_U8_2() {
+        let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeLiteralInt(value: 0),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        let expectedIr: [YertleInstruction] = [
+            .push(1),
+            .push(0),
+            .lt
+        ]
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, expectedIr)
+        XCTAssertEqual(computer.stack(at: 0), 1)
     }
     
     func testBinary_U8_Lt_Bool() {

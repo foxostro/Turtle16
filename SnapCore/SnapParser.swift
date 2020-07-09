@@ -436,6 +436,10 @@ public class SnapParser: Parser {
     }
     
     private func consumeReturn(_ token: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
-        return [Return(token: token, expression: try consumeExpression())]
+        if nil == acceptEndOfStatement() {
+            return [Return(token: token, expression: try consumeExpression())]
+        } else {
+            return [Return(token: token, expression: nil)]
+        }
     }
 }

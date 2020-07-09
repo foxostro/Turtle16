@@ -1317,11 +1317,15 @@ class ExpressionSubCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
                                      left: ExprUtils.makeLiteralInt(value: 1000),
                                      right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push16(1000),
             .push16(1000),
             .mod16
         ])
+        XCTAssertEqual(computer.stack(at: 0), 0)
     }
     
     func testBinary_U16_Modulus_U8() {
@@ -1361,13 +1365,17 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testBinary_U8_Modulus_U8() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
-                                     left: ExprUtils.makeLiteralInt(value: 1),
-                                     right: ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(1),
+                                     left: ExprUtils.makeLiteralInt(value: 15),
+                                     right: ExprUtils.makeLiteralInt(value: 4))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push(4),
+            .push(15),
             .mod
         ])
+        XCTAssertEqual(computer.stack(at: 0), 3)
     }
     
     func testBinary_U8_Modulus_Bool() {

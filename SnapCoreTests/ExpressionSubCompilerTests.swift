@@ -1097,13 +1097,17 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testBinary_U16_Multiply_U16() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                     left: ExprUtils.makeLiteralInt(value: 1000),
-                                     right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push16(1000),
+                                     left: ExprUtils.makeLiteralInt(value: 256),
+                                     right: ExprUtils.makeLiteralInt(value: 256))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(256),
+            .push16(256),
             .mul16
         ])
+        XCTAssertEqual(computer.stack16(at: 0), UInt16(256) &* UInt16(256))
     }
     
     func testBinary_U16_Multiply_U8() {
@@ -1143,13 +1147,17 @@ class ExpressionSubCompilerTests: XCTestCase {
     
     func testBinary_U8_Multiply_U8() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                     left: ExprUtils.makeLiteralInt(value: 1),
-                                     right: ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(1),
+                                     left: ExprUtils.makeLiteralInt(value: 2),
+                                     right: ExprUtils.makeLiteralInt(value: 3))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push(3),
+            .push(2),
             .mul
         ])
+        XCTAssertEqual(computer.stack(at: 0), 6)
     }
     
     func testBinary_U8_Multiply_Bool() {

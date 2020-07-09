@@ -411,27 +411,21 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         try assembler.li(.V, addressOfB+0)
         try assembler.mov(.B, .M)
+        
+        let labelThen = makeTempLabel()
+        try setAddressToLabel(labelThen)
 
         // Compare the high bytes.
         try assembler.sbc(.NONE)
         try assembler.sbc(.NONE)
         
-        // A <- (carry_flag) ? 1 : 0
-        let labelTail = makeTempLabel()
-        let labelThen = makeTempLabel()
-        try setAddressToLabel(labelThen)
-        assembler.jnc()
+        // A <- (carry_flag==active) ? 1 : 0
+        try assembler.li(.A, 1)
+        assembler.jc()
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)
-        try setAddressToLabel(labelTail)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
         try label(token: labelThen)
-        try assembler.li(.A, 1)
-        try label(token: labelTail)
-        
         try pushAToStack()
     }
     

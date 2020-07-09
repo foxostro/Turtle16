@@ -791,16 +791,16 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     private func sub16() throws {
         try pop16()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.V, kScratchLo+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.V, kScratchLo+1)
         try assembler.mov(.M, .B)
         
         try pop16()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        try assembler.li(.V, kScratchLo+2)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+1)
+        try assembler.li(.V, kScratchLo+3)
         try assembler.mov(.M, .B)
         
         try assembler.li(.U, kScratchHi)

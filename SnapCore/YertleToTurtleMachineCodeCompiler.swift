@@ -459,20 +459,20 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
 
-        // Pop `b' and store in scratch memory.
-        try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.M, .B)
-
         // Pop `a' and store in scratch memory.
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, addressOfA+0)
         try assembler.mov(.M, .A)
         try assembler.li(.V, addressOfA+1)
+        try assembler.mov(.M, .B)
+
+        // Pop `b' and store in scratch memory.
+        try pop16()
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, addressOfB+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, addressOfB+1)
         try assembler.mov(.M, .B)
         
         // Compare low bytes of `a' and `b' into the A and B registers.

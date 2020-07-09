@@ -327,13 +327,17 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Gt_U16() {
-        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 1000),
-                                              right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push16(1000),
+        let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 0x2000),
+                                              right: ExprUtils.makeLiteralInt(value: 0x1000))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(0x1000),
+            .push16(0x2000),
             .gt16
         ])
+        XCTAssertEqual(computer.stack(at: 0), 1)
     }
     
     func testBinary_U16_Gt_U8() {

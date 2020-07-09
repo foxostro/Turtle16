@@ -112,12 +112,12 @@ class UnlockedComputerExecutor: NSObject {
         
         computer.step()
         
-        if (.active == computer.cpuState.controlWord.HLT) {
+        if .active == computer.cpuState.controlWord.HLT {
             numberOfInstructionsRemaining = 0
             notifyDidStop()
             notifyDidHalt()
         }
-        else if (numberOfInstructionsRemaining == 0) {
+        else if numberOfInstructionsRemaining == 0 {
             notifyDidStop()
         }
     }

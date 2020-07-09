@@ -383,4 +383,14 @@ let a = isOdd(2)
         
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
     }
+        
+    func test_EndToEndIntegration_ReturnInVoidFunction() {
+        let executor = SnapExecutor()
+        let _ = try! executor.execute(program: """
+func foo() {
+    return
+}
+foo()
+""")
+    }
 }

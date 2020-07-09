@@ -212,25 +212,29 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
+    func testLt16_1_lt_1_is_false() {
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(1), .lt16])
+        XCTAssertEqual(computer.stack(at: 0), 0)
+        XCTAssertEqual(computer.stack(at: 1), 2)
+        XCTAssertEqual(computer.stack(at: 2), 1)
+    }
+    
     func testLt16_0_lt_1_is_true() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .lt16])
-        
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .lt16])
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
     func testLt16_1_lt_0_is_false() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .lt16])
-        
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .lt16])
         XCTAssertEqual(computer.stack(at: 0), 0)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
     }
     
     func testLt16_1000_lt_2000_is_true() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(1000), .push16(2000), .lt16])
-        
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(2000), .push16(1000), .lt16])
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
@@ -258,7 +262,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testGt16_0_gt_1_is_false() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .gt16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .gt16])
         
         XCTAssertEqual(computer.stack(at: 0), 0)
         XCTAssertEqual(computer.stack(at: 1), 2)
@@ -266,7 +270,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testGt16_1_gt_0_is_true() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .gt16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .gt16])
         
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
@@ -274,7 +278,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testGt16_1000_gt_2000_is_false() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(1000), .push16(2000), .gt16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(2000), .push16(1000), .gt16])
         
         XCTAssertEqual(computer.stack(at: 0), 0)
         XCTAssertEqual(computer.stack(at: 1), 2)
@@ -303,7 +307,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLe16_0_le_1_is_true() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .le16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .le16])
         
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
@@ -311,7 +315,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLe16_1_le_0_is_false() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(1), .push16(0), .le16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0), .push16(1), .le16])
         
         XCTAssertEqual(computer.stack(at: 0), 0)
         XCTAssertEqual(computer.stack(at: 1), 2)
@@ -319,7 +323,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLe16_1000_le_2000_is_true() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(1000), .push16(2000), .le16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(2000), .push16(1000), .le16])
         
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
@@ -410,7 +414,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testSub16_0x0000_and_0x0001() {
-        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0000), .push16(0x0001), .sub16])
+        let computer = try! execute(ir: [.push(1), .push(2), .push16(0x0001), .push16(0x0000), .sub16])
         // TODO: SUB16 does not set the carry flag. Should it?
         XCTAssertEqual(computer.stack16(at: 0), 0xffff)
         XCTAssertEqual(computer.stack(at: 2), 2)

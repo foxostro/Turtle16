@@ -585,14 +585,46 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
-    func testBinary_U16_Le_U16() {
+    func testBinary_U16_Le_U16_1() {
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 500),
+                                              right: ExprUtils.makeLiteralInt(value: 1000))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(1000),
+            .push16(500),
+            .le16
+        ])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testBinary_U16_Le_U16_2() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1000),
                                               right: ExprUtils.makeLiteralInt(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push16(1000),
             .push16(1000),
             .le16
         ])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testBinary_U16_Le_U16_3() {
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1000),
+                                              right: ExprUtils.makeLiteralInt(value: 500))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(500),
+            .push16(1000),
+            .le16
+        ])
+        XCTAssertEqual(computer.stack(at: 0), 0)
     }
     
     func testBinary_U16_Le_U8() {
@@ -627,14 +659,46 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
     }
     
-    func testBinary_U8_Le_U8() {
+    func testBinary_U8_Le_U8_1() {
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 0),
+                                              right: ExprUtils.makeLiteralInt(value: 1))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push(1),
+            .push(0),
+            .le
+        ])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testBinary_U8_Le_U8_2() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1),
                                               right: ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
             .push(1),
             .push(1),
             .le
         ])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testBinary_U8_Le_U8_3() {
+        let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeLiteralInt(value: 1),
+                                              right: ExprUtils.makeLiteralInt(value: 0))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push(0),
+            .push(1),
+            .le
+        ])
+        XCTAssertEqual(computer.stack(at: 0), 0)
     }
     
     func testBinary_U8_Le_Bool() {

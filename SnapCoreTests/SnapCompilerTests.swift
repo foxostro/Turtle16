@@ -496,7 +496,7 @@ let foo: bool = 0xffff
 """)
         
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `u16' to return type `bool'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `u16' to type `bool'")
     }
     
     func test_EndToEndIntegration_CastU16DownToU8() {
@@ -506,6 +506,7 @@ var foo: u16 = 1
 let bar: u8 = foo as u8
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
     }
 }

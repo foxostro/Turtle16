@@ -384,12 +384,22 @@ public class SnapParser: Parser {
     }
     
     private func consumeMultiplication() throws -> Expression {
-        var expression = try consumeUnary()
+        var expression = try consumeCast()
         while let tokenOperator = accept(operators: [.multiply, .divide, .modulus]) {
-            let right = try consumeUnary()
+            let right = try consumeCast()
             expression = Expression.Binary(op: tokenOperator, left: expression, right: right)
         }
         return expression
+    }
+    
+    private func consumeCast() throws -> Expression {
+        let expr = try consumeUnary()
+        if let tokenAs = accept(TokenAs.self) {
+            let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+            return Expression.As(expr: expr, tokenAs: tokenAs as! TokenAs, tokenType: tokenType)
+        } else {
+            return expr
+        }
     }
     
     private func consumeUnary() throws -> Expression {

@@ -283,6 +283,36 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class As: Expression {
+        public let expr: Expression
+        public let tokenAs: TokenAs
+        public let tokenType: TokenType
+        
+        public override var tokens: [Token] {
+            return expr.tokens + [tokenAs, tokenType]
+        }
+        
+        public var targetType: SymbolType {
+            return tokenType.representedType
+        }
+        
+        public required init(expr: Expression, tokenAs: TokenAs, tokenType: TokenType) {
+            self.expr = expr
+            self.tokenAs = tokenAs
+            self.tokenType = tokenType
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? As else { return false }
+            guard expr == rhs.expr else { return false }
+            guard tokenAs == rhs.tokenAs else { return false }
+            guard tokenType == rhs.tokenType else { return false }
+            return true
+        }
+    }
+    
     // Useful for testing
     public class UnsupportedExpression : Expression {}
 }

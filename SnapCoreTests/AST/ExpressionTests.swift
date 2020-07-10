@@ -176,4 +176,46 @@ class ExpressionTests: XCTestCase {
                        Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
                         arguments: [ExprUtils.makeLiteralInt(value: 1)]).hash)
     }
+    
+    func testAsEquality() {
+        // Different expr
+        XCTAssertNotEqual(Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                        tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                        tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)),
+                          Expression.As(expr: ExprUtils.makeIdentifier(name: "bar"),
+                                        tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                        tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)))
+        
+        // Different "as" token
+        XCTAssertNotEqual(Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                        tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                        tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)),
+                          Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                        tokenAs: TokenAs(lineNumber: 2, lexeme: "as"),
+                                        tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)))
+        
+        // Different target type
+        XCTAssertNotEqual(Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                        tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                        tokenType: TokenType(lineNumber: 1, lexeme: "u16", type: .u16)),
+                          Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                        tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                        tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)))
+        
+        // Same
+        XCTAssertEqual(Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                     tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                     tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)),
+                       Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                     tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                     tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)))
+        
+        // Hash
+        XCTAssertEqual(Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                     tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                     tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)).hash,
+                       Expression.As(expr: ExprUtils.makeIdentifier(name: "foo"),
+                                     tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                     tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)).hash)
+    }
 }

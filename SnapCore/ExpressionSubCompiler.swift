@@ -38,6 +38,8 @@ public class ExpressionSubCompiler: NSObject {
             return try compile(assignment: assignment)
         } else if let call = expression as? Expression.Call {
             return try compile(call: call)
+        } else if let expr = expression as? Expression.As {
+            return try compile(as: expr)
         }
         
         throw unsupportedError(expression: expression)
@@ -343,6 +345,23 @@ public class ExpressionSubCompiler: NSObject {
                 throw CompilerError(message: message)
             }
         }
+    }
+    
+    private func compile(as expr: Expression.As) throws -> [YertleInstruction] {
+        let originalType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr.expr)
+        let targetType = expr.targetType
+        var instructions: [YertleInstruction] = try compile(expression: expr.expr)
+        if originalType != targetType {
+            switch (originalType, targetType) {
+            case (.u8, .u16):
+                instructions += [.push(0)]
+            case (.u16, .u8):
+                instructions += [.pop]
+            default:
+                abort()
+            }
+        }
+        return instructions
     }
     
     private func unsupportedError(expression: Expression) -> Error {

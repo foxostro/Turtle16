@@ -1597,4 +1597,132 @@ class ExpressionSubCompilerTests: XCTestCase {
             XCTAssertEqual(($0 as? CompilerError)?.message, "cannot call value of non-function type `u8'")
         }
     }
+    
+    func testBoolasVoid() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralBoolean(value: false),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "void", type: .void))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `void'")
+        }
+    }
+    
+    func testBoolasU16() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralBoolean(value: false),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "u16", type: .u16))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `u16'")
+        }
+    }
+    
+    func testBoolasU8() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralBoolean(value: false),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `u8'")
+        }
+    }
+    
+    func testBoolasBool() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralBoolean(value: true),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "bool", type: .bool))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testU8asVoid() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 1),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "void", type: .void))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `void'")
+        }
+    }
+    
+    func testU8asU16() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 0xab),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "u16", type: .u16))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0x00ab)
+    }
+    
+    func testU8asU8() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 1),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testU8asBool() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 1),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "bool", type: .bool))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `bool'")
+        }
+    }
+    
+    func testU16asVoid() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 0xffff),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "void", type: .void))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u16' to type `void'")
+        }
+    }
+    
+    func testU16asU16() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 0xffff),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "u16", type: .u16))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0xffff)
+    }
+    
+    func testU16asU8() {
+        // Casting from U16 to U8 just drops the high byte.
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 0xabcd),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8))
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack(at: 0), 0xcd)
+    }
+    
+    func testU16asBool() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 0xffff),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 tokenType: TokenType(lineNumber: 1, lexeme: "bool", type: .bool))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u16' to type `bool'")
+        }
+    }
 }

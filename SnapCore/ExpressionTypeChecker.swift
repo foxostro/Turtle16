@@ -33,6 +33,8 @@ public class ExpressionTypeChecker: NSObject {
             return try check(assignment: assignment)
         } else if let call = expression as? Expression.Call {
             return try check(call: call)
+        } else if let expr = expression as? Expression.As {
+            return try check(as: expr)
         }
         throw unsupportedError(expression: expression)
     }
@@ -185,6 +187,22 @@ public class ExpressionTypeChecker: NSObject {
             } else {
                 throw CompilerError(message: message)
             }
+        }
+    }
+        
+    public func check(as expr: Expression.As) throws -> SymbolType {
+        let originalType = try check(expression: expr.expr)
+        let targetType = expr.targetType
+        if originalType == targetType {
+            return targetType
+        }
+        switch (originalType, targetType) {
+        case (.u8, .u16), (.u16, .u8):
+            return targetType
+        default:
+            let lineNumber = expr.tokens.first!.lineNumber
+            let message = "cannot convert value of type `\(originalType)' to type `\(targetType)'"
+            throw CompilerError(line: lineNumber, message: message)
         }
     }
     

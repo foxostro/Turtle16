@@ -70,6 +70,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "%") {[weak self] in
                 TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .modulus)
             },
+            Rule(pattern: "as") {[weak self] in
+                TokenAs(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "\\(") {[weak self] in
                 TokenParenLeft(lineNumber: self!.lineNumber, lexeme: $0)
             },

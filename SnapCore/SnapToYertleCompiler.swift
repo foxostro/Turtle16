@@ -135,10 +135,14 @@ public class SnapToYertleCompiler: NSObject {
                 case (.u8, .u16):    instructions += [.push(0)]
                 case (.u16, .u16):   break
                 default:
-                    abort()
+                    let lineNumber = varDecl.identifier.lineNumber
+                    let message = "cannot assign value of type `\(String(describing: inferredType))' to type `\(String(describing: explicitType))'"
+                    throw CompilerError(line: lineNumber, message: message)
                 }
             case .function, .void:
-                abort()
+                let lineNumber = varDecl.identifier.lineNumber
+                let message = "cannot assign value of type `\(String(describing: inferredType))' to type `\(String(describing: explicitType))'"
+                throw CompilerError(line: lineNumber, message: message)
             }
         }
         

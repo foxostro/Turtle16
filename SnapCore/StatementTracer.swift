@@ -31,22 +31,18 @@ public class StatementTracer: NSObject {
     }
     
     public func trace(currentTrace: Trace, genericNode: AbstractSyntaxTreeNode) throws -> [Trace] {
-        if let node = genericNode as? Block {
+        switch genericNode {
+        case let node as Block:
             return try trace(currentTrace: currentTrace, block: node)
-        }
-        else if let node = genericNode as? If {
+        case let node as If:
             return try trace(currentTrace: currentTrace, if: node)
-        }
-        else if let node = genericNode as? While {
+        case let node as While:
             return try trace(currentTrace: currentTrace, while: node)
-        }
-        else if let node = genericNode as? ForLoop {
+        case let node as ForLoop:
             return try trace(currentTrace: currentTrace, forLoop: node)
-        }
-        else if let node = genericNode as? Return {
+        case let node as Return:
             return try trace(currentTrace: currentTrace, return: node)
-        }
-        else {
+        default:
             return trace(currentTrace: currentTrace, stmt: genericNode)
         }
     }

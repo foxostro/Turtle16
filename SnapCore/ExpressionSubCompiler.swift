@@ -16,6 +16,12 @@ public class ExpressionSubCompiler: NSObject {
     let symbols: SymbolTable
     let kFramePointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
     let kFramePointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
+    let compilerInstrinsicFunctions: [String: [YertleInstruction]] = [
+        "peekMemory" : [.loadIndirect],
+        "pokeMemory" : [.storeIndirect, .pop],
+        "peekPeripheral" : [.peekPeripheral],
+        "pokePeripheral" : [.pokePeripheral, .pop]
+    ]
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
@@ -297,19 +303,12 @@ public class ExpressionSubCompiler: NSObject {
         let identifierToken = (node.callee as! Expression.Identifier).identifier
         let symbol = try symbols.resolve(identifierToken: identifierToken)
         switch symbol.type {
-        case .function(name: let name, mangledName: let mangledName, functionType: let typ):
+        case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [YertleInstruction] = []
             instructions += try pushFunctionArguments(typ, node)
-            switch name {
-            case "peekMemory":
-                instructions += [.loadIndirect]
-            case "pokeMemory":
-                instructions += [.storeIndirect, .pop]
-            case "peekPeripheral":
-                instructions += [.peekPeripheral]
-            case "pokePeripheral":
-                instructions += [.pokePeripheral, .pop]
-            default:
+            if let ins = compilerInstrinsicFunctions[mangledName] {
+                instructions += ins
+            } else {
                 let fn = TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName)
                 instructions += [.jalr(fn)]
                 instructions += popFunctionArguments(typ)

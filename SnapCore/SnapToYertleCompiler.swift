@@ -23,6 +23,42 @@ public class SnapToYertleCompiler: NSObject {
     public override init() {
         symbols = globalSymbols
         super.init()
+        bindCompilerInstrinsicPeekMemory()
+        bindCompilerInstrinsicPokeMemory()
+        bindCompilerInstrinsicPeekPeripheral()
+        bindCompilerInstrinsicPokePeripheral()
+    }
+    
+    private func bindCompilerInstrinsicPeekMemory() {
+        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
+        let name = TokenIdentifier(lineNumber: -1, lexeme: "peekMemory")
+        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name.lexeme, symbol: symbol)
+    }
+    
+    private func bindCompilerInstrinsicPokeMemory() {
+        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
+        let name = TokenIdentifier(lineNumber: -1, lexeme: "pokeMemory")
+        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name.lexeme, symbol: symbol)
+    }
+    
+    private func bindCompilerInstrinsicPeekPeripheral() {
+        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
+        let name = TokenIdentifier(lineNumber: -1, lexeme: "peekPeripheral")
+        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name.lexeme, symbol: symbol)
+    }
+    
+    private func bindCompilerInstrinsicPokePeripheral() {
+        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
+        let name = TokenIdentifier(lineNumber: -1, lexeme: "pokePeripheral")
+        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name.lexeme, symbol: symbol)
     }
     
     // The generated program will need unique, temporary labels.

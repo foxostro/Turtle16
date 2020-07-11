@@ -56,6 +56,8 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.ret.description, "RET")
         XCTAssertEqual(YertleInstruction.leafRet.description, "LEAF-RET")
         XCTAssertEqual(YertleInstruction.hlt.description, "HLT")
+        XCTAssertEqual(YertleInstruction.peekPeripheral.description, "PEEK-PERIPHERAL")
+        XCTAssertEqual(YertleInstruction.pokePeripheral.description, "POKE-PERIPHERAL")
     }
     
     func testMakeListing_Empty() {

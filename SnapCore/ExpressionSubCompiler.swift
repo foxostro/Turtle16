@@ -296,46 +296,24 @@ public class ExpressionSubCompiler: NSObject {
         let identifierToken = (node.callee as! Expression.Identifier).identifier
         let symbol = try symbols.resolve(identifierToken: identifierToken)
         switch symbol.type {
-        case .function(name: _, mangledName: let mangledName, functionType: let typ):
+        case .function(name: let name, mangledName: let mangledName, functionType: let typ):
             var instructions: [YertleInstruction] = []
-            for i in 0..<typ.arguments.count {
-                let argExpr = node.arguments[i]
-                let arg = try compile(expression: argExpr)
-                let expectedType = typ.arguments[i].argumentType
-                let actualType = try ExpressionTypeChecker(symbols: symbols).check(expression: argExpr)
-                switch (actualType, expectedType) {
-                case (.bool, .bool): instructions += arg
-                case (.u8, .u8):     instructions += arg
-                case (.u8, .u16):    instructions += arg + [.push(0)]
-                case (.u16, .u16):   instructions += arg
-                default:
-                    abort()
-                }
-            }
-            instructions += [
-                .jalr(TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName))
-            ]
-            
-            for arg in typ.arguments.reversed() {
-                switch arg.argumentType {
-                case .u16:       instructions += [.pop16]
-                case .u8, .bool: instructions += [.pop]
-                default:
-                    abort()
-                }
-            }
-            
-            switch typ.returnType {
-            case .u16:
-                instructions += [.load16(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case .u8, .bool:
-                instructions += [.load(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case .void:
-                break
+            instructions += try pushFunctionArguments(typ, node)
+            switch name {
+            case "peekMemory":
+                instructions += [.loadIndirect]
+            case "pokeMemory":
+                instructions += [.storeIndirect, .pop]
+            case "peekPeripheral":
+                instructions += [.peekPeripheral]
+            case "pokePeripheral":
+                instructions += [.pokePeripheral, .pop]
             default:
-                abort()
+                let fn = TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName)
+                instructions += [.jalr(fn)]
+                instructions += popFunctionArguments(typ)
+                instructions += doFunctionReturnValue(typ)
             }
-            
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
@@ -345,6 +323,53 @@ public class ExpressionSubCompiler: NSObject {
                 throw CompilerError(message: message)
             }
         }
+    }
+    
+    private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        for i in 0..<typ.arguments.count {
+            let argExpr = node.arguments[i]
+            let arg = try compile(expression: argExpr)
+            let expectedType = typ.arguments[i].argumentType
+            let actualType = try ExpressionTypeChecker(symbols: symbols).check(expression: argExpr)
+            switch (actualType, expectedType) {
+            case (.bool, .bool): instructions += arg
+            case (.u8, .u8):     instructions += arg
+            case (.u8, .u16):    instructions += arg + [.push(0)]
+            case (.u16, .u16):   instructions += arg
+            default:
+                abort()
+            }
+        }
+        return instructions
+    }
+    
+    private func popFunctionArguments(_ typ: FunctionType) -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        for arg in typ.arguments.reversed() {
+            switch arg.argumentType {
+            case .u16:       instructions += [.pop16]
+            case .u8, .bool: instructions += [.pop]
+            default:
+                abort()
+            }
+        }
+        return instructions
+    }
+    
+    private func doFunctionReturnValue(_ typ: FunctionType) -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        switch typ.returnType {
+        case .u16:
+            instructions += [.load16(SnapToYertleCompiler.kReturnValueScratchLocation)]
+        case .u8, .bool:
+            instructions += [.load(SnapToYertleCompiler.kReturnValueScratchLocation)]
+        case .void:
+            break
+        default:
+            abort()
+        }
+        return instructions
     }
     
     private func compile(as expr: Expression.As) throws -> [YertleInstruction] {

@@ -101,6 +101,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .leafRet: try leafRet()
             case .ret: try ret()
             case .hlt: assembler.hlt()
+            case .peekPeripheral: try peekPeripheral()
+            case .pokePeripheral: try pokePeripheral()
             }
         }
         insertProgramEpilogue()
@@ -1693,5 +1695,41 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
+    }
+    
+    private func peekPeripheral() throws {
+        try pop16()
+        try assembler.mov(.U, .A)
+        try assembler.mov(.V, .B)
+        try assembler.mov(.A, .P)
+        try pushAToStack()
+    }
+    
+    private func pokePeripheral() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.D, .B)
+        
+        try pop16()
+        
+        // Stash the destination address in a well-known scratch location.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .B)
+        
+        // Copy the top of the stack into A.
+        try loadStackPointerIntoUVandXY()
+        try assembler.mov(.A, .M)
+        
+        // Restore the stashed destination address to XY.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.X, .M)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.Y, .M)
+        
+        // Store A to the destination address on the peripheral bus.
+        try assembler.mov(.P, .A)
     }
 }

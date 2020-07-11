@@ -1205,4 +1205,48 @@ for var i = 0; i < 10; i = i + 1 {
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
+    
+    func testParsePeekMemory() {
+        let tokens = tokenize("peekMemory(0x0010)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "peekMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010))])
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
+    
+    func testParsePokeMemory() {
+        let tokens = tokenize("pokeMemory(0x0010, 0xab)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokeMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xab", literal: 0xab))])
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
+    
+    func testParsePeekPeripheral() {
+        let tokens = tokenize("peekPeripheral(0xffff, 7)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "peekPeripheral")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xffff", literal: 0xffff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7))])
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
+    
+    func testParsePokePeripheral() {
+        let tokens = tokenize("pokePeripheral(0xffff, 0xff, 0)")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokePeripheral")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xffff", literal: 0xffff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xff", literal: 0xff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))])
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
 }

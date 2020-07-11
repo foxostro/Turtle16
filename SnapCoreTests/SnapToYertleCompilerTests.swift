@@ -9,6 +9,7 @@
 import XCTest
 import SnapCore
 import TurtleCompilerToolbox
+import TurtleCore
 
 class SnapToYertleCompilerTests: XCTestCase {
     func testNoErrorsAtFirst() {
@@ -1075,6 +1076,86 @@ class SnapToYertleCompilerTests: XCTestCase {
             let executor = YertleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        }
+    }
+        
+    func testCompilePeekMemory() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
+                           explicitType: nil,
+                           expression: ExprUtils.makeLiteralInt(value: 0xaa),
+                           storage: .staticStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
+                           explicitType: nil,
+                           expression: Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "peekMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010))]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+        } else {
+            let ir = compiler.instructions
+            XCTAssertEqual(ir, [
+                .push(0xaa),
+                .store(0x0010),
+                .pop,
+                .push(0x10),
+                .push(0x00),
+                .loadIndirect,
+                .store(0x0011),
+                .pop,
+            ])
+            let executor = YertleExecutor()
+            let computer = try! executor.execute(ir: ir)
+            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+            XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xaa)
+        }
+    }
+        
+    func testCompilePokeMemory() {
+        let ast = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokeMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xab", literal: 0xab)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010))])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+        } else {
+            let ir = compiler.instructions
+            XCTAssertEqual(ir, [
+                .push(0xab),
+                .push(0x10),
+                .push(0x00),
+                .storeIndirect,
+                .pop
+            ])
+            let executor = YertleExecutor()
+            let computer = try! executor.execute(ir: ir)
+            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+        }
+    }
+        
+    func testCompilePokePeripheral() {
+        let ast = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokePeripheral")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xff", literal: 0xff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xffff", literal: 0xffff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))]),
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokePeripheral")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xff", literal: 0xff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xffff", literal: 0xffff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+        } else {
+            let ir = compiler.instructions
+            let executor = YertleExecutor()
+            let computer = try! executor.execute(ir: ir)
+            XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), 0xff)
+            XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), 0xff)
         }
     }
 }

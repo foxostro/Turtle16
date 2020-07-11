@@ -8,6 +8,7 @@
 
 import XCTest
 import SnapCore
+import TurtleCore
 
 class SnapCompilerTests: XCTestCase {
     func testCompileFailsDuringLexing() {
@@ -508,5 +509,64 @@ let bar: u8 = foo as u8
         
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
+    }
+        
+    func test_EndToEndIntegration_PokeMemory() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+pokeMemory(0xab, 0x0010)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+    }
+    
+    func test_EndToEndIntegration_PeekMemory() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let a = 0xab
+let b = peekMemory(0x0010)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xab)
+    }
+        
+    func test_EndToEndIntegration_PokePeripheral() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+pokePeripheral(0xab, 0xffff, 1)
+pokePeripheral(0xcd, 0xffff, 0)
+""")
+        
+        // There's a hardware bug in Rev 2 where the bits of the instruction
+        // RAM port connected to the data bus are in reverse order.
+        XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), reverseBits(0xab))
+        XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), reverseBits(0xcd))
+    }
+    
+    private func reverseBits(_ value: UInt8) -> UInt8 {
+        var n = value
+        var result: UInt8 = 0
+        while (n > 0) {
+            result <<= 1
+            if ((n & 1) == 1) {
+                result ^= 1
+            }
+            n >>= 1
+        }
+        return result
+    }
+        
+    func test_EndToEndIntegration_PeekPeripheral() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let a = peekPeripheral(0, 0)
+let b = peekPeripheral(0, 1)
+""")
+        
+        XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0), 0)
+        XCTAssertEqual(computer.upperInstructionRAM.load(from: 0), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0)
     }
 }

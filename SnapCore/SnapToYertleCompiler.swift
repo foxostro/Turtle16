@@ -95,11 +95,13 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func performDeclPass(genericNode: AbstractSyntaxTreeNode) {
-        if let node = genericNode as? FunctionDeclaration {
+        switch genericNode {
+        case let node as FunctionDeclaration:
             performDeclPass(func: node)
-        }
-        else if let node = genericNode as? Block {
+        case let node as Block:
             performDeclPass(block: node)
+        default:
+            break
         }
     }
     
@@ -123,29 +125,25 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
-        if let node = genericNode as? VarDeclaration {
+        switch genericNode {
+        case let node as VarDeclaration:
             try compile(varDecl: node)
-        }
-        else if let node = genericNode as? Expression {
+        case let node as Expression:
             try compile(expressionStatement: node)
-        }
-        else if let node = genericNode as? If {
+        case let node as If:
             try compile(if: node)
-        }
-        else if let node = genericNode as? While {
+        case let node as While:
             try compile(while: node)
-        }
-        else if let node = genericNode as? ForLoop {
+        case let node as ForLoop:
             try compile(forLoop: node)
-        }
-        else if let node = genericNode as? Block {
+        case let node as Block:
             try compile(block: node)
-        }
-        else if let node = genericNode as? Return {
+        case let node as Return:
             try compile(return: node)
-        }
-        else if let node = genericNode as? FunctionDeclaration {
+        case let node as FunctionDeclaration:
             try compile(func: node)
+        default:
+            break
         }
     }
     

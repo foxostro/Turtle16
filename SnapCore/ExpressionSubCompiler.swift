@@ -24,25 +24,26 @@ public class ExpressionSubCompiler: NSObject {
     public func compile(expression: Expression) throws -> [YertleInstruction] {
         try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
         
-        if let literal = expression as? Expression.LiteralWord {
+        switch expression {
+        case let literal as Expression.LiteralWord:
             return try compile(literalInt: literal)
-        } else if let literal = expression as? Expression.LiteralBoolean {
+        case let literal as Expression.LiteralBoolean:
             return compile(literalBoolean: literal)
-        } else if let binary = expression as? Expression.Binary {
+        case let binary as Expression.Binary:
             return try compile(binary: binary)
-        } else if let unary = expression as? Expression.Unary {
+        case let unary as Expression.Unary:
             return try compile(unary: unary)
-        } else if let identifier = expression as? Expression.Identifier {
+        case let identifier as Expression.Identifier:
             return try compile(identifier: identifier)
-        } else if let assignment = expression as? Expression.Assignment {
+        case let assignment as Expression.Assignment:
             return try compile(assignment: assignment)
-        } else if let call = expression as? Expression.Call {
+        case let call as Expression.Call:
             return try compile(call: call)
-        } else if let expr = expression as? Expression.As {
+        case let expr as Expression.As:
             return try compile(as: expr)
+        default:
+            throw unsupportedError(expression: expression)
         }
-        
-        throw unsupportedError(expression: expression)
     }
     
     private func compile(literalInt: Expression.LiteralWord) throws -> [YertleInstruction] {

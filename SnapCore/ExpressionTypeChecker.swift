@@ -19,24 +19,26 @@ public class ExpressionTypeChecker: NSObject {
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
-        if let expr = expression as? Expression.LiteralWord {
+        switch expression {
+        case let expr as Expression.LiteralWord:
             return check(literalWord: expr)
-        } else if let _ = expression as? Expression.LiteralBoolean {
+        case is Expression.LiteralBoolean:
             return .bool
-        } else if let expr = expression as? Expression.Unary {
+        case let expr as Expression.Unary:
             return try check(unary: expr)
-        } else if let expr = expression as? Expression.Binary {
+        case let expr as Expression.Binary:
             return try check(binary: expr)
-        } else if let identifier = expression as? Expression.Identifier {
+        case let identifier as Expression.Identifier:
             return try check(identifier: identifier)
-        } else if let assignment = expression as? Expression.Assignment {
+        case let assignment as Expression.Assignment:
             return try check(assignment: assignment)
-        } else if let call = expression as? Expression.Call {
+        case let call as Expression.Call:
             return try check(call: call)
-        } else if let expr = expression as? Expression.As {
+        case let expr as Expression.As:
             return try check(as: expr)
+        default:
+            throw unsupportedError(expression: expression)
         }
-        throw unsupportedError(expression: expression)
     }
     
     public func check(literalWord: Expression.LiteralWord) -> SymbolType {

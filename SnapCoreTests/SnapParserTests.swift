@@ -1249,4 +1249,30 @@ for var i = 0; i < 10; i = i + 1 {
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
+    
+    func testParseValidSubscriptExpression() {
+        let tokens = tokenize("foo[1+2]")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            ExprUtils.makeSubscript(identifier: "foo",
+                                    expr: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
+                                                            right: ExprUtils.makeLiteralInt(value: 2)))
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
+    
+    func testParseValidSubscriptExpression_Nested() {
+        let tokens = tokenize("foo[foo[0]]")
+        let parser = SnapParser(tokens: tokens)
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let expected = TopLevel(children: [
+            ExprUtils.makeSubscript(identifier: "foo",
+                                    expr: ExprUtils.makeSubscript(identifier: "foo",
+                                                                  expr: ExprUtils.makeLiteralInt(value: 0)))
+        ])
+        XCTAssertEqual(parser.syntaxTree, expected)
+    }
 }

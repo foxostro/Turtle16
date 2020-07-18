@@ -69,4 +69,11 @@ public class ExprUtils: NSObject {
     public static func makeNeg(expr: Expression) -> Expression {
         return Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus), expression: expr)
     }
+    
+    public static func makeSubscript(lineNumber: Int = 1, identifier: String, expr: Expression) -> Expression {
+        return Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: lineNumber, lexeme: identifier),
+                                    tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                    expr: expr,
+                                    tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"))
+    }
 }

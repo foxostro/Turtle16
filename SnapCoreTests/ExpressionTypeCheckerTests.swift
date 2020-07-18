@@ -1302,4 +1302,29 @@ class ExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `u16' to type `bool'")
         }
     }
+    
+    fileprivate func doTestSubscriptOfZero(_ symbolType: SymbolType) {
+        let ident = "foo"
+        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
+        let zero = ExprUtils.makeLiteralInt(value: 0)
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `\(String(describing: symbolType))' has no subscripts")
+        }
+    }
+    
+    func testSubscriptOfZeroWithU8() {
+        doTestSubscriptOfZero(.u8)
+    }
+    
+    func testSubscriptOfZeroWithU16() {
+        doTestSubscriptOfZero(.u16)
+    }
+    
+    func testSubscriptOfZeroWithBool() {
+        doTestSubscriptOfZero(.bool)
+    }
 }

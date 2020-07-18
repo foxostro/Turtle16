@@ -425,4 +425,16 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "bass"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeSquareBrackets() {
+        let tokenizer = SnapLexer(withString: "foo[[bar]]")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                          TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                          TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                          TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                          TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
+                                          TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

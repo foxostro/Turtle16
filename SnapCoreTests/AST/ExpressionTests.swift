@@ -218,4 +218,46 @@ class ExpressionTests: XCTestCase {
                                      tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
                                      tokenType: TokenType(lineNumber: 1, lexeme: "u8", type: .u8)).hash)
     }
+    
+    func testSubscriptEquality() {
+        // Different identifier
+        XCTAssertNotEqual(Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                               tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                               expr: ExprUtils.makeLiteralInt(value: 0),
+                                               tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
+                          Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                               tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                               expr: ExprUtils.makeLiteralInt(value: 0),
+                                               tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")))
+        
+        // Different expression
+        XCTAssertNotEqual(Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                               tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                               expr: ExprUtils.makeLiteralInt(value: 0),
+                                               tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
+                          Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                               tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                               expr: ExprUtils.makeLiteralInt(value: 1),
+                                               tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")))
+        
+        // Same
+        XCTAssertEqual(Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                            tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                            expr: ExprUtils.makeLiteralInt(value: 0),
+                                            tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
+                       Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                            tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                            expr: ExprUtils.makeLiteralInt(value: 0),
+                                            tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")))
+        
+        // Hash
+        XCTAssertEqual(Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                            tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                            expr: ExprUtils.makeLiteralInt(value: 0),
+                                            tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")).hash,
+                       Expression.Subscript(tokenIdentifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                            tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                            expr: ExprUtils.makeLiteralInt(value: 0),
+                                            tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")).hash)
+    }
 }

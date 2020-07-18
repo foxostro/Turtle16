@@ -8,14 +8,17 @@
 
 import TurtleCompilerToolbox
 
-public class TokenArrow : Token {}
+
 public class TokenCurlyLeft : Token {}
 public class TokenCurlyRight : Token {}
+public class TokenSquareBracketLeft : Token {}
+public class TokenSquareBracketRight : Token {}
+public class TokenParenLeft : Token {}
+public class TokenParenRight : Token {}
+public class TokenArrow : Token {}
 public class TokenElse: Token {}
 public class TokenFunc : Token {}
 public class TokenIf: Token {}
-public class TokenParenLeft : Token {}
-public class TokenParenRight : Token {}
 public class TokenReturn: Token {}
 public class TokenVar: Token {}
 public class TokenWhile : Token {}

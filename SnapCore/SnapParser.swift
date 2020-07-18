@@ -408,7 +408,22 @@ public class SnapParser: Parser {
             return Expression.Unary(op: token, expression: right)
         }
         
-        return try consumeCall()
+        return try consumeSubscript()
+    }
+    
+    private func consumeSubscript() throws -> Expression {
+        if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenSquareBracketLeft) {
+            let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected identifier")) as! TokenIdentifier
+            let leftBracket = try expect(type: TokenSquareBracketLeft.self, error: CompilerError(line: identifier.lineNumber, message: "expected `['")) as! TokenSquareBracketLeft
+            let expr = try consumeExpression()
+            let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: leftBracket.lineNumber, message: "expected `]'")) as! TokenSquareBracketRight
+            return Expression.Subscript(tokenIdentifier: identifier,
+                                        tokenBracketLeft: leftBracket,
+                                        expr: expr,
+                                        tokenBracketRight: rightBracket)
+        } else {
+            return try consumeCall()
+        }
     }
     
     private func consumeCall() throws -> Expression {

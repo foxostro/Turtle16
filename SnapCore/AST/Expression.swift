@@ -313,6 +313,38 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class Subscript: Expression {
+        public let tokenIdentifier: TokenIdentifier
+        public let tokenBracketLeft: TokenSquareBracketLeft
+        public let expr: Expression
+        public let tokenBracketRight: TokenSquareBracketRight
+        
+        public override var tokens: [Token] {
+            return [tokenIdentifier, tokenBracketLeft] + expr.tokens + [tokenBracketRight]
+        }
+        
+        public required init(tokenIdentifier: TokenIdentifier,
+                             tokenBracketLeft: TokenSquareBracketLeft,
+                             expr: Expression,
+                             tokenBracketRight: TokenSquareBracketRight) {
+            self.tokenIdentifier = tokenIdentifier
+            self.tokenBracketLeft = tokenBracketLeft
+            self.expr = expr
+            self.tokenBracketRight = tokenBracketRight
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? Subscript else { return false }
+            guard tokenIdentifier == rhs.tokenIdentifier else { return false }
+            guard tokenBracketLeft == rhs.tokenBracketLeft else { return false }
+            guard expr == rhs.expr else { return false }
+            guard tokenBracketRight == rhs.tokenBracketRight else { return false }
+            return true
+        }
+    }
+    
     // Useful for testing
     public class UnsupportedExpression : Expression {}
 }

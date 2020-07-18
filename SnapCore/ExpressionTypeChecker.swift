@@ -36,6 +36,8 @@ public class ExpressionTypeChecker: NSObject {
             return try check(call: call)
         case let expr as Expression.As:
             return try check(as: expr)
+        case let expr as Expression.Subscript:
+            return try check(subscript: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -206,6 +208,13 @@ public class ExpressionTypeChecker: NSObject {
             let message = "cannot convert value of type `\(originalType)' to type `\(targetType)'"
             throw CompilerError(line: lineNumber, message: message)
         }
+    }
+        
+    public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
+        let symbol = try symbols.resolve(identifierToken: expr.tokenIdentifier)
+        let lineNumber = expr.tokens.first!.lineNumber
+        let message = "value of type `\(symbol.type)' has no subscripts"
+        throw CompilerError(line: lineNumber, message: message)
     }
     
     private func unsupportedError(expression: Expression) -> Error {

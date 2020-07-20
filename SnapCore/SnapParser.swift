@@ -73,69 +73,92 @@ public class SnapParser: Parser {
     }
     
     private func consumeLet(_ letToken: TokenLet, storage: SymbolStorage = .stackStorage) throws -> [AbstractSyntaxTreeNode] {
-        let identifier = try expect(type: TokenIdentifier.self,
-                                    error: CompilerError(line: letToken.lineNumber,
-                                                          format: "expected to find an identifier in let declaration",
-                                                          letToken.lexeme)) as! TokenIdentifier
-        
-        let explicitType: SymbolType?
-        if nil != accept(TokenColon.self) {
-            let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
-            explicitType = tokenType.representedType
-        } else {
-            explicitType = nil
-        }
-        
-        let equal = try expect(type: TokenEqual.self,
-                               error: CompilerError(line: letToken.lineNumber,
-                                                    format: "immutable variables must be assigned a value",
-                                                    letToken.lexeme))
-        
-        if nil != acceptEndOfStatement() {
-            throw CompilerError(line: equal.lineNumber,
-                                format: "expected value after '%@'",
-                                equal.lexeme)
-        }
-        
-        let expression = try consumeExpression()
-        
-        return [VarDeclaration(identifier: identifier,
-                               explicitType: explicitType,
-                               expression: expression,
-                               storage: storage,
-                               isMutable: false)]
+        let isMutable = false
+        let errorMessageWhenMissingIdentifier = "expected to find an identifier in let declaration"
+        let errorMessageWhenNoInitialValue = "immutable variables must be assigned a value"
+        let errorFormatWhenNoInitialValueAfterEqual = "expected value after `%@'"
+        return try consumeVar(letToken,
+                              errorMessageWhenMissingIdentifier,
+                              errorMessageWhenNoInitialValue,
+                              errorFormatWhenNoInitialValueAfterEqual,
+                              storage,
+                              isMutable)
     }
     
     private func consumeVar(_ varToken: TokenVar, storage: SymbolStorage = .stackStorage) throws -> [AbstractSyntaxTreeNode] {
+        let isMutable = true
+        let errorMessageWhenMissingIdentifier = "expected to find an identifier in variable declaration"
+        let errorMessageWhenNoInitialValue = "variables must be assigned an initial value"
+        let errorFormatWhenNoInitialValueAfterEqual = "expected initial value after `%@'"
+        return try consumeVar(varToken,
+                              errorMessageWhenMissingIdentifier,
+                              errorMessageWhenNoInitialValue,
+                              errorFormatWhenNoInitialValueAfterEqual,
+                              storage,
+                              isMutable)
+    }
+    
+    fileprivate func consumeVar(_ letOrVarToken: Token,
+                                _ errorMessageWhenMissingIdentifier: String,
+                                _ errorMessageWhenNoInitialValue: String,
+                                _ errorFormatWhenNoInitialValueAfterEqual: String,
+                                _ storage: SymbolStorage,
+                                _ isMutable: Bool) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
-                                    error: CompilerError(line: varToken.lineNumber,
-                                                         format: "expected to find an identifier in variable declaration",
-                                                         varToken.lexeme)) as! TokenIdentifier
-        let explicitType: SymbolType?
-        if nil != accept(TokenColon.self) {
-            let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
-            explicitType = tokenType.representedType
-        } else {
-            explicitType = nil
-        }
+                                    error: CompilerError(line: letOrVarToken.lineNumber,
+                                                         format: errorMessageWhenMissingIdentifier,
+                                                         letOrVarToken.lexeme)) as! TokenIdentifier
+        
+        let explicitType = try consumeTypeAnnotation()
         
         let equal = try expect(type: TokenEqual.self,
-                               error: CompilerError(line: identifier.lineNumber,
-                                                    message: "variables must be assigned an initial value"))
+                               error: CompilerError(line: letOrVarToken.lineNumber,
+                                                    message: errorMessageWhenNoInitialValue))
         
         if nil != acceptEndOfStatement() {
             throw CompilerError(line: equal.lineNumber,
-                                format: "expected initial value after `%@'",
+                                format: errorFormatWhenNoInitialValueAfterEqual,
                                 equal.lexeme)
         }
         
         let expression = try consumeExpression()
         
+        if let arr = expression as? Expression.Array {
+            if arr.elements.count == 0 && explicitType == nil {
+                throw CompilerError(line: arr.tokens.first!.lineNumber,
+                                    message: "empty array literal requires an explicit type")
+            }
+        }
+        
         return [VarDeclaration(identifier: identifier,
                                explicitType: explicitType,
                                expression: expression,
                                storage: storage,
-                               isMutable: true)]
+                               isMutable: isMutable)]
+    }
+    
+    fileprivate func consumeTypeAnnotation() throws -> SymbolType? {
+        guard nil != accept(TokenColon.self) else {
+            return nil
+        }
+        return try consumeType()
+    }
+    
+    fileprivate func consumeType() throws -> SymbolType {
+        if nil != accept(TokenSquareBracketLeft.self) {
+            let baseType = try consumePrimitiveType()
+            try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]'"))
+            return .array(baseType)
+        } else {
+            let explicitType = try consumePrimitiveType()
+            return explicitType
+        }
+    }
+    
+    fileprivate func consumePrimitiveType() throws -> SymbolType {
+        let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+        let explicitType = tokenType.representedType
+        return explicitType
     }
     
     private func consumeIf(_ ifToken: TokenIf) throws -> [AbstractSyntaxTreeNode] {
@@ -457,8 +480,22 @@ public class SnapParser: Parser {
             let expression = try consumeExpression()
             try expect(type: TokenParenRight.self,
                        error: CompilerError(line: previous!.lineNumber,
-                                            message: "expected ')' after expression"))
+                                            message: "expected `)' after expression"))
             return expression
+        }
+        else if let tokenSquareBracketLeft = accept(TokenSquareBracketLeft.self) as? TokenSquareBracketLeft {
+            var elements: [Expression] = []
+            if nil == (peek() as? TokenSquareBracketRight) {
+                repeat {
+                    while nil != accept(TokenNewline.self) {}
+                    elements.append(try consumeExpression())
+                    while nil != accept(TokenNewline.self) {}
+                } while nil != accept(TokenComma.self)
+            }
+            let tokenSquareBracketRight = try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' after expression")) as! TokenSquareBracketRight
+            return Expression.Array(tokenBracketLeft: tokenSquareBracketLeft,
+                                    elements: elements,
+                                    tokenBracketRight: tokenSquareBracketRight)
         }
         else if let token = peek() {
             throw operandTypeMismatchError(token)

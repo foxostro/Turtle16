@@ -62,7 +62,7 @@ public class ExpressionTypeChecker: NSObject {
                 return .u16
             case .u8:
                 return .u8
-            case .bool, .function, .void:
+            default:
                 throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(String(describing: expressionType))'")
             }
         default:

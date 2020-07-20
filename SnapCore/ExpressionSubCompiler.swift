@@ -190,7 +190,7 @@ public class ExpressionSubCompiler: NSObject {
             return [.load16(symbol.offset)]
         case .u8, .bool:
             return [.load(symbol.offset)]
-        case .function, .void:
+        case .void, .function, .array:
             abort()
         }
     }
@@ -203,7 +203,7 @@ public class ExpressionSubCompiler: NSObject {
             instructions += [.loadIndirect16]
         case .u8, .bool:
             instructions += [.loadIndirect]
-        case .function, .void:
+        case .void, .function, .array:
             abort()
         }
         return instructions
@@ -265,7 +265,7 @@ public class ExpressionSubCompiler: NSObject {
                 abort()
             }
             instructions += storeSymbol(symbol, depth)
-        case .function, .void:
+        case .void, .function, .array:
             abort()
         }
         
@@ -282,7 +282,7 @@ public class ExpressionSubCompiler: NSObject {
                 instructions += [.store16(symbol.offset)]
             case .u8, .bool:
                 instructions += [.store(symbol.offset)]
-            case .function, .void:
+            case .void, .function, .array:
                 abort()
             }
         case .stackStorage:
@@ -292,7 +292,7 @@ public class ExpressionSubCompiler: NSObject {
                 instructions += [.storeIndirect16]
             case .u8, .bool:
                 instructions += [.storeIndirect]
-            case .function, .void:
+            case .void, .function, .array:
                 abort()
             }
         }

@@ -10,6 +10,12 @@ import SnapCore
 import TurtleCompilerToolbox
 
 public class ExprUtils: NSObject {
+    public static func makeArray(lineNumber: Int = 1, elements: [Expression]) -> Expression {
+        return Expression.Array(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                elements: elements,
+                                tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"))
+    }
+    
     public static func makeLiteralInt(lineNumber: Int = 1, value: Int) -> Expression {
         return Expression.LiteralWord(number: TokenNumber(lineNumber: lineNumber, lexeme: "\(value)", literal: value))
     }

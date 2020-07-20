@@ -160,6 +160,8 @@ public class SnapToYertleCompiler: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
         try compile(expression: varDecl.expression)
         
+        let lineNumber = varDecl.identifier.lineNumber
+        
         if let explicitType = varDecl.explicitType {
             switch symbol.type {
             case .u16, .u8, .bool:
@@ -169,14 +171,15 @@ public class SnapToYertleCompiler: NSObject {
                 case (.u8, .u16):    instructions += [.push(0)]
                 case (.u16, .u16):   break
                 default:
-                    let lineNumber = varDecl.identifier.lineNumber
                     let message = "cannot assign value of type `\(String(describing: inferredType))' to type `\(String(describing: explicitType))'"
                     throw CompilerError(line: lineNumber, message: message)
                 }
             case .function, .void:
-                let lineNumber = varDecl.identifier.lineNumber
                 let message = "cannot assign value of type `\(String(describing: inferredType))' to type `\(String(describing: explicitType))'"
                 throw CompilerError(line: lineNumber, message: message)
+                
+            case .array(elementType: _):
+                throw CompilerError(line: lineNumber, message: "unimplemented")
             }
         }
         
@@ -226,7 +229,7 @@ public class SnapToYertleCompiler: NSObject {
                     .store(symbol.offset),
                     .pop
                 ]
-            case .function, .void:
+            case .void, .function, .array:
                 abort()
             }
         case .stackStorage:
@@ -248,7 +251,7 @@ public class SnapToYertleCompiler: NSObject {
             instructions += [.pop]
         case .void:
             break
-        case .function(name: _, mangledName: _, functionType: _):
+        case .array, .function:
             abort()
         }
     }

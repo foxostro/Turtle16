@@ -131,7 +131,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType() {
+    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType_UnspecifiedLength() {
         let parser = SnapParser(tokens: tokenize("let foo: [u8] = []"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
@@ -144,6 +144,23 @@ class SnapParserTests: XCTestCase {
         // type is given as [u8].
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: .array(count: nil, elementType: .u8),
+                                      expression: ExprUtils.makeArray(elements: []),
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType_ExplicitLength() {
+        let parser = SnapParser(tokens: tokenize("let foo: [0, u8] = []"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: .array(count: 0, elementType: .u8),
                                       expression: ExprUtils.makeArray(elements: []),
                                       storage: .stackStorage,
                                       isMutable: false)

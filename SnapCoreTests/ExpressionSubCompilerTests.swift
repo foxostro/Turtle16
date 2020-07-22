@@ -1725,4 +1725,103 @@ class ExpressionSubCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `u16' to type `bool'")
         }
     }
+    
+    func testEmptyArray() {
+        let expr = ExprUtils.makeArray(elements: [])
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(0)
+        ])
+        XCTAssertEqual(computer.stack16(at: 0), 0)
+    }
+    
+    func testArrayU8() {
+        let expr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 0),
+                                                  ExprUtils.makeLiteralInt(value: 1),
+                                                  ExprUtils.makeLiteralInt(value: 2)])
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(3),
+            .push(0),
+            .push(1),
+            .push(2)
+        ])
+        XCTAssertEqual(computer.stack16(at: 3), 3)
+        XCTAssertEqual(computer.stack(at: 2), 0)
+        XCTAssertEqual(computer.stack(at: 1), 1)
+        XCTAssertEqual(computer.stack(at: 0), 2)
+    }
+    
+    func testArrayU16() {
+        let expr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 1000),
+                                                  ExprUtils.makeLiteralInt(value: 1001),
+                                                  ExprUtils.makeLiteralInt(value: 1002)])
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(3),
+            .push16(1000),
+            .push16(1001),
+            .push16(1002)
+        ])
+        XCTAssertEqual(computer.stack16(at: 6), 3)
+        XCTAssertEqual(computer.stack16(at: 4), 1000)
+        XCTAssertEqual(computer.stack16(at: 2), 1001)
+        XCTAssertEqual(computer.stack16(at: 0), 1002)
+    }
+    
+    func testArrayBoolean() {
+        let expr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralBoolean(value: false),
+                                                  ExprUtils.makeLiteralBoolean(value: false),
+                                                  ExprUtils.makeLiteralBoolean(value: true)])
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(3),
+            .push(0),
+            .push(0),
+            .push(1)
+        ])
+        XCTAssertEqual(computer.stack16(at: 3), 3)
+        XCTAssertEqual(computer.stack(at: 2), 0)
+        XCTAssertEqual(computer.stack(at: 1), 0)
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
+    func testArrayHeterogeneousU8andBool() {
+        let expr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 0),
+                                                  ExprUtils.makeLiteralBoolean(value: false)])
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `u8'")
+        }
+    }
+    
+    func testArrayHeterogeneousU8andU16() {
+        let expr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 0),
+                                                  ExprUtils.makeLiteralInt(value: 1),
+                                                  ExprUtils.makeLiteralInt(value: 1000)])
+        let ir = try! compile(expression: expr)
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .push16(3),
+            .push(0),
+            .push(0),
+            .push(1),
+            .push(0),
+            .push16(1000)
+        ])
+        XCTAssertEqual(computer.stack16(at: 6), 3)
+        XCTAssertEqual(computer.stack16(at: 4), 0)
+        XCTAssertEqual(computer.stack16(at: 2), 1)
+        XCTAssertEqual(computer.stack16(at: 0), 1000)
+    }
 }

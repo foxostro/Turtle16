@@ -135,6 +135,92 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: false))
     }
     
+    func testCompileConstantDeclaration_ArrayWithStaticStorage_ImplicitType() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                           explicitType: nil,
+                           expression: ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 0),
+                                                                      ExprUtils.makeLiteralInt(value: 1),
+                                                                      ExprUtils.makeLiteralInt(value: 2)]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push16(3),
+            .push(0),
+            .push(1),
+            .push(2),
+            .store(addressFoo+4),
+            .pop,
+            .store(addressFoo+3),
+            .pop,
+            .store(addressFoo+2),
+            .pop,
+            .store16(addressFoo+0),
+            .pop16
+        ])
+        var symbol: Symbol? = nil
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
+        XCTAssertEqual(symbol, Symbol(type: .array(count: 3, elementType: .u8), offset: addressFoo, isMutable: false))
+    }
+    
+    func testCompileConstantDeclaration_ArrayWithStaticStorage_ExplicitType() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                           explicitType: .array(count: nil, elementType: .u8),
+                           expression: ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 0),
+                                                                      ExprUtils.makeLiteralInt(value: 1),
+                                                                      ExprUtils.makeLiteralInt(value: 2)]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push16(3),
+            .push(0),
+            .push(1),
+            .push(2),
+            .store(addressFoo+4),
+            .pop,
+            .store(addressFoo+3),
+            .pop,
+            .store(addressFoo+2),
+            .pop,
+            .store16(addressFoo+0),
+            .pop16
+        ])
+        var symbol: Symbol? = nil
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
+        XCTAssertEqual(symbol, Symbol(type: .array(count: 3, elementType: .u8), offset: addressFoo, isMutable: false))
+    }
+    
+    func testCompileConstantDeclaration_CannotAssignFunctionToArray() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)]),
+                                body: Block(children: [
+                                    Return(token: TokenReturn(lineNumber: 1, lexeme: "return"),
+                                           expression: ExprUtils.makeLiteralBoolean(value: true))
+                                ])),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                           explicitType: .array(count: nil, elementType: .u16),
+                           expression: ExprUtils.makeIdentifier(name: "foo"),
+                           storage: .staticStorage,
+                           isMutable: true)
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[u16]'")
+    }
+    
     func testCompileVarDeclaration() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = TopLevel(children: [

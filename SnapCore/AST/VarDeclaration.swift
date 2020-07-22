@@ -71,7 +71,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       identifier.lexeme,
-                      String(describing: explicitType),
+                      explicitType?.description ?? "nil",
                       String(describing: storage),
                       isMutable ? "true" : "false",
                       expression.makeIndentedDescription(depth: depth + 1))

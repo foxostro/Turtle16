@@ -1312,7 +1312,7 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "value of type `\(String(describing: symbolType))' has no subscripts")
+            XCTAssertEqual(compilerError?.message, "value of type `\(symbolType)' has no subscripts")
         }
     }
     
@@ -1326,5 +1326,127 @@ class ExpressionTypeCheckerTests: XCTestCase {
     
     func testSubscriptOfZeroWithBool() {
         doTestSubscriptOfZero(.bool)
+    }
+    
+    func testEmptyArray() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let arr = ExprUtils.makeArray(elements: [])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 0, elementType: .void))
+    }
+    
+    func testSingletonArrayOfU8() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeLiteralInt(value: 0)
+        let arr = ExprUtils.makeArray(elements: [val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 1, elementType: .u8))
+    }
+    
+    func testSingletonArrayOfU16() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeLiteralInt(value: 1000)
+        let arr = ExprUtils.makeArray(elements: [val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 1, elementType: .u16))
+    }
+    
+    func testSingletonArrayOfBoolean() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeLiteralBoolean(value: false)
+        let arr = ExprUtils.makeArray(elements: [val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 1, elementType: .bool))
+    }
+    
+    func testSingletonArrayOfArray() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeArray(elements: [])
+        let arr = ExprUtils.makeArray(elements: [val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 1, elementType: .array(count: 0, elementType: .void)))
+    }
+    
+    func testArrayOfU8() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeLiteralInt(value: 0)
+        let arr = ExprUtils.makeArray(elements: [val, val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 2, elementType: .u8))
+    }
+    
+    func testArrayOfU16() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeLiteralInt(value: 1000)
+        let arr = ExprUtils.makeArray(elements: [val, val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 2, elementType: .u16))
+    }
+    
+    func testArrayOfBoolean() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeLiteralBoolean(value: false)
+        let arr = ExprUtils.makeArray(elements: [val, val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 2, elementType: .bool))
+    }
+    
+    func testArrayOfArray() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let val = ExprUtils.makeArray(elements: [])
+        let arr = ExprUtils.makeArray(elements: [val, val])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 2, elementType: .array(count: 0, elementType: .void)))
+    }
+    
+    func testArrayOfHeterogeneousU8andU16() {
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        let arr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 0),
+                                                 ExprUtils.makeLiteralInt(value: 0),
+                                                 ExprUtils.makeLiteralInt(value: 1000)])
+        XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
+        XCTAssertEqual(result, .array(count: 3, elementType: .u16))
+    }
+    
+    func testEvaluationOfArrayIdentifierIsNotYetSupported() {
+        // The evaluation of a bare array identifier ought to yield a reference
+        // to the array in memory. Currently, it's simply unsupported.
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: false)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        let expr = ExprUtils.makeIdentifier(name: "foo")
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "unsupported expression: <Identifier: identifier=\'foo\'>")
+        }
+    }
+    
+    func testCannotAssignFunctionToArray() {
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)])),
+                           offset: 0x0010,
+                           isMutable: false),
+            "bar" : Symbol(type: .array(count: nil, elementType: .u16),
+                           offset: 0x0012,
+                           isMutable: false)
+        ])
+        let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
+                                         expression: ExprUtils.makeIdentifier(name: "foo"))
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[u16]'")
+        }
     }
 }

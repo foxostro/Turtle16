@@ -47,6 +47,8 @@ public class ExpressionSubCompiler: NSObject {
             return try compile(call: call)
         case let expr as Expression.As:
             return try compile(as: expr)
+        case let expr as Expression.Array:
+            return try compile(array: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -387,6 +389,34 @@ public class ExpressionSubCompiler: NSObject {
             }
         }
         return instructions
+    }
+    
+    private func compile(array expr: Expression.Array) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        instructions += [.push16(expr.elements.count)]
+        let targetType = try determineArrayBaseType(array: expr)
+        for el in expr.elements {
+            instructions += try compile(expression: el)
+            let originalType = try ExpressionTypeChecker(symbols: symbols).check(expression: el)
+            if originalType != targetType {
+                switch (originalType, targetType) {
+                case (.u8, .u16):
+                    instructions += [.push(0)]
+                default:
+                    abort()
+                }
+            }
+        }
+        return instructions
+    }
+    
+    private func determineArrayBaseType(array expr: Expression.Array) throws -> SymbolType {
+        switch try ExpressionTypeChecker(symbols: symbols).check(expression: expr) {
+        case .array(count: _, elementType: let elementType):
+            return elementType
+        default:
+            abort()
+        }
     }
     
     private func unsupportedError(expression: Expression) -> Error {

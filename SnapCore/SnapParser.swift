@@ -146,9 +146,9 @@ public class SnapParser: Parser {
     
     fileprivate func consumeType() throws -> SymbolType {
         if nil != accept(TokenSquareBracketLeft.self) {
-            let baseType = try consumePrimitiveType()
+            let elementType = try consumePrimitiveType()
             try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]'"))
-            return .array(baseType)
+            return .array(count: nil, elementType: elementType)
         } else {
             let explicitType = try consumePrimitiveType()
             return explicitType

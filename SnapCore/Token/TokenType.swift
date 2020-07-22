@@ -20,7 +20,7 @@ public class TokenType : Token {
         return String(format: "<%@: lineNumber=%d, lexeme=\"%@\", type=%@>",
                       String(describing: type(of: self)),
                       lineNumber, lexeme,
-                      String(describing: representedType))
+                      representedType.description)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

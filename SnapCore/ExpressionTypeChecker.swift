@@ -38,6 +38,8 @@ public class ExpressionTypeChecker: NSObject {
             return try check(as: expr)
         case let expr as Expression.Subscript:
             return try check(subscript: expr)
+        case let expr as Expression.Array:
+            return try check(array: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -63,7 +65,7 @@ public class ExpressionTypeChecker: NSObject {
             case .u8:
                 return .u8
             default:
-                throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(String(describing: expressionType))'")
+                throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(expressionType)'")
             }
         default:
             throw CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
@@ -142,7 +144,7 @@ public class ExpressionTypeChecker: NSObject {
                 // nothing to do
             } else {
                 let lineNumber = assignment.tokens.first!.lineNumber
-                let message = "cannot assign value of type `\(String(describing: rtype))' to type `\(String(describing: symbol.type))'"
+                let message = "cannot assign value of type `\(rtype)' to type `\(symbol.type)'"
                 throw CompilerError(line: lineNumber, message: message)
             }
         }
@@ -150,7 +152,14 @@ public class ExpressionTypeChecker: NSObject {
     }
         
     public func check(identifier: Expression.Identifier) throws -> SymbolType {
-        return try symbols.resolve(identifierToken: identifier.identifier).type
+        let symbolType = try symbols.resolve(identifierToken: identifier.identifier).type
+        switch symbolType {
+        case .array:
+            throw unsupportedError(expression: identifier)
+        default:
+            break
+        }
+        return symbolType
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
@@ -175,7 +184,7 @@ public class ExpressionTypeChecker: NSObject {
                 case (.u8, .u16):    break
                 case (.u16, .u16):   break
                 default:
-                    let message = "cannot convert value of type `\(String(describing: argumentType))' to expected argument type `\(String(describing: typ.arguments[i].argumentType))' in call to `\(name)'"
+                    let message = "cannot convert value of type `\(argumentType)' to expected argument type `\(typ.arguments[i].argumentType)' in call to `\(name)'"
                     if let lineNumber = call.tokens.first?.lineNumber {
                         throw CompilerError(line: lineNumber, message: message)
                     } else {
@@ -185,7 +194,7 @@ public class ExpressionTypeChecker: NSObject {
             }
             return typ.returnType
         default:
-            let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
+            let message = "cannot call value of non-function type `\(symbol.type)'"
             if let lineNumber = call.tokens.first?.lineNumber {
                 throw CompilerError(line: lineNumber, message: message)
             } else {
@@ -215,6 +224,32 @@ public class ExpressionTypeChecker: NSObject {
         let lineNumber = expr.tokens.first!.lineNumber
         let message = "value of type `\(symbol.type)' has no subscripts"
         throw CompilerError(line: lineNumber, message: message)
+    }
+    
+    public func check(array expr: Expression.Array) throws -> SymbolType {
+        let elements = try expr.elements.compactMap({try check(expression: $0)})
+        switch elements.count {
+        case 0:
+            return .array(count: 0, elementType: .void)
+        case 1:
+            return .array(count: 1, elementType: elements[0])
+        default:
+            if areElementsHeterogeneousMixOfU8andU16(elements) {
+                return .array(count: elements.count, elementType: .u16)
+            }
+            for el in elements[1...] {
+                if elements[0] != el {
+                    let lineNumber = expr.tokens.first!.lineNumber
+                    let message = "cannot convert value of type `\(el)' to type `\(elements[0])'"
+                    throw CompilerError(line: lineNumber, message: message)
+                }
+            }
+            return .array(count: elements.count, elementType: elements[0])
+        }
+    }
+        
+    private func areElementsHeterogeneousMixOfU8andU16(_ elements: [SymbolType]) -> Bool {
+        return elements.allSatisfy({$0 == .u8 || $0 == .u16}) && elements.contains(where: {$0 == .u8}) && elements.contains(where: {$0 == .u16})
     }
     
     private func unsupportedError(expression: Expression) -> Error {

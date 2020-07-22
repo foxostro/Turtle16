@@ -139,8 +139,11 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         
+        // Note that the parser doesn't know that the expression will actually
+        // yield a result of the the type [0, u8]. It only knows the explicit
+        // type is given as [u8].
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                      explicitType: .array(.u8),
+                                      explicitType: .array(count: nil, elementType: .u8),
                                       expression: ExprUtils.makeArray(elements: []),
                                       storage: .stackStorage,
                                       isMutable: false)

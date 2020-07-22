@@ -148,6 +148,7 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(varDecl: VarDeclaration) throws {
+        let lineNumber = varDecl.identifier.lineNumber
         let name = varDecl.identifier.lexeme
         guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
             throw CompilerError(line: varDecl.identifier.lineNumber,
@@ -155,31 +156,72 @@ public class SnapToYertleCompiler: NSObject {
                                 varDecl.isMutable ? "variable" : "constant",
                                 varDecl.identifier.lexeme)
         }
-        let inferredType = try ExpressionTypeChecker(symbols: symbols).check(expression: varDecl.expression)
-        let symbol = try makeSymbolWithExplicitType(explicitType: varDecl.explicitType ?? inferredType, storage: varDecl.storage, isMutable: varDecl.isMutable)
+        
+        // The type of the initial value expression may be used to infer the
+        // symbol type in cases where the explicit type is not specified.
+        let expressionResultType = try ExpressionTypeChecker(symbols: symbols).check(expression: varDecl.expression)
+        
+        // An explicit array type does not specify the number of array elements.
+        // If the explicit type is an array type then we must examine the
+        // expression result type to determine the array length.
+        let symbolType: SymbolType
+        switch (expressionResultType, varDecl.explicitType) {
+        case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
+            symbolType = .array(count: count, elementType: elementType)
+        default:
+            symbolType = varDecl.explicitType ?? expressionResultType
+        }
+        let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
-        try compile(expression: varDecl.expression)
         
-        let lineNumber = varDecl.identifier.lineNumber
-        
+        // Check the type of the expression and make sure it is convertible to
+        // the explicit type, if one is given.
         if let explicitType = varDecl.explicitType {
             switch symbol.type {
             case .u16, .u8, .bool:
-                switch (inferredType, explicitType) {
+                switch (expressionResultType, explicitType) {
+                case (.bool, .bool): break // check out OK
+                case (.u8, .u8):     break // check out OK
+                case (.u8, .u16):    break // check out OK
+                case (.u16, .u16):   break // check out OK
+                default:
+                    let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
+                    throw CompilerError(line: lineNumber, message: message)
+                }
+            case .array:
+                if expressionResultType != symbolType {
+                    let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
+                    throw CompilerError(line: lineNumber, message: message)
+                }
+            case .function, .void:
+                let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
+                throw CompilerError(line: lineNumber, message: message)
+            }
+        }
+        
+        // Only compile the expression once we're sure the types are OK.
+        try compile(expression: varDecl.expression)
+        
+        // Compile code to perform a conversion from the expression type to the
+        // symbol type. Abort on error since we checked above that this should
+        // actually work.
+        if let explicitType = varDecl.explicitType {
+            switch symbol.type {
+            case .u16, .u8, .bool:
+                switch (expressionResultType, explicitType) {
                 case (.bool, .bool): break
                 case (.u8, .u8):     break
                 case (.u8, .u16):    instructions += [.push(0)]
                 case (.u16, .u16):   break
                 default:
-                    let message = "cannot assign value of type `\(String(describing: inferredType))' to type `\(String(describing: explicitType))'"
-                    throw CompilerError(line: lineNumber, message: message)
+                    abort()
+                }
+            case .array:
+                if expressionResultType != symbolType {
+                    abort()
                 }
             case .function, .void:
-                let message = "cannot assign value of type `\(String(describing: inferredType))' to type `\(String(describing: explicitType))'"
-                throw CompilerError(line: lineNumber, message: message)
-                
-            case .array(elementType: _):
-                throw CompilerError(line: lineNumber, message: "unimplemented")
+                abort()
             }
         }
         
@@ -194,7 +236,7 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
-        let size = sizeof(symbolType)
+        let size = symbolType.sizeof()
         let offset: Int
         switch storage {
         case .staticStorage:
@@ -207,35 +249,37 @@ public class SnapToYertleCompiler: NSObject {
         return offset
     }
     
-    private func sizeof(_ type: SymbolType) -> Int {
-        switch type {
-        case .u8, .bool: return 1
-        case .u16:       return 2
-        default:         return 0
-        }
-    }
-    
     private func storeSymbol(_ symbol: Symbol) {
         switch symbol.storage {
         case .staticStorage:
-            switch symbol.type {
-            case .u16:
-                instructions += [
-                    .store16(symbol.offset),
-                    .pop16
-                ]
-            case .bool, .u8:
-                instructions += [
-                    .store(symbol.offset),
-                    .pop
-                ]
-            case .void, .function, .array:
-                abort()
-            }
+            storeStaticValue(symbolType: symbol.type, offset: symbol.offset)
         case .stackStorage:
             // Evaluation of the expression has left the stack symbol's value
             // on the stack already. Nothing to do here.
             break
+        }
+    }
+    
+    private func storeStaticValue(symbolType: SymbolType, offset: Int) {
+        switch symbolType {
+        case .u16:
+            instructions += [
+                .store16(offset),
+                .pop16
+            ]
+        case .bool, .u8:
+            instructions += [
+                .store(offset),
+                .pop
+            ]
+        case .array(count: let count, elementType: let elementType):
+            let length = SymbolType.u16.sizeof() + (count!)*elementType.sizeof()
+            for i in 0..<(count!) {
+                storeStaticValue(symbolType: elementType, offset: offset + length - (i+1)*elementType.sizeof())
+            }
+            storeStaticValue(symbolType: .u16, offset: offset)
+        case .void, .function:
+            abort()
         }
     }
     
@@ -364,8 +408,8 @@ public class SnapToYertleCompiler: NSObject {
             default:
                 throw CompilerError(line: node.token.lineNumber,
                                     format: "cannot convert return expression of type `%@' to return type `%@'",
-                                    String(describing: returnExpressionType),
-                                    String(describing: enclosingFunctionType.returnType))
+                                    returnExpressionType.description,
+                                    enclosingFunctionType.returnType.description)
             }
         } else if .void != enclosingFunctionType.returnType {
             throw CompilerError(line: node.token.lineNumber, message: "non-void function should return a value")
@@ -459,7 +503,7 @@ public class SnapToYertleCompiler: NSObject {
     private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
         return CompilerError(line: node.identifier.lineNumber,
                              format: "missing return in a function expected to return `%@'",
-                             String(describing: node.functionType.returnType))
+                             node.functionType.returnType.description)
     }
     
     private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) -> Bool {

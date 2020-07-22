@@ -8,10 +8,46 @@
 
 import TurtleCompilerToolbox
 
-public indirect enum SymbolType: Equatable, Hashable {
+public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case void, u16, u8, bool
     case function(name: String, mangledName: String, functionType: FunctionType)
-    case array(SymbolType)
+    case array(count: Int?, elementType: SymbolType)
+    
+    public func sizeof() -> Int {
+        switch self {
+        case .u8, .bool:
+            return 1
+        case .u16:
+            return 2
+        case .array(count: let count, elementType: let elementType):
+            return (count ?? 0) * elementType.sizeof()
+        case .void, .function:
+            return 0
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case .void:
+            return "void"
+        case .u16:
+            return "u16"
+        case .u8:
+            return "u8"
+        case .bool:
+            return "bool"
+        case .array(count: let count, elementType: let elementType):
+            if let count = count {
+                return "[\(count), \(elementType)]"
+            } else {
+                return "[\(elementType)]"
+            }
+        case .function(name: _, mangledName: _, functionType: let functionType):
+            let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
+            let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
+            return result
+        }
+    }
 }
 
 public enum SymbolStorage: Equatable {
@@ -58,11 +94,11 @@ public class FunctionType: NSObject {
     }
     
     public override var description: String {
-        return "(\(makeArgumentsDescription())) -> \(String(describing: returnType))"
+        return "(\(makeArgumentsDescription())) -> \(returnType)"
     }
     
     public func makeArgumentsDescription() -> String {
-        let result = arguments.map({"\($0.name) : \(String(describing: $0.argumentType))"}).joined(separator: ", ")
+        let result = arguments.map({"\($0.name) : \($0.argumentType)"}).joined(separator: ", ")
         return result
     }
     

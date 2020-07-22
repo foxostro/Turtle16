@@ -575,9 +575,10 @@ let b = peekPeripheral(0, 1)
         let computer = try! executor.execute(program: """
 let arr = [1, 2, 3]
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0013), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0014), 3)
     }
     
     func test_EndToEndIntegration_DeclareArrayType_ExplicitType() {
@@ -585,8 +586,70 @@ let arr = [1, 2, 3]
         let computer = try! executor.execute(program: """
 let arr: [u8] = [1, 2, 3]
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0013), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0014), 3)
+    }
+    
+    func test_EndToEndIntegration_FailToAssignScalarToArray() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+let arr: [u8] = 1
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `u8' to type `[u8]'")
+    }
+    
+    func test_EndToEndIntegration_FailToAssignArrayOfU16toArrayOfU8() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+let arr: [u8] = [1000]
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u16]' to type `[u8]'")
+        // TODO: This assignment should copy and cast each element in the array.
+    }
+    
+    func test_EndToEndIntegration_FailToAssignArrayOfU8toArrayOfU16() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+let arr: [u16] = [1]
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u8]' to type `[u16]'")
+        // TODO: This assignment should copy and cast each element in the array.
+    }
+            
+    func test_EndToEndIntegration_FailToAssignFunctionToArray() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+func foo(bar: u8, baz: u16) -> bool {
+    return false
+}
+let arr: [u16] = foo
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 4)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[u16]'")
+    }
+            
+    func test_EndToEndIntegration_CannotAddArrayToInteger() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+let foo = [1, 2, 3]
+let bar = 1 + foo
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 2)
+        XCTAssertEqual(compiler.errors.first?.message, "unsupported expression: <Identifier: identifier=\'foo\'>")
     }
 }

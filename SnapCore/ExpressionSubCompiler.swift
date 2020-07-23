@@ -47,8 +47,8 @@ public class ExpressionSubCompiler: NSObject {
             return try compile(call: call)
         case let expr as Expression.As:
             return try compile(as: expr)
-        case let expr as Expression.Array:
-            return try compile(array: expr)
+        case let expr as Expression.LiteralArray:
+            return try compile(literalArray: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -62,7 +62,7 @@ public class ExpressionSubCompiler: NSObject {
         if value >= 256 && value < 65536 {
             return [.push16(value)]
         }
-        throw CompilerError(line: literalInt.number.lineNumber, message: "literal int `\(literalInt.number.lexeme)' is too large")
+        throw CompilerError(line: literalInt.number.lineNumber, message: "integer literal `\(literalInt.number.lexeme)' overflows when stored into `u16'")
     }
     
     private func compile(intValue: Int) -> [YertleInstruction] {
@@ -119,56 +119,138 @@ public class ExpressionSubCompiler: NSObject {
         let leftType = try ExpressionTypeChecker(symbols: symbols).check(expression: binary.left)
         
         switch (binary.op.op, leftType, rightType) {
-        case (.eq, .u8, .u8):         return right + left + [.eq]
-        case (.eq, .u8, .u16):        return right + left + [.push(0), .eq16]
-        case (.eq, .u16, .u8):        return right + [.push(0)] + left + [.eq16]
-        case (.eq, .u16, .u16):       return right + left + [.eq16]
-        case (.eq, .bool, .bool):     return right + left + [.eq]
-        case (.ne, .u8, .u8):         return right + left + [.ne]
-        case (.ne, .u8, .u16):        return right + left + [.push(0), .ne16]
-        case (.ne, .u16, .u8):        return right + [.push(0)] + left + [.ne16]
-        case (.ne, .u16, .u16):       return right + left + [.ne16]
-        case (.ne, .bool, .bool):     return right + left + [.ne]
-        case (.lt, .u8, .u8):         return right + left + [.lt]
-        case (.lt, .u8, .u16):        return right + left + [.push(0), .lt16]
-        case (.lt, .u16, .u8):        return right + [.push(0)] + left + [.lt16]
-        case (.lt, .u16, .u16):       return right + left + [.lt16]
-        case (.lt, .bool, .bool):     return right + left + [.lt]
-        case (.gt, .u8, .u8):         return right + left + [.gt]
-        case (.gt, .u8, .u16):        return right + left + [.push(0), .gt16]
-        case (.gt, .u16, .u8):        return right + [.push(0)] + left + [.gt16]
-        case (.gt, .u16, .u16):       return right + left + [.gt16]
-        case (.gt, .bool, .bool):     return right + left + [.gt]
-        case (.le, .u8, .u8):         return right + left + [.le]
-        case (.le, .u8, .u16):        return right + left + [.push(0), .le16]
-        case (.le, .u16, .u8):        return right + [.push(0)] + left + [.le16]
-        case (.le, .u16, .u16):       return right + left + [.le16]
-        case (.le, .bool, .bool):     return right + left + [.le]
-        case (.ge, .u8, .u8):         return right + left + [.ge]
-        case (.ge, .u8, .u16):        return right + left + [.push(0), .ge16]
-        case (.ge, .u16, .u8):        return right + [.push(0)] + left + [.ge16]
-        case (.ge, .u16, .u16):       return right + left + [.ge16]
-        case (.ge, .bool, .bool):     return right + left + [.ge]
-        case (.plus, .u8, .u8):       return right + left + [.add]
-        case (.plus, .u8, .u16):      return right + left + [.push(0), .add16]
-        case (.plus, .u16, .u8):      return right + [.push(0)] + left + [.add16]
-        case (.plus, .u16, .u16):     return right + left + [.add16]
-        case (.minus, .u8, .u8):      return right + left + [.sub]
-        case (.minus, .u8, .u16):     return right + left + [.push(0), .sub16]
-        case (.minus, .u16, .u8):     return right + [.push(0)] + left + [.sub16]
-        case (.minus, .u16, .u16):    return right + left + [.sub16]
-        case (.multiply, .u8, .u8):   return right + left + [.mul]
-        case (.multiply, .u8, .u16):  return right + left + [.push(0), .mul16]
-        case (.multiply, .u16, .u8):  return right + [.push(0)] + left + [.mul16]
+        case (.eq, .u8, .u8): return right + left + [.eq]
+        case (.eq, .u8, .u16): return right + left + [.push(0), .eq16]
+        case (.eq, .u8, .constInt(let a)): return [.push(a)] + left + [.eq]
+        case (.eq, .u16, .u8): return right + [.push(0)] + left + [.eq16]
+        case (.eq, .u16, .u16): return right + left + [.eq16]
+        case (.eq, .u16, .constInt(let a)): return [.push16(a)] + left + [.eq16]
+        case (.eq, .constInt(let a), .u8): return right + [.push(a)] + [.eq]
+        case (.eq, .constInt(let a), .u16): return right + [.push16(a)] + [.eq16]
+        case (.eq, .constInt(let a), .constInt(let b)): return [.push((a == b) ? 1 : 0)]
+        case (.eq, .bool, .bool): return right + left + [.eq]
+        case (.eq, .bool, .constBool): return right + left + [.eq]
+        case (.eq, .constBool, .bool): return right + left + [.eq]
+        case (.eq, .constBool(let a), .constBool(let b)): return [.push((a == b) ? 1 : 0)]
+        case (.ne, .u8, .u8): return right + left + [.ne]
+        case (.ne, .u8, .u16): return right + left + [.push(0), .ne16]
+        case (.ne, .u8, .constInt(let a)): return [.push(a)] + left + [.ne]
+        case (.ne, .u16, .u8): return right + [.push(0)] + left + [.ne16]
+        case (.ne, .u16, .u16): return right + left + [.ne16]
+        case (.ne, .u16, .constInt(let a)): return [.push16(a)] + left + [.ne16]
+        case (.ne, .constInt(let a), .u8): return right + [.push(a)] + [.ne]
+        case (.ne, .constInt(let a), .u16): return right + [.push16(a)] + [.ne16]
+        case (.ne, .constInt(let a), .constInt(let b)): return [.push((a == b) ? 1 : 0)]
+        case (.ne, .bool, .bool): return right + left + [.ne]
+        case (.ne, .bool, .constBool): return right + left + [.ne]
+        case (.ne, .constBool, .bool): return right + left + [.ne]
+        case (.ne, .constBool(let a), .constBool(let b)): return [.push((a != b) ? 1 : 0)]
+        case (.lt, .u8, .u8): return right + left + [.lt]
+        case (.lt, .u8, .u16): return right + left + [.push(0), .lt16]
+        case (.lt, .u8, .constInt(let a)): return [.push(a)] + left + [.lt]
+        case (.lt, .u16, .u8): return right + [.push(0)] + left + [.lt16]
+        case (.lt, .u16, .u16): return right + left + [.lt16]
+        case (.lt, .u16, .constInt(let a)): return [.push16(a)] + left + [.lt16]
+        case (.lt, .constInt(let a), .u8): return right + [.push(a)] + [.lt]
+        case (.lt, .constInt(let a), .u16): return right + [.push16(a)] + [.lt16]
+        case (.lt, .constInt(let a), .constInt(let b)): return [.push((a < b) ? 1 : 0)]
+        case (.gt, .u8, .u8): return right + left + [.gt]
+        case (.gt, .u8, .u16): return right + left + [.push(0), .gt16]
+        case (.gt, .u8, .constInt(let a)): return [.push(a)] + left + [.gt]
+        case (.gt, .u16, .u8): return right + [.push(0)] + left + [.gt16]
+        case (.gt, .u16, .u16): return right + left + [.gt16]
+        case (.gt, .u16, .constInt(let a)): return [.push16(a)] + left + [.gt16]
+        case (.gt, .constInt(let a), .u8): return right + [.push(a)] + [.gt]
+        case (.gt, .constInt(let a), .u16): return right + [.push16(a)] + [.gt16]
+        case (.gt, .constInt(let a), .constInt(let b)): return [.push((a > b) ? 1 : 0)]
+        case (.le, .u8, .u8): return right + left + [.le]
+        case (.le, .u8, .u16): return right + left + [.push(0), .le16]
+        case (.le, .u8, .constInt(let a)): return [.push(a)] + left + [.le]
+        case (.le, .u16, .u8): return right + [.push(0)] + left + [.le16]
+        case (.le, .u16, .u16): return right + left + [.le16]
+        case (.le, .u16, .constInt(let a)): return [.push16(a)] + left + [.le16]
+        case (.le, .constInt(let a), .u8): return right + [.push(a)] + [.le]
+        case (.le, .constInt(let a), .u16): return right + [.push16(a)] + [.le16]
+        case (.le, .constInt(let a), .constInt(let b)): return [.push((a <= b) ? 1 : 0)]
+        case (.ge, .u8, .u8): return right + left + [.ge]
+        case (.ge, .u8, .u16): return right + left + [.push(0), .ge16]
+        case (.ge, .u8, .constInt(let a)): return [.push(a)] + left + [.ge]
+        case (.ge, .u16, .u8): return right + [.push(0)] + left + [.ge16]
+        case (.ge, .u16, .u16): return right + left + [.ge16]
+        case (.ge, .u16, .constInt(let a)): return [.push16(a)] + left + [.ge16]
+        case (.ge, .constInt(let a), .u8): return right + [.push(a)] + [.ge]
+        case (.ge, .constInt(let a), .u16): return right + [.push16(a)] + [.ge16]
+        case (.ge, .constInt(let a), .constInt(let b)): return [.push((a >= b) ? 1 : 0)]
+        case (.plus, .u8, .u8): return right + left + [.add]
+        case (.plus, .u8, .u16): return right + left + [.push(0), .add16]
+        case (.plus, .u8, .constInt(let a)): return [.push(a)] + left + [.add]
+        case (.plus, .u16, .u8): return right + [.push(0)] + left + [.add16]
+        case (.plus, .u16, .u16): return right + left + [.add16]
+        case (.plus, .u16, .constInt(let a)): return [.push16(a)] + left + [.add16]
+        case (.plus, .constInt(let a), .u8): return right + [.push(a)] + [.add]
+        case (.plus, .constInt(let a), .u16): return right + [.push16(a)] + [.add16]
+        case (.plus, .constInt(let a), .constInt(let b)):
+            if a + b > 255 {
+                return [.push16(a + b)]
+            } else {
+                return [.push(a + b)]
+            }
+        case (.minus, .u8, .u8): return right + left + [.sub]
+        case (.minus, .u8, .u16): return right + left + [.push(0), .sub16]
+        case (.minus, .u8, .constInt(let a)): return [.push(a)] + left + [.sub]
+        case (.minus, .u16, .u8): return right + [.push(0)] + left + [.sub16]
+        case (.minus, .u16, .u16): return right + left + [.sub16]
+        case (.minus, .u16, .constInt(let a)): return [.push16(a)] + left + [.sub16]
+        case (.minus, .constInt(let a), .u8): return right + [.push(a)] + [.sub]
+        case (.minus, .constInt(let a), .u16): return right + [.push16(a)] + [.sub16]
+        case (.minus, .constInt(let a), .constInt(let b)):
+            if a - b > 255 {
+                return [.push16(a - b)]
+            } else {
+                return [.push(a - b)]
+            }
+        case (.multiply, .u8, .u8): return right + left + [.mul]
+        case (.multiply, .u8, .u16): return right + left + [.push(0), .mul16]
+        case (.multiply, .u8, .constInt(let a)): return [.push(a)] + left + [.mul]
+        case (.multiply, .u16, .u8): return right + [.push(0)] + left + [.mul16]
         case (.multiply, .u16, .u16): return right + left + [.mul16]
-        case (.divide, .u8, .u8):     return right + left + [.div]
-        case (.divide, .u8, .u16):    return right + left + [.push(0), .div16]
-        case (.divide, .u16, .u8):    return right + [.push(0)] + left + [.div16]
-        case (.divide, .u16, .u16):   return right + left + [.div16]
-        case (.modulus, .u8, .u8):    return right + left + [.mod]
-        case (.modulus, .u8, .u16):   return right + left + [.push(0), .mod16]
-        case (.modulus, .u16, .u8):   return right + [.push(0)] + left + [.mod16]
-        case (.modulus, .u16, .u16):  return right + left + [.mod16]
+        case (.multiply, .u16, .constInt(let a)): return [.push16(a)] + left + [.mul16]
+        case (.multiply, .constInt(let a), .u8): return right + [.push(a)] + [.mul16]
+        case (.multiply, .constInt(let a), .u16): return right + [.push16(a)] + [.mul16]
+        case (.multiply, .constInt(let a), .constInt(let b)):
+            if a * b > 255 {
+                return [.push16(a * b)]
+            } else {
+                return [.push(a * b)]
+            }
+        case (.divide, .u8, .u8): return right + left + [.div]
+        case (.divide, .u8, .u16): return right + left + [.push(0), .div16]
+        case (.divide, .u8, .constInt(let a)): return [.push(a)] + left + [.div]
+        case (.divide, .u16, .u8): return right + [.push(0)] + left + [.div16]
+        case (.divide, .u16, .u16): return right + left + [.div16]
+        case (.divide, .u16, .constInt(let a)): return [.push16(a)] + left + [.div16]
+        case (.divide, .constInt(let a), .u8): return right + [.push(a)] + [.div16]
+        case (.divide, .constInt(let a), .u16): return right + [.push16(a)] + [.div16]
+        case (.divide, .constInt(let a), .constInt(let b)):
+            if a / b > 255 {
+                return [.push16(a / b)]
+            } else {
+                return [.push(a / b)]
+            }
+        case (.modulus, .u8, .u8): return right + left + [.mod]
+        case (.modulus, .u8, .u16): return right + left + [.push(0), .mod16]
+        case (.modulus, .u8, .constInt(let a)): return [.push(a)] + left + [.mod]
+        case (.modulus, .u16, .u8): return right + [.push(0)] + left + [.mod16]
+        case (.modulus, .u16, .u16): return right + left + [.mod16]
+        case (.modulus, .u16, .constInt(let a)): return [.push16(a)] + left + [.mod16]
+        case (.modulus, .constInt(let a), .u8): return right + [.push(a)] + [.mod16]
+        case (.modulus, .constInt(let a), .u16): return right + [.push16(a)] + [.mod16]
+        case (.modulus, .constInt(let a), .constInt(let b)):
+            if a % b > 255 {
+                return [.push16(a % b)]
+            } else {
+                return [.push(a % b)]
+            }
         default:
             throw unsupportedError(expression: binary)
         }
@@ -192,7 +274,7 @@ public class ExpressionSubCompiler: NSObject {
             return [.load16(symbol.offset)]
         case .u8, .bool:
             return [.load(symbol.offset)]
-        case .void, .function, .array:
+        default:
             abort()
         }
     }
@@ -205,7 +287,7 @@ public class ExpressionSubCompiler: NSObject {
             instructions += [.loadIndirect16]
         case .u8, .bool:
             instructions += [.loadIndirect]
-        case .void, .function, .array:
+        default:
             abort()
         }
         return instructions
@@ -252,51 +334,48 @@ public class ExpressionSubCompiler: NSObject {
         }
         
         var instructions: [YertleInstruction] = []
-        
-        switch symbol.type {
-        case .u16, .u8, .bool:
-            let expr = assignment.child
-            let exprType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
-            let compiledInstructions = try compile(expression: expr)
-            switch (exprType, symbol.type) {
-            case (.bool, .bool): instructions += compiledInstructions
-            case (.u8, .u8):     instructions += compiledInstructions
-            case (.u8, .u16):    instructions += compiledInstructions + [.push(0)]
-            case (.u16, .u16):   instructions += compiledInstructions
-            default:
-                abort()
-            }
-            instructions += storeSymbol(symbol, depth)
-        case .void, .function, .array:
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.child, ltype: symbol.type)
+        instructions += storeSymbol(symbol, depth)
+        return instructions
+    }
+    
+    private func compileAndConvertExpressionForAssignment(rexpr: Expression, ltype: SymbolType) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        let rtype = try ExpressionTypeChecker(symbols: symbols).check(expression: rexpr)
+        switch (rtype, ltype) {
+        case (.bool, .bool), (.u8, .u8), (.u16, .u16):
+            instructions += try compile(expression: rexpr)
+        case (.constInt(let a), .u8):
+            instructions += [.push(a)]
+        case (.constInt(let a), .u16):
+            instructions += [.push16(a)]
+        case (.constBool(let a), .bool):
+            instructions += [.push(a ? 1 : 0)]
+        case (.u8, .u16):
+            instructions += try compile(expression: rexpr)
+            instructions += [.push(0)]
+        default:
             abort()
         }
-        
         return instructions
     }
     
     private func storeSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         assert(symbol.isMutable)
         var instructions: [YertleInstruction] = []
-        switch symbol.storage {
-        case .staticStorage:
-            switch symbol.type {
-            case .u16:
-                instructions += [.store16(symbol.offset)]
-            case .u8, .bool:
-                instructions += [.store(symbol.offset)]
-            case .void, .function, .array:
-                abort()
-            }
-        case .stackStorage:
+        switch (symbol.storage, symbol.type) {
+        case (.staticStorage, .u16):
+            instructions += [.store16(symbol.offset)]
+        case (.staticStorage, .u8), (.staticStorage, .bool):
+            instructions += [.store(symbol.offset)]
+        case (.stackStorage, .u16):
             instructions += computeAddressOfLocalVariable(symbol, depth)
-            switch symbol.type {
-            case .u16:
-                instructions += [.storeIndirect16]
-            case .u8, .bool:
-                instructions += [.storeIndirect]
-            case .void, .function, .array:
-                abort()
-            }
+            instructions += [.storeIndirect16]
+        case (.stackStorage, .u8), (.stackStorage, .bool):
+            instructions += computeAddressOfLocalVariable(symbol, depth)
+            instructions += [.storeIndirect]
+        default:
+            abort()
         }
         return instructions
     }
@@ -330,18 +409,8 @@ public class ExpressionSubCompiler: NSObject {
     private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         for i in 0..<typ.arguments.count {
-            let argExpr = node.arguments[i]
-            let arg = try compile(expression: argExpr)
-            let expectedType = typ.arguments[i].argumentType
-            let actualType = try ExpressionTypeChecker(symbols: symbols).check(expression: argExpr)
-            switch (actualType, expectedType) {
-            case (.bool, .bool): instructions += arg
-            case (.u8, .u8):     instructions += arg
-            case (.u8, .u16):    instructions += arg + [.push(0)]
-            case (.u16, .u16):   instructions += arg
-            default:
-                abort()
-            }
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i],
+                                                                         ltype: typ.arguments[i].argumentType)
         }
         return instructions
     }
@@ -377,13 +446,23 @@ public class ExpressionSubCompiler: NSObject {
     private func compile(as expr: Expression.As) throws -> [YertleInstruction] {
         let originalType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr.expr)
         let targetType = expr.targetType
-        var instructions: [YertleInstruction] = try compile(expression: expr.expr)
-        if originalType != targetType {
+        var instructions: [YertleInstruction] = []
+        if originalType == targetType {
+            instructions += try compile(expression: expr.expr)
+        } else {
             switch (originalType, targetType) {
             case (.u8, .u16):
+                instructions += try compile(expression: expr.expr)
                 instructions += [.push(0)]
             case (.u16, .u8):
+                instructions += try compile(expression: expr.expr)
                 instructions += [.pop]
+            case (.constInt(let value), .u8):
+                instructions += [.push(Int(UInt8(value)))]
+            case (.constInt(let value), .u16):
+                instructions += [.push16(Int(UInt16(value)))]
+            case (.constBool(let value), .bool):
+                instructions += [.push(value ? 1 : 0)]
             default:
                 abort()
             }
@@ -391,32 +470,13 @@ public class ExpressionSubCompiler: NSObject {
         return instructions
     }
     
-    private func compile(array expr: Expression.Array) throws -> [YertleInstruction] {
+    private func compile(literalArray expr: Expression.LiteralArray) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         instructions += [.push16(expr.elements.count)]
-        let targetType = try determineArrayBaseType(array: expr)
         for el in expr.elements {
             instructions += try compile(expression: el)
-            let originalType = try ExpressionTypeChecker(symbols: symbols).check(expression: el)
-            if originalType != targetType {
-                switch (originalType, targetType) {
-                case (.u8, .u16):
-                    instructions += [.push(0)]
-                default:
-                    abort()
-                }
-            }
         }
         return instructions
-    }
-    
-    private func determineArrayBaseType(array expr: Expression.Array) throws -> SymbolType {
-        switch try ExpressionTypeChecker(symbols: symbols).check(expression: expr) {
-        case .array(count: _, elementType: let elementType):
-            return elementType
-        default:
-            abort()
-        }
     }
     
     private func unsupportedError(expression: Expression) -> Error {

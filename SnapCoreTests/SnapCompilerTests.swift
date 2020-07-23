@@ -497,7 +497,7 @@ let foo: bool = 0xffff
 """)
         
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `u16' to type `bool'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `bool'")
     }
     
     func test_EndToEndIntegration_CastU16DownToU8() {
@@ -600,7 +600,7 @@ let arr: [u8] = 1
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `u8' to type `[u8]'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `[u8]'")
     }
     
     func test_EndToEndIntegration_FailToAssignArrayOfU16toArrayOfU8() {
@@ -612,7 +612,6 @@ let arr: [u8] = [1000]
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u16]' to type `[u8]'")
-        // TODO: This assignment should copy and cast each element in the array.
     }
     
     func test_EndToEndIntegration_FailToAssignArrayOfU8toArrayOfU16() {

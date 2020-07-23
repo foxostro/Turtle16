@@ -123,7 +123,7 @@ public class SnapParser: Parser {
         
         let expression = try consumeExpression()
         
-        if let arr = expression as? Expression.Array {
+        if let arr = expression as? Expression.LiteralArray {
             if arr.elements.count == 0 && explicitType == nil {
                 throw CompilerError(line: arr.tokens.first!.lineNumber,
                                     message: "empty array literal requires an explicit type")
@@ -424,9 +424,9 @@ public class SnapParser: Parser {
     
     private func consumeCast() throws -> Expression {
         let expr = try consumeUnary()
-        if let tokenAs = accept(TokenAs.self) {
-            let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
-            return Expression.As(expr: expr, tokenAs: tokenAs as! TokenAs, tokenType: tokenType)
+        if let tokenAs = accept(TokenAs.self) as? TokenAs {
+            let targetType = try consumeType()
+            return Expression.As(expr: expr, tokenAs: tokenAs, targetType: targetType)
         } else {
             return expr
         }
@@ -500,9 +500,9 @@ public class SnapParser: Parser {
                 } while nil != accept(TokenComma.self)
             }
             let tokenSquareBracketRight = try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' after expression")) as! TokenSquareBracketRight
-            return Expression.Array(tokenBracketLeft: tokenSquareBracketLeft,
-                                    elements: elements,
-                                    tokenBracketRight: tokenSquareBracketRight)
+            return Expression.LiteralArray(tokenBracketLeft: tokenSquareBracketLeft,
+                                           elements: elements,
+                                           tokenBracketRight: tokenSquareBracketRight)
         }
         else if let token = peek() {
             throw operandTypeMismatchError(token)

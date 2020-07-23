@@ -10,18 +10,36 @@ import SnapCore
 import TurtleCompilerToolbox
 
 public class ExprUtils: NSObject {
-    public static func makeArray(lineNumber: Int = 1, elements: [Expression]) -> Expression {
-        return Expression.Array(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                elements: elements,
-                                tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"))
+    public static func makeLiteralArray(lineNumber: Int = 1, _ elements: [Expression]) -> Expression {
+        return Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                       elements: elements,
+                                       tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"))
     }
     
     public static func makeLiteralInt(lineNumber: Int = 1, value: Int) -> Expression {
         return Expression.LiteralWord(number: TokenNumber(lineNumber: lineNumber, lexeme: "\(value)", literal: value))
     }
     
-    public static func makeLiteralBoolean(value: Bool) -> Expression {
-        return Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "\(value)", literal: value))
+    public static func makeU8(lineNumber: Int = 1, value: Int) -> Expression {
+        return Expression.As(expr: Expression.LiteralWord(number: TokenNumber(lineNumber: lineNumber, lexeme: "\(value)", literal: value)),
+                             tokenAs: TokenAs(lineNumber: lineNumber, lexeme: "as"),
+                             targetType: .u8)
+    }
+    
+    public static func makeU16(lineNumber: Int = 1, value: Int) -> Expression {
+        return Expression.As(expr: Expression.LiteralWord(number: TokenNumber(lineNumber: lineNumber, lexeme: "\(value)", literal: value)),
+                             tokenAs: TokenAs(lineNumber: lineNumber, lexeme: "as"),
+                             targetType: .u16)
+    }
+    
+    public static func makeLiteralBoolean(lineNumber: Int = 1, value: Bool) -> Expression {
+        return Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: lineNumber, lexeme: "\(value)", literal: value))
+    }
+    
+    public static func makeBool(lineNumber: Int = 1, value: Bool) -> Expression {
+        return Expression.As(expr: makeLiteralBoolean(lineNumber: lineNumber, value: value),
+                             tokenAs: TokenAs(lineNumber: lineNumber, lexeme: "as"),
+                             targetType: .bool)
     }
     
     public static func makeAdd(lineNumber: Int = 1, left: Expression, right: Expression) -> Expression {

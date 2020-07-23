@@ -9,25 +9,48 @@
 import TurtleCompilerToolbox
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
-    case void, u16, u8, bool
+    case constInt(Int), constBool(Bool)
+    case u16, u8, bool, void
     case function(name: String, mangledName: String, functionType: FunctionType)
     case array(count: Int?, elementType: SymbolType)
     
-    public func sizeof() -> Int {
+    public var isBooleanType: Bool {
+        switch self {
+        case .bool, .constBool:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public var isArithmeticType: Bool {
+        switch self {
+        case .u8, .u16, .constInt:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public var sizeof: Int {
         switch self {
         case .u8, .bool:
             return 1
         case .u16:
             return 2
         case .array(count: let count, elementType: let elementType):
-            return (count ?? 0) * elementType.sizeof()
-        case .void, .function:
+            return (count ?? 0) * elementType.sizeof
+        case .constInt, .constBool, .void, .function:
             return 0
         }
     }
     
     public var description: String {
         switch self {
+        case .constInt:
+            return "const int"
+        case .constBool:
+            return "const bool"
         case .void:
             return "void"
         case .u16:
@@ -41,6 +64,33 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
                 return "[\(count), \(elementType)]"
             } else {
                 return "[\(elementType)]"
+            }
+        case .function(name: _, mangledName: _, functionType: let functionType):
+            let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
+            let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
+            return result
+        }
+    }
+    
+    public var debugDescription: String {
+        switch self {
+        case .constInt(let value):
+            return "constInt(\(value))"
+        case .constBool(let value):
+            return "constBool(\(value))"
+        case .void:
+            return "void"
+        case .u16:
+            return "u16"
+        case .u8:
+            return "u8"
+        case .bool:
+            return "bool"
+        case .array(count: let count, elementType: let elementType):
+            if let count = count {
+                return "array(\(count), \(elementType))"
+            } else {
+                return "array(\(elementType))"
             }
         case .function(name: _, mangledName: _, functionType: let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")

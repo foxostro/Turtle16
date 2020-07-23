@@ -21,9 +21,9 @@ public class ExpressionTypeChecker: NSObject {
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
         case let expr as Expression.LiteralWord:
-            return check(literalWord: expr)
-        case is Expression.LiteralBoolean:
-            return .bool
+            return .constInt(expr.number.literal)
+        case let expr as Expression.LiteralBoolean:
+            return .constBool(expr.boolean.literal)
         case let expr as Expression.Unary:
             return try check(unary: expr)
         case let expr as Expression.Binary:
@@ -38,19 +38,10 @@ public class ExpressionTypeChecker: NSObject {
             return try check(as: expr)
         case let expr as Expression.Subscript:
             return try check(subscript: expr)
-        case let expr as Expression.Array:
-            return try check(array: expr)
+        case let expr as Expression.LiteralArray:
+            return try check(literalArray: expr)
         default:
             throw unsupportedError(expression: expression)
-        }
-    }
-    
-    public func check(literalWord: Expression.LiteralWord) -> SymbolType {
-        if literalWord.number.literal > 255 {
-            return .u16
-        }
-        else {
-            return .u8
         }
     }
         
@@ -60,6 +51,8 @@ public class ExpressionTypeChecker: NSObject {
         switch unary.op.op {
         case .minus:
             switch expressionType {
+            case .constInt(let value):
+                return .constInt(-value)
             case .u16:
                 return .u16
             case .u8:
@@ -77,52 +70,220 @@ public class ExpressionTypeChecker: NSObject {
         let left = try check(expression: binary.left)
         let lineNumber = binary.tokens.first!.lineNumber
         switch (binary.op.op, left, right) {
-        case (.eq, .u8, .u8):         return .bool
-        case (.eq, .u8, .u16):        return .bool
-        case (.eq, .u16, .u8):        return .bool
-        case (.eq, .u16, .u16):       return .bool
-        case (.eq, .bool, .bool):     return .bool
-        case (.ne, .u8, .u8):         return .bool
-        case (.ne, .u8, .u16):        return .bool
-        case (.ne, .u16, .u8):        return .bool
-        case (.ne, .u16, .u16):       return .bool
-        case (.ne, .bool, .bool):     return .bool
-        case (.lt, .u8, .u8):         return .bool
-        case (.lt, .u8, .u16):        return .bool
-        case (.lt, .u16, .u8):        return .bool
-        case (.lt, .u16, .u16):       return .bool
-        case (.gt, .u8, .u8):         return .bool
-        case (.gt, .u8, .u16):        return .bool
-        case (.gt, .u16, .u8):        return .bool
-        case (.gt, .u16, .u16):       return .bool
-        case (.le, .u8, .u8):         return .bool
-        case (.le, .u8, .u16):        return .bool
-        case (.le, .u16, .u8):        return .bool
-        case (.le, .u16, .u16):       return .bool
-        case (.ge, .u8, .u8):         return .bool
-        case (.ge, .u8, .u16):        return .bool
-        case (.ge, .u16, .u8):        return .bool
-        case (.ge, .u16, .u16):       return .bool
-        case (.plus, .u8, .u8):       return .u8
-        case (.plus, .u8, .u16):      return .u16
-        case (.plus, .u16, .u8):      return .u16
-        case (.plus, .u16, .u16):     return .u16
-        case (.minus, .u8, .u8):      return .u8
-        case (.minus, .u8, .u16):     return .u16
-        case (.minus, .u16, .u8):     return .u16
-        case (.minus, .u16, .u16):    return .u16
-        case (.multiply, .u8, .u8):   return .u8
-        case (.multiply, .u8, .u16):  return .u16
-        case (.multiply, .u16, .u8):  return .u16
-        case (.multiply, .u16, .u16): return .u16
-        case (.divide, .u8, .u8):     return .u8
-        case (.divide, .u8, .u16):    return .u16
-        case (.divide, .u16, .u8):    return .u16
-        case (.divide, .u16, .u16):   return .u16
-        case (.modulus, .u8, .u8):    return .u8
-        case (.modulus, .u8, .u16):   return .u16
-        case (.modulus, .u16, .u8):   return .u16
-        case (.modulus, .u16, .u16):  return .u16
+        case (.eq, .u8, .u8):
+            return .bool
+        case (.eq, .u8, .u16):
+            return .bool
+        case (.eq, .u8, .constInt):
+            return .bool
+        case (.eq, .u16, .u8):
+            return .bool
+        case (.eq, .u16, .u16):
+            return .bool
+        case (.eq, .u16, .constInt):
+            return .bool
+        case (.eq, .constInt, .u8):
+            return .bool
+        case (.eq, .constInt, .u16):
+            return .bool
+        case (.eq, .constInt(let a), .constInt(let b)):
+            return .constBool(a == b)
+        case (.eq, .bool, .bool):
+            return .bool
+        case (.eq, .bool, .constBool):
+            return .bool
+        case (.eq, .constBool, .bool):
+            return .bool
+        case (.eq, .constBool(let a), .constBool(let b)):
+            return .constBool(a == b)
+        case (.ne, .u8, .u8):
+            return .bool
+        case (.ne, .u8, .u16):
+            return .bool
+        case (.ne, .u8, .constInt):
+            return .bool
+        case (.ne, .u16, .u8):
+            return .bool
+        case (.ne, .u16, .u16):
+            return .bool
+        case (.ne, .u16, .constInt):
+            return .bool
+        case (.ne, .constInt, .u8):
+            return .bool
+        case (.ne, .constInt, .u16):
+            return .bool
+        case (.ne, .constInt(let a), .constInt(let b)):
+            return .constBool(a != b)
+        case (.ne, .bool, .bool):
+            return .bool
+        case (.ne, .bool, .constBool):
+            return .bool
+        case (.ne, .constBool, .bool):
+            return .bool
+        case (.ne, .constBool(let a), .constBool(let b)):
+            return .constBool(a != b)
+        case (.lt, .u8, .u8):
+            return .bool
+        case (.lt, .u8, .u16):
+            return .bool
+        case (.lt, .u8, .constInt):
+            return .bool
+        case (.lt, .u16, .u8):
+            return .bool
+        case (.lt, .u16, .u16):
+            return .bool
+        case (.lt, .u16, .constInt):
+            return .bool
+        case (.lt, .constInt, .u8):
+            return .bool
+        case (.lt, .constInt, .u16):
+            return .bool
+        case (.lt, .constInt(let a), .constInt(let b)):
+            return .constBool(a < b)
+        case (.gt, .u8, .u8):
+            return .bool
+        case (.gt, .u8, .u16):
+            return .bool
+        case (.gt, .u8, .constInt):
+            return .bool
+        case (.gt, .u16, .u8):
+            return .bool
+        case (.gt, .u16, .u16):
+            return .bool
+        case (.gt, .u16, .constInt):
+            return .bool
+        case (.gt, .constInt, .u8):
+            return .bool
+        case (.gt, .constInt, .u16):
+            return .bool
+        case (.gt, .constInt(let a), .constInt(let b)):
+            return .constBool(a > b)
+        case (.le, .u8, .u8):
+            return .bool
+        case (.le, .u8, .u16):
+            return .bool
+        case (.le, .u8, .constInt):
+            return .bool
+        case (.le, .u16, .u8):
+            return .bool
+        case (.le, .u16, .u16):
+            return .bool
+        case (.le, .u16, .constInt):
+            return .bool
+        case (.le, .constInt, .u8):
+            return .bool
+        case (.le, .constInt, .u16):
+            return .bool
+        case (.le, .constInt(let a), .constInt(let b)):
+            return .constBool(a <= b)
+        case (.ge, .u8, .u8):
+            return .bool
+        case (.ge, .u8, .u16):
+            return .bool
+        case (.ge, .u8, .constInt):
+            return .bool
+        case (.ge, .u16, .u8):
+            return .bool
+        case (.ge, .u16, .u16):
+            return .bool
+        case (.ge, .u16, .constInt):
+            return .bool
+        case (.ge, .constInt, .u8):
+            return .bool
+        case (.ge, .constInt, .u16):
+            return .bool
+        case (.ge, .constInt(let a), .constInt(let b)):
+            return .constBool(a >= b)
+        case (.plus, .u8, .u8):
+            return .u8
+        case (.plus, .u8, .u16):
+            return .u16
+        case (.plus, .u8, .constInt):
+            return .u8
+        case (.plus, .u16, .u8):
+            return .u16
+        case (.plus, .u16, .u16):
+            return .u16
+        case (.plus, .u16, .constInt):
+            return .u16
+        case (.plus, .constInt, .u8):
+            return .u8
+        case (.plus, .constInt, .u16):
+            return .u16
+        case (.plus, .constInt(let a), .constInt(let b)):
+            return .constInt(a + b)
+        case (.minus, .u8, .u8):
+            return .u8
+        case (.minus, .u8, .u16):
+            return .u16
+        case (.minus, .u8, .constInt):
+            return .u8
+        case (.minus, .u16, .u8):
+            return .u16
+        case (.minus, .u16, .u16):
+            return .u16
+        case (.minus, .u16, .constInt):
+            return .u16
+        case (.minus, .constInt, .u8):
+            return .u8
+        case (.minus, .constInt, .u16):
+            return .u16
+        case (.minus, .constInt(let a), .constInt(let b)):
+            return .constInt(a - b)
+        case (.multiply, .u8, .u8):
+            return .u8
+        case (.multiply, .u8, .u16):
+            return .u16
+        case (.multiply, .u8, .constInt):
+            return .u8
+        case (.multiply, .u16, .u8):
+            return .u16
+        case (.multiply, .u16, .u16):
+            return .u16
+        case (.multiply, .u16, .constInt):
+            return .u16
+        case (.multiply, .constInt, .u8):
+            return .u8
+        case (.multiply, .constInt, .u16):
+            return .u16
+        case (.multiply, .constInt(let a), .constInt(let b)):
+            return .constInt(a * b)
+        case (.divide, .u8, .u8):
+            return .u8
+        case (.divide, .u8, .u16):
+            return .u16
+        case (.divide, .u8, .constInt):
+            return .u8
+        case (.divide, .u16, .u8):
+            return .u16
+        case (.divide, .u16, .u16):
+            return .u16
+        case (.divide, .u16, .constInt):
+            return .u16
+        case (.divide, .constInt, .u8):
+            return .u8
+        case (.divide, .constInt, .u16):
+            return .u16
+        case (.divide, .constInt(let a), .constInt(let b)):
+            return .constInt(a / b)
+        case (.modulus, .u8, .u8):
+            return .u8
+        case (.modulus, .u8, .u16):
+            return .u16
+        case (.modulus, .u8, .constInt):
+            return .u8
+        case (.modulus, .u16, .u8):
+            return .u16
+        case (.modulus, .u16, .u16):
+            return .u16
+        case (.modulus, .u16, .constInt):
+            return .u16
+        case (.modulus, .constInt, .u8):
+            return .u8
+        case (.modulus, .constInt, .u16):
+            return .u16
+        case (.modulus, .constInt(let a), .constInt(let b)):
+            return .constInt(a % b)
         default:
             throw invalidBinaryExpr(lineNumber, binary, left, right)
         }
@@ -135,20 +296,38 @@ public class ExpressionTypeChecker: NSObject {
             return CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
         }
     }
-        
+    
     public func check(assignment: Expression.Assignment) throws -> SymbolType {
         let symbol = try symbols.resolve(identifierToken: assignment.identifier)
         let rtype = try check(expression: assignment.child)
-        if rtype != symbol.type {
-            if rtype == .u8 && symbol.type == .u16 {
-                // nothing to do
-            } else {
-                let lineNumber = assignment.tokens.first!.lineNumber
-                let message = "cannot assign value of type `\(rtype)' to type `\(symbol.type)'"
-                throw CompilerError(line: lineNumber, message: message)
-            }
+        if !areTypesAreConvertibleInAssignment(ltype: symbol.type, rtype: rtype) {
+            let lineNumber = assignment.tokens.first!.lineNumber
+            let message = "cannot assign value of type `\(rtype)' to type `\(symbol.type)'"
+            throw CompilerError(line: lineNumber, message: message)
         }
         return symbol.type
+    }
+        
+    private func areTypesAreConvertibleInAssignment(ltype: SymbolType, rtype: SymbolType) -> Bool {
+        // Integer constants will be automatically converted to appropriate
+        // concrete integer types.
+        //
+        // Small integer types will be automatically promoted to larger types.
+        //
+        // Otherwise, the type of the expression must be identical to the type
+        // of the symbol.
+        if rtype == ltype {
+            return true
+        }
+        switch (rtype, ltype) {
+        case (.constInt, .u8),
+             (.constInt, .u16),
+             (.u8, .u16),
+             (.constBool, .bool):
+            return true // The conversion is acceptable.
+        default:
+            return false
+        }
     }
         
     public func check(identifier: Expression.Identifier) throws -> SymbolType {
@@ -176,15 +355,10 @@ public class ExpressionTypeChecker: NSObject {
                 }
             }
             for i in 0..<typ.arguments.count {
-                let argumentType = try check(expression: call.arguments[i])
-                switch (argumentType, typ.arguments[i].argumentType) {
-                case (.bool, .bool): break
-                case (.void, .void): break
-                case (.u8, .u8):     break
-                case (.u8, .u16):    break
-                case (.u16, .u16):   break
-                default:
-                    let message = "cannot convert value of type `\(argumentType)' to expected argument type `\(typ.arguments[i].argumentType)' in call to `\(name)'"
+                let rtype = try check(expression: call.arguments[i])
+                let ltype = typ.arguments[i].argumentType
+                if !areTypesAreConvertibleInAssignment(ltype: ltype, rtype: rtype) {
+                    let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
                     if let lineNumber = call.tokens.first?.lineNumber {
                         throw CompilerError(line: lineNumber, message: message)
                     } else {
@@ -210,8 +384,12 @@ public class ExpressionTypeChecker: NSObject {
             return targetType
         }
         switch (originalType, targetType) {
-        case (.u8, .u16), (.u16, .u8):
-            return targetType
+        case (.u8, .u16),
+             (.u16, .u8),
+             (.constInt, .u8),
+             (.constInt, .u16),
+             (.constBool, .bool):
+            return targetType // the conversion is valid
         default:
             let lineNumber = expr.tokens.first!.lineNumber
             let message = "cannot convert value of type `\(originalType)' to type `\(targetType)'"
@@ -226,30 +404,48 @@ public class ExpressionTypeChecker: NSObject {
         throw CompilerError(line: lineNumber, message: message)
     }
     
-    public func check(array expr: Expression.Array) throws -> SymbolType {
-        let elements = try expr.elements.compactMap({try check(expression: $0)})
-        switch elements.count {
-        case 0:
-            return .array(count: 0, elementType: .void)
-        case 1:
-            return .array(count: 1, elementType: elements[0])
-        default:
-            if areElementsHeterogeneousMixOfU8andU16(elements) {
-                return .array(count: elements.count, elementType: .u16)
-            }
-            for el in elements[1...] {
-                if elements[0] != el {
-                    let lineNumber = expr.tokens.first!.lineNumber
-                    let message = "cannot convert value of type `\(el)' to type `\(elements[0])'"
-                    throw CompilerError(line: lineNumber, message: message)
+    public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {
+        let elementTypes = try expr.elements.compactMap({try check(expression: $0)})
+        guard let elementType = determineArrayElementType(elementTypes) else {
+            let lineNumber = expr.tokens.first!.lineNumber
+            throw CompilerError(line: lineNumber, message: "cannot infer type of heterogeneous array")
+        }
+        return .array(count: elementTypes.count, elementType: elementType)
+    }
+    
+    private func determineArrayElementType(_ elementTypes: [SymbolType]) -> SymbolType? {
+        if elementTypes.isEmpty {
+            return .void
+        }
+        else if elementTypes.allSatisfy({$0.isBooleanType}) {
+            return .bool
+        }
+        else if elementTypes.allSatisfy({$0.isArithmeticType}) {
+            var largestVal = Int.min
+            for el in elementTypes {
+                switch el {
+                case .constInt(let val):
+                    largestVal = max(largestVal, val)
+                case .u8:
+                    largestVal = max(largestVal, 255)
+                case .u16:
+                    largestVal = max(largestVal, 65535)
+                default:
+                    return nil
                 }
             }
-            return .array(count: elements.count, elementType: elements[0])
+            if largestVal < 256 {
+                return .u8
+            } else {
+                return .u16
+            }
         }
-    }
-        
-    private func areElementsHeterogeneousMixOfU8andU16(_ elements: [SymbolType]) -> Bool {
-        return elements.allSatisfy({$0 == .u8 || $0 == .u16}) && elements.contains(where: {$0 == .u8}) && elements.contains(where: {$0 == .u16})
+        else if elementTypes.allSatisfy({$0 == elementTypes[0]}) {
+            return elementTypes[0]
+        }
+        else {
+            return nil
+        }
     }
     
     private func unsupportedError(expression: Expression) -> Error {

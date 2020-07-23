@@ -169,7 +169,20 @@ public class SnapToYertleCompiler: NSObject {
         case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
             symbolType = .array(count: count, elementType: elementType)
         default:
-            symbolType = varDecl.explicitType ?? expressionResultType
+            if let explicitType = varDecl.explicitType {
+                symbolType = explicitType
+            } else {
+                // Some expression types cannot be made concrete.
+                // Convert these appropriate convertible types.
+                switch expressionResultType {
+                case .constInt(let a):
+                    symbolType = a > 255 ? .u16 : .u8
+                case .constBool:
+                    symbolType = .bool
+                default:
+                    symbolType = expressionResultType
+                }
+            }
         }
         let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
@@ -180,22 +193,22 @@ public class SnapToYertleCompiler: NSObject {
             switch symbol.type {
             case .u16, .u8, .bool:
                 switch (expressionResultType, explicitType) {
-                case (.bool, .bool): break // check out OK
-                case (.u8, .u8):     break // check out OK
-                case (.u8, .u16):    break // check out OK
-                case (.u16, .u16):   break // check out OK
+                case (.bool, .bool):      break // the conversion is acceptable
+                case (.constBool, .bool): break // the conversion is acceptable
+                case (.u8, .u8):          break // the conversion is acceptable
+                case (.u8, .u16):         break // the conversion is acceptable
+                case (.u16, .u16):        break // the conversion is acceptable
+                case (.constInt, .u8):    break // the conversion is acceptable
+                case (.constInt, .u16):   break // the conversion is acceptable
                 default:
-                    let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
-                    throw CompilerError(line: lineNumber, message: message)
+                    throw makeCannotAssignError(lineNumber, expressionResultType, explicitType)
                 }
             case .array:
                 if expressionResultType != symbolType {
-                    let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
-                    throw CompilerError(line: lineNumber, message: message)
+                    throw makeCannotAssignError(lineNumber, expressionResultType, explicitType)
                 }
-            case .function, .void:
-                let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
-                throw CompilerError(line: lineNumber, message: message)
+            default:
+                throw makeCannotAssignError(lineNumber, expressionResultType, explicitType)
             }
         }
         
@@ -209,10 +222,13 @@ public class SnapToYertleCompiler: NSObject {
             switch symbol.type {
             case .u16, .u8, .bool:
                 switch (expressionResultType, explicitType) {
-                case (.bool, .bool): break
-                case (.u8, .u8):     break
-                case (.u8, .u16):    instructions += [.push(0)]
-                case (.u16, .u16):   break
+                case (.bool, .bool):             break // nothing to do
+                case (.constBool(let a), .bool): instructions += [.push(a ? 1 : 0)]
+                case (.u8, .u8):                 break // nothing to do
+                case (.u8, .u16):                instructions += [.push(0)]
+                case (.u16, .u16):               break // nothing to do
+                case (.constInt(let a), .u8):    instructions += [.push(a)]
+                case (.constInt(let a), .u16):   instructions += [.push16(a)]
                 default:
                     abort()
                 }
@@ -220,12 +236,17 @@ public class SnapToYertleCompiler: NSObject {
                 if expressionResultType != symbolType {
                     abort()
                 }
-            case .function, .void:
+            default:
                 abort()
             }
         }
         
         storeSymbol(symbol)
+    }
+    
+    private func makeCannotAssignError(_ lineNumber: Int, _ expressionResultType: SymbolType, _ explicitType: SymbolType) -> CompilerError {
+        let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
+        return CompilerError(line: lineNumber, message: message)
     }
     
     private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
@@ -236,7 +257,7 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
-        let size = symbolType.sizeof()
+        let size = symbolType.sizeof
         let offset: Int
         switch storage {
         case .staticStorage:
@@ -273,12 +294,12 @@ public class SnapToYertleCompiler: NSObject {
                 .pop
             ]
         case .array(count: let count, elementType: let elementType):
-            let length = SymbolType.u16.sizeof() + (count!)*elementType.sizeof()
+            let length = SymbolType.u16.sizeof + (count!)*elementType.sizeof
             for i in 0..<(count!) {
-                storeStaticValue(symbolType: elementType, offset: offset + length - (i+1)*elementType.sizeof())
+                storeStaticValue(symbolType: elementType, offset: offset + length - (i+1)*elementType.sizeof)
             }
             storeStaticValue(symbolType: .u16, offset: offset)
-        case .void, .function:
+        default:
             abort()
         }
     }
@@ -291,11 +312,13 @@ public class SnapToYertleCompiler: NSObject {
         switch returnExpressionType {
         case .u16:
             instructions += [.pop16]
-        case .u8, .bool:
+        case .u8, .bool, .constBool:
             instructions += [.pop]
+        case .constInt(let a):
+            instructions += [a > 255 ? .pop16 : .pop]
         case .void:
             break
-        case .array, .function:
+        default:
             abort()
         }
     }
@@ -392,19 +415,33 @@ public class SnapToYertleCompiler: NSObject {
             throw CompilerError(line: node.token.lineNumber, message: "return is invalid outside of a function")
         }
         if let expr = node.expression {
-            try compile(expression: expr)
             let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
             switch (returnExpressionType, enclosingFunctionType.returnType) {
             case (.void, .void):
+                try compile(expression: expr)
                 instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case (.bool, .bool):
+            case (.bool, .bool), (.constBool, .bool):
+                try compile(expression: expr)
                 instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
             case (.u8, .u8):
+                try compile(expression: expr)
                 instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
             case (.u8, .u16):
+                try compile(expression: expr)
                 instructions += [.push(0), .store16(SnapToYertleCompiler.kReturnValueScratchLocation)]
             case (.u16, .u16):
+                try compile(expression: expr)
                 instructions += [.store16(SnapToYertleCompiler.kReturnValueScratchLocation)]
+            case (.constInt(let a), .u8):
+                instructions += [
+                    .push(a),
+                    .store(SnapToYertleCompiler.kReturnValueScratchLocation)
+                ]
+            case (.constInt(let a), .u16):
+                instructions += [
+                    .push16(a),
+                    .store16(SnapToYertleCompiler.kReturnValueScratchLocation)
+                ]
             default:
                 throw CompilerError(line: node.token.lineNumber,
                                     format: "cannot convert return expression of type `%@' to return type `%@'",

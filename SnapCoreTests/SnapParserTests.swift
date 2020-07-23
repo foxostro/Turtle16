@@ -144,7 +144,7 @@ class SnapParserTests: XCTestCase {
         // type is given as [u8].
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: .array(count: nil, elementType: .u8),
-                                      expression: ExprUtils.makeArray(elements: []),
+                                      expression: ExprUtils.makeLiteralArray([]),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -161,7 +161,7 @@ class SnapParserTests: XCTestCase {
         
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: .array(count: 0, elementType: .u8),
-                                      expression: ExprUtils.makeArray(elements: []),
+                                      expression: ExprUtils.makeLiteralArray([]),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -178,7 +178,7 @@ class SnapParserTests: XCTestCase {
         
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: nil,
-                                      expression: ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 1)]),
+                                      expression: ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 1)]),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -191,9 +191,9 @@ class SnapParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let arr = ExprUtils.makeArray(elements: [ExprUtils.makeLiteralInt(value: 1),
-                                                 ExprUtils.makeLiteralInt(value: 2),
-                                                 ExprUtils.makeLiteralInt(value: 3)])
+        let arr = ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 1),
+                                              ExprUtils.makeLiteralInt(value: 2),
+                                              ExprUtils.makeLiteralInt(value: 3)])
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: nil,
                                       expression: arr,

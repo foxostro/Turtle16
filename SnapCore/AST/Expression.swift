@@ -286,20 +286,16 @@ public class Expression: AbstractSyntaxTreeNode {
     public class As: Expression {
         public let expr: Expression
         public let tokenAs: TokenAs
-        public let tokenType: TokenType
+        public let targetType: SymbolType
         
         public override var tokens: [Token] {
-            return expr.tokens + [tokenAs, tokenType]
+            return expr.tokens + [tokenAs]
         }
         
-        public var targetType: SymbolType {
-            return tokenType.representedType
-        }
-        
-        public required init(expr: Expression, tokenAs: TokenAs, tokenType: TokenType) {
+        public required init(expr: Expression, tokenAs: TokenAs, targetType: SymbolType) {
             self.expr = expr
             self.tokenAs = tokenAs
-            self.tokenType = tokenType
+            self.targetType = targetType
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -308,7 +304,7 @@ public class Expression: AbstractSyntaxTreeNode {
             guard let rhs = rhs as? As else { return false }
             guard expr == rhs.expr else { return false }
             guard tokenAs == rhs.tokenAs else { return false }
-            guard tokenType == rhs.tokenType else { return false }
+            guard targetType == rhs.targetType else { return false }
             return true
         }
     }
@@ -345,7 +341,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
-    public class Array: Expression {
+    public class LiteralArray: Expression {
         public let tokenBracketLeft: TokenSquareBracketLeft
         public let elements: [Expression]
         public let tokenBracketRight: TokenSquareBracketRight
@@ -365,7 +361,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
-            guard let rhs = rhs as? Array else { return false }
+            guard let rhs = rhs as? LiteralArray else { return false }
             guard tokenBracketLeft == rhs.tokenBracketLeft else { return false }
             guard elements == rhs.elements else { return false }
             guard tokenBracketRight == rhs.tokenBracketRight else { return false }

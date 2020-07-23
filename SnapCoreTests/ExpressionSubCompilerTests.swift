@@ -1885,6 +1885,28 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
+    func testIntegerConstantAsU8_Overflows() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 256),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .u8)
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `256' overflows when stored into `u8'")
+        }
+    }
+    
+    func testIntegerConstantAsU16_Overflows() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 65536),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .u16)
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `65536' overflows when stored into `u16'")
+        }
+    }
+    
     func testEmptyArray() {
         let expr = ExprUtils.makeLiteralArray([])
         let ir = try! compile(expression: expr)

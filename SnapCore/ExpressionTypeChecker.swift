@@ -300,15 +300,19 @@ public class ExpressionTypeChecker: NSObject {
     public func check(assignment: Expression.Assignment) throws -> SymbolType {
         let symbol = try symbols.resolve(identifierToken: assignment.identifier)
         let rtype = try check(expression: assignment.child)
-        if !areTypesAreConvertibleInAssignment(ltype: symbol.type, rtype: rtype) {
-            let lineNumber = assignment.tokens.first!.lineNumber
-            let message = "cannot assign value of type `\(rtype)' to type `\(symbol.type)'"
-            throw CompilerError(line: lineNumber, message: message)
-        }
+        let lineNumber = assignment.tokens.first!.lineNumber
+        let message = "cannot assign value of type `\(rtype)' to type `\(symbol.type)'"
+        try checkTypesAreConvertibleInAssignment(ltype: symbol.type,
+                                                 rtype: rtype,
+                                                 lineNumber: lineNumber,
+                                                 messageWhenNotConvertible: message)
         return symbol.type
     }
         
-    private func areTypesAreConvertibleInAssignment(ltype: SymbolType, rtype: SymbolType) -> Bool {
+    private func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
+                                                      rtype: SymbolType,
+                                                      lineNumber: Int,
+                                                      messageWhenNotConvertible: String) throws {
         // Integer constants will be automatically converted to appropriate
         // concrete integer types.
         //
@@ -317,16 +321,23 @@ public class ExpressionTypeChecker: NSObject {
         // Otherwise, the type of the expression must be identical to the type
         // of the symbol.
         if rtype == ltype {
-            return true
+            return
         }
         switch (rtype, ltype) {
-        case (.constInt, .u8),
-             (.constInt, .u16),
-             (.u8, .u16),
-             (.constBool, .bool):
-            return true // The conversion is acceptable.
+        case (.constInt(let a), .u8):
+            guard a >= 0 && a < 256 else {
+                throw CompilerError(line: lineNumber, message: "integer constant `\(a)' overflows when stored into `u8'")
+            }
+            return // The conversion is acceptable.
+        case (.constInt(let a), .u16):
+            guard a >= 0 && a < 65536 else {
+                throw CompilerError(line: lineNumber, message: "integer constant `\(a)' overflows when stored into `u16'")
+            }
+            return // The conversion is acceptable.
+        case (.u8, .u16), (.constBool, .bool):
+            return // The conversion is acceptable.
         default:
-            return false
+            throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
         }
     }
         
@@ -357,14 +368,12 @@ public class ExpressionTypeChecker: NSObject {
             for i in 0..<typ.arguments.count {
                 let rtype = try check(expression: call.arguments[i])
                 let ltype = typ.arguments[i].argumentType
-                if !areTypesAreConvertibleInAssignment(ltype: ltype, rtype: rtype) {
-                    let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
-                    if let lineNumber = call.tokens.first?.lineNumber {
-                        throw CompilerError(line: lineNumber, message: message)
-                    } else {
-                        throw CompilerError(message: message)
-                    }
-                }
+                let lineNumber = call.tokens.first!.lineNumber
+                let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
+                try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                         rtype: rtype,
+                                                         lineNumber: lineNumber,
+                                                         messageWhenNotConvertible: message)
             }
             return typ.returnType
         default:
@@ -378,6 +387,7 @@ public class ExpressionTypeChecker: NSObject {
     }
         
     public func check(as expr: Expression.As) throws -> SymbolType {
+        let lineNumber = expr.tokens.first!.lineNumber
         let originalType = try check(expression: expr.expr)
         let targetType = expr.targetType
         if originalType == targetType {
@@ -386,14 +396,20 @@ public class ExpressionTypeChecker: NSObject {
         switch (originalType, targetType) {
         case (.u8, .u16),
              (.u16, .u8),
-             (.constInt, .u8),
-             (.constInt, .u16),
              (.constBool, .bool):
             return targetType // the conversion is valid
+        case (.constInt(let a), .u8):
+            guard a >= 0 && a < 256 else {
+                throw CompilerError(line: lineNumber, message: "integer constant `\(a)' overflows when stored into `u8'")
+            }
+            return targetType // the conversion is valid
+        case (.constInt(let a), .u16):
+            guard a >= 0 && a < 65536 else {
+                throw CompilerError(line: lineNumber, message: "integer constant `\(a)' overflows when stored into `u16'")
+            }
+            return targetType // the conversion is valid
         default:
-            let lineNumber = expr.tokens.first!.lineNumber
-            let message = "cannot convert value of type `\(originalType)' to type `\(targetType)'"
-            throw CompilerError(line: lineNumber, message: message)
+            throw CompilerError(line: lineNumber, message: "cannot convert value of type `\(originalType)' to type `\(targetType)'")
         }
     }
         

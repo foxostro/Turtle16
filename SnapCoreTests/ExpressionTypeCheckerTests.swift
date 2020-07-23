@@ -2083,6 +2083,30 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
+    func testAssignment_IntegerConstant_to_U16_Overflows() {
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                         expression: ExprUtils.makeLiteralInt(value: 0x10000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `65536' overflows when stored into `u16'")
+        }
+    }
+    
+    func testAssignment_IntegerConstant_to_U8_Overflows() {
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                         expression: ExprUtils.makeLiteralInt(value: 0x100))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `256' overflows when stored into `u8'")
+        }
+    }
+    
     func testAssignment_IntegerConstant_to_U16() {
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
         let typeChecker = ExpressionTypeChecker(symbols: symbols)
@@ -2181,6 +2205,28 @@ class ExpressionTypeCheckerTests: XCTestCase {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "incorrect number of arguments in call to `foo'")
+        }
+    }
+    
+    func testFailBecauseAssignmentCannotConvertLargeIntegerConstantToU16() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 65536))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `65536' overflows when stored into `u16'")
+        }
+    }
+    
+    func testFailBecauseAssignmentCannotConvertLargeIntegerConstantToU8() {
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralInt(value: 256))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `256' overflows when stored into `u8'")
         }
     }
     
@@ -2367,6 +2413,54 @@ class ExpressionTypeCheckerTests: XCTestCase {
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
+    }
+    
+    func testIntegerConstantAsU8_Overflows() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 256),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .u8)
+        let typeChecker = ExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `256' overflows when stored into `u8'")
+        }
+    }
+    
+    func testIntegerConstantAsU16_Overflows() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 65536),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .u16)
+        let typeChecker = ExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `65536' overflows when stored into `u16'")
+        }
+    }
+    
+    func testIntegerConstantAsU8_Overflows_Negative() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: -1),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .u8)
+        let typeChecker = ExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `-1' overflows when stored into `u8'")
+        }
+    }
+    
+    func testIntegerConstantAsU16_Overflows_Negative() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: -1),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .u16)
+        let typeChecker = ExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "integer constant `-1' overflows when stored into `u16'")
+        }
     }
     
     func testIntegerConstantasBool() {

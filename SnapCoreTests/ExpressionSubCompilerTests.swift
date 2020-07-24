@@ -1985,30 +1985,6 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
-    func testArrayLiteralMaySpecifyAnExplicitElementType() {
-        let expr = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                           elements: [ExprUtils.makeLiteralInt(value: 1000),
-                                                      ExprUtils.makeU8(value: 1),
-                                                      ExprUtils.makeU8(value: 2)],
-                                           tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
-                                           explicitElementType: .u16)
-        let ir = try! compile(expression: expr)
-        let executor = YertleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(3),
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .push(2),
-            .push(0)
-        ])
-        XCTAssertEqual(computer.stack16(at: 6), 3)
-        XCTAssertEqual(computer.stack16(at: 4), 1000)
-        XCTAssertEqual(computer.stack16(at: 2), 1)
-        XCTAssertEqual(computer.stack16(at: 0), 2)
-    }
-    
     func testMoreComplicatedConstantExpressionIsAlsoEvaluatedAtCompileTime() {
         let expr = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
                                      left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),

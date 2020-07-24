@@ -367,8 +367,16 @@ public class ExpressionSubCompiler: NSObject {
         case (.bool, .bool), (.u8, .u8), (.u16, .u16):
             instructions += try compile(expression: rexpr)
         case (.constInt(let a), .u8):
+            guard a >= 0 && a < 256 else {
+                throw CompilerError(line: rexpr.tokens.first!.lineNumber,
+                                    message: "integer constant `\(a)' overflows when stored into `u8'")
+            }
             instructions += [.push(a)]
         case (.constInt(let a), .u16):
+            guard a >= 0 && a < 65536 else {
+                throw CompilerError(line: rexpr.tokens.first!.lineNumber,
+                                    message: "integer constant `\(a)' overflows when stored into `u16'")
+            }
             instructions += [.push16(a)]
         case (.constBool(let a), .bool):
             instructions += [.push(a ? 1 : 0)]
@@ -382,13 +390,20 @@ public class ExpressionSubCompiler: NSObject {
             instructions += try compile(expression: rexpr)
             instructions += [.pop]
         case (.array(let n, let a), .array(let m, let b)):
-            guard n == m else {
+            guard n == m || m == nil else {
                 abort()
             }
-            guard a == b else {
-                abort()
+            if let literalArray = rexpr as? Expression.LiteralArray {
+                instructions += [.push16(literalArray.elements.count)]
+                for el in literalArray.elements {
+                    instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
+                }
+            } else {
+                guard a == b else {
+                    abort()
+                }
+                instructions += try compile(expression: rexpr)
             }
-            instructions += try compile(expression: rexpr)
         default:
             abort()
         }
@@ -486,11 +501,7 @@ public class ExpressionSubCompiler: NSObject {
         var instructions: [YertleInstruction] = []
         instructions += [.push16(expr.elements.count)]
         for el in expr.elements {
-            if let explicitElementType = expr.explicitElementType {
-                instructions += try compileAndConvertExpressionForExplicitCast(rexpr: el, ltype: explicitElementType)
-            } else {
-                instructions += try compile(expression: el)
-            }
+            instructions += try compile(expression: el)
         }
         return instructions
     }

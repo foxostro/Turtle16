@@ -2395,6 +2395,28 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
+    func testCannotConvertArrayLiteralsOfDifferentLengths() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralArray([ExprUtils.makeU8(value: 1)]),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .array(count: 10, elementType: .u16))
+        let typeChecker = ExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `[1, u8]' to type `[10, u16]'")
+        }
+    }
+    
+    func testArrayOfU8AsArrayOfU16() {
+        let expr = Expression.As(expr: ExprUtils.makeLiteralArray([ExprUtils.makeU8(value: 1)]),
+                                 tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
+                                 targetType: .array(count: 1, elementType: .u16))
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .array(count: 1, elementType: .u16))
+    }
+    
     func testIntegerConstantAsU16() {
         let expr = Expression.As(expr: ExprUtils.makeLiteralInt(value: 0),
                                  tokenAs: TokenAs(lineNumber: 1, lexeme: "as"),
@@ -2674,19 +2696,6 @@ class ExpressionTypeCheckerTests: XCTestCase {
         let expr = ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 0),
                                                ExprUtils.makeU8(value: 0),
                                                ExprUtils.makeU16(value: 0)])
-        let typeChecker = ExpressionTypeChecker()
-        var result: SymbolType? = nil
-        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .array(count: 3, elementType: .u16))
-    }
-    
-    func testArrayLiteralMaySpecifyAnExplicitElementType() {
-        let expr = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                           elements: [ExprUtils.makeLiteralInt(value: 1000),
-                                                      ExprUtils.makeU8(value: 1),
-                                                      ExprUtils.makeU8(value: 2)],
-                                           tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
-                                           explicitElementType: .u16)
         let typeChecker = ExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))

@@ -347,6 +347,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public let tokenBracketLeft: TokenSquareBracketLeft
         public let elements: [Expression]
         public let tokenBracketRight: TokenSquareBracketRight
+        public let explicitElementType: SymbolType?
         
         public override var tokens: [Token] {
             return [tokenBracketLeft] + elements.flatMap({$0.tokens}) + [tokenBracketRight]
@@ -354,10 +355,12 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public required init(tokenBracketLeft: TokenSquareBracketLeft,
                              elements: [Expression],
-                             tokenBracketRight: TokenSquareBracketRight) {
+                             tokenBracketRight: TokenSquareBracketRight,
+                             explicitElementType: SymbolType? = nil) {
             self.tokenBracketLeft = tokenBracketLeft
             self.elements = elements
             self.tokenBracketRight = tokenBracketRight
+            self.explicitElementType = explicitElementType
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -367,6 +370,7 @@ public class Expression: AbstractSyntaxTreeNode {
             guard tokenBracketLeft == rhs.tokenBracketLeft else { return false }
             guard elements == rhs.elements else { return false }
             guard tokenBracketRight == rhs.tokenBracketRight else { return false }
+            guard explicitElementType == rhs.explicitElementType else { return false }
             return true
         }
         
@@ -375,15 +379,24 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(tokenBracketLeft)
             hasher.combine(elements)
             hasher.combine(tokenBracketRight)
+            hasher.combine(explicitElementType)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ elements=[%@]>",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          elements.compactMap({$0.description}).joined(separator: ", "))
+            if let explicitElementType = explicitElementType {
+                return String(format: "%@<%@ explicitElementType=%@, elements=[%@]>",
+                              wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                              String(describing: type(of: self)),
+                              explicitElementType.description,
+                              elements.compactMap({$0.description}).joined(separator: ", "))
+            } else {
+                return String(format: "%@<%@ elements=[%@]>",
+                              wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                              String(describing: type(of: self)),
+                              elements.compactMap({$0.description}).joined(separator: ", "))
+            }
         }
     }
     

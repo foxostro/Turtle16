@@ -486,7 +486,11 @@ public class ExpressionSubCompiler: NSObject {
         var instructions: [YertleInstruction] = []
         instructions += [.push16(expr.elements.count)]
         for el in expr.elements {
-            instructions += try compile(expression: el)
+            if let explicitElementType = expr.explicitElementType {
+                instructions += try compileAndConvertExpressionForExplicitCast(rexpr: el, ltype: explicitElementType)
+            } else {
+                instructions += try compile(expression: el)
+            }
         }
         return instructions
     }

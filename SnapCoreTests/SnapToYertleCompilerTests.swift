@@ -456,6 +456,33 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa)
     }
     
+    func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {
+        let arr = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                          elements: [ExprUtils.makeLiteralInt(value: 1000),
+                                                     ExprUtils.makeU8(value: 1),
+                                                     ExprUtils.makeU8(value: 2)],
+                                          tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"))
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                               explicitType: .array(count: nil, elementType: .u16),
+                               expression: arr,
+                               storage: .stackStorage,
+                               isMutable: false)
+            ])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 2)
+    }
+    
     func testCompileExpression() {
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.

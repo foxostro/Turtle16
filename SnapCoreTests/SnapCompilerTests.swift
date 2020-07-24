@@ -602,28 +602,6 @@ let arr: [u8] = 1
         XCTAssertEqual(compiler.errors.first?.line, 1)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `[u8]'")
     }
-    
-    func test_EndToEndIntegration_FailToAssignArrayOfU16toArrayOfU8() {
-        let compiler = SnapCompiler()
-        compiler.compile("""
-let arr: [u8] = [1000]
-""")
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u16]' to type `[1, u8]'")
-    }
-    
-    func test_EndToEndIntegration_FailToAssignArrayOfU8toArrayOfU16() {
-        let compiler = SnapCompiler()
-        compiler.compile("""
-let arr: [u16] = [1]
-""")
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u8]' to type `[1, u16]'")
-    }
             
     func test_EndToEndIntegration_FailToAssignFunctionToArray() {
         let compiler = SnapCompiler()
@@ -649,5 +627,42 @@ let bar = 1 + foo
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 2)
         XCTAssertEqual(compiler.errors.first?.message, "unsupported expression: <Identifier: identifier=\'foo\'>")
+    }
+    
+    func test_EndToEndIntegration_ArrayOfIntegerConstantsConvertedToArrayOfU16OnInitialAssignment() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0024), 109)
+    }
+    
+    func test_EndToEndIntegration_ArrayOfU8ConvertedToArrayOfU16OnInitialAssignment() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let arr: [u16] = [42 as u8]
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 42)
+    }
+    
+    func test_EndToEndIntegration_ReadArrayElement_U16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var result: u16 = 0
+let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+result = arr[2]
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 102)
     }
 }

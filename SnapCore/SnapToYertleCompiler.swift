@@ -186,8 +186,28 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
         
+        // If the rexpr is an array literal then rewrite it to include an
+        // explicit element type. This will cause the compiler to add casts on
+        // each element when it compiles the literal.
+        let rexpr: Expression
+        if let literalArray = varDecl.expression as? Expression.LiteralArray {
+            let arrayElementType: SymbolType
+            switch symbol.type {
+            case .array(count: _, elementType: let elementType):
+                arrayElementType = elementType
+            default:
+                abort()
+            }
+            rexpr = Expression.LiteralArray(tokenBracketLeft: literalArray.tokenBracketLeft,
+                                            elements: literalArray.elements,
+                                            tokenBracketRight: literalArray.tokenBracketRight,
+                                            explicitElementType: arrayElementType)
+        } else {
+            rexpr = varDecl.expression
+        }
+        
         try compile(expression: Expression.InitialAssignment(identifier: varDecl.identifier,
-                                                             expression: varDecl.expression))
+                                                             expression: rexpr))
                                                              
         storeSymbol(symbol)
     }

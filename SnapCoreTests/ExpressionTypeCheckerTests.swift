@@ -2680,6 +2680,19 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .array(count: 3, elementType: .u16))
     }
     
+    func testArrayLiteralMaySpecifyAnExplicitElementType() {
+        let expr = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                           elements: [ExprUtils.makeLiteralInt(value: 1000),
+                                                      ExprUtils.makeU8(value: 1),
+                                                      ExprUtils.makeU8(value: 2)],
+                                           tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
+                                           explicitElementType: .u16)
+        let typeChecker = ExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .array(count: 3, elementType: .u16))
+    }
+    
     func testEvaluationOfArrayIdentifierIsNotYetSupported() {
         // The evaluation of a bare array identifier ought to yield a reference
         // to the array in memory. Currently, it's simply unsupported.

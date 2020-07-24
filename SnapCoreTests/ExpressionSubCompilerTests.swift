@@ -1908,14 +1908,12 @@ class ExpressionSubCompilerTests: XCTestCase {
     }
     
     func testEmptyArray() {
+        // The empty array is not actually materialized in memory.
         let expr = ExprUtils.makeLiteralArray([])
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(0)
-        ])
-        XCTAssertEqual(computer.stack16(at: 0), 0)
+        _ = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [])
     }
     
     func testArrayU8() {
@@ -1926,12 +1924,10 @@ class ExpressionSubCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push16(3),
             .push(0),
             .push(1),
             .push(2)
         ])
-        XCTAssertEqual(computer.stack16(at: 3), 3)
         XCTAssertEqual(computer.stack(at: 2), 0)
         XCTAssertEqual(computer.stack(at: 1), 1)
         XCTAssertEqual(computer.stack(at: 0), 2)
@@ -1945,12 +1941,10 @@ class ExpressionSubCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push16(3),
             .push16(1),
             .push16(2),
             .push16(1000)
         ])
-        XCTAssertEqual(computer.stack16(at: 6), 3)
         XCTAssertEqual(computer.stack16(at: 4), 1)
         XCTAssertEqual(computer.stack16(at: 2), 2)
         XCTAssertEqual(computer.stack16(at: 0), 1000)
@@ -1964,12 +1958,10 @@ class ExpressionSubCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push16(3),
             .push(0),
             .push(0),
             .push(1)
         ])
-        XCTAssertEqual(computer.stack16(at: 3), 3)
         XCTAssertEqual(computer.stack(at: 2), 0)
         XCTAssertEqual(computer.stack(at: 1), 0)
         XCTAssertEqual(computer.stack(at: 0), 1)
@@ -2051,13 +2043,12 @@ class ExpressionSubCompilerTests: XCTestCase {
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = YertleExecutor()
         executor.configure = { computer in
-            computer.dataRAM.store16(value: UInt16(n), to: 0x0010)
             for j in 0..<n {
                 switch elementType.sizeof {
                 case 2:
-                    computer.dataRAM.store16(value: UInt16(j), to: 0x0012 + j*elementType.sizeof)
+                    computer.dataRAM.store16(value: UInt16(j), to: 0x0010 + j*elementType.sizeof)
                 case 1:
-                    computer.dataRAM.store(value: UInt8(j), to: 0x0012 + j*elementType.sizeof)
+                    computer.dataRAM.store(value: UInt8(j), to: 0x0010 + j*elementType.sizeof)
                 default:
                     abort()
                 }

@@ -575,10 +575,9 @@ let b = peekPeripheral(0, 1)
         let computer = try! executor.execute(program: """
 let arr = [1, 2, 3]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0013), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0014), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
     }
     
     func test_EndToEndIntegration_DeclareArrayType_ExplicitType() {
@@ -586,10 +585,9 @@ let arr = [1, 2, 3]
         let computer = try! executor.execute(program: """
 let arr: [u8] = [1, 2, 3]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0013), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0014), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
     }
     
     func test_EndToEndIntegration_FailToAssignScalarToArray() {
@@ -634,17 +632,16 @@ let bar = 1 + foo
         let computer = try! executor.execute(program: """
 let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 100)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 101)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 102)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 103)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 104)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 105)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 106)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 107)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 108)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0024), 109)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
     }
     
     func test_EndToEndIntegration_ArrayOfU8ConvertedToArrayOfU16OnInitialAssignment() {
@@ -652,8 +649,7 @@ let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
         let computer = try! executor.execute(program: """
 let arr: [u16] = [42 as u8]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
     }
     
     func test_EndToEndIntegration_ReadArrayElement_U16() {
@@ -661,9 +657,9 @@ let arr: [u16] = [42 as u8]
         let computer = try! executor.execute(program: """
 var result: u16 = 0
 let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
-result = arr[2]
+result = arr[0]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
     }
     
     func test_EndToEndIntegration_CastArrayLiteralFromArrayOfU8ToArrayOfU16() {
@@ -671,10 +667,9 @@ result = arr[2]
         let computer = try! executor.execute(program: """
 let foo = [1, 2, 3] as [u16]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 2)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 3)
     }
     
     func test_EndToEndIntegration_FailToCastIntegerLiteralToArrayOfU8BecauseOfOverflow() {
@@ -693,9 +688,8 @@ let foo = [0x1001, 0x1002, 0x1003] as [u8]
         let computer = try! executor.execute(program: """
 let foo = [0x1001 as u16, 0x1002 as u16, 0x1003 as u16] as [u8]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0013), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0014), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
     }
 }

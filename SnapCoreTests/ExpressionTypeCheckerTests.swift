@@ -2485,7 +2485,19 @@ class ExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .bool)
     }
     
-    fileprivate func doTestSubscriptOfZero(_ symbolType: SymbolType) {
+    func testSubscriptOfZeroWithU8() {
+        doTestSubscriptOfZero(.u8)
+    }
+    
+    func testSubscriptOfZeroWithU16() {
+        doTestSubscriptOfZero(.u16)
+    }
+    
+    func testSubscriptOfZeroWithBool() {
+        doTestSubscriptOfZero(.bool)
+    }
+    
+    private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
         let zero = ExprUtils.makeLiteralInt(value: 0)
@@ -2498,16 +2510,43 @@ class ExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testSubscriptOfZeroWithU8() {
-        doTestSubscriptOfZero(.u8)
+    func testArraySubscriptFailsWithNonarithmeticIndex() {
+        let ident = "foo"
+        let symbols = SymbolTable([ident : Symbol(type: .array(count: 3, elementType: .bool), offset: 0x0010, isMutable: false)])
+        let index = ExprUtils.makeBool(value: false)
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: index)
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot subscript a value of type `[3, bool]' with an argument of type `bool'")
+        }
     }
     
-    func testSubscriptOfZeroWithU16() {
-        doTestSubscriptOfZero(.u16)
+    func testArraySubscriptAccessesAnArrayElement_U8() {
+        checkArraySubscriptAccessesArrayElement(elementType: .u8)
     }
     
-    func testSubscriptOfZeroWithBool() {
-        doTestSubscriptOfZero(.bool)
+    func testArraySubscriptAccessesAnArrayElement_U16() {
+        checkArraySubscriptAccessesArrayElement(elementType: .u16)
+    }
+    
+    func testArraySubscriptAccessesAnArrayElement_Bool() {
+        checkArraySubscriptAccessesArrayElement(elementType: .bool)
+    }
+    
+    func testArraySubscriptAccessesAnArrayElement_ArrayOfArrays() {
+        checkArraySubscriptAccessesArrayElement(elementType: .array(count: 3, elementType: .u8))
+    }
+    
+    private func checkArraySubscriptAccessesArrayElement(elementType: SymbolType) {
+        let ident = "foo"
+        let symbols = SymbolTable([ident : Symbol(type: .array(count: 3, elementType: elementType), offset: 0x0010, isMutable: false)])
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: ExprUtils.makeLiteralInt(value: 0))
+        let typeChecker = ExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, elementType)
     }
     
     func testEmptyArray() {

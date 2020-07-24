@@ -611,7 +611,7 @@ let arr: [u8] = [1000]
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u16]' to type `[u8]'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u16]' to type `[1, u8]'")
     }
     
     func test_EndToEndIntegration_FailToAssignArrayOfU8toArrayOfU16() {
@@ -622,8 +622,7 @@ let arr: [u16] = [1]
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u8]' to type `[u16]'")
-        // TODO: This assignment should copy and cast each element in the array.
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `[1, u8]' to type `[1, u16]'")
     }
             
     func test_EndToEndIntegration_FailToAssignFunctionToArray() {
@@ -639,7 +638,7 @@ let arr: [u16] = foo
         XCTAssertEqual(compiler.errors.first?.line, 4)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[u16]'")
     }
-            
+    
     func test_EndToEndIntegration_CannotAddArrayToInteger() {
         let compiler = SnapCompiler()
         compiler.compile("""

@@ -260,6 +260,8 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class InitialAssignment: Assignment {}
+    
     public class Call: Expression {
         public let callee: Expression
         public let arguments: [Expression]

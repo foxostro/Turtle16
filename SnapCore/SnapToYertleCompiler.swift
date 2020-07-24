@@ -148,7 +148,6 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(varDecl: VarDeclaration) throws {
-        let lineNumber = varDecl.identifier.lineNumber
         let name = varDecl.identifier.lexeme
         guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
             throw CompilerError(line: varDecl.identifier.lineNumber,
@@ -187,66 +186,10 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
         
-        // Check the type of the expression and make sure it is convertible to
-        // the explicit type, if one is given.
-        if let explicitType = varDecl.explicitType {
-            switch symbol.type {
-            case .u16, .u8, .bool:
-                switch (expressionResultType, explicitType) {
-                case (.bool, .bool):      break // the conversion is acceptable
-                case (.constBool, .bool): break // the conversion is acceptable
-                case (.u8, .u8):          break // the conversion is acceptable
-                case (.u8, .u16):         break // the conversion is acceptable
-                case (.u16, .u16):        break // the conversion is acceptable
-                case (.constInt, .u8):    break // the conversion is acceptable
-                case (.constInt, .u16):   break // the conversion is acceptable
-                default:
-                    throw makeCannotAssignError(lineNumber, expressionResultType, explicitType)
-                }
-            case .array:
-                if expressionResultType != symbolType {
-                    throw makeCannotAssignError(lineNumber, expressionResultType, explicitType)
-                }
-            default:
-                throw makeCannotAssignError(lineNumber, expressionResultType, explicitType)
-            }
-        }
-        
-        // Only compile the expression once we're sure the types are OK.
-        try compile(expression: varDecl.expression)
-        
-        // Compile code to perform a conversion from the expression type to the
-        // symbol type. Abort on error since we checked above that this should
-        // actually work.
-        if let explicitType = varDecl.explicitType {
-            switch symbol.type {
-            case .u16, .u8, .bool:
-                switch (expressionResultType, explicitType) {
-                case (.bool, .bool):             break // nothing to do
-                case (.constBool(let a), .bool): instructions += [.push(a ? 1 : 0)]
-                case (.u8, .u8):                 break // nothing to do
-                case (.u8, .u16):                instructions += [.push(0)]
-                case (.u16, .u16):               break // nothing to do
-                case (.constInt(let a), .u8):    instructions += [.push(a)]
-                case (.constInt(let a), .u16):   instructions += [.push16(a)]
-                default:
-                    abort()
-                }
-            case .array:
-                if expressionResultType != symbolType {
-                    abort()
-                }
-            default:
-                abort()
-            }
-        }
-        
+        try compile(expression: Expression.InitialAssignment(identifier: varDecl.identifier,
+                                                             expression: varDecl.expression))
+                                                             
         storeSymbol(symbol)
-    }
-    
-    private func makeCannotAssignError(_ lineNumber: Int, _ expressionResultType: SymbolType, _ explicitType: SymbolType) -> CompilerError {
-        let message = "cannot assign value of type `\(expressionResultType)' to type `\(explicitType)'"
-        return CompilerError(line: lineNumber, message: message)
     }
     
     private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {

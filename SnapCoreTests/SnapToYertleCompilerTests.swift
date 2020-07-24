@@ -150,18 +150,15 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push16(3),
             .push(0),
             .push(1),
             .push(2),
-            .store(addressFoo+4),
-            .pop,
-            .store(addressFoo+3),
-            .pop,
             .store(addressFoo+2),
             .pop,
-            .store16(addressFoo+0),
-            .pop16
+            .store(addressFoo+1),
+            .pop,
+            .store(addressFoo+0),
+            .pop
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -183,18 +180,15 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push16(3),
             .push(0),
             .push(1),
             .push(2),
-            .store(addressFoo+4),
-            .pop,
-            .store(addressFoo+3),
-            .pop,
             .store(addressFoo+2),
             .pop,
-            .store16(addressFoo+0),
-            .pop16
+            .store(addressFoo+1),
+            .pop,
+            .store(addressFoo+0),
+            .pop
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -477,10 +471,9 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1000)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 1)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 2)
     }
     
     func testCompileExpression() {

@@ -237,11 +237,11 @@ public class SnapToYertleCompiler: NSObject {
                 .pop
             ]
         case .array(count: let count, elementType: let elementType):
-            let length = SymbolType.u16.sizeof + (count!)*elementType.sizeof
-            for i in 0..<(count!) {
+            let n = count!
+            let length = n*elementType.sizeof
+            for i in 0..<n {
                 storeStaticValue(symbolType: elementType, offset: offset + length - (i+1)*elementType.sizeof)
             }
-            storeStaticValue(symbolType: .u16, offset: offset)
         default:
             abort()
         }

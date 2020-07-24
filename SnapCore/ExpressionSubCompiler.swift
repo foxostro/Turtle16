@@ -394,7 +394,6 @@ public class ExpressionSubCompiler: NSObject {
                 abort()
             }
             if let literalArray = rexpr as? Expression.LiteralArray {
-                instructions += [.push16(literalArray.elements.count)]
                 for el in literalArray.elements {
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
                 }
@@ -499,7 +498,6 @@ public class ExpressionSubCompiler: NSObject {
     
     private func compile(literalArray expr: Expression.LiteralArray) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        instructions += [.push16(expr.elements.count)]
         for el in expr.elements {
             instructions += try compile(expression: el)
         }
@@ -522,13 +520,6 @@ public class ExpressionSubCompiler: NSObject {
             case .stackStorage:
                 instructions += computeAddressOfLocalVariable(symbol, depth)
             }
-            
-            // Apply an offset to skip the array header.
-            let kOffsetToSkipArrayHeader = 2
-            instructions += [
-                .push16(kOffsetToSkipArrayHeader),
-                .add16
-            ]
             
             // Push instructions to compute the subscript index.
             // This must be converted to u16 so we can do math with the address.

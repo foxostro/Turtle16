@@ -665,4 +665,37 @@ result = arr[2]
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 102)
     }
+    
+    func test_EndToEndIntegration_CastArrayLiteralFromArrayOfU8ToArrayOfU16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let foo = [1, 2, 3] as [u16]
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 3)
+    }
+    
+    func test_EndToEndIntegration_FailToCastIntegerLiteralToArrayOfU8BecauseOfOverflow() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+let foo = [0x1001, 0x1002, 0x1003] as [u8]
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.line, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "integer constant `4097' overflows when stored into `u8'")
+    }
+    
+    func test_EndToEndIntegration_CastArrayOfU16ToArrayOfU8() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let foo = [0x1001 as u16, 0x1002 as u16, 0x1003 as u16] as [u8]
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0013), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0014), 3)
+    }
 }

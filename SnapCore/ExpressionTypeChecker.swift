@@ -309,10 +309,10 @@ public class ExpressionTypeChecker: NSObject {
         return symbol.type
     }
         
-    private func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
-                                                      rtype: SymbolType,
-                                                      lineNumber: Int,
-                                                      messageWhenNotConvertible: String) throws {
+    public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
+                                                     rtype: SymbolType,
+                                                     lineNumber: Int,
+                                                     messageWhenNotConvertible: String) throws {
         // Integer constants will be automatically converted to appropriate
         // concrete integer types.
         //
@@ -414,10 +414,18 @@ public class ExpressionTypeChecker: NSObject {
     }
         
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let symbol = try symbols.resolve(identifierToken: expr.tokenIdentifier)
         let lineNumber = expr.tokens.first!.lineNumber
-        let message = "value of type `\(symbol.type)' has no subscripts"
-        throw CompilerError(line: lineNumber, message: message)
+        let symbol = try symbols.resolve(identifierToken: expr.tokenIdentifier)
+        switch symbol.type {
+        case .array(count: _, elementType: let elementType):
+            let argumentType = try check(expression: expr.expr)
+            if !argumentType.isArithmeticType {
+                throw CompilerError(line: lineNumber, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
+            }
+            return elementType
+        default:
+            throw CompilerError(line: lineNumber, message: "value of type `\(symbol.type)' has no subscripts")
+        }
     }
     
     public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {

@@ -1999,4 +1999,78 @@ class ExpressionSubCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(computer.stack16(at: 0), 4004)
     }
+    
+    func testSubscriptOfZeroWithU8() {
+        doTestSubscriptOfZero(.u8)
+    }
+    
+    func testSubscriptOfZeroWithU16() {
+        doTestSubscriptOfZero(.u16)
+    }
+    
+    func testSubscriptOfZeroWithBool() {
+        doTestSubscriptOfZero(.bool)
+    }
+    
+    private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
+        let ident = "foo"
+        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
+        let zero = ExprUtils.makeLiteralInt(value: 0)
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `\(symbolType)' has no subscripts")
+        }
+    }
+    
+    func testArraySubscriptAccessesAnArrayElement_U16() {
+        checkArraySubscriptCanAccessEveryElement(elementType: .u16)
+    }
+    
+    func testArraySubscriptAccessesAnArrayElement_U8() {
+        checkArraySubscriptCanAccessEveryElement(elementType: .u8)
+    }
+    
+    func testArraySubscriptAccessesAnArrayElement_Bool() {
+        checkArraySubscriptCanAccessEveryElement(elementType: .bool)
+    }
+    
+    private func checkArraySubscriptCanAccessEveryElement(elementType: SymbolType) {
+        let n = 3
+        for i in 0..<n {
+            checkArraySubscriptAccessesArrayElement(i, n, elementType)
+        }
+    }
+    
+    private func checkArraySubscriptAccessesArrayElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
+        let ident = "foo"
+        let symbols = SymbolTable([ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0010, isMutable: false)])
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: ExprUtils.makeLiteralInt(value: i))
+        var ir: [YertleInstruction] = []
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: UInt16(n), to: 0x0010)
+            for j in 0..<n {
+                switch elementType.sizeof {
+                case 2:
+                    computer.dataRAM.store16(value: UInt16(j), to: 0x0012 + j*elementType.sizeof)
+                case 1:
+                    computer.dataRAM.store(value: UInt8(j), to: 0x0012 + j*elementType.sizeof)
+                default:
+                    abort()
+                }
+            }
+        }
+        let computer = try! executor.execute(ir: ir)
+        switch elementType.sizeof {
+        case 2:
+            XCTAssertEqual(computer.stack16(at: 0), UInt16(i))
+        case 1:
+            XCTAssertEqual(computer.stack(at: 0), UInt8(i))
+        default:
+            abort()
+        }
+    }
 }

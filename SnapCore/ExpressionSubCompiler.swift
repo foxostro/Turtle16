@@ -41,6 +41,8 @@ public class ExpressionSubCompiler: NSObject {
             return try compile(unary: unary)
         case let identifier as Expression.Identifier:
             return try compile(identifier: identifier)
+        case let assignment as Expression.InitialAssignment:
+            return try compile(assignment: assignment)
         case let assignment as Expression.Assignment:
             return try compile(assignment: assignment)
         case let call as Expression.Call:
@@ -49,6 +51,8 @@ public class ExpressionSubCompiler: NSObject {
             return try compile(as: expr)
         case let expr as Expression.LiteralArray:
             return try compile(literalArray: expr)
+        case let expr as Expression.Subscript:
+            return try compile(subscript: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -339,7 +343,24 @@ public class ExpressionSubCompiler: NSObject {
         return instructions
     }
     
+    private func compile(assignment: Expression.InitialAssignment) throws -> [YertleInstruction] {
+        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: assignment.identifier)
+        let symbol = resolution.0
+        
+        var instructions: [YertleInstruction] = []
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.child, ltype: symbol.type)
+        return instructions
+    }
+    
     private func compileAndConvertExpressionForAssignment(rexpr: Expression, ltype: SymbolType) throws -> [YertleInstruction] {
+        return try compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: false)
+    }
+    
+    private func compileAndConvertExpressionForExplicitCast(rexpr: Expression, ltype: SymbolType) throws -> [YertleInstruction] {
+        return try compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: true)
+    }
+    
+    private func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         let rtype = try ExpressionTypeChecker(symbols: symbols).check(expression: rexpr)
         switch (rtype, ltype) {
@@ -354,6 +375,20 @@ public class ExpressionSubCompiler: NSObject {
         case (.u8, .u16):
             instructions += try compile(expression: rexpr)
             instructions += [.push(0)]
+        case (.u16, .u8):
+            guard isExplicitCast else {
+                abort()
+            }
+            instructions += try compile(expression: rexpr)
+            instructions += [.pop]
+        case (.array(let n, let a), .array(let m, let b)):
+            guard n == m else {
+                abort()
+            }
+            guard a == b else {
+                abort()
+            }
+            instructions += try compile(expression: rexpr)
         default:
             abort()
         }
@@ -361,7 +396,6 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func storeSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        assert(symbol.isMutable)
         var instructions: [YertleInstruction] = []
         switch (symbol.storage, symbol.type) {
         case (.staticStorage, .u16):
@@ -444,29 +478,7 @@ public class ExpressionSubCompiler: NSObject {
     }
     
     private func compile(as expr: Expression.As) throws -> [YertleInstruction] {
-        let originalType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr.expr)
-        let targetType = expr.targetType
-        var instructions: [YertleInstruction] = []
-        if originalType == targetType {
-            instructions += try compile(expression: expr.expr)
-        } else {
-            switch (originalType, targetType) {
-            case (.u8, .u16):
-                instructions += try compile(expression: expr.expr)
-                instructions += [.push(0)]
-            case (.u16, .u8):
-                instructions += try compile(expression: expr.expr)
-                instructions += [.pop]
-            case (.constInt(let value), .u8):
-                instructions += [.push(Int(UInt8(value)))]
-            case (.constInt(let value), .u16):
-                instructions += [.push16(Int(UInt16(value)))]
-            case (.constBool(let value), .bool):
-                instructions += [.push(value ? 1 : 0)]
-            default:
-                abort()
-            }
-        }
+        let instructions = try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: expr.targetType)
         return instructions
     }
     
@@ -476,6 +488,58 @@ public class ExpressionSubCompiler: NSObject {
         for el in expr.elements {
             instructions += try compile(expression: el)
         }
+        return instructions
+    }
+    
+    private func compile(subscript expr: Expression.Subscript) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        
+        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: expr.tokenIdentifier)
+        let symbol = resolution.0
+        let depth = symbols.stackFrameIndex - resolution.1
+        
+        switch symbol.type {
+        case .array(count: _, elementType: let elementType):
+            // Push instructions to compute the absolute address of the array.
+            switch symbol.storage {
+            case .staticStorage:
+                instructions += [.push16(symbol.offset)]
+            case .stackStorage:
+                instructions += computeAddressOfLocalVariable(symbol, depth)
+            }
+            
+            // Apply an offset to skip the array header.
+            let kOffsetToSkipArrayHeader = 2
+            instructions += [
+                .push16(kOffsetToSkipArrayHeader),
+                .add16
+            ]
+            
+            // Push instructions to compute the subscript index.
+            // This must be converted to u16 so we can do math with the address.
+            instructions += try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
+            
+            // Multiply the index by the size of an element.
+            // Add the element offset to the array address.
+            instructions += [
+                .push16(elementType.sizeof),
+                .mul16,
+                .add16
+            ]
+            
+            // Load the element. This depends on the element type.
+            switch elementType.sizeof {
+            case 2:
+                instructions += [.loadIndirect16]
+            case 1:
+                instructions += [.loadIndirect]
+            default:
+                abort()
+            }
+        default:
+            abort()
+        }
+        
         return instructions
     }
     

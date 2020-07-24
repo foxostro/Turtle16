@@ -429,6 +429,9 @@ public class ExpressionTypeChecker: NSObject {
     }
     
     public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {
+        if let explicitElementType = expr.explicitElementType {
+            return .array(count: expr.elements.count, elementType: explicitElementType)
+        }
         let elementTypes = try expr.elements.compactMap({try check(expression: $0)})
         guard let elementType = determineArrayElementType(elementTypes) else {
             let lineNumber = expr.tokens.first!.lineNumber

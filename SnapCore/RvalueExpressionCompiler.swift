@@ -422,11 +422,20 @@ public class RvalueExpressionCompiler: NSObject {
             guard n == m || m == nil else {
                 abort()
             }
-            if let literalArray = rexpr as? Expression.LiteralArray {
+            switch rexpr {
+            case let literalArray as Expression.LiteralArray:
                 for el in literalArray.elements.reversed() {
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
                 }
-            } else {
+            case let identifier as Expression.Identifier:
+                // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
+                let elements = stride(from: 0, through: n!, by: 1).map({i in
+                    Expression.As(expr: Expression.Subscript(tokenIdentifier: identifier.identifier, tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), expr: Expression.LiteralWord(number: TokenNumber(lineNumber: identifier.identifier.lineNumber, lexeme: "\(i)", literal: i)), tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]")), tokenAs: TokenAs(lineNumber: identifier.identifier.lineNumber, lexeme: "as"), targetType: b)
+                })
+                let synthesized = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), elements: elements, tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]"))
+                print(synthesized.makeIndentedDescription(depth: 0))
+                instructions += try compile(expression: synthesized)
+            default:
                 guard a == b else {
                     abort()
                 }

@@ -221,42 +221,47 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public class Assignment: Expression {
-        public let identifier: TokenIdentifier
-        public let child: Expression
+        public let lexpr: Expression
+        public let tokenEqual: TokenEqual
+        public let rexpr: Expression
         
         public override var tokens: [Token] {
-            return [identifier] + child.tokens
+            return rexpr.tokens + [tokenEqual] + rexpr.tokens
         }
         
-        public required init(identifier: TokenIdentifier,
-                             expression: Expression) {
-            self.identifier = identifier
-            self.child = expression
+        public required init(lexpr: Expression,
+                             tokenEqual: TokenEqual,
+                             rexpr: Expression) {
+            self.lexpr = lexpr
+            self.tokenEqual = tokenEqual
+            self.rexpr = rexpr
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? Assignment else { return false }
-            guard identifier == rhs.identifier else { return false }
-            guard child == rhs.child else { return false }
+            guard lexpr == rhs.lexpr else { return false }
+            guard tokenEqual == rhs.tokenEqual else { return false }
+            guard rexpr == rhs.rexpr else { return false }
             return true
         }
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(identifier)
-            hasher.combine(child)
+            hasher.combine(lexpr)
+            hasher.combine(tokenEqual)
+            hasher.combine(rexpr)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: identifier='%@', children=%@>",
+            return String(format: "%@<%@: lexpr=%@, rexpr=%@>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          identifier.lexeme,
-                          child.makeIndentedDescription(depth: depth + 1))
+                          lexpr.makeIndentedDescription(depth: depth + 1),
+                          rexpr.makeIndentedDescription(depth: depth + 1))
         }
     }
     

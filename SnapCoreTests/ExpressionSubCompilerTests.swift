@@ -1649,7 +1649,8 @@ class ExpressionSubCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(1),
-            .store(0x0010)
+            .push16(0x0010),
+            .storeIndirect
         ])
     }
     
@@ -1658,7 +1659,8 @@ class ExpressionSubCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
-            .store(0x0010)
+            .push16(0x0010),
+            .storeIndirect
         ])
     }
     
@@ -1667,7 +1669,8 @@ class ExpressionSubCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push16(0xabcd),
-            .store16(0x0010)
+            .push16(0x0010),
+            .storeIndirect16
         ])
     }
     
@@ -1677,7 +1680,8 @@ class ExpressionSubCompilerTests: XCTestCase {
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(42),
             .push(0),
-            .store16(0x0010)
+            .push16(0x0010),
+            .storeIndirect16
         ])
     }
     
@@ -1731,12 +1735,27 @@ class ExpressionSubCompilerTests: XCTestCase {
         }
     }
     
+    func testExpressionIsNotAssignable_ConstInt() {
+        let expr = Expression.Assignment(lexpr: ExprUtils.makeLiteralInt(value: 0), tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="), rexpr: ExprUtils.makeLiteralInt(value: 0))
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
+        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "expression is not assignable")
+        }
+    }
+    
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
-        let ir = try! compile(expression: expr, symbols: symbols)
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = YertleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        let computer = try! executor.execute(ir: ir!)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xaa)
     }
     

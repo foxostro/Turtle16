@@ -16,8 +16,8 @@ public class LvalueExpressionTypeChecker: NSObject {
         self.symbols = symbols
     }
         
-    func rvalueContext() -> ExpressionTypeChecker {
-        return ExpressionTypeChecker(symbols: symbols)
+    func rvalueContext() -> RvalueExpressionTypeChecker {
+        return RvalueExpressionTypeChecker(symbols: symbols)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {

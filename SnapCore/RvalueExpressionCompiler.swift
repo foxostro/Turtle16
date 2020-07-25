@@ -22,11 +22,11 @@ public class RvalueExpressionCompiler: NSObject {
         "peekPeripheral" : [.peekPeripheral],
         "pokePeripheral" : [.pokePeripheral, .pop]
     ]
-    public let typeChecker: ExpressionTypeChecker
+    public let typeChecker: RvalueExpressionTypeChecker
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
-        self.typeChecker = ExpressionTypeChecker(symbols: symbols)
+        self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
     }
     
     func rvalueContext() -> RvalueExpressionCompiler {

@@ -158,7 +158,7 @@ public class SnapToYertleCompiler: NSObject {
         
         // The type of the initial value expression may be used to infer the
         // symbol type in cases where the explicit type is not specified.
-        let expressionResultType = try ExpressionTypeChecker(symbols: symbols).check(expression: varDecl.expression)
+        let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: varDecl.expression)
         
         // An explicit array type does not specify the number of array elements.
         // If the explicit type is an array type then we must examine the
@@ -252,7 +252,7 @@ public class SnapToYertleCompiler: NSObject {
     // from the stack at the end.
     private func compile(expressionStatement node: Expression) throws {
         try compile(expression: node)
-        let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: node)
+        let returnExpressionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node)
         switch returnExpressionType {
         case .u16:
             instructions += [.pop16]
@@ -359,7 +359,7 @@ public class SnapToYertleCompiler: NSObject {
             throw CompilerError(line: node.token.lineNumber, message: "return is invalid outside of a function")
         }
         if let expr = node.expression {
-            let returnExpressionType = try ExpressionTypeChecker(symbols: symbols).check(expression: expr)
+            let returnExpressionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: expr)
             switch (returnExpressionType, enclosingFunctionType.returnType) {
             case (.void, .void):
                 try compile(expression: expr)

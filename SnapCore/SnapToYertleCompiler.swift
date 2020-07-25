@@ -262,6 +262,8 @@ public class SnapToYertleCompiler: NSObject {
             instructions += [a > 255 ? .pop16 : .pop]
         case .void:
             break
+        case .array:
+            instructions += [.popn(returnExpressionType.sizeof)]
         default:
             abort()
         }

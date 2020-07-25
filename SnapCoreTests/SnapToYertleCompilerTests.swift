@@ -503,7 +503,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 2)
     }
     
-    func testCompileExpression() {
+    func testCompileSimplestExpressionStatement() {
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
         // When an expression is compiled as an independent statement, the
@@ -516,6 +516,78 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [ .push(1), .pop ])
+    }
+    
+    func testCompileExpressionStatement_ArrayOfU8() {
+        // The expression compiler contains more detailed tests. This is more
+        // for testing integration between the two classes.
+        // When an expression is compiled as an independent statement, the
+        // result on the top of the expression stack and must be cleaned up at
+        // the end of the statement.
+        let ast = TopLevel(children: [
+            ExprUtils.makeLiteralArray([ExprUtils.makeU8(value: 0),
+                                        ExprUtils.makeU8(value: 1),
+                                        ExprUtils.makeU8(value: 2)])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push(0),
+            .push(1),
+            .push(2),
+            .popn(3)
+        ])
+    }
+    
+    func testCompileExpressionStatement_ArrayOfU16() {
+        // The expression compiler contains more detailed tests. This is more
+        // for testing integration between the two classes.
+        // When an expression is compiled as an independent statement, the
+        // result on the top of the expression stack and must be cleaned up at
+        // the end of the statement.
+        let ast = TopLevel(children: [
+            ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 0xaaaa),
+                                        ExprUtils.makeU16(value: 0xbbbb),
+                                        ExprUtils.makeU16(value: 0xcccc)])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push16(0xaaaa),
+            .push16(0xbbbb),
+            .push16(0xcccc),
+            .popn(6)
+        ])
+    }
+    
+    func testCompileExpressionStatement_ArrayOfArrayOfU16() {
+        // The expression compiler contains more detailed tests. This is more
+        // for testing integration between the two classes.
+        // When an expression is compiled as an independent statement, the
+        // result on the top of the expression stack and must be cleaned up at
+        // the end of the statement.
+        let ast = TopLevel(children: [
+            ExprUtils.makeLiteralArray([ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 0xaaaa),
+                                                                    ExprUtils.makeU16(value: 0xbbbb),
+                                                                    ExprUtils.makeU16(value: 0xcccc)]),
+                                        ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 0xdddd),
+                                                                    ExprUtils.makeU16(value: 0xeeee),
+                                                                    ExprUtils.makeU16(value: 0xffff)])])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [
+            .push16(0xaaaa),
+            .push16(0xbbbb),
+            .push16(0xcccc),
+            .push16(0xdddd),
+            .push16(0xeeee),
+            .push16(0xffff),
+            .popn(12)
+        ])
     }
     
     func testCompileIfStatementWithoutElseBranch() {

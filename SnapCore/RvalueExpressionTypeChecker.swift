@@ -1,5 +1,5 @@
 //
-//  ExpressionTypeChecker.swift
+//  RvalueExpressionTypeChecker.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 6/5/20.
@@ -11,15 +11,15 @@ import TurtleCompilerToolbox
 // Given an expression, determines the result type.
 // Throws a compiler error when the result type cannot be determined, e.g., due
 // to a type error in the expression.
-public class ExpressionTypeChecker: NSObject {
+public class RvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
     }
         
-    func rvalueContext() -> ExpressionTypeChecker {
-        return ExpressionTypeChecker(symbols: symbols)
+    func rvalueContext() -> RvalueExpressionTypeChecker {
+        return RvalueExpressionTypeChecker(symbols: symbols)
     }
         
     func lvalueContext() -> LvalueExpressionTypeChecker {

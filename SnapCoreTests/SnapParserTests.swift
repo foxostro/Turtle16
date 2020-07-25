@@ -209,6 +209,25 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
+    func testWellFormedLetDeclaration_ArrayOfU8InitializedFromQuotedString() {
+        let parser = SnapParser(tokens: tokenize("""
+let foo = "Hello, World!"
+"""))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        XCTAssertEqual(ast.children.count, 1)
+        let arr = ExprUtils.makeLiteralArray("Hello, World!".utf8.map({ExprUtils.makeLiteralInt(value: Int($0))}))
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: nil,
+                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                      expression: arr,
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
     func testMalformedVariableDeclaration_EmptyArrayLiteralRequiresExplicitType() {
         let parser = SnapParser(tokens: tokenize("let foo = []"))
         parser.parse()

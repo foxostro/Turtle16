@@ -501,6 +501,17 @@ public class SnapParser: Parser {
                                            elements: elements,
                                            tokenBracketRight: tokenSquareBracketRight)
         }
+        else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
+            // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
+            let elements = literalString.literal.utf8.map({
+                Expression.LiteralWord(number: TokenNumber(lineNumber: literalString.lineNumber,
+                                                           lexeme: "\($0)",
+                                                           literal: Int($0)))
+            })
+            return Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: literalString.lineNumber, lexeme: "["),
+                                           elements: elements,
+                                           tokenBracketRight: TokenSquareBracketRight(lineNumber: literalString.lineNumber, lexeme: "]"))
+        }
         else if let token = peek() {
             throw operandTypeMismatchError(token)
         } else {

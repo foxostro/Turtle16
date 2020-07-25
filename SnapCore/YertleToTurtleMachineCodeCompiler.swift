@@ -59,6 +59,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .push16(let value): try push16(value)
             case .pop: try pop()
             case .pop16: try pop16()
+            case .popn(let count): try popn(count)
             case .eq:  try eq()
             case .eq16:  try eq16()
             case .ne:  try ne()
@@ -209,6 +210,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     private func pop() throws {
         try popInMemoryStackIntoRegisterB()
+    }
+    
+    private func popn(_ count: Int) throws {
+        // This can probably be optimized.
+        for _ in 0..<count {
+            try pop()
+        }
     }
     
     private func pushAToStack() throws {

@@ -17,6 +17,7 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.push16(0xffff).description, "PUSH16 0xffff")
         XCTAssertEqual(YertleInstruction.pop.description, "POP")
         XCTAssertEqual(YertleInstruction.pop16.description, "POP16")
+        XCTAssertEqual(YertleInstruction.popn(42).description, "POPN 42")
         XCTAssertEqual(YertleInstruction.eq.description, "EQ")
         XCTAssertEqual(YertleInstruction.eq16.description, "EQ16")
         XCTAssertEqual(YertleInstruction.ne.description, "NE")

@@ -11,17 +11,20 @@ import TurtleCompilerToolbox
 public class VarDeclaration: AbstractSyntaxTreeNode {
     public let identifier: TokenIdentifier
     public let explicitType: SymbolType?
+    public let tokenEqual: TokenEqual
     public let expression: Expression
     public let storage: SymbolStorage
     public let isMutable: Bool
     
     public required init(identifier: TokenIdentifier,
                          explicitType: SymbolType?,
+                         tokenEqual: TokenEqual,
                          expression: Expression,
                          storage: SymbolStorage,
                          isMutable: Bool) {
         self.identifier = identifier
         self.explicitType = explicitType
+        self.tokenEqual = tokenEqual
         self.storage = storage
         self.isMutable = isMutable
         self.expression = expression
@@ -43,6 +46,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         guard explicitType == rhs.explicitType else {
             return false
         }
+        guard tokenEqual == rhs.tokenEqual else {
+            return false
+        }
         guard isMutable == rhs.isMutable else {
             return false
         }
@@ -59,6 +65,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(identifier)
         hasher.combine(explicitType)
+        hasher.combine(tokenEqual)
         hasher.combine(storage)
         hasher.combine(isMutable)
         hasher.combine(expression)

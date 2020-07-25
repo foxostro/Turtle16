@@ -44,6 +44,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                            storage: .staticStorage,
                            isMutable: false)
@@ -67,11 +68,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: one,
                            storage: .staticStorage,
                            isMutable: false),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: one,
                            storage: .staticStorage,
                            isMutable: false)
@@ -86,11 +89,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
                            storage: .staticStorage,
                            isMutable: true),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "bar"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
                            storage: .staticStorage,
                            isMutable: false)
@@ -117,6 +122,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralBoolean(value: true),
                            storage: .staticStorage,
                            isMutable: false)
@@ -139,6 +145,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 0),
                                                                    ExprUtils.makeLiteralInt(value: 1),
                                                                    ExprUtils.makeLiteralInt(value: 2)]),
@@ -169,6 +176,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: .array(count: nil, elementType: .u8),
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 0),
                                                                    ExprUtils.makeLiteralInt(value: 1),
                                                                    ExprUtils.makeLiteralInt(value: 2)]),
@@ -205,6 +213,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
                            explicitType: .array(count: nil, elementType: .u16),
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeIdentifier(name: "foo"),
                            storage: .staticStorage,
                            isMutable: true)
@@ -220,6 +229,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: one,
                            storage: .staticStorage,
                            isMutable: true)
@@ -243,11 +253,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: val,
                            storage: .staticStorage,
                            isMutable: true),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: val,
                            storage: .staticStorage,
                            isMutable: true)
@@ -282,11 +294,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: one,
                            storage: .staticStorage,
                            isMutable: true),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: one,
                            storage: .staticStorage,
                            isMutable: true)
@@ -307,16 +321,19 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: one,
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: two,
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "c"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: three,
                                                    storage: .stackStorage,
                                                    isMutable: false),
@@ -325,6 +342,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -348,18 +366,21 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: one,
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     Block(children: [
                                         VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
                                                        explicitType: nil,
+                                                       tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                        expression: two,
                                                        storage: .stackStorage,
                                                        isMutable: false),
                                         Block(children: [
                                             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "c"),
                                                            explicitType: nil,
+                                                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                            expression: three,
                                                            storage: .stackStorage,
                                                            isMutable: false),
@@ -370,6 +391,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -389,12 +411,14 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: one,
                            storage: .staticStorage,
                            isMutable: false),
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                explicitType: nil,
+                               tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                expression: two,
                                storage: .staticStorage,
                                isMutable: false)
@@ -413,6 +437,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralBoolean(value: true),
                            storage: .staticStorage,
                            isMutable: true)
@@ -436,6 +461,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                explicitType: nil,
+                               tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                expression: ExprUtils.makeLiteralInt(value: 0xaa),
                                storage: .stackStorage,
                                isMutable: true)
@@ -460,6 +486,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                explicitType: .array(count: nil, elementType: .u16),
+                               tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                expression: arr,
                                storage: .stackStorage,
                                isMutable: false)
@@ -495,14 +522,15 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)),
                            storage: .staticStorage,
                            isMutable: true),
             If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
-               then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
-                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
+               then: ExprUtils.makeAssignment(lineNumber: 3, name: "foo", right: ExprUtils.makeLiteralInt(lineNumber: 3, value: 1)),
                else: nil)
         ])
+        
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -516,7 +544,8 @@ class SnapToYertleCompilerTests: XCTestCase {
             .push(0),
             .je(L0),
             .push(1),
-            .store(addressFoo),
+            .push16(addressFoo),
+            .storeIndirect,
             .pop,
             .label(L0)
         ])
@@ -526,14 +555,17 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)),
                            storage: .staticStorage,
                            isMutable: true),
             If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "1", literal: 1)),
-               then: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 3, lexeme: "foo"),
-                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "1", literal: 1))),
-               else: Expression.Assignment(identifier: TokenIdentifier(lineNumber: 5, lexeme: "foo"),
-                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 5, lexeme: "2", literal: 2))))
+               then: ExprUtils.makeAssignment(lineNumber: 3,
+                                              name: "foo",
+                                              right: ExprUtils.makeLiteralInt(lineNumber: 3, value: 1)),
+               else: ExprUtils.makeAssignment(lineNumber: 5,
+                                              name: "foo",
+                                              right: ExprUtils.makeLiteralInt(lineNumber: 5, value: 2)))
         ])
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
         let compiler = SnapToYertleCompiler()
@@ -549,12 +581,14 @@ class SnapToYertleCompilerTests: XCTestCase {
             .push(0),
             .je(L0),
             .push(1),
-            .store(addressFoo),
+            .push16(addressFoo),
+            .storeIndirect,
             .pop,
             .jmp(L1),
             .label(L0),
             .push(2),
-            .store(addressFoo),
+            .push16(addressFoo),
+            .storeIndirect,
             .pop,
             .label(L1)
         ])
@@ -586,6 +620,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeAdd(left: ExprUtils.makeU8(value: 1),
                                                          right: ExprUtils.makeBool(value: true)),
                            storage: .staticStorage,
@@ -601,11 +636,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralInt(value: 0),
                            storage: .staticStorage,
                            isMutable: true),
             ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
                                                       explicitType: nil,
+                                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                       expression: ExprUtils.makeLiteralInt(value: 0),
                                                       storage: .staticStorage,
                                                       isMutable: true),
@@ -633,12 +670,14 @@ class SnapToYertleCompilerTests: XCTestCase {
             .push(0),
             .je(L1),
             .load(0x0011),
-            .store(0x0010),
+            .push16(0x0010),
+            .storeIndirect,
             .pop,
             .push(1),
             .load(0x0011),
             .add,
-            .store(0x0011),
+            .push16(0x0011),
+            .storeIndirect,
             .pop,
             .jmp(L0),
             .label(L1)
@@ -651,6 +690,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                explicitType: nil,
+                               tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                expression: ExprUtils.makeLiteralInt(value: 0),
                                storage: .staticStorage,
                                isMutable: true),
@@ -689,6 +729,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralInt(value: 0),
                            storage: .staticStorage,
                            isMutable: true),
@@ -852,6 +893,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -875,6 +917,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -898,6 +941,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -950,6 +994,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
                                                        arguments: [ExprUtils.makeBool(value: true)]),
                            storage: .staticStorage,
@@ -981,6 +1026,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeU8(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1002,6 +1048,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "baz"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: ExprUtils.makeLiteralInt(value: 0xbb),
                                                    storage: .stackStorage,
                                                    isMutable: false),
@@ -1010,6 +1057,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeU8(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1033,6 +1081,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [ExprUtils.makeLiteralInt(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1053,6 +1102,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: ExprUtils.makeLiteralInt(value: 0xaa),
                                                    storage: .stackStorage,
                                                    isMutable: false),
@@ -1068,6 +1118,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1088,6 +1139,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                                                    explicitType: nil,
+                                                   tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                                    expression: ExprUtils.makeLiteralInt(value: 0xaa),
                                                    storage: .stackStorage,
                                                    isMutable: false),
@@ -1109,6 +1161,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "bar"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1162,6 +1215,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 ])),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: ExprUtils.makeIdentifier(name: "isOdd"),
                                                        arguments: [ExprUtils.makeLiteralInt(value: 7)]),
                            storage: .staticStorage,
@@ -1185,6 +1239,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeComparisonGt(left: ExprUtils.makeLiteralInt(value: 0x1000), right: ExprUtils.makeLiteralInt(value: 0x0001)),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1207,11 +1262,13 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "a"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: ExprUtils.makeLiteralInt(value: 0xaa),
                            storage: .staticStorage,
                            isMutable: false),
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "b"),
                            explicitType: nil,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                            expression: Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "peekMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010))]),
                            storage: .staticStorage,
                            isMutable: false)

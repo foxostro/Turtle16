@@ -13,6 +13,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case u16, u8, bool, void
     case function(name: String, mangledName: String, functionType: FunctionType)
     case array(count: Int?, elementType: SymbolType)
+    case reference(SymbolType)
     
     public var isBooleanType: Bool {
         switch self {
@@ -36,7 +37,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .u8, .bool:
             return 1
-        case .u16:
+        case .u16, .reference:
             return 2
         case .array(count: let count, elementType: let elementType):
             return (count ?? 0) * elementType.sizeof
@@ -65,6 +66,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             } else {
                 return "[\(elementType)]"
             }
+        case .reference(let referencedType):
+            return "&\(referencedType)"
         case .function(name: _, mangledName: _, functionType: let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
@@ -88,14 +91,25 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "bool"
         case .array(count: let count, elementType: let elementType):
             if let count = count {
-                return "array(\(count), \(elementType))"
+                return "array(\(count), \(elementType.debugDescription))"
             } else {
-                return "array(\(elementType))"
+                return "array(\(elementType.debugDescription))"
             }
+        case .reference(let referencedType):
+            return "&\(referencedType.debugDescription)"
         case .function(name: _, mangledName: _, functionType: let functionType):
-            let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
-            let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
+            let arg = functionType.arguments.compactMap({"\($0.argumentType.debugDescription)"}).joined(separator: ", ")
+            let result = "(\(arg.debugDescription)) -> \(functionType.returnType.debugDescription)"
             return result
+        }
+    }
+    
+    public func unwrapReference() -> SymbolType {
+        switch self {
+        case .reference(let a):
+            return a
+        default:
+            abort()
         }
     }
 }

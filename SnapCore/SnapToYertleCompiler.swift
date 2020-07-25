@@ -186,8 +186,9 @@ public class SnapToYertleCompiler: NSObject {
         let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: name, symbol: symbol)
         
-        try compile(expression: Expression.InitialAssignment(identifier: varDecl.identifier,
-                                                             expression: varDecl.expression))
+        try compile(expression: Expression.InitialAssignment(lexpr: Expression.Identifier(identifier: varDecl.identifier),
+                                                             tokenEqual: varDecl.tokenEqual,
+                                                             rexpr: varDecl.expression))
                                                              
         storeSymbol(symbol)
     }

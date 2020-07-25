@@ -22,13 +22,23 @@ public class ExpressionSubCompiler: NSObject {
         "peekPeripheral" : [.peekPeripheral],
         "pokePeripheral" : [.pokePeripheral, .pop]
     ]
+    public let typeChecker: ExpressionTypeChecker
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
+        self.typeChecker = ExpressionTypeChecker(symbols: symbols)
+    }
+    
+    func rvalueContext() -> ExpressionSubCompiler {
+        return ExpressionSubCompiler(symbols: symbols)
+    }
+    
+    func lvalueContext() -> LvalueExpressionCompiler {
+        return LvalueExpressionCompiler(symbols: symbols)
     }
     
     public func compile(expression: Expression) throws -> [YertleInstruction] {
-        try ExpressionTypeChecker(symbols: symbols).check(expression: expression)
+        try typeChecker.check(expression: expression)
         
         switch expression {
         case let literal as Expression.LiteralWord:
@@ -83,7 +93,7 @@ public class ExpressionSubCompiler: NSObject {
     
     private func compile(unary: Expression.Unary) throws -> [YertleInstruction] {
         let childExpr = try compile(expression: unary.child)
-        let childType = try ExpressionTypeChecker(symbols: symbols).check(expression: unary.child)
+        let childType = try typeChecker.check(expression: unary.child)
         var result: [YertleInstruction] = []
         switch childType {
         case .u16:
@@ -117,10 +127,10 @@ public class ExpressionSubCompiler: NSObject {
     
     private func compile(binary: Expression.Binary) throws -> [YertleInstruction] {
         let right: [YertleInstruction] = try compile(expression: binary.right)
-        let rightType = try ExpressionTypeChecker(symbols: symbols).check(expression: binary.right)
+        let rightType = try typeChecker.check(expression: binary.right)
         
         let left: [YertleInstruction] = try compile(expression: binary.left)
-        let leftType = try ExpressionTypeChecker(symbols: symbols).check(expression: binary.left)
+        let leftType = try typeChecker.check(expression: binary.left)
         
         switch (binary.op.op, leftType, rightType) {
         case (.eq, .u8, .u8): return right + left + [.eq]
@@ -297,7 +307,7 @@ public class ExpressionSubCompiler: NSObject {
         return instructions
     }
     
-    private func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         
         if symbol.offset >= 0 {
@@ -329,40 +339,36 @@ public class ExpressionSubCompiler: NSObject {
         return instructions
     }
     
-    private func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: assignment.identifier)
-        let symbol = resolution.0
-        let depth = resolution.1
-        guard symbol.isMutable else {
-            throw CompilerError(line: assignment.identifier.lineNumber, message: "cannot assign to immutable variable `\(assignment.identifier.lexeme)'")
-        }
-        
+    public func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
+        let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr).unwrapReference()
         var instructions: [YertleInstruction] = []
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.child, ltype: symbol.type)
-        instructions += storeSymbol(symbol, depth)
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
+        instructions += try lvalueContext().compile(expression: assignment.lexpr)
+        instructions += indirectStoreOfValue(type: ltype)
         return instructions
     }
     
     private func compile(assignment: Expression.InitialAssignment) throws -> [YertleInstruction] {
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: assignment.identifier)
+        let identifier = (assignment.lexpr as! Expression.Identifier).identifier
+        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: identifier)
         let symbol = resolution.0
         
         var instructions: [YertleInstruction] = []
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.child, ltype: symbol.type)
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: symbol.type)
         return instructions
     }
     
     private func compileAndConvertExpressionForAssignment(rexpr: Expression, ltype: SymbolType) throws -> [YertleInstruction] {
-        return try compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: false)
+        return try rvalueContext().compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: false)
     }
     
-    private func compileAndConvertExpressionForExplicitCast(rexpr: Expression, ltype: SymbolType) throws -> [YertleInstruction] {
+    public func compileAndConvertExpressionForExplicitCast(rexpr: Expression, ltype: SymbolType) throws -> [YertleInstruction] {
         return try compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: true)
     }
     
     private func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        let rtype = try ExpressionTypeChecker(symbols: symbols).check(expression: rexpr)
+        let rtype = try typeChecker.check(expression: rexpr)
         switch (rtype, ltype) {
         case (.bool, .bool), (.u8, .u8), (.u16, .u16):
             instructions += try compile(expression: rexpr)
@@ -409,18 +415,12 @@ public class ExpressionSubCompiler: NSObject {
         return instructions
     }
     
-    private func storeSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    private func indirectStoreOfValue(type: SymbolType) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        switch (symbol.storage, symbol.type) {
-        case (.staticStorage, .u16):
-            instructions += [.store16(symbol.offset)]
-        case (.staticStorage, .u8), (.staticStorage, .bool):
-            instructions += [.store(symbol.offset)]
-        case (.stackStorage, .u16):
-            instructions += computeAddressOfLocalVariable(symbol, depth)
+        switch type.sizeof {
+        case 2:
             instructions += [.storeIndirect16]
-        case (.stackStorage, .u8), (.stackStorage, .bool):
-            instructions += computeAddressOfLocalVariable(symbol, depth)
+        case 1:
             instructions += [.storeIndirect]
         default:
             abort()
@@ -523,7 +523,7 @@ public class ExpressionSubCompiler: NSObject {
             
             // Push instructions to compute the subscript index.
             // This must be converted to u16 so we can do math with the address.
-            instructions += try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
+            instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
             
             // Multiply the index by the size of an element.
             // Add the element offset to the array address.

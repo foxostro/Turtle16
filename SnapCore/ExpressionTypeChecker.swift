@@ -12,10 +12,18 @@ import TurtleCompilerToolbox
 // Throws a compiler error when the result type cannot be determined, e.g., due
 // to a type error in the expression.
 public class ExpressionTypeChecker: NSObject {
-    private let symbols: SymbolTable
+    public let symbols: SymbolTable
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
+    }
+        
+    func rvalueContext() -> ExpressionTypeChecker {
+        return ExpressionTypeChecker(symbols: symbols)
+    }
+        
+    func lvalueContext() -> LvalueExpressionTypeChecker {
+        return LvalueExpressionTypeChecker(symbols: symbols)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
@@ -298,14 +306,18 @@ public class ExpressionTypeChecker: NSObject {
     }
     
     public func check(assignment: Expression.Assignment) throws -> SymbolType {
-        let symbol = try symbols.resolve(identifierToken: assignment.identifier)
-        let rtype = try check(expression: assignment.child)
-        let lineNumber = assignment.tokens.first!.lineNumber
-        let message = "cannot assign value of type `\(rtype)' to type `\(symbol.type)'"
-        return try checkTypesAreConvertibleInAssignment(ltype: symbol.type,
-                                                        rtype: rtype,
-                                                        lineNumber: lineNumber,
-                                                        messageWhenNotConvertible: message)
+        let ltype0 = try lvalueContext().check(expression: assignment.lexpr)
+        switch ltype0 {
+        case .reference(let ltype):
+            let rtype = try rvalueContext().check(expression: assignment.rexpr)
+            return try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                            rtype: rtype,
+                                                            lineNumber: assignment.tokens.first!.lineNumber,
+                                                            messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'")
+        default:
+            throw CompilerError(line: assignment.tokens.first!.lineNumber,
+                                message: "expression is not assignable")
+        }
     }
         
     public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
@@ -377,14 +389,8 @@ public class ExpressionTypeChecker: NSObject {
         }
     }
         
-    public func check(identifier: Expression.Identifier) throws -> SymbolType {
-        let symbolType = try symbols.resolve(identifierToken: identifier.identifier).type
-        switch symbolType {
-        case .array:
-            throw unsupportedError(expression: identifier)
-        default:
-            break
-        }
+    public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
+        let symbolType = try symbols.resolve(identifierToken: expr.identifier).type
         return symbolType
     }
         
@@ -402,7 +408,7 @@ public class ExpressionTypeChecker: NSObject {
                 }
             }
             for i in 0..<typ.arguments.count {
-                let rtype = try check(expression: call.arguments[i])
+                let rtype = try rvalueContext().check(expression: call.arguments[i])
                 let ltype = typ.arguments[i].argumentType
                 let lineNumber = call.tokens.first!.lineNumber
                 let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
@@ -430,13 +436,13 @@ public class ExpressionTypeChecker: NSObject {
                                                           lineNumber: expr.tokens.first!.lineNumber,
                                                           messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)'")
     }
-        
+    
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
         let lineNumber = expr.tokens.first!.lineNumber
         let symbol = try symbols.resolve(identifierToken: expr.tokenIdentifier)
         switch symbol.type {
         case .array(count: _, elementType: let elementType):
-            let argumentType = try check(expression: expr.expr)
+            let argumentType = try rvalueContext().check(expression: expr.expr)
             if !argumentType.isArithmeticType {
                 throw CompilerError(line: lineNumber, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
             }
@@ -455,7 +461,7 @@ public class ExpressionTypeChecker: NSObject {
         return .array(count: elementTypes.count, elementType: elementType)
     }
     
-    private func determineArrayElementType(_ elementTypes: [SymbolType]) -> SymbolType? {
+    func determineArrayElementType(_ elementTypes: [SymbolType]) -> SymbolType? {
         if elementTypes.isEmpty {
             return .void
         }
@@ -490,7 +496,7 @@ public class ExpressionTypeChecker: NSObject {
         }
     }
     
-    private func unsupportedError(expression: Expression) -> Error {
+    func unsupportedError(expression: Expression) -> Error {
         let message = "unsupported expression: \(expression)"
         if let lineNumber = expression.tokens.first?.lineNumber {
             return CompilerError(line: lineNumber, message: message)

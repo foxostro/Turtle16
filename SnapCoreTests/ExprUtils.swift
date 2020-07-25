@@ -87,7 +87,11 @@ public class ExprUtils: NSObject {
     }
     
     public static func makeAssignment(lineNumber: Int = 1, name: String, right: Expression) -> Expression {
-        return Expression.Assignment(identifier: TokenIdentifier(lineNumber: lineNumber, lexeme: name), expression: right)
+        return Expression.Assignment(lexpr: Expression.Identifier(identifier: TokenIdentifier(lineNumber: lineNumber, lexeme: name)), tokenEqual: TokenEqual(lineNumber: lineNumber, lexeme: "="), rexpr: right)
+    }
+    
+    public static func makeAssignment(lineNumber: Int = 1, lexpr: Expression, rexpr: Expression) -> Expression {
+        return Expression.Assignment(lexpr: lexpr, tokenEqual: TokenEqual(lineNumber: lineNumber, lexeme: "="), rexpr: rexpr)
     }
     
     public static func makeNeg(expr: Expression) -> Expression {

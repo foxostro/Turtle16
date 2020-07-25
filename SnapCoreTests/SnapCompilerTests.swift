@@ -624,7 +624,7 @@ let bar = 1 + foo
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 2)
-        XCTAssertEqual(compiler.errors.first?.message, "unsupported expression: <Identifier: identifier=\'foo\'>")
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `const int' and `[3, u8]'")
     }
     
     func test_EndToEndIntegration_ArrayOfIntegerConstantsConvertedToArrayOfU16OnInitialAssignment() {

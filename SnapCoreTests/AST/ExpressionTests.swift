@@ -127,29 +127,40 @@ class ExpressionTests: XCTestCase {
     }
     
     func testAssignmentEquality() {
+        let foo = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
+        let bar = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"))
+        
         // Different right expression
-        XCTAssertNotEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                          Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
-                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
+        XCTAssertNotEqual(Expression.Assignment(lexpr: foo,
+                                                tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                                rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                          Expression.Assignment(lexpr: foo,
+                                                tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                                rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2))))
         
         // Different left identifier
-        XCTAssertNotEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                          Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "bar"),
-                                                expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+        XCTAssertNotEqual(Expression.Assignment(lexpr: foo,
+                                                tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                                rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                          Expression.Assignment(lexpr: bar,
+                                                tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                                rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
         
         // Same
-        XCTAssertEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                       Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
+        XCTAssertEqual(Expression.Assignment(lexpr: foo,
+                                             tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                             rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
+                       Expression.Assignment(lexpr: foo,
+                                             tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                             rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))))
         
         // Hash
-        XCTAssertEqual(Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
-                       Expression.Assignment(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                             expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
+        XCTAssertEqual(Expression.Assignment(lexpr: foo,
+                                             tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                             rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash,
+                       Expression.Assignment(lexpr: foo,
+                                             tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                             rexpr: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))).hash)
     }
     
     func testCallEquality() {

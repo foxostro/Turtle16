@@ -113,7 +113,7 @@ public class SnapParser: Parser {
         
         let equal = try expect(type: TokenEqual.self,
                                error: CompilerError(line: letOrVarToken.lineNumber,
-                                                    message: errorMessageWhenNoInitialValue))
+                                                    message: errorMessageWhenNoInitialValue)) as! TokenEqual
         
         if nil != acceptEndOfStatement() {
             throw CompilerError(line: equal.lineNumber,
@@ -132,6 +132,7 @@ public class SnapParser: Parser {
         
         return [VarDeclaration(identifier: identifier,
                                explicitType: explicitType,
+                               tokenEqual: equal,
                                expression: expression,
                                storage: storage,
                                isMutable: isMutable)]
@@ -391,17 +392,13 @@ public class SnapParser: Parser {
     }
     
     private func consumeAssignment() throws -> Expression {
-        let lhs = try consumeAddition()
-        
-        if let identifier = lhs as? Expression.Identifier {
-            if nil != accept(TokenEqual.self) {
-                let rhs = try consumeAddition()
-                let expression = Expression.Assignment(identifier: identifier.identifier, expression: rhs)
-                return expression
-            }
+        let lexpr = try consumeAddition()
+        if let tokenEqual = accept(TokenEqual.self) as? TokenEqual {
+            let rexpr = try consumeAddition()
+            let expression = Expression.Assignment(lexpr: lexpr, tokenEqual: tokenEqual, rexpr: rexpr)
+            return expression
         }
-        
-        return lhs
+        return lexpr
     }
     
     private func consumeAddition() throws -> Expression {

@@ -45,8 +45,10 @@ public enum YertleInstruction: Equatable {
     case store16(Int) // peek at the top two bytes of the stack and store that 16-bit value to the specified address
     case loadIndirect // Pop a sixteen-bit address from the stack. Load the eight-bit value at that address and push it to the stack.
     case loadIndirect16 // Pop a sixteen-bit address from the stack. Load the sixteen-bit value at that address and push it to the stack.
+    case loadIndirectN(Int) // Pop a sixteen-bit address from the stack. Load the N words in memory at that address and push them to the stack as a unit.
     case storeIndirect // Pop a sixteen-bit address from the stack. Peek at the eight-bit value on the top of the stack. Store that eight-bit value at the specified address.
     case storeIndirect16 // Pop a sixteen-bit address from the stack. Peek at the sixteen-bit value on the top of the stack. Store that sixteen-bit value at the specified address.
+    case storeIndirectN(Int) // Pop a sixteen-bit address from the stack. Peek at the top N words on the stack and store them linearly in memory, starting at the specified address.
     case label(TokenIdentifier) // declares a label
     case jmp(TokenIdentifier) // unconditional jump, no change to the stack
     case je(TokenIdentifier) // pop two from the stack, jump if they are equal
@@ -128,10 +130,14 @@ public enum YertleInstruction: Equatable {
             return "LOAD-INDIRECT"
         case .loadIndirect16:
             return "LOAD-INDIRECT16"
+        case .loadIndirectN(let count):
+            return "LOAD-INDIRECTN \(count)"
         case .storeIndirect:
             return "STORE-INDIRECT"
         case .storeIndirect16:
             return "STORE-INDIRECT16"
+        case .storeIndirectN(let count):
+            return "STORE-INDIRECTN \(count)"
         case .label(let token):
             return "\(token.lexeme):"
         case .jmp(let token):

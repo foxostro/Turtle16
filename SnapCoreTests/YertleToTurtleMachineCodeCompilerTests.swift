@@ -961,4 +961,81 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 0xbb)
         XCTAssertEqual(computer.stack(at: 3), 0xcc)
     }
+    
+    func testStoreIndirectN_1() {
+        let computer = try! execute(ir: [
+            .push(0x01),
+            .push16(0x0010),
+            .storeIndirectN(1)
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0x01)
+    }
+    
+    func testStoreIndirectN_2() {
+        let computer = try! execute(ir: [
+            .push(0x02),
+            .push(0x01),
+            .push16(0x0010),
+            .storeIndirectN(2)
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0x01)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0x02)
+    }
+    
+    func testStoreIndirectN_3() {
+        let computer = try! execute(ir: [
+            .push(0x03),
+            .push(0x02),
+            .push(0x01),
+            .push16(0x0010),
+            .storeIndirectN(3)
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0x01)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0x02)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 0x03)
+    }
+    
+    func testLoadIndirectN_1() {
+        let ir: [YertleInstruction] = [
+            .push16(0x0010),
+            .loadIndirectN(1)
+        ]
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: 0x01, to: 0x0010)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack(at: 0), 0x01)
+    }
+    
+    func testLoadIndirectN_2() {
+        let ir: [YertleInstruction] = [
+            .push16(0x0010),
+            .loadIndirectN(2)
+        ]
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store16(value: 0xabcd, to: 0x0010)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0xabcd)
+    }
+    
+    func testLoadIndirectN_3() {
+        let ir: [YertleInstruction] = [
+            .push16(0x0010),
+            .loadIndirectN(3)
+        ]
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            computer.dataRAM.store(value: 0x01, to: 0x0010)
+            computer.dataRAM.store(value: 0x02, to: 0x0011)
+            computer.dataRAM.store(value: 0x03, to: 0x0012)
+        }
+        let computer = try! executor.execute(ir: ir)
+        let address = computer.stackPointer
+        XCTAssertEqual(computer.dataRAM.load(from: address + 0), 0x01)
+        XCTAssertEqual(computer.dataRAM.load(from: address + 1), 0x02)
+        XCTAssertEqual(computer.dataRAM.load(from: address + 2), 0x03)
+    }
 }

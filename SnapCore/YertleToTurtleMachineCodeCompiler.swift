@@ -88,8 +88,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .store16(let address): try store16(to: address)
             case .loadIndirect: try loadIndirect()
             case .loadIndirect16: try loadIndirect16()
+            case .loadIndirectN(let count): try loadIndirectN(count)
             case .storeIndirect: try storeIndirect()
             case .storeIndirect16: try storeIndirect16()
+            case .storeIndirectN(let count): try storeIndirectN(count)
             case .label(let token): try label(token: token)
             case .jmp(let token): try jmp(to: token)
             case .je(let token): try je(to: token)
@@ -1520,6 +1522,125 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
+    private func loadIndirectN(_ count: Int) throws {
+        try pop16()
+        
+        // Stash the source address in scratch memory @ (4,5)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+4)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+5)
+        try assembler.mov(.M, .B)
+        
+        // Stash the stack pointer in scratch memory @ (0,1)
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .A)
+        
+        // Stash the count in scratch memory. @ (2,3)
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.M, Int((UInt16(count) & 0xff00) >> 8))
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.M, Int((UInt16(count) & 0x00ff)))
+        
+        // Perform a 16-bit subtraction to subtract the count from SP.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.B, .M)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.B, .M)
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.M)
+        
+        // Store the updated stack pointer back to memory.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+2)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.M, .A)
+        
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+3)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.M, .A)
+        
+        // Copy bytes from the source address to the destination address on the stack.
+        for i in 0..<count {
+            // Load a byte from the source address into A.
+            try assembler.li(.U, kScratchHi)
+            try assembler.li(.V, kScratchLo+4)
+            try assembler.mov(.X, .M)
+            try assembler.li(.V, kScratchLo+5)
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.A, .M)
+            
+            // Store A to the destination address
+            try assembler.li(.U, kScratchHi)
+            try assembler.li(.V, kScratchLo+2)
+            try assembler.mov(.X, .M)
+            try assembler.li(.V, kScratchLo+3)
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.M, .A)
+            
+            if i < count - 1 {
+                // Increment and write back the source address
+                try assembler.li(.U, kScratchHi)
+                try assembler.li(.V, kScratchLo+4)
+                try assembler.mov(.X, .M)
+                try assembler.li(.V, kScratchLo+5)
+                try assembler.mov(.Y, .M)
+                try assembler.mov(.U, .X)
+                try assembler.mov(.V, .Y)
+                assembler.inxy()
+                try assembler.li(.U, kScratchHi)
+                try assembler.li(.V, kScratchLo+4)
+                try assembler.mov(.M, .X)
+                try assembler.li(.V, kScratchLo+5)
+                try assembler.mov(.M, .Y)
+                
+                // Increment and write back the destination address
+                try assembler.li(.U, kScratchHi)
+                try assembler.li(.V, kScratchLo+2)
+                try assembler.mov(.X, .M)
+                try assembler.li(.V, kScratchLo+3)
+                try assembler.mov(.Y, .M)
+                try assembler.mov(.U, .X)
+                try assembler.mov(.V, .Y)
+                assembler.inxy()
+                try assembler.li(.U, kScratchHi)
+                try assembler.li(.V, kScratchLo+2)
+                try assembler.mov(.M, .X)
+                try assembler.li(.V, kScratchLo+3)
+                try assembler.mov(.M, .Y)
+            }
+        }
+    }
+    
     private func storeIndirect() throws {
         try pop16()
         
@@ -1576,6 +1697,44 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
         assembler.inuv()
         try assembler.mov(.M, .B)
+    }
+    
+    private func storeIndirectN(_ count: Int) throws {
+        // TODO: storeIndirectN can probably be optimized. For example, use the BLT instructions and the ALU.
+        try pop16()
+        
+        // Stash the destination address in a well-known scratch location.
+        try assembler.li(.U, kScratchHi)
+        try assembler.li(.V, kScratchLo+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.V, kScratchLo+1)
+        try assembler.mov(.M, .B)
+        
+        for i in 0..<count {
+            // Copy the i-th word on the stack to A.
+            try loadStackPointerIntoUVandXY()
+            for _ in 0..<i {
+                assembler.inuv()
+            }
+            try assembler.mov(.A, .M)
+            
+            // Restore the stashed destination address to UV and XY.
+            try assembler.li(.U, kScratchHi)
+            try assembler.li(.V, kScratchLo+0)
+            try assembler.mov(.X, .M)
+            try assembler.li(.V, kScratchLo+1)
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            
+            // Offset to get the destination of the i-th word
+            for _ in 0..<i {
+                assembler.inuv()
+            }
+            
+            // Store the i-th word
+            try assembler.mov(.M, .A)
+        }
     }
     
     private func jmp(to token: TokenIdentifier) throws {

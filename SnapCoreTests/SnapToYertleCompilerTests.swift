@@ -157,15 +157,12 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(0),
-            .push(1),
             .push(2),
-            .store(addressFoo+2),
-            .pop,
-            .store(addressFoo+1),
-            .pop,
-            .store(addressFoo+0),
-            .pop
+            .push(1),
+            .push(0),
+            .push16(addressFoo),
+            .storeIndirectN(3),
+            .popn(3)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -188,15 +185,12 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(0),
-            .push(1),
             .push(2),
-            .store(addressFoo+2),
-            .pop,
-            .store(addressFoo+1),
-            .pop,
-            .store(addressFoo+0),
-            .pop
+            .push(1),
+            .push(0),
+            .push16(addressFoo),
+            .storeIndirectN(3),
+            .popn(3)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -533,9 +527,9 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(0),
-            .push(1),
             .push(2),
+            .push(1),
+            .push(0),
             .popn(3)
         ])
     }
@@ -555,9 +549,9 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push16(0xaaaa),
-            .push16(0xbbbb),
             .push16(0xcccc),
+            .push16(0xbbbb),
+            .push16(0xaaaa),
             .popn(6)
         ])
     }
@@ -580,12 +574,12 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push16(0xaaaa),
-            .push16(0xbbbb),
-            .push16(0xcccc),
-            .push16(0xdddd),
-            .push16(0xeeee),
             .push16(0xffff),
+            .push16(0xeeee),
+            .push16(0xdddd),
+            .push16(0xcccc),
+            .push16(0xbbbb),
+            .push16(0xaaaa),
             .popn(12)
         ])
     }

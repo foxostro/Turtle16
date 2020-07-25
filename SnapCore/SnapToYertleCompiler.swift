@@ -238,10 +238,13 @@ public class SnapToYertleCompiler: NSObject {
                 .pop
             ]
         case .array(count: let count, elementType: let elementType):
-            let n = count!
-            let length = n*elementType.sizeof
-            for i in 0..<n {
-                storeStaticValue(symbolType: elementType, offset: offset + length - (i+1)*elementType.sizeof)
+            let numWords = count! * elementType.sizeof
+            if numWords > 0 {
+                instructions += [
+                    .push16(offset),
+                    .storeIndirectN(numWords),
+                    .popn(numWords)
+                ]
             }
         default:
             abort()

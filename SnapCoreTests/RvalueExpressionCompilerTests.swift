@@ -1655,24 +1655,26 @@ class RvalueExpressionCompilerTests: XCTestCase {
             return
         }
         executor.configure = { computer in
-            computer.dataRAM.store16(value: 1000, to: 0x0010)
-            computer.dataRAM.store16(value: 2000, to: 0x0012)
-            computer.dataRAM.store16(value: 3000, to: 0x0014)
-            computer.dataRAM.store16(value: 4000, to: 0x0016)
-            computer.dataRAM.store16(value: 5000, to: 0x0018)
+            let address = 0x0010
+            computer.dataRAM.store16(value: 1000, to: address + 0)
+            computer.dataRAM.store16(value: 2000, to: address + 2)
+            computer.dataRAM.store16(value: 3000, to: address + 4)
+            computer.dataRAM.store16(value: 4000, to: address + 6)
+            computer.dataRAM.store16(value: 5000, to: address + 8)
         }
         let computer = try! executor.execute(ir: ir!)
-        XCTAssertEqual(computer.stack16(at: 0), 5000)
-        XCTAssertEqual(computer.stack16(at: 2), 4000)
-        XCTAssertEqual(computer.stack16(at: 4), 3000)
-        XCTAssertEqual(computer.stack16(at: 6), 2000)
-        XCTAssertEqual(computer.stack16(at: 8), 1000)
+        let address = computer.stackPointer
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 6), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 8), 5000)
     }
     
     func testCompileIdentifierExpression_ArrayOfU16_Stack() {
         let expr = ExprUtils.makeIdentifier(name: "foo")
         let symbol = Symbol(type: .array(count: 5, elementType: .u16),
-                            offset: 0x0010,
+                            offset: 0x0020,
                             isMutable: false,
                             storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -1687,18 +1689,20 @@ class RvalueExpressionCompilerTests: XCTestCase {
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
-            computer.dataRAM.store16(value: 1000, to: 0xfff0 - 0)
-            computer.dataRAM.store16(value: 2000, to: 0xfff0 - 2)
-            computer.dataRAM.store16(value: 3000, to: 0xfff0 - 4)
-            computer.dataRAM.store16(value: 4000, to: 0xfff0 - 6)
-            computer.dataRAM.store16(value: 5000, to: 0xfff0 - 8)
+            let address = Int(UInt16(0) &- UInt16(0x0020))
+            computer.dataRAM.store16(value: 1000, to: address + 0)
+            computer.dataRAM.store16(value: 2000, to: address + 2)
+            computer.dataRAM.store16(value: 3000, to: address + 4)
+            computer.dataRAM.store16(value: 4000, to: address + 6)
+            computer.dataRAM.store16(value: 5000, to: address + 8)
         }
         let computer = try! executor.execute(ir: ir!)
-        XCTAssertEqual(computer.stack16(at: 0), 5000)
-        XCTAssertEqual(computer.stack16(at: 2), 4000)
-        XCTAssertEqual(computer.stack16(at: 4), 3000)
-        XCTAssertEqual(computer.stack16(at: 6), 2000)
-        XCTAssertEqual(computer.stack16(at: 8), 1000)
+        let address = computer.stackPointer
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 6), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 8), 5000)
     }
     
     func testCompileAssignment_Bool_Static() {
@@ -1729,6 +1733,29 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .push16(0x0010),
             .storeIndirect16
         ])
+    }
+    
+    func testCompileAssignment_ArrayOfU16_Static() {
+        let arr = ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 1000),
+                                              ExprUtils.makeU16(value: 2000),
+                                              ExprUtils.makeU16(value: 3000),
+                                              ExprUtils.makeU16(value: 4000),
+                                              ExprUtils.makeU16(value: 5000)])
+        let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true)])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 5000)
     }
     
     func testCompileAssignment_PromoteU8ToU16() {
@@ -1770,6 +1797,30 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), 0xabcd)
+    }
+    
+    func testCompileAssignment_ArrayOfU16_Stack() {
+        let arr = ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 1000),
+                                              ExprUtils.makeU16(value: 2000),
+                                              ExprUtils.makeU16(value: 3000),
+                                              ExprUtils.makeU16(value: 4000),
+                                              ExprUtils.makeU16(value: 5000)])
+        let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true, storage: .stackStorage)])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        let computer = try! executor.execute(ir: ir!)
+        let address = 0xfff0
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 6), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 8), 5000)
     }
     
     func testCannotAssignToAnImmutableValue_Word() {
@@ -2000,13 +2051,14 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push(0),
+            .push(2),
             .push(1),
-            .push(2)
+            .push(0)
         ])
-        XCTAssertEqual(computer.stack(at: 2), 0)
-        XCTAssertEqual(computer.stack(at: 1), 1)
-        XCTAssertEqual(computer.stack(at: 0), 2)
+        let address = computer.stackPointer
+        XCTAssertEqual(computer.dataRAM.load(from: address + 0), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: address + 1), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: address + 2), 2)
     }
     
     func testArrayU16() {
@@ -2017,13 +2069,14 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push16(1),
+            .push16(1000),
             .push16(2),
-            .push16(1000)
+            .push16(1)
         ])
-        XCTAssertEqual(computer.stack16(at: 4), 1)
-        XCTAssertEqual(computer.stack16(at: 2), 2)
-        XCTAssertEqual(computer.stack16(at: 0), 1000)
+        let address = computer.stackPointer
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 1000)
     }
     
     func testArrayBoolean() {
@@ -2034,13 +2087,14 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
+            .push(1),
             .push(0),
-            .push(0),
-            .push(1)
+            .push(0)
         ])
-        XCTAssertEqual(computer.stack(at: 2), 0)
-        XCTAssertEqual(computer.stack(at: 1), 0)
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let address = computer.stackPointer
+        XCTAssertEqual(computer.dataRAM.load(from: address + 0), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: address + 1), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: address + 2), 1)
     }
     
     func testArrayHeterogeneousU8andBool() {

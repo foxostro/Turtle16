@@ -306,18 +306,12 @@ public class ExpressionTypeChecker: NSObject {
     }
     
     public func check(assignment: Expression.Assignment) throws -> SymbolType {
-        let ltype0 = try lvalueContext().check(expression: assignment.lexpr)
-        switch ltype0 {
-        case .reference(let ltype):
-            let rtype = try rvalueContext().check(expression: assignment.rexpr)
-            return try checkTypesAreConvertibleInAssignment(ltype: ltype,
-                                                            rtype: rtype,
-                                                            lineNumber: assignment.tokens.first!.lineNumber,
-                                                            messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'")
-        default:
-            throw CompilerError(line: assignment.tokens.first!.lineNumber,
-                                message: "expression is not assignable")
-        }
+        let ltype = try lvalueContext().check(expression: assignment.lexpr)
+        let rtype = try rvalueContext().check(expression: assignment.rexpr)
+        return try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                        rtype: rtype,
+                                                        lineNumber: assignment.tokens.first!.lineNumber,
+                                                        messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'")
     }
         
     public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,

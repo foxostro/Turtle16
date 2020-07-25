@@ -32,7 +32,7 @@ public class LvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
-        return .reference(try rvalueContext().check(identifier: expr))
+        return try rvalueContext().check(identifier: expr)
     }
     
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
@@ -41,8 +41,7 @@ public class LvalueExpressionTypeChecker: NSObject {
             throw CompilerError(line: expr.tokenIdentifier.lineNumber,
                                 message: "expression is not assignable: `\(expr.tokenIdentifier.lexeme)' is immutable")
         }
-        
-        return .reference(try rvalueContext().check(subscript: expr))
+        return try rvalueContext().check(subscript: expr)
     }
     
     func makeNotAssignableError(expression: Expression) -> Error {

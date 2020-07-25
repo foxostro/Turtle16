@@ -340,7 +340,7 @@ public class RvalueExpressionCompiler: NSObject {
     }
     
     public func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
-        let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr).unwrapReference()
+        let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
         var instructions: [YertleInstruction] = []
         instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
         instructions += try lvalueContext().compile(expression: assignment.lexpr)

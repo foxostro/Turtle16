@@ -680,7 +680,7 @@ let foo = [0x1001, 0x1002, 0x1003] as [u8]
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "integer constant `4097' overflows when stored into `u8'")
+        XCTAssertEqual(compiler.errors.first?.message, "integer constant `4099' overflows when stored into `u8'")
     }
     
     func test_EndToEndIntegration_CastArrayOfU16ToArrayOfU8() {
@@ -691,5 +691,61 @@ let foo = [0x1001 as u16, 0x1002 as u16, 0x1003 as u16] as [u8]
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+    }
+    
+    func test_EndToEndIntegration_ReassignArrayContentsWithLiteralArray() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var arr: [u16] = [0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
+arr = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
+    }
+    
+    func test_EndToEndIntegration_ReassignArrayContentsWithArrayIdentifier() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a: [u16] = [0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
+let b: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+a = b
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
+    }
+    
+    func test_EndToEndIntegration_ReassignArrayContents_ConvertingFromArrayOfU8ToArrayOfU16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a: [u16] = [0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
+let b = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+a = b
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
     }
 }

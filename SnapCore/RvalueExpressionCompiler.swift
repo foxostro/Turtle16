@@ -287,22 +287,21 @@ public class RvalueExpressionCompiler: NSObject {
     }
     
     private func loadStaticValue(type: SymbolType, offset: Int) -> [YertleInstruction] {
-        switch type {
-        case .u16:
-            return [.load16(offset)]
-        case .u8, .bool:
-            return [.load(offset)]
-        case .array(count: let count, elementType: let elementType):
-            var instructions: [YertleInstruction] = []
-            let n = count!
-            for i in 0..<n {
-                let a = offset + i*elementType.sizeof
-                instructions += loadStaticValue(type: elementType, offset: a)
-            }
-            return instructions
-        default:
+        var instructions: [YertleInstruction] = []
+        switch type.sizeof {
+        case 0:
             abort()
+        case 1:
+            instructions += [.load(offset)]
+        case 2:
+            instructions += [.load16(offset)]
+        default:
+            instructions += [
+                .push16(offset),
+                .loadIndirectN(type.sizeof)
+            ]
         }
+        return instructions
     }
     
     private func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
@@ -313,23 +312,16 @@ public class RvalueExpressionCompiler: NSObject {
     
     private func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        switch type {
-        case .u16:
-            instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
-            instructions += [.loadIndirect16]
-        case .u8, .bool:
-            instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
-            instructions += [.loadIndirect]
-        case .array(count: let count, elementType: let elementType):
-            var instructions: [YertleInstruction] = []
-            let n = count!
-            for i in 0..<n {
-                let a = offset + i*elementType.sizeof
-                instructions += loadStackValue(type: elementType, offset: a, depth: depth)
-            }
-            return instructions
-        default:
+        instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
+        switch type.sizeof {
+        case 0:
             abort()
+        case 1:
+            instructions += [.loadIndirect]
+        case 2:
+            instructions += [.loadIndirect16]
+        default:
+            instructions += [.loadIndirectN(type.sizeof)]
         }
         return instructions
     }
@@ -431,7 +423,7 @@ public class RvalueExpressionCompiler: NSObject {
                 abort()
             }
             if let literalArray = rexpr as? Expression.LiteralArray {
-                for el in literalArray.elements {
+                for el in literalArray.elements.reversed() {
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
                 }
             } else {
@@ -449,12 +441,14 @@ public class RvalueExpressionCompiler: NSObject {
     private func indirectStoreOfValue(type: SymbolType) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         switch type.sizeof {
-        case 2:
-            instructions += [.storeIndirect16]
+        case 0:
+            abort()
         case 1:
             instructions += [.storeIndirect]
+        case 2:
+            instructions += [.storeIndirect16]
         default:
-            abort()
+            instructions += [.storeIndirectN(type.sizeof)]
         }
         return instructions
     }
@@ -529,7 +523,7 @@ public class RvalueExpressionCompiler: NSObject {
     
     private func compile(literalArray expr: Expression.LiteralArray) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        for el in expr.elements {
+        for el in expr.elements.reversed() {
             instructions += try compile(expression: el)
         }
         return instructions

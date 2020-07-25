@@ -21,8 +21,8 @@ public class LvalueExpressionCompiler: NSObject {
         self.typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
     }
     
-    func rvalueContext() -> ExpressionSubCompiler {
-        return ExpressionSubCompiler(symbols: symbols)
+    func rvalueContext() -> RvalueExpressionCompiler {
+        return RvalueExpressionCompiler(symbols: symbols)
     }
     
     func lvalueContext() -> LvalueExpressionCompiler {

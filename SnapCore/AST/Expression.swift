@@ -314,6 +314,14 @@ public class Expression: AbstractSyntaxTreeNode {
             guard targetType == rhs.targetType else { return false }
             return true
         }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ convertingTo=%@ expr=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          targetType.description,
+                          expr.makeIndentedDescription(depth: depth))
+        }
     }
     
     public class Subscript: Expression {
@@ -345,6 +353,14 @@ public class Expression: AbstractSyntaxTreeNode {
             guard expr == rhs.expr else { return false }
             guard tokenBracketRight == rhs.tokenBracketRight else { return false }
             return true
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ identifier=\"%@\" argument=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          tokenIdentifier.lexeme,
+                          expr.makeIndentedDescription(depth: depth))
         }
     }
     
@@ -385,10 +401,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ elements=[%@]>",
+            return String(format: "%@<%@ elements=[\n%@\n]>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          elements.compactMap({$0.description}).joined(separator: ", "))
+                          elements.compactMap({$0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace:  true)}).joined(separator: ",\n"))
         }
     }
     

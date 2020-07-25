@@ -437,4 +437,22 @@ class SnapLexerTests: XCTestCase {
                                           TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeQuotedLiteralString() {
+        let tokenizer = SnapLexer(withString: "\"test\"")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(lineNumber: 1,
+                                                             lexeme: "\"test\"",
+                                                             literal: "test"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeQuotedStringWithEscapeCharacters_DoubleQuote() {
+        let tokenizer = SnapLexer(withString: #""\t\n\r\"\'\\\0""#)
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(lineNumber: 1,
+                                                             lexeme: #""\t\n\r\"\'\\\0""#,
+                                                             literal: "\t\n\r\"\'\\\0"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

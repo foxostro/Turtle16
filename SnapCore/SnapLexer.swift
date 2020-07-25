@@ -136,6 +136,11 @@ public class SnapLexer: Lexer {
             Rule(pattern: "false") {[weak self] in
                 TokenBoolean(lineNumber: self!.lineNumber, lexeme: $0, literal: false)
             },
+            Rule(pattern: "\".*\"") {[weak self] in
+                TokenLiteralString(lineNumber: self!.lineNumber,
+                                   lexeme: $0,
+                                   literal: self!.interpretQuotedString(lexeme: $0))
+            },
             Rule(pattern: "[a-zA-Z_][a-zA-Z0-9_]*") {[weak self] in
                 TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
             },
@@ -175,5 +180,20 @@ public class SnapLexer: Lexer {
                 nil
             }
         ]
+    }
+    
+    func interpretQuotedString(lexeme: String) -> String {
+        var result = String(lexeme.dropFirst().dropLast())
+        let map = ["\0" : "\\0",
+                   "\t" : "\\t",
+                   "\n" : "\\n",
+                   "\r" : "\\r",
+                   "\"" : "\\\"",
+                   "\'" : "\\\'",
+                   "\\" : "\\\\"]
+        for (entity, description) in map {
+            result = result.replacingOccurrences(of: description, with: entity)
+        }
+        return result
     }
 }

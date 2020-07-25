@@ -1,5 +1,5 @@
 //
-//  ExpressionSubCompilerTests.swift
+//  RvalueExpressionCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/22/20.
@@ -10,9 +10,9 @@ import XCTest
 import SnapCore
 import TurtleCompilerToolbox
 
-class ExpressionSubCompilerTests: XCTestCase {
+class RvalueExpressionCompilerTests: XCTestCase {
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [YertleInstruction] {
-        let compiler = ExpressionSubCompiler(symbols: symbols)
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
         let ir = try compiler.compile(expression: expression)
         return ir
     }

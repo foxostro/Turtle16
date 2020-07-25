@@ -9,9 +9,7 @@
 import TurtleCore
 import TurtleCompilerToolbox
 
-// Takes some YertleInstruction and generates corresponding machine code.
-// For speed, we use the A and B registers as the top of the stack.
-// (see also ExpressionSubCompiler)
+// Generates machine code for given IR code.
 public class YertleToTurtleMachineCodeCompiler: NSObject {
     // Programs written in Snap use a push down stack, and store the stack
     // pointer in data RAM at addresses 0x0000 and 0x0001.

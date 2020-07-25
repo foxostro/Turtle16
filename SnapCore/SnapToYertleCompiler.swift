@@ -270,7 +270,7 @@ public class SnapToYertleCompiler: NSObject {
     // The expression will push the result onto the stack. The client assumes the
     // responsibility of cleaning up.
     private func compile(expression: Expression) throws {
-        let exprCompiler = ExpressionSubCompiler(symbols: symbols)
+        let exprCompiler = RvalueExpressionCompiler(symbols: symbols)
         let ir = try exprCompiler.compile(expression: expression)
         instructions += ir
     }

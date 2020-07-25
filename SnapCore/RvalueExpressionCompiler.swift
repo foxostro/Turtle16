@@ -1,5 +1,5 @@
 //
-//  ExpressionSubCompiler.swift
+//  RvalueExpressionCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/22/20.
@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 // compiled to machine code. (see also YertleToTurtleMachineCodeCompiler)
 // The expression will push the result onto the stack. The client assumes the
 // responsibility of cleaning up.
-public class ExpressionSubCompiler: NSObject {
+public class RvalueExpressionCompiler: NSObject {
     let symbols: SymbolTable
     let kFramePointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
     let kFramePointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
@@ -29,8 +29,8 @@ public class ExpressionSubCompiler: NSObject {
         self.typeChecker = ExpressionTypeChecker(symbols: symbols)
     }
     
-    func rvalueContext() -> ExpressionSubCompiler {
-        return ExpressionSubCompiler(symbols: symbols)
+    func rvalueContext() -> RvalueExpressionCompiler {
+        return RvalueExpressionCompiler(symbols: symbols)
     }
     
     func lvalueContext() -> LvalueExpressionCompiler {

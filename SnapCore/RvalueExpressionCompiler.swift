@@ -283,36 +283,67 @@ public class RvalueExpressionCompiler: NSObject {
     }
     
     private func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
-        switch symbol.type {
+        return loadStaticValue(type: symbol.type, offset: symbol.offset)
+    }
+    
+    private func loadStaticValue(type: SymbolType, offset: Int) -> [YertleInstruction] {
+        switch type {
         case .u16:
-            return [.load16(symbol.offset)]
+            return [.load16(offset)]
         case .u8, .bool:
-            return [.load(symbol.offset)]
+            return [.load(offset)]
+        case .array(count: let count, elementType: let elementType):
+            var instructions: [YertleInstruction] = []
+            let n = count!
+            for i in 0..<n {
+                let a = offset + i*elementType.sizeof
+                instructions += loadStaticValue(type: elementType, offset: a)
+            }
+            return instructions
         default:
             abort()
         }
     }
     
     private func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        return loadStackValue(type: symbol.type,
+                              offset: symbol.offset,
+                              depth: depth)
+    }
+    
+    private func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        instructions += computeAddressOfLocalVariable(symbol, depth)
-        switch symbol.type {
+        switch type {
         case .u16:
+            instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
             instructions += [.loadIndirect16]
         case .u8, .bool:
+            instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
             instructions += [.loadIndirect]
+        case .array(count: let count, elementType: let elementType):
+            var instructions: [YertleInstruction] = []
+            let n = count!
+            for i in 0..<n {
+                let a = offset + i*elementType.sizeof
+                instructions += loadStackValue(type: elementType, offset: a, depth: depth)
+            }
+            return instructions
         default:
             abort()
         }
         return instructions
     }
     
-    func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    private func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        return computeAddressOfLocalVariable(offset: symbol.offset, depth: depth)
+    }
+    
+    private func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         
-        if symbol.offset >= 0 {
+        if offset >= 0 {
             // Push the symbol offset. This is used in the subtraction below.
-            instructions += [.push16(symbol.offset)]
+            instructions += [.push16(offset)]
             
             // Load the frame pointer.
             instructions += [.load16(kFramePointerAddressHi)]
@@ -324,7 +355,7 @@ public class RvalueExpressionCompiler: NSObject {
             instructions += [.sub16]
         } else {
             // Push the symbol offset. This is used in the subtraction below.
-            instructions += [.push16(-symbol.offset)]
+            instructions += [.push16(-offset)]
             
             // Load the frame pointer.
             instructions += [.load16(kFramePointerAddressHi)]

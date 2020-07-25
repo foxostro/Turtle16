@@ -1644,6 +1644,63 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testCompileIdentifierExpression_ArrayOfU16_Static() {
+        let expr = ExprUtils.makeIdentifier(name: "foo")
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: false)])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 1000, to: 0x0010)
+            computer.dataRAM.store16(value: 2000, to: 0x0012)
+            computer.dataRAM.store16(value: 3000, to: 0x0014)
+            computer.dataRAM.store16(value: 4000, to: 0x0016)
+            computer.dataRAM.store16(value: 5000, to: 0x0018)
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.stack16(at: 0), 5000)
+        XCTAssertEqual(computer.stack16(at: 2), 4000)
+        XCTAssertEqual(computer.stack16(at: 4), 3000)
+        XCTAssertEqual(computer.stack16(at: 6), 2000)
+        XCTAssertEqual(computer.stack16(at: 8), 1000)
+    }
+    
+    func testCompileIdentifierExpression_ArrayOfU16_Stack() {
+        let expr = ExprUtils.makeIdentifier(name: "foo")
+        let symbol = Symbol(type: .array(count: 5, elementType: .u16),
+                            offset: 0x0010,
+                            isMutable: false,
+                            storage: .stackStorage)
+        let symbols = SymbolTable(["foo" : symbol])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        let executor = YertleExecutor()
+        executor.configure = {computer in
+            // Set the value of the local variable on the stack.
+            // We're going to assume the initial value of the frame pointer,
+            // which is 0x0000.
+            computer.dataRAM.store16(value: 1000, to: 0xfff0 - 0)
+            computer.dataRAM.store16(value: 2000, to: 0xfff0 - 2)
+            computer.dataRAM.store16(value: 3000, to: 0xfff0 - 4)
+            computer.dataRAM.store16(value: 4000, to: 0xfff0 - 6)
+            computer.dataRAM.store16(value: 5000, to: 0xfff0 - 8)
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.stack16(at: 0), 5000)
+        XCTAssertEqual(computer.stack16(at: 2), 4000)
+        XCTAssertEqual(computer.stack16(at: 4), 3000)
+        XCTAssertEqual(computer.stack16(at: 6), 2000)
+        XCTAssertEqual(computer.stack16(at: 8), 1000)
+    }
+    
     func testCompileAssignment_Bool_Static() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeLiteralBoolean(value: true))
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])

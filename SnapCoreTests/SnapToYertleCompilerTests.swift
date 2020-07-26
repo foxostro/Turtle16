@@ -1346,7 +1346,6 @@ class SnapToYertleCompilerTests: XCTestCase {
             XCTFail()
         } else {
             let ir = compiler.instructions
-            print("IR:\n" + YertleInstruction.makeListing(instructions: ir) + "\n\n")
             XCTAssertEqual(ir, [
                 .push(0xaa),
                 .store(0x0010),

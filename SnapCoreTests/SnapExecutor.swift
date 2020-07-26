@@ -13,7 +13,8 @@ import TurtleSimulatorCore
 
 // Simulates execution of a program written in the Snap programming language.
 class SnapExecutor: NSObject {
-    let isVerboseLogging = false
+    public var isVerboseLogging = false
+    public var shouldAlwaysPrintIR = false
     let microcodeGenerator: MicrocodeGenerator
     let compiler = SnapCompiler()
     var configure: (Computer)->Void = {_ in}
@@ -33,6 +34,9 @@ class SnapExecutor: NSObject {
             
             if isVerboseLogging {
                 print("AST:\n" + compiler.ast.description + "\n\n")
+            }
+            
+            if shouldAlwaysPrintIR || isVerboseLogging {
                 print("IR:\n" + YertleInstruction.makeListing(instructions: compiler.ir) + "\n\n")
             }
 

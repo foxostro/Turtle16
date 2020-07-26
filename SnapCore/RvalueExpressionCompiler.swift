@@ -457,14 +457,15 @@ public class RvalueExpressionCompiler: NSObject {
         switch symbol.type {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [YertleInstruction] = []
-            instructions += try pushFunctionArguments(typ, node)
             if let ins = compilerInstrinsicFunctions[mangledName] {
+                instructions += try pushFunctionArguments(typ, node)
                 instructions += ins
             } else {
+                instructions += try pushToAllocateFunctionReturnValue(typ)
+                instructions += try pushFunctionArguments(typ, node)
                 let fn = TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName)
                 instructions += [.jalr(fn)]
                 instructions += popFunctionArguments(typ)
-                instructions += doFunctionReturnValue(typ)
             }
             return instructions
         default:
@@ -477,12 +478,25 @@ public class RvalueExpressionCompiler: NSObject {
         }
     }
     
+    private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        
+        // Allocate space for the return value, if any. When we pop arguments
+        // off the stack, we leave the return value in place.
+        instructions += [YertleInstruction].init(repeating: .push(0), count: typ.returnType.sizeof)
+        
+        return instructions
+    }
+    
     private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
+        
+        // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i],
                                                                          ltype: typ.arguments[i].argumentType)
         }
+        
         return instructions
     }
     
@@ -496,21 +510,6 @@ public class RvalueExpressionCompiler: NSObject {
             case 2:  instructions += [.pop16]
             default: instructions += [.popn(size)]
             }
-        }
-        return instructions
-    }
-    
-    private func doFunctionReturnValue(_ typ: FunctionType) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        switch typ.returnType {
-        case .u16:
-            instructions += [.load16(SnapToYertleCompiler.kReturnValueScratchLocation)]
-        case .u8, .bool:
-            instructions += [.load(SnapToYertleCompiler.kReturnValueScratchLocation)]
-        case .void:
-            break
-        default:
-            abort()
         }
         return instructions
     }

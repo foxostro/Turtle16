@@ -300,6 +300,18 @@ func foo() -> u8 {
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
     
+    func testUnexpectedNonVoidReturnValueInVoidFunction() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+func foo() {
+    return 1
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
+    }
+    
     func test_EndToEndIntegration_PromoteInAssignmentStatement() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
@@ -392,7 +404,7 @@ var count = 0
 func foo(n: u8) {
     if n > 0 {
         count = count + 1
-        return foo(n - 1)
+        foo(n - 1)
     }
 }
 foo(10)
@@ -812,5 +824,79 @@ func sum(a: [3, u16]) -> u16 {
 let foo = sum([1, 2, 3])
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
+    }
+    
+    func test_EndToEndIntegration_ReturnArrayByValue_U8() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func makeArray() -> [3, u8] {
+    return [1, 2, 3]
+}
+let foo = makeArray()
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+    }
+    
+    func test_EndToEndIntegration_ReturnArrayByValue_U16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func makeArray() -> [3, u16] {
+    return [0x1234, 0x5678, 0x9abc]
+}
+let foo = makeArray()
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x1234)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 0x5678)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 0x9abc)
+    }
+    
+    func test_EndToEndIntegration_PassTwoArraysAsFunctionParameters_1() {
+        let executor = SnapExecutor()
+        executor.shouldAlwaysPrintIR = true
+        let computer = try! executor.execute(program: """
+func sum(a: [3, u8], b: [3, u8], c: u8) -> u8 {
+    return (a[0] + b[0] + a[1] + b[1] + a[2] + b[2]) * c
+}
+let foo = sum([1, 2, 3], [4, 5, 6], 2)
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
+    }
+    
+    func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
+        let executor = SnapExecutor()
+        executor.shouldAlwaysPrintIR = true
+        let computer = try! executor.execute(program: """
+func sum(a: [3, u8], b: [3, u8], c: u8) -> [3, u8] {
+    var result: [u8] = [0, 0, 0]
+    for var i = 0; i < 3; i = i + 1 {
+        result[i] = (a[i] + b[i]) * c
+    }
+    return result
+}
+let foo = sum([1, 2, 3], [4, 5, 6], 2)
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 14)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 18)
+    }
+    
+    func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() {
+        let executor = SnapExecutor()
+        executor.shouldAlwaysPrintIR = true
+        let computer = try! executor.execute(program: """
+func sum(a: [3, u16], b: [3, u16], c: u16) -> [3, u16] {
+    var result: [u16] = [0, 0, 0]
+    for var i = 0; i < 3; i = i + 1 {
+        result[i] = (a[i] + b[i]) * c
+    }
+    return result
+}
+let foo = sum([1, 2, 3], [4, 5, 6], 2)
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 14)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 18)
     }
 }

@@ -18,7 +18,6 @@ public class SnapToYertleCompiler: NSObject {
     private var symbols: SymbolTable
     private var tempLabelCounter = 0
     private var staticStoragePointer = SnapToYertleCompiler.kStaticStorageStartAddress
-    public static let kReturnValueScratchLocation = 0x0005
     
     public override init() {
         symbols = globalSymbols
@@ -363,40 +362,22 @@ public class SnapToYertleCompiler: NSObject {
         guard let enclosingFunctionType = symbols.enclosingFunctionType else {
             throw CompilerError(line: node.token.lineNumber, message: "return is invalid outside of a function")
         }
+        
         if let expr = node.expression {
-            let returnExpressionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: expr)
-            switch (returnExpressionType, enclosingFunctionType.returnType) {
-            case (.void, .void):
-                try compile(expression: expr)
-                instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case (.bool, .bool), (.constBool, .bool):
-                try compile(expression: expr)
-                instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case (.u8, .u8):
-                try compile(expression: expr)
-                instructions += [.store(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case (.u8, .u16):
-                try compile(expression: expr)
-                instructions += [.push(0), .store16(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case (.u16, .u16):
-                try compile(expression: expr)
-                instructions += [.store16(SnapToYertleCompiler.kReturnValueScratchLocation)]
-            case (.constInt(let a), .u8):
-                instructions += [
-                    .push(a),
-                    .store(SnapToYertleCompiler.kReturnValueScratchLocation)
-                ]
-            case (.constInt(let a), .u16):
-                instructions += [
-                    .push16(a),
-                    .store16(SnapToYertleCompiler.kReturnValueScratchLocation)
-                ]
-            default:
-                throw CompilerError(line: node.token.lineNumber,
-                                    format: "cannot convert return expression of type `%@' to return type `%@'",
-                                    returnExpressionType.description,
-                                    enclosingFunctionType.returnType.description)
+            if enclosingFunctionType.returnType == .void {
+                throw CompilerError(line: node.token.lineNumber, message: "unexpected non-void return value in void function")
             }
+            
+            // Synthesize an assignment to the special return value symbol.
+            // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
+            let kReturnValueIdentifier = "__returnValue"
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+            let returnExpressionType = try typeChecker.check(expression: expr)
+            try typeChecker.checkTypesAreConvertibleInAssignment(ltype: enclosingFunctionType.returnType,
+                                                                 rtype: returnExpressionType,
+                                                                 lineNumber: node.token.lineNumber,
+                                                                 messageWhenNotConvertible: "cannot convert return expression of type `\(returnExpressionType)' to return type `\(enclosingFunctionType.returnType)'")
+            try compile(expression: Expression.Assignment(lexpr: Expression.Identifier(identifier: TokenIdentifier(lineNumber: node.token.lineNumber, lexeme: kReturnValueIdentifier)), tokenEqual: TokenEqual(lineNumber: node.token.lineNumber, lexeme: "="), rexpr: expr))
         } else if .void != enclosingFunctionType.returnType {
             throw CompilerError(line: node.token.lineNumber, message: "non-void function should return a value")
         }
@@ -449,7 +430,8 @@ public class SnapToYertleCompiler: NSObject {
         let kReturnAddressSize = 2
         let kFramePointerSize = 2
         var offset = kReturnAddressSize + kFramePointerSize
-        for i in 0..<typ.arguments.count {
+        
+        for i in (0..<typ.arguments.count).reversed() {
             let argument = typ.arguments[i]
             let symbol = Symbol(type: argument.argumentType,
                                 offset: -offset,
@@ -458,6 +440,16 @@ public class SnapToYertleCompiler: NSObject {
             symbols.bind(identifier: argument.name, symbol: symbol)
             offset += argument.argumentType.sizeof
         }
+        
+        // Bind a special symbol to contain the function return value.
+        // This must be located just before the function arguments.
+        let kReturnValueIdentifier = "__returnValue"
+        symbols.bind(identifier: kReturnValueIdentifier,
+                     symbol: Symbol(type: typ.returnType,
+                                    offset: -offset,
+                                    isMutable: true,
+                                    storage: .stackStorage))
+        offset += typ.returnType.sizeof
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {

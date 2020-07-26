@@ -772,4 +772,19 @@ let bar: u16 = foo()
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
     }
+    
+    func test_EndToEndIntegration_SumLoop() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func sum() -> u8 {
+    var accum = 0
+    for var i = 0; i < 3; i = i + 1 {
+        accum = accum + 1
+    }
+    return accum
+}
+let foo = sum()
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
+    }
 }

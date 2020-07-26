@@ -787,4 +787,30 @@ let foo = sum()
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
     }
+    
+    func test_EndToEndIntegration_PassArrayAsFunctionParameter_1() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func sum(a: [3, u16]) -> u16 {
+    return a[0] + a[1] + a[2]
+}
+let foo = sum([1, 2, 3])
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
+    }
+    
+    func test_EndToEndIntegration_PassArrayAsFunctionParameter_2() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func sum(a: [3, u16]) -> u16 {
+    var accum: u16 = 0
+    for var i = 0; i < 3; i = i + 1 {
+        accum = accum + a[i]
+    }
+    return accum
+}
+let foo = sum([1, 2, 3])
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
+    }
 }

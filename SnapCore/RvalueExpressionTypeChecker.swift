@@ -313,11 +313,11 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                         lineNumber: assignment.tokens.first!.lineNumber,
                                                         messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'")
     }
-        
-    public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
-                                                     rtype: SymbolType,
-                                                     lineNumber: Int,
-                                                     messageWhenNotConvertible: String) throws -> SymbolType {
+    
+    @discardableResult public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
+                                                                        rtype: SymbolType,
+                                                                        lineNumber: Int,
+                                                                        messageWhenNotConvertible: String) throws -> SymbolType {
         return try checkTypesAreConvertible(ltype: ltype,
                                             rtype: rtype,
                                             lineNumber: lineNumber,

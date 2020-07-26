@@ -421,7 +421,7 @@ public class SnapToYertleCompiler: NSObject {
         
         pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.lexeme,
                                   enclosingFunctionType: node.functionType)
-        bindFunctionArguments(node.functionType.arguments)
+        bindFunctionArguments(node.functionType)
         performDeclPass(block: node.body)
         for child in node.body.children {
             try compile(genericNode: child)
@@ -445,25 +445,18 @@ public class SnapToYertleCompiler: NSObject {
         symbols.enclosingFunctionType = enclosingFunctionType
     }
     
-    private func bindFunctionArguments(_ arguments: [FunctionType.Argument]) {
+    private func bindFunctionArguments(_ typ: FunctionType) {
         let kReturnAddressSize = 2
         let kFramePointerSize = 2
         var offset = kReturnAddressSize + kFramePointerSize
-        for i in 0..<arguments.count {
-            let argument = arguments[i]
+        for i in 0..<typ.arguments.count {
+            let argument = typ.arguments[i]
             let symbol = Symbol(type: argument.argumentType,
                                 offset: -offset,
                                 isMutable: false,
                                 storage: .stackStorage)
             symbols.bind(identifier: argument.name, symbol: symbol)
-            let argSize: Int
-            switch argument.argumentType {
-            case .u16: argSize = 2
-            case .u8, .bool: argSize = 1
-            default:
-                abort()
-            }
-            offset += argSize
+            offset += argument.argumentType.sizeof
         }
     }
     

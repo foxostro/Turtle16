@@ -164,7 +164,7 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumePrimitiveType() throws -> SymbolType {
-        let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+        let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "use of undeclared type `\(peek()!.lexeme)'")) as! TokenType
         let explicitType = tokenType.representedType
         return explicitType
     }
@@ -306,10 +306,10 @@ public class SnapParser: Parser {
                 if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
                     throw CompilerError(line: peek()!.lineNumber, message: "parameter requires an explicit type")
                 }
-                try expect(type: TokenColon.self, error: CompilerError(line: peek()!.lineNumber, message: "expected parameter name followed by `:'"))
-                let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "")) as! TokenType
+                guard let type = try consumeTypeAnnotation() else {
+                    throw CompilerError(line: previous!.lineNumber, message: "expected parameter name followed by `:'")
+                }
                 let name = tokenIdentifier.lexeme
-                let type = tokenType.representedType
                 arguments.append(FunctionType.Argument(name: name, type: type))
             } while nil != accept(TokenComma.self)
         }
@@ -319,8 +319,7 @@ public class SnapParser: Parser {
         if nil == accept(TokenArrow.self) {
             returnType = .void
         } else {
-            let typeToken = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "use of undeclared type `\(peek()!.lexeme)'")) as! TokenType
-            returnType = typeToken.representedType
+            returnType = try consumeType()
         }
         let leftError = "expected `{' in body of function declaration"
         let rightError = "expected `}' after function body"

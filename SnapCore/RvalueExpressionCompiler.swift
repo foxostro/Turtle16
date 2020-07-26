@@ -289,12 +289,9 @@ public class RvalueExpressionCompiler: NSObject {
     private func loadStaticValue(type: SymbolType, offset: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         switch type.sizeof {
-        case 0:
-            abort()
-        case 1:
-            instructions += [.load(offset)]
-        case 2:
-            instructions += [.load16(offset)]
+        case 0: break
+        case 1: instructions += [.load(offset)]
+        case 2: instructions += [.load16(offset)]
         default:
             instructions += [
                 .push16(offset),
@@ -314,14 +311,10 @@ public class RvalueExpressionCompiler: NSObject {
         var instructions: [YertleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
         switch type.sizeof {
-        case 0:
-            abort()
-        case 1:
-            instructions += [.loadIndirect]
-        case 2:
-            instructions += [.loadIndirect16]
-        default:
-            instructions += [.loadIndirectN(type.sizeof)]
+        case 0:  break
+        case 1:  instructions += [.loadIndirect]
+        case 2:  instructions += [.loadIndirect16]
+        default: instructions += [.loadIndirectN(type.sizeof)]
         }
         return instructions
     }
@@ -433,7 +426,6 @@ public class RvalueExpressionCompiler: NSObject {
                     Expression.As(expr: Expression.Subscript(tokenIdentifier: identifier.identifier, tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), expr: Expression.LiteralWord(number: TokenNumber(lineNumber: identifier.identifier.lineNumber, lexeme: "\(i)", literal: i)), tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]")), tokenAs: TokenAs(lineNumber: identifier.identifier.lineNumber, lexeme: "as"), targetType: b)
                 })
                 let synthesized = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), elements: elements, tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]"))
-                print(synthesized.makeIndentedDescription(depth: 0))
                 instructions += try compile(expression: synthesized)
             default:
                 guard a == b else {
@@ -449,15 +441,12 @@ public class RvalueExpressionCompiler: NSObject {
     
     private func indirectStoreOfValue(type: SymbolType) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        switch type.sizeof {
-        case 0:
-            abort()
-        case 1:
-            instructions += [.storeIndirect]
-        case 2:
-            instructions += [.storeIndirect16]
-        default:
-            instructions += [.storeIndirectN(type.sizeof)]
+        let size = type.sizeof
+        switch size {
+        case 0:  break
+        case 1:  instructions += [.storeIndirect]
+        case 2:  instructions += [.storeIndirect16]
+        default: instructions += [.storeIndirectN(size)]
         }
         return instructions
     }
@@ -500,11 +489,12 @@ public class RvalueExpressionCompiler: NSObject {
     private func popFunctionArguments(_ typ: FunctionType) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         for arg in typ.arguments.reversed() {
-            switch arg.argumentType {
-            case .u16:       instructions += [.pop16]
-            case .u8, .bool: instructions += [.pop]
-            default:
-                abort()
+            let size = arg.argumentType.sizeof
+            switch size {
+            case 0:  break
+            case 1:  instructions += [.pop]
+            case 2:  instructions += [.pop16]
+            default: instructions += [.popn(size)]
             }
         }
         return instructions

@@ -854,7 +854,6 @@ let foo = makeArray()
     
     func test_EndToEndIntegration_PassTwoArraysAsFunctionParameters_1() {
         let executor = SnapExecutor()
-        executor.shouldAlwaysPrintIR = true
         let computer = try! executor.execute(program: """
 func sum(a: [3, u8], b: [3, u8], c: u8) -> u8 {
     return (a[0] + b[0] + a[1] + b[1] + a[2] + b[2]) * c
@@ -866,7 +865,6 @@ let foo = sum([1, 2, 3], [4, 5, 6], 2)
     
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
         let executor = SnapExecutor()
-        executor.shouldAlwaysPrintIR = true
         let computer = try! executor.execute(program: """
 func sum(a: [3, u8], b: [3, u8], c: u8) -> [3, u8] {
     var result: [u8] = [0, 0, 0]
@@ -884,7 +882,6 @@ let foo = sum([1, 2, 3], [4, 5, 6], 2)
     
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() {
         let executor = SnapExecutor()
-        executor.shouldAlwaysPrintIR = true
         let computer = try! executor.execute(program: """
 func sum(a: [3, u16], b: [3, u16], c: u16) -> [3, u16] {
     var result: [u16] = [0, 0, 0]

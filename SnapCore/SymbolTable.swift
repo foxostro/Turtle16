@@ -203,7 +203,7 @@ public class SymbolTable: NSObject {
     public init(parent p: SymbolTable?, dict: [String:Symbol] = [:]) {
         parent = p
         symbolTable = dict
-        storagePointer = p?.storagePointer ?? 1
+        storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
         enclosingFunctionName = p?.enclosingFunctionName
         stackFrameIndex = p?.stackFrameIndex ?? 0

@@ -208,8 +208,8 @@ public class SnapToYertleCompiler: NSObject {
             offset = staticStoragePointer
             staticStoragePointer += size
         case .stackStorage:
-            offset = symbols.storagePointer
             symbols.storagePointer += size
+            offset = symbols.storagePointer
         }
         return offset
     }
@@ -439,7 +439,7 @@ public class SnapToYertleCompiler: NSObject {
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,
                                            enclosingFunctionType: FunctionType) {
         pushScope()
-        symbols.storagePointer = 1
+        symbols.storagePointer = 0
         symbols.stackFrameIndex += 1
         symbols.enclosingFunctionName = enclosingFunctionName
         symbols.enclosingFunctionType = enclosingFunctionType

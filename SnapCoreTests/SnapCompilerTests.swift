@@ -748,4 +748,28 @@ a = b
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
     }
+    
+    func test_EndToEndIntegration_AccessVariableInFunction_U8() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u8 {
+    let result: u8 = 42
+    return result
+}
+let bar = foo()
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
+    }
+    
+    func test_EndToEndIntegration_AccessVariableInFunction_U16() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u16 {
+    let result: u16 = 42
+    return result
+}
+let bar: u16 = foo()
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+    }
 }

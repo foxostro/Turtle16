@@ -47,7 +47,7 @@ public class LvalueExpressionCompiler: NSObject {
         
         let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: expr.identifier)
         let symbol = resolution.0
-        let depth = resolution.1
+        let depth = symbols.stackFrameIndex - resolution.1
         guard symbol.isMutable else {
             throw CompilerError(line: expr.identifier.lineNumber, message: "cannot assign to immutable variable `\(expr.identifier.lexeme)'")
         }

@@ -342,20 +342,22 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(block: Block) throws {
-        pushScope()
+        pushScopeForBlock()
         performDeclPass(block: block)
         for child in block.children {
             try compile(genericNode: child)
         }
-        popScope()
+        popScopeForBlock()
     }
     
-    private func pushScope() {
+    private func pushScopeForBlock() {
         symbols = SymbolTable(parent: symbols)
     }
     
-    private func popScope() {
+    private func popScopeForBlock() {
+        let storagePointer = symbols.storagePointer
         symbols = symbols.parent!
+        symbols.storagePointer = storagePointer
     }
     
     private func compile(return node: Return) throws {
@@ -410,7 +412,7 @@ public class SnapToYertleCompiler: NSObject {
         if shouldSynthesizeTerminalReturnStatement(func: node) {
             try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
         }
-        popScope()
+        popScopeForStackFrame()
         
         instructions += [
             .label(labelTail),
@@ -419,11 +421,15 @@ public class SnapToYertleCompiler: NSObject {
     
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,
                                            enclosingFunctionType: FunctionType) {
-        pushScope()
+        symbols = SymbolTable(parent: symbols)
         symbols.storagePointer = 0
         symbols.stackFrameIndex += 1
         symbols.enclosingFunctionName = enclosingFunctionName
         symbols.enclosingFunctionType = enclosingFunctionType
+    }
+    
+    private func popScopeForStackFrame() {
+        symbols = symbols.parent!
     }
     
     private func bindFunctionArguments(_ typ: FunctionType) {

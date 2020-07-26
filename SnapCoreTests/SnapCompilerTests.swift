@@ -899,4 +899,19 @@ let foo = sum([1, 2, 3], [4, 5, 6], 2)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 14)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 18)
     }
+    
+    func test_EndToEndIntegration_BugWhenStackVariablesAreDeclaredAfterForLoop() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> u16 {
+    for var i = 0; i < 3; i = i + 1 {
+    }
+    let a = 42
+    return a
+}
+let b = foo()
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+    }
 }

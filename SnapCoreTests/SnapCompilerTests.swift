@@ -585,7 +585,7 @@ let b = peekPeripheral(0, 1)
     func test_EndToEndIntegration_DeclareArrayType_InferredType() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-let arr = [1, 2, 3]
+let arr = [_]u8{1, 2, 3}
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
@@ -595,7 +595,7 @@ let arr = [1, 2, 3]
     func test_EndToEndIntegration_DeclareArrayType_ExplicitType() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-let arr: [u8] = [1, 2, 3]
+let arr: [_]u8 = [_]u8{1, 2, 3}
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
@@ -605,12 +605,12 @@ let arr: [u8] = [1, 2, 3]
     func test_EndToEndIntegration_FailToAssignScalarToArray() {
         let compiler = SnapCompiler()
         compiler.compile("""
-let arr: [u8] = 1
+let arr: [_]u8 = 1
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `[u8]'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `[_]u8'")
     }
             
     func test_EndToEndIntegration_FailToAssignFunctionToArray() {
@@ -619,30 +619,30 @@ let arr: [u8] = 1
 func foo(bar: u8, baz: u16) -> bool {
     return false
 }
-let arr: [u16] = foo
+let arr: [_]u16 = foo
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 4)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[u16]'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
     }
     
     func test_EndToEndIntegration_CannotAddArrayToInteger() {
         let compiler = SnapCompiler()
         compiler.compile("""
-let foo = [1, 2, 3]
+let foo = [_]u8{1, 2, 3}
 let bar = 1 + foo
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 2)
-        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `const int' and `[3, u8]'")
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `const int' and `[3]u8'")
     }
     
     func test_EndToEndIntegration_ArrayOfIntegerConstantsConvertedToArrayOfU16OnInitialAssignment() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
@@ -659,7 +659,7 @@ let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
     func test_EndToEndIntegration_ArrayOfU8ConvertedToArrayOfU16OnInitialAssignment() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-let arr: [u16] = [42 as u8]
+let arr: [_]u16 = [_]u16{42 as u8}
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
     }
@@ -668,7 +668,7 @@ let arr: [u16] = [42 as u8]
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var result: u16 = 0
-let arr: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 result = arr[0]
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
@@ -677,7 +677,7 @@ result = arr[0]
     func test_EndToEndIntegration_CastArrayLiteralFromArrayOfU8ToArrayOfU16() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-let foo = [1, 2, 3] as [u16]
+let foo = [_]u8{1, 2, 3} as [_]u16
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 2)
@@ -687,18 +687,18 @@ let foo = [1, 2, 3] as [u16]
     func test_EndToEndIntegration_FailToCastIntegerLiteralToArrayOfU8BecauseOfOverflow() {
         let compiler = SnapCompiler()
         compiler.compile("""
-let foo = [0x1001, 0x1002, 0x1003] as [u8]
+let foo = [_]u8{0x1001, 0x1002, 0x1003} as [_]u8
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.line, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "integer constant `4099' overflows when stored into `u8'")
+        XCTAssertEqual(compiler.errors.first?.message, "integer constant `4097' overflows when stored into `u8'")
     }
     
     func test_EndToEndIntegration_CastArrayOfU16ToArrayOfU8() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-let foo = [0x1001 as u16, 0x1002 as u16, 0x1003 as u16] as [u8]
+let foo = [_]u16{0x1001 as u16, 0x1002 as u16, 0x1003 as u16} as [_]u8
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
@@ -708,8 +708,8 @@ let foo = [0x1001 as u16, 0x1002 as u16, 0x1003 as u16] as [u8]
     func test_EndToEndIntegration_ReassignArrayContentsWithLiteralArray() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var arr: [u16] = [0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
-arr = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+var arr: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
+arr = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
@@ -726,8 +726,8 @@ arr = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
     func test_EndToEndIntegration_ReassignArrayContentsWithArrayIdentifier() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var a: [u16] = [0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
-let b: [u16] = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
+let b: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 a = b
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
@@ -745,8 +745,8 @@ a = b
     func test_EndToEndIntegration_ReassignArrayContents_ConvertingFromArrayOfU8ToArrayOfU16() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var a: [u16] = [0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff]
-let b = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
+let b = [_]u8{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 a = b
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
@@ -803,10 +803,10 @@ let foo = sum()
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_1() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func sum(a: [3, u16]) -> u16 {
+func sum(a: [3]u16) -> u16 {
     return a[0] + a[1] + a[2]
 }
-let foo = sum([1, 2, 3])
+let foo = sum([3]u16{1, 2, 3})
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
     }
@@ -814,14 +814,14 @@ let foo = sum([1, 2, 3])
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_2() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func sum(a: [3, u16]) -> u16 {
+func sum(a: [3]u16) -> u16 {
     var accum: u16 = 0
     for var i = 0; i < 3; i = i + 1 {
         accum = accum + a[i]
     }
     return accum
 }
-let foo = sum([1, 2, 3])
+let foo = sum([_]u16{1, 2, 3})
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
     }
@@ -829,8 +829,8 @@ let foo = sum([1, 2, 3])
     func test_EndToEndIntegration_ReturnArrayByValue_U8() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func makeArray() -> [3, u8] {
-    return [1, 2, 3]
+func makeArray() -> [3]u8 {
+    return [_]u8{1, 2, 3}
 }
 let foo = makeArray()
 """)
@@ -842,8 +842,8 @@ let foo = makeArray()
     func test_EndToEndIntegration_ReturnArrayByValue_U16() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func makeArray() -> [3, u16] {
-    return [0x1234, 0x5678, 0x9abc]
+func makeArray() -> [3]u16 {
+    return [_]u16{0x1234, 0x5678, 0x9abc}
 }
 let foo = makeArray()
 """)
@@ -855,10 +855,10 @@ let foo = makeArray()
     func test_EndToEndIntegration_PassTwoArraysAsFunctionParameters_1() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func sum(a: [3, u8], b: [3, u8], c: u8) -> u8 {
+func sum(a: [3]u8, b: [3]u8, c: u8) -> u8 {
     return (a[0] + b[0] + a[1] + b[1] + a[2] + b[2]) * c
 }
-let foo = sum([1, 2, 3], [4, 5, 6], 2)
+let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
     }
@@ -866,14 +866,14 @@ let foo = sum([1, 2, 3], [4, 5, 6], 2)
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func sum(a: [3, u8], b: [3, u8], c: u8) -> [3, u8] {
-    var result: [u8] = [0, 0, 0]
+func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
+    var result = [_]u8{0, 0, 0}
     for var i = 0; i < 3; i = i + 1 {
         result[i] = (a[i] + b[i]) * c
     }
     return result
 }
-let foo = sum([1, 2, 3], [4, 5, 6], 2)
+let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
 """)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 14)
@@ -883,14 +883,14 @@ let foo = sum([1, 2, 3], [4, 5, 6], 2)
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-func sum(a: [3, u16], b: [3, u16], c: u16) -> [3, u16] {
-    var result: [u16] = [0, 0, 0]
+func sum(a: [3]u16, b: [3]u16, c: u16) -> [3]u16 {
+    var result = [_]u16{0, 0, 0}
     for var i = 0; i < 3; i = i + 1 {
         result[i] = (a[i] + b[i]) * c
     }
     return result
 }
-let foo = sum([1, 2, 3], [4, 5, 6], 2)
+let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 14)
@@ -923,7 +923,7 @@ let b = foo()
         _ = try! executor.execute(program: """
 puts("Hello, World!")
 
-func puts(s: [13, u8]) {
+func puts(s: [13]u8) {
     for var i = 0; i < 13; i = i + 1 {
         putc(s[i])
     }

@@ -365,45 +365,51 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public class LiteralArray: Expression {
-        public let tokenBracketLeft: TokenSquareBracketLeft
+        public let explicitType: SymbolType
+        public let explicitCount: Int?
         public let elements: [Expression]
-        public let tokenBracketRight: TokenSquareBracketRight
         
         public override var tokens: [Token] {
-            return [tokenBracketLeft] + elements.flatMap({$0.tokens}) + [tokenBracketRight]
+            return elements.flatMap({$0.tokens})
         }
         
-        public required init(tokenBracketLeft: TokenSquareBracketLeft,
-                             elements: [Expression],
-                             tokenBracketRight: TokenSquareBracketRight) {
-            self.tokenBracketLeft = tokenBracketLeft
+        public init(_ explicitType: SymbolType, _ elements: [Expression]) {
+            self.explicitType = explicitType
+            self.explicitCount = nil
             self.elements = elements
-            self.tokenBracketRight = tokenBracketRight
+        }
+        
+        public init(explicitType: SymbolType, explicitCount: Int? = nil, elements: [Expression] = []) {
+            self.explicitType = explicitType
+            self.explicitCount = explicitCount
+            self.elements = elements
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard let rhs = rhs as? LiteralArray else { return false }
-            guard tokenBracketLeft == rhs.tokenBracketLeft else { return false }
+            guard explicitType == rhs.explicitType else { return false }
+            guard explicitCount == rhs.explicitCount else { return false }
             guard elements == rhs.elements else { return false }
-            guard tokenBracketRight == rhs.tokenBracketRight else { return false }
             return true
         }
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(tokenBracketLeft)
+            hasher.combine(explicitType)
+            hasher.combine(explicitCount)
             hasher.combine(elements)
-            hasher.combine(tokenBracketRight)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ elements=[\n%@\n]>",
+            return String(format: "%@<%@ explicitType=%@, explicitCount=%@, elements=[\n%@\n]>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          explicitType.description,
+                          explicitCount?.description ?? "nil",
                           elements.compactMap({$0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace:  true)}).joined(separator: ",\n"))
         }
     }

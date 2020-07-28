@@ -273,44 +273,36 @@ class ExpressionTests: XCTestCase {
     }
     
     func testLiteralArrayEquality() {
-        // Different left brackets
-        XCTAssertNotEqual(Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                                  elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                                  tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
-                          Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 2, lexeme: "["),
-                                                  elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                                  tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")))
+        // Different explicit lengths
+        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u8,
+                                                  explicitCount: 1,
+                                                  elements: [ExprUtils.makeLiteralInt(value: 0)]),
+                          Expression.LiteralArray(explicitType: .u8,
+                                                  explicitCount: 2,
+                                                  elements: [ExprUtils.makeLiteralInt(value: 0)]))
         
-        // Different expressions
-        XCTAssertNotEqual(Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                                  elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                                  tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
-                          Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                                  elements: [ExprUtils.makeLiteralBoolean(value: false)],
-                                                  tokenBracketRight: TokenSquareBracketRight(lineNumber: 2, lexeme: "]")))
+        // Different explicit types
+        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u16,
+                                                  elements: [ExprUtils.makeLiteralInt(value: 0)]),
+                          Expression.LiteralArray(explicitType: .u8,
+                                                  elements: [ExprUtils.makeLiteralInt(value: 0)]))
         
-        // Different right brackets
-        XCTAssertNotEqual(Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                                  elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                                  tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
-                          Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                                  elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                                  tokenBracketRight: TokenSquareBracketRight(lineNumber: 2, lexeme: "]")))
+        // Different element expressions
+        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u8,
+                                                  elements: [ExprUtils.makeLiteralInt(value: 0)]),
+                          Expression.LiteralArray(explicitType: .u8,
+                                                  elements: [ExprUtils.makeLiteralBoolean(value: false)]))
         
         // Same
-        XCTAssertEqual(Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                               elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                            tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")),
-                       Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                               elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                            tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")))
+        XCTAssertEqual(Expression.LiteralArray(explicitType: .u8,
+                                               elements: [ExprUtils.makeLiteralInt(value: 0)]),
+                       Expression.LiteralArray(explicitType: .u8,
+                                               elements: [ExprUtils.makeLiteralInt(value: 0)]))
         
         // Same hashes
-        XCTAssertEqual(Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                               elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                               tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")).hash,
-                       Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                               elements: [ExprUtils.makeLiteralInt(value: 0)],
-                                               tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]")).hash)
+        XCTAssertEqual(Expression.LiteralArray(explicitType: .u8,
+                                               elements: [ExprUtils.makeLiteralInt(value: 0)]).hash,
+                       Expression.LiteralArray(explicitType: .u8,
+                                               elements: [ExprUtils.makeLiteralInt(value: 0)]).hash)
     }
 }

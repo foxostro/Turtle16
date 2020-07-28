@@ -125,7 +125,7 @@ public class SnapParser: Parser {
         
         if let arr = expression as? Expression.LiteralArray {
             if arr.elements.count == 0 && explicitType == nil {
-                throw CompilerError(line: arr.tokens.first!.lineNumber,
+                throw CompilerError(line: arr.tokens.first?.lineNumber ?? -1,
                                     message: "empty array literal requires an explicit type")
             }
         }
@@ -146,21 +146,24 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumeType() throws -> SymbolType {
-        if nil != accept(TokenSquareBracketLeft.self) {
-            let count: Int?
-            if let number = accept(TokenNumber.self) as? TokenNumber {
-                count = number.literal
-                try expect(type: TokenComma.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `,'"))
-            } else {
-                count = nil
-            }
-            let elementType = try consumePrimitiveType()
-            try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]'"))
-            return .array(count: count, elementType: elementType)
+        if let _ = peek() as? TokenSquareBracketLeft {
+            return try consumeArrayType()
         } else {
-            let explicitType = try consumePrimitiveType()
-            return explicitType
+            return try consumePrimitiveType()
         }
+    }
+    
+    fileprivate func consumeArrayType() throws -> SymbolType {
+        try expect(type: TokenSquareBracketLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `[' in array type"))
+        let count: Int?
+        if nil != accept(TokenUnderscore.self) {
+            count = nil
+        } else {
+            count = (try expect(type: TokenNumber.self, error: CompilerError(line: peek()!.lineNumber, message: "expected integer literal for the array count")) as! TokenNumber).literal
+        }
+        try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' in array type"))
+        let elementType = try consumeType()
+        return .array(count: count, elementType: elementType)
     }
     
     fileprivate func consumePrimitiveType() throws -> SymbolType {
@@ -486,19 +489,32 @@ public class SnapParser: Parser {
                                             message: "expected `)' after expression"))
             return expression
         }
-        else if let tokenSquareBracketLeft = accept(TokenSquareBracketLeft.self) as? TokenSquareBracketLeft {
+        else if let _ = peek() as? TokenSquareBracketLeft {
+            let typ = try consumeArrayType()
+            let explicitCount: Int?
+            let explicitType: SymbolType
+            switch typ {
+            case .array(count: let n, elementType: let a):
+                explicitCount = n
+                explicitType = a
+            default:
+                abort()
+            }
+            
+            try expect(type: TokenCurlyLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `{' in array literal"))
             var elements: [Expression] = []
-            if nil == (peek() as? TokenSquareBracketRight) {
+            if nil == (peek() as? TokenCurlyRight) {
                 repeat {
                     while nil != accept(TokenNewline.self) {}
                     elements.append(try consumeExpression())
                     while nil != accept(TokenNewline.self) {}
                 } while nil != accept(TokenComma.self)
             }
-            let tokenSquareBracketRight = try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' after expression")) as! TokenSquareBracketRight
-            return Expression.LiteralArray(tokenBracketLeft: tokenSquareBracketLeft,
-                                           elements: elements,
-                                           tokenBracketRight: tokenSquareBracketRight)
+            try expect(type: TokenCurlyRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `}' in array literal"))
+            
+            return Expression.LiteralArray(explicitType: explicitType,
+                                           explicitCount: explicitCount,
+                                           elements: elements)
         }
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
             // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
@@ -507,9 +523,7 @@ public class SnapParser: Parser {
                                                            lexeme: "\($0)",
                                                            literal: Int($0)))
             })
-            return Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: literalString.lineNumber, lexeme: "["),
-                                           elements: elements,
-                                           tokenBracketRight: TokenSquareBracketRight(lineNumber: literalString.lineNumber, lexeme: "]"))
+            return Expression.LiteralArray(explicitType: .u8, elements: elements)
         }
         else if let token = peek() {
             throw operandTypeMismatchError(token)

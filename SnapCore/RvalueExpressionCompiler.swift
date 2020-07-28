@@ -425,7 +425,9 @@ public class RvalueExpressionCompiler: NSObject {
                 let elements = stride(from: 0, through: n!, by: 1).map({i in
                     Expression.As(expr: Expression.Subscript(tokenIdentifier: identifier.identifier, tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), expr: Expression.LiteralWord(number: TokenNumber(lineNumber: identifier.identifier.lineNumber, lexeme: "\(i)", literal: i)), tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]")), tokenAs: TokenAs(lineNumber: identifier.identifier.lineNumber, lexeme: "as"), targetType: b)
                 })
-                let synthesized = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), elements: elements, tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]"))
+                let synthesized = Expression.LiteralArray(explicitType: b,
+                                                          explicitCount: elements.count,
+                                                          elements: elements)
                 instructions += try compile(expression: synthesized)
             default:
                 guard a == b else {

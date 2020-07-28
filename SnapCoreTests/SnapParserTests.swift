@@ -133,8 +133,60 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(expected, actual)
     }
     
-    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType_UnspecifiedLength() {
-        let parser = SnapParser(tokens: tokenize("let foo: [u8] = []"))
+    func testWellFormedArrayLiteralWithAndImplicitCount() {
+        let parser = SnapParser(tokens: tokenize("[_]u16{foo}"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = Expression.LiteralArray(explicitType: .u16,
+                                               elements: [ExprUtils.makeIdentifier(name: "foo")])
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testMalformedArrayLiteralWithBadCount() {
+        let parser = SnapParser(tokens: tokenize("[bar]u16{foo}"))
+        parser.parse()
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.message, "expected integer literal for the array count")
+    }
+    
+    func testWellFormedArrayLiteralOfNestedArrays() {
+        let parser = SnapParser(tokens: tokenize("[_][_]u16{[_]u16{foo, foo}}"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = Expression.LiteralArray(explicitType: .array(count: nil, elementType: .u16),
+                                               elements: [Expression.LiteralArray(.u16, [ExprUtils.makeIdentifier(name: "foo"), ExprUtils.makeIdentifier(name: "foo")])])
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedArrayLiteralWithExplicitTypeAndCount() {
+        let parser = SnapParser(tokens: tokenize("[1]u16{foo}"))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = Expression.LiteralArray(explicitType: .u16,
+                                               explicitCount: 1,
+                                               elements: [ExprUtils.makeIdentifier(name: "foo")])
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType_ImplicitCount() {
+        let parser = SnapParser(tokens: tokenize("let foo: [_]u8 = [_]u8{}"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
@@ -142,20 +194,19 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         // Note that the parser doesn't know that the expression will actually
-        // yield a result of the the type [0, u8]. It only knows the explicit
-        // type is given as [u8].
+        // yield a result of the the type [0]u8.
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: .array(count: nil, elementType: .u8),
                                       tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: ExprUtils.makeLiteralArray([]),
+                                      expression: Expression.LiteralArray(.u8, []),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
     
-    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType_ExplicitLength() {
-        let parser = SnapParser(tokens: tokenize("let foo: [0, u8] = []"))
+    func testWellFormedLetDeclaration_ArrayOfU8_ExplicitCount() {
+        let parser = SnapParser(tokens: tokenize("let foo: [0]u8 = [0]u8{}"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
@@ -165,7 +216,7 @@ class SnapParserTests: XCTestCase {
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: .array(count: 0, elementType: .u8),
                                       tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: ExprUtils.makeLiteralArray([]),
+                                      expression: Expression.LiteralArray(explicitType: .u8, explicitCount: 0, elements: []),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -173,7 +224,7 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8_ImplicitType() {
-        let parser = SnapParser(tokens: tokenize("let foo = [1]"))
+        let parser = SnapParser(tokens: tokenize("let foo = [0]u8{1}"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
@@ -183,7 +234,7 @@ class SnapParserTests: XCTestCase {
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: nil,
                                       tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 1)]),
+                                      expression: Expression.LiteralArray(explicitType: .u8, explicitCount: 0, elements: [ExprUtils.makeLiteralInt(value: 1)]),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -191,14 +242,15 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8_MoreThanOneElement() {
-        let parser = SnapParser(tokens: tokenize("let foo = [1, 2, 3]"))
+        let parser = SnapParser(tokens: tokenize("let foo = [_]u8{1, 2, 3}"))
         parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let arr = ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 1),
-                                              ExprUtils.makeLiteralInt(value: 2),
-                                              ExprUtils.makeLiteralInt(value: 3)])
+        let arr = Expression.LiteralArray(.u8,
+                                          [ExprUtils.makeLiteralInt(value: 1),
+                                           ExprUtils.makeLiteralInt(value: 2),
+                                           ExprUtils.makeLiteralInt(value: 3)])
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: nil,
                                       tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
@@ -217,7 +269,7 @@ let foo = "Hello, World!"
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let arr = ExprUtils.makeLiteralArray("Hello, World!".utf8.map({ExprUtils.makeLiteralInt(value: Int($0))}))
+        let arr = Expression.LiteralArray(.u8, "Hello, World!".utf8.map({ExprUtils.makeLiteralInt(value: Int($0))}))
         let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
                                       explicitType: nil,
                                       tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
@@ -226,14 +278,6 @@ let foo = "Hello, World!"
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
-    }
-    
-    func testMalformedVariableDeclaration_EmptyArrayLiteralRequiresExplicitType() {
-        let parser = SnapParser(tokens: tokenize("let foo = []"))
-        parser.parse()
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "empty array literal requires an explicit type")
     }
     
     func testMalformedVariableDeclaration_BareVar() {

@@ -455,4 +455,27 @@ class SnapLexerTests: XCTestCase {
                                                              literal: "\t\n\r\"\'\\\0"),
                                           TokenEOF(lineNumber: 1, lexeme: "")])
     }
+    
+    func testTokenizeUnderscore() {
+        let tokenizer = SnapLexer(withString: "_")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenUnderscore(lineNumber: 1, lexeme: "_"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeUnderscoreAdjacentToOtherTokens() {
+        let tokenizer = SnapLexer(withString: "[_]")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
+                                          TokenUnderscore(lineNumber: 1, lexeme: "_"),
+                                          TokenSquareBracketRight(lineNumber: 1, lexeme: "]"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
+    
+    func testTokenizeIdnetifierWithUnderscore() {
+        let tokenizer = SnapLexer(withString: "foo_bar")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(lineNumber: 1, lexeme: "foo_bar"),
+                                          TokenEOF(lineNumber: 1, lexeme: "")])
+    }
 }

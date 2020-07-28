@@ -146,9 +146,10 @@ class SnapToYertleCompilerTests: XCTestCase {
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: nil,
                            tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                           expression: ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 0),
-                                                                   ExprUtils.makeLiteralInt(value: 1),
-                                                                   ExprUtils.makeLiteralInt(value: 2)]),
+                           expression: Expression.LiteralArray(.u8,
+                                                               [ExprUtils.makeLiteralInt(value: 0),
+                                                                ExprUtils.makeLiteralInt(value: 1),
+                                                                ExprUtils.makeLiteralInt(value: 2)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -174,9 +175,10 @@ class SnapToYertleCompilerTests: XCTestCase {
             VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
                            explicitType: .array(count: nil, elementType: .u8),
                            tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                           expression: ExprUtils.makeLiteralArray([ExprUtils.makeLiteralInt(value: 0),
-                                                                   ExprUtils.makeLiteralInt(value: 1),
-                                                                   ExprUtils.makeLiteralInt(value: 2)]),
+                           expression: Expression.LiteralArray(.u8,
+                                                               [ExprUtils.makeLiteralInt(value: 0),
+                                                                ExprUtils.makeLiteralInt(value: 1),
+                                                                ExprUtils.makeLiteralInt(value: 2)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -215,7 +217,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[u16]'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
     }
     
     func testCompileVarDeclaration() {
@@ -471,11 +473,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {
-        let arr = Expression.LiteralArray(tokenBracketLeft: TokenSquareBracketLeft(lineNumber: 1, lexeme: "["),
-                                          elements: [ExprUtils.makeLiteralInt(value: 1000),
-                                                     ExprUtils.makeU8(value: 1),
-                                                     ExprUtils.makeU8(value: 2)],
-                                          tokenBracketRight: TokenSquareBracketRight(lineNumber: 1, lexeme: "]"))
+        let arr = Expression.LiteralArray(.u16,
+                                          [ExprUtils.makeLiteralInt(value: 1000),
+                                           ExprUtils.makeU8(value: 1),
+                                           ExprUtils.makeU8(value: 2)])
         let ast = TopLevel(children: [
             Block(children: [
                 VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
@@ -519,9 +520,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
         let ast = TopLevel(children: [
-            ExprUtils.makeLiteralArray([ExprUtils.makeU8(value: 0),
-                                        ExprUtils.makeU8(value: 1),
-                                        ExprUtils.makeU8(value: 2)])
+            Expression.LiteralArray(.u8,
+                                    [ExprUtils.makeU8(value: 0),
+                                     ExprUtils.makeU8(value: 1),
+                                     ExprUtils.makeU8(value: 2)])
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -541,9 +543,10 @@ class SnapToYertleCompilerTests: XCTestCase {
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
         let ast = TopLevel(children: [
-            ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 0xaaaa),
-                                        ExprUtils.makeU16(value: 0xbbbb),
-                                        ExprUtils.makeU16(value: 0xcccc)])
+            Expression.LiteralArray(.u16,
+                                    [ExprUtils.makeU16(value: 0xaaaa),
+                                     ExprUtils.makeU16(value: 0xbbbb),
+                                     ExprUtils.makeU16(value: 0xcccc)])
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -563,12 +566,15 @@ class SnapToYertleCompilerTests: XCTestCase {
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
         let ast = TopLevel(children: [
-            ExprUtils.makeLiteralArray([ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 0xaaaa),
-                                                                    ExprUtils.makeU16(value: 0xbbbb),
-                                                                    ExprUtils.makeU16(value: 0xcccc)]),
-                                        ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 0xdddd),
-                                                                    ExprUtils.makeU16(value: 0xeeee),
-                                                                    ExprUtils.makeU16(value: 0xffff)])])
+            Expression.LiteralArray(.array(count: 3, elementType: .u16),
+                                    [Expression.LiteralArray(.u16,
+                                                             [ExprUtils.makeU16(value: 0xaaaa),
+                                                              ExprUtils.makeU16(value: 0xbbbb),
+                                                              ExprUtils.makeU16(value: 0xcccc)]),
+                                     Expression.LiteralArray(.u16,
+                                                             [ExprUtils.makeU16(value: 0xdddd),
+                                                              ExprUtils.makeU16(value: 0xeeee),
+                                                              ExprUtils.makeU16(value: 0xffff)])])
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)

@@ -91,6 +91,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "\\]") {[weak self] in
                 TokenSquareBracketRight(lineNumber: self!.lineNumber, lexeme: $0)
             },
+            Rule(pattern: "_") {[weak self] in
+                TokenUnderscore(lineNumber: self!.lineNumber, lexeme: $0)
+            },
             Rule(pattern: "let") {[weak self] in
                 TokenLet(lineNumber: self!.lineNumber, lexeme: $0)
             },

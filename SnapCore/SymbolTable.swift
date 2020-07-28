@@ -61,40 +61,13 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "bool"
         case .array(count: let count, elementType: let elementType):
             if let count = count {
-                return "[\(count), \(elementType)]"
+                return "[\(count)]\(elementType)"
             } else {
-                return "[\(elementType)]"
+                return "[_]\(elementType)"
             }
         case .function(name: _, mangledName: _, functionType: let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
-            return result
-        }
-    }
-    
-    public var debugDescription: String {
-        switch self {
-        case .constInt(let value):
-            return "constInt(\(value))"
-        case .constBool(let value):
-            return "constBool(\(value))"
-        case .void:
-            return "void"
-        case .u16:
-            return "u16"
-        case .u8:
-            return "u8"
-        case .bool:
-            return "bool"
-        case .array(count: let count, elementType: let elementType):
-            if let count = count {
-                return "array(\(count), \(elementType.debugDescription))"
-            } else {
-                return "array(\(elementType.debugDescription))"
-            }
-        case .function(name: _, mangledName: _, functionType: let functionType):
-            let arg = functionType.arguments.compactMap({"\($0.argumentType.debugDescription)"}).joined(separator: ", ")
-            let result = "(\(arg.debugDescription)) -> \(functionType.returnType.debugDescription)"
             return result
         }
     }

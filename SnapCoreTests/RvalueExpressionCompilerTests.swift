@@ -1736,11 +1736,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_ArrayOfU16_Static() {
-        let arr = ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 1000),
-                                              ExprUtils.makeU16(value: 2000),
-                                              ExprUtils.makeU16(value: 3000),
-                                              ExprUtils.makeU16(value: 4000),
-                                              ExprUtils.makeU16(value: 5000)])
+        let arr = Expression.LiteralArray(.u16,
+                                          [ExprUtils.makeU16(value: 1000),
+                                           ExprUtils.makeU16(value: 2000),
+                                           ExprUtils.makeU16(value: 3000),
+                                           ExprUtils.makeU16(value: 4000),
+                                           ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true)])
         var ir: [YertleInstruction]? = nil
@@ -1800,11 +1801,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_ArrayOfU16_Stack() {
-        let arr = ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 1000),
-                                              ExprUtils.makeU16(value: 2000),
-                                              ExprUtils.makeU16(value: 3000),
-                                              ExprUtils.makeU16(value: 4000),
-                                              ExprUtils.makeU16(value: 5000)])
+        let arr = Expression.LiteralArray(.u16,
+                                          [ExprUtils.makeU16(value: 1000),
+                                           ExprUtils.makeU16(value: 2000),
+                                           ExprUtils.makeU16(value: 3000),
+                                           ExprUtils.makeU16(value: 4000),
+                                           ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true, storage: .stackStorage)])
         var ir: [YertleInstruction]? = nil
@@ -2036,7 +2038,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testEmptyArray() {
         // The empty array is not actually materialized in memory.
-        let expr = ExprUtils.makeLiteralArray([])
+        let expr = Expression.LiteralArray(.u8, [])
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         _ = try! executor.execute(ir: ir)
@@ -2044,9 +2046,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayU8() {
-        let expr = ExprUtils.makeLiteralArray([ExprUtils.makeU8(value: 0),
-                                               ExprUtils.makeU8(value: 1),
-                                               ExprUtils.makeU8(value: 2)])
+        let expr = Expression.LiteralArray(.u8,
+                                           [ExprUtils.makeU8(value: 0),
+                                            ExprUtils.makeU8(value: 1),
+                                            ExprUtils.makeU8(value: 2)])
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -2062,9 +2065,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayU16() {
-        let expr = ExprUtils.makeLiteralArray([ExprUtils.makeU16(value: 1),
-                                               ExprUtils.makeU16(value: 2),
-                                               ExprUtils.makeU16(value: 1000)])
+        let expr = Expression.LiteralArray(.u16,
+                                           [ExprUtils.makeU16(value: 1),
+                                            ExprUtils.makeU16(value: 2),
+                                            ExprUtils.makeU16(value: 1000)])
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -2080,9 +2084,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayBoolean() {
-        let expr = ExprUtils.makeLiteralArray([ExprUtils.makeLiteralBoolean(value: false),
-                                               ExprUtils.makeLiteralBoolean(value: false),
-                                               ExprUtils.makeLiteralBoolean(value: true)])
+        let expr = Expression.LiteralArray(.bool,
+                                           [ExprUtils.makeLiteralBoolean(value: false),
+                                            ExprUtils.makeLiteralBoolean(value: false),
+                                            ExprUtils.makeLiteralBoolean(value: true)])
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -2097,13 +2102,14 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: address + 2), 1)
     }
     
-    func testArrayHeterogeneousU8andBool() {
-        let expr = ExprUtils.makeLiteralArray([ExprUtils.makeU8(value: 0),
-                                               ExprUtils.makeBool(value: false)])
+    func testArrayLiteralHasNonConvertibleType() {
+        let expr = Expression.LiteralArray(.bool,
+                                           [ExprUtils.makeLiteralInt(value: 0),
+                                            ExprUtils.makeBool(value: false)])
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot infer type of heterogeneous array")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `const int' to type `bool' in `[2]bool' array literal")
         }
     }
     

@@ -447,47 +447,35 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {
-        let elementTypes = try expr.elements.compactMap({try check(expression: $0)})
-        guard let elementType = determineArrayElementType(elementTypes) else {
-            let lineNumber = expr.tokens.first!.lineNumber
-            throw CompilerError(line: lineNumber, message: "cannot infer type of heterogeneous array")
-        }
-        return .array(count: elementTypes.count, elementType: elementType)
-    }
-    
-    func determineArrayElementType(_ elementTypes: [SymbolType]) -> SymbolType? {
-        if elementTypes.isEmpty {
-            return .void
-        }
-        else if elementTypes.allSatisfy({$0.isBooleanType}) {
-            return .bool
-        }
-        else if elementTypes.allSatisfy({$0.isArithmeticType}) {
-            var largestVal = Int.min
-            for el in elementTypes {
-                switch el {
-                case .constInt(let val):
-                    largestVal = max(largestVal, val)
-                case .u8:
-                    largestVal = max(largestVal, 255)
-                case .u16:
-                    largestVal = max(largestVal, 65535)
-                default:
-                    return nil
-                }
+        switch expr.explicitType {
+        case .array(count: let count, elementType: _):
+            if count == nil {
+                let lineNumber = expr.tokens.first?.lineNumber ?? -1
+                throw CompilerError(line: lineNumber, message: "inferred array count is invalid here")
             }
-            if largestVal < 256 {
-                return .u8
-            } else {
-                return .u16
+        default:
+            break
+        }
+        
+        let arrayLiteralType: SymbolType = .array(count: expr.elements.count, elementType: expr.explicitType)
+        
+        if let explicitCount = expr.explicitCount {
+            if expr.elements.count != explicitCount {
+                let lineNumber = expr.tokens.first?.lineNumber ?? -1
+                throw CompilerError(line: lineNumber, message: "expected \(explicitCount) elements in `\(arrayLiteralType)' array literal")
             }
         }
-        else if elementTypes.allSatisfy({$0 == elementTypes[0]}) {
-            return elementTypes[0]
+        
+        for element in expr.elements {
+            let ltype = expr.explicitType
+            let rtype = try check(expression: element)
+            try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                     rtype: rtype,
+                                                     lineNumber: element.tokens.first?.lineNumber ?? -1,
+                                                     messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)' in `\(arrayLiteralType)' array literal")
         }
-        else {
-            return nil
-        }
+        
+        return arrayLiteralType
     }
     
     func unsupportedError(expression: Expression) -> Error {

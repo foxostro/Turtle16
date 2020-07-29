@@ -366,7 +366,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 instructions += [.push16(n)]
                 instructions += pushAddressOfSymbol(symbol, depth)
             default:
-                throw unsupportedError(expression: rexpr)
+                // The dynamic array must bind to a temporary value on the stack.
+                // TODO: The way this is written now, the stack will continue to grow and will eventually overflow. We need something like a way to signal that additional bytes must be popped at the end of the statement.
+                instructions += try compile(expression: rexpr)
+                instructions += [
+                    .push16(n),
+                    .push16(4),
+                    .pushsp,
+                    .add16
+                ]
             }
         default:
             abort()

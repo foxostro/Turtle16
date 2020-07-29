@@ -310,12 +310,7 @@ public class RvalueExpressionCompiler: NSObject {
     private func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
-        switch type.sizeof {
-        case 0:  break
-        case 1:  instructions += [.loadIndirect]
-        case 2:  instructions += [.loadIndirect16]
-        default: instructions += [.loadIndirectN(type.sizeof)]
-        }
+        instructions += indirectLoadValue(type)
         return instructions
     }
     
@@ -538,39 +533,75 @@ public class RvalueExpressionCompiler: NSObject {
         
         switch symbol.type {
         case .array(count: _, elementType: let elementType):
-            // Push instructions to compute the absolute address of the array.
-            switch symbol.storage {
-            case .staticStorage:
-                instructions += [.push16(symbol.offset)]
-            case .stackStorage:
-                instructions += computeAddressOfLocalVariable(symbol, depth)
-            }
-            
-            // Push instructions to compute the subscript index.
-            // This must be converted to u16 so we can do math with the address.
-            instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
-            
-            // Multiply the index by the size of an element.
-            // Add the element offset to the array address.
-            instructions += [
-                .push16(elementType.sizeof),
-                .mul16,
-                .add16
-            ]
-            
-            // Load the element. This depends on the element type.
-            switch elementType.sizeof {
-            case 2:
-                instructions += [.loadIndirect16]
-            case 1:
-                instructions += [.loadIndirect]
-            default:
-                abort()
-            }
+            instructions += try arraySubscript(symbol, depth, expr, elementType)
+        case .dynamicArray(elementType: let elementType):
+            instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
         default:
             abort()
         }
         
+        return instructions
+    }
+    
+    // Compile an array element lookup through the subscript operator.
+    private func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        instructions += pushAddressOfSymbol(symbol, depth)
+        instructions += try accessArrayElement(expr, elementType)
+        return instructions
+    }
+    
+    // Compute and push the address of the specified symbol.
+    private func pushAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        switch symbol.storage {
+        case .staticStorage: instructions += [.push16(symbol.offset)]
+        case .stackStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
+        }
+        return instructions
+    }
+    
+    // Given an array address on the stack, access the element at an index determined by the expression.
+    private func accessArrayElement(_ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        
+        // Push instructions to compute the subscript index.
+        // This must be converted to u16 so we can do math with the address.
+        instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
+        
+        // Multiply the index by the size of an element.
+        // Add the element offset to the array address.
+        instructions += [
+            .push16(elementType.sizeof),
+            .mul16,
+            .add16
+        ]
+        
+        instructions += indirectLoadValue(elementType)
+        
+        return instructions
+    }
+    
+    // Given an address on the stack, load a typed value from that address.
+    private func indirectLoadValue(_ type: SymbolType) -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        switch type.sizeof {
+        case 0:  break
+        case 1:  instructions += [.loadIndirect]
+        case 2:  instructions += [.loadIndirect16]
+        default: instructions += [.loadIndirectN(type.sizeof)]
+        }
+        return instructions
+    }
+    
+    // Compile an array element lookup in a dynamic array through the subscript operator.
+    private func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        instructions += pushAddressOfSymbol(symbol, depth)
+        // The first two bytes of the dynamic array object are a pointer to the
+        // referenced array data. Follow that pointer.
+        instructions += [.loadIndirect16]
+        instructions += try accessArrayElement(expr, elementType)
         return instructions
     }
     

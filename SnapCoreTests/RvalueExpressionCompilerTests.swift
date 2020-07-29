@@ -2200,4 +2200,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
             abort()
         }
     }
+    
+    func testDynamicArraySubscriptAccessesAnArrayElement_U16() {
+        checkDynamicArraySubscriptCanAccessEveryElement(elementType: .u16)
+    }
+    
+    func testDynamicArraySubscriptAccessesAnArrayElement_U8() {
+        checkDynamicArraySubscriptCanAccessEveryElement(elementType: .u8)
+    }
+    
+    func testDynamicArraySubscriptAccessesAnArrayElement_Bool() {
+        checkDynamicArraySubscriptCanAccessEveryElement(elementType: .bool)
+    }
+    
+    private func checkDynamicArraySubscriptCanAccessEveryElement(elementType: SymbolType) {
+        let n = 3
+        for i in 0..<n {
+            checkDynamicArraySubscriptCanAccessEveryElement(i, n, elementType)
+        }
+    }
+    
+    private func checkDynamicArraySubscriptCanAccessEveryElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
+        let ident = "foo"
+        let symbols = SymbolTable([ident : Symbol(type: .dynamicArray(elementType: elementType), offset: 0x0010, isMutable: false)])
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: ExprUtils.makeLiteralInt(value: i))
+        var ir: [YertleInstruction] = []
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        executor.configure = { computer in
+            let addressOfPointer = 0x0010
+            let addressOfCount = 0x0012
+            let addressOfData = 0x0014
+            
+            // A dynamic array is an object containing a pointer and a length
+            computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
+            computer.dataRAM.store16(value: UInt16(n), to: addressOfCount)
+            
+            // Initialize the underlying data that the dynamic array is referencing
+            for j in 0..<n {
+                switch elementType.sizeof {
+                case 2:
+                    computer.dataRAM.store16(value: UInt16(j), to: addressOfData + j*elementType.sizeof)
+                case 1:
+                    computer.dataRAM.store(value: UInt8(j), to: addressOfData + j*elementType.sizeof)
+                default:
+                    abort()
+                }
+            }
+        }
+        let computer = try! executor.execute(ir: ir)
+        switch elementType.sizeof {
+        case 2:
+            XCTAssertEqual(computer.stack16(at: 0), UInt16(i))
+        case 1:
+            XCTAssertEqual(computer.stack(at: 0), UInt8(i))
+        default:
+            abort()
+        }
+    }
 }

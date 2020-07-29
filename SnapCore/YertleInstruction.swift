@@ -14,6 +14,7 @@ import TurtleCompilerToolbox
 public enum YertleInstruction: Equatable {
     case push(Int) // push the specified word-sized value to the stack
     case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack
+    case pushsp // push the value of stack pointer (before instruction executes) to the stack
     case pop // pop the stack
     case pop16 // pop a sixteen-bit value from the stack
     case popn(Int) // pop the specified number of words from the stack
@@ -68,6 +69,8 @@ public enum YertleInstruction: Equatable {
             return String(format: "PUSH 0x%02x", value)
         case .push16(let value):
             return String(format: "PUSH16 0x%04x", value)
+        case .pushsp:
+            return String(format: "PUSH-SP")
         case .pop:
             return "POP"
         case .popn(let count):

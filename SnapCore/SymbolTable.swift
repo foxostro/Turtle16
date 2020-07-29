@@ -13,6 +13,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case u16, u8, bool, void
     case function(name: String, mangledName: String, functionType: FunctionType)
     case array(count: Int?, elementType: SymbolType)
+    case dynamicArray(elementType: SymbolType)
     
     public var isBooleanType: Bool {
         switch self {
@@ -42,6 +43,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return 2
         case .array(count: let count, elementType: let elementType):
             return (count ?? 0) * elementType.sizeof
+        case .dynamicArray(elementType: _):
+            return 4
         }
     }
     
@@ -65,6 +68,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             } else {
                 return "[_]\(elementType)"
             }
+        case .dynamicArray(elementType: let elementType):
+            return "[]\(elementType)"
         case .function(name: _, mangledName: _, functionType: let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"

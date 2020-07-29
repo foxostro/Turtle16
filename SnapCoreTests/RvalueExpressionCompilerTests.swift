@@ -2322,4 +2322,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir!)
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfData + 2*SymbolType.u16.sizeof), 0xcafe)
     }
+    
+    func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
+        let count = 5
+        let addressOfPointer = 0x0010
+        let addressOfCount = 0x0012
+        let addressOfData = 0x0014
+        let expr = ExprUtils.makeAssignment(name: "dst", right: ExprUtils.makeIdentifier(name: "src"))
+        let symbols = SymbolTable([
+            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true),
+            "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0014, isMutable: false)
+        ])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0xcdcd, to: addressOfPointer)
+            computer.dataRAM.store16(value: 0xcdcd, to: addressOfCount)
+            for i in 0..<count {
+                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
+            }
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressOfPointer), UInt16(addressOfData))
+        XCTAssertEqual(computer.dataRAM.load16(from: addressOfCount), UInt16(count))
+    }
 }

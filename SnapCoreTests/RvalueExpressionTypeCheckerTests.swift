@@ -2150,6 +2150,18 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .bool)
     }
     
+    func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
+        let symbols = SymbolTable([
+            "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0010, isMutable: true),
+            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = ExprUtils.makeAssignment(name: "dst", right:  ExprUtils.makeIdentifier(name: "src"))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .dynamicArray(elementType: .u8))
+    }
+    
     func testIdentifier_U16() {
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: false)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)

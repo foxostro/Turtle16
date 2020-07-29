@@ -241,7 +241,6 @@ class SnapToYertleCompilerTests: XCTestCase {
         
         let ir = compiler.instructions
         let executor = YertleExecutor()
-        executor.isVerboseLogging = true
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff3)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 2), 0xd)

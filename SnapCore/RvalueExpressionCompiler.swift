@@ -12,10 +12,7 @@ import TurtleCompilerToolbox
 // compiled to machine code. (see also YertleToTurtleMachineCodeCompiler)
 // The expression will push the result onto the stack. The client assumes the
 // responsibility of cleaning up.
-public class RvalueExpressionCompiler: NSObject {
-    let symbols: SymbolTable
-    let kFramePointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
-    let kFramePointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
+public class RvalueExpressionCompiler: BaseExpressionCompiler {
     let compilerInstrinsicFunctions: [String: [YertleInstruction]] = [
         "peekMemory" : [.loadIndirect],
         "pokeMemory" : [.storeIndirect, .pop],
@@ -24,20 +21,12 @@ public class RvalueExpressionCompiler: NSObject {
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     
-    public init(symbols: SymbolTable = SymbolTable()) {
-        self.symbols = symbols
+    public override init(symbols: SymbolTable = SymbolTable()) {
         self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        super.init(symbols: symbols)
     }
     
-    func rvalueContext() -> RvalueExpressionCompiler {
-        return RvalueExpressionCompiler(symbols: symbols)
-    }
-    
-    func lvalueContext() -> LvalueExpressionCompiler {
-        return LvalueExpressionCompiler(symbols: symbols)
-    }
-    
-    public func compile(expression: Expression) throws -> [YertleInstruction] {
+    public override func compile(expression: Expression) throws -> [YertleInstruction] {
         try typeChecker.check(expression: expression)
         
         switch expression {
@@ -282,74 +271,6 @@ public class RvalueExpressionCompiler: NSObject {
         }
     }
     
-    private func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
-        return loadStaticValue(type: symbol.type, offset: symbol.offset)
-    }
-    
-    private func loadStaticValue(type: SymbolType, offset: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        switch type.sizeof {
-        case 0: break
-        case 1: instructions += [.load(offset)]
-        case 2: instructions += [.load16(offset)]
-        default:
-            instructions += [
-                .push16(offset),
-                .loadIndirectN(type.sizeof)
-            ]
-        }
-        return instructions
-    }
-    
-    private func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        return loadStackValue(type: symbol.type,
-                              offset: symbol.offset,
-                              depth: depth)
-    }
-    
-    private func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
-        instructions += indirectLoadValue(type)
-        return instructions
-    }
-    
-    private func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        return computeAddressOfLocalVariable(offset: symbol.offset, depth: depth)
-    }
-    
-    private func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        
-        if offset >= 0 {
-            // Push the symbol offset. This is used in the subtraction below.
-            instructions += [.push16(offset)]
-            
-            // Load the frame pointer.
-            instructions += [.load16(kFramePointerAddressHi)]
-            
-            // Follow the frame pointer `depth' times.
-            instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
-            
-            // Apply the offset to get the final address.
-            instructions += [.sub16]
-        } else {
-            // Push the symbol offset. This is used in the subtraction below.
-            instructions += [.push16(-offset)]
-            
-            // Load the frame pointer.
-            instructions += [.load16(kFramePointerAddressHi)]
-            
-            // Follow the frame pointer `depth' times.
-            instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
-            
-            // Apply the offset to get the final address.
-            instructions += [.add16]
-        }
-        
-        return instructions
-    }
-    
     public func compile(assignment: Expression.Assignment) throws -> [YertleInstruction] {
         let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
         var instructions: [YertleInstruction] = []
@@ -436,18 +357,6 @@ public class RvalueExpressionCompiler: NSObject {
         return instructions
     }
     
-    private func indirectStoreOfValue(type: SymbolType) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        let size = type.sizeof
-        switch size {
-        case 0:  break
-        case 1:  instructions += [.storeIndirect]
-        case 2:  instructions += [.storeIndirect16]
-        default: instructions += [.storeIndirectN(size)]
-        }
-        return instructions
-    }
-    
     private func compile(call node: Expression.Call) throws -> [YertleInstruction] {
         let identifierToken = (node.callee as! Expression.Identifier).identifier
         let symbol = try symbols.resolve(identifierToken: identifierToken)
@@ -524,93 +433,19 @@ public class RvalueExpressionCompiler: NSObject {
         return instructions
     }
     
-    private func compile(subscript expr: Expression.Subscript) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: expr.tokenIdentifier)
-        let symbol = resolution.0
-        let depth = symbols.stackFrameIndex - resolution.1
-        
-        switch symbol.type {
-        case .array(count: _, elementType: let elementType):
-            instructions += try arraySubscript(symbol, depth, expr, elementType)
-        case .dynamicArray(elementType: let elementType):
-            instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
-        default:
-            abort()
-        }
-        
-        return instructions
-    }
-    
     // Compile an array element lookup through the subscript operator.
-    private func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        instructions += pushAddressOfSymbol(symbol, depth)
-        instructions += try accessArrayElement(expr, elementType)
-        return instructions
-    }
-    
-    // Compute and push the address of the specified symbol.
-    private func pushAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        switch symbol.storage {
-        case .staticStorage: instructions += [.push16(symbol.offset)]
-        case .stackStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
-        }
-        return instructions
-    }
-    
-    // Given an array address on the stack, access the element at an index determined by the expression.
-    private func accessArrayElement(_ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        
-        // Push instructions to compute the subscript index.
-        // This must be converted to u16 so we can do math with the address.
-        instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
-        
-        // Multiply the index by the size of an element.
-        // Add the element offset to the array address.
-        instructions += [
-            .push16(elementType.sizeof),
-            .mul16,
-            .add16
-        ]
-        
+        instructions += try arraySubscriptLvalue(symbol, depth, expr, elementType)
         instructions += indirectLoadValue(elementType)
-        
-        return instructions
-    }
-    
-    // Given an address on the stack, load a typed value from that address.
-    private func indirectLoadValue(_ type: SymbolType) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
-        switch type.sizeof {
-        case 0:  break
-        case 1:  instructions += [.loadIndirect]
-        case 2:  instructions += [.loadIndirect16]
-        default: instructions += [.loadIndirectN(type.sizeof)]
-        }
         return instructions
     }
     
     // Compile an array element lookup in a dynamic array through the subscript operator.
-    private func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        instructions += pushAddressOfSymbol(symbol, depth)
-        // The first two bytes of the dynamic array object are a pointer to the
-        // referenced array data. Follow that pointer.
-        instructions += [.loadIndirect16]
-        instructions += try accessArrayElement(expr, elementType)
+        instructions += try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
+        instructions += indirectLoadValue(elementType)
         return instructions
-    }
-    
-    private func unsupportedError(expression: Expression) -> Error {
-        let message = "unsupported expression: \(expression)"
-        if let lineNumber = expression.tokens.first?.lineNumber {
-            return CompilerError(line: lineNumber, message: message)
-        } else {
-            return CompilerError(message: message)
-        }
     }
 }

@@ -236,8 +236,8 @@ public class SnapToYertleCompiler: NSObject {
                 .store(offset),
                 .pop
             ]
-        case .array(count: let count, elementType: let elementType):
-            let numWords = count! * elementType.sizeof
+        default:
+            let numWords = symbolType.sizeof
             if numWords > 0 {
                 instructions += [
                     .push16(offset),
@@ -245,8 +245,6 @@ public class SnapToYertleCompiler: NSObject {
                     .popn(numWords)
                 ]
             }
-        default:
-            abort()
         }
     }
     

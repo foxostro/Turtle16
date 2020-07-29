@@ -1,5 +1,5 @@
 //
-//  ExpressionTypeCheckerTests.swift
+//  RvalueExpressionTypeCheckerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 6/5/20.
@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCompilerToolbox
 
-class ExpressionTypeCheckerTests: XCTestCase {
+class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testUnsupportedExpressionThrows() {
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: Expression.UnsupportedExpression())) {

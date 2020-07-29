@@ -923,7 +923,7 @@ let b = foo()
         _ = try! executor.execute(program: """
 puts("Hello, World!")
 
-func puts(s: [13]u8) {
+func puts(s: []u8) {
     for var i = 0; i < 13; i = i + 1 {
         putc(s[i])
     }

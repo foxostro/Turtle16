@@ -220,6 +220,33 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
     }
     
+    func testCompileConstantDeclaration_AssignStringLiteralToDynamicArray() {
+        let stringLiteral = Expression.LiteralArray(.u8, "Hello, World!".utf8.map({ExprUtils.makeLiteralInt(value: Int($0))}))
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                           explicitType: .dynamicArray(elementType: .u8),
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                           expression: stringLiteral,
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        
+        var symbol: Symbol? = nil
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
+        XCTAssertEqual(symbol, Symbol(type: .dynamicArray(elementType: .u8), offset: addressFoo, isMutable: false))
+        
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        executor.isVerboseLogging = true
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff3)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 2), 0xd)
+    }
+    
     func testCompileVarDeclaration() {
         let one = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
         let ast = TopLevel(children: [

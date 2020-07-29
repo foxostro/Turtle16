@@ -156,14 +156,20 @@ public class SnapParser: Parser {
     fileprivate func consumeArrayType() throws -> SymbolType {
         try expect(type: TokenSquareBracketLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `[' in array type"))
         let count: Int?
-        if nil != accept(TokenUnderscore.self) {
-            count = nil
-        } else {
-            count = (try expect(type: TokenNumber.self, error: CompilerError(line: peek()!.lineNumber, message: "expected integer literal for the array count")) as! TokenNumber).literal
+        if nil != accept(TokenSquareBracketRight.self) {
+            let elementType = try consumeType()
+            return .dynamicArray(elementType: elementType)
         }
-        try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' in array type"))
-        let elementType = try consumeType()
-        return .array(count: count, elementType: elementType)
+        else {
+            if nil != accept(TokenUnderscore.self) {
+                count = nil
+            } else {
+                count = (try expect(type: TokenNumber.self, error: CompilerError(line: peek()!.lineNumber, message: "expected integer literal for the array count")) as! TokenNumber).literal
+            }
+            try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' in array type"))
+            let elementType = try consumeType()
+            return .array(count: count, elementType: elementType)
+        }
     }
     
     fileprivate func consumePrimitiveType() throws -> SymbolType {

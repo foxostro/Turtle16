@@ -280,6 +280,24 @@ let foo = "Hello, World!"
         XCTAssertEqual(expected, actual)
     }
     
+    func testWellFormedLetDeclaration_DynamicArrayOfU8_ExplicitType() {
+        let parser = SnapParser(tokens: tokenize("""
+let foo: []u8 = bar
+"""))
+        parser.parse()
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+                                      explicitType: .dynamicArray(elementType: .u8),
+                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                                      expression: ExprUtils.makeIdentifier(name: "bar"),
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
     func testMalformedVariableDeclaration_BareVar() {
         let parser = SnapParser(tokens: tokenize("var"))
         parser.parse()

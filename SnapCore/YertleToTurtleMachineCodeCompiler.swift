@@ -57,6 +57,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             switch instruction {
             case .push(let value): try push(value)
             case .push16(let value): try push16(value)
+            case .pushsp: try pushsp()
             case .pop: try pop()
             case .pop16: try pop16()
             case .popn(let count): try popn(count)
@@ -158,6 +159,19 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         let lo =  value & 0xff
         try push(lo)
         try push(hi)
+    }
+    
+    private func pushsp() throws {
+        // Load the 16-bit stack pointer into AB and then push to the stack.
+        try assembler.li(.U, kStackPointerHiHi)
+        try assembler.li(.V, kStackPointerHiLo)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, kStackPointerLoHi)
+        try assembler.li(.V, kStackPointerLoLo)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        try assembler.mov(.A, .B)
+        try pushAToStack()
     }
     
     private func loadStackPointerIntoUVandXY() throws {

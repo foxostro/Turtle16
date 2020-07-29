@@ -378,6 +378,11 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                            messageWhenNotConvertible: messageWhenNotConvertible,
                                                            isExplicitCast: isExplicitCast)
             return .array(count: n, elementType: elementType)
+        case (.array(let n, let a), .dynamicArray(elementType: let b)):
+            guard n != nil && a == b else {
+                throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
+            }
+            return ltype
         default:
             throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
         }

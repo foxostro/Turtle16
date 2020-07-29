@@ -351,6 +351,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 }
                 instructions += try compile(expression: rexpr)
             }
+        case (.array(let n, let a), .dynamicArray(elementType: let b)):
+            guard let n = n else {
+                abort()
+            }
+            guard a == b else {
+                abort()
+            }
+            switch rexpr {
+            case let identifier as Expression.Identifier:
+                let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: identifier.identifier)
+                let symbol = resolution.0
+                let depth = symbols.stackFrameIndex - resolution.1
+                instructions += [.push16(n)]
+                instructions += pushAddressOfSymbol(symbol, depth)
+            default:
+                throw unsupportedError(expression: rexpr)
+            }
         default:
             abort()
         }

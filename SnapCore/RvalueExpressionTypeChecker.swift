@@ -435,7 +435,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         let lineNumber = expr.tokens.first!.lineNumber
         let symbol = try symbols.resolve(identifierToken: expr.tokenIdentifier)
         switch symbol.type {
-        case .array(count: _, elementType: let elementType), .dynamicArray(elementType: let elementType):
+        case .array(count: _, elementType: let elementType),
+             .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.expr)
             if !argumentType.isArithmeticType {
                 throw CompilerError(line: lineNumber, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")

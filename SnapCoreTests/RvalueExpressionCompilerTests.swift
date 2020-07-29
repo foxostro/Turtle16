@@ -2259,7 +2259,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
-    func testCompileIdentifierExpression_DynamicArrayOfU8_Static() {
+    func testCompileIdentifierExpression_DynamicArrayOfU16_Static() {
         let count = 5
         
         let addressOfPointer = 0x0010
@@ -2289,5 +2289,37 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let address = computer.stackPointer
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), UInt16(addressOfData))
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), UInt16(count))
+    }
+    
+    func testCompileAssignmentThroughArraySubscript_DynamicArray() {
+        let count = 5
+        
+        let addressOfPointer = 0x0010
+        let addressOfCount = 0x0012
+        let addressOfData = 0x0014
+        
+        let expr = ExprUtils.makeAssignment(lexpr: ExprUtils.makeSubscript(identifier: "foo", expr: ExprUtils.makeLiteralInt(value: 2)),
+                                            rexpr: ExprUtils.makeLiteralInt(value: 0xcafe))
+        
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: true),
+            "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: true)
+        ])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        if ir == nil {
+            XCTFail()
+            return
+        }
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
+            computer.dataRAM.store16(value: UInt16(count), to: addressOfCount)
+            for i in 0..<count {
+                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
+            }
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressOfData + 2*SymbolType.u16.sizeof), 0xcafe)
     }
 }

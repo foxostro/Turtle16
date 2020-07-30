@@ -1454,4 +1454,43 @@ class SnapToYertleCompilerTests: XCTestCase {
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
         }
     }
+        
+    func testCompileGetArrayLength() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "r"),
+                           explicitType: .u16,
+                           tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
+                           expression: ExprUtils.makeLiteralInt(value: 0),
+                           storage: .staticStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "a"),
+                           explicitType: .array(count: nil, elementType: .u8),
+                           tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
+                           expression: Expression.LiteralArray(.u8, [ExprUtils.makeU8(value: 1), ExprUtils.makeU8(value: 2), ExprUtils.makeU8(value: 3)]),
+                           storage: .staticStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: TokenIdentifier(lineNumber: 3, lexeme: "b"),
+                           explicitType: .dynamicArray(elementType: .u8),
+                           tokenEqual: TokenEqual(lineNumber: 3, lexeme: "="),
+                           expression: ExprUtils.makeIdentifier(lineNumber: 3, name: "a"),
+                           storage: .staticStorage,
+                           isMutable: false),
+            Expression.Assignment(lexpr: ExprUtils.makeIdentifier(lineNumber: 4, name: "r"),
+                                  tokenEqual: TokenEqual(lineNumber: 4, lexeme: "="),
+                                  rexpr: Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 4, lexeme: "length")), arguments: [ExprUtils.makeIdentifier(lineNumber: 4, name: "b")]))
+            
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+            return
+        }
+        let ir = compiler.instructions
+        let executor = YertleExecutor()
+        executor.isVerboseLogging = true
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+    }
 }

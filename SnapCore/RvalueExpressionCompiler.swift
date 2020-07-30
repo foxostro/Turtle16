@@ -17,7 +17,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         "peekMemory" : [.loadIndirect],
         "pokeMemory" : [.storeIndirect, .pop],
         "peekPeripheral" : [.peekPeripheral],
-        "pokePeripheral" : [.pokePeripheral, .pop]
+        "pokePeripheral" : [.pokePeripheral, .pop],
+        "hlt" : [.hlt]
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     

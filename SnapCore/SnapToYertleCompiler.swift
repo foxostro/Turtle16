@@ -26,6 +26,7 @@ public class SnapToYertleCompiler: NSObject {
         bindCompilerInstrinsicPokeMemory()
         bindCompilerInstrinsicPeekPeripheral()
         bindCompilerInstrinsicPokePeripheral()
+        bindCompilerInstrinsicHlt()
     }
     
     private func bindCompilerInstrinsicPeekMemory() {
@@ -55,6 +56,14 @@ public class SnapToYertleCompiler: NSObject {
     private func bindCompilerInstrinsicPokePeripheral() {
         let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
         let name = TokenIdentifier(lineNumber: -1, lexeme: "pokePeripheral")
+        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name.lexeme, symbol: symbol)
+    }
+    
+    private func bindCompilerInstrinsicHlt() {
+        let functionType = FunctionType(returnType: .void, arguments: [])
+        let name = TokenIdentifier(lineNumber: -1, lexeme: "hlt")
         let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name.lexeme, symbol: symbol)

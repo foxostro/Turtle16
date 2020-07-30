@@ -581,6 +581,17 @@ let b = peekPeripheral(0, 1)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0)
     }
+        
+    func test_EndToEndIntegration_Hlt() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+pokeMemory(0xab, 0x0010)
+hlt()
+pokeMemory(0xcd, 0x0010)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+    }
     
     func test_EndToEndIntegration_DeclareArrayType_InferredType() {
         let executor = SnapExecutor()

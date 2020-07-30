@@ -1435,4 +1435,23 @@ class SnapToYertleCompilerTests: XCTestCase {
             XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), 0xff)
         }
     }
+        
+    func testCompileHlt() {
+        let ast = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokeMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xab", literal: 0xab)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010))]),
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 2, lexeme: "hlt")), arguments: []),
+            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 3, lexeme: "pokeMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "0xcd", literal: 0xcd)), Expression.LiteralWord(number: TokenNumber(lineNumber: 3, lexeme: "0x0010", literal: 0x0010))])
+        ])
+        let compiler = SnapToYertleCompiler()
+        compiler.compile(ast: ast)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            XCTFail()
+        } else {
+            let ir = compiler.instructions
+            let executor = YertleExecutor()
+            let computer = try! executor.execute(ir: ir)
+            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+        }
+    }
 }

@@ -926,6 +926,7 @@ let b = foo()
     func testSerialOutput_HelloWorld() {
         var serialOutput = ""
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         executor.configure = { computer in
             computer.didUpdateSerialOutput = {
                 serialOutput = $0
@@ -933,28 +934,6 @@ let b = foo()
         }
         _ = try! executor.execute(program: """
 puts("Hello, World!")
-
-func puts(s: []u8) {
-    for var i = 0; i < 13; i = i + 1 {
-        putc(s[i])
-    }
-}
-
-func putc(c: u8) {
-    let kSerialDevice = 7
-    let kDataPort = 1
-    let kControlPort = 0
-    let kPutCommand = 1
-    let kSckHi = 1
-    let kSckLo = 0
-
-    pokePeripheral(kPutCommand, kDataPort, kSerialDevice)
-    pokePeripheral(kSckHi, kControlPort, kSerialDevice)
-    pokePeripheral(kSckLo, kControlPort, kSerialDevice)
-    pokePeripheral(c, kDataPort, kSerialDevice)
-    pokePeripheral(kSckHi, kControlPort, kSerialDevice)
-    pokePeripheral(kSckLo, kControlPort, kSerialDevice)
-}
 """)
         XCTAssertEqual(serialOutput, "Hello, World!")
     }

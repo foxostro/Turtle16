@@ -951,6 +951,6 @@ puts("Hello, World!")
 panic("oops!")
 puts("Hello, World!")
 """)
-        XCTAssertEqual(serialOutput, "PANIC: oops!\n")
+        XCTAssertEqual(serialOutput, "PANIC: oops!")
     }
 }

@@ -18,7 +18,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         "pokeMemory" : [.storeIndirect, .pop],
         "peekPeripheral" : [.peekPeripheral],
         "pokePeripheral" : [.pokePeripheral, .pop],
-        "hlt" : [.hlt]
+        "hlt" : [.hlt],
+        "length" : [.pop16], // discard the dynamic array's pointer, leaving only the length
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     
@@ -377,6 +378,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     .add16
                 ]
             }
+        case (.dynamicArray(elementType: let a), .dynamicArray(elementType: let b)):
+            guard a == b else {
+                abort()
+            }
+            instructions += try compile(expression: rexpr)
         default:
             abort()
         }

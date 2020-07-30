@@ -13,7 +13,7 @@ import TurtleSimulatorCore
 
 // Simulates execution of a program written in the Yertle intermediate language.
 class YertleExecutor: NSObject {
-    let isVerboseLogging = false
+    public var isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
     var configure: (Computer)->Void = {_ in}

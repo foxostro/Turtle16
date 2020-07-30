@@ -1,11 +1,12 @@
 func panic(message: []u8) {
-    puts("PANIC: oops!\n")
-//    puts(message)
+    puts("PANIC: ")
+    puts(message)
     hlt()
 }
 
 func puts(s: []u8) {
-    for var i = 0; i < 13; i = i + 1 {
+    let n = length(s)
+    for var i = 0; i < n; i = i + 1 {
         putc(s[i])
     }
 }

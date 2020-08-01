@@ -12,87 +12,101 @@ import TurtleCompilerToolbox
 
 class ForLoopTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()),
-                          AbstractSyntaxTreeNode())
+        XCTAssertNotEqual(ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
+                          AbstractSyntaxTreeNode(sourceAnchor: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentInitializerClause() {
-        XCTAssertNotEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()),
-                          ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 2),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()))
+        XCTAssertNotEqual(ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
+                          ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 2),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentConditionClause() {
-        XCTAssertNotEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()),
-                          ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 2),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()))
+        XCTAssertNotEqual(ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
+                          ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 2),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentIncrementClause() {
-        XCTAssertNotEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()),
-                          ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 2),
-                                  body: AbstractSyntaxTreeNode()))
+        XCTAssertNotEqual(ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
+                          ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 2),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {
-        XCTAssertNotEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: AbstractSyntaxTreeNode()),
-                          ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                                  conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                                  incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                                  body: ExprUtils.makeLiteralInt(value: 1)))
+        XCTAssertNotEqual(ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
+                          ForLoop(sourceAnchor: nil,
+                                  initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                  body: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
     }
     
     func testSame() {
-        XCTAssertEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                               conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                               incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                               body: AbstractSyntaxTreeNode()),
-                       ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                               conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                               incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                               body: AbstractSyntaxTreeNode()))
+        XCTAssertEqual(ForLoop(sourceAnchor: nil,
+                               initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
+                       ForLoop(sourceAnchor: nil,
+                               initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               body: AbstractSyntaxTreeNode(sourceAnchor: nil)))
     }
     
     func testHash() {
-        XCTAssertEqual(ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                               conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                               incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                               body: AbstractSyntaxTreeNode()).hash,
-                       ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                               conditionClause: ExprUtils.makeLiteralInt(value: 1),
-                               incrementClause: ExprUtils.makeLiteralInt(value: 1),
-                               body: AbstractSyntaxTreeNode()).hash)
+        XCTAssertEqual(ForLoop(sourceAnchor: nil,
+                               initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               body: AbstractSyntaxTreeNode(sourceAnchor: nil)).hash,
+                       ForLoop(sourceAnchor: nil,
+                               initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                               body: AbstractSyntaxTreeNode(sourceAnchor: nil)).hash)
     }
     
     func testGetters() {
-        let stmt = ForLoop(initializerClause: ExprUtils.makeLiteralInt(value: 1),
-                           conditionClause: ExprUtils.makeLiteralInt(value: 2),
-                           incrementClause: ExprUtils.makeLiteralInt(value: 3),
-                           body: ExprUtils.makeLiteralInt(value: 4))
-        XCTAssertEqual(stmt.initializerClause, ExprUtils.makeLiteralInt(value: 1))
-        XCTAssertEqual(stmt.conditionClause, ExprUtils.makeLiteralInt(value: 2))
-        XCTAssertEqual(stmt.incrementClause, ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(stmt.body, ExprUtils.makeLiteralInt(value: 4))
+        let stmt = ForLoop(sourceAnchor: nil,
+                           initializerClause: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                           conditionClause: Expression.LiteralWord(sourceAnchor: nil, value: 2),
+                           incrementClause: Expression.LiteralWord(sourceAnchor: nil, value: 3),
+                           body: Expression.LiteralWord(sourceAnchor: nil, value: 4))
+        XCTAssertEqual(stmt.initializerClause, Expression.LiteralWord(sourceAnchor: nil, value: 1))
+        XCTAssertEqual(stmt.conditionClause, Expression.LiteralWord(sourceAnchor: nil, value: 2))
+        XCTAssertEqual(stmt.incrementClause, Expression.LiteralWord(sourceAnchor: nil, value: 3))
+        XCTAssertEqual(stmt.body, Expression.LiteralWord(sourceAnchor: nil, value: 4))
     }
 }

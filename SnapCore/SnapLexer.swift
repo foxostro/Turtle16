@@ -12,174 +12,169 @@ public class SnapLexer: Lexer {
     public required init(withString string: String) {
         super.init(withString: string)
         self.rules = [
-            Rule(pattern: "\n") {[weak self] in
-                let this = self!
-                let token = TokenNewline(lineNumber: this.lineNumber, lexeme: $0)
-                this.lineNumber += 1
-                return token
+            Rule(pattern: "\n") {
+                return TokenNewline(sourceAnchor: $0)
             },
-            Rule(pattern: "((#)|(//))") {[weak self] (lexeme: String) in
+            Rule(pattern: "((#)|(//))") {[weak self] _ in
                 self!.advanceToNewline()
                 return nil
             },
-            Rule(pattern: ",") {[weak self] in
-                TokenComma(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: ",") {
+                TokenComma(sourceAnchor: $0)
             },
-            Rule(pattern: ":") {[weak self] in
-                TokenColon(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: ":") {
+                TokenColon(sourceAnchor: $0)
             },
-            Rule(pattern: ";") {[weak self] in
-                TokenSemicolon(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: ";") {
+                TokenSemicolon(sourceAnchor: $0)
             },
-            Rule(pattern: "->") {[weak self] in
-                TokenArrow(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "->") {
+                TokenArrow(sourceAnchor: $0)
             },
-            Rule(pattern: "==") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .eq)
+            Rule(pattern: "==") {
+                TokenOperator(sourceAnchor: $0, op: .eq)
             },
-            Rule(pattern: "!=") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .ne)
+            Rule(pattern: "!=") {
+                TokenOperator(sourceAnchor: $0, op: .ne)
             },
-            Rule(pattern: "<=") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .le)
+            Rule(pattern: "<=") {
+                TokenOperator(sourceAnchor: $0, op: .le)
             },
-            Rule(pattern: ">=") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .ge)
+            Rule(pattern: ">=") {
+                TokenOperator(sourceAnchor: $0, op: .ge)
             },
-            Rule(pattern: "<") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .lt)
+            Rule(pattern: "<") {
+                TokenOperator(sourceAnchor: $0, op: .lt)
             },
-            Rule(pattern: ">") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .gt)
+            Rule(pattern: ">") {
+                TokenOperator(sourceAnchor: $0, op: .gt)
             },
-            Rule(pattern: "=") {[weak self] in
-                TokenEqual(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "=") {
+                TokenEqual(sourceAnchor: $0)
             },
-            Rule(pattern: "\\+") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .plus)
+            Rule(pattern: "\\+") {
+                TokenOperator(sourceAnchor: $0, op: .plus)
             },
-            Rule(pattern: "-") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .minus)
+            Rule(pattern: "-") {
+                TokenOperator(sourceAnchor: $0, op: .minus)
             },
-            Rule(pattern: "\\*") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .multiply)
+            Rule(pattern: "\\*") {
+                TokenOperator(sourceAnchor: $0, op: .multiply)
             },
-            Rule(pattern: "/") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .divide)
+            Rule(pattern: "/") {
+                TokenOperator(sourceAnchor: $0, op: .divide)
             },
-            Rule(pattern: "%") {[weak self] in
-                TokenOperator(lineNumber: self!.lineNumber, lexeme: $0, op: .modulus)
+            Rule(pattern: "%") {
+                TokenOperator(sourceAnchor: $0, op: .modulus)
             },
-            Rule(pattern: "as") {[weak self] in
-                TokenAs(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "as") {
+                TokenAs(sourceAnchor: $0)
             },
-            Rule(pattern: "\\(") {[weak self] in
-                TokenParenLeft(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "\\(") {
+                TokenParenLeft(sourceAnchor: $0)
             },
-            Rule(pattern: "\\)") {[weak self] in
-                TokenParenRight(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "\\)") {
+                TokenParenRight(sourceAnchor: $0)
             },
-            Rule(pattern: "\\{") {[weak self] in
-                TokenCurlyLeft(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "\\{") {
+                TokenCurlyLeft(sourceAnchor: $0)
             },
-            Rule(pattern: "\\}") {[weak self] in
-                TokenCurlyRight(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "\\}") {
+                TokenCurlyRight(sourceAnchor: $0)
             },
-            Rule(pattern: "\\[") {[weak self] in
-                TokenSquareBracketLeft(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "\\[") {
+                TokenSquareBracketLeft(sourceAnchor: $0)
             },
-            Rule(pattern: "\\]") {[weak self] in
-                TokenSquareBracketRight(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "\\]") {
+                TokenSquareBracketRight(sourceAnchor: $0)
             },
-            Rule(pattern: "_") {[weak self] in
-                TokenUnderscore(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "_") {
+                TokenUnderscore(sourceAnchor: $0)
             },
-            Rule(pattern: "let") {[weak self] in
-                TokenLet(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "let") {
+                TokenLet(sourceAnchor: $0)
             },
-            Rule(pattern: "return") {[weak self] in
-                TokenReturn(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "return") {
+                TokenReturn(sourceAnchor: $0)
             },
-            Rule(pattern: "var") {[weak self] in
-                TokenVar(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "var") {
+                TokenVar(sourceAnchor: $0)
             },
-            Rule(pattern: "if") {[weak self] in
-                TokenIf(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "if") {
+                TokenIf(sourceAnchor: $0)
             },
-            Rule(pattern: "else") {[weak self] in
-                TokenElse(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "else") {
+                TokenElse(sourceAnchor: $0)
             },
-            Rule(pattern: "while") {[weak self] in
-                TokenWhile(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "while") {
+                TokenWhile(sourceAnchor: $0)
             },
-            Rule(pattern: "for") {[weak self] in
-                TokenFor(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "for") {
+                TokenFor(sourceAnchor: $0)
             },
-            Rule(pattern: "static") {[weak self] in
-                TokenStatic(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "static") {
+                TokenStatic(sourceAnchor: $0)
             },
-            Rule(pattern: "func") {[weak self] in
-                TokenFunc(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "func") {
+                TokenFunc(sourceAnchor: $0)
             },
-            Rule(pattern: "u8") {[weak self] in
-                TokenType(lineNumber: self!.lineNumber, lexeme: $0, type: .u8)
+            Rule(pattern: "u8") {
+                TokenType(sourceAnchor: $0, type: .u8)
             },
-            Rule(pattern: "u16") {[weak self] in
-                TokenType(lineNumber: self!.lineNumber, lexeme: $0, type: .u16)
+            Rule(pattern: "u16") {
+                TokenType(sourceAnchor: $0, type: .u16)
             },
-            Rule(pattern: "bool") {[weak self] in
-                TokenType(lineNumber: self!.lineNumber, lexeme: $0, type: .bool)
+            Rule(pattern: "bool") {
+                TokenType(sourceAnchor: $0, type: .bool)
             },
-            Rule(pattern: "void") {[weak self] in
-                TokenType(lineNumber: self!.lineNumber, lexeme: $0, type: .void)
+            Rule(pattern: "void") {
+                TokenType(sourceAnchor: $0, type: .void)
             },
-            Rule(pattern: "true") {[weak self] in
-                TokenBoolean(lineNumber: self!.lineNumber, lexeme: $0, literal: true)
+            Rule(pattern: "true") {
+                TokenBoolean(sourceAnchor: $0, literal: true)
             },
-            Rule(pattern: "false") {[weak self] in
-                TokenBoolean(lineNumber: self!.lineNumber, lexeme: $0, literal: false)
+            Rule(pattern: "false") {
+                TokenBoolean(sourceAnchor: $0, literal: false)
             },
-            Rule(pattern: "\".*\"") {[weak self] in
-                TokenLiteralString(lineNumber: self!.lineNumber,
-                                   lexeme: $0,
-                                   literal: self!.interpretQuotedString(lexeme: $0))
+            Rule(pattern: "\".*\"") {[weak self] in 
+                TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))
             },
-            Rule(pattern: "[a-zA-Z_][a-zA-Z0-9_]*") {[weak self] in
-                TokenIdentifier(lineNumber: self!.lineNumber, lexeme: $0)
+            Rule(pattern: "[a-zA-Z_][a-zA-Z0-9_]*") {
+                TokenIdentifier(sourceAnchor: $0)
             },
-            Rule(pattern: "[0-9]+\\b") {[weak self] in
-                let scanner = Scanner(string: $0)
+            Rule(pattern: "[0-9]+\\b") {
+                let scanner = Scanner(string: String($0.text))
                 var number: Int = 0
                 let result = scanner.scanInt(&number)
                 assert(result)
-                return TokenNumber(lineNumber: self!.lineNumber, lexeme: $0, literal: number)
+                return TokenNumber(sourceAnchor: $0, literal: number)
             },
-            Rule(pattern: "\\$[0-9a-fA-F]+\\b") {[weak self] in
-                let scanner = Scanner(string: String($0.dropFirst()))
+            Rule(pattern: "\\$[0-9a-fA-F]+\\b") {
+                let scanner = Scanner(string: String($0.text.dropFirst()))
                 var number: UInt32 = 0
                 let result = scanner.scanHexInt32(&number)
                 assert(result)
-                return TokenNumber(lineNumber: self!.lineNumber, lexeme: $0, literal: Int(number))
+                return TokenNumber(sourceAnchor: $0, literal: Int(number))
             },
-            Rule(pattern: "0[xX][0-9a-fA-F]+\\b") {[weak self] in
-                let scanner = Scanner(string: String($0))
+            Rule(pattern: "0[xX][0-9a-fA-F]+\\b") {
+                let scanner = Scanner(string: String($0.text))
                 var number: UInt32 = 0
                 let result = scanner.scanHexInt32(&number)
                 assert(result)
-                return TokenNumber(lineNumber: self!.lineNumber, lexeme: $0, literal: Int(number))
+                return TokenNumber(sourceAnchor: $0, literal: Int(number))
             },
-            Rule(pattern: "0b[01]+\\b") {[weak self] in
-                let scanner = Scanner(string: String($0))
+            Rule(pattern: "0b[01]+\\b") {
+                let scanner = Scanner(string: String($0.text))
                 var number = 0
                 let result = scanner.scanBinaryInt(&number)
                 assert(result)
-                return TokenNumber(lineNumber: self!.lineNumber, lexeme: $0, literal: number)
+                return TokenNumber(sourceAnchor: $0, literal: number)
             },
-            Rule(pattern: "'.'") {[weak self] in
-                let number = Int(String($0).split(separator: "'").first!.unicodeScalars.first!.value)
-                return TokenNumber(lineNumber: self!.lineNumber, lexeme: $0, literal: number)
+            Rule(pattern: "'.'") {
+                let number = Int(String($0.text).split(separator: "'").first!.unicodeScalars.first!.value)
+                return TokenNumber(sourceAnchor: $0, literal: number)
             },
-            Rule(pattern: "[ \t]+") {(lexeme: String) in
+            Rule(pattern: "[ \t]+") {_ in
                 nil
             }
         ]

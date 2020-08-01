@@ -13,6 +13,7 @@ public class SnapToYertleCompiler: NSObject {
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool { !errors.isEmpty }
     public private(set) var instructions: [YertleInstruction] = []
+    public private(set) var mapInstructionToSource: [Int:SourceAnchor?] = [:]
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
@@ -31,58 +32,58 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func bindCompilerInstrinsicPeekMemory() {
+        let name = "peekMemory"
         let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
-        let name = TokenIdentifier(lineNumber: -1, lexeme: "peekMemory")
-        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name.lexeme, symbol: symbol)
+        symbols.bind(identifier: name, symbol: symbol)
     }
     
     private func bindCompilerInstrinsicPokeMemory() {
+        let name = "pokeMemory"
         let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
-        let name = TokenIdentifier(lineNumber: -1, lexeme: "pokeMemory")
-        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name.lexeme, symbol: symbol)
+        symbols.bind(identifier: name, symbol: symbol)
     }
     
     private func bindCompilerInstrinsicPeekPeripheral() {
+        let name = "peekPeripheral"
         let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let name = TokenIdentifier(lineNumber: -1, lexeme: "peekPeripheral")
-        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name.lexeme, symbol: symbol)
+        symbols.bind(identifier: name, symbol: symbol)
     }
     
     private func bindCompilerInstrinsicPokePeripheral() {
+        let name = "pokePeripheral"
         let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let name = TokenIdentifier(lineNumber: -1, lexeme: "pokePeripheral")
-        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name.lexeme, symbol: symbol)
+        symbols.bind(identifier: name, symbol: symbol)
     }
     
     private func bindCompilerInstrinsicHlt() {
+        let name = "hlt"
         let functionType = FunctionType(returnType: .void, arguments: [])
-        let name = TokenIdentifier(lineNumber: -1, lexeme: "hlt")
-        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name.lexeme, symbol: symbol)
+        symbols.bind(identifier: name, symbol: symbol)
     }
     
     private func bindCompilerInstrinsicLength() {
+        let name = "length"
         let functionType = FunctionType(returnType: .u16, arguments: [FunctionType.Argument(name: "array", type: .dynamicArray(elementType: .u8))])
-        let name = TokenIdentifier(lineNumber: -1, lexeme: "length")
-        let typ: SymbolType = .function(name: name.lexeme, mangledName: name.lexeme, functionType: functionType)
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name.lexeme, symbol: symbol)
+        symbols.bind(identifier: name, symbol: symbol)
     }
     
     // The generated program will need unique, temporary labels.
-    private func makeTempLabel() -> TokenIdentifier {
+    private func makeTempLabel() -> String {
         let label = ".L\(tempLabelCounter)"
         tempLabelCounter += 1
-        return TokenIdentifier(lineNumber: -1, lexeme: label)
+        return label
     }
     
     // Static storage is allocated in a region starting at this address.
@@ -129,7 +130,7 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func performDeclPass(func funDecl: FunctionDeclaration) {
-        let name = funDecl.identifier.lexeme
+        let name = funDecl.identifier.identifier
         let mangledName = makeMangledFunctionName(funDecl)
         let typ: SymbolType = .function(name: name, mangledName: mangledName, functionType: funDecl.functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
@@ -137,11 +138,12 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {
-        let name = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [node.identifier.lexeme])).map{$0 as! String}.joined(separator: "_")
+        let name = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [node.identifier.identifier])).map{$0 as! String}.joined(separator: "_")
         return name
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
+        let instructionsBegin = instructions.count
         switch genericNode {
         case let node as VarDeclaration:
             try compile(varDecl: node)
@@ -162,15 +164,20 @@ public class SnapToYertleCompiler: NSObject {
         default:
             break
         }
+        let instructionsEnd = instructions.count
+        if instructionsBegin < instructionsEnd {
+            for i in (instructionsBegin+1)..<instructionsEnd {
+                mapInstructionToSource[i] = genericNode.sourceAnchor
+            }
+        }
     }
     
     private func compile(varDecl: VarDeclaration) throws {
-        let name = varDecl.identifier.lexeme
-        guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
-            throw CompilerError(line: varDecl.identifier.lineNumber,
+        guard symbols.existsAndCannotBeShadowed(identifier: varDecl.identifier.identifier) == false else {
+            throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
                                 format: "%@ redefines existing symbol: `%@'",
                                 varDecl.isMutable ? "variable" : "constant",
-                                varDecl.identifier.lexeme)
+                                varDecl.identifier.identifier)
         }
         
         // The type of the initial value expression may be used to infer the
@@ -201,10 +208,10 @@ public class SnapToYertleCompiler: NSObject {
             }
         }
         let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
-        symbols.bind(identifier: name, symbol: symbol)
+        symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
         
-        try compile(expression: Expression.InitialAssignment(lexpr: Expression.Identifier(identifier: varDecl.identifier),
-                                                             tokenEqual: varDecl.tokenEqual,
+        try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
+                                                             lexpr: varDecl.identifier,
                                                              rexpr: varDecl.expression))
                                                              
         storeSymbol(symbol)
@@ -380,26 +387,27 @@ public class SnapToYertleCompiler: NSObject {
     
     private func compile(return node: Return) throws {
         guard let enclosingFunctionType = symbols.enclosingFunctionType else {
-            throw CompilerError(line: node.token.lineNumber, message: "return is invalid outside of a function")
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "return is invalid outside of a function")
         }
         
         if let expr = node.expression {
             if enclosingFunctionType.returnType == .void {
-                throw CompilerError(line: node.token.lineNumber, message: "unexpected non-void return value in void function")
+                throw CompilerError(sourceAnchor: node.expression?.sourceAnchor ?? node.sourceAnchor,
+                                    message: "unexpected non-void return value in void function")
             }
             
             // Synthesize an assignment to the special return value symbol.
-            // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
             let kReturnValueIdentifier = "__returnValue"
             let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
             let returnExpressionType = try typeChecker.check(expression: expr)
             try typeChecker.checkTypesAreConvertibleInAssignment(ltype: enclosingFunctionType.returnType,
                                                                  rtype: returnExpressionType,
-                                                                 lineNumber: node.token.lineNumber,
+                                                                 sourceAnchor: node.sourceAnchor,
                                                                  messageWhenNotConvertible: "cannot convert return expression of type `\(returnExpressionType)' to return type `\(enclosingFunctionType.returnType)'")
-            try compile(expression: Expression.Assignment(lexpr: Expression.Identifier(identifier: TokenIdentifier(lineNumber: node.token.lineNumber, lexeme: kReturnValueIdentifier)), tokenEqual: TokenEqual(lineNumber: node.token.lineNumber, lexeme: "="), rexpr: expr))
+            let lexpr = Expression.Identifier(sourceAnchor: node.sourceAnchor, identifier: kReturnValueIdentifier)
+            try compile(expression: Expression.Assignment(sourceAnchor: node.sourceAnchor, lexpr: lexpr, rexpr: expr))
         } else if .void != enclosingFunctionType.returnType {
-            throw CompilerError(line: node.token.lineNumber, message: "non-void function should return a value")
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "non-void function should return a value")
         }
         instructions += [
             .leave,
@@ -411,8 +419,8 @@ public class SnapToYertleCompiler: NSObject {
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
         let mangledName = makeMangledFunctionName(node)
-        let labelHead = TokenIdentifier(lineNumber: -1, lexeme: mangledName)
-        let labelTail = TokenIdentifier(lineNumber: -1, lexeme: "__\(mangledName)_tail")
+        let labelHead = mangledName
+        let labelTail = "__\(mangledName)_tail"
         instructions += [
             .jmp(labelTail),
             .label(labelHead),
@@ -420,7 +428,7 @@ public class SnapToYertleCompiler: NSObject {
             .enter
         ]
         
-        pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.lexeme,
+        pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.identifier,
                                   enclosingFunctionType: node.functionType)
         bindFunctionArguments(node.functionType)
         performDeclPass(block: node.body)
@@ -428,7 +436,7 @@ public class SnapToYertleCompiler: NSObject {
             try compile(genericNode: child)
         }
         if shouldSynthesizeTerminalReturnStatement(func: node) {
-            try compile(return: Return(token: TokenReturn(lineNumber: -1, lexeme: ""), expression: nil))
+            try compile(return: Return(sourceAnchor: node.sourceAnchor))
         }
         popScopeForStackFrame()
         
@@ -496,9 +504,8 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
-        return CompilerError(line: node.identifier.lineNumber,
-                             format: "missing return in a function expected to return `%@'",
-                             node.functionType.returnType.description)
+        return CompilerError(sourceAnchor: node.identifier.sourceAnchor,
+                             message: "missing return in a function expected to return `\(node.functionType.returnType)'")
     }
     
     private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) -> Bool {

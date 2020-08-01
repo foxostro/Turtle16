@@ -11,13 +11,17 @@ import TurtleCompilerToolbox
 public class TokenLiteralString : Token {
     public let literal: String
     
-    public init(lineNumber: Int, lexeme: String, literal: String) {
+    public init(sourceAnchor: SourceAnchor, literal: String) {
         self.literal = literal
-        super.init(lineNumber: lineNumber, lexeme: lexeme)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override var description: String {
-        return String(format: "<%@: lineNumber=%d, lexeme=\"%@\", literal=%@>", String(describing: type(of: self)), lineNumber, lexeme, literal)
+        return String(format: "<%@: sourceAnchor=%@, lexeme=\"%@\", literal=%@>",
+                      String(describing: type(of: self)),
+                      String(describing: sourceAnchor),
+                      lexeme,
+                      literal)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

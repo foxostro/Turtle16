@@ -11,104 +11,102 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class SnapParserTests: XCTestCase {
-    func tokenize(_ text: String) -> [Token] {
+    func parse(_ text: String) -> SnapParser {
         let tokenizer = SnapLexer(withString: text)
         tokenizer.scanTokens()
-        let tokens = tokenizer.tokens
-        return tokens
+        let parser = SnapParser(tokens: tokenizer.tokens,
+                                lineMapper: tokenizer.lineMapper)
+        parser.parse()
+        return parser
     }
     
     func testEmptyProgramYieldsEmptyAST() {
-        let parser = SnapParser(tokens: tokenize(""))
-        parser.parse()
+        let parser = parse("")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 0)
     }
 
     func testLabelDeclaration() {
-        let parser = SnapParser(tokens: tokenize("label:"))
-        parser.parse()
+        let parser = parse("label:")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 6))
         XCTAssertEqual(parser.errors.first?.message, "labels are not supported")
     }
 
     func testParseExtraneousColon() {
         // If we try to use a number as a label name then it will be interpreted
         // as a malformed expression.
-        let parser = SnapParser(tokens: tokenize(":"))
-        parser.parse()
+        let parser = parse(":")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `:'")
     }
     
     func testExtraneousComma() {
-        let parser = SnapParser(tokens: tokenize(","))
-        parser.parse()
+        let parser = parse(",")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,'")
     }
 
     func testMultipleErrorsParsingInstructions() {
-        let tokens = tokenize(",\n:\n")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse(",\n:\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors[0].line, Optional<Int>(1))
+        XCTAssertEqual(parser.errors.count, 2)
+        XCTAssertEqual(parser.errors[0].sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors[0].message, "operand type mismatch: `,'")
-        XCTAssertEqual(parser.errors[1].line, Optional<Int>(2))
+        XCTAssertEqual(parser.errors[1].sourceAnchor, parser.lineMapper.anchor(2, 3))
         XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `:'")
     }
     
     func testMalformedLetDeclaration_JustLet() {
-        let parser = SnapParser(tokens: tokenize("let"))
-        parser.parse()
+        let parser = parse("let")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 3))
         XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in let declaration")
     }
     
     func testMalformedLetDeclaration_MissingAssignment() {
-        let parser = SnapParser(tokens: tokenize("let foo"))
-        parser.parse()
+        let parser = parse("let foo")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "foo")
         XCTAssertEqual(parser.errors.first?.message, "immutable variables must be assigned a value")
     }
     
     func testMalformedLetDeclaration_MissingValue() {
-        let tokens = tokenize("let foo =")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("let foo =")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(8, 9))
         XCTAssertEqual(parser.errors.first?.message, "expected value after `='")
     }
     
     func testMalformedLetDeclaration_BadTypeForValue_TooManyTokens() {
-        let parser = SnapParser(tokens: tokenize("let foo = 1 2"))
-        parser.parse()
+        let parser = parse("let foo = 1 2")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(12, 13))
         XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `2'")
     }
     
     func testWellFormedLetDeclaration() {
-        let parser = SnapParser(tokens: tokenize("let foo = 1"))
-        parser.parse()
+        let parser = parse("let foo = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -116,17 +114,16 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_WithExplicitType_U8() {
-        let parser = SnapParser(tokens: tokenize("let foo: u8 = 1"))
-        parser.parse()
+        let parser = parse("let foo: u8 = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 15),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .u8,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -134,71 +131,80 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedArrayLiteralWithAndImplicitCount() {
-        let parser = SnapParser(tokens: tokenize("[_]u16{foo}"))
-        parser.parse()
+        let parser = parse("[_]u16{foo}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.LiteralArray(explicitType: .u16,
-                                               elements: [ExprUtils.makeIdentifier(name: "foo")])
+        let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                               explicitType: .u16,
+                                               explicitCount: nil,
+                                               elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
     
     func testMalformedArrayLiteralWithBadCount() {
-        let parser = SnapParser(tokens: tokenize("[bar]u16{foo}"))
-        parser.parse()
+        let parser = parse("[bar]u16{foo}")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "bar")
         XCTAssertEqual(parser.errors.first?.message, "expected integer literal for the array count")
     }
     
     func testWellFormedArrayLiteralOfNestedArrays() {
-        let parser = SnapParser(tokens: tokenize("[_][_]u16{[_]u16{foo, foo}}"))
-        parser.parse()
+        let parser = parse("[_][_]u16{[_]u16{foo, foo}}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
-        
-        let expected = Expression.LiteralArray(explicitType: .array(count: nil, elementType: .u16),
-                                               elements: [Expression.LiteralArray(.u16, [ExprUtils.makeIdentifier(name: "foo"), ExprUtils.makeIdentifier(name: "foo")])])
+        let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 26),
+                                                 explicitType: .u16,
+                                                 explicitCount: nil,
+                                                 elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(17, 20), identifier: "foo"),
+                                                            Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(22, 25), identifier: "foo")])
+        let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 27),
+                                               explicitType: .array(count: nil, elementType: .u16),
+                                               explicitCount: nil,
+                                               elements: [innerArray])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
     
     func testWellFormedArrayLiteralWithExplicitTypeAndCount() {
-        let parser = SnapParser(tokens: tokenize("[1]u16{foo}"))
-        parser.parse()
+        let parser = parse("[1]u16{foo}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.LiteralArray(explicitType: .u16,
+        let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                               explicitType: .u16,
                                                explicitCount: 1,
-                                               elements: [ExprUtils.makeIdentifier(name: "foo")])
+                                               elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8_ExplicitType_ImplicitCount() {
-        let parser = SnapParser(tokens: tokenize("let foo: [_]u8 = [_]u8{}"))
-        parser.parse()
+        let parser = parse("let foo: [_]u8 = [_]u8{}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
+        let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
+                                                 explicitType: .u8,
+                                                 explicitCount: nil,
+                                                 elements: [])
+        
         // Note that the parser doesn't know that the expression will actually
         // yield a result of the the type [0]u8.
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .array(count: nil, elementType: .u8),
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralArray(.u8, []),
+                                      expression: innerArray,
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -206,17 +212,19 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8_ExplicitCount() {
-        let parser = SnapParser(tokens: tokenize("let foo: [0]u8 = [0]u8{}"))
-        parser.parse()
+        let parser = parse("let foo: [0]u8 = [0]u8{}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .array(count: 0, elementType: .u8),
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralArray(explicitType: .u8, explicitCount: 0, elements: []),
+                                      expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
+                                                                          explicitType: .u8,
+                                                                          explicitCount: 0,
+                                                                          elements: []),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -224,17 +232,21 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8_ImplicitType() {
-        let parser = SnapParser(tokens: tokenize("let foo = [0]u8{1}"))
-        parser.parse()
+        let parser = parse("let foo = [0]u8{1}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralArray(explicitType: .u8, explicitCount: 0, elements: [ExprUtils.makeLiteralInt(value: 1)]),
+                                      expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 18),
+                                                                          explicitType: .u8,
+                                                                          explicitCount: 0,
+                                                                          elements: [
+                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
+                                      ]),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -242,18 +254,21 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8_MoreThanOneElement() {
-        let parser = SnapParser(tokens: tokenize("let foo = [_]u8{1, 2, 3}"))
-        parser.parse()
+        let parser = parse("let foo = [_]u8{1, 2, 3}")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let arr = Expression.LiteralArray(.u8,
-                                          [ExprUtils.makeLiteralInt(value: 1),
-                                           ExprUtils.makeLiteralInt(value: 2),
-                                           ExprUtils.makeLiteralInt(value: 3)])
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let arr = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 24),
+                                          explicitType: .u8,
+                                          explicitCount: nil,
+                                          elements: [
+            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1),
+            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 2),
+            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(22, 23), value: 3)
+        ])
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                       expression: arr,
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -262,17 +277,22 @@ class SnapParserTests: XCTestCase {
     }
     
     func testWellFormedLetDeclaration_ArrayOfU8InitializedFromQuotedString() {
-        let parser = SnapParser(tokens: tokenize("""
+        let parser = parse("""
 let foo = "Hello, World!"
-"""))
-        parser.parse()
+""")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let arr = Expression.LiteralArray(.u8, "Hello, World!".utf8.map({ExprUtils.makeLiteralInt(value: Int($0))}))
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let elements = "Hello, World!".utf8.map({
+            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(10, 25), value: Int($0))
+        })
+        let arr = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 25),
+                                          explicitType: .u8,
+                                          explicitCount: nil,
+                                          elements: elements)
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
                                       expression: arr,
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -281,17 +301,16 @@ let foo = "Hello, World!"
     }
     
     func testWellFormedLetDeclaration_DynamicArrayOfU8_ExplicitType() {
-        let parser = SnapParser(tokens: tokenize("""
+        let parser = parse("""
 let foo: []u8 = bar
-"""))
-        parser.parse()
+""")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .dynamicArray(elementType: .u8),
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: ExprUtils.makeIdentifier(name: "bar"),
+                                      expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "bar"),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -299,50 +318,48 @@ let foo: []u8 = bar
     }
     
     func testMalformedVariableDeclaration_BareVar() {
-        let parser = SnapParser(tokens: tokenize("var"))
-        parser.parse()
+        let parser = parse("var")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 3))
         XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in variable declaration")
     }
     
     func testMalformedVariableDeclaration_MissingAssignment() {
-        let parser = SnapParser(tokens: tokenize("var foo"))
-        parser.parse()
+        let parser = parse("var foo")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(4, 7))
         XCTAssertEqual(parser.errors.first?.message, "variables must be assigned an initial value")
     }
     
     func testMalformedVariableDeclaration_MissingValue() {
-        let tokens = tokenize("var foo =")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("var foo =")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(8, 9))
         XCTAssertEqual(parser.errors.first?.message, "expected initial value after `='")
     }
     
     func testMalformedVariableDeclaration_BadTypeForValue_TooManyTokens() {
-        let parser = SnapParser(tokens: tokenize("var foo = 1 2"))
-        parser.parse()
+        let parser = parse("var foo = 1 2")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(12, 13))
         XCTAssertEqual(parser.errors.first?.message, "expected to find the end of the statement: `2'")
     }
     
     func testWellFormedVariableDeclaration() {
-        let parser = SnapParser(tokens: tokenize("var foo = 1"))
-        parser.parse()
+        let parser = parse("var foo = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
                                       storage: .stackStorage,
                                       isMutable: true)
         let actual = ast.children[0]
@@ -350,17 +367,16 @@ let foo: []u8 = bar
     }
     
     func testWellFormedVariableDeclaration_WithExplicitType() {
-        let parser = SnapParser(tokens: tokenize("var foo: u8 = 1"))
-        parser.parse()
+        let parser = parse("var foo: u8 = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 15),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .u8,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
                                       storage: .stackStorage,
                                       isMutable: true)
         let actual = ast.children[0]
@@ -368,25 +384,24 @@ let foo: []u8 = bar
     }
     
     func testMalformedStaticVariableDeclaration() {
-        let parser = SnapParser(tokens: tokenize("static foo"))
-        parser.parse()
+        let parser = parse("static foo")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 6))
         XCTAssertEqual(parser.errors.first?.message, "expected declaration")
     }
     
     func testWellFormedStaticVariableDeclaration() {
-        let parser = SnapParser(tokens: tokenize("static var foo = 1"))
-        parser.parse()
+        let parser = parse("static var foo = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 14), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
                                       storage: .staticStorage,
                                       isMutable: true)
         let actual = ast.children[0]
@@ -394,17 +409,16 @@ let foo: []u8 = bar
     }
     
     func testWellFormedStaticVariableDeclaration_Immutable() {
-        let parser = SnapParser(tokens: tokenize("static let foo = 1"))
-        parser.parse()
+        let parser = parse("static let foo = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 14), identifier: "foo"),
                                       explicitType: nil,
-                                      tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                      expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
+                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
                                       storage: .staticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -412,374 +426,381 @@ let foo: []u8 = bar
     }
     
     func testExpressionStatement_Literal_Number() {
-        let parser = SnapParser(tokens: tokenize("1"))
-        parser.parse()
+        let parser = parse("1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1)
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Literal_Boolean() {
-        let parser = SnapParser(tokens: tokenize("true"))
-        parser.parse()
+        let parser = parse("true")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "true", literal: true))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.LiteralBoolean(sourceAnchor: parser.lineMapper.anchor(0, 4), value: true)
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Identifier() {
-        let parser = SnapParser(tokens: tokenize("foo"))
-        parser.parse()
+        let parser = parse("foo")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo")
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Unary_Identifier() {
-        let parser = SnapParser(tokens: tokenize("-foo"))
-        parser.parse()
+        let parser = parse("-foo")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus), expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Unary(sourceAnchor: parser.lineMapper.anchor(0, 4),
+                                        op: .minus,
+                                        expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(1, 4), identifier: "foo"))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Unary_Boolean() {
         // We'll flag this as a type error during semantic analysis. The parser,
         // however, has no problem with it.
-        let parser = SnapParser(tokens: tokenize("-false"))
-        parser.parse()
+        let parser = parse("-false")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus), expression: Expression.LiteralBoolean(boolean: TokenBoolean(lineNumber: 1, lexeme: "false", literal: false)))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Unary(sourceAnchor: parser.lineMapper.anchor(0, 6),
+                                        op: .minus,
+                                        expression: Expression.LiteralBoolean(sourceAnchor: parser.lineMapper.anchor(1, 6), value: false))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Unary_OperandTypeMismatch() {
-        let parser = SnapParser(tokens: tokenize("-,"))
-        parser.parse()
+        let parser = parse("-,")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,'")
     }
     
     func testExpressionStatement_Multiplication() {
-        let parser = SnapParser(tokens: tokenize("1 * -foo"))
-        parser.parse()
+        let parser = parse("1 * -foo")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                         op: .multiply,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
+                                                                 op: .minus,
+                                                                 expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Division() {
-        let parser = SnapParser(tokens: tokenize("1 / -foo"))
-        parser.parse()
+        let parser = parse("1 / -foo")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "/", op: .divide),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                         op: .divide,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
+                                                                 op: .minus,
+                                                                 expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Addition() {
-        let parser = SnapParser(tokens: tokenize("1 + -foo"))
-        parser.parse()
+        let parser = parse("1 + -foo")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                         op: .plus,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
+                                                                 op: .minus,
+                                                                 expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Subtraction() {
-        let parser = SnapParser(tokens: tokenize("1 - -foo"))
-        parser.parse()
+        let parser = parse("1 - -foo")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                         right: Expression.Unary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                 expression: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"))))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                         op: .minus,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
+                                                                 op: .minus,
+                                                                 expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_MultiplicationTakesPrecendenceOverAddition() {
-        let parser = SnapParser(tokens: tokenize("1 + 2 * 4"))
-        parser.parse()
+        let parser = parse("1 + 2 * 4")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                         right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                                                  left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                  right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
+                                         op: .plus,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 9),
+                                                                  op: .multiply,
+                                                                  left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
+                                                                  right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_MultiplicationTakesPrecendenceOverSubtraction() {
-        let parser = SnapParser(tokens: tokenize("1 - 2 * 4"))
-        parser.parse()
+        let parser = parse("1 - 2 * 4")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                                         right: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                                                  left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                  right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4))))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
+                                         op: .minus,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 9),
+                                                                  op: .multiply,
+                                                                  left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
+                                                                  right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_Modulus() {
-        let parser = SnapParser(tokens: tokenize("7 % 3"))
-        parser.parse()
+        let parser = parse("7 % 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "%", op: .modulus),
-                                         left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7)),
-                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "3", literal: 3)))
-        XCTAssertEqual(Optional<Expression>(expected), ast.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                         op: .modulus,
+                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 7),
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 3))
+        XCTAssertEqual(expected, ast.children.first)
     }
     
     func testExpressionStatement_ParenthesesProvideGrouping() {
-        let parser = SnapParser(tokens: tokenize("(2-1)*4"))
-        parser.parse()
+        let parser = parse("(2-1)*4")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "*", op: .multiply),
-                                         left: Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                                                                 left: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)),
-                                                                 right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1))),
-                                         right: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "4", literal: 4)))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 7),
+                                         op: .multiply,
+                                         left: Expression.Group(sourceAnchor: parser.lineMapper.anchor(0, 5), expression:
+                                            Expression.Binary(sourceAnchor: parser.lineMapper.anchor(1, 4),
+                                                              op: .minus,
+                                                              left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 2),
+                                                              right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1))),
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 4))
+        XCTAssertEqual(expected, ast?.children.first)
     }
     
     func testExpressionStatement_RightParenthesesMissing() {
-        let parser = SnapParser(tokens: tokenize("(1+1"))
-        parser.parse()
+        let parser = parse("(1+1")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected `)' after expression")
     }
     
     func testExpressionStatement_AssignmentExpression() {
-        let tokens = tokenize("""
+        let parser = parse("""
 var foo = 1
 foo = 2
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
         
         XCTAssertEqual(ast?.children.count, 2)
         
-        let expected = ExprUtils.makeAssignment(lineNumber: 2, name: "foo", right: ExprUtils.makeLiteralInt(lineNumber: 2, value: 2))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.last)
+        let expected = Expression.Assignment(sourceAnchor: parser.lineMapper.anchor(12+0, 12+7),
+                                             lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12+0, 12+3), identifier: "foo"),
+                                             rexpr: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(12+6, 12+7), value: 2))
+        XCTAssertEqual(expected, ast?.children.last)
     }
         
     func testExpressionStatement_Comparison_Equals() {
-        let tokens = tokenize("1 + 2 == 3")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + 2 == 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
-        
         XCTAssertEqual(ast?.children.count, 1)
-        
-        let expected = ExprUtils.makeComparisonEq(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
-                                                  right: ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+
+        let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                      op: .plus,
+                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                                         op: .eq,
+                                         left: inner,
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+        XCTAssertEqual(expected, ast?.children.first)
     }
         
     func testExpressionStatement_Comparison_NotEqual() {
-        let tokens = tokenize("1 + 2 != 3")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + 2 != 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
-        
         XCTAssertEqual(ast?.children.count, 1)
-        
-        let expected = ExprUtils.makeComparisonNe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
-                                                  right: ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+        let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                      op: .plus,
+                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                                         op: .ne,
+                                         left: inner,
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+        XCTAssertEqual(expected, ast?.children.first)
     }
         
     func testExpressionStatement_Comparison_LessThan() {
-        let tokens = tokenize("1 + 2 < 3")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + 2 < 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
-        
         XCTAssertEqual(ast?.children.count, 1)
-        
-        let expected = ExprUtils.makeComparisonLt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
-                                                  right: ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+        let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                      op: .plus,
+                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
+                                         op: .lt,
+                                         left: inner,
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 3))
+        XCTAssertEqual(expected, ast?.children.first)
     }
         
     func testExpressionStatement_Comparison_GreaterThan() {
-        let tokens = tokenize("1 + 2 > 3")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + 2 > 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
-        
         XCTAssertEqual(ast?.children.count, 1)
-        
-        let expected = ExprUtils.makeComparisonGt(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
-                                                  right: ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+        let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                      op: .plus,
+                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
+                                         op: .gt,
+                                         left: inner,
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 3))
+        XCTAssertEqual(expected, ast?.children.first)
     }
         
     func testExpressionStatement_Comparison_LessThanOrEqualTo() {
-        let tokens = tokenize("1 + 2 <= 3")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + 2 <= 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
-        
         XCTAssertEqual(ast?.children.count, 1)
-        
-        let expected = ExprUtils.makeComparisonLe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
-                                                  right: ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+        let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                      op: .plus,
+                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                                         op: .le,
+                                         left: inner,
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+        XCTAssertEqual(expected, ast?.children.first)
     }
         
     func testExpressionStatement_Comparison_GreaterThanOrEqualTo() {
-        let tokens = tokenize("1 + 2 >= 3")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + 2 >= 3")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
-        
         XCTAssertEqual(ast?.children.count, 1)
-        
-        let expected = ExprUtils.makeComparisonGe(left: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                                          right: ExprUtils.makeLiteralInt(value: 2)),
-                                                  right: ExprUtils.makeLiteralInt(value: 3))
-        XCTAssertEqual(Optional<Expression>(expected), ast?.children.first)
+        let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                      op: .plus,
+                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                                         op: .ge,
+                                         left: inner,
+                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+        XCTAssertEqual(expected, ast?.children.first)
     }
         
     func testMalformedIfStatement_MissingCondition_1() {
-        let parser = SnapParser(tokens: tokenize("if"))
-        parser.parse()
+        let parser = parse("if")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "if")
         XCTAssertEqual(parser.errors.first?.message, "expected condition after `if'")
     }
         
     func testMalformedIfStatement_MissingCondition_2() {
-        let parser = SnapParser(tokens: tokenize("if {"))
-        parser.parse()
+        let parser = parse("if {")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "if")
         XCTAssertEqual(parser.errors.first?.message, "expected condition after `if'")
     }
         
     func testMalformedIfStatement_MissingOpeningBraceForThenBranch() {
-        let parser = SnapParser(tokens: tokenize("if 1"))
-        parser.parse()
+        let parser = parse("if 1")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected newline")
     }
         
     func testMalformedIfStatement_MissingStatementForThenBranch() {
-        let parser = SnapParser(tokens: tokenize("if 1 {\n"))
-        parser.parse()
+        let parser = parse("if 1 {\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after `then' branch")
     }
         
     func testMalformedIfStatement_MissingClosingBraceOfThenBranch() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     var foo = 2
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after `then' branch")
     }
         
     func testWellformedIfStatement_NoElseBranch() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     var foo = 2
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree
         
         XCTAssertEqual(ast?.children.count, 1)
         
-        let expected = If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: Block(children: [
-                            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+        let expected = If(sourceAnchor: parser.lineMapper.anchor(0, 24),
+                          condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+                          then: Block(sourceAnchor: parser.lineMapper.anchor(5, 24), children: [
+                            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(11, 22),
+                                           identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 18), identifier: "foo"),
                                            explicitType: nil,
-                                           tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
-                                           expression: Expression.LiteralWord(number: TokenNumber(lineNumber: 2, lexeme: "2", literal: 2)),
+                                           expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(21, 22), value: 2),
                                            storage: .stackStorage,
                                            isMutable: true)
                           ]),
@@ -788,62 +809,56 @@ if 1 {
     }
         
     func testMalformedIfStatement_MissingOpeningBraceForElseBranch_1() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     var foo = 2
 } else
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected newline")
     }
         
     func testMalformedIfStatement_MissingOpeningBraceForElseBranch_2() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     var foo = 2
 }
 else
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "expected newline")
     }
         
     func testMalformedIfStatement_MissingStatementForElseBranch() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     var foo = 2
 } else {
 
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 2..<3)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after `else' branch")
     }
         
     func testMalformedIfStatement_MissingClosingBraceOfElseBranch() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     1
 } else {
     var foo = 2
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after `else' branch")
     }
         
     func testWellformedIfStatement_IncludingElseBranch() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
     2
 } else {
@@ -852,83 +867,79 @@ if 1 {
 }
 5
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
-               then: Block(children: [
-                ExprUtils.makeLiteralInt(lineNumber: 2, value: 2)
+            If(sourceAnchor: parser.lineMapper.anchor(0, 35),
+               condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+               then: Block(sourceAnchor: parser.lineMapper.anchor(5, 14), children: [
+                Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)
                ]),
-               else: Block(children: [
-                ExprUtils.makeLiteralInt(lineNumber: 4, value: 3),
-                ExprUtils.makeLiteralInt(lineNumber: 5, value: 4)
+               else: Block(sourceAnchor: parser.lineMapper.anchor(20, 35), children: [
+                Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(26, 27), value: 3),
+                Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(32, 33), value: 4)
                ])),
-            ExprUtils.makeLiteralInt(lineNumber: 7, value: 5)])
+            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(36, 37), value: 5)])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_2() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
 } else {
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: Block(),
-                          else: Block())
+                       [If(sourceAnchor: parser.lineMapper.anchor(0, 17),
+                           condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+                           then: Block(sourceAnchor: parser.lineMapper.anchor(5, 8), children: []),
+                           else: Block(sourceAnchor: parser.lineMapper.anchor(14, 17), children: []))
         ])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_3() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1 {
 }
 else {
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children,
-                       [If(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                          then: Block(),
-                          else: Block())
+                       [If(sourceAnchor: parser.lineMapper.anchor(0, 17),
+                           condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+                           then: Block(sourceAnchor: parser.lineMapper.anchor(5, 8), children: []),
+                           else: Block(sourceAnchor: parser.lineMapper.anchor(14, 17), children: []))
         ])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_4() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1
     let foo = 1
 else
     let bar = 1
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
-               then: Block(children: [
-                VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+            If(sourceAnchor: parser.lineMapper.anchor(0, 41),
+               condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+               then: Block(sourceAnchor: parser.lineMapper.anchor(4, 20), children: [
+                VarDeclaration(sourceAnchor: parser.lineMapper.anchor(9, 20),
+                               identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
                                explicitType: nil,
-                               tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
-                               expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 1),
+                               expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
-               else: Block(children: [
-                VarDeclaration(identifier: TokenIdentifier(lineNumber: 4, lexeme: "bar"),
+               else: Block(sourceAnchor: parser.lineMapper.anchor(25, 41), children: [
+                VarDeclaration(sourceAnchor: parser.lineMapper.anchor(30, 41),
+                               identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(34, 37), identifier: "bar"),
                                explicitType: nil,
-                               tokenEqual: TokenEqual(lineNumber: 4, lexeme: "="),
-                               expression: ExprUtils.makeLiteralInt(lineNumber: 4, value: 1),
+                               expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(40, 41), value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]))
@@ -936,21 +947,20 @@ else
     }
         
     func testWellformedIfStatement_SingleStatementBodyWithoutElseClause() {
-        let tokens = tokenize("""
+        let parser = parse("""
 if 1
     let foo = 1
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            If(condition: ExprUtils.makeLiteralInt(lineNumber: 1, value: 1),
-               then: Block(children: [
-                VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+            If(sourceAnchor: parser.lineMapper.anchor(0, 20),
+               condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+               then: Block(sourceAnchor: parser.lineMapper.anchor(4, 20), children: [
+                VarDeclaration(sourceAnchor: parser.lineMapper.anchor(9, 20),
+                               identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
                                explicitType: nil,
-                               tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
-                               expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 1),
+                               expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
@@ -959,65 +969,63 @@ if 1
     }
     
     func testMalformedWhileStatement_MissingCondition_1() {
-        let parser = SnapParser(tokens: tokenize("while"))
-        parser.parse()
+        let parser = parse("while")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected condition after `while'")
     }
         
     func testMalformedWhileStatement_MissingCondition_2() {
-        let parser = SnapParser(tokens: tokenize("while {"))
-        parser.parse()
+        let parser = parse("while {")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected condition after `while'")
     }
         
     func testMalformedWhileStatement_MissingOpeningBraceBeforeBody() {
-        let parser = SnapParser(tokens: tokenize("while 1"))
-        parser.parse()
+        let parser = parse("while 1")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected newline")
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(parser.errors.first?.message, "expected newline or curly brace after `while' condition")
     }
         
     func testMalformedWhileStatement_MissingStatementInBodyBlock() {
-        let parser = SnapParser(tokens: tokenize("while 1 {\n"))
-        parser.parse()
+        let parser = parse("while 1 {\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after `while' body")
     }
         
     func testMalformedWhileStatement_MissingClosingBraceOfThenBranch() {
-        let tokens = tokenize("""
+        let parser = parse("""
 while 1 {
     var foo = 2
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after `while' body")
     }
         
     func testWellformedWhileStatement() {
-        let tokens = tokenize("""
+        let parser = parse("""
 while 1 {
     var foo = 2
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            While(condition: Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-                  body: Block(children: [
-                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+            While(sourceAnchor: parser.lineMapper.anchor(0, 27),
+                  condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
+                  body: Block(sourceAnchor: parser.lineMapper.anchor(8, 27), children: [
+                    VarDeclaration(sourceAnchor: parser.lineMapper.anchor(14, 25),
+                                   identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
                                    explicitType: nil,
-                                   tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
-                                   expression: ExprUtils.makeLiteralInt(lineNumber: 2, value: 2),
+                                   expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 2),
                                    storage: .stackStorage,
                                    isMutable: true)
                   ]))
@@ -1025,57 +1033,63 @@ while 1 {
     }
         
     func testWellformedWhileStatement_EmptyBody_1() {
-        let tokens = tokenize("""
+        let parser = parse("""
 while 1 {
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            While(condition: ExprUtils.makeLiteralInt(value: 1), body: Block())
+            While(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                  condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
+                  body: Block(sourceAnchor: parser.lineMapper.anchor(8, 11), children: []))
         ])
     }
         
     func testWellformedWhileStatement_EmptyBody_2() {
-        let tokens = tokenize("""
+        let parser = parse("""
 while 1 {}
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         
         XCTAssertEqual(parser.syntaxTree?.children, [
-            While(condition: ExprUtils.makeLiteralInt(value: 1), body: Block())
+            While(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                  condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
+                  body: Block(sourceAnchor: parser.lineMapper.anchor(8, 10), children: []))
         ])
     }
         
     func testWellformedForLoopStatement() {
-        let tokens = tokenize("""
+        let parser = parse("""
 for var i = 0; i < 10; i = i + 1 {
     var foo = i
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(children: [
-                ForLoop(initializerClause: VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "i"),
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 52), children: [
+                ForLoop(sourceAnchor: parser.lineMapper.anchor(0, 52),
+                        initializerClause: VarDeclaration(sourceAnchor: parser.lineMapper.anchor(4, 13),
+                                                          identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 9), identifier: "i"),
                                                           explicitType: nil,
-                                                          tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                                                          expression: ExprUtils.makeLiteralInt(value: 0),
+                                                          expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(12, 13), value: 0),
                                                           storage: .stackStorage,
                                                           isMutable: true),
-                        conditionClause: ExprUtils.makeComparisonLt(left: ExprUtils.makeIdentifier(name: "i"),
-                                                                    right: ExprUtils.makeLiteralInt(value: 10)),
-                        incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: ExprUtils.makeIdentifier(name: "i"), right: ExprUtils.makeLiteralInt(value: 1))),
-                        body: Block(children: [
-                            VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+                        conditionClause: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(15, 21),
+                                                           op: .lt,
+                                                           left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 16), identifier: "i"),
+                                                           right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 21), value: 10)),
+                        incrementClause: Expression.Assignment(sourceAnchor: parser.lineMapper.anchor(23, 32),
+                                                               lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(23, 24), identifier: "i"),
+                                                               rexpr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(27, 32),
+                                                                                        op: .plus,
+                                                                                        left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(27, 28), identifier: "i"),
+                                                                                        right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(31, 32), value: 1))),
+                        body: Block(sourceAnchor: parser.lineMapper.anchor(33, 52), children: [
+                            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(39, 50),
+                                           identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(43, 46), identifier: "foo"),
                                            explicitType: nil,
-                                           tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
-                                           expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"),
+                                           expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(49, 50), identifier: "i"),
                                            storage: .stackStorage,
                                            isMutable: true)
                         ]))
@@ -1084,20 +1098,18 @@ for var i = 0; i < 10; i = i + 1 {
     }
         
     func testStandaloneBlockStatements() {
-        let tokens = tokenize("""
+        let parser = parse("""
 {
     var foo = i
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(children: [
-                VarDeclaration(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 19), children: [
+                VarDeclaration(sourceAnchor: parser.lineMapper.anchor(6, 17),
+                               identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(10, 13), identifier: "foo"),
                                explicitType: nil,
-                               tokenEqual: TokenEqual(lineNumber: 2, lexeme: "="),
-                               expression: ExprUtils.makeIdentifier(lineNumber: 2, name: "i"),
+                               expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 17), identifier: "i"),
                                storage: .stackStorage,
                                isMutable: true)
             ])
@@ -1105,16 +1117,14 @@ for var i = 0; i < 10; i = i + 1 {
     }
         
     func testStandaloneBlockStatementsWithoutNewlines() {
-        let tokens = tokenize("{var foo = i}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("{var foo = i}")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(children: [
-                VarDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 13), children: [
+                VarDeclaration(sourceAnchor: parser.lineMapper.anchor(1, 12),
+                               identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                explicitType: nil,
-                               tokenEqual: TokenEqual(lineNumber: 1, lexeme: "="),
-                               expression: ExprUtils.makeIdentifier(lineNumber: 1, name: "i"),
+                               expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 12), identifier: "i"),
                                storage: .stackStorage,
                                isMutable: true)
             ])
@@ -1122,33 +1132,29 @@ for var i = 0; i < 10; i = i + 1 {
     }
         
     func testStandaloneBlockStatementIsEmpty() {
-        let tokens = tokenize("{}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("{}")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(children: [])
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 2), children: [])
         ])
     }
     
     func testStandaloneBlockStatementsAreNested() {
-        let tokens = tokenize("""
+        let parser = parse("""
 {
     {
         var bar = i
     }
 }
 """)
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(children: [
-                Block(children: [
-                    VarDeclaration(identifier: TokenIdentifier(lineNumber: 3, lexeme: "bar"),
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 35), children: [
+                Block(sourceAnchor: parser.lineMapper.anchor(6, 33), children: [
+                    VarDeclaration(sourceAnchor: parser.lineMapper.anchor(16, 27),
+                                   identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 23), identifier: "bar"),
                                    explicitType: nil,
-                                   tokenEqual: TokenEqual(lineNumber: 3, lexeme: "="),
-                                   expression: ExprUtils.makeIdentifier(lineNumber: 3, name: "i"),
+                                   expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(26, 27), identifier: "i"),
                                    storage: .stackStorage,
                                    isMutable: true)
                 ])
@@ -1157,205 +1163,189 @@ for var i = 0; i < 10; i = i + 1 {
     }
     
     func testStandaloneBlockStatementsAreNestedAndEmpty() {
-        let tokens = tokenize("{{}}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("{{}}")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(children: [
-                Block(children: [
-                ])
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 4), children: [
+                Block(sourceAnchor: parser.lineMapper.anchor(1, 3), children: [])
             ])
         ])
     }
     
     func testParseFunctionCallWithNoArguments() {
-        let tokens = tokenize("foo()")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("foo()")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"), arguments: [])
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                            arguments: [])
         ])
     }
     
     func testParseFunctionCallWithOneArgument() {
-        let tokens = tokenize("foo(1)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("foo(1)")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
-                            arguments: [ExprUtils.makeLiteralInt(value: 1)])
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 6),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1)])
         ])
     }
     
     func testParseFunctionCallWithTwoArgument() {
-        let tokens = tokenize("foo(1, 2)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("foo(1, 2)")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
-                            arguments: [ExprUtils.makeLiteralInt(value: 1),
-                                        ExprUtils.makeLiteralInt(value: 2)])
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 9),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
+                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 2)])
         ])
     }
     
     func testParseFunctionCallInExpression() {
-        let tokens = tokenize("1 + foo(1, 2)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("1 + foo(1, 2)")
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Expression.Binary(op: TokenOperator(lineNumber: 1, lexeme: "+", op: .plus),
-                              left: ExprUtils.makeLiteralInt(value: 1),
-                              right: Expression.Call(callee: ExprUtils.makeIdentifier(name: "foo"),
-                                                     arguments: [ExprUtils.makeLiteralInt(value: 1),
-                                                                 ExprUtils.makeLiteralInt(value: 2)]))
+            Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 13),
+                              op: .plus,
+                              left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                              right: Expression.Call(sourceAnchor: parser.lineMapper.anchor(4, 13),
+                                                     callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
+                                                     arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 1),
+                                                                 Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)]))
             
         ])
     }
     
     func testFailToParseFunctionDefinition_MissingIdentifier_1() {
-        let tokens = tokenize("func")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected identifier in function declaration")
     }
     
     func testFailToParseFunctionDefinition_MissingIdentifier_2() {
-        let tokens = tokenize("func 123")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func 123")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected identifier in function declaration")
     }
     
     func testFailToParseFunctionDefinition_MissingArgumentListLeftParen() {
-        let tokens = tokenize("func foo")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected `(' in argument list of function declaration")
     }
     
     func testFailToParseFunctionDefinition_MissingArgumentListRightParen() {
-        let tokens = tokenize("func foo(")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo(")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected parameter name followed by `:'")
     }
     
     func testFailToParseFunctionDefinition_MissingFunctionBody() {
-        let tokens = tokenize("func foo()")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo()")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected `{' in body of function declaration")
     }
     
     func testFailToParseFunctionDefinition_MalformedFunctionBody() {
-        let tokens = tokenize("func foo() {\n")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo() {\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(parser.errors.first?.message, "expected `}' after function body")
     }
     
     func testParseFunctionDefinition_ZeroArgsAndVoidReturnValue() {
-        let tokens = tokenize("func foo() {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo() {}")
         XCTAssertFalse(parser.hasError)
-        XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
-            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 13), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 13),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                 functionType: FunctionType(returnType: .void, arguments: []),
-                                body: Block())
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(11, 13), children: []))
         ]))
     }
     
     func testFailToParseFunctionDefinition_InvalidReturnType() {
-        let tokens = tokenize("func foo() -> wat {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo() -> wat {}")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "wat")
         XCTAssertEqual(parser.errors.first?.message, "use of undeclared type `wat'")
     }
     
     func testParseFunctionDefinition_ZeroArgsAndUInt8ReturnValue() {
-        let tokens = tokenize("func foo() -> u8 {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo() -> u8 {}")
         XCTAssertFalse(parser.hasError)
-        XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
-            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 19), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block())
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(17, 19), children: []))
         ]))
     }
     
     func testParseFunctionDefinition_ZeroArgsAndExplicitVoidReturnValue() {
-        let tokens = tokenize("func foo() -> void {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo() -> void {}")
         XCTAssertFalse(parser.hasError)
-        XCTAssertEqual(parser.syntaxTree, TopLevel(children: [
-            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 21), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 21),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                 functionType: FunctionType(returnType: .void, arguments: []),
-                                body: Block())
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(19, 21), children: []))
         ]))
     }
     
     func testFailToParseFunctionDefinition_ParameterIsNotAnIdentifier() {
-        let tokens = tokenize("func foo(123) {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo(123) {}")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "123")
         XCTAssertEqual(parser.errors.first?.message, "expected parameter name followed by `:'")
     }
     
     func testFailToParseFunctionDefinition_ParameterIsMissingAnExplicitType() {
-        let tokens = tokenize("func foo(bar) {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo(bar) {}")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "bar")
         XCTAssertEqual(parser.errors.first?.message, "parameter requires an explicit type")
     }
     
     func testParseFunctionDefinition_OneArg() {
-        let tokens = tokenize("func foo(bar: u8) {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo(bar: u8) {}")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 20), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 20),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                 functionType: FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
-                                body: Block())
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(18, 20), children: []))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParseFunctionDefinition_TwoArgs() {
-        let tokens = tokenize("func foo(bar: u8, baz: bool) {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo(bar: u8, baz: bool) {}")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 31), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 31),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                 functionType: FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "bar", type: .u8), FunctionType.Argument(name: "baz", type: .bool)]),
-                                body: Block())
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(29, 31), children: []))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1363,95 +1353,100 @@ for var i = 0; i < 10; i = i + 1 {
     func testParseFunctionDefinition_ArgWithVoidType() {
         // The parser will permit the following.
         // The typechecker should reject it later.
-        let tokens = tokenize("func foo(bar: void) {}")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("func foo(bar: void) {}")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            FunctionDeclaration(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 22), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 22),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                 functionType: FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "bar", type: .void)]),
-                                body: Block())
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(20, 22), children: []))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParseReturn() {
-        let tokens = tokenize("return 1")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("return 1")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: ExprUtils.makeLiteralInt(value: 1))
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 6), children: [
+            Return(sourceAnchor: parser.lineMapper.anchor(0, 6),
+                   expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 1))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParsePeekMemory() {
-        let tokens = tokenize("peekMemory(0x0010)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("peekMemory(0x0010)")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "peekMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010))])
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 18), children: [
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                                                          identifier: "peekMemory"),
+                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 17),
+                                                               value: 0x0010)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParsePokeMemory() {
-        let tokens = tokenize("pokeMemory(0x0010, 0xab)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("pokeMemory(0x0010, 0xab)")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokeMemory")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0x0010", literal: 0x0010)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xab", literal: 0xab))])
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 24), children: [
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 24),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 10), identifier: "pokeMemory"),
+                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 17), value: 0x0010),
+                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 23), value: 0xab)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParsePeekPeripheral() {
-        let tokens = tokenize("peekPeripheral(0xffff, 7)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("peekPeripheral(0xffff, 7)")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "peekPeripheral")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xffff", literal: 0xffff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "7", literal: 7))])
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 25), children: [
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 14), identifier: "peekPeripheral"),
+                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
+                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(23, 24), value: 7)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParsePokePeripheral() {
-        let tokens = tokenize("pokePeripheral(0xffff, 0xff, 0)")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("pokePeripheral(0xffff, 0xff, 0)")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            Expression.Call(callee: Expression.Identifier(identifier: TokenIdentifier(lineNumber: 1, lexeme: "pokePeripheral")), arguments: [Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xffff", literal: 0xffff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0xff", literal: 0xff)), Expression.LiteralWord(number: TokenNumber(lineNumber: 1, lexeme: "0", literal: 0))])
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 31), children: [
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 31),
+                            callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 14), identifier: "pokePeripheral"),
+                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
+                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(23, 27), value: 0xff),
+                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(29, 30), value: 0)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParseValidSubscriptExpression() {
-        let tokens = tokenize("foo[1+2]")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("foo[1+2]")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            ExprUtils.makeSubscript(identifier: "foo",
-                                    expr: ExprUtils.makeAdd(left: ExprUtils.makeLiteralInt(value: 1),
-                                                            right: ExprUtils.makeLiteralInt(value: 2)))
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 8), children: [
+            Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                 expr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 7),
+                                                         op: .plus,
+                                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
+                                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 2)))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
     func testParseValidSubscriptExpression_Nested() {
-        let tokens = tokenize("foo[foo[0]]")
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("foo[foo[0]]")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(children: [
-            ExprUtils.makeSubscript(identifier: "foo",
-                                    expr: ExprUtils.makeSubscript(identifier: "foo",
-                                                                  expr: ExprUtils.makeLiteralInt(value: 0)))
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 11), children: [
+            Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                 expr: Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(4, 10),
+                                                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
+                                                            expr: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 0)))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }

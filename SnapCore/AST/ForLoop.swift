@@ -14,7 +14,8 @@ public class ForLoop: AbstractSyntaxTreeNode {
     public let incrementClause: AbstractSyntaxTreeNode
     public let body: AbstractSyntaxTreeNode
     
-    public required init(initializerClause: AbstractSyntaxTreeNode,
+    public required init(sourceAnchor: SourceAnchor?,
+                         initializerClause: AbstractSyntaxTreeNode,
                          conditionClause: Expression,
                          incrementClause: AbstractSyntaxTreeNode,
                          body: AbstractSyntaxTreeNode) {
@@ -22,6 +23,7 @@ public class ForLoop: AbstractSyntaxTreeNode {
         self.conditionClause = conditionClause
         self.incrementClause = incrementClause
         self.body = body
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

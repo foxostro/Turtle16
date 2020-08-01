@@ -10,15 +10,16 @@ import TurtleCore
 import TurtleCompilerToolbox
 
 public class InstructionNode: AbstractSyntaxTreeNode {
-    public let instruction: Token
-    public let parameters: ParameterListNode
+    public let instruction: String
+    public let parameters: ParameterList
     public var destination: RegisterName {
-        return (parameters.parameters.first as! TokenRegister).literal
+        return (parameters.elements.first as! ParameterRegister).value
     }
     
-    public required init(instruction: Token, parameters: ParameterListNode) {
+    public required init(sourceAnchor: SourceAnchor?, instruction: String, parameters: ParameterList) {
         self.instruction = instruction
         self.parameters = parameters
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

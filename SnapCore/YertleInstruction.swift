@@ -50,10 +50,10 @@ public enum YertleInstruction: Equatable {
     case storeIndirect // Pop a sixteen-bit address from the stack. Peek at the eight-bit value on the top of the stack. Store that eight-bit value at the specified address.
     case storeIndirect16 // Pop a sixteen-bit address from the stack. Peek at the sixteen-bit value on the top of the stack. Store that sixteen-bit value at the specified address.
     case storeIndirectN(Int) // Pop a sixteen-bit address from the stack. Peek at the top N words on the stack and store them linearly in memory, starting at the specified address.
-    case label(TokenIdentifier) // declares a label
-    case jmp(TokenIdentifier) // unconditional jump, no change to the stack
-    case je(TokenIdentifier) // pop two from the stack, jump if they are equal
-    case jalr(TokenIdentifier) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register.
+    case label(String) // declares a label
+    case jmp(String) // unconditional jump, no change to the stack
+    case je(String) // pop two from the stack, jump if they are equal
+    case jalr(String) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register.
     case enter // push fp in two bytes ; fp <- sp
     case leave // sp <- fp ; fp <- pop two bytes from the stack
     case pushReturnAddress // push the link register (two bytes) to the stack
@@ -141,14 +141,14 @@ public enum YertleInstruction: Equatable {
             return "STORE-INDIRECT16"
         case .storeIndirectN(let count):
             return "STORE-INDIRECTN \(count)"
-        case .label(let token):
-            return "\(token.lexeme):"
-        case .jmp(let token):
-            return "JMP \(token.lexeme)"
-        case .je(let token):
-            return "JE \(token.lexeme)"
-        case .jalr(let token):
-            return "JALR \(token.lexeme)"
+        case .label(let name):
+            return "\(name):"
+        case .jmp(let label):
+            return "JMP \(label)"
+        case .je(let label):
+            return "JE \(label)"
+        case .jalr(let label):
+            return "JALR \(label)"
         case .enter:
             return "ENTER"
         case .leave:

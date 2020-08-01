@@ -13,50 +13,51 @@ import TurtleCompilerToolbox
 class InstructionNodeTests: XCTestCase {
     func testEquality() {
         // Does not equal node of a different type.
-        let parameters = ParameterListNode(parameters: [
-            TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
+        let parameters = ParameterList(sourceAnchor: nil, parameters: [
+            ParameterRegister(sourceAnchor: nil, value: RegisterName.A)
         ])
-        XCTAssertNotEqual(InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""), parameters: parameters), InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
+        XCTAssertNotEqual(InstructionNode(sourceAnchor: nil,
+                                          instruction: "",
+                                          parameters: parameters),
+                          InstructionNode(sourceAnchor: nil,
+                                          instruction: "NOP",
+                                          parameters: ParameterList(sourceAnchor: nil, parameters: [])))
         
         // Does not equal node with different parameters
-        XCTAssertNotEqual(InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                          parameters: ParameterListNode(parameters: [
-                                            TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
+        XCTAssertNotEqual(InstructionNode(sourceAnchor: nil,
+                                          instruction: "",
+                                          parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                            ParameterRegister(sourceAnchor: nil, value: RegisterName.A)
                                           ])),
-                          InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                          parameters: ParameterListNode(parameters: [
-                                            TokenRegister(lineNumber:0, lexeme: "", literal: RegisterName.B)
-                                          ])))
-        
-        // Does not equal node with a different token
-        XCTAssertNotEqual(InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                          parameters: ParameterListNode(parameters: [
-                                            TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
-                                          ])),
-                          InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: ""),
-                                          parameters: ParameterListNode(parameters: [
-                                            TokenRegister(lineNumber:0, lexeme: "", literal: RegisterName.A)
+                          InstructionNode(sourceAnchor: nil,
+                                          instruction: "",
+                                          parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                            ParameterRegister(sourceAnchor: nil, value: RegisterName.B)
                                           ])))
         
         // The nodes actually are the same
-        XCTAssertEqual(InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                       parameters: ParameterListNode(parameters: [
-                                         TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
+        XCTAssertEqual(InstructionNode(sourceAnchor: nil,
+                                       instruction: "",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                         ParameterRegister(sourceAnchor: nil, value: RegisterName.A)
                                        ])),
-                                       InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                                       parameters: ParameterListNode(parameters: [
-                                                         TokenRegister(lineNumber:0, lexeme: "", literal: RegisterName.A)
-                                                       ])))
+                       InstructionNode(sourceAnchor: nil,
+                                       instruction: "",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                        ParameterRegister(sourceAnchor: nil, value: RegisterName.A)
+                                       ])))
     }
     
     func testHash() {
-        XCTAssertEqual(InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                       parameters: ParameterListNode(parameters: [
-                                         TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
+        XCTAssertEqual(InstructionNode(sourceAnchor: nil,
+                                       instruction: "",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                         ParameterRegister(sourceAnchor: nil, value: RegisterName.A)
                                        ])).hashValue,
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: ""),
-                                       parameters: ParameterListNode(parameters: [
-                                         TokenRegister(lineNumber:0, lexeme: "", literal: RegisterName.A)
+                       InstructionNode(sourceAnchor: nil,
+                                       instruction: "",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                         ParameterRegister(sourceAnchor: nil, value: RegisterName.A)
                                        ])).hashValue)
     }
 }

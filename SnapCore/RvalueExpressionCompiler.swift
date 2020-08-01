@@ -38,6 +38,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return compile(literalBoolean: literal)
         case let binary as Expression.Binary:
             return try compile(binary: binary)
+        case let group as Expression.Group:
+            return try compile(expression: group.expression)
         case let unary as Expression.Unary:
             return try compile(unary: unary)
         case let identifier as Expression.Identifier:
@@ -60,14 +62,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(literalInt: Expression.LiteralWord) throws -> [YertleInstruction] {
-        let value = literalInt.number.literal
+        let value = literalInt.value
         if value >= 0 && value < 256 {
             return [.push(value)]
         }
         if value >= 256 && value < 65536 {
             return [.push16(value)]
         }
-        throw CompilerError(line: literalInt.number.lineNumber, message: "integer literal `\(literalInt.number.lexeme)' overflows when stored into `u16'")
+        let lexeme = literalInt.sourceAnchor?.text ?? "\(value)"
+        throw CompilerError(sourceAnchor: literalInt.sourceAnchor, message: "integer literal `\(lexeme)' overflows when stored into `u16'")
     }
     
     private func compile(intValue: Int) -> [YertleInstruction] {
@@ -75,7 +78,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(literalBoolean: Expression.LiteralBoolean) -> [YertleInstruction] {
-        return compile(boolValue: literalBoolean.boolean.literal)
+        return compile(boolValue: literalBoolean.value)
     }
     
     private func compile(boolValue: Bool) -> [YertleInstruction] {
@@ -90,7 +93,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case .u16:
             result += childExpr
             result += [.push16(0)]
-            switch unary.op.op {
+            switch unary.op {
             case .minus:
                 result += [.sub16]
             default:
@@ -99,7 +102,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case .u8:
             result += childExpr
             result += [.push(0)]
-            switch unary.op.op {
+            switch unary.op {
             case .minus:
                 result += [.sub]
             default:
@@ -112,8 +115,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func invalidUnaryOperator(_ unary: Expression.Unary) -> CompilerError {
-        let lineNumber = unary.tokens.first?.lineNumber ?? -1
-        return CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
+        return CompilerError(sourceAnchor: unary.sourceAnchor, message: "`\(unary.op)' is not a prefix unary operator")
     }
     
     private func compile(binary: Expression.Binary) throws -> [YertleInstruction] {
@@ -123,7 +125,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let left: [YertleInstruction] = try compile(expression: binary.left)
         let leftType = try typeChecker.check(expression: binary.left)
         
-        switch (binary.op.op, leftType, rightType) {
+        switch (binary.op, leftType, rightType) {
         case (.eq, .u8, .u8): return right + left + [.eq]
         case (.eq, .u8, .u16): return right + left + [.push(0), .eq16]
         case (.eq, .u8, .constInt(let a)): return [.push(a)] + left + [.eq]
@@ -262,7 +264,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(identifier: Expression.Identifier) throws -> [YertleInstruction] {
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: identifier.identifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         switch symbol.storage {
@@ -284,7 +286,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private func compile(assignment: Expression.InitialAssignment) throws -> [YertleInstruction] {
         let identifier = (assignment.lexpr as! Expression.Identifier).identifier
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: identifier)
+        let sourceAnchor = assignment.sourceAnchor
+        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
         let symbol = resolution.0
         
         var instructions: [YertleInstruction] = []
@@ -308,14 +311,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += try compile(expression: rexpr)
         case (.constInt(let a), .u8):
             guard a >= 0 && a < 256 else {
-                throw CompilerError(line: rexpr.tokens.first!.lineNumber,
-                                    message: "integer constant `\(a)' overflows when stored into `u8'")
+                throw CompilerError(sourceAnchor: rexpr.sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u8'")
             }
             instructions += [.push(a)]
         case (.constInt(let a), .u16):
             guard a >= 0 && a < 65536 else {
-                throw CompilerError(line: rexpr.tokens.first!.lineNumber,
-                                    message: "integer constant `\(a)' overflows when stored into `u16'")
+                throw CompilerError(sourceAnchor: rexpr.sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u16'")
             }
             instructions += [.push16(a)]
         case (.constBool(let a), .bool):
@@ -339,11 +340,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
                 }
             case let identifier as Expression.Identifier:
-                // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
                 let elements = stride(from: 0, through: n!, by: 1).map({i in
-                    Expression.As(expr: Expression.Subscript(tokenIdentifier: identifier.identifier, tokenBracketLeft: TokenSquareBracketLeft(lineNumber: identifier.identifier.lineNumber, lexeme: "["), expr: Expression.LiteralWord(number: TokenNumber(lineNumber: identifier.identifier.lineNumber, lexeme: "\(i)", literal: i)), tokenBracketRight: TokenSquareBracketRight(lineNumber: identifier.identifier.lineNumber, lexeme: "]")), tokenAs: TokenAs(lineNumber: identifier.identifier.lineNumber, lexeme: "as"), targetType: b)
+                    Expression.As(sourceAnchor: identifier.sourceAnchor,
+                                  expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
+                                                             identifier: identifier,
+                                                             expr: Expression.LiteralWord(sourceAnchor: identifier.sourceAnchor, value: i)),
+                                  targetType: b)
                 })
-                let synthesized = Expression.LiteralArray(explicitType: b,
+                let synthesized = Expression.LiteralArray(sourceAnchor: identifier.sourceAnchor,
+                                                          explicitType: b,
                                                           explicitCount: elements.count,
                                                           elements: elements)
                 instructions += try compile(expression: synthesized)
@@ -362,7 +367,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
             switch rexpr {
             case let identifier as Expression.Identifier:
-                let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: identifier.identifier)
+                let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
                 let symbol = resolution.0
                 let depth = symbols.stackFrameIndex - resolution.1
                 instructions += [.push16(n)]
@@ -390,8 +395,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(call node: Expression.Call) throws -> [YertleInstruction] {
-        let identifierToken = (node.callee as! Expression.Identifier).identifier
-        let symbol = try symbols.resolve(identifierToken: identifierToken)
+        let identifier = (node.callee as! Expression.Identifier).identifier
+        let symbol = try symbols.resolve(sourceAnchor: node.sourceAnchor, identifier: identifier)
         switch symbol.type {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [YertleInstruction] = []
@@ -401,18 +406,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             } else {
                 instructions += try pushToAllocateFunctionReturnValue(typ)
                 instructions += try pushFunctionArguments(typ, node)
-                let fn = TokenIdentifier(lineNumber: identifierToken.lineNumber, lexeme: mangledName)
-                instructions += [.jalr(fn)]
+                instructions += [.jalr(mangledName)]
                 instructions += popFunctionArguments(typ)
             }
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
-            if let lineNumber = node.tokens.first?.lineNumber {
-                throw CompilerError(line: lineNumber, message: message)
-            } else {
-                throw CompilerError(message: message)
-            }
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: message)
         }
     }
     

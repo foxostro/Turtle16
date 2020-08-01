@@ -35,33 +35,35 @@ public class AssemblerBackEnd: NSObject {
     }
     
     // Produce a generic instruction with the specified immediate value.
-    public func instruction(mnemonic:String, immediate: Int) throws {
+    public func instruction(mnemonic: String, immediate: Int) throws {
         assert(isAssembling)
         if immediate < 0 || immediate > 255 {
-            throw CompilerError(format: "immediate value is not between 0 and 255: `%d'", immediate)
+            throw CompilerError(sourceAnchor: nil, message: "immediate value is not between 0 and 255: `\(immediate)'")
         }
         let maybeOpcode = microcodeGenerator.getOpcode(mnemonic: mnemonic)
         if let opcode = maybeOpcode {
             let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
-            throw CompilerError(format: "unrecognized mnemonic: `%@'", mnemonic)
+            throw CompilerError(sourceAnchor: nil, message: "unrecognized mnemonic: `\(mnemonic)'")
         }
     }
     
     // Produce a generic instruction with the specified immediate value.
-    public func instruction(mnemonic:String, token immediateToken: TokenNumber) throws {
+    public func instruction(mnemonic: String, token immediateToken: TokenNumber) throws {
         assert(isAssembling)
         let immediate = immediateToken.literal
         if immediate < 0 || immediate > 255 {
-            throw CompilerError(line: immediateToken.lineNumber, format: "immediate value is not between 0 and 255: `%d'", immediate)
+            throw CompilerError(sourceAnchor: immediateToken.sourceAnchor,
+                                message: "immediate value is not between 0 and 255: `\(immediate)'")
         }
         let maybeOpcode = microcodeGenerator.getOpcode(mnemonic: mnemonic)
         if let opcode = maybeOpcode {
             let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
-            throw CompilerError(line: immediateToken.lineNumber, format: "unrecognized mnemonic: `%@'", mnemonic)
+            throw CompilerError(sourceAnchor: immediateToken.sourceAnchor,
+                                message: "unrecognized mnemonic: `\(mnemonic)'")
         }
     }
     
@@ -117,9 +119,9 @@ public class AssemblerBackEnd: NSObject {
     }
     
     // Load Immediate -- Loads an immediate value to the specified destination
-    public func li(_ destination: RegisterName, token immediate: TokenNumber) throws {
+    public func li(sourceAnchor: SourceAnchor?, destination: RegisterName, immediate: Int) throws {
         assert(isAssembling)
-        try mov(destination, .C, token: immediate)
+        try mov(destination, .C, immediate)
     }
     
     // Addition -- The ALU adds the contents of the A and B registers and moves

@@ -17,8 +17,8 @@ class AssemblerFrontEndTests: XCTestCase {
         compiler.compile("@")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
-        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("unexpected character: `@'"))
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected character: `@'")
     }
     
     func testCompileFailsDuringParsing() {
@@ -26,8 +26,8 @@ class AssemblerFrontEndTests: XCTestCase {
         compiler.compile(":")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
-        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("unexpected end of input"))
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected end of input")
     }
     
     func testCompileFailsDuringCodeGeneration() {
@@ -35,8 +35,8 @@ class AssemblerFrontEndTests: XCTestCase {
         compiler.compile("LI B, foo")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
-        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("use of unresolved identifier: `foo'"))
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
     }
     
     func testEnsureDisassemblyWorks() {

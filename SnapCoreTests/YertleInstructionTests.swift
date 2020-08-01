@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 
 class YertleInstructionTests: XCTestCase {
     func testDescription() {
-        let L0 = TokenIdentifier(lineNumber: -1, lexeme: ".L0")
+        let L0 = ".L0"
         XCTAssertEqual(YertleInstruction.push(0xff).description, "PUSH 0xff")
         XCTAssertEqual(YertleInstruction.push16(0xffff).description, "PUSH16 0xffff")
         XCTAssertEqual(YertleInstruction.pushsp.description, "PUSH-SP")

@@ -12,46 +12,35 @@ import TurtleCompilerToolbox
 
 class TokenRegisterTests: XCTestCase {
     func testTokenRegisterDescription() {
-        XCTAssertEqual(TokenRegister(lineNumber: 1, lexeme: "A", literal: .A).description, "<TokenRegister: lineNumber=1, lexeme=\"A\", literal=A>")
+        XCTAssertEqual(TokenRegister(sourceAnchor: nil, literal: .A).description,
+                       "<TokenRegister: sourceAnchor=nil, lexeme=\"\", literal=A>")
     }
     
     func testTokenRegisterEquality() {
-        let a = TokenRegister(lineNumber: 1, lexeme: "X", literal: .X)
-        let b = TokenRegister(lineNumber: 1, lexeme: "X", literal: .X)
+        let a = TokenRegister(sourceAnchor: nil, literal: .X)
+        let b = TokenRegister(sourceAnchor: nil, literal: .X)
         XCTAssertEqual(a, b)
     }
     
     func testTokenRegisterIsNotEqualToSomeOtherNSObject() {
-        let token = TokenRegister(lineNumber: 42, lexeme: "A", literal: .A)
+        let token = TokenRegister(sourceAnchor: nil, literal: .A)
         XCTAssertNotEqual(token, NSArray())
     }
     
-    func testTokenRegisterIsNotEqualToTokenWithDifferentLineNumber() {
-        let a = TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
-        let b = TokenRegister(lineNumber: 2, lexeme: "A", literal: .A)
-        XCTAssertNotEqual(a, b)
-    }
-    
-    func testTokenRegisterIsNotEqualToTokenWithDifferentLexeme() {
-        let a = TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
-        let b = TokenRegister(lineNumber: 1, lexeme: "B", literal: .A)
-        XCTAssertNotEqual(a, b)
-    }
-    
     func testTokenRegistersNotEqualToTokenWithDifferentLiteral() {
-        let a = TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
-        let b = TokenRegister(lineNumber: 1, lexeme: "A", literal: .B)
+        let a = TokenRegister(sourceAnchor: nil, literal: .A)
+        let b = TokenRegister(sourceAnchor: nil, literal: .B)
         XCTAssertNotEqual(a, b)
     }
     
     func testTokenRegisterIsNotEqualToTokenOfDifferentType() {
-        let a = TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
-        let b = TokenEOF(lineNumber: 1)
+        let a = TokenRegister(sourceAnchor: nil, literal: .A)
+        let b = TokenEOF(sourceAnchor: nil)
         XCTAssertNotEqual(a, b)
     }
     
     func testHash() {
-        XCTAssertEqual(TokenRegister(lineNumber: 1, lexeme: "X", literal: .X).hashValue,
-                       TokenRegister(lineNumber: 1, lexeme: "X", literal: .X).hashValue)
+        XCTAssertEqual(TokenRegister(sourceAnchor: nil, literal: .X).hashValue,
+                       TokenRegister(sourceAnchor: nil, literal: .X).hashValue)
     }
 }

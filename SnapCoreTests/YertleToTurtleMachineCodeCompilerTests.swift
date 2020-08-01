@@ -753,11 +753,9 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {
-        let foo1 = TokenIdentifier(lineNumber: 1, lexeme: "foo")
-        let foo2 = TokenIdentifier(lineNumber: 2, lexeme: "foo")
         let instructions: [YertleInstruction] = [
-            .label(foo1),
-            .label(foo2)
+            .label("foo"),
+            .label("foo")
         ]
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
@@ -771,37 +769,34 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJmp() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [
             .push(1),
-            .jmp(foo),
+            .jmp("foo"),
             .push(42),
-            .label(foo)
+            .label("foo")
         ]
         let computer = try! execute(ir: instructions)
         XCTAssertEqual(computer.stack(at: 0), 1)
     }
     
     func testJalr() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [
             .push(1),
-            .jalr(foo),
+            .jalr("foo"),
             .push(42),
-            .label(foo)
+            .label("foo")
         ]
         let computer = try! execute(ir: instructions)
         XCTAssertEqual(computer.stack(at: 0), 1)
     }
     
     func testJe_TakeTheBranch() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [
             .push(1),
             .push(1),
-            .je(foo),
+            .je("foo"),
             .push(42),
-            .label(foo),
+            .label("foo"),
             .push(100)
         ]
         let computer = try! execute(ir: instructions)
@@ -809,13 +804,12 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJe_DoNotTakeTheBranch() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [
             .push(1),
             .push(0),
-            .je(foo),
+            .je("foo"),
             .push(42),
-            .label(foo),
+            .label("foo"),
             .push(100)
         ]
         let computer = try! execute(ir: instructions)
@@ -824,15 +818,14 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJe_StackDepthThree() {
-        let foo = TokenIdentifier(lineNumber: 1, lexeme: "foo")
         let instructions: [YertleInstruction] = [
             .push(5), // will end up in 0xfffd
             .push(4), // will end up in B
             .push(3), // will end up in A
             .push(2), // will be popped
             .push(1), // will be popped
-            .je(foo),
-            .label(foo)
+            .je("foo"),
+            .label("foo")
         ]
         let computer = try! execute(ir: instructions)
         XCTAssertEqual(computer.stack(at: 0), 3)

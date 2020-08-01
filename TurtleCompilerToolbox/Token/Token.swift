@@ -7,17 +7,19 @@
 //
 
 open class Token : NSObject {
-    public let lineNumber: Int
-    public let lexeme: String
+    public let sourceAnchor: SourceAnchor?
+    public var lexeme: String {
+        String(sourceAnchor?.text ?? "")
+    }
     
-    public init(lineNumber: Int, lexeme: String) {
-        self.lineNumber = lineNumber
-        self.lexeme = lexeme
+    public init(sourceAnchor: SourceAnchor?) {
+        self.sourceAnchor = sourceAnchor
         super.init()
     }
     
     open override var description: String {
-        return String(format: "<%@: lineNumber=%d, lexeme=\"%@\">", String(describing: type(of: self)), lineNumber, lexeme)
+        let typeString = String(describing: type(of: self))
+        return "<\(typeString): sourceAnchor=\(String(describing: sourceAnchor)), lexeme=\"\(lexeme)\">"
     }
     
     public static func ==(lhs: Token, rhs: Token) -> Bool {
@@ -32,15 +34,13 @@ open class Token : NSObject {
     
     public final func isBaseClassPartEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? Token else { return false }
-        guard lineNumber == rhs.lineNumber else { return false }
-        guard lexeme == rhs.lexeme else { return false }
+        guard sourceAnchor == rhs.sourceAnchor else { return false }
         return true
     }
     
     open override var hash: Int {
         var hasher = Hasher()
-        hasher.combine(lineNumber)
-        hasher.combine(lexeme)
+        hasher.combine(sourceAnchor)
         return hasher.finalize()
     }
 }

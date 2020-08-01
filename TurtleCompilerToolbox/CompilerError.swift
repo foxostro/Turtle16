@@ -7,35 +7,33 @@
 //
 
 open class CompilerError: Error {
-    public let line: Int?
+    public let sourceAnchor: SourceAnchor?
     public let message: String
     
-    public init(line: Int, format: String, _ args: CVarArg...) {
-        self.line = line
-        message = String(format:format, arguments:args)
-    }
-    
-    public init(line: Int, message: String) {
-        self.line = line
+    public init(sourceAnchor: SourceAnchor?, message: String) {
+        self.sourceAnchor = sourceAnchor
         self.message = message
     }
     
-    public init(message: String) {
-        line = nil
-        self.message = message
+    public convenience init(sourceAnchor: SourceAnchor?, format: String, _ args: CVarArg...) {
+        self.init(sourceAnchor: sourceAnchor,
+                  message: String(format:format, arguments:args))
     }
     
-    public init(format: String, _ args: CVarArg...) {
-        line = nil
-        message = String(format:format, arguments:args)
+    private var lineNumberPrefix: String {
+        var result: String = ""
+        if let lineNumbers = sourceAnchor?.lineNumbers {
+            if lineNumbers.count == 1 {
+                result = "\(lineNumbers.lowerBound+1): "
+            } else {
+                result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound): "
+            }
+        }
+        return result
     }
     
     public var localizedDescription: String {
-        if let line = line {
-            return "\(line): \(message)"
-        } else {
-            return message
-        }
+        return lineNumberPrefix + message
     }
     
     public var debugDescription: String {
@@ -47,30 +45,29 @@ open class CompilerError: Error {
     }
     
     public static func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError {
+        var sourceAnchor: SourceAnchor? = errors.first?.sourceAnchor
         var message = ""
         
         for error in errors {
+            sourceAnchor = sourceAnchor?.union(error.sourceAnchor)
             if fileName != nil {
-                message += fileName! + ":"
+                message += fileName! + ": "
             }
-            if let lineNumber = error.line {
-                message += String(lineNumber) + ": "
-            }
-            message += String(format: "error: %@\n", error.message)
+            message += "error: \(error.localizedDescription)\n"
         }
         
         if errors.count == 1 {
-            message += String(format: "1 error generated\n")
+            message += "1 error generated\n"
         } else {
-            message += String(format: "%d errors generated\n", errors.count)
+            message += "\(errors.count) errors generated\n"
         }
         
-        return CompilerError(message: message)
+        return CompilerError(sourceAnchor: sourceAnchor, message: message)
     }
 }
 
 public func ==(lhs: CompilerError, rhs: CompilerError) -> Bool {
-    guard lhs.line == rhs.line else { return false }
+    guard lhs.sourceAnchor == rhs.sourceAnchor else { return false }
     guard lhs.message == rhs.message else { return false }
     return true
 }

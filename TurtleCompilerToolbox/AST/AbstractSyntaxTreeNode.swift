@@ -7,18 +7,35 @@
 //
 
 open class AbstractSyntaxTreeNode : NSObject {
+    public let sourceAnchor: SourceAnchor?
+    
+    public init(sourceAnchor: SourceAnchor?) {
+        self.sourceAnchor = sourceAnchor
+    }
+    
     public static func ==(lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
         return lhs.isEqual(rhs)
     }
     
     open override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? AbstractSyntaxTreeNode else {
+            return false
+        }
+        guard sourceAnchor == rhs.sourceAnchor else {
+            return false
+        }
         return true
     }
     
     open override var hash: Int {
-        let hasher = Hasher()
+        var hasher = Hasher()
+        hasher.combine(sourceAnchor)
         return hasher.finalize()
     }
     

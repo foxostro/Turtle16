@@ -16,8 +16,9 @@ class SnapCompilerTests: XCTestCase {
         compiler.compile("@")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
-        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("unexpected character: `@'"))
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "@")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected character: `@'")
     }
     
     func testCompileFailsDuringParsing() {
@@ -25,8 +26,9 @@ class SnapCompilerTests: XCTestCase {
         compiler.compile(":")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
-        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("operand type mismatch: `:'"))
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, ":")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "operand type mismatch: `:'")
     }
     
     func testCompileFailsDuringCodeGeneration() {
@@ -34,8 +36,9 @@ class SnapCompilerTests: XCTestCase {
         compiler.compile("foo")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, Optional<Int>(1))
-        XCTAssertEqual(compiler.errors.first?.message, Optional<String>("use of unresolved identifier: `foo'"))
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
     }
     
     func testEnsureDisassemblyWorks() {
@@ -117,7 +120,8 @@ a = 3
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 5)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 4..<5)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `a'")
     }
     
@@ -131,7 +135,8 @@ i = 3
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 4)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "i")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `i'")
     }
     
@@ -283,6 +288,8 @@ func foo() -> u8 {
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
     
@@ -297,6 +304,8 @@ func foo() -> u8 {
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
     
@@ -309,6 +318,8 @@ func foo() {
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
     }
     
@@ -509,6 +520,8 @@ let foo: bool = 0xffff
 """)
         
         XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "0xffff")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `bool'")
     }
     
@@ -620,7 +633,8 @@ let arr: [_]u8 = 1
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `[_]u8'")
     }
             
@@ -634,7 +648,8 @@ let arr: [_]u16 = foo
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 4)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
     }
     
@@ -646,7 +661,8 @@ let bar = 1 + foo
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 2)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1 + foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `const int' and `[3]u8'")
     }
     
@@ -702,7 +718,8 @@ let foo = [_]u8{0x1001, 0x1002, 0x1003} as [_]u8
 """)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.line, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "0x1001")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "integer constant `4097' overflows when stored into `u8'")
     }
     

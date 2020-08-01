@@ -12,9 +12,9 @@ import TurtleAssemblerCore
 import TurtleCompilerToolbox
 
 class AssemblerCodeGeneratorTests: XCTestCase {
-    let aabb = TokenNumber(lineNumber: 1, lexeme: "0xaabb", literal: 0xaabb)
-    let tooLargeAddress = TokenNumber(lineNumber: 1, lexeme: "0xffffffff", literal: 0xffffffff)
-    let negativeAddress = TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)
+    let aabb = TokenNumber(sourceAnchor: nil, literal: 0xaabb)
+    let tooLargeAddress = TokenNumber(sourceAnchor: nil, literal: 0xffffffff)
+    let negativeAddress = TokenNumber(sourceAnchor: nil, literal: -1)
     
     var microcodeGenerator = MicrocodeGenerator()
     var nop: UInt8 = 0
@@ -53,13 +53,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testEmptyProgram() {
-        let instructions = mustCompile(TopLevel())
+        let instructions = mustCompile(TopLevel(sourceAnchor: nil, children: []))
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
     func testNop() {
-        let ast = TopLevel(children: [InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: []))])
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
         XCTAssertEqual(instructions[0].opcode, nop)
@@ -67,9 +71,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testHlt() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "HLT"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "HLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
@@ -78,112 +83,113 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithNoOperands() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
     }
 
     func testFailToCompileMOVWithOneOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
     }
 
     func testFailToCompileMOVWithTooManyOperands() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
-                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterRegister(sourceAnchor: nil, value: .B),
+                                ParameterRegister(sourceAnchor: nil, value: .C),
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
     }
 
     func testFailToCompileMOVWithNumberInFirstOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 1),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
     }
 
     func testFailToCompileMOVWithNumberInSecondOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterNumber(sourceAnchor: nil, value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
     }
 
     func testFailToCompileMOVWithInvalidDestinationRegisterE() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .E),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
     }
 
     func testFailToCompileMOVWithInvalidDestinationRegisterC() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .C),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
     }
 
     func testFailToCompileMOVWithInvalidSourceRegisterD() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterRegister(sourceAnchor: nil, value: .D)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a source: `D'")
     }
     
     func testMov() throws {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "MOV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .D),
+                                ParameterRegister(sourceAnchor: nil, value: .A),
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -198,73 +204,73 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileLIWithNoOperands() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
     }
 
     func testFailToCompileLIWithOneOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
     }
 
     func testFailToCompileLIWhereDestinationIsANumber() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil, instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 1),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
     }
 
     func testFailToCompileLIWhereSourceIsARegister() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .B),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
     }
 
     func testFailToCompileLIWithTooManyOperands() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterNumber(sourceAnchor: nil, value: 1),
+                                ParameterNumber(sourceAnchor: nil, value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
     }
     
     func testLoadImmediate() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
-                                TokenNumber(lineNumber: 1, lexeme: "42", literal: 42),
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .D),
+                                ParameterNumber(sourceAnchor: nil, value: 42),
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -280,44 +286,48 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileADDWithIdentifierOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
-                    parameters: ParameterListNode(parameters: [
-                        TokenIdentifier(lineNumber: 1, lexeme: "label")
-                    ]))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "ADD",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterIdentifier(sourceAnchor: nil, value: "label")
+                            ]))
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `ADD'")
     }
 
     func testFailToCompileADDWithInvalidDestinationRegisterE() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
-                    parameters: ParameterListNode(parameters: [
-                        TokenRegister(lineNumber: 1, lexeme: "E", literal: .E)
-                    ]))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "ADD",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .E)
+                            ]))
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
     }
 
     func testFailToCompileADDWithInvalidDestinationRegisterC() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "ADD"),
-                    parameters: ParameterListNode(parameters: [
-                        TokenRegister(lineNumber: 1, lexeme: "C", literal: .C)
-                    ]))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "ADD",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .C)
+                            ]))
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
     }
     
     func testAdd() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "ADD"),
-                    parameters: ParameterListNode(parameters: [
-                        TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
-                    ]))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "ADD",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .D)
+                            ]))
         ])
         let instructions = mustCompile(ast)
         
@@ -334,16 +344,22 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmp() {
-        let ast = TopLevel(children: [
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 2, lexeme: "foo")])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "JMP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 5, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))])
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JMP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -368,18 +384,26 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testForwardJmp() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 1, lexeme: "foo")])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 5, lexeme: "foo")),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 6, lexeme: "HLT"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JMP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            LabelDeclaration(sourceAnchor: nil,
+                                 identifier: "foo"),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "HLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -408,15 +432,21 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressZero() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 0)
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JMP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
 
@@ -442,15 +472,21 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressNegative() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: -1)
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JMP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -458,15 +494,21 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressTooLarge() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0x10000", literal: 0x10000)])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JMP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 0x10000)
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JMP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -474,16 +516,22 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJC() {
-        let ast = TopLevel(children: [
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenIdentifier(lineNumber: 2, lexeme: "foo")])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "JC"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 5, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JC",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -510,15 +558,21 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressZero() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-                            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0", literal: 0)])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 0)
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JC",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -544,15 +598,21 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressNegative() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "-1", literal: -1)])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: -1)
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JC",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -560,15 +620,21 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressTooLarge() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LXY"),
-            parameters: ParameterListNode(parameters: [TokenNumber(lineNumber: 1, lexeme: "0x10000", literal: 0x10000)])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "JC"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 3, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: [])),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 4, lexeme: "NOP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 0x10000)
+                            ])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "JC",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "NOP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -576,9 +642,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testCMP() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "CMP"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "CMP",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -594,9 +661,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testINUV() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "INUV"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "INUV",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -608,9 +676,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testINXY() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "INXY"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "INXY",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -622,112 +691,113 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileBLTWithNoOperands() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: []))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
     }
 
     func testFailToCompileBLTWithOneOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
     }
 
     func testFailToCompileBLTWithTooManyOperands() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
-                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterRegister(sourceAnchor: nil, value: .B),
+                                ParameterRegister(sourceAnchor: nil, value: .C),
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
     }
 
     func testFailToCompileBLTWithNumberInFirstOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterNumber(sourceAnchor: nil, value: 1),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
     }
 
     func testFailToCompileBLTWithNumberInSecondOperand() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenNumber(lineNumber: 1, lexeme: "$1", literal: 1)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterNumber(sourceAnchor: nil, value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
     }
 
     func testFailToCompileBLTWithInvalidDestinationRegisterE() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "E", literal: .E),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .E),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
     }
 
     func testFailToCompileBLTWithInvalidDestinationRegisterC() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "C", literal: .C),
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .C),
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
     }
 
     func testFailToCompileBLTWithInvalidSourceRegisterD() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
-                                TokenRegister(lineNumber: 1, lexeme: "D", literal: .D)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A),
+                                ParameterRegister(sourceAnchor: nil, value: .D)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a source: `D'")
     }
     
     func testBLT() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "BLT"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "P", literal: .P),
-                                TokenRegister(lineNumber: 1, lexeme: "M", literal: .M),
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "BLT",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .P),
+                                ParameterRegister(sourceAnchor: nil, value: .M),
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -744,46 +814,50 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileDueToRedefinitionOfLabel() {
-        let ast = TopLevel(children: [
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo")),
-            LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"))
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
+            LabelDeclaration(sourceAnchor: nil, identifier: "foo")
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "label redefines existing symbol: `foo'")
     }
     
     func testFailToCompileDueToRedefinitionOfConstant() {
-        let ast = TopLevel(children: [
-            ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                    number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)),
-            ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "foo"),
-                                    number: TokenNumber(lineNumber: 2, lexeme: "42", literal: 42)),
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            ConstantDeclaration(sourceAnchor: nil,
+                                    identifier: "foo",
+                                    value: 1),
+            ConstantDeclaration(sourceAnchor: nil,
+                                    identifier: "foo",
+                                    value: 42),
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "constant redefines existing symbol: `foo'")
     }
 
     func testLICannotUseUndeclaredSymbolAsSource() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 1, lexeme: "B", literal: .B),
-                                TokenIdentifier(lineNumber: 1, lexeme: "foo")
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .B),
+                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
                             ]))
         ])
         let errors = mustFailToCompile(ast)
-        XCTAssertEqual(errors.first?.line, 1)
         XCTAssertEqual(errors.first?.message, "use of unresolved identifier: `foo'")
     }
     
     func testLIWithConstantSource() {
-        let ast = TopLevel(children: [
-            ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                    number: TokenNumber(lineNumber: 1, lexeme: "42", literal: 42)),
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "LI"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 2, lexeme: "B", literal: .B),
-                                TokenIdentifier(lineNumber: 2, lexeme: "foo")
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            ConstantDeclaration(sourceAnchor: nil,
+                                identifier: "foo",
+                                value: 42),
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "LI",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .B),
+                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -799,10 +873,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testDEA() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DEA"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.D)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "DEA",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .D)
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -820,10 +895,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testDCA() {
-        let ast = TopLevel(children: [
-            InstructionNode(instruction: TokenIdentifier(lineNumber: 0, lexeme: "DCA"),
-                            parameters: ParameterListNode(parameters: [
-                                TokenRegister(lineNumber: 0, lexeme: "", literal: RegisterName.A)
+        let ast = TopLevel(sourceAnchor: nil, children: [
+            InstructionNode(sourceAnchor: nil,
+                            instruction: "DCA",
+                            parameters: ParameterList(sourceAnchor: nil, parameters: [
+                                ParameterRegister(sourceAnchor: nil, value: .A)
                             ]))
         ])
         let instructions = mustCompile(ast)

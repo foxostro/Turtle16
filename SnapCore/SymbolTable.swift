@@ -195,7 +195,7 @@ public class SymbolTable: NSObject {
     }
     
     public func existsAndCannotBeShadowed(identifier: String) -> Bool {
-        guard let resolution = maybeResolveWithScopeDepth(identifier: identifier) else {
+        guard let resolution = maybeResolveWithScopeDepth(sourceAnchor: nil, identifier: identifier) else {
             return false
         }
         return resolution.1 == 0
@@ -205,51 +205,41 @@ public class SymbolTable: NSObject {
         symbolTable[identifier] = symbol
     }
     
-    public func resolve(identifier: String) throws -> Symbol {
-        guard let resolution = maybeResolveWithStackFrameDepth(identifier: identifier) else {
-            throw CompilerError(message: "use of unresolved identifier: `\(identifier)'")
+    public func resolve(sourceAnchor: SourceAnchor?, identifier: String) throws -> Symbol {
+        guard let resolution = maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
+            throw CompilerError(sourceAnchor: sourceAnchor,
+                                message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution.0
     }
     
-    public func resolve(identifierToken: TokenIdentifier) throws -> Symbol {
-        guard let resolution = maybeResolveWithStackFrameDepth(identifier: identifierToken.lexeme) else {
-            throw CompilerError(line: identifierToken.lineNumber,
-                                format: "use of unresolved identifier: `%@'",
-                                identifierToken.lexeme)
-        }
-        return resolution.0
-    }
-    
-    public func resolveWithStackFrameDepth(identifierToken: TokenIdentifier) throws -> (Symbol, Int) {
-        guard let resolution = maybeResolveWithStackFrameDepth(identifier: identifierToken.lexeme) else {
-            throw CompilerError(line: identifierToken.lineNumber,
-                                format: "use of unresolved identifier: `%@'",
-                                identifierToken.lexeme)
+    public func resolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) throws -> (Symbol, Int) {
+        guard let resolution = maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
+            throw CompilerError(sourceAnchor: sourceAnchor,
+                                message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution
     }
     
-    private func maybeResolveWithStackFrameDepth(identifier: String) -> (Symbol, Int)? {
+    private func maybeResolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             return (symbol, stackFrameIndex)
         }
-        return parent?.maybeResolveWithStackFrameDepth(identifier: identifier)
+        return parent?.maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
-    public func resolveWithScopeDepth(identifierToken: TokenIdentifier) throws -> (Symbol, Int) {
-        guard let resolution = maybeResolveWithScopeDepth(identifier: identifierToken.lexeme) else {
-            throw CompilerError(line: identifierToken.lineNumber,
-                                format: "use of unresolved identifier: `%@'",
-                                identifierToken.lexeme)
+    public func resolveWithScopeDepth(sourceAnchor: SourceAnchor?, identifier: String) throws -> (Symbol, Int) {
+        guard let resolution = maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
+            throw CompilerError(sourceAnchor: sourceAnchor,
+                                message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution
     }
     
-    private func maybeResolveWithScopeDepth(identifier: String) -> (Symbol, Int)? {
+    private func maybeResolveWithScopeDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             return (symbol, 0)
-        } else if let parentResolution = parent?.maybeResolveWithScopeDepth(identifier: identifier) {
+        } else if let parentResolution = parent?.maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
             return (parentResolution.0, parentResolution.1 + 1)
         }
         return nil

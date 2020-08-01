@@ -9,13 +9,15 @@
 public class TopLevel: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
-    public init(children: [AbstractSyntaxTreeNode] = []) {
+    public init(sourceAnchor: SourceAnchor?, children: [AbstractSyntaxTreeNode]) {
         self.children = children
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? TopLevel else { return false }
         guard children == rhs.children else { return false }
         return true

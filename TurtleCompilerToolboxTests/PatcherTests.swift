@@ -12,7 +12,7 @@ import TurtleCore
 
 class PatcherTests: XCTestCase {
     func testPatchWithNoInstructions() {
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
             return 0
         }
         let patcher = Patcher(inputInstructions: [], resolver: resolver, actions: [], base: 0x0000)
@@ -21,7 +21,7 @@ class PatcherTests: XCTestCase {
     }
     
     func testPatchWithNoChangesToInstructions() {
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
             return 0
         }
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
@@ -35,12 +35,11 @@ class PatcherTests: XCTestCase {
     
     func testPatchWithNoOpChangeToInstruction() {
         let symbols = ["" : 0]
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
-            return symbols[identifier.lexeme]!
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
+            return symbols[identifier]!
         }
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
-        let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
+        let actions: [Patcher.Action] = [(index: 0, sourceAnchor: nil, symbol: "", shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               resolver: resolver,
                               actions: actions,
@@ -53,11 +52,10 @@ class PatcherTests: XCTestCase {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
         let symbols = ["" : 255]
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
-            return symbols[identifier.lexeme]!
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
+            return symbols[identifier]!
         }
-        let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
-        let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 0)]
+        let actions: [Patcher.Action] = [(index: 0, sourceAnchor: nil, symbol: "", shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               resolver: resolver,
                               actions: actions,
@@ -70,11 +68,10 @@ class PatcherTests: XCTestCase {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
         let expected = [Instruction(opcode: 0, immediate: 255)]
         let symbols = ["" : 0xff00]
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
-            return symbols[identifier.lexeme]!
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
+            return symbols[identifier]!
         }
-        let symbol = TokenIdentifier(lineNumber: 0, lexeme: "")
-        let actions: [Patcher.Action] = [(index: 0, symbol: symbol, shift: 8)]
+        let actions: [Patcher.Action] = [(index: 0, sourceAnchor: nil, symbol: "", shift: 8)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               resolver: resolver,
                               actions: actions,
@@ -91,12 +88,12 @@ class PatcherTests: XCTestCase {
                         Instruction(opcode: 1, immediate: 20),
                         Instruction(opcode: 2, immediate: 30)]
         let symbols = ["a" : 10, "b" : 20, "c" : 30]
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
-            return symbols[identifier.lexeme]!
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
+            return symbols[identifier]!
         }
-        let actions: [Patcher.Action] = [(index: 0, symbol: TokenIdentifier(lineNumber: 1, lexeme: "a"), shift: 0),
-                                         (index: 1, symbol: TokenIdentifier(lineNumber: 2, lexeme: "b"), shift: 0),
-                                         (index: 2, symbol: TokenIdentifier(lineNumber: 3, lexeme: "c"), shift: 0)]
+        let actions: [Patcher.Action] = [(index: 0, sourceAnchor: nil, symbol: "a", shift: 0),
+                                         (index: 1, sourceAnchor: nil, symbol: "b", shift: 0),
+                                         (index: 2, sourceAnchor: nil, symbol: "c", shift: 0)]
         let patcher = Patcher(inputInstructions: inputInstructions,
                               resolver: resolver,
                               actions: actions,
@@ -107,9 +104,9 @@ class PatcherTests: XCTestCase {
     
     func testPatchWithUnresolvedSymbol() {
         let inputInstructions = [Instruction(opcode: 0, immediate: 0)]
-        let actions: [Patcher.Action] = [(index: 0, symbol: TokenIdentifier(lineNumber: 0, lexeme: ""), shift: 0)]
-        let resolver: (TokenIdentifier) throws -> Int = {(identifier: TokenIdentifier) in
-            throw CompilerError(message: "use of unresolved identifier: `\(identifier.lexeme)'")
+        let actions: [Patcher.Action] = [(index: 0, sourceAnchor: nil, symbol: "", shift: 0)]
+        let resolver: (SourceAnchor?, String) throws -> Int = {(sourceAnchor: SourceAnchor?, identifier: String) in
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "use of unresolved identifier: `\(identifier)'")
         }
         let patcher = Patcher(inputInstructions: inputInstructions,
                               resolver: resolver,

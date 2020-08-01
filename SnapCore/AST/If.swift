@@ -13,17 +13,20 @@ public class If: AbstractSyntaxTreeNode {
     public let thenBranch: AbstractSyntaxTreeNode
     public let elseBranch: AbstractSyntaxTreeNode?
     
-    public required init(condition: Expression,
+    public required init(sourceAnchor: SourceAnchor?,
+                         condition: Expression,
                          then thenBranch: AbstractSyntaxTreeNode,
                          else elseBranch: AbstractSyntaxTreeNode?) {
         self.condition = condition
         self.thenBranch = thenBranch
         self.elseBranch = elseBranch
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? If else { return false }
         guard condition == rhs.condition else { return false }
         guard thenBranch == rhs.thenBranch else { return false }

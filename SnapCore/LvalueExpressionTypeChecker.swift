@@ -36,20 +36,17 @@ public class LvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let isMutable = try symbols.resolve(identifierToken: expr.tokenIdentifier).isMutable
-        if !isMutable {
-            throw CompilerError(line: expr.tokenIdentifier.lineNumber,
-                                message: "expression is not assignable: `\(expr.tokenIdentifier.lexeme)' is immutable")
+        let symbol = try symbols.resolve(sourceAnchor: expr.identifier.sourceAnchor,
+                                         identifier: expr.identifier.identifier)
+        if !symbol.isMutable {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor,
+                                message: "expression is not assignable: `\(expr.identifier.identifier)' is immutable")
         }
         return try rvalueContext().check(subscript: expr)
     }
     
     func makeNotAssignableError(expression: Expression) -> Error {
-        let message = "expression is not assignable"
-        if let lineNumber = expression.tokens.first?.lineNumber {
-            return CompilerError(line: lineNumber, message: message)
-        } else {
-            return CompilerError(message: message)
-        }
+        return CompilerError(sourceAnchor: expression.sourceAnchor,
+                             message: "expression is not assignable")
     }
 }

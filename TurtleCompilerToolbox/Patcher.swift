@@ -11,17 +11,17 @@ import TurtleCore
 // Rewrites instructions, replacing placeholder immediate values with final
 // values determined from the symbol table.
 public class Patcher: NSObject {
-    let resolve: (TokenIdentifier) throws -> Int
+    let resolve: (SourceAnchor?, String) throws -> Int
     let inputInstructions: [Instruction]
     let base: Int
     
     // For some given instruction (given by index), specify a symbol through
     // which to determine the the new immediate value to use.
-    public typealias Action = (index: Int, symbol: TokenIdentifier, shift: Int)
+    public typealias Action = (index: Int, sourceAnchor: SourceAnchor?, symbol: String, shift: Int)
     let actions: [Action]
     
     public required init(inputInstructions: [Instruction],
-                         resolver: @escaping (TokenIdentifier) throws -> Int,
+                         resolver: @escaping (SourceAnchor?, String) throws -> Int,
                          actions: [Action],
                          base: Int) {
         self.inputInstructions = inputInstructions
@@ -34,7 +34,7 @@ public class Patcher: NSObject {
         var instructions = inputInstructions
         for action in actions {
             let oldInstruction = instructions[action.index]
-            let symbolValue = try resolve(action.symbol) + base
+            let symbolValue = try resolve(action.sourceAnchor, action.symbol) + base
             let immediate: UInt8 = UInt8((symbolValue >> action.shift) & 0xff)
             let newInstruction = Instruction(opcode: oldInstruction.opcode,
                                              immediate: immediate)

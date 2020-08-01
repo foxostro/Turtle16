@@ -29,9 +29,11 @@ public class RvalueExpressionTypeChecker: NSObject {
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
         case let expr as Expression.LiteralWord:
-            return .constInt(expr.number.literal)
+            return .constInt(expr.value)
         case let expr as Expression.LiteralBoolean:
-            return .constBool(expr.boolean.literal)
+            return .constBool(expr.value)
+        case let expr as Expression.Group:
+            return try check(expression: expr.expression)
         case let expr as Expression.Unary:
             return try check(unary: expr)
         case let expr as Expression.Binary:
@@ -54,9 +56,8 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(unary: Expression.Unary) throws -> SymbolType {
-        let lineNumber = unary.tokens.first!.lineNumber
         let expressionType = try check(expression: unary.child)
-        switch unary.op.op {
+        switch unary.op {
         case .minus:
             switch expressionType {
             case .constInt(let value):
@@ -66,18 +67,39 @@ public class RvalueExpressionTypeChecker: NSObject {
             case .u8:
                 return .u8
             default:
-                throw CompilerError(line: lineNumber, message: "Unary operator `\(unary.op.lexeme)' cannot be applied to an operand of type `\(expressionType)'")
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
             }
         default:
-            throw CompilerError(line: lineNumber, message: "`\(unary.op.lexeme)' is not a prefix unary operator")
+            let operatorString: String
+            if let lexeme = unary.sourceAnchor?.text {
+                operatorString = String(lexeme)
+            } else {
+                operatorString = fallbackStringForOperator(unary.op)
+            }
+            throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "`\(operatorString)' is not a prefix unary operator")
+        }
+    }
+    
+    private func fallbackStringForOperator(_ op: TokenOperator.Operator) -> String {
+        switch op {
+        case .eq: return "=="
+        case .ne: return "!="
+        case .lt: return "<"
+        case .gt: return ">"
+        case .le: return "<="
+        case .ge: return ">="
+        case .plus: return "+"
+        case .minus: return "-"
+        case .multiply: return "*"
+        case .divide: return "/"
+        case .modulus: return "%"
         }
     }
     
     public func check(binary: Expression.Binary) throws -> SymbolType {
         let right = try check(expression: binary.right)
         let left = try check(expression: binary.left)
-        let lineNumber = binary.tokens.first!.lineNumber
-        switch (binary.op.op, left, right) {
+        switch (binary.op, left, right) {
         case (.eq, .u8, .u8):
             return .bool
         case (.eq, .u8, .u16):
@@ -293,15 +315,15 @@ public class RvalueExpressionTypeChecker: NSObject {
         case (.modulus, .constInt(let a), .constInt(let b)):
             return .constInt(a % b)
         default:
-            throw invalidBinaryExpr(lineNumber, binary, left, right)
+            throw invalidBinaryExpr(binary, left, right)
         }
     }
     
-    private func invalidBinaryExpr(_ lineNumber: Int, _ binary: Expression.Binary, _ left: SymbolType, _ right: SymbolType) -> CompilerError {
+    private func invalidBinaryExpr(_ binary: Expression.Binary, _ left: SymbolType, _ right: SymbolType) -> CompilerError {
         if left == right {
-            return CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to two `\(right)' operands")
+            return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op.description)' cannot be applied to two `\(right)' operands")
         } else {
-            return CompilerError(line: lineNumber, message: "binary operator `\(binary.op.lexeme)' cannot be applied to operands of types `\(left)' and `\(right)'")
+            return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op.description)' cannot be applied to operands of types `\(left)' and `\(right)'")
         }
     }
     
@@ -310,35 +332,35 @@ public class RvalueExpressionTypeChecker: NSObject {
         let rtype = try rvalueContext().check(expression: assignment.rexpr)
         return try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                         rtype: rtype,
-                                                        lineNumber: assignment.tokens.first!.lineNumber,
+                                                        sourceAnchor: assignment.rexpr.sourceAnchor,
                                                         messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'")
     }
     
     @discardableResult public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
                                                                         rtype: SymbolType,
-                                                                        lineNumber: Int,
+                                                                        sourceAnchor: SourceAnchor?,
                                                                         messageWhenNotConvertible: String) throws -> SymbolType {
         return try checkTypesAreConvertible(ltype: ltype,
                                             rtype: rtype,
-                                            lineNumber: lineNumber,
+                                            sourceAnchor: sourceAnchor,
                                             messageWhenNotConvertible: messageWhenNotConvertible,
                                             isExplicitCast: false)
     }
         
     public func checkTypesAreConvertibleInExplicitCast(ltype: SymbolType,
                                                        rtype: SymbolType,
-                                                       lineNumber: Int,
+                                                       sourceAnchor: SourceAnchor?,
                                                        messageWhenNotConvertible: String) throws -> SymbolType {
         return try checkTypesAreConvertible(ltype: ltype,
                                             rtype: rtype,
-                                            lineNumber: lineNumber,
+                                            sourceAnchor: sourceAnchor,
                                             messageWhenNotConvertible: messageWhenNotConvertible,
                                             isExplicitCast: true)
     }
         
     private func checkTypesAreConvertible(ltype: SymbolType,
                                           rtype: SymbolType,
-                                          lineNumber: Int,
+                                          sourceAnchor: SourceAnchor?,
                                           messageWhenNotConvertible: String,
                                           isExplicitCast: Bool) throws -> SymbolType {
         // Integer constants will be automatically converted to appropriate
@@ -354,76 +376,66 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch (rtype, ltype) {
         case (.constInt(let a), .u8):
             guard a >= 0 && a < 256 else {
-                throw CompilerError(line: lineNumber, message: "integer constant `\(a)' overflows when stored into `u8'")
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u8'")
             }
             return ltype // The conversion is acceptable.
         case (.constInt(let a), .u16):
             guard a >= 0 && a < 65536 else {
-                throw CompilerError(line: lineNumber, message: "integer constant `\(a)' overflows when stored into `u16'")
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u16'")
             }
             return ltype // The conversion is acceptable.
         case (.u8, .u16), (.constBool, .bool):
             return ltype // The conversion is acceptable.
         case (.u16, .u8):
             if !isExplicitCast {
-                throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return ltype
         case (.array(let n, let a), .array(let m, let b)):
             guard n == m || m == nil else {
-                throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             let elementType = try checkTypesAreConvertible(ltype: b, rtype: a,
-                                                           lineNumber: lineNumber,
+                                                           sourceAnchor: sourceAnchor,
                                                            messageWhenNotConvertible: messageWhenNotConvertible,
                                                            isExplicitCast: isExplicitCast)
             return .array(count: n, elementType: elementType)
         case (.array(let n, let a), .dynamicArray(elementType: let b)):
             guard n != nil && a == b else {
-                throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return ltype
         default:
-            throw CompilerError(line: lineNumber, message: messageWhenNotConvertible)
+            throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
         }
     }
         
     public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
-        let symbolType = try symbols.resolve(identifierToken: expr.identifier).type
-        return symbolType
+        return try resolve(expr).type
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
         let callee = call.callee as! Expression.Identifier
-        let symbol = try symbols.resolve(identifierToken: callee.identifier)
+        let symbol = try resolve(callee)
         switch symbol.type {
         case .function(name: let name, mangledName: _, functionType: let typ):
             if call.arguments.count != typ.arguments.count {
                 let message = "incorrect number of arguments in call to `\(name)'"
-                if let lineNumber = call.tokens.first?.lineNumber {
-                    throw CompilerError(line: lineNumber, message: message)
-                } else {
-                    throw CompilerError(message: message)
-                }
+                throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
             }
             for i in 0..<typ.arguments.count {
                 let rtype = try rvalueContext().check(expression: call.arguments[i])
                 let ltype = typ.arguments[i].argumentType
-                let lineNumber = call.tokens.first!.lineNumber
                 let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
                 _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                              rtype: rtype,
-                                                             lineNumber: lineNumber,
+                                                             sourceAnchor: call.arguments[i].sourceAnchor,
                                                              messageWhenNotConvertible: message)
             }
             return typ.returnType
         default:
             let message = "cannot call value of non-function type `\(symbol.type)'"
-            if let lineNumber = call.tokens.first?.lineNumber {
-                throw CompilerError(line: lineNumber, message: message)
-            } else {
-                throw CompilerError(message: message)
-            }
+            throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
         }
     }
         
@@ -432,23 +444,28 @@ public class RvalueExpressionTypeChecker: NSObject {
         let rtype = try check(expression: expr.expr)
         return try checkTypesAreConvertibleInExplicitCast(ltype: ltype,
                                                           rtype: rtype,
-                                                          lineNumber: expr.tokens.first!.lineNumber,
+                                                          sourceAnchor: expr.sourceAnchor,
                                                           messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)'")
     }
     
+    public func resolve(_ expr: Expression.Identifier) throws -> Symbol {
+        let symbol = try symbols.resolve(sourceAnchor: expr.sourceAnchor,
+                                         identifier: expr.identifier)
+        return symbol
+    }
+    
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let lineNumber = expr.tokens.first!.lineNumber
-        let symbol = try symbols.resolve(identifierToken: expr.tokenIdentifier)
+        let symbol = try resolve(expr.identifier)
         switch symbol.type {
         case .array(count: _, elementType: let elementType),
              .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.expr)
             if !argumentType.isArithmeticType {
-                throw CompilerError(line: lineNumber, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
             }
             return elementType
         default:
-            throw CompilerError(line: lineNumber, message: "value of type `\(symbol.type)' has no subscripts")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(symbol.type)' has no subscripts")
         }
     }
     
@@ -456,8 +473,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch expr.explicitType {
         case .array(count: let count, elementType: _):
             if count == nil {
-                let lineNumber = expr.tokens.first?.lineNumber ?? -1
-                throw CompilerError(line: lineNumber, message: "inferred array count is invalid here")
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "inferred array count is invalid here")
             }
         default:
             break
@@ -467,8 +483,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         if let explicitCount = expr.explicitCount {
             if expr.elements.count != explicitCount {
-                let lineNumber = expr.tokens.first?.lineNumber ?? -1
-                throw CompilerError(line: lineNumber, message: "expected \(explicitCount) elements in `\(arrayLiteralType)' array literal")
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "expected \(explicitCount) elements in `\(arrayLiteralType)' array literal")
             }
         }
         
@@ -477,7 +492,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             let rtype = try check(expression: element)
             try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                      rtype: rtype,
-                                                     lineNumber: element.tokens.first?.lineNumber ?? -1,
+                                                     sourceAnchor: element.sourceAnchor,
                                                      messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)' in `\(arrayLiteralType)' array literal")
         }
         
@@ -485,11 +500,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     func unsupportedError(expression: Expression) -> Error {
-        let message = "unsupported expression: \(expression)"
-        if let lineNumber = expression.tokens.first?.lineNumber {
-            return CompilerError(line: lineNumber, message: message)
-        } else {
-            return CompilerError(message: message)
-        }
+        return CompilerError(sourceAnchor: expression.sourceAnchor,
+                             message: "unsupported expression: \(expression)")
     }
 }

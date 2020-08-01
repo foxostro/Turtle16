@@ -12,36 +12,19 @@ import TurtleCompilerToolbox
 
 class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        XCTAssertNotEqual(Return(token: token, expression: nil), AbstractSyntaxTreeNode())
+        XCTAssertNotEqual(Return(sourceAnchor: nil, expression: nil),
+                          AbstractSyntaxTreeNode(sourceAnchor: nil))
     }
     
-    func testDoesNotEqualNodeWithDifferentLineNumber() {
-        XCTAssertNotEqual(Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil), Return(token: TokenReturn(lineNumber: 2, lexeme: "return"), expression: nil))
-    }
-    
-    func testDoesNotEqualNodeWithDifferentValue() {
-        let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 1, lexeme: "2", literal: 2)
-        XCTAssertNotEqual(Return(token: token, expression: Expression.LiteralWord(number: a)), Return(token: token, expression: Expression.LiteralWord(number: b)))
-    }
-    
-    func testDoesEqualNodeWithSameLineNumberAndValue() {
-        let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertEqual(Return(token: token, expression: nil), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil))
-        XCTAssertEqual(Return(token: token, expression: Expression.LiteralWord(number: a)), Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.LiteralWord(number: b)))
+    func testDoesNotEqualNodeWithDifferentExpression() {
+        XCTAssertNotEqual(Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
+                          Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
     }
     
     func testHash() {
-        let token = TokenReturn(lineNumber: 1, lexeme: "return")
-        let a = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        let b = TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)
-        XCTAssertEqual(Return(token: token, expression: nil).hashValue,
-                       Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: nil).hashValue)
-        XCTAssertEqual(Return(token: token, expression: Expression.LiteralWord(number: a)).hashValue,
-                       Return(token: TokenReturn(lineNumber: 1, lexeme: "return"), expression: Expression.LiteralWord(number: b)).hashValue)
+        XCTAssertEqual(Return(sourceAnchor: nil, expression: nil).hashValue,
+                       Return(sourceAnchor: nil, expression: nil).hashValue)
+        XCTAssertEqual(Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue,
+                       Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue)
     }
 }

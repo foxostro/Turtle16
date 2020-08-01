@@ -11,40 +11,28 @@ import TurtleCompilerToolbox
 
 class TokenTests: XCTestCase {
     func testTokenDescription() {
-        XCTAssertEqual(Token(lineNumber: 42, lexeme: "foo").description, "<Token: lineNumber=42, lexeme=\"foo\">")
+        XCTAssertEqual(Token(sourceAnchor: nil).description, "<Token: sourceAnchor=nil, lexeme=\"\">")
     }
     
     func testTokenEquality() {
-        let a = Token(lineNumber: 1, lexeme: "")
-        let b = Token(lineNumber: 1, lexeme: "")
+        let a = Token(sourceAnchor: nil)
+        let b = Token(sourceAnchor: nil)
         XCTAssertEqual(a, b)
     }
     
     func testTokenIsNotEqualToSomeOtherNSObject() {
-        let token = Token(lineNumber: 42, lexeme: "foo")
+        let token = Token(sourceAnchor: nil)
         XCTAssertNotEqual(token, NSArray())
     }
     
-    func testTokenIsNotEqualToTokenWithDifferentLineNumber() {
-        let a = Token(lineNumber: 1, lexeme: "")
-        let b = Token(lineNumber: 2, lexeme: "")
-        XCTAssertNotEqual(a, b)
-    }
-    
-    func testTokenIsNotEqualToTokenWithDifferentLexeme() {
-        let a = Token(lineNumber: 1, lexeme: "foo")
-        let b = Token(lineNumber: 1, lexeme: "bar")
-        XCTAssertNotEqual(a, b)
-    }
-    
     func testTokenIsNotEqualToTokenOfDifferentType() {
-        let a = Token(lineNumber: 1, lexeme: "")
-        let b = TokenEOF(lineNumber: 1)
+        let a = Token(sourceAnchor: nil)
+        let b = TokenEOF(sourceAnchor: nil)
         XCTAssertNotEqual(a, b)
     }
     
     func testHash() {
-        XCTAssertEqual(Token(lineNumber: 1, lexeme: "").hashValue,
-                       Token(lineNumber: 1, lexeme: "").hashValue)
+        XCTAssertEqual(Token(sourceAnchor: nil).hashValue,
+                       Token(sourceAnchor: nil).hashValue)
     }
 }

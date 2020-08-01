@@ -8,6 +8,8 @@
 
 public class TokenNewline : Token {
     public override var description: String {
-        return String(format: "<%@: lineNumber=%d>", String(describing: type(of: self)), lineNumber)
+        return String(format: "<%@: sourceAnchor=%@>",
+                      String(describing: type(of: self)),
+                      String(describing: sourceAnchor))
     }
 }

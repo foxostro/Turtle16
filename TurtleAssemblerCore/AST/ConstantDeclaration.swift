@@ -1,5 +1,5 @@
 //
-//  ConstantDeclarationNode.swift
+//  ConstantDeclaration.swift
 //  TurtleAssemblerCore
 //
 //  Created by Andrew Fox on 5/16/20.
@@ -8,28 +8,29 @@
 
 import TurtleCompilerToolbox
 
-public class ConstantDeclarationNode: AbstractSyntaxTreeNode {
-    public let identifier: TokenIdentifier
-    public let number: TokenNumber
+public class ConstantDeclaration: AbstractSyntaxTreeNode {
+    public let identifier: String
+    public let value: Int
     
-    public required init(identifier: TokenIdentifier, number: TokenNumber) {
+    public required init(sourceAnchor: SourceAnchor?, identifier: String, value: Int) {
         self.identifier = identifier
-        self.number = number
+        self.value = value
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? ConstantDeclarationNode else { return false }
+        guard let rhs = rhs as? ConstantDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
-        guard number == rhs.number else { return false }
+        guard value == rhs.value else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(identifier)
-        hasher.combine(number)
+        hasher.combine(value)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

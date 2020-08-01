@@ -64,8 +64,7 @@ public class StatementTracer: NSObject {
             let stmt = block.children[i]
             if let _ = stmt as? Return {
                 if i != block.children.count-1 {
-                    // TODO: Need to get the line number for the offending statement.
-                    throw CompilerError(line: -1, message: "code after return will never be executed")
+                    throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "code after return will never be executed")
                 }
             }
         }

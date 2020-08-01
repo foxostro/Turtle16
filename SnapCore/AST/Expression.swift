@@ -9,33 +9,25 @@
 import TurtleCompilerToolbox
 
 public class Expression: AbstractSyntaxTreeNode {
-    public var tokens: [Token] {
-        return []
-    }
-    
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? Expression else { return false }
-        guard tokens == rhs.tokens else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard super.isEqual(rhs) else {
+            return false
+        }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(tokens)
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-    
     public class LiteralWord: Expression {
-        public let number: TokenNumber
-        public override var tokens: [Token] {
-            return [number]
-        }
+        public let value: Int
         
-        public init(number: TokenNumber) {
-            self.number = number
+        public init(sourceAnchor: SourceAnchor? = nil, value: Int) {
+            self.value = value
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -45,10 +37,13 @@ public class Expression: AbstractSyntaxTreeNode {
             guard type(of: rhs!) == type(of: self) else {
                 return false
             }
+            guard super.isEqual(rhs) else {
+                return false
+            }
             guard let rhs = rhs as? LiteralWord else {
                 return false
             }
-            guard number == rhs.number else {
+            guard value == rhs.value else {
                 return false
             }
             return true
@@ -56,40 +51,39 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(number)
+            hasher.combine(value)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: number=%@>",
+            return String(format: "%@<%@: value=%d>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          number.lexeme)
+                          value)
         }
     }
     
     public class LiteralBoolean: Expression {
-        public let boolean: TokenBoolean
-        public override var tokens: [Token] {
-            return [boolean]
-        }
+        public let value: Bool
         
-        public init(boolean: TokenBoolean) {
-            self.boolean = boolean
+        public init(sourceAnchor: SourceAnchor?, value: Bool) {
+            self.value = value
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? LiteralBoolean else { return false }
-            guard boolean == rhs.boolean else { return false }
+            guard value == rhs.value else { return false }
             return true
         }
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(boolean)
+            hasher.combine(value)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
@@ -98,23 +92,22 @@ public class Expression: AbstractSyntaxTreeNode {
             return String(format: "%@<%@: boolean=%@>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          boolean.lexeme)
+                          value ? "true" : "false")
         }
     }
     
     public class Identifier: Expression {
-        public let identifier: TokenIdentifier
-        public override var tokens: [Token] {
-            return [identifier]
-        }
+        public let identifier: String
         
-        public init(identifier: TokenIdentifier) {
+        public init(sourceAnchor: SourceAnchor?, identifier: String) {
             self.identifier = identifier
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Identifier else { return false }
             guard identifier == rhs.identifier else { return false }
             return true
@@ -131,26 +124,24 @@ public class Expression: AbstractSyntaxTreeNode {
             return String(format: "%@<%@: identifier='%@'>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          identifier.lexeme)
+                          identifier)
         }
     }
     
     public class Unary: Expression {
-        public let op: TokenOperator
+        public let op: TokenOperator.Operator
         public let child: Expression
         
-        public override var tokens: [Token] {
-            return [op] + child.tokens
-        }
-        
-        public required init(op: TokenOperator, expression: Expression) {
+        public init(sourceAnchor: SourceAnchor?, op: TokenOperator.Operator, expression: Expression) {
             self.op = op
             self.child = expression
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Unary else { return false }
             guard op == rhs.op else { return false }
             guard child == rhs.child else { return false }
@@ -169,29 +160,62 @@ public class Expression: AbstractSyntaxTreeNode {
             return String(format: "%@<%@: op='%@', expression=\n%@>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          op.lexeme,
+                          String(describing: op),
                           child.makeIndentedDescription(depth: depth+1))
         }
     }
     
-    public class Binary: Expression {
-        public let op: TokenOperator
-        public let left: Expression
-        public let right: Expression
+    public class Group: Expression {
+        public let expression: Expression
         
-        public override var tokens: [Token] {
-            return left.tokens + [op] + right.tokens
-        }
-        
-        public required init(op: TokenOperator, left: Expression, right: Expression) {
-            self.op = op
-            self.left = left
-            self.right = right
+        public init(sourceAnchor: SourceAnchor?, expression: Expression) {
+            self.expression = expression
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? Group else { return false }
+            guard expression == rhs.expression else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(expression)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: expression=\n%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          expression.makeIndentedDescription(depth: depth+1))
+        }
+    }
+    
+    public class Binary: Expression {
+        public let op: TokenOperator.Operator
+        public let left: Expression
+        public let right: Expression
+        
+        public init(sourceAnchor: SourceAnchor?,
+                    op: TokenOperator.Operator,
+                    left: Expression,
+                    right: Expression) {
+            self.op = op
+            self.left = left
+            self.right = right
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Binary else { return false }
             guard op == rhs.op else { return false }
             guard left == rhs.left else { return false }
@@ -212,7 +236,7 @@ public class Expression: AbstractSyntaxTreeNode {
             return String(format: "%@<%@: op='%@',\n%@left=%@,\n%@right=%@>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          op.lexeme,
+                          String(describing: op),
                           makeIndent(depth: depth + 1),
                           left.makeIndentedDescription(depth: depth + 1),
                           makeIndent(depth: depth + 1),
@@ -222,27 +246,20 @@ public class Expression: AbstractSyntaxTreeNode {
     
     public class Assignment: Expression {
         public let lexpr: Expression
-        public let tokenEqual: TokenEqual
         public let rexpr: Expression
         
-        public override var tokens: [Token] {
-            return rexpr.tokens + [tokenEqual] + rexpr.tokens
-        }
-        
-        public required init(lexpr: Expression,
-                             tokenEqual: TokenEqual,
-                             rexpr: Expression) {
+        public init(sourceAnchor: SourceAnchor?, lexpr: Expression, rexpr: Expression) {
             self.lexpr = lexpr
-            self.tokenEqual = tokenEqual
             self.rexpr = rexpr
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Assignment else { return false }
             guard lexpr == rhs.lexpr else { return false }
-            guard tokenEqual == rhs.tokenEqual else { return false }
             guard rexpr == rhs.rexpr else { return false }
             return true
         }
@@ -250,7 +267,6 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(lexpr)
-            hasher.combine(tokenEqual)
             hasher.combine(rexpr)
             hasher.combine(super.hash)
             return hasher.finalize()
@@ -271,18 +287,16 @@ public class Expression: AbstractSyntaxTreeNode {
         public let callee: Expression
         public let arguments: [Expression]
         
-        public override var tokens: [Token] {
-            return callee.tokens + arguments.flatMap({$0.tokens})
-        }
-        
-        public required init(callee: Expression, arguments: [Expression]) {
+        public init(sourceAnchor: SourceAnchor?, callee: Expression, arguments: [Expression]) {
             self.callee = callee
             self.arguments = arguments
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Call else { return false }
             guard callee == rhs.callee else { return false }
             guard arguments == rhs.arguments else { return false }
@@ -292,25 +306,20 @@ public class Expression: AbstractSyntaxTreeNode {
     
     public class As: Expression {
         public let expr: Expression
-        public let tokenAs: TokenAs
         public let targetType: SymbolType
         
-        public override var tokens: [Token] {
-            return expr.tokens + [tokenAs]
-        }
-        
-        public required init(expr: Expression, tokenAs: TokenAs, targetType: SymbolType) {
+        public init(sourceAnchor: SourceAnchor?, expr: Expression, targetType: SymbolType) {
             self.expr = expr
-            self.tokenAs = tokenAs
             self.targetType = targetType
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? As else { return false }
             guard expr == rhs.expr else { return false }
-            guard tokenAs == rhs.tokenAs else { return false }
             guard targetType == rhs.targetType else { return false }
             return true
         }
@@ -325,41 +334,30 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public class Subscript: Expression {
-        public let tokenIdentifier: TokenIdentifier
-        public let tokenBracketLeft: TokenSquareBracketLeft
+        public let identifier: Expression.Identifier
         public let expr: Expression
-        public let tokenBracketRight: TokenSquareBracketRight
         
-        public override var tokens: [Token] {
-            return [tokenIdentifier, tokenBracketLeft] + expr.tokens + [tokenBracketRight]
-        }
-        
-        public required init(tokenIdentifier: TokenIdentifier,
-                             tokenBracketLeft: TokenSquareBracketLeft,
-                             expr: Expression,
-                             tokenBracketRight: TokenSquareBracketRight) {
-            self.tokenIdentifier = tokenIdentifier
-            self.tokenBracketLeft = tokenBracketLeft
+        public init(sourceAnchor: SourceAnchor?, identifier: Expression.Identifier, expr: Expression) {
+            self.identifier = identifier
             self.expr = expr
-            self.tokenBracketRight = tokenBracketRight
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Subscript else { return false }
-            guard tokenIdentifier == rhs.tokenIdentifier else { return false }
-            guard tokenBracketLeft == rhs.tokenBracketLeft else { return false }
+            guard identifier == rhs.identifier else { return false }
             guard expr == rhs.expr else { return false }
-            guard tokenBracketRight == rhs.tokenBracketRight else { return false }
             return true
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ identifier=\"%@\" argument=%@>",
+            return String(format: "%@<%@ identifier=%@ argument=%@>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          tokenIdentifier.lexeme,
+                          identifier.makeIndentedDescription(depth: depth),
                           expr.makeIndentedDescription(depth: depth))
         }
     }
@@ -369,29 +367,26 @@ public class Expression: AbstractSyntaxTreeNode {
         public let explicitCount: Int?
         public let elements: [Expression]
         
-        public override var tokens: [Token] {
-            return elements.flatMap({$0.tokens})
-        }
-        
-        public init(_ explicitType: SymbolType, _ elements: [Expression]) {
-            self.explicitType = explicitType
-            self.explicitCount = nil
-            self.elements = elements
-        }
-        
-        public init(explicitType: SymbolType, explicitCount: Int? = nil, elements: [Expression] = []) {
+        public init(sourceAnchor: SourceAnchor?,
+                    explicitType: SymbolType,
+                    explicitCount: Int?,
+                    elements: [Expression] = []) {
             self.explicitType = explicitType
             self.explicitCount = explicitCount
             self.elements = elements
+            super.init(sourceAnchor: sourceAnchor)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? LiteralArray else { return false }
             guard explicitType == rhs.explicitType else { return false }
             guard explicitCount == rhs.explicitCount else { return false }
-            guard elements == rhs.elements else { return false }
+            guard elements == rhs.elements else {
+                return false
+            }
             return true
         }
         

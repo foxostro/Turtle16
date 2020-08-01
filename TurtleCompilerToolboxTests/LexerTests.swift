@@ -39,29 +39,26 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(input.peek(2), "c")
     }
     
-    func testAdvanceEmptyString() {
+    func testPeekPastTheEnd() {
+        let input = Lexer(withString: "a")
+        XCTAssertEqual(input.peek(2), nil)
+    }
+    
+    func testIsAtEnd() {
         let input = Lexer(withString: "")
         XCTAssertTrue(input.isAtEnd)
-        XCTAssertEqual(input.advance(), nil)
+    }
+    
+    func testAdvanceEmptyString() {
+        let input = Lexer(withString: "")
+        input.advance()
+        XCTAssertTrue(input.isAtEnd)
     }
     
     func testAdvanceCharacter() {
         let input = Lexer(withString: "a")
-        XCTAssertFalse(input.isAtEnd)
-        XCTAssertEqual(input.advance(), "a")
+        input.advance()
         XCTAssertTrue(input.isAtEnd)
-    }
-    
-    func testMatchWhitespaceButNoneIsThere() {
-        let input = Lexer(withString: "\n")
-        XCTAssertEqual(input.match(characterSet: .whitespaces), nil)
-        XCTAssertEqual(input.peek(), "\n")
-    }
-    
-    func testMatchWhitespace() {
-        let input = Lexer(withString: "  \t\n")
-        XCTAssertEqual(input.match(characterSet: .whitespaces), "  \t")
-        XCTAssertEqual(input.peek(), "\n")
     }
     
     func testAdvanceToNewlineWithEmptyString() {
@@ -76,19 +73,31 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(input.peek(), "\n")
     }
     
+    func testAdvancePastNewline() {
+        let input = Lexer(withString: "abcd\nefgh")
+        input.advanceToNewline()
+        input.advance()
+        XCTAssertEqual(input.peek(0), "e")
+        XCTAssertEqual(input.peek(1), "f")
+    }
+    
     func testMatchBadPattern() {
         let input = Lexer(withString: "NOP $1\n")
         XCTAssertEqual(input.match(pattern: "["), nil)
     }
     
     func testMatchEmptyPattern() {
-        let input = Lexer(withString: "NOP $1\n")
-        XCTAssertEqual(input.match(pattern: ""), "")
+        let text = "NOP $1\n"
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let input = Lexer(withString: text)
+        XCTAssertEqual(input.match(pattern: ""), lineMapper.anchor(0, 0))
     }
     
     func testMatchPattern() {
-        let input = Lexer(withString: "NOP $1\n")
-        XCTAssertEqual(input.match(pattern: "[A-Z]+"), "NOP")
+        let text = "NOP $1\n"
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let input = Lexer(withString: text)
+        XCTAssertEqual(input.match(pattern: "[A-Z]+"), lineMapper.anchor(0, 3))
     }
     
     func testFailToMatchPattern() {
@@ -97,38 +106,38 @@ class LexerTests: XCTestCase {
     }
     
     func testScanTokensInEmptyString() {
-        let tokenizer = Lexer(withString: "")
+        let text = ""
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let tokenizer = Lexer(withString: text)
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenEOF(lineNumber: 1, lexeme: "")])
+        XCTAssertEqual(tokenizer.tokens, [TokenEOF(sourceAnchor: lineMapper.anchor(0, 0))])
     }
     
     func testScanTokensWithNewlines() {
-        let tokenizer = Lexer(withString: "\n\n")
+        let text = "\n\n"
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let tokenizer = Lexer(withString: text)
         tokenizer.rules = [
             Lexer.Rule(pattern: "\n") {
-                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
-                tokenizer.lineNumber += 1
-                return token
+                TokenNewline(sourceAnchor: $0)
             }
         ]
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenNewline(lineNumber: 1, lexeme: "\n"),
-                                          TokenNewline(lineNumber: 2, lexeme: "\n"),
-                                          TokenEOF(lineNumber: 3, lexeme: "")])
+        XCTAssertEqual(tokenizer.tokens, [TokenNewline(sourceAnchor: lineMapper.anchor(0, 1)),
+                                          TokenNewline(sourceAnchor: lineMapper.anchor(1, 2)),
+                                          TokenEOF(sourceAnchor: lineMapper.anchor(2, 2))])
     }
     
     func testScanTokensYieldingUnexpectedCharacterError() {
         let tokenizer = Lexer(withString: "@\n")
         tokenizer.rules = [
             Lexer.Rule(pattern: "\n") {
-                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
-                tokenizer.lineNumber += 1
-                return token
+                TokenNewline(sourceAnchor: $0)
             }
         ]
         tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
-        XCTAssertEqual(tokenizer.errors.first?.line, 1)
+        XCTAssertEqual(tokenizer.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `@'")
     }
     
@@ -136,35 +145,35 @@ class LexerTests: XCTestCase {
         let tokenizer = Lexer(withString: "@\n$\n")
         tokenizer.rules = [
             Lexer.Rule(pattern: "\n") {
-                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
-                tokenizer.lineNumber += 1
-                return token
+                TokenNewline(sourceAnchor: $0)
             }
         ]
         tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
         XCTAssertEqual(tokenizer.errors.count, 2)
-        XCTAssertEqual(tokenizer.errors[0].line, 1)
+        XCTAssertEqual(tokenizer.errors[0].sourceAnchor?.text, "@")
+        XCTAssertEqual(tokenizer.errors[0].sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(tokenizer.errors[0].message, "unexpected character: `@'")
-        XCTAssertEqual(tokenizer.errors[1].line, 2)
+        XCTAssertEqual(tokenizer.errors[1].sourceAnchor?.text, "$")
+        XCTAssertEqual(tokenizer.errors[1].sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(tokenizer.errors[1].message, "unexpected character: `$'")
     }
     
     func testScanTokensWithMoreThanOneRule() {
-        let tokenizer = Lexer(withString: ",\n")
+        let text = ",\n"
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let tokenizer = Lexer(withString: text)
         tokenizer.rules = [
             Lexer.Rule(pattern: ",") {
-                TokenComma(lineNumber: tokenizer.lineNumber, lexeme: $0)
+                TokenComma(sourceAnchor: $0)
             },
             Lexer.Rule(pattern: "\n") {
-                let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
-                tokenizer.lineNumber += 1
-                return token
+                TokenNewline(sourceAnchor: $0)
             }
         ]
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenComma(lineNumber: 1, lexeme: ","),
-                                          TokenNewline(lineNumber: 1, lexeme: "\n"),
-                                          TokenEOF(lineNumber: 2, lexeme: "")])
+        XCTAssertEqual(tokenizer.tokens, [TokenComma(sourceAnchor: lineMapper.anchor(0, 1)),
+                                          TokenNewline(sourceAnchor: lineMapper.anchor(1, 2)),
+                                          TokenEOF(sourceAnchor: lineMapper.anchor(2, 2))])
     }
 }

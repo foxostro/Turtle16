@@ -11,210 +11,216 @@ import TurtleAssemblerCore
 import TurtleCompilerToolbox
 
 class AssemblerParserTests: XCTestCase {
-    func tokenize(_ text: String) -> [Token] {
+    func parse(_ text: String) -> AssemblerParser {
         let tokenizer = AssemblerLexer(withString: text)
         tokenizer.scanTokens()
-        let tokens = tokenizer.tokens
-        return tokens
+        let parser = AssemblerParser(tokens: tokenizer.tokens,
+                                     lineMapper: tokenizer.lineMapper)
+        parser.parse()
+        return parser
     }
     
     func testEmptyProgramYieldsEmptyAST() {
-        let parser = AssemblerParser(tokens: tokenize(""))
-        parser.parse()
+        let parser = parse("")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 0)
     }
     
     func testParseNOPYieldsSingleNOPNode() {
-        let parser = AssemblerParser(tokens: tokenize("NOP"))
-        parser.parse()
+        let parser = parse("NOP")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
+        XCTAssertEqual(ast.children[0], InstructionNode(sourceAnchor: nil, instruction: "NOP", parameters: ParameterList(sourceAnchor: nil, parameters: [])))
     }
 
     func testParseTwoNOPsYieldsTwoNOPNodes() {
-        let parser = AssemblerParser(tokens: tokenize("NOP\nNOP\n"))
-        parser.parse()
+        let parser = parse("NOP\nNOP\n")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-        XCTAssertEqual(ast.children[1], InstructionNode(instruction: TokenIdentifier(lineNumber: 2, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
+        XCTAssertEqual(ast.children[0],
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                       instruction: "NOP",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+        XCTAssertEqual(ast.children[1],
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(4, 7),
+                                       instruction: "NOP",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
     }
 
     func testHLTParses() {
-        let parser = AssemblerParser(tokens: tokenize("HLT"))
-        parser.parse()
+        let parser = parse("HLT")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "HLT"),
-                                       parameters: ParameterListNode(parameters: [])))
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                       instruction: "HLT",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
     }
 
     func testLabelDeclaration() {
-        let parser = AssemblerParser(tokens: tokenize("label:"))
-        parser.parse()
+        let parser = parse("label:")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "label")))
+        XCTAssertEqual(ast.children[0],
+                       LabelDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 6),
+                                            identifier: "label"))
     }
 
     func testLabelDeclarationAtAnotherAddress() {
-        let parser = AssemblerParser(tokens: tokenize("NOP\nlabel:"))
-        parser.parse()
+        let parser = parse("NOP\nlabel:")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "NOP"), parameters: ParameterListNode(parameters: [])))
-        XCTAssertEqual(ast.children[1], LabelDeclarationNode(identifier: TokenIdentifier(lineNumber: 2, lexeme: "label")))
+        XCTAssertEqual(ast.children[0],
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                       instruction: "NOP",
+                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+        XCTAssertEqual(ast.children[1],
+                       LabelDeclaration(sourceAnchor: parser.lineMapper.anchor(4, 10),
+                                            identifier: "label"))
     }
 
     func testParseLabelNameIsANumber() {
-        let parser = AssemblerParser(tokens: tokenize("123:"))
-        parser.parse()
+        let parser = parse("123:")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 3))
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
 
     func testParseExtraneousColon() {
-        let parser = AssemblerParser(tokens: tokenize(":"))
-        parser.parse()
+        let parser = parse(":")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
 
     func testParseValidLI() {
-        let parser = AssemblerParser(tokens: tokenize("LI D, 42"))
-        parser.parse()
+        let parser = parse("LI D, 42")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "LI"),
-                                       parameters: ParameterListNode(parameters: [
-                                        TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
-                                        TokenNumber(lineNumber: 1, lexeme: "42", literal: 42),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                       instruction: "LI",
+                                       parameters: ParameterList(sourceAnchor: parser.lineMapper.anchor(3, 8), parameters: [
+                                        ParameterRegister(sourceAnchor: parser.lineMapper.anchor(3, 4), value: .D),
+                                        ParameterNumber(sourceAnchor: parser.lineMapper.anchor(6, 8), value: 42),
                                        ])))
     }
 
     func testParseValidMOV() {
-        let parser = AssemblerParser(tokens: tokenize("MOV D, A"))
-        parser.parse()
+        let parser = parse("MOV D, A")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       InstructionNode(instruction: TokenIdentifier(lineNumber: 1, lexeme: "MOV"),
-                                       parameters: ParameterListNode(parameters: [
-                                        TokenRegister(lineNumber: 1, lexeme: "D", literal: .D),
-                                        TokenRegister(lineNumber: 1, lexeme: "A", literal: .A),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                       instruction: "MOV",
+                                       parameters: ParameterList(sourceAnchor: parser.lineMapper.anchor(4, 8), parameters: [
+                                        ParameterRegister(sourceAnchor: parser.lineMapper.anchor(4, 5), value: .D),
+                                        ParameterRegister(sourceAnchor: parser.lineMapper.anchor(7, 8), value: .A),
                                        ])))
     }
     
     func testExtraneousComma() {
-        let parser = AssemblerParser(tokens: tokenize(","))
-        parser.parse()
+        let parser = parse(",")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
     
     func testParameterListMalformedByHavingOnlyComma() {
-        let parser = AssemblerParser(tokens: tokenize("MOV ,"))
-        parser.parse()
+        let parser = parse("MOV ,")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(4, 5))
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,'")
     }
     
     func testParameterListMalformedWithTrailingComma() {
-        let parser = AssemblerParser(tokens: tokenize("MOV A, B, C,"))
-        parser.parse()
+        let parser = parse("MOV A, B, C,")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.line, 1)
-        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `MOV'")
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 12))
+        XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `,'")
     }
 
     func testMultipleErrorsParsingInstructions() {
-        let parser = AssemblerParser(tokens: tokenize("MOV ,\nMOV A, B, C,\n"))
-        parser.parse()
+        let parser = parse("MOV ,\nMOV A, B, C,\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors[0].line, 1)
-        XCTAssertEqual(parser.errors[0].message, "operand type mismatch: `MOV'")
-        XCTAssertEqual(parser.errors[1].line, 2)
-        XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `MOV'")
+        XCTAssertEqual(parser.errors[0].sourceAnchor, parser.lineMapper.anchor(4, 5))
+        XCTAssertEqual(parser.errors[0].message, "operand type mismatch: `,'")
+        XCTAssertEqual(parser.errors[1].sourceAnchor, parser.lineMapper.anchor(17, 18))
+        XCTAssertEqual(parser.errors[1].message, "operand type mismatch: `,'")
     }
     
     func testMalformedDeclaration_BareLetStatement() {
-        let parser = AssemblerParser(tokens: tokenize("let"))
-        parser.parse()
+        let parser = parse("let")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 3))
         XCTAssertEqual(parser.errors.first?.message, "expected to find an identifier in constant declaration")
     }
     
     func testMalformedDeclaration_MissingAssignment() {
-        let parser = AssemblerParser(tokens: tokenize("let foo"))
-        parser.parse()
+        let parser = parse("let foo")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(4, 7))
         XCTAssertEqual(parser.errors.first?.message, "constants must be assigned a value")
     }
     
     func testMalformedDeclaration_MissingValue() {
-        let tokens = tokenize("let foo =")
-        let parser = AssemblerParser(tokens: tokens)
-        parser.parse()
+        let parser = parse("let foo =")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected value after '='")
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(8, 9))
+        XCTAssertEqual(parser.errors.first?.message, "expected value after `='")
     }
     
     func testMalformedDeclaration_BadTypeForValue_Identifier() {
-        let parser = AssemblerParser(tokens: tokenize("let foo = bar"))
-        parser.parse()
+        let parser = parse("let foo = bar")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(10, 13))
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `bar'")
     }
     
     func testMalformedDeclaration_BadTypeForValue_Register() {
-        let parser = AssemblerParser(tokens: tokenize("let foo = A"))
-        parser.parse()
+        let parser = parse("let foo = A")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(10, 11))
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `A'")
     }
     
     func testMalformedDeclaration_BadTypeForValue_TooManyTokens() {
-        let parser = AssemblerParser(tokens: tokenize("let foo = 1 A"))
-        parser.parse()
+        let parser = parse("let foo = 1 A")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(12, 13))
         XCTAssertEqual(parser.errors.first?.message, "operand type mismatch: `A'")
     }
     
     func testWellFormedDeclaration() {
-        let parser = AssemblerParser(tokens: tokenize("let foo = 1"))
-        parser.parse()
+        let parser = parse("let foo = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       ConstantDeclarationNode(identifier: TokenIdentifier(lineNumber: 1, lexeme: "foo"),
-                                               number: TokenNumber(lineNumber: 1, lexeme: "1", literal: 1)))
+                       ConstantDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                               identifier: "foo",
+                                               value: 1))
     }
 }

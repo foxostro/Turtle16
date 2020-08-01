@@ -18,7 +18,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCannotAssignToAnImmutableVariable() {
-        let expr = ExprUtils.makeIdentifier(name: "foo")
+        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -28,7 +28,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testAssignToMutableVariable() {
-        let expr = ExprUtils.makeIdentifier(name: "foo")
+        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
         let ir = try! compile(expression: expr, symbols: symbols)
         let executor = YertleExecutor()
@@ -37,7 +37,9 @@ class LvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignmentThroughArraySubscript() {
-        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: ExprUtils.makeLiteralInt(value: 0))
+        let expr = Expression.Subscript(sourceAnchor: nil,
+                                        identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                        expr: Expression.LiteralWord(sourceAnchor: nil, value: 0))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .bool), offset: 0x0010, isMutable: true)])
         var ir: [YertleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
@@ -57,7 +59,9 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let addressOfCount = 0x0012
         let addressOfData = 0x0014
         
-        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: ExprUtils.makeLiteralInt(value: 2))
+        let expr = Expression.Subscript(sourceAnchor: nil,
+                                        identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                        expr: Expression.LiteralWord(sourceAnchor: nil, value: 2))
         
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: true),

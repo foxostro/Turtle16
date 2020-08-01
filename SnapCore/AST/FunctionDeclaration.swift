@@ -9,21 +9,24 @@
 import TurtleCompilerToolbox
 
 public class FunctionDeclaration: AbstractSyntaxTreeNode {
-    public let identifier: TokenIdentifier
+    public let identifier: Expression.Identifier
     public let functionType: FunctionType
     public let body: Block
     
-    public required init(identifier: TokenIdentifier,
+    public required init(sourceAnchor: SourceAnchor?,
+                         identifier: Expression.Identifier,
                          functionType: FunctionType,
                          body: Block) {
         self.identifier = identifier
         self.functionType = functionType
         self.body = body
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? FunctionDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
         guard functionType == rhs.functionType else { return false }
@@ -41,10 +44,10 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=\"%@\", functionType=%@, body=%@>",
+        return String(format: "%@<%@: identifier=%@, functionType=%@, body=%@>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
-                      identifier.lexeme,
+                      identifier.makeIndentedDescription(depth: depth + 1),
                       functionType.description,
                       body.makeIndentedDescription(depth: depth + 1))
     }

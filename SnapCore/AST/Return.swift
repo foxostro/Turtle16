@@ -9,26 +9,24 @@
 import TurtleCompilerToolbox
 
 public class Return: AbstractSyntaxTreeNode {
-    public let token: TokenReturn
     public let expression: Expression?
     
-    public required init(token: TokenReturn, expression: Expression?) {
-        self.token = token
+    public required init(sourceAnchor: SourceAnchor?, expression: Expression? = nil) {
         self.expression = expression
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Return else { return false }
-        guard token == rhs.token else { return false }
         guard expression == rhs.expression else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
-        hasher.combine(token)
         hasher.combine(expression)
         hasher.combine(super.hash)
         return hasher.finalize()

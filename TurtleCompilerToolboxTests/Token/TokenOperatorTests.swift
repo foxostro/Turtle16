@@ -11,45 +11,33 @@ import TurtleCompilerToolbox
 
 class TokenOperatorTests: XCTestCase {
     func testDescription() {
-        XCTAssertEqual(TokenOperator(lineNumber: 1, lexeme: "-", op: .minus).description, "<TokenOperator: lineNumber=1, lexeme=\"-\", op=minus>")
+        XCTAssertEqual(TokenOperator(sourceAnchor: nil, op: .minus).description, "<TokenOperator: sourceAnchor=nil, lexeme=\"\", op=minus>")
     }
     
     func testTokenOperatorIsNotEqualToSomeOtherNSObject() {
-        let token = TokenOperator(lineNumber: 42, lexeme: "-", op: .minus)
+        let token = TokenOperator(sourceAnchor: nil, op: .minus)
         XCTAssertNotEqual(token, NSArray())
     }
     
-    func testTokenOperatorIsNotEqualToTokenWithDifferentLineNumber() {
-        let a = TokenOperator(lineNumber: 1, lexeme: "-", op: .minus)
-        let b = TokenOperator(lineNumber: 2, lexeme: "-", op: .minus)
-        XCTAssertNotEqual(a, b)
-    }
-    
-    func testTokenOperatorIsNotEqualToTokenWithDifferentLexeme() {
-        let a = TokenOperator(lineNumber: 1, lexeme: "-", op: .minus)
-        let b = TokenOperator(lineNumber: 1, lexeme: "neg", op: .minus)
-        XCTAssertNotEqual(a, b)
-    }
-    
     func testTokenOperatorIsNotEqualToTokenWithDifferentOperator() {
-        let a = TokenOperator(lineNumber: 1, lexeme: "-", op: .minus)
-        let b = TokenOperator(lineNumber: 1, lexeme: "-", op: .plus)
+        let a = TokenOperator(sourceAnchor: nil, op: .minus)
+        let b = TokenOperator(sourceAnchor: nil, op: .plus)
         XCTAssertNotEqual(a, b)
     }
     
     func testTokenOperatorIsNotEqualToTokenOfDifferentType() {
-        let a = TokenOperator(lineNumber: 1, lexeme: "-", op: .minus)
-        let b = TokenEOF(lineNumber: 1)
+        let a = TokenOperator(sourceAnchor: nil, op: .minus)
+        let b = TokenEOF(sourceAnchor: nil)
         XCTAssertNotEqual(a, b)
     }
     
     func testEquality() {
-        XCTAssertEqual(TokenOperator(lineNumber: 1, lexeme: "-", op: .minus),
-                       TokenOperator(lineNumber: 1, lexeme: "-", op: .minus))
+        XCTAssertEqual(TokenOperator(sourceAnchor: nil, op: .minus),
+                       TokenOperator(sourceAnchor: nil, op: .minus))
     }
     
     func testHash() {
-        XCTAssertEqual(TokenOperator(lineNumber: 1, lexeme: "-", op: .minus).hashValue,
-                       TokenOperator(lineNumber: 1, lexeme: "-", op: .minus).hashValue)
+        XCTAssertEqual(TokenOperator(sourceAnchor: nil, op: .minus).hashValue,
+                       TokenOperator(sourceAnchor: nil, op: .minus).hashValue)
     }
 }

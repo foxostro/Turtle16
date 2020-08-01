@@ -9,25 +9,24 @@
 import TurtleCompilerToolbox
 
 public class VarDeclaration: AbstractSyntaxTreeNode {
-    public let identifier: TokenIdentifier
+    public let identifier: Expression.Identifier
     public let explicitType: SymbolType?
-    public let tokenEqual: TokenEqual
     public let expression: Expression
     public let storage: SymbolStorage
     public let isMutable: Bool
     
-    public required init(identifier: TokenIdentifier,
+    public required init(sourceAnchor: SourceAnchor?,
+                         identifier: Expression.Identifier,
                          explicitType: SymbolType?,
-                         tokenEqual: TokenEqual,
                          expression: Expression,
                          storage: SymbolStorage,
                          isMutable: Bool) {
         self.identifier = identifier
         self.explicitType = explicitType
-        self.tokenEqual = tokenEqual
         self.storage = storage
         self.isMutable = isMutable
         self.expression = expression
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -37,6 +36,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         guard type(of: rhs!) == type(of: self) else {
             return false
         }
+        guard super.isEqual(rhs) else {
+            return false
+        }
         guard let rhs = rhs as? VarDeclaration else {
             return false
         }
@@ -44,9 +46,6 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
             return false
         }
         guard explicitType == rhs.explicitType else {
-            return false
-        }
-        guard tokenEqual == rhs.tokenEqual else {
             return false
         }
         guard isMutable == rhs.isMutable else {
@@ -65,7 +64,6 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(identifier)
         hasher.combine(explicitType)
-        hasher.combine(tokenEqual)
         hasher.combine(storage)
         hasher.combine(isMutable)
         hasher.combine(expression)
@@ -74,10 +72,10 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=\"%@\", explicitType=%@, storage=%@, isMutable=%@, expression=%@>",
+        return String(format: "%@<%@: identifier=%@, explicitType=%@, storage=%@, isMutable=%@, expression=%@>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
-                      identifier.lexeme,
+                      identifier.makeIndentedDescription(depth: depth + 1),
                       explicitType?.description ?? "nil",
                       String(describing: storage),
                       isMutable ? "true" : "false",

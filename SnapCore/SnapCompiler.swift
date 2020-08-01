@@ -35,10 +35,10 @@ public class SnapCompiler: NSObject {
             do {
                 return try String(contentsOfFile: fileName)
             } catch {
-                throw CompilerError(message: "failed to read standard library from file: \(fileName)")
+                throw CompilerError(sourceAnchor: nil, message: "failed to read standard library from file: \(fileName)")
             }
         } else {
-            throw CompilerError(message: "standard library file is missing: \(kStandardLibrarySourceFileName).snap")
+            throw CompilerError(sourceAnchor: nil, message: "standard library file is missing: \(kStandardLibrarySourceFileName).snap")
         }
     }
     
@@ -60,7 +60,7 @@ public class SnapCompiler: NSObject {
                 errors.append(error)
                 return
             } catch {
-                errors.append(CompilerError(message: "unrecoverable error: \(error.localizedDescription)"))
+                errors.append(CompilerError(sourceAnchor: nil, message: "unrecoverable error: \(error.localizedDescription)"))
                 return
             }
             text = originalText + "\n" + kStandardLibraryText
@@ -93,12 +93,13 @@ public class SnapCompiler: NSObject {
             return
         }
         ir = snapToYertle.instructions
+        let mapInstructionToSource = snapToYertle.mapInstructionToSource
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
         let yertleToMachineCode = YertleToTurtleMachineCodeCompiler(assembler: assembler)
         do {
-            try yertleToMachineCode.compile(ir: ir, base: base)
+            try yertleToMachineCode.compile(ir: ir, mapInstructionToSource: mapInstructionToSource, base: base)
         } catch let error as CompilerError {
             errors = [error]
             return

@@ -34,11 +34,11 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
     private func compile(identifier expr: Expression.Identifier) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: expr.identifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         guard symbol.isMutable else {
-            throw CompilerError(line: expr.identifier.lineNumber, message: "cannot assign to immutable variable `\(expr.identifier.lexeme)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to immutable variable `\(expr.identifier)'")
         }
         
         switch symbol.storage {

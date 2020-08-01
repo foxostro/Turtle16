@@ -42,11 +42,12 @@ public class SnapParser: Parser {
         else if let token = accept(TokenFor.self) {
             result = try consumeForLoop(token as! TokenFor)
         }
-        else if let _ = accept(TokenCurlyLeft.self) {
-            result = try consumeBlock()
+        else if let leftBrace = accept(TokenCurlyLeft.self) {
+            result = try consumeBlock(leftBrace as! TokenCurlyLeft)
         }
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
-            throw CompilerError(line: peek()!.lineNumber, message: "labels are not supported")
+            let sourceAnchor = peek(0)?.sourceAnchor?.union(peek(1)?.sourceAnchor)
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "labels are not supported")
         }
         else if let token = accept(TokenFunc.self) {
             result = try consumeFunc(token as! TokenFunc)
@@ -65,14 +66,20 @@ public class SnapParser: Parser {
     
     private func consumeStatic(_ staticToken: TokenStatic) throws -> [AbstractSyntaxTreeNode] {
         if let token = accept(TokenLet.self) {
-            return try consumeLet(token as! TokenLet, storage: .staticStorage)
+            return try consumeLet(token as! TokenLet,
+                                  storage: .staticStorage,
+                                  storageSpecifier: staticToken)
+        } else {
+            let token = try expect(type: TokenVar.self, error: CompilerError(sourceAnchor: staticToken.sourceAnchor, message: "expected declaration"))
+            return try consumeVar(token as! TokenVar,
+                                  storage: .staticStorage,
+                                  storageSpecifier: staticToken)
         }
-        
-        let token = try expect(type: TokenVar.self, error: CompilerError(line: staticToken.lineNumber, message: "expected declaration"))
-        return try consumeVar(token as! TokenVar, storage: .staticStorage)
     }
     
-    private func consumeLet(_ letToken: TokenLet, storage: SymbolStorage = .stackStorage) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeLet(_ letToken: TokenLet,
+                            storage: SymbolStorage = .stackStorage,
+                            storageSpecifier: Token? = nil) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = false
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in let declaration"
         let errorMessageWhenNoInitialValue = "immutable variables must be assigned a value"
@@ -82,10 +89,13 @@ public class SnapParser: Parser {
                               errorMessageWhenNoInitialValue,
                               errorFormatWhenNoInitialValueAfterEqual,
                               storage,
-                              isMutable)
+                              isMutable,
+                              storageSpecifier)
     }
     
-    private func consumeVar(_ varToken: TokenVar, storage: SymbolStorage = .stackStorage) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeVar(_ varToken: TokenVar,
+                            storage: SymbolStorage = .stackStorage,
+                            storageSpecifier: Token? = nil) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = true
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in variable declaration"
         let errorMessageWhenNoInitialValue = "variables must be assigned an initial value"
@@ -95,7 +105,8 @@ public class SnapParser: Parser {
                               errorMessageWhenNoInitialValue,
                               errorFormatWhenNoInitialValueAfterEqual,
                               storage,
-                              isMutable)
+                              isMutable,
+                              storageSpecifier)
     }
     
     fileprivate func consumeVar(_ letOrVarToken: Token,
@@ -103,20 +114,20 @@ public class SnapParser: Parser {
                                 _ errorMessageWhenNoInitialValue: String,
                                 _ errorFormatWhenNoInitialValueAfterEqual: String,
                                 _ storage: SymbolStorage,
-                                _ isMutable: Bool) throws -> [AbstractSyntaxTreeNode] {
+                                _ isMutable: Bool,
+                                _ storageSpecifier: Token?) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
-                                    error: CompilerError(line: letOrVarToken.lineNumber,
-                                                         format: errorMessageWhenMissingIdentifier,
-                                                         letOrVarToken.lexeme)) as! TokenIdentifier
+                                    error: CompilerError(sourceAnchor: letOrVarToken.sourceAnchor,
+                                                         message: errorMessageWhenMissingIdentifier)) as! TokenIdentifier
         
         let explicitType = try consumeTypeAnnotation()
         
         let equal = try expect(type: TokenEqual.self,
-                               error: CompilerError(line: letOrVarToken.lineNumber,
+                               error: CompilerError(sourceAnchor: identifier.sourceAnchor,
                                                     message: errorMessageWhenNoInitialValue)) as! TokenEqual
         
         if nil != acceptEndOfStatement() {
-            throw CompilerError(line: equal.lineNumber,
+            throw CompilerError(sourceAnchor: equal.sourceAnchor,
                                 format: errorFormatWhenNoInitialValueAfterEqual,
                                 equal.lexeme)
         }
@@ -125,14 +136,17 @@ public class SnapParser: Parser {
         
         if let arr = expression as? Expression.LiteralArray {
             if arr.elements.count == 0 && explicitType == nil {
-                throw CompilerError(line: arr.tokens.first?.lineNumber ?? -1,
+                throw CompilerError(sourceAnchor: arr.sourceAnchor,
                                     message: "empty array literal requires an explicit type")
             }
         }
         
-        return [VarDeclaration(identifier: identifier,
+        let sourceAnchor = letOrVarToken.sourceAnchor?
+            .union(expression.sourceAnchor)
+            .union(storageSpecifier?.sourceAnchor)
+        return [VarDeclaration(sourceAnchor: sourceAnchor,
+                               identifier: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
                                explicitType: explicitType,
-                               tokenEqual: equal,
                                expression: expression,
                                storage: storage,
                                isMutable: isMutable)]
@@ -154,7 +168,7 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumeArrayType() throws -> SymbolType {
-        try expect(type: TokenSquareBracketLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `[' in array type"))
+        try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in array type"))
         let count: Int?
         if nil != accept(TokenSquareBracketRight.self) {
             let elementType = try consumeType()
@@ -164,26 +178,29 @@ public class SnapParser: Parser {
             if nil != accept(TokenUnderscore.self) {
                 count = nil
             } else {
-                count = (try expect(type: TokenNumber.self, error: CompilerError(line: peek()!.lineNumber, message: "expected integer literal for the array count")) as! TokenNumber).literal
+                count = (try expect(type: TokenNumber.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected integer literal for the array count")) as! TokenNumber).literal
             }
-            try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `]' in array type"))
+            try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]' in array type"))
             let elementType = try consumeType()
             return .array(count: count, elementType: elementType)
         }
     }
     
     fileprivate func consumePrimitiveType() throws -> SymbolType {
-        let tokenType = try expect(type: TokenType.self, error: CompilerError(line: peek()!.lineNumber, message: "use of undeclared type `\(peek()!.lexeme)'")) as! TokenType
+        let typeName = peek()?.sourceAnchor?.text ?? "unknown"
+        let tokenType = try expect(type: TokenType.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "use of undeclared type `\(typeName)'")) as! TokenType
         let explicitType = tokenType.representedType
         return explicitType
     }
     
     private func consumeIf(_ ifToken: TokenIf) throws -> [AbstractSyntaxTreeNode] {
         if nil != acceptEndOfStatement() {
-            throw CompilerError(line: ifToken.lineNumber, message: "expected condition after `\(ifToken.lexeme)'")
+            let s = ifToken.sourceAnchor?.text ?? "if"
+            throw CompilerError(sourceAnchor: ifToken.sourceAnchor, message: "expected condition after `\(s)'")
         }
         if nil != accept(TokenCurlyLeft.self) {
-            throw CompilerError(line: ifToken.lineNumber, message: "expected condition after `\(ifToken.lexeme)'")
+            let s = ifToken.sourceAnchor?.text ?? "if"
+            throw CompilerError(sourceAnchor: ifToken.sourceAnchor, message: "expected condition after `\(s)'")
         }
         let condition = try consumeExpression()
         
@@ -193,72 +210,90 @@ public class SnapParser: Parser {
             let rightError = "expected `}' after `then' branch"
             thenBranch = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
         } else {
-            try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
-            thenBranch = Block(children: try consumeStatement())
+            let newline = try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
+            let children = try consumeStatement()
+            let sourceAnchor = children.map({$0.sourceAnchor}).reduce(newline.sourceAnchor, {$0?.union($1)})
+            thenBranch = Block(sourceAnchor: sourceAnchor, children: children)
         }
         
         var elseBranch: AbstractSyntaxTreeNode? = nil
         let handleElse = {
-            let elseToken = try self.expect(type: TokenElse.self, error: CompilerError(line: self.peek()!.lineNumber, message: "expected `else'"))
+            let elseToken = try self.expect(type: TokenElse.self, error: CompilerError(sourceAnchor: self.peek()?.sourceAnchor, message: "expected `else'"))
             
             if nil != (self.peek() as? TokenCurlyLeft) {
                 let leftError = "expected `{' after `\(elseToken.lexeme)'"
                 let rightError = "expected `}' after `\(elseToken.lexeme)' branch"
                 elseBranch = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
             } else {
-                try self.expect(type: TokenNewline.self, error: CompilerError(line: self.peek()!.lineNumber, message: "expected newline"))
-                elseBranch = Block(children: try self.consumeStatement())
+                let newline = try self.expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: self.peek()?.sourceAnchor, message: "expected newline"))
+                let children = try self.consumeStatement()
+                let sourceAnchor = children.map({$0.sourceAnchor}).reduce(newline.sourceAnchor, {$0?.union($1)})
+                elseBranch = Block(sourceAnchor: sourceAnchor, children: children)
             }
         }
         if (nil != peek(0) as? TokenElse) {
             try handleElse()
         } else if (nil != peek(0) as? TokenNewline) && (nil != peek(1) as? TokenElse) {
-            try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
+            try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
             try handleElse()
         }
         
-        return [If(condition: condition, then: thenBranch, else: elseBranch)]
+        let sourceAnchor = ifToken.sourceAnchor?.union(previous?.sourceAnchor)
+        
+        return [If(sourceAnchor: sourceAnchor,
+                   condition: condition,
+                   then: thenBranch,
+                   else: elseBranch)]
     }
     
-    private func consumeBlock() throws -> [AbstractSyntaxTreeNode] {
+    private func consumeBlock(_ leftBrace: TokenCurlyLeft) throws -> [AbstractSyntaxTreeNode] {
         var statements: [AbstractSyntaxTreeNode] = []
         while nil == accept(TokenCurlyRight.self) {
             if nil == peek() || nil != (peek() as? TokenEOF){
-                throw CompilerError(line: previous!.lineNumber, message: "expected `}' after block")
+                throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected `}' after block")
             }
             statements += try consumeStatement()
         }
-        
-        return [Block(children: statements)]
+        let sourceAnchor = leftBrace.sourceAnchor?.union(previous?.sourceAnchor)
+        return [Block(sourceAnchor: sourceAnchor, children: statements)]
     }
     
     private func consumeBlock(errorOnMissingCurlyLeft: String,
                               errorOnMissingCurlyRight: String) throws -> [AbstractSyntaxTreeNode] {
-        try expect(type: TokenCurlyLeft.self, error: CompilerError(line: previous!.lineNumber, message: errorOnMissingCurlyLeft))
+        let leftCurly = try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: errorOnMissingCurlyLeft))
         
         if nil != accept(TokenCurlyRight.self) {
-            return [Block()]
+            let sourceAnchor = leftCurly.sourceAnchor?.union(previous?.sourceAnchor)
+            return [Block(sourceAnchor: sourceAnchor)]
         }
         
-        try expect(type: TokenNewline.self, error: CompilerError(line: previous!.lineNumber, message: "expected newline"))
+        let newline = try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected newline"))
         
         var statements: [AbstractSyntaxTreeNode] = []
         while nil == accept(TokenCurlyRight.self) {
             if nil == peek() || nil != (peek() as? TokenEOF){
-                throw CompilerError(line: previous!.lineNumber, message: errorOnMissingCurlyRight)
+                let sourceAnchor: SourceAnchor?
+                if let lastStatement = statements.last {
+                    sourceAnchor = lastStatement.sourceAnchor
+                } else {
+                    sourceAnchor = newline.sourceAnchor
+                }
+                throw CompilerError(sourceAnchor: sourceAnchor, message: errorOnMissingCurlyRight)
             }
             statements += try consumeStatement()
         }
         
-        return [Block(children: statements)]
+        let sourceAnchor = leftCurly.sourceAnchor?.union(previous?.sourceAnchor)
+        
+        return [Block(sourceAnchor: sourceAnchor, children: statements)]
     }
     
     private func consumeWhile(_ whileToken: TokenWhile) throws -> [AbstractSyntaxTreeNode] {
         if nil != acceptEndOfStatement() {
-            throw CompilerError(line: whileToken.lineNumber, message: "expected condition after `\(whileToken.lexeme)'")
+            throw CompilerError(sourceAnchor: whileToken.sourceAnchor, message: "expected condition after `\(whileToken.lexeme)'")
         }
         if nil != accept(TokenCurlyLeft.self) {
-            throw CompilerError(line: whileToken.lineNumber, message: "expected condition after `\(whileToken.lexeme)'")
+            throw CompilerError(sourceAnchor: whileToken.sourceAnchor, message: "expected condition after `\(whileToken.lexeme)'")
         }
         let condition = try consumeExpression()
         
@@ -268,18 +303,20 @@ public class SnapParser: Parser {
             let rightError = "expected `}' after `\(whileToken.lexeme)' body"
             body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
         } else {
-            try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
-            body = Block(children: try consumeStatement())
+            let newline = try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: condition.sourceAnchor, message: "expected newline or curly brace after `while' condition"))
+            let sourceAnchor = whileToken.sourceAnchor?.union(newline.sourceAnchor)
+            body = Block(sourceAnchor: sourceAnchor, children: try consumeStatement())
         }
         
-        return [While(condition: condition, body: body)]
+        let sourceAnchor = whileToken.sourceAnchor?.union(previous?.sourceAnchor)
+        return [While(sourceAnchor: sourceAnchor, condition: condition, body: body)]
     }
     
     private func consumeForLoop(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
         let initializerClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
-        try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
+        try expect(type: TokenSemicolon.self, error: CompilerError(sourceAnchor: forToken.sourceAnchor, message: "expected `;'"))
         let conditionClause = try consumeExpression()
-        try expect(type: TokenSemicolon.self, error: CompilerError(line: forToken.lineNumber, message: "expected `;'"))
+        try expect(type: TokenSemicolon.self, error: CompilerError(sourceAnchor: forToken.sourceAnchor, message: "expected `;'"))
         let incrementClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
         
         let body: AbstractSyntaxTreeNode
@@ -288,42 +325,47 @@ public class SnapParser: Parser {
             let rightError = "expected `}' after `\(forToken.lexeme)' body"
             body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
         } else {
-            try expect(type: TokenNewline.self, error: CompilerError(line: peek()!.lineNumber, message: "expected newline"))
-            body = Block(children: try consumeStatement())
+            let newline = try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
+            let sourceAnchor = forToken.sourceAnchor?.union(newline.sourceAnchor)
+            body = Block(sourceAnchor: sourceAnchor, children: try consumeStatement())
         }
         
+        let sourceAnchor = forToken.sourceAnchor?.union(previous?.sourceAnchor)
+        
         return [
-            Block(children: [
-                ForLoop(initializerClause: initializerClause,
-                        conditionClause: conditionClause,
-                        incrementClause: incrementClause,
-                        body: body)
-            ])
+            Block(sourceAnchor: sourceAnchor,
+                  children: [
+                    ForLoop(sourceAnchor: sourceAnchor,
+                            initializerClause: initializerClause,
+                            conditionClause: conditionClause,
+                            incrementClause: incrementClause,
+                            body: body)
+                ])
         ]
     }
     
     private func consumeFunc(_ token: TokenFunc) throws -> [AbstractSyntaxTreeNode] {
         let returnType: SymbolType
-        let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected identifier in function declaration")) as! TokenIdentifier
-        try expect(type: TokenParenLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `(' in argument list of function declaration"))
+        let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: token.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
+        try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
         
         var arguments: [FunctionType.Argument] = []
         
         if type(of: peek()!) != TokenParenRight.self {
             repeat {
-                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected parameter name followed by `:'")) as! TokenIdentifier
+                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected parameter name followed by `:'")) as! TokenIdentifier
                 if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
-                    throw CompilerError(line: peek()!.lineNumber, message: "parameter requires an explicit type")
+                    throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "parameter requires an explicit type")
                 }
                 guard let type = try consumeTypeAnnotation() else {
-                    throw CompilerError(line: previous!.lineNumber, message: "expected parameter name followed by `:'")
+                    throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
                 }
                 let name = tokenIdentifier.lexeme
                 arguments.append(FunctionType.Argument(name: name, type: type))
             } while nil != accept(TokenComma.self)
         }
         
-        try expect(type: TokenParenRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `)' in argument list of function declaration"))
+        try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in argument list of function declaration"))
         
         if nil == accept(TokenArrow.self) {
             returnType = .void
@@ -333,7 +375,9 @@ public class SnapParser: Parser {
         let leftError = "expected `{' in body of function declaration"
         let rightError = "expected `}' after function body"
         let body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first as! Block
-        return [FunctionDeclaration(identifier: tokenIdentifier,
+        let sourceAnchor = token.sourceAnchor?.union(previous?.sourceAnchor)
+        return [FunctionDeclaration(sourceAnchor: sourceAnchor,
+                                    identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
                                     functionType: FunctionType(returnType: returnType,
                                                                arguments: arguments),
                                     body: body)]
@@ -381,9 +425,7 @@ public class SnapParser: Parser {
     }
     
     private func expectedEndOfStatementError(_ token: Token) -> Error {
-        return CompilerError(line: token.lineNumber,
-                              format: "expected to find the end of the statement: `%@'",
-                              token.lexeme)
+        return CompilerError(sourceAnchor: token.sourceAnchor, message: "expected to find the end of the statement: `\(token.lexeme)'")
     }
     
     private func consumeExpression() throws -> Expression {
@@ -394,16 +436,23 @@ public class SnapParser: Parser {
         var expression = try consumeAssignment()
         while let tokenOperator = accept(operators: [.eq, .ne, .lt, .gt, .le, .ge]) {
             let right = try consumeAssignment()
-            expression = Expression.Binary(op: tokenOperator, left: expression, right: right)
+            let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
+            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+                                           op: tokenOperator.op,
+                                           left: expression,
+                                           right: right)
         }
         return expression
     }
     
     private func consumeAssignment() throws -> Expression {
         let lexpr = try consumeAddition()
-        if let tokenEqual = accept(TokenEqual.self) as? TokenEqual {
+        if nil != accept(TokenEqual.self) {
             let rexpr = try consumeAddition()
-            let expression = Expression.Assignment(lexpr: lexpr, tokenEqual: tokenEqual, rexpr: rexpr)
+            let sourceAnchor = lexpr.sourceAnchor?.union(rexpr.sourceAnchor)
+            let expression = Expression.Assignment(sourceAnchor: sourceAnchor,
+                                                   lexpr: lexpr,
+                                                   rexpr: rexpr)
             return expression
         }
         return lexpr
@@ -413,7 +462,10 @@ public class SnapParser: Parser {
         var expression = try consumeMultiplication()
         while let tokenOperator = accept(operators: [.plus, .minus]) {
             let right = try consumeMultiplication()
-            expression = Expression.Binary(op: tokenOperator, left: expression, right: right)
+            let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
+            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+                                           op: tokenOperator.op,
+                                           left: expression, right: right)
         }
         return expression
     }
@@ -422,7 +474,11 @@ public class SnapParser: Parser {
         var expression = try consumeCast()
         while let tokenOperator = accept(operators: [.multiply, .divide, .modulus]) {
             let right = try consumeCast()
-            expression = Expression.Binary(op: tokenOperator, left: expression, right: right)
+            let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
+            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+                                           op: tokenOperator.op,
+                                           left: expression,
+                                           right: right)
         }
         return expression
     }
@@ -431,7 +487,10 @@ public class SnapParser: Parser {
         let expr = try consumeUnary()
         if let tokenAs = accept(TokenAs.self) as? TokenAs {
             let targetType = try consumeType()
-            return Expression.As(expr: expr, tokenAs: tokenAs, targetType: targetType)
+            let sourceAnchor = expr.sourceAnchor?.union(tokenAs.sourceAnchor).union(previous?.sourceAnchor)
+            return Expression.As(sourceAnchor: sourceAnchor,
+                                 expr: expr,
+                                 targetType: targetType)
         } else {
             return expr
         }
@@ -440,7 +499,10 @@ public class SnapParser: Parser {
     private func consumeUnary() throws -> Expression {
         if let token = accept(operator: .minus) {
             let right = try consumeUnary()
-            return Expression.Unary(op: token, expression: right)
+            let sourceAnchor = token.sourceAnchor?.union(right.sourceAnchor)
+            return Expression.Unary(sourceAnchor: sourceAnchor,
+                                    op: token.op,
+                                    expression: right)
         }
         
         return try consumeSubscript()
@@ -448,14 +510,14 @@ public class SnapParser: Parser {
     
     private func consumeSubscript() throws -> Expression {
         if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenSquareBracketLeft) {
-            let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(line: peek()!.lineNumber, message: "expected identifier")) as! TokenIdentifier
-            let leftBracket = try expect(type: TokenSquareBracketLeft.self, error: CompilerError(line: identifier.lineNumber, message: "expected `['")) as! TokenSquareBracketLeft
+            let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier")) as! TokenIdentifier
+            let leftBracket = try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: identifier.sourceAnchor, message: "expected `['")) as! TokenSquareBracketLeft
             let expr = try consumeExpression()
-            let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(line: leftBracket.lineNumber, message: "expected `]'")) as! TokenSquareBracketRight
-            return Expression.Subscript(tokenIdentifier: identifier,
-                                        tokenBracketLeft: leftBracket,
-                                        expr: expr,
-                                        tokenBracketRight: rightBracket)
+            let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: leftBracket.sourceAnchor, message: "expected `]'")) as! TokenSquareBracketRight
+            let sourceAnchor = identifier.sourceAnchor?.union(rightBracket.sourceAnchor)
+            return Expression.Subscript(sourceAnchor: sourceAnchor,
+                                        identifier: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
+                                        expr: expr)
         } else {
             return try consumeCall()
         }
@@ -471,31 +533,37 @@ public class SnapParser: Parser {
                     arguments.append(try consumeExpression())
                     while nil != accept(TokenNewline.self) {}
                 } while nil != accept(TokenComma.self)
-                try expect(type: TokenParenRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `)'"))
+                try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)'"))
             }
-            expr = Expression.Call(callee: expr, arguments: arguments)
+            let sourceAnchor = expr.sourceAnchor?.union(previous?.sourceAnchor)
+            expr = Expression.Call(sourceAnchor: sourceAnchor,
+                                   callee: expr,
+                                   arguments: arguments)
         }
         return expr
     }
     
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
-            return Expression.LiteralWord(number: numberToken)
+            return Expression.LiteralWord(sourceAnchor: numberToken.sourceAnchor,
+                                          value: numberToken.literal)
         }
         else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
-            return Expression.LiteralBoolean(boolean: booleanToken)
+            return Expression.LiteralBoolean(sourceAnchor: booleanToken.sourceAnchor,
+                                             value: booleanToken.literal)
         }
         else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
-            return Expression.Identifier(identifier: identifierToken)
+            return Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                                         identifier: identifierToken.lexeme)
         }
-        else if (accept(TokenParenLeft.self) as? TokenParenLeft) != nil {
+        else if let leftParen = accept(TokenParenLeft.self) as? TokenParenLeft {
             let expression = try consumeExpression()
-            try expect(type: TokenParenRight.self,
-                       error: CompilerError(line: previous!.lineNumber,
-                                            message: "expected `)' after expression"))
-            return expression
+            let rightParen = try expect(type: TokenParenRight.self,
+                       error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' after expression"))
+            let sourceAnchor = leftParen.sourceAnchor?.union(rightParen.sourceAnchor)
+            return Expression.Group(sourceAnchor: sourceAnchor, expression: expression)
         }
-        else if let _ = peek() as? TokenSquareBracketLeft {
+        else if let squareBracketLeft = peek() as? TokenSquareBracketLeft {
             let typ = try consumeArrayType()
             let explicitCount: Int?
             let explicitType: SymbolType
@@ -507,7 +575,7 @@ public class SnapParser: Parser {
                 abort()
             }
             
-            try expect(type: TokenCurlyLeft.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `{' in array literal"))
+            try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in array literal"))
             var elements: [Expression] = []
             if nil == (peek() as? TokenCurlyRight) {
                 repeat {
@@ -516,20 +584,23 @@ public class SnapParser: Parser {
                     while nil != accept(TokenNewline.self) {}
                 } while nil != accept(TokenComma.self)
             }
-            try expect(type: TokenCurlyRight.self, error: CompilerError(line: peek()!.lineNumber, message: "expected `}' in array literal"))
+            try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in array literal"))
             
-            return Expression.LiteralArray(explicitType: explicitType,
+            let sourceAnchor = squareBracketLeft.sourceAnchor?.union(previous?.sourceAnchor)
+            return Expression.LiteralArray(sourceAnchor: sourceAnchor,
+                                           explicitType: explicitType,
                                            explicitCount: explicitCount,
                                            elements: elements)
         }
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
-            // TODO: Synthesizing tokens to satisfy the AST node constructors feels a bit janky. Maybe we need a different way to anchor an AST node to a location in a source file.
+            let sourceAnchor = literalString.sourceAnchor
             let elements = literalString.literal.utf8.map({
-                Expression.LiteralWord(number: TokenNumber(lineNumber: literalString.lineNumber,
-                                                           lexeme: "\($0)",
-                                                           literal: Int($0)))
+                Expression.LiteralWord(sourceAnchor: sourceAnchor, value: Int($0))
             })
-            return Expression.LiteralArray(explicitType: .u8, elements: elements)
+            return Expression.LiteralArray(sourceAnchor: sourceAnchor,
+                                           explicitType: .u8,
+                                           explicitCount: nil,
+                                           elements: elements)
         }
         else if let token = peek() {
             throw operandTypeMismatchError(token)
@@ -539,22 +610,19 @@ public class SnapParser: Parser {
     }
     
     private func useOfUnresolvedIdentifierError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "use of unresolved identifier: `%@'",
-                              instruction.lexeme)
+        return CompilerError(sourceAnchor: instruction.sourceAnchor, message: "use of unresolved identifier: `\(instruction.lexeme)'")
     }
     
     private func operandTypeMismatchError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "operand type mismatch: `%@'",
-                              instruction.lexeme)
+        let str = String(instruction.sourceAnchor?.text ?? "")
+        return CompilerError(sourceAnchor: instruction.sourceAnchor, message: "operand type mismatch: `\(str)'")
     }
     
     private func consumeReturn(_ token: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
         if nil == acceptEndOfStatement() {
-            return [Return(token: token, expression: try consumeExpression())]
+            return [Return(sourceAnchor: token.sourceAnchor, expression: try consumeExpression())]
         } else {
-            return [Return(token: token, expression: nil)]
+            return [Return(sourceAnchor: token.sourceAnchor, expression: nil)]
         }
     }
 }

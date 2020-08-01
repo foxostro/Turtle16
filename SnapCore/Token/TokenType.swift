@@ -11,15 +11,16 @@ import TurtleCompilerToolbox
 public class TokenType : Token {
     public let representedType: SymbolType
     
-    public init(lineNumber: Int, lexeme: String, type: SymbolType) {
+    public init(sourceAnchor: SourceAnchor, type: SymbolType) {
         self.representedType = type
-        super.init(lineNumber: lineNumber, lexeme: lexeme)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override var description: String {
-        return String(format: "<%@: lineNumber=%d, lexeme=\"%@\", type=%@>",
+        return String(format: "<%@: sourceAnchor=%@, lexeme=\"%@\", type=%@>",
                       String(describing: type(of: self)),
-                      lineNumber, lexeme,
+                      String(describing: sourceAnchor),
+                      lexeme,
                       representedType.description)
     }
     

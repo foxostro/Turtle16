@@ -1,5 +1,5 @@
 //
-//  LabelDeclarationNode.swift
+//  LabelDeclaration.swift
 //  TurtleAssemblerCore
 //
 //  Created by Andrew Fox on 8/22/19.
@@ -8,17 +8,18 @@
 
 import TurtleCompilerToolbox
 
-public class LabelDeclarationNode: AbstractSyntaxTreeNode {
-    public let identifier: TokenIdentifier
+public class LabelDeclaration: AbstractSyntaxTreeNode {
+    public let identifier: String
     
-    public required init(identifier: TokenIdentifier) {
+    public required init(sourceAnchor: SourceAnchor?, identifier: String) {
         self.identifier = identifier
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? LabelDeclarationNode else { return false }
+        guard let rhs = rhs as? LabelDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
         return true
     }

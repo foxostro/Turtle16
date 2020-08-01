@@ -12,14 +12,16 @@ public class While: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let body: AbstractSyntaxTreeNode
     
-    public required init(condition: Expression, body: AbstractSyntaxTreeNode) {
+    public required init(sourceAnchor: SourceAnchor?, condition: Expression, body: AbstractSyntaxTreeNode) {
         self.condition = condition
         self.body = body
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? While else { return false }
         guard condition == rhs.condition else { return false }
         guard body == rhs.body else { return false }

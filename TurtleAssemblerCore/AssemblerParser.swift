@@ -29,57 +29,55 @@ public class AssemblerParser: Parser {
     
     func consumeIdentifier(_ identifier: TokenIdentifier) throws -> [AbstractSyntaxTreeNode] {
         if let token = peek(), type(of: token) == TokenColon.self {
-            try expect(type: TokenColon.self, error: unrecognizedInstructionError(identifier))
-            return [LabelDeclarationNode(identifier: identifier)]
+            try expect(type: TokenColon.self, error: unrecognizedInstructionError(sourceAnchor: identifier.sourceAnchor, instruction: identifier.lexeme))
+            return [LabelDeclaration(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme)]
         } else {
             let parameters = try consumeParameterList(instruction: identifier)
-            let node = InstructionNode(instruction: identifier, parameters: parameters)
+            let node = InstructionNode(sourceAnchor: identifier.sourceAnchor, instruction: identifier.lexeme, parameters: parameters)
             return [node]
         }
     }
     
-    func consumeParameterList(instruction: Token) throws -> ParameterListNode {
+    func consumeParameterList(instruction: Token) throws -> ParameterList {
         var parameters = try consumeOneParameterOrTheEnd(instruction: instruction)
         var previousParameterCount = 0
         while parameters.count > previousParameterCount {
             previousParameterCount = parameters.count
             parameters = try consumeCommaSeparatedParameters(instruction: instruction, parameters: parameters)
         }
-        return ParameterListNode(parameters: parameters)
+        return ParameterList(sourceAnchor: instruction.sourceAnchor, parameters: parameters)
     }
     
-    func consumeOneParameterOrTheEnd(instruction: Token, parameters sofar: [Any] = []) throws -> [Any] {
+    func consumeOneParameterOrTheEnd(instruction: Token, parameters sofar: [Parameter] = []) throws -> [Parameter] {
         var parameters = sofar
-            
-        let maybeParameter = peek()
-        try expect(types: [TokenRegister.self,
-                           TokenNumber.self,
-                           TokenIdentifier.self,
-                           TokenNewline.self,
-                           TokenEOF.self],
-                   error: operandTypeMismatchError(instruction))
-        
-        if let _ = maybeParameter as? TokenNewline {
-            return parameters
+        let nextToken = peek()
+        switch nextToken {
+        case is TokenRegister:
+            parameters += [try consumeParameterRegister()]
+        case is TokenNumber:
+            parameters += [try consumeParameterNumber()]
+        case is TokenIdentifier:
+            parameters += [try consumeParameterIdentifier()]
+        case is TokenNewline:
+            advance()
+        case is TokenEOF:
+            advance()
+        default:
+            throw operandTypeMismatchError(sourceAnchor: nextToken?.sourceAnchor,
+                                           instruction: nextToken?.lexeme ?? "unknown")
         }
-        
-        if let _ = maybeParameter as? TokenEOF {
-            return parameters
-        }
-        
-        parameters += [maybeParameter!]
-        
         return parameters
     }
     
-    func consumeCommaSeparatedParameters(instruction: Token, parameters sofar: [Any] = []) throws -> [Any] {
+    func consumeCommaSeparatedParameters(instruction: Token, parameters sofar: [Parameter] = []) throws -> [Parameter] {
         var parameters = sofar
             
         let maybeComma = peek()
         try expect(types: [TokenComma.self,
                            TokenNewline.self,
                            TokenEOF.self],
-                   error: operandTypeMismatchError(instruction))
+                   error: operandTypeMismatchError(sourceAnchor: instruction.sourceAnchor,
+                                                   instruction: instruction.lexeme))
         
         if let _ = maybeComma as? TokenComma {
             parameters = try consumeOneParameter(instruction: instruction, parameters: parameters)
@@ -88,58 +86,66 @@ public class AssemblerParser: Parser {
         return parameters
     }
     
-    func consumeOneParameter(instruction: Token, parameters sofar: [Any] = []) throws -> [Any] {
+    func consumeOneParameter(instruction: Token, parameters sofar: [Parameter] = []) throws -> [Parameter] {
         var parameters = sofar
-            
-        let maybeParameter = peek()
-        try expect(types: [TokenRegister.self,
-                           TokenNumber.self,
-                           TokenIdentifier.self],
-                   error: operandTypeMismatchError(instruction))
-        
-        parameters += [maybeParameter!]
-        
+        let nextToken = peek()
+        switch nextToken {
+        case is TokenRegister:
+            parameters += [try consumeParameterRegister()]
+        case is TokenNumber:
+            parameters += [try consumeParameterNumber()]
+        case is TokenIdentifier:
+            parameters += [try consumeParameterIdentifier()]
+        default:
+            throw operandTypeMismatchError(sourceAnchor: previous?.sourceAnchor,
+                                           instruction: previous?.lexeme ?? "unknown")
+        }
         return parameters
     }
     
+    func consumeParameterRegister() throws -> Parameter {
+        let error = operandTypeMismatchError(sourceAnchor: peek()?.sourceAnchor, instruction: peek()?.lexeme ?? "unknown")
+        let token = try expect(type: TokenRegister.self, error: error) as! TokenRegister
+        return ParameterRegister(sourceAnchor: token.sourceAnchor, value: token.literal)
+    }
+    
+    func consumeParameterNumber() throws -> Parameter {
+        let error = operandTypeMismatchError(sourceAnchor: peek()?.sourceAnchor, instruction: peek()?.lexeme ?? "unknown")
+        let token = try expect(type: TokenNumber.self, error: error) as! TokenNumber
+        return ParameterNumber(sourceAnchor: token.sourceAnchor, value: token.literal)
+    }
+    
+    func consumeParameterIdentifier() throws -> Parameter {
+        let error = operandTypeMismatchError(sourceAnchor: peek()?.sourceAnchor, instruction: peek()?.lexeme ?? "unknown")
+        let token = try expect(type: TokenIdentifier.self, error: error) as! TokenIdentifier
+        return ParameterIdentifier(sourceAnchor: token.sourceAnchor, value: token.lexeme)
+    }
+    
     func consumeLet(_ letToken: TokenLet) throws -> [AbstractSyntaxTreeNode] {
-        let identifier = try expect(type: TokenIdentifier.self,
-                                    error: CompilerError(line: letToken.lineNumber,
-                                                          format: "expected to find an identifier in constant declaration",
-                                                          letToken.lexeme)) as! TokenIdentifier
-        try expect(type: TokenEqual.self,
-                   error: CompilerError(line: letToken.lineNumber,
-                                         format: "constants must be assigned a value",
-                                         letToken.lexeme))
+        let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: letToken.sourceAnchor, format: "expected to find an identifier in constant declaration")) as! TokenIdentifier
+        let equalToken = try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: identifier.sourceAnchor, message: "constants must be assigned a value"))
         let numberToken = peek()
         if (numberToken == nil) || (type(of: numberToken!) == TokenNewline.self) || (type(of: numberToken!) == TokenEOF.self) {
-            throw CompilerError(line: letToken.lineNumber,
-                                 format: "expected value after '='",
-                                 letToken.lexeme)
+            throw CompilerError(sourceAnchor: equalToken.sourceAnchor, message: "expected value after `='")
         }
         let number = try expect(type: TokenNumber.self,
-                                error: operandTypeMismatchError(numberToken!)) as! TokenNumber
+                                error: operandTypeMismatchError(sourceAnchor: numberToken!.sourceAnchor, instruction: numberToken!.lexeme)) as! TokenNumber
         try expect(types: [TokenNewline.self, TokenEOF.self],
-                   error: operandTypeMismatchError(peek()!))
+                   error: operandTypeMismatchError(sourceAnchor: peek()!.sourceAnchor, instruction: peek()!.lexeme))
         
-        return [ConstantDeclarationNode(identifier: identifier, number: number)]
+        let sourceAnchor = letToken.sourceAnchor?.union(number.sourceAnchor)
+        return [ConstantDeclaration(sourceAnchor: sourceAnchor, identifier: identifier.lexeme, value: number.literal)]
     }
     
-    func zeroOperandsExpectedError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "instruction takes no operands: `%@'",
-                              instruction.lexeme)
+    func zeroOperandsExpectedError(sourceAnchor: SourceAnchor?, instruction: String) -> Error {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "instruction takes no operands: `\(instruction)'")
     }
     
-    func operandTypeMismatchError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "operand type mismatch: `%@'",
-                              instruction.lexeme)
+    func operandTypeMismatchError(sourceAnchor: SourceAnchor?, instruction: String) -> Error {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "operand type mismatch: `\(instruction)'")
     }
     
-    func unrecognizedInstructionError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "no such instruction: `%@'",
-                              instruction.lexeme)
+    func unrecognizedInstructionError(sourceAnchor: SourceAnchor?, instruction: String) -> Error {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "no such instruction: `\(instruction)'")
     }
 }

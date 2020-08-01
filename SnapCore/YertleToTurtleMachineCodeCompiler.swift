@@ -44,16 +44,21 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     public private(set) var labelTable: [String:Int] = [:]
     public private(set) var instructions: [Instruction] = []
+    public var currentSourceAnchor: SourceAnchor? = nil
     
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
     }
     
-    public func compile(ir: [YertleInstruction], base: Int) throws {
+    public func compile(ir: [YertleInstruction],
+                        mapInstructionToSource: [Int:SourceAnchor?] = [:],
+                        base: Int = 0x0000) throws {
         patcherActions = []
         assembler.begin()
         try insertProgramPrologue()
-        for instruction in ir {
+        for i in 0..<ir.count {
+            let instruction = ir[i]
+            currentSourceAnchor = mapInstructionToSource[i] ?? nil
             switch instruction {
             case .push(let value): try push(value)
             case .push16(let value): try push16(value)
@@ -93,10 +98,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .storeIndirect: try storeIndirect()
             case .storeIndirect16: try storeIndirect16()
             case .storeIndirectN(let count): try storeIndirectN(count)
-            case .label(let token): try label(token: token)
-            case .jmp(let token): try jmp(to: token)
-            case .je(let token): try je(to: token)
-            case .jalr(let token): try jalr(to: token)
+            case .label(let name): try label(name)
+            case .jmp(let label): try jmp(label)
+            case .je(let label): try je(label)
+            case .jalr(let label): try jalr(label)
             case .enter: try enter()
             case .leave: try leave()
             case .pushReturnAddress: try pushReturnAddress()
@@ -109,11 +114,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         }
         insertProgramEpilogue()
         assembler.end()
-        let resolver: (TokenIdentifier) throws -> Int = {[weak self] (identifier: TokenIdentifier) in
-            if let address = self!.labelTable[identifier.lexeme] {
+        let resolver: (SourceAnchor?, String) throws -> Int = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
+            if let address = self!.labelTable[identifier] {
                 return address
             } else {
-                throw CompilerError(line: identifier.lineNumber, message: "cannot resolve label `\(identifier.lexeme)'")
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "cannot resolve label `\(identifier)'")
             }
         }
         let patcher = Patcher(inputInstructions: assembler.instructions,
@@ -299,10 +304,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
      private var tempLabelCounter = 0
     
     // The generated program will need unique, temporary labels.
-    private func makeTempLabel() -> TokenIdentifier {
+    private func makeTempLabel() -> String {
         let label = ".LL\(tempLabelCounter)"
         tempLabelCounter += 1
-        return TokenIdentifier(lineNumber: -1, lexeme: label)
+        return label
     }
     
     private func eq16() throws {
@@ -354,12 +359,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         try push(valueOnPass)
-        try jmp(to: label_tail)
+        try jmp(label_tail)
         
-        try label(token: label_fail_test)
+        try label(label_fail_test)
         try push(valueOnFail)
         
-        try label(token: label_tail)
+        try label(label_tail)
     }
     
     private func ne() throws {
@@ -449,9 +454,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         
         // The two operands are equal so return false.
         try assembler.li(.A, 0)
-        try jmp(to: labelTail)
+        try jmp(labelTail)
         
-        try label(token: labelFailEqualityTest)
+        try label(labelFailEqualityTest)
         
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -483,7 +488,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)
-        try label(token: labelTail)
+        try label(labelTail)
         
         try pushAToStack()
     }
@@ -555,9 +560,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // The two operands are equal so return true.
-        try jmp(to: labelThen)
+        try jmp(labelThen)
         
-        try label(token: labelFailEqualityTest)
+        try label(labelFailEqualityTest)
         
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -591,9 +596,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
-        try label(token: labelThen)
+        try label(labelThen)
         try assembler.li(.A, 0)
-        try label(token: labelTail)
+        try label(labelTail)
         
         try pushAToStack()
     }
@@ -665,7 +670,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         assembler.nop()
         try assembler.li(.A, 0)
-        try label(token: labelThen)
+        try label(labelThen)
         try pushAToStack()
     }
     
@@ -739,9 +744,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
-        try label(token: labelThen)
+        try label(labelThen)
         try assembler.li(.A, 1)
-        try label(token: labelTail)
+        try label(labelTail)
         
         try pushAToStack()
     }
@@ -935,7 +940,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         let loopTail = makeTempLabel()
         let notDone = makeTempLabel()
         
-        try label(token: loopHead)
+        try label(loopHead)
         
         // If the multiplier is equal to zero then bail because we're done.
         try setAddressToLabel(notDone)
@@ -960,7 +965,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
-        try label(token: notDone)
+        try label(notDone)
         
         // Add the multiplicand to the result.
         try assembler.li(.V, multiplicandAddress+1)
@@ -991,7 +996,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
-        try label(token: loopTail)
+        try label(loopTail)
         
         // Push the result onto the stack.
         // First the low byte
@@ -1143,7 +1148,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
 
         // while a >= b
-        try label(token: loopHead)
+        try label(loopHead)
 
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -1204,7 +1209,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
-        try label(token: loopTail)
+        try label(loopTail)
 
         // Push the result to the stack. First the low byte, then the high byte.
         try assembler.li(.U, kScratchHi)
@@ -1358,7 +1363,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
 
         // while a >= b
-        try label(token: loopHead)
+        try label(loopHead)
 
         // Load the low bytes of `a' and `b' into the A and B registers.
         try assembler.li(.U, kScratchHi)
@@ -1419,7 +1424,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
-        try label(token: loopTail)
+        try label(loopTail)
 
         // The result is in `a'. Push it to the stack.
         // First the low byte, then the high byte.
@@ -1487,12 +1492,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func label(token: TokenIdentifier) throws {
-        let name = token.lexeme
+    private func label(_ name: String) throws {
         guard labelTable[name] == nil else {
-            throw CompilerError(line: token.lineNumber,
-                                format: "label redefines existing symbol: `%@'",
-                                token.lexeme)
+            throw CompilerError(sourceAnchor: currentSourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }
         labelTable[name] = assembler.programCounter
     }
@@ -1751,37 +1753,39 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         }
     }
     
-    private func jmp(to token: TokenIdentifier) throws {
-        try setAddressToLabel(token)
+    private func jmp(_ label: String) throws {
+        try setAddressToLabel(label)
         assembler.jmp()
         assembler.nop()
         assembler.nop()
     }
     
-    private func je(to token: TokenIdentifier) throws {
+    private func je(_ label: String) throws {
         try pop16()
         
         assembler.cmp()
         assembler.cmp()
-        try setAddressToLabel(token)
+        try setAddressToLabel(label)
         assembler.je()
         assembler.nop()
         assembler.nop()
     }
     
-    private func jalr(to token: TokenIdentifier) throws {
-        try setAddressToLabel(token)
+    private func jalr(_ label: String) throws {
+        try setAddressToLabel(label)
         assembler.jalr()
         assembler.nop()
         assembler.nop()
     }
     
-    func setAddressToLabel(_ name: TokenIdentifier) throws {
+    func setAddressToLabel(_ name: String) throws {
         patcherActions.append((index: assembler.programCounter,
+                               sourceAnchor: currentSourceAnchor,
                                symbol: name,
                                shift: 8))
         try assembler.li(.X, 0xff)
         patcherActions.append((index: assembler.programCounter,
+                               sourceAnchor: currentSourceAnchor,
                                symbol: name,
                                shift: 0))
         try assembler.li(.Y, 0xff)

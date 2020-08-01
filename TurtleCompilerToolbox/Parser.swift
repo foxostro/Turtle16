@@ -7,6 +7,7 @@
 //
 
 open class Parser: NSObject {
+    public let lineMapper: SourceLineRangeMapper!
     public var tokens: [Token] = []
     public private(set) var previous: Token? = nil
     
@@ -16,8 +17,9 @@ open class Parser: NSObject {
     }
     public private(set) var syntaxTree: TopLevel? = nil
     
-    public init(tokens: [Token] = []) {
+    public init(tokens: [Token] = [], lineMapper: SourceLineRangeMapper! = nil) {
         self.tokens = tokens
+        self.lineMapper = lineMapper
     }
     
     public func parse() {
@@ -37,7 +39,8 @@ open class Parser: NSObject {
         if hasError {
             syntaxTree = nil
         } else {
-            syntaxTree = TopLevel(children: statements)
+            let sourceAnchor = statements.map({$0.sourceAnchor}).reduce(statements.first?.sourceAnchor, { $0?.union($1) })
+            syntaxTree = TopLevel(sourceAnchor: sourceAnchor, children: statements)
         }
     }
     
@@ -123,17 +126,15 @@ open class Parser: NSObject {
     }
     
     open func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        throw CompilerError(format: "override consumeStatement() in a child class")
+        throw CompilerError(sourceAnchor: nil, message: "override consumeStatement() in a child class")
     }
     
     public func unexpectedEndOfInputError() -> CompilerError {
         let message = "unexpected end of input"
         if let token = peek() {
-            return CompilerError(line: token.lineNumber, message: message)
-        } else if let previous = previous {
-            return CompilerError(line: previous.lineNumber, message: message)
+            return CompilerError(sourceAnchor: token.sourceAnchor, message: message)
+        } else {
+            return CompilerError(sourceAnchor: previous?.sourceAnchor, message: message)
         }
-        
-        return CompilerError(message: message)
     }
 }

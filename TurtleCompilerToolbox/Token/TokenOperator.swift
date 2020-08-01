@@ -7,18 +7,37 @@
 //
 
 public class TokenOperator : Token {
-    public enum Operator { case eq, ne, lt, gt, le, ge, plus, minus, multiply, divide, modulus }
+    public enum Operator {
+        case eq, ne, lt, gt, le, ge, plus, minus, multiply, divide, modulus
+        
+        public var description: String {
+            switch self {
+            case .eq: return "=="
+            case .ne: return "!="
+            case .lt: return "<"
+            case .gt: return ">"
+            case .le: return "<="
+            case .ge: return ">="
+            case .plus: return "+"
+            case .minus: return "-"
+            case .multiply: return "*"
+            case .divide: return "/"
+            case .modulus: return "%"
+            }
+        }
+    }
     public let op: Operator
     
-    public init(lineNumber: Int, lexeme: String, op: Operator) {
+    public init(sourceAnchor: SourceAnchor?, op: Operator) {
         self.op = op
-        super.init(lineNumber: lineNumber, lexeme: lexeme)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
     public override var description: String {
-        return String(format: "<%@: lineNumber=%d, lexeme=\"%@\", op=%@>",
+        return String(format: "<%@: sourceAnchor=%@, lexeme=\"%@\", op=%@>",
                       String(describing: type(of: self)),
-                      lineNumber, lexeme,
+                      String(describing: sourceAnchor),
+                      lexeme,
                       String(describing: op))
     }
     

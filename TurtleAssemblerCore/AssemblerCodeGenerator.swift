@@ -36,7 +36,7 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             // This catch block should be unreachable because patch()
             // only throws CompilerError. Regardless, we need it to satisfy
             // the compiler.
-            errors.append(CompilerError(format: "unrecoverable error: %@", error.localizedDescription))
+            errors.append(CompilerError(sourceAnchor: root.sourceAnchor, message: "unrecoverable error: \(error.localizedDescription)"))
         }
     }
     
@@ -53,8 +53,8 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             }
         }
         assemblerBackEnd.end()
-        let resolver: (TokenIdentifier) throws -> Int = {[weak self] (identifier: TokenIdentifier) in
-            return try self!.resolve(identifier: identifier)
+        let resolver = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
+            return try self!.resolve(sourceAnchor: sourceAnchor, identifier: identifier)
         }
         let patcher = Patcher(inputInstructions: assemblerBackEnd.instructions,
                               resolver: resolver,
@@ -80,10 +80,10 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         if let node = genericNode as? InstructionNode {
             try visit(node: node)
         }
-        if let node = genericNode as? LabelDeclarationNode {
+        if let node = genericNode as? LabelDeclaration {
             try visit(node: node)
         }
-        if let node = genericNode as? ConstantDeclarationNode {
+        if let node = genericNode as? ConstantDeclaration {
             try visit(node: node)
         }
     }
@@ -117,20 +117,20 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             "DEA"  : { try self.dea(node) },
             "DCA"  : { try self.dca(node) }
         ]
-        if let closure = instructions[node.instruction.lexeme] {
+        if let closure = instructions[node.instruction] {
             try closure()
         } else {
-            throw unrecognizedInstructionError(node.instruction)
+            throw unrecognizedInstructionError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
     }
     
     func add(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.parameters.first as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
         try expectRegisterCanBeUsedAsDestination(register)
@@ -139,12 +139,12 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     }
     
     func sub(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.parameters.first as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
         try expectRegisterCanBeUsedAsDestination(register)
@@ -153,12 +153,12 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     }
     
     func adc(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.parameters.first as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
         try expectRegisterCanBeUsedAsDestination(register)
@@ -167,12 +167,12 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     }
     
     func sbc(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.parameters.first as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
         try expectRegisterCanBeUsedAsDestination(register)
@@ -181,290 +181,274 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     }
     
     func blt(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 2 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 2 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let destination = node.parameters.parameters[0] as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let destination = node.parameters.elements[0] as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        guard let source = node.parameters.parameters[1] as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let source = node.parameters.elements[1] as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try self.assemblerBackEnd.blt(destination.literal, source.literal)
+        try self.assemblerBackEnd.blt(destination.value, source.value)
     }
     
     func cmp(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.cmp()
     }
     
     func hlt(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.hlt()
     }
     
     func inuv(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.inuv()
     }
     
     func inxy(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.inxy()
     }
     
     func link(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.link()
     }
     
     func jalr(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jalr()
     }
     
     func jc(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jc()
     }
     
     func jnc(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jnc()
     }
     
     func je(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.je()
     }
     
     func jne(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jne()
     }
     
     func jg(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jg()
     }
     
     func jle(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jle()
     }
     
     func jl(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jl()
     }
     
     func jge(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jge()
     }
     
     func jmp(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jmp()
     }
     
     func li(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 2 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 2 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let destination = node.parameters.parameters[0] as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let destination = node.parameters.elements[0] as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        if let immediate = node.parameters.parameters[1] as? TokenNumber {
-            try self.assemblerBackEnd.li(node.destination, token: immediate)
-        } else if let identifier = node.parameters.parameters[1] as? TokenIdentifier {
-            let value = try resolve(identifier: identifier)
-            try self.assemblerBackEnd.li(node.destination,
-                                      token: TokenNumber(lineNumber: identifier.lineNumber,
-                                                         lexeme: identifier.lexeme,
-                                                         literal: value))
+        if let immediate = node.parameters.elements[1] as? ParameterNumber {
+            try self.assemblerBackEnd.li(node.destination, immediate.value)
+        } else if let identifier = node.parameters.elements[1] as? ParameterIdentifier {
+            let value = try resolve(sourceAnchor: identifier.sourceAnchor, identifier: identifier.value)
+            try self.assemblerBackEnd.li(node.destination, value)
         } else {
-            throw operandTypeMismatchError(node.instruction)
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
     }
     
-    func resolve(identifier: TokenIdentifier) throws -> Int {
-        guard let address = symbols[identifier.lexeme] else {
-            throw CompilerError(line: identifier.lineNumber,
-                                format: "use of unresolved identifier: `%@'",
-                                identifier.lexeme)
+    func resolve(sourceAnchor: SourceAnchor?, identifier: String) throws -> Int {
+        guard let address = symbols[identifier] else {
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "use of unresolved identifier: `\(identifier)'")
         }
         return address
     }
     
     func lxy(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        let parameter = node.parameters.parameters.first!
+        let parameter = node.parameters.elements.first!
         
-        if let identifier = parameter as? TokenIdentifier {
-            try self.setAddress(token: identifier)
-        } else if let address = parameter as? TokenNumber {
-            try self.setAddress(address.literal)
+        if let identifier = parameter as? ParameterIdentifier {
+            try self.setAddress(identifier: identifier)
+        } else if let address = parameter as? ParameterNumber {
+            try self.setAddress(number: address)
         } else {
-            throw operandTypeMismatchError(node.instruction)
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
     }
     
     func mov(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 2 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 2 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let destination = node.parameters.parameters[0] as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let destination = node.parameters.elements[0] as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        guard let source = node.parameters.parameters[1] as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let source = node.parameters.elements[1] as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsSource(source)
         
-        try self.assemblerBackEnd.mov(destination.literal, source.literal)
+        try self.assemblerBackEnd.mov(destination.value, source.value)
     }
     
     func nop(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 0 else {
-            throw zeroOperandsExpectedError(node.instruction)
+        guard node.parameters.elements.count == 0 else {
+            throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.nop()
     }
     
-    func expectRegisterCanBeUsedAsDestination(_ register: TokenRegister) throws {
-        if register.literal == .E || register.literal == .C {
+    func expectRegisterCanBeUsedAsDestination(_ register: ParameterRegister) throws {
+        if register.value == .E || register.value == .C {
             throw badDestinationError(register)
         }
     }
     
-    func badDestinationError(_ register: TokenRegister) -> Error {
-        return CompilerError(line: register.lineNumber,
-                              format: "register cannot be used as a destination: `%@'",
-                              register.lexeme)
+    func badDestinationError(_ register: ParameterRegister) -> Error {
+        return CompilerError(sourceAnchor: register.sourceAnchor, message: "register cannot be used as a destination: `\(String(describing: register.value))'")
     }
     
-    func expectRegisterCanBeUsedAsSource(_ register: TokenRegister) throws {
-        if register.literal == .D {
+    func expectRegisterCanBeUsedAsSource(_ register: ParameterRegister) throws {
+        if register.value == .D {
             throw badSourceError(register)
         }
     }
     
-    func badSourceError(_ register: TokenRegister) -> Error {
-        return CompilerError(line: register.lineNumber,
-                              format: "register cannot be used as a source: `%@'",
-                              register.lexeme)
+    func badSourceError(_ register: ParameterRegister) -> Error {
+        return CompilerError(sourceAnchor: register.sourceAnchor, message: "register cannot be used as a source: `\(String(describing: register.value))'")
     }
     
-    func zeroOperandsExpectedError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "instruction takes no operands: `%@'",
-                              instruction.lexeme)
+    func zeroOperandsExpectedError(sourceAnchor: SourceAnchor?, instruction: String) -> Error {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "instruction takes no operands: `\(instruction)'")
     }
     
-    func operandTypeMismatchError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "operand type mismatch: `%@'",
-                              instruction.lexeme)
+    func operandTypeMismatchError(sourceAnchor: SourceAnchor?, instruction: String) -> Error {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "operand type mismatch: `\(instruction)'")
     }
     
-    func unrecognizedInstructionError(_ instruction: Token) -> Error {
-        return CompilerError(line: instruction.lineNumber,
-                              format: "no such instruction: `%@'",
-                              instruction.lexeme)
+    func unrecognizedInstructionError(sourceAnchor: SourceAnchor?, instruction: String) -> Error {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "no such instruction: `\(instruction)'")
     }
     
-    func visit(node: LabelDeclarationNode) throws {
-        let name = node.identifier.lexeme
+    func visit(node: LabelDeclaration) throws {
+        let name = node.identifier
         guard symbols[name] == nil else {
-            throw CompilerError(line: node.identifier.lineNumber,
-                                format: "label redefines existing symbol: `%@'",
-                                name)
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }
         symbols[name] = assemblerBackEnd.programCounter
     }
     
-    func visit(node: ConstantDeclarationNode) throws {
-        let name = node.identifier.lexeme
+    func visit(node: ConstantDeclaration) throws {
+        let name = node.identifier
         guard symbols[name] == nil else {
-            throw CompilerError(line: node.identifier.lineNumber,
-                                format: "constant redefines existing symbol: `%@'",
-                                name)
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "constant redefines existing symbol: `\(name)'")
         }
-        symbols[name] = node.number.literal
+        symbols[name] = node.value
     }
     
-    func setAddress(_ address: Int) throws {
-        if(address < 0 || address > 0xffff) {
-            throw CompilerError(format: "invalid address: 0x%x", address)
+    func setAddress(number: ParameterNumber) throws {
+        let address = number.value
+        guard address >= 0 && address <= 0xffff else {
+            throw CompilerError(sourceAnchor: number.sourceAnchor, format: "invalid address: 0x%x", address)
         }
         try self.assemblerBackEnd.li(.X, (address & 0xff00) >> 8)
         try self.assemblerBackEnd.li(.Y, (address & 0xff))
     }
     
-    func setAddress(token identifier: TokenIdentifier) throws {
+    func setAddress(identifier: ParameterIdentifier) throws {
         patcherActions.append((index: assemblerBackEnd.programCounter,
-                               symbol: identifier,
+                               sourceAnchor: identifier.sourceAnchor,
+                               symbol: identifier.value,
                                shift: 8))
         try assemblerBackEnd.li(.X, 0xAB)
         
         patcherActions.append((index: assemblerBackEnd.programCounter,
-                               symbol: identifier,
+                               sourceAnchor: identifier.sourceAnchor,
+                               symbol: identifier.value,
                                shift: 0))
         try assemblerBackEnd.li(.Y, 0xCD)
     }
     
     public func dea(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.parameters.first as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
         try expectRegisterCanBeUsedAsDestination(register)
@@ -473,12 +457,12 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
     }
     
     public func dca(_ node: InstructionNode) throws {
-        guard node.parameters.parameters.count == 1 else {
-            throw operandTypeMismatchError(node.instruction)
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.parameters.first as? TokenRegister else {
-            throw operandTypeMismatchError(node.instruction)
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
         try expectRegisterCanBeUsedAsDestination(register)

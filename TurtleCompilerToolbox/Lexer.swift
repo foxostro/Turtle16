@@ -7,14 +7,15 @@
 //
 
 open class Lexer: NSObject {
-    public private(set) var string = ""
+    public let string: String
+    private var position: String.Index
     public var isAtEnd:Bool {
-        return string == ""
+        return position == string.endIndex
     }
+    public let lineMapper: SourceLineRangeMapper
     public private(set) var tokens: [Token] = []
-    public var lineNumber = 1
     
-    public typealias Rule = (pattern: String, emit: (String) -> Token?)
+    public typealias Rule = (pattern: String, emit: (SourceAnchor) -> Token?)
     public var rules: [Rule] = []
     
     public private(set) var errors: [CompilerError] = []
@@ -24,49 +25,63 @@ open class Lexer: NSObject {
     
     public required init(withString string: String) {
         self.string = string
+        position = string.startIndex
+        lineMapper = SourceLineRangeMapper(text: string)
     }
     
-    public func peek(_ ahead: Int = 0) -> String? {
-        if ahead >= 0 && ahead < string.count {
-           return String(Array(string)[ahead])
+    public func peekRange(_ ahead: Int = 0) -> Range<String.Index>? {
+        var start: String.Index = position
+        for _ in 0..<ahead {
+            string.formIndex(after: &start)
+            if start >= string.endIndex {
+                return nil
+            }
         }
-        return nil
+        
+        var end: String.Index = start
+        if start < string.endIndex {
+            string.formIndex(after: &end)
+        } else {
+            return nil
+        }
+        
+        let range = start..<end
+        return range
     }
     
-    @discardableResult public func advance() -> String? {
-        guard let character = peek() else { return nil }
-        string.remove(at: string.startIndex)
-        return String(character)
+    public func peek(_ ahead: Int = 0) -> Substring? {
+        guard let range = peekRange(ahead) else {
+            return nil
+        }
+        let substring = string[range]
+        return substring
     }
     
-    public func match(pattern: String) -> String? {
+    public func advance() {
+        if position != string.endIndex {
+            string.formIndex(after: &position)
+        }
+    }
+    
+    public func match(pattern: String) -> SourceAnchor? {
         guard let regex = try? NSRegularExpression(pattern: "^\(pattern)", options: []) else {
             return nil
         }
-        guard let match = regex.firstMatch(in: string, options: [], range: NSRange(string.startIndex..., in: string)) else {
+        guard let match = regex.firstMatch(in: string, options: [], range: NSRange(position..., in: string)) else {
             return nil
         }
-        let matchedString = String(string[Range(match.range, in: string)!])
-        string = String(string[matchedString.endIndex...])
-        return matchedString
+        let matchedRange = Range(match.range, in: string)!
+        position = matchedRange.upperBound
+        return SourceAnchor(range: matchedRange, lineMapper: lineMapper)
     }
     
-    public func match(characterSet: CharacterSet) -> String? {
-        var result = ""
+    public func advanceToNewline() {
         while let c = peek() {
-            if !c.unicodeScalars.allSatisfy({ characterSet.contains($0) }) {
+            if c == "\n" {
                 break
             }
-            result += advance()!
+            advance()
         }
-        if result == "" {
-            return nil
-        }
-        return result
-    }
-    
-    @discardableResult public func advanceToNewline() -> String? {
-        return match(characterSet: CharacterSet.newlines.inverted)
     }
     
     public func scanTokens() {
@@ -81,27 +96,29 @@ open class Lexer: NSObject {
                 // This catch block should be unreachable because scanToken()
                 // only throws CompilerError. Regardless, we need it to satisfy
                 // the compiler.
-                errors.append(CompilerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
+                errors.append(CompilerError(sourceAnchor: tokens.last?.sourceAnchor,
+                                            message: "unrecoverable error: \(error.localizedDescription)"))
                 return
             }
         }
-        tokens.append(TokenEOF(lineNumber: lineNumber, lexeme: ""))
+        let eofAnchor = SourceAnchor(range: string.endIndex..<string.endIndex, lineMapper: lineMapper)
+        tokens.append(TokenEOF(sourceAnchor: eofAnchor))
     }
     
     public func scanToken() throws {
         for rule in rules {
-            if let lexeme = match(pattern: rule.pattern) {
-                if let token = rule.emit(lexeme) {
+            if let anchor = match(pattern: rule.pattern) {
+                if let token = rule.emit(anchor) {
                     tokens.append(token)
                 }
                 return
             }
         }
         
-        throw unexpectedCharacterError(peek()!)
+        throw unexpectedCharacterError(sourceAnchor: SourceAnchor(range: peekRange()!, lineMapper: lineMapper))
     }
     
-    func unexpectedCharacterError(_ character: String) -> CompilerError {
-        return CompilerError(line: lineNumber, format: "unexpected character: `%@'", character)
+    func unexpectedCharacterError(sourceAnchor: SourceAnchor) -> CompilerError {
+        return CompilerError(sourceAnchor: sourceAnchor, message: "unexpected character: `\(sourceAnchor.text)'")
     }
 }

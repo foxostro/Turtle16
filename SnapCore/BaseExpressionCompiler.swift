@@ -30,12 +30,8 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func unsupportedError(expression: Expression) -> Error {
-        let message = "unsupported expression: \(expression)"
-        if let lineNumber = expression.tokens.first?.lineNumber {
-            return CompilerError(line: lineNumber, message: message)
-        } else {
-            return CompilerError(message: message)
-        }
+        return CompilerError(sourceAnchor: expression.sourceAnchor,
+                             message: "unsupported expression: \(expression)")
     }
     
     public func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
@@ -143,7 +139,7 @@ public class BaseExpressionCompiler: NSObject {
     public func compile(subscript expr: Expression.Subscript) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         
-        let resolution = try symbols.resolveWithStackFrameDepth(identifierToken: expr.tokenIdentifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.identifier.sourceAnchor, identifier: expr.identifier.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         

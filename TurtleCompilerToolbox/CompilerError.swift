@@ -20,20 +20,46 @@ open class CompilerError: Error {
                   message: String(format:format, arguments:args))
     }
     
-    private var lineNumberPrefix: String {
-        var result: String = ""
+    private var lineNumberPrefix: String? {
+        var result: String? = nil
         if let lineNumbers = sourceAnchor?.lineNumbers {
             if lineNumbers.count == 1 {
-                result = "\(lineNumbers.lowerBound+1): "
+                result = "\(lineNumbers.lowerBound+1):"
             } else {
-                result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound): "
+                result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound):"
             }
         }
         return result
     }
     
+    public var context: String? {
+        guard let anchor = sourceAnchor else {
+            return nil
+        }
+        let text = anchor.lineMapper.text
+        let lineRange = text.lineRange(for: anchor.range)
+        let line = text[lineRange]
+        var result = "\t\(line)"
+        if !line.hasSuffix("\n") {
+            result += "\n"
+        }
+        result += "\t"
+        var index = lineRange.lowerBound
+        while index != anchor.range.lowerBound {
+            result += " "
+            text.formIndex(after: &index)
+        }
+        result += "^"
+        text.formIndex(after: &index)
+        while index != anchor.range.upperBound {
+            result += "~"
+            text.formIndex(after: &index)
+        }
+        return result
+    }
+    
     public var localizedDescription: String {
-        return lineNumberPrefix + message
+        return message
     }
     
     public var debugDescription: String {
@@ -50,10 +76,22 @@ open class CompilerError: Error {
         
         for error in errors {
             sourceAnchor = sourceAnchor?.union(error.sourceAnchor)
+            var didIncludeAnyPrefix = false
             if fileName != nil {
-                message += fileName! + ": "
+                message += fileName! + ":"
+                didIncludeAnyPrefix = true
             }
-            message += "error: \(error.localizedDescription)\n"
+            if let lineNumber = error.lineNumberPrefix {
+                message += lineNumber
+                didIncludeAnyPrefix = true
+            }
+            if didIncludeAnyPrefix {
+                message += " "
+            }
+            message += "\(error.message)\n"
+            if let context = error.context {
+                message += "\(context)\n"
+            }
         }
         
         if errors.count == 1 {

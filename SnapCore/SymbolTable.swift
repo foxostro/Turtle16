@@ -195,7 +195,7 @@ public class SymbolTable: NSObject {
     }
     
     public func existsAndCannotBeShadowed(identifier: String) -> Bool {
-        guard let resolution = maybeResolveWithScopeDepth(sourceAnchor: nil, identifier: identifier) else {
+        guard let resolution = maybeResolveWithScopeDepth(identifier: identifier) else {
             return false
         }
         return resolution.1 == 0
@@ -203,6 +203,10 @@ public class SymbolTable: NSObject {
     
     public func bind(identifier: String, symbol: Symbol) {
         symbolTable[identifier] = symbol
+    }
+    
+    public func resolve(identifier: String) throws -> Symbol {
+        return try resolve(sourceAnchor: nil, identifier: identifier)
     }
     
     public func resolve(sourceAnchor: SourceAnchor?, identifier: String) throws -> Symbol {
@@ -228,7 +232,7 @@ public class SymbolTable: NSObject {
         return parent?.maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
-    public func resolveWithScopeDepth(sourceAnchor: SourceAnchor?, identifier: String) throws -> (Symbol, Int) {
+    public func resolveWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) throws -> (Symbol, Int) {
         guard let resolution = maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
             throw CompilerError(sourceAnchor: sourceAnchor,
                                 message: "use of unresolved identifier: `\(identifier)'")
@@ -236,7 +240,7 @@ public class SymbolTable: NSObject {
         return resolution
     }
     
-    private func maybeResolveWithScopeDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (Symbol, Int)? {
+    private func maybeResolveWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             return (symbol, 0)
         } else if let parentResolution = parent?.maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {

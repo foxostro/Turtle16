@@ -11,111 +11,96 @@ import TurtleCompilerToolbox
 
 public class ExprUtils: NSObject {
     public static func makeU8(value: Int) -> Expression {
-        return Expression.As(sourceAnchor: nil,
-                             expr: Expression.LiteralWord(sourceAnchor: nil, value: value),
+        return Expression.As(expr: Expression.LiteralInt(value),
                              targetType: .u8)
     }
     
     public static func makeU16(value: Int) -> Expression {
-        return Expression.As(sourceAnchor: nil,
-                             expr: Expression.LiteralWord(sourceAnchor: nil, value: value),
+        return Expression.As(expr: Expression.LiteralInt(value),
                              targetType: .u16)
     }
     
     public static func makeBool(value: Bool) -> Expression {
-        return Expression.As(sourceAnchor: nil,
-                             expr: Expression.LiteralBoolean(sourceAnchor: nil, value: value),
+        return Expression.As(expr: Expression.LiteralBool(value),
                              targetType: .bool)
     }
     
     public static func makeAdd(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .plus,
+        return Expression.Binary(op: .plus,
                                  left: left,
                                  right: right)
     }
     
     public static func makeSub(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .minus,
+        return Expression.Binary(op: .minus,
                                  left: left,
                                  right: right)
     }
     
     public static func makeMul(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .multiply,
+        return Expression.Binary(op: .multiply,
                                  left: left,
                                  right: right)
     }
     
     public static func makeDiv(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .divide,
+        return Expression.Binary(op: .divide,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonEq(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .eq,
+        return Expression.Binary(op: .eq,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonNe(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .ne,
+        return Expression.Binary(op: .ne,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonLt(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .lt,
+        return Expression.Binary(op: .lt,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonGt(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .gt,
+        return Expression.Binary(op: .gt,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonLe(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .le,
+        return Expression.Binary(op: .le,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonGe(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(sourceAnchor: nil,
-                                 op: .ge,
+        return Expression.Binary(op: .ge,
                                  left: left,
                                  right: right)
     }
     
     public static func makeAssignment(name: String, right: Expression) -> Expression {
-        return makeAssignment(lexpr: Expression.Identifier(sourceAnchor: nil, identifier: name),
+        return makeAssignment(lexpr: Expression.Identifier(name),
                               rexpr: right)
     }
     
     public static func makeAssignment(lexpr: Expression, rexpr: Expression) -> Expression {
-        return Expression.Assignment(sourceAnchor: nil, lexpr: lexpr, rexpr: rexpr)
+        return Expression.Assignment(lexpr: lexpr, rexpr: rexpr)
     }
     
     public static func makeNeg(expr: Expression) -> Expression {
-        return Expression.Unary(sourceAnchor: nil,
-                                op: .minus,
+        return Expression.Unary(op: .minus,
                                 expression: expr)
     }
     
     public static func makeSubscript(identifier: String, expr: Expression) -> Expression {
-        return Expression.Subscript(sourceAnchor: nil,
-                                    identifier: Expression.Identifier(sourceAnchor: nil, identifier: identifier),
+        return Expression.Subscript(identifier: Expression.Identifier(identifier),
                                     expr: expr)
     }
 }

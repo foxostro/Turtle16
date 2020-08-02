@@ -60,7 +60,7 @@ class AssemblerBackEndTests: XCTestCase {
     func testInstructionWithInvalidMnemonicThrowsUsingToken() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(mnemonic: "", token:TokenNumber(sourceAnchor: nil, literal: 0)))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "", token:TokenNumber(literal: 0)))
     }
     
     func testInstructionWithNegativeImmediateThrows() {
@@ -72,7 +72,7 @@ class AssemblerBackEndTests: XCTestCase {
     func testInstructionWithNegativeImmediateThrowsUsingToken() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", token: TokenNumber(sourceAnchor: nil, literal: -1)))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", token: TokenNumber(literal: -1)))
     }
     
     func testInstructionWithTooLargeImmediateThrows() {
@@ -84,7 +84,7 @@ class AssemblerBackEndTests: XCTestCase {
     func testInstructionWithTooLargeImmediateThrowsUsingToken() {
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
         assembler.begin()
-        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", token: TokenNumber(sourceAnchor: nil, literal: 256)))
+        XCTAssertThrowsError(try assembler.instruction(mnemonic: "NOP", token: TokenNumber(literal: 256)))
     }
     
     func testMovFromScratch() {

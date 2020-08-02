@@ -9,6 +9,10 @@
 public class TokenNumber : Token {
     public let literal: Int
     
+    public convenience init(literal: Int) {
+        self.init(sourceAnchor: nil, literal: literal)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, literal: Int) {
         self.literal = literal
         super.init(sourceAnchor: sourceAnchor)

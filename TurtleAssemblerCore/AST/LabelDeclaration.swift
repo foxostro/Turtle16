@@ -11,6 +11,10 @@ import TurtleCompilerToolbox
 public class LabelDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String
     
+    public convenience init(identifier: String) {
+        self.init(sourceAnchor: nil, identifier: identifier)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?, identifier: String) {
         self.identifier = identifier
         super.init(sourceAnchor: sourceAnchor)

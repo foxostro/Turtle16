@@ -11,6 +11,6 @@ import TurtleCompilerToolbox
 
 class TokenEOFTests: XCTestCase {
     func testTokenDescription() {
-        XCTAssertEqual(TokenEOF(sourceAnchor: nil).description, "<TokenEOF: sourceAnchor=nil>")
+        XCTAssertEqual(TokenEOF().description, "<TokenEOF: sourceAnchor=nil>")
     }
 }

@@ -11,6 +11,10 @@ import TurtleCompilerToolbox
 public class ParameterNumber: Parameter {
     public let value: Int
     
+    public convenience init(value: Int) {
+        self.init(sourceAnchor: nil, value: value)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, value: Int) {
         self.value = value
         super.init(sourceAnchor: sourceAnchor)

@@ -20,14 +20,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileEmptyProgram() {
         let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: TopLevel(sourceAnchor: nil, children: []))
+        compiler.compile(ast: TopLevel(children: []))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
     
     func testAbstractSyntaxTreeNodeIsIgnoredInProgramCompilation() {
         let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: TopLevel(sourceAnchor: nil, children: [AbstractSyntaxTreeNode(sourceAnchor: nil)]))
+        compiler.compile(ast: TopLevel(children: [AbstractSyntaxTreeNode()]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
@@ -35,17 +35,16 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationIgnoresUnknownNodes() {
         class UnknownNode: AbstractSyntaxTreeNode {}
         let compiler = SnapToYertleCompiler()
-        compiler.compile(ast: TopLevel(sourceAnchor: nil, children: [UnknownNode(sourceAnchor: nil)]))
+        compiler.compile(ast: TopLevel(children: [UnknownNode(sourceAnchor: nil)]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
     
     func testCompileLetDeclaration_CompileTimeConstant() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                           expression: Expression.LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -59,21 +58,19 @@ class SnapToYertleCompilerTests: XCTestCase {
             .pop
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: false))
     }
     
     func testCompileConstantDeclaration_CompileTimeConstant_RedefinesExistingSymbol() {
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let one = Expression.LiteralInt(1)
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: one,
                            storage: .staticStorage,
                            isMutable: false),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: one,
                            storage: .staticStorage,
@@ -86,17 +83,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_NotCompileTimeConstant() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                           expression: Expression.LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+            VarDeclaration(identifier: Expression.Identifier("bar"),
                            explicitType: nil,
-                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Identifier("foo"),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -114,16 +109,15 @@ class SnapToYertleCompilerTests: XCTestCase {
             .pop
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "bar"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "bar"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressBar, isMutable: false))
     }
     
     func testCompileConstantDeclaration_TypeIsInferredFromTheExpression() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralBoolean(sourceAnchor: nil, value: true),
+                           expression: Expression.LiteralBool(true),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -137,20 +131,18 @@ class SnapToYertleCompilerTests: XCTestCase {
             .pop
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: false))
     }
     
     func testCompileConstantDeclaration_ArrayWithStaticStorage_ImplicitType() {
-        let expr = Expression.LiteralArray(sourceAnchor: nil,
-                                           explicitType: .u8,
+        let expr = Expression.LiteralArray(explicitType: .u8,
                                            explicitCount: 3,
-                                           elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0),
-                                                      Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                                      Expression.LiteralWord(sourceAnchor: nil, value: 2)])
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                           elements: [Expression.LiteralInt(0),
+                                                      Expression.LiteralInt(1),
+                                                      Expression.LiteralInt(2)])
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: expr,
                            storage: .staticStorage,
@@ -174,15 +166,13 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_ArrayWithStaticStorage_ExplicitType() {
-        let expr = Expression.LiteralArray(sourceAnchor: nil,
-                                           explicitType: .u8,
+        let expr = Expression.LiteralArray(explicitType: .u8,
                                            explicitCount: 3,
-                                           elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0),
-                                                      Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                                      Expression.LiteralWord(sourceAnchor: nil, value: 2)])
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                           elements: [Expression.LiteralInt(0),
+                                                      Expression.LiteralInt(1),
+                                                      Expression.LiteralInt(2)])
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: .array(count: nil, elementType: .u8),
                            expression: expr,
                            storage: .staticStorage,
@@ -206,18 +196,16 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_CannotAssignFunctionToArray() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: ExprUtils.makeBool(value: true))
+                                body: Block(children: [
+                                    Return(ExprUtils.makeBool(value: true))
                                 ])),
             VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                           identifier: Expression.Identifier("bar"),
                            explicitType: .array(count: nil, elementType: .u16),
-                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Identifier("foo"),
                            storage: .staticStorage,
                            isMutable: true)
         ])
@@ -229,15 +217,13 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompileConstantDeclaration_AssignStringLiteralToDynamicArray() {
         let elements = "Hello, World!".utf8.map({
-            Expression.LiteralWord(sourceAnchor: nil, value: Int($0))
+            Expression.LiteralInt(Int($0))
         })
-        let stringLiteral = Expression.LiteralArray(sourceAnchor: nil,
-                                                    explicitType: .u8,
+        let stringLiteral = Expression.LiteralArray(explicitType: .u8,
                                                     explicitCount: elements.count,
                                                     elements: elements)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: .dynamicArray(elementType: .u8),
                            expression: stringLiteral,
                            storage: .staticStorage,
@@ -260,10 +246,9 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration() {
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let one = Expression.LiteralInt(1)
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: one,
                            storage: .staticStorage,
@@ -274,7 +259,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: true))
         XCTAssertEqual(compiler.instructions, [
             .push(1),
@@ -284,16 +269,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_IncrementsStoragePointer() {
-        let val = Expression.LiteralWord(sourceAnchor: nil, value: 0xabcd)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let val = Expression.LiteralInt(0xabcd)
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: val,
                            storage: .staticStorage,
                            isMutable: true),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+            VarDeclaration(identifier: Expression.Identifier("bar"),
                            explicitType: nil,
                            expression: val,
                            storage: .staticStorage,
@@ -306,12 +289,12 @@ class SnapToYertleCompilerTests: XCTestCase {
         
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
         var symbolFoo: Symbol? = nil
-        XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
+        XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo, isMutable: true))
         
         let addressBar = SnapToYertleCompiler.kStaticStorageStartAddress+2
         var symbolBar: Symbol? = nil
-        XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "bar"))
+        XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(identifier: "bar"))
         XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar, isMutable: true))
         
         XCTAssertEqual(compiler.instructions, [
@@ -325,16 +308,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_RedefinesExistingSymbol() {
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let one = Expression.LiteralInt(1)
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: one,
                            storage: .staticStorage,
                            isMutable: true),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: one,
                            storage: .staticStorage,
@@ -347,39 +328,34 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_1() {
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let two = Expression.LiteralWord(sourceAnchor: nil, value: 2)
-        let three = Expression.LiteralWord(sourceAnchor: nil, value: 3)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let one = Expression.LiteralInt(1)
+        let two = Expression.LiteralInt(2)
+        let three = Expression.LiteralInt(3)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
                                                    expression: one,
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
+                                    VarDeclaration(identifier: Expression.Identifier("b"),
                                                    explicitType: nil,
                                                    expression: two,
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "c"),
+                                    VarDeclaration(identifier: Expression.Identifier("c"),
                                                    explicitType: nil,
                                                    expression: three,
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "b"))
+                                    Return(Expression.Identifier("b"))
                                 ])),
             VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+                           identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil, callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"), arguments: []),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"), arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -393,44 +369,37 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_2() {
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let two = Expression.LiteralWord(sourceAnchor: nil, value: 2)
-        let three = Expression.LiteralWord(sourceAnchor: nil, value: 3)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let one = Expression.LiteralInt(1)
+        let two = Expression.LiteralInt(2)
+        let three = Expression.LiteralInt(3)
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
                                                    expression: one,
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    Block(sourceAnchor: nil, children: [
-                                        VarDeclaration(sourceAnchor: nil,
-                                                       identifier: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
+                                    Block(children: [
+                                        VarDeclaration(identifier: Expression.Identifier("b"),
                                                        explicitType: nil,
                                                        expression: two,
                                                        storage: .stackStorage,
                                                        isMutable: false),
-                                        Block(sourceAnchor: nil, children: [
-                                            VarDeclaration(sourceAnchor: nil,
-                                                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "c"),
+                                        Block(children: [
+                                            VarDeclaration(identifier: Expression.Identifier("c"),
                                                            explicitType: nil,
                                                            expression: three,
                                                            storage: .stackStorage,
                                                            isMutable: false),
-                                            Return(sourceAnchor: nil,
-                                                   expression: Expression.Identifier(sourceAnchor: nil, identifier: "c"))
+                                            Return(Expression.Identifier("c"))
                                         ]),
                                     ]),
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -445,18 +414,16 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_ShadowsExistingSymbolInEnclosingScope() {
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let two = Expression.LiteralWord(sourceAnchor: nil, value: 2)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let one = Expression.LiteralInt(1)
+        let two = Expression.LiteralInt(2)
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: one,
                            storage: .staticStorage,
                            isMutable: false),
-            Block(sourceAnchor: nil, children: [
-                VarDeclaration(sourceAnchor: nil,
-                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: nil,
                                expression: two,
                                storage: .staticStorage,
@@ -473,11 +440,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_TypeIsInferredFromTheExpression() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralBoolean(sourceAnchor: nil, value: true),
+                           expression: Expression.LiteralBool(true),
                            storage: .staticStorage,
                            isMutable: true)
         ])
@@ -491,17 +457,16 @@ class SnapToYertleCompilerTests: XCTestCase {
             .pop
         ])
         var symbol: Symbol? = nil
-        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
+        XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: true))
     }
     
     func testCompileVarDeclaration_StackLocalVariable() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Block(sourceAnchor: nil, children: [
-                VarDeclaration(sourceAnchor: nil,
-                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: nil,
-                               expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xaa),
+                               expression: Expression.LiteralInt(0xaa),
                                storage: .stackStorage,
                                isMutable: true)
             ])
@@ -516,16 +481,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {
-        let arr = Expression.LiteralArray(sourceAnchor: nil,
-                                          explicitType: .u16,
+        let arr = Expression.LiteralArray(explicitType: .u16,
                                           explicitCount: 3,
-                                          elements: [Expression.LiteralWord(sourceAnchor: nil, value: 1000),
+                                          elements: [Expression.LiteralInt(1000),
                                                      ExprUtils.makeU8(value: 1),
                                                      ExprUtils.makeU8(value: 2)])
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Block(sourceAnchor: nil, children: [
-                VarDeclaration(sourceAnchor: nil,
-                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: .array(count: nil, elementType: .u16),
                                expression: arr,
                                storage: .stackStorage,
@@ -549,8 +512,8 @@ class SnapToYertleCompilerTests: XCTestCase {
         // When an expression is compiled as an independent statement, the
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.LiteralWord(sourceAnchor: nil, value: 1)
+        let ast = TopLevel(children: [
+            Expression.LiteralInt(1)
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -564,13 +527,12 @@ class SnapToYertleCompilerTests: XCTestCase {
         // When an expression is compiled as an independent statement, the
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.LiteralArray(sourceAnchor: nil,
-                                          explicitType: .u8,
-                                          explicitCount: 3,
-                                          elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0),
-                                                     Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                                     Expression.LiteralWord(sourceAnchor: nil, value: 2)])
+        let ast = TopLevel(children: [
+            Expression.LiteralArray(explicitType: .u8,
+                                    explicitCount: 3,
+                                    elements: [Expression.LiteralInt(0),
+                                               Expression.LiteralInt(1),
+                                               Expression.LiteralInt(2)])
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -589,9 +551,8 @@ class SnapToYertleCompilerTests: XCTestCase {
         // When an expression is compiled as an independent statement, the
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.LiteralArray(sourceAnchor: nil,
-                                    explicitType: .u16,
+        let ast = TopLevel(children: [
+            Expression.LiteralArray(explicitType: .u16,
                                     explicitCount: 3,
                                     elements: [ExprUtils.makeU16(value: 0xaaaa),
                                                ExprUtils.makeU16(value: 0xbbbb),
@@ -614,19 +575,16 @@ class SnapToYertleCompilerTests: XCTestCase {
         // When an expression is compiled as an independent statement, the
         // result on the top of the expression stack and must be cleaned up at
         // the end of the statement.
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.LiteralArray(sourceAnchor: nil,
-                                    explicitType: .array(count: 3, elementType: .u16),
+        let ast = TopLevel(children: [
+            Expression.LiteralArray(explicitType: .array(count: 3, elementType: .u16),
                                     explicitCount: nil,
                                     elements: [
-                Expression.LiteralArray(sourceAnchor: nil,
-                                        explicitType: .u16,
+                Expression.LiteralArray(explicitType: .u16,
                                         explicitCount: 3,
                                         elements: [ExprUtils.makeU16(value: 0xaaaa),
                                                    ExprUtils.makeU16(value: 0xbbbb),
                                                    ExprUtils.makeU16(value: 0xcccc)]),
-                Expression.LiteralArray(sourceAnchor: nil,
-                                        explicitType: .u16,
+                Expression.LiteralArray(explicitType: .u16,
                                         explicitCount: 3,
                                         elements: [ExprUtils.makeU16(value: 0xdddd),
                                                    ExprUtils.makeU16(value: 0xeeee),
@@ -648,16 +606,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileIfStatementWithoutElseBranch() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                           expression: Expression.LiteralInt(0),
                            storage: .staticStorage,
                            isMutable: true),
-            If(sourceAnchor: nil,
-               condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-               then: ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
+            If(condition: Expression.LiteralInt(1),
+               then: ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(1)),
                else: nil)
         ])
         
@@ -682,19 +638,18 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileIfStatementIncludingElseBranch() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                           expression: Expression.LiteralInt(0),
                            storage: .staticStorage,
                            isMutable: true),
             If(sourceAnchor: nil,
-               condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+               condition: Expression.LiteralInt(1),
                then: ExprUtils.makeAssignment(name: "foo",
-                                              right: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
+                                              right: Expression.LiteralInt(1)),
                else: ExprUtils.makeAssignment(name: "foo",
-                                              right: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+                                              right: Expression.LiteralInt(2)))
         ])
         let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
         let compiler = SnapToYertleCompiler()
@@ -724,10 +679,9 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileWhileStatement() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            While(sourceAnchor: nil,
-                  condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                  body: Expression.LiteralWord(sourceAnchor: nil, value: 2))
+        let ast = TopLevel(children: [
+            While(condition: Expression.LiteralInt(1),
+                  body: Expression.LiteralInt(2))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -747,9 +701,8 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsDueToTypeErrorInExpression() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: ExprUtils.makeAdd(left: ExprUtils.makeU8(value: 1),
                                                          right: ExprUtils.makeBool(value: true)),
@@ -763,24 +716,21 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileForLoopStatement() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                           expression: Expression.LiteralInt(0),
                            storage: .staticStorage,
                            isMutable: true),
-            ForLoop(sourceAnchor: nil,
-                    initializerClause: VarDeclaration(sourceAnchor: nil,
-                                                      identifier: Expression.Identifier(sourceAnchor: nil, identifier: "i"),
+            ForLoop(initializerClause: VarDeclaration(identifier: Expression.Identifier("i"),
                                                       explicitType: nil,
-                                                      expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                                                      expression: Expression.LiteralInt(0),
                                                       storage: .staticStorage,
                                                       isMutable: true),
-                    conditionClause: ExprUtils.makeComparisonLt(left: Expression.Identifier(sourceAnchor: nil, identifier: "i"),
-                                                                right: Expression.LiteralWord(sourceAnchor: nil, value: 10)),
-                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: Expression.Identifier(sourceAnchor: nil, identifier: "i"), right: Expression.LiteralWord(sourceAnchor: nil, value: 1))),
-                    body: ExprUtils.makeAssignment(name: "foo", right: Expression.Identifier(sourceAnchor: nil, identifier: "i")))
+                    conditionClause: ExprUtils.makeComparisonLt(left: Expression.Identifier("i"),
+                                                                right: Expression.LiteralInt(10)),
+                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: Expression.Identifier("i"), right: Expression.LiteralInt(1))),
+                    body: ExprUtils.makeAssignment(name: "foo", right: Expression.Identifier("i")))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -817,16 +767,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseLocalVarDoesntSurviveLocalScope() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Block(sourceAnchor: nil, children: [
-                VarDeclaration(sourceAnchor: nil,
-                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: nil,
-                               expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                               expression: Expression.LiteralInt(0),
                                storage: .staticStorage,
                                isMutable: true),
             ]),
-            ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralWord(sourceAnchor: nil, value: 0))
+            ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(0))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -835,11 +784,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionDeclaration_Simplest() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .void, arguments: []),
-                                body: Block(sourceAnchor: nil, children: []))
+                                body: Block())
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -858,21 +806,18 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionDeclaration_WithSideEffects() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                           expression: Expression.LiteralInt(0),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .void, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    ExprUtils.makeAssignment(name: "a", right: Expression.LiteralWord(sourceAnchor: nil, value: 1))
+                                body: Block(children: [
+                                    ExprUtils.makeAssignment(name: "a", right: Expression.LiteralInt(1))
                                 ])),
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+            Expression.Call(callee: Expression.Identifier("foo"),
                             arguments: [])
         ])
         let compiler = SnapToYertleCompiler()
@@ -885,11 +830,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseFunctionIsMissingAReturnStatement() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: []))
+                                body: Block())
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -898,12 +842,11 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil, expression: ExprUtils.makeBool(value: true))
+                                body: Block(children: [
+                                    Return(ExprUtils.makeBool(value: true))
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -913,12 +856,11 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnVoid() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil, expression: nil)
+                                body: Block(children: [
+                                    Return(nil)
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -928,13 +870,12 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil, expression: Expression.LiteralBoolean(sourceAnchor: nil, value: true)),
-                                    Expression.LiteralBoolean(sourceAnchor: nil, value: false)
+                                body: Block(children: [
+                                    Return(Expression.LiteralBool(true)),
+                                    Expression.LiteralBool(false)
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -946,16 +887,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideIf() {
         let tr = ExprUtils.makeBool(value: true)
         let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    If(sourceAnchor: nil,
-                                       condition: tr,
-                                       then: Return(sourceAnchor: nil, expression: tr),
+                                body: Block(children: [
+                                    If(condition: tr,
+                                       then: Return(tr),
                                        else: nil),
-                                    Return(sourceAnchor: nil, expression: one)
+                                    Return(one)
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -967,16 +906,14 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideElse() {
         let tr = ExprUtils.makeBool(value: true)
         let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    If(sourceAnchor: nil,
-                                       condition: tr,
-                                       then: AbstractSyntaxTreeNode(sourceAnchor: nil),
-                                       else: Return(sourceAnchor: nil, expression: tr)),
-                                    Return(sourceAnchor: nil, expression: one)
+                                body: Block(children: [
+                                    If(condition: tr,
+                                       then: AbstractSyntaxTreeNode(),
+                                       else: Return(tr)),
+                                    Return(one)
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -988,15 +925,13 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideWhile() {
         let tr = ExprUtils.makeBool(value: true)
         let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    While(sourceAnchor: nil,
-                                          condition: tr,
-                                          body: Return(sourceAnchor: nil, expression: tr)),
-                                    Return(sourceAnchor: nil, expression: one)
+                                body: Block(children: [
+                                    While(condition: tr,
+                                          body: Return(tr)),
+                                    Return(one)
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -1008,17 +943,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideFor() {
         let tr = ExprUtils.makeBool(value: true)
         let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    ForLoop(sourceAnchor: nil,
-                                            initializerClause: AbstractSyntaxTreeNode(sourceAnchor: nil),
+                                body: Block(children: [
+                                    ForLoop(initializerClause: AbstractSyntaxTreeNode(),
                                             conditionClause: tr,
-                                            incrementClause: AbstractSyntaxTreeNode(sourceAnchor: nil),
-                                            body: Return(sourceAnchor: nil, expression: tr)),
-                                    Return(sourceAnchor: nil, expression: one)
+                                            incrementClause: AbstractSyntaxTreeNode(),
+                                            body: Return(tr)),
+                                    Return(one)
                                 ]))
         ])
         let compiler = SnapToYertleCompiler()
@@ -1028,19 +961,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionWithReturnValueU8() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xaa))
+                                body: Block(children: [
+                                    Return(Expression.LiteralInt(0xaa))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1055,19 +984,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionWithReturnValueU16() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u16, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xabcd))
+                                body: Block(children: [
+                                    Return(Expression.LiteralInt(0xabcd))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1082,19 +1007,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionWithReturnValueU8PromotedToU16() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u16, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xaa))
+                                body: Block(children: [
+                                    Return(Expression.LiteralInt(0xaa))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1109,15 +1030,13 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
+                                body: Block(children: [
                                     If(sourceAnchor: nil,
-                                       condition: Expression.LiteralBoolean(sourceAnchor: nil, value: true),
-                                       then: Return(sourceAnchor: nil,
-                                                    expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
+                                       condition: Expression.LiteralBool(true),
+                                       then: Return(Expression.LiteralInt(1)),
                                        else: nil)
                                 ]))
         ])
@@ -1128,11 +1047,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_2() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: []))
+                                body: Block())
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -1141,19 +1059,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseFunctionCallUsesIncorrectParameterType() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: ExprUtils.makeU8(value: 1))
+                                body: Block(children: [
+                                    Return(ExprUtils.makeU8(value: 1))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
+            VarDeclaration(identifier: Expression.Identifier("b"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: [ExprUtils.makeBool(value: true)]),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1165,8 +1079,8 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Return(sourceAnchor: nil, expression: Expression.LiteralBoolean(sourceAnchor: nil, value: true))
+        let ast = TopLevel(children: [
+            Return(Expression.LiteralBool(true))
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -1175,19 +1089,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionWithParameters_1() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "bar"))
+                                body: Block(children: [
+                                    Return(Expression.Identifier("bar"))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: [ExprUtils.makeU8(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1203,25 +1113,20 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     // We take steps to ensure parameters and local variables do not overlap.
     func testCompileFunctionWithParameters_2() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "baz"),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: Expression.Identifier("baz"),
                                                    explicitType: nil,
-                                                   expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xbb),
+                                                   expression: Expression.LiteralInt(0xbb),
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "bar"))
+                                    Return(Expression.Identifier("bar"))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: [ExprUtils.makeU8(value: 0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1236,20 +1141,16 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionWithParameters_3_ConvertIntegerConstantsToMatchingConcreteTypes() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "bar"))
+                                body: Block(children: [
+                                    Return(Expression.Identifier("bar"))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                                       arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 0xaa)]),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
+                                                       arguments: [Expression.LiteralInt(0xaa)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -1263,34 +1164,26 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testCompileNestedFunction() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
-                                                   expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xaa),
+                                                   expression: Expression.LiteralInt(0xaa),
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    FunctionDeclaration(sourceAnchor: nil,
-                                                        identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                                    FunctionDeclaration(identifier: Expression.Identifier("bar"),
                                                         functionType: FunctionType(returnType: .u8, arguments: []),
-                                                        body: Block(sourceAnchor: nil, children: [
-                                                            Return(sourceAnchor: nil,
-                                                                   expression: Expression.Identifier(sourceAnchor: nil, identifier: "a"))
+                                                        body: Block(children: [
+                                                            Return(Expression.Identifier("a"))
                                                         ])),
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.Call(sourceAnchor: nil,
-                                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
-                                                                       arguments: []))
+                                    Return(Expression.Call(callee: Expression.Identifier("bar"),
+                                                           arguments: []))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
                                                        arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1305,41 +1198,31 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testFunctionNamesAreNotUnique() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    VarDeclaration(sourceAnchor: nil,
-                                                   identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+                                body: Block(children: [
+                                    VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
-                                                   expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xaa),
+                                                   expression: Expression.LiteralInt(0xaa),
                                                    storage: .stackStorage,
                                                    isMutable: false),
-                                    FunctionDeclaration(sourceAnchor: nil,
-                                                        identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                                    FunctionDeclaration(identifier: Expression.Identifier("bar"),
                                                         functionType: FunctionType(returnType: .u8, arguments: []),
-                                                        body: Block(sourceAnchor: nil, children: [
-                                                            Return(sourceAnchor: nil,
-                                                                   expression: Expression.Identifier(sourceAnchor: nil, identifier: "a"))
+                                                        body: Block(children: [
+                                                            Return(Expression.Identifier("a"))
                                                         ])),
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.Call(sourceAnchor: nil,
-                                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
-                                                                       arguments: []))
+                                    Return(Expression.Call(callee: Expression.Identifier("bar"),
+                                                           arguments: []))
                                 ])),
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+            FunctionDeclaration(identifier: Expression.Identifier("bar"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),
-                                body: Block(sourceAnchor: nil, children: [
-                                    Return(sourceAnchor: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xbb))
+                                body: Block(children: [
+                                    Return(Expression.LiteralInt(0xbb))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                           expression: Expression.Call(callee: Expression.Identifier("bar"),
                                                        arguments: []),
                            storage: .staticStorage,
                            isMutable: false)
@@ -1354,49 +1237,38 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
     
     func testMutuallyRecursiveFunctions() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "isEven"),
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("isEven"),
                                 functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "n", type: .u8)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    If(sourceAnchor: nil,
-                                       condition: ExprUtils.makeComparisonEq(left: Expression.Identifier(sourceAnchor: nil, identifier: "n"),
-                                                                             right: Expression.LiteralWord(sourceAnchor: nil, value: 0)),
-                                       then: Block(sourceAnchor: nil, children: [
-                                        Return(sourceAnchor: nil,
-                                               expression: Expression.LiteralBoolean(sourceAnchor: nil, value: true))
+                                body: Block(children: [
+                                    If(condition: ExprUtils.makeComparisonEq(left: Expression.Identifier("n"),
+                                                                             right: Expression.LiteralInt(0)),
+                                       then: Block(children: [
+                                        Return(Expression.LiteralBool(true))
                                        ]),
-                                       else: Block(sourceAnchor: nil, children: [
-                                        Return(sourceAnchor: nil,
-                                               expression: Expression.Call(sourceAnchor: nil,
-                                                                           callee: Expression.Identifier(sourceAnchor: nil, identifier: "isOdd"),
-                                                                           arguments: [ExprUtils.makeSub(left:  Expression.Identifier(sourceAnchor: nil, identifier: "n"), right: Expression.LiteralWord(sourceAnchor: nil, value: 1))]))
+                                       else: Block(children: [
+                                        Return(Expression.Call(callee: Expression.Identifier("isOdd"),
+                                                               arguments: [ExprUtils.makeSub(left:  Expression.Identifier("n"), right: Expression.LiteralInt(1))]))
                                        ]))
                                 ])),
-            FunctionDeclaration(sourceAnchor: nil,
-                                identifier: Expression.Identifier(sourceAnchor: nil, identifier: "isOdd"),
+            FunctionDeclaration(identifier: Expression.Identifier("isOdd"),
                                 functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "n", type: .u8)]),
-                                body: Block(sourceAnchor: nil, children: [
-                                    If(sourceAnchor: nil,
-                                       condition: ExprUtils.makeComparisonEq(left: Expression.Identifier(sourceAnchor: nil, identifier: "n"),
-                                                                             right: Expression.LiteralWord(sourceAnchor: nil, value: 0)),
-                                       then: Block(sourceAnchor: nil, children: [Return(sourceAnchor: nil, expression: Expression.LiteralBoolean(sourceAnchor: nil, value: false))]),
-                                       else: Block(sourceAnchor: nil, children: [
-                                        Return(sourceAnchor: nil,
-                                               expression: Expression.Call(sourceAnchor: nil,
-                                                                           callee: Expression.Identifier(sourceAnchor: nil, identifier: "isEven"),
-                                                                           arguments: [
-                                                                            ExprUtils.makeSub(left: Expression.Identifier(sourceAnchor: nil, identifier: "n"),
-                                                                                          right: Expression.LiteralWord(sourceAnchor: nil, value: 1))
-                                               ]))
+                                body: Block(children: [
+                                    If(condition: ExprUtils.makeComparisonEq(left: Expression.Identifier("n"),
+                                                                             right: Expression.LiteralInt(0)),
+                                       then: Block(children: [Return(Expression.LiteralBool(false))]),
+                                       else: Block(children: [
+                                        Return(Expression.Call(callee: Expression.Identifier("isEven"),
+                                                               arguments: [
+                                                                ExprUtils.makeSub(left: Expression.Identifier("n"),
+                                                                                  right: Expression.LiteralInt(1))
+                                                ]))
                                        ]))
                                 ])),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "isOdd"),
-                                                       arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 7)]),
+                           expression: Expression.Call(callee: Expression.Identifier("isOdd"),
+                                                       arguments: [Expression.LiteralInt(7)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -1415,11 +1287,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
         
     func test_SixteenBitGreaterThan() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: ExprUtils.makeComparisonGt(left: Expression.LiteralWord(sourceAnchor: nil, value: 0x1000), right: Expression.LiteralWord(sourceAnchor: nil, value: 0x0001)),
+                           expression: ExprUtils.makeComparisonGt(left: Expression.LiteralInt(0x1000), right: Expression.LiteralInt(0x0001)),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -1438,19 +1309,16 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
         
     func testCompilePeekMemory() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xaa),
+                           expression: Expression.LiteralInt(0xaa),
                            storage: .staticStorage,
                            isMutable: false),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
+            VarDeclaration(identifier: Expression.Identifier("b"),
                            explicitType: nil,
-                           expression: Expression.Call(sourceAnchor: nil,
-                                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "peekMemory"),
-                                                       arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 0x0010)]),
+                           expression: Expression.Call(callee: Expression.Identifier("peekMemory"),
+                                                       arguments: [Expression.LiteralInt(0x0010)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -1478,11 +1346,10 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
         
     func testCompilePokeMemory() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "pokeMemory"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 0xab),
-                                        Expression.LiteralWord(sourceAnchor: nil, value: 0x0010)])
+        let ast = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier("pokeMemory"),
+                            arguments: [Expression.LiteralInt(0xab),
+                                        Expression.LiteralInt(0x0010)])
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -1504,20 +1371,18 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
         
     func testCompilePokePeripheral() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "pokePeripheral"),
+        let ast = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier("pokePeripheral"),
                             arguments: [
-                                Expression.LiteralWord(sourceAnchor: nil, value: 0xff),
-                                Expression.LiteralWord(sourceAnchor: nil, value: 0xffff),
-                                Expression.LiteralWord(sourceAnchor: nil, value: 0)
+                                Expression.LiteralInt(0xff),
+                                Expression.LiteralInt(0xffff),
+                                Expression.LiteralInt(0)
             ]),
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "pokePeripheral"),
+            Expression.Call(callee: Expression.Identifier("pokePeripheral"),
                             arguments: [
-                                Expression.LiteralWord(sourceAnchor: nil, value: 0xff),
-                                Expression.LiteralWord(sourceAnchor: nil, value: 0xffff),
-                                Expression.LiteralWord(sourceAnchor: nil, value: 1)
+                                Expression.LiteralInt(0xff),
+                                Expression.LiteralInt(0xffff),
+                                Expression.LiteralInt(1)
             ])
         ])
         let compiler = SnapToYertleCompiler()
@@ -1535,18 +1400,15 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
         
     func testCompileHlt() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "pokeMemory"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 0xab),
-                                        Expression.LiteralWord(sourceAnchor: nil, value: 0x0010)]),
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "hlt"),
+        let ast = TopLevel(children: [
+            Expression.Call(callee: Expression.Identifier("pokeMemory"),
+                            arguments: [Expression.LiteralInt(0xab),
+                                        Expression.LiteralInt(0x0010)]),
+            Expression.Call(callee: Expression.Identifier("hlt"),
                             arguments: []),
-            Expression.Call(sourceAnchor: nil,
-                            callee: Expression.Identifier(sourceAnchor: nil, identifier: "pokeMemory"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 0xcd),
-                                        Expression.LiteralWord(sourceAnchor: nil, value: 0x0010)])
+            Expression.Call(callee: Expression.Identifier("pokeMemory"),
+                            arguments: [Expression.LiteralInt(0xcd),
+                                        Expression.LiteralInt(0x0010)])
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
@@ -1562,35 +1424,30 @@ class SnapToYertleCompilerTests: XCTestCase {
     }
         
     func testCompileGetArrayLength() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "r"),
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("r"),
                            explicitType: .u16,
-                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                           expression: Expression.LiteralInt(0),
                            storage: .staticStorage,
                            isMutable: true),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+            VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: .array(count: nil, elementType: .u8),
-                           expression: Expression.LiteralArray(sourceAnchor: nil,
-                                                               explicitType: .u8,
+                           expression: Expression.LiteralArray(explicitType: .u8,
                                                                explicitCount: nil,
                                                                elements: [ExprUtils.makeU8(value: 1),
                                                                           ExprUtils.makeU8(value: 2),
                                                                           ExprUtils.makeU8(value: 3)]),
                            storage: .staticStorage,
                            isMutable: false),
-            VarDeclaration(sourceAnchor: nil,
-                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
+            VarDeclaration(identifier: Expression.Identifier("b"),
                            explicitType: .dynamicArray(elementType: .u8),
-                           expression: Expression.Identifier(sourceAnchor: nil, identifier: "a"),
+                           expression: Expression.Identifier("a"),
                            storage: .staticStorage,
                            isMutable: false),
-            Expression.Assignment(sourceAnchor: nil,
-                                  lexpr: Expression.Identifier(sourceAnchor: nil, identifier: "r"),
+            Expression.Assignment(lexpr: Expression.Identifier("r"),
                                   rexpr: Expression.Get(sourceAnchor: nil,
-                                                        expr: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
-                                                        member: Expression.Identifier(sourceAnchor: nil, identifier: "count")))
+                                                        expr: Expression.Identifier("b"),
+                                                        member: Expression.Identifier("count")))
             
         ])
         let compiler = SnapToYertleCompiler()

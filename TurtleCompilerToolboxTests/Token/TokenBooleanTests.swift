@@ -11,34 +11,34 @@ import TurtleCompilerToolbox
 
 class TokenBooleanTests: XCTestCase {
     func testTokenBooleanDescription() {
-        XCTAssertEqual(TokenBoolean(sourceAnchor: nil, literal: true).description, "<TokenBoolean: sourceAnchor=nil, lexeme=\"\", literal=true>")
+        XCTAssertEqual(TokenBoolean(true).description, "<TokenBoolean: sourceAnchor=nil, lexeme=\"\", literal=true>")
     }
     
     func testTokenBooleanEquality() {
-        let a = TokenBoolean(sourceAnchor: nil, literal: true)
-        let b = TokenBoolean(sourceAnchor: nil, literal: true)
+        let a = TokenBoolean(true)
+        let b = TokenBoolean(true)
         XCTAssertEqual(a, b)
     }
     
     func testTokenBooleanIsNotEqualToSomeOtherNSObject() {
-        let token = TokenBoolean(sourceAnchor: nil, literal: true)
+        let token = TokenBoolean(true)
         XCTAssertNotEqual(token, NSArray())
     }
     
     func testTokenBooleanIsNotEqualToTokenWithDifferentLiteral() {
-        let a = TokenBoolean(sourceAnchor: nil, literal: true)
-        let b = TokenBoolean(sourceAnchor: nil, literal: false)
+        let a = TokenBoolean(true)
+        let b = TokenBoolean(false)
         XCTAssertNotEqual(a, b)
     }
     
     func testTokenBooleanIsNotEqualToTokenOfDifferentType() {
-        let a = TokenBoolean(sourceAnchor: nil, literal: true)
-        let b = TokenEOF(sourceAnchor: nil)
+        let a = TokenBoolean(true)
+        let b = TokenEOF()
         XCTAssertNotEqual(a, b)
     }
     
     func testHash() {
-        XCTAssertEqual(TokenBoolean(sourceAnchor: nil, literal: true).hashValue,
-                       TokenBoolean(sourceAnchor: nil, literal: true).hashValue)
+        XCTAssertEqual(TokenBoolean(true).hashValue,
+                       TokenBoolean(true).hashValue)
     }
 }

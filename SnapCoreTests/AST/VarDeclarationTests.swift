@@ -12,29 +12,26 @@ import TurtleCompilerToolbox
 
 class VarDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        let one = Expression.LiteralInt(1)
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        let bar = Expression.Identifier(sourceAnchor: nil, identifier: "bar")
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
+        let one = Expression.LiteralInt(1)
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
-                          VarDeclaration(sourceAnchor: nil,
-                                         identifier: bar,
+                          VarDeclaration(identifier: bar,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
@@ -42,17 +39,15 @@ class VarDeclarationTests: XCTestCase {
     }
     
     func testDoesNotEqualNodeWithDifferentStorage() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        let bar = Expression.Identifier(sourceAnchor: nil, identifier: "bar")
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
+        let one = Expression.LiteralInt(1)
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
-                          VarDeclaration(sourceAnchor: nil,
-                                         identifier: bar,
+                          VarDeclaration(identifier: bar,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .stackStorage,
@@ -60,17 +55,15 @@ class VarDeclarationTests: XCTestCase {
     }
     
     func testDoesNotEqualNodeWithDifferentMutability() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        let bar = Expression.Identifier(sourceAnchor: nil, identifier: "bar")
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
+        let one = Expression.LiteralInt(1)
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
-                          VarDeclaration(sourceAnchor: nil,
-                                         identifier: bar,
+                          VarDeclaration(identifier: bar,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
@@ -78,17 +71,15 @@ class VarDeclarationTests: XCTestCase {
     }
     
     func testDoesNotEqualNodeWithDifferentNumber() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let two = Expression.LiteralWord(sourceAnchor: nil, value: 2)
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        let one = Expression.LiteralInt(1)
+        let two = Expression.LiteralInt(2)
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
-                          VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+                          VarDeclaration(identifier: foo,
                                          explicitType: .u8,
                                          expression: two,
                                          storage: .staticStorage,
@@ -96,44 +87,38 @@ class VarDeclarationTests: XCTestCase {
     }
     
     func testDoesNotEqualNodeWithDifferentExplicitType() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
-                                         expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                         expression: Expression.LiteralInt(1),
                                                    storage: .staticStorage, isMutable: true),
-                          VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+                          VarDeclaration(identifier: foo,
                                          explicitType: .u16,
-                                         expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                         expression: Expression.LiteralInt(1),
                                          storage: .staticStorage, isMutable: true))
     }
     
     func testNodesActuallyAreTheSame() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(VarDeclaration(sourceAnchor: nil,
-                                      identifier: foo,
+        let foo = Expression.Identifier("foo")
+        XCTAssertEqual(VarDeclaration(identifier: foo,
                                       explicitType: .u8,
-                                      expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                      expression: Expression.LiteralInt(1),
                                       storage: .staticStorage, isMutable: true),
-                       VarDeclaration(sourceAnchor: nil,
-                                      identifier: foo,
+                       VarDeclaration(identifier: foo,
                                       explicitType: .u8,
-                                      expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                      expression: Expression.LiteralInt(1),
                                       storage: .staticStorage, isMutable: true))
     }
     
     func testHash() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        XCTAssertNotEqual(VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+        let foo = Expression.Identifier("foo")
+        XCTAssertNotEqual(VarDeclaration(identifier: foo,
                                          explicitType: .u8,
-                                         expression: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+                                         expression: Expression.LiteralInt(1),
                                          storage: .staticStorage, isMutable: true).hashValue,
-                          VarDeclaration(sourceAnchor: nil,
-                                         identifier: foo,
+                          VarDeclaration(identifier: foo,
                                          explicitType: .u8,
-                                         expression: Expression.LiteralWord(sourceAnchor: nil, value: 2),
+                                         expression: Expression.LiteralInt(2),
                                          storage: .staticStorage, isMutable: true).hashValue)
     }
 }

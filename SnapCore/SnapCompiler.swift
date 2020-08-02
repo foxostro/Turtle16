@@ -35,10 +35,10 @@ public class SnapCompiler: NSObject {
             do {
                 return try String(contentsOfFile: fileName)
             } catch {
-                throw CompilerError(sourceAnchor: nil, message: "failed to read standard library from file: \(fileName)")
+                throw CompilerError(message: "failed to read standard library from file: \(fileName)")
             }
         } else {
-            throw CompilerError(sourceAnchor: nil, message: "standard library file is missing: \(kStandardLibrarySourceFileName).snap")
+            throw CompilerError(message: "standard library file is missing: \(kStandardLibrarySourceFileName).snap")
         }
     }
     
@@ -60,7 +60,7 @@ public class SnapCompiler: NSObject {
                 errors.append(error)
                 return
             } catch {
-                errors.append(CompilerError(sourceAnchor: nil, message: "unrecoverable error: \(error.localizedDescription)"))
+                errors.append(CompilerError(message: "unrecoverable error: \(error.localizedDescription)"))
                 return
             }
             text = originalText + "\n" + kStandardLibraryText

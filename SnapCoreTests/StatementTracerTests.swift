@@ -13,25 +13,25 @@ import TurtleCompilerToolbox
 class StatementTracerTests: XCTestCase {
     func testTraceSingleReturnStatement() {
         let tracer = StatementTracer()
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let traces = try! tracer.trace(ast: Return(sourceAnchor: nil, expression: one))
+        let one = Expression.LiteralInt(1)
+        let traces = try! tracer.trace(ast: Return(one))
         XCTAssertEqual(traces[0], [.Return])
     }
     
     func testTraceBlockContainingSingleReturnStatement() {
         let tracer = StatementTracer()
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let traces = try! tracer.trace(ast: Block(sourceAnchor: nil, children: [
-            Return(sourceAnchor: nil, expression: one)
+        let one = Expression.LiteralInt(1)
+        let traces = try! tracer.trace(ast: Block(children: [
+            Return(one)
         ]))
         XCTAssertEqual(traces, [[.Return]])
     }
     
     func testThrowErrorWhenStatementAfterReturnInBlock() {
         let tracer = StatementTracer()
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let ast = Block(sourceAnchor: nil, children: [
-            Return(sourceAnchor: nil, expression: one),
+        let one = Expression.LiteralInt(1)
+        let ast = Block(children: [
+            Return(one),
             ExprUtils.makeAssignment(name: "foo", right: one)
         ])
         XCTAssertThrowsError(try tracer.trace(ast: ast)) {
@@ -45,15 +45,15 @@ class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughIf() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBoolean(sourceAnchor: nil, value: true)
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let two = Expression.LiteralWord(sourceAnchor: nil, value: 2)
-        let traces = try! tracer.trace(ast: Block(sourceAnchor: nil, children: [
+        let tr = Expression.LiteralBool(true)
+        let one = Expression.LiteralInt(1)
+        let two = Expression.LiteralInt(2)
+        let traces = try! tracer.trace(ast: Block(children: [
             If(sourceAnchor: nil,
                condition: tr,
-               then: Return(sourceAnchor: nil, expression: one),
+               then: Return(one),
                else: nil),
-            Return(sourceAnchor: nil, expression: two)
+            Return(two)
         ]))
         XCTAssertEqual(traces[0], [.IfThen, .Return])
         XCTAssertEqual(traces[1], [.IfSkipped, .Return])
@@ -61,13 +61,13 @@ class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughElse() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBoolean(sourceAnchor: nil, value: true)
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let traces = try! tracer.trace(ast: Block(sourceAnchor: nil, children: [
+        let tr = Expression.LiteralBool(true)
+        let one = Expression.LiteralInt(1)
+        let traces = try! tracer.trace(ast: Block(children: [
             If(sourceAnchor: nil,
                condition: tr,
-               then: Block(sourceAnchor: nil, children: []),
-               else: Return(sourceAnchor: nil, expression: one))
+               then: Block(),
+               else: Return(one))
         ]))
         XCTAssertEqual(traces.count, 2)
         XCTAssertEqual(traces[0], [.IfThen])
@@ -76,12 +76,12 @@ class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughWhile() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBoolean(sourceAnchor: nil, value: true)
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let traces = try! tracer.trace(ast: Block(sourceAnchor: nil, children: [
+        let tr = Expression.LiteralBool(true)
+        let one = Expression.LiteralInt(1)
+        let traces = try! tracer.trace(ast: Block(children: [
             While(sourceAnchor: nil,
                   condition: tr,
-                  body: Return(sourceAnchor: nil, expression: one))
+                  body: Return(one))
         ]))
         XCTAssertEqual(traces.count, 2)
         XCTAssertEqual(traces[0], [.LoopBody, .Return])
@@ -90,14 +90,14 @@ class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughForLoop() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBoolean(sourceAnchor: nil, value: true)
-        let one = Expression.LiteralWord(sourceAnchor: nil, value: 1)
-        let traces = try! tracer.trace(ast: Block(sourceAnchor: nil, children: [
+        let tr = Expression.LiteralBool(true)
+        let one = Expression.LiteralInt(1)
+        let traces = try! tracer.trace(ast: Block(children: [
             ForLoop(sourceAnchor: nil,
-                    initializerClause: AbstractSyntaxTreeNode(sourceAnchor: nil),
+                    initializerClause: AbstractSyntaxTreeNode(),
                     conditionClause: tr,
-                    incrementClause: AbstractSyntaxTreeNode(sourceAnchor: nil),
-                    body: Return(sourceAnchor: nil, expression: one))
+                    incrementClause: AbstractSyntaxTreeNode(),
+                    body: Return(one))
         ]))
         XCTAssertEqual(traces.count, 2)
         XCTAssertEqual(traces[0], [.LoopBody, .Return])

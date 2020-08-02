@@ -12,6 +12,12 @@ public class ConstantDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String
     public let value: Int
     
+    public convenience init(identifier: String, value: Int) {
+        self.init(sourceAnchor: nil,
+                  identifier: identifier,
+                  value: value)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?, identifier: String, value: Int) {
         self.identifier = identifier
         self.value = value

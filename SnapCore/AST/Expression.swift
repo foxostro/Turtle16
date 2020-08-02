@@ -25,10 +25,14 @@ public class Expression: AbstractSyntaxTreeNode {
     // Useful for testing
     public class UnsupportedExpression : Expression {}
     
-    public class LiteralWord: Expression {
+    public class LiteralInt: Expression {
         public let value: Int
         
-        public init(sourceAnchor: SourceAnchor? = nil, value: Int) {
+        public convenience init(_ value: Int) {
+            self.init(sourceAnchor: nil, value: value)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, value: Int) {
             self.value = value
             super.init(sourceAnchor: sourceAnchor)
         }
@@ -43,7 +47,7 @@ public class Expression: AbstractSyntaxTreeNode {
             guard super.isEqual(rhs) else {
                 return false
             }
-            guard let rhs = rhs as? LiteralWord else {
+            guard let rhs = rhs as? LiteralInt else {
                 return false
             }
             guard value == rhs.value else {
@@ -67,8 +71,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
-    public class LiteralBoolean: Expression {
+    public class LiteralBool: Expression {
         public let value: Bool
+        
+        public convenience init(_ value: Bool) {
+            self.init(sourceAnchor: nil, value: value)
+        }
         
         public init(sourceAnchor: SourceAnchor?, value: Bool) {
             self.value = value
@@ -79,7 +87,7 @@ public class Expression: AbstractSyntaxTreeNode {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? LiteralBoolean else { return false }
+            guard let rhs = rhs as? LiteralBool else { return false }
             guard value == rhs.value else { return false }
             return true
         }
@@ -101,6 +109,10 @@ public class Expression: AbstractSyntaxTreeNode {
     
     public class Identifier: Expression {
         public let identifier: String
+        
+        public convenience init(_ identifier: String) {
+            self.init(sourceAnchor: nil, identifier: identifier)
+        }
         
         public init(sourceAnchor: SourceAnchor?, identifier: String) {
             self.identifier = identifier
@@ -134,6 +146,10 @@ public class Expression: AbstractSyntaxTreeNode {
     public class Unary: Expression {
         public let op: TokenOperator.Operator
         public let child: Expression
+        
+        public convenience init(op: TokenOperator.Operator, expression: Expression) {
+            self.init(sourceAnchor: nil, op: op, expression: expression)
+        }
         
         public init(sourceAnchor: SourceAnchor?, op: TokenOperator.Operator, expression: Expression) {
             self.op = op
@@ -171,6 +187,10 @@ public class Expression: AbstractSyntaxTreeNode {
     public class Group: Expression {
         public let expression: Expression
         
+        public convenience init(_ expression: Expression) {
+            self.init(sourceAnchor: nil, expression: expression)
+        }
+        
         public init(sourceAnchor: SourceAnchor?, expression: Expression) {
             self.expression = expression
             super.init(sourceAnchor: sourceAnchor)
@@ -204,6 +224,12 @@ public class Expression: AbstractSyntaxTreeNode {
         public let op: TokenOperator.Operator
         public let left: Expression
         public let right: Expression
+        
+        public convenience init(op: TokenOperator.Operator,
+                    left: Expression,
+                    right: Expression) {
+            self.init(sourceAnchor: nil, op: op, left: left, right: right)
+        }
         
         public init(sourceAnchor: SourceAnchor?,
                     op: TokenOperator.Operator,
@@ -251,6 +277,10 @@ public class Expression: AbstractSyntaxTreeNode {
         public let lexpr: Expression
         public let rexpr: Expression
         
+        public convenience init(lexpr: Expression, rexpr: Expression) {
+            self.init(sourceAnchor: nil, lexpr: lexpr, rexpr: rexpr)
+        }
+        
         public init(sourceAnchor: SourceAnchor?, lexpr: Expression, rexpr: Expression) {
             self.lexpr = lexpr
             self.rexpr = rexpr
@@ -290,6 +320,10 @@ public class Expression: AbstractSyntaxTreeNode {
         public let callee: Expression
         public let arguments: [Expression]
         
+        public convenience init(callee: Expression, arguments: [Expression]) {
+            self.init(sourceAnchor: nil, callee: callee, arguments: arguments)
+        }
+        
         public init(sourceAnchor: SourceAnchor?, callee: Expression, arguments: [Expression]) {
             self.callee = callee
             self.arguments = arguments
@@ -310,6 +344,10 @@ public class Expression: AbstractSyntaxTreeNode {
     public class As: Expression {
         public let expr: Expression
         public let targetType: SymbolType
+        
+        public convenience init(expr: Expression, targetType: SymbolType) {
+            self.init(sourceAnchor: nil, expr: expr, targetType: targetType)
+        }
         
         public init(sourceAnchor: SourceAnchor?, expr: Expression, targetType: SymbolType) {
             self.expr = expr
@@ -340,6 +378,10 @@ public class Expression: AbstractSyntaxTreeNode {
         public let identifier: Expression.Identifier
         public let expr: Expression
         
+        public convenience init(identifier: Expression.Identifier, expr: Expression) {
+            self.init(sourceAnchor: nil, identifier: identifier, expr: expr)
+        }
+        
         public init(sourceAnchor: SourceAnchor?, identifier: Expression.Identifier, expr: Expression) {
             self.identifier = identifier
             self.expr = expr
@@ -369,6 +411,15 @@ public class Expression: AbstractSyntaxTreeNode {
         public let explicitType: SymbolType
         public let explicitCount: Int?
         public let elements: [Expression]
+        
+        public convenience init(explicitType: SymbolType,
+                                explicitCount: Int? = nil,
+                                elements: [Expression] = []) {
+            self.init(sourceAnchor: nil,
+                      explicitType: explicitType,
+                      explicitCount: explicitCount,
+                      elements: elements)
+        }
         
         public init(sourceAnchor: SourceAnchor?,
                     explicitType: SymbolType,
@@ -415,6 +466,10 @@ public class Expression: AbstractSyntaxTreeNode {
     public class Get: Expression {
         public let expr: Expression
         public let member: Identifier
+        
+        public convenience init(expr: Expression, member: Identifier) {
+            self.init(sourceAnchor: nil, expr: expr, member: member)
+        }
         
         public init(sourceAnchor: SourceAnchor?, expr: Expression, member: Identifier) {
             self.expr = expr

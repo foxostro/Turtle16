@@ -36,17 +36,17 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileLiteralIntExpression_FitsIntoU8() {
-        XCTAssertEqual(try compile(expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)), [.push(1)])
-        XCTAssertEqual(try compile(expression: Expression.LiteralWord(sourceAnchor: nil, value: 2)), [.push(2)])
+        XCTAssertEqual(try compile(expression: Expression.LiteralInt(1)), [.push(1)])
+        XCTAssertEqual(try compile(expression: Expression.LiteralInt(2)), [.push(2)])
     }
     
     func testCompileLiteralIntExpression_FitsIntoU16() {
-        XCTAssertEqual(try compile(expression: Expression.LiteralWord(sourceAnchor: nil, value: 0xffff)), [.push16(0xffff)])
-        XCTAssertEqual(try compile(expression: Expression.LiteralWord(sourceAnchor: nil, value: 256)), [.push16(256)])
+        XCTAssertEqual(try compile(expression: Expression.LiteralInt(0xffff)), [.push16(0xffff)])
+        XCTAssertEqual(try compile(expression: Expression.LiteralInt(256)), [.push16(256)])
     }
     
     func testCompileLiteralIntExpression_TooLarge() {
-        let expr = Expression.LiteralWord(sourceAnchor: nil, value: 65536)
+        let expr = Expression.LiteralInt(65536)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -55,13 +55,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileLiteralBooleanExpression() {
-        XCTAssertEqual(try compile(expression: Expression.LiteralBoolean(sourceAnchor: nil, value: true)), [.push(1)])
-        XCTAssertEqual(try compile(expression: Expression.LiteralBoolean(sourceAnchor: nil, value: false)), [.push(0)])
+        XCTAssertEqual(try compile(expression: Expression.LiteralBool(true)), [.push(1)])
+        XCTAssertEqual(try compile(expression: Expression.LiteralBool(false)), [.push(0)])
     }
         
     func testUnaryNegationOfU8() {
-        let expr = Expression.Unary(sourceAnchor: nil,
-                                    op: .minus,
+        let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU8(value: 42))
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -71,8 +70,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .push(0),
             .sub
         ])
-        XCTAssertEqual(ir, try compile(expression: Expression.Binary(sourceAnchor: nil,
-                                                                     op: .minus,
+        XCTAssertEqual(ir, try compile(expression: Expression.Binary(op: .minus,
                                                                      left: ExprUtils.makeU8(value: 0),
                                                                      right: ExprUtils.makeU8(value: 42))))
         let expected = UInt8(0) &- UInt8(42)
@@ -80,8 +78,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testUnaryNegationOfU16() {
-        let expr = Expression.Unary(sourceAnchor: nil,
-                                    op: .minus,
+        let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -96,8 +93,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testUnaryNegationOfIntegerConstant() {
-        let expr = Expression.Unary(sourceAnchor: nil,
-                                    op: .minus,
+        let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -112,8 +108,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testFailToCompileInvalidPrefixUnaryOperator() {
-        let expr = Expression.Unary(sourceAnchor: nil,
-                                    op: .multiply,
+        let expr = Expression.Unary(op: .multiply,
                                     expression: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -177,7 +172,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_U16_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+                                              right: Expression.LiteralBool(false))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -236,7 +231,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_U8_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+                                              right: Expression.LiteralBool(false))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -246,7 +241,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_Bool_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeBool(value: false),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+                                              right: Expression.LiteralBool(false))
         XCTAssertEqual(try compile(expression: expr), [
             .push(0),
             .push(0),
@@ -275,15 +270,15 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_BooleanConstant_Eq_BooleanConstant() {
-        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBoolean(sourceAnchor: nil, value: false),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
+                                              right: Expression.LiteralBool(false))
         XCTAssertEqual(try compile(expression: expr), [
             .push(1)
         ])
     }
     
     func testBinary_BooleanConstant_Eq_Bool() {
-        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBoolean(sourceAnchor: nil, value: false),
+        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeBool(value: false))
         XCTAssertEqual(try compile(expression: expr), [
             .push(0),
@@ -293,7 +288,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_BooleanConstant_Eq_U8() {
-        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBoolean(sourceAnchor: nil, value: false),
+        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -353,7 +348,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_U16_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+                                              right: Expression.LiteralBool(false))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -412,7 +407,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_U8_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+                                              right: Expression.LiteralBool(false))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -422,7 +417,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_Bool_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeBool(value: false),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+                                              right: Expression.LiteralBool(false))
         XCTAssertEqual(try compile(expression: expr), [
             .push(0),
             .push(0),
@@ -451,15 +446,15 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_BooleanConstant_Ne_BooleanConstant() {
-        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBoolean(sourceAnchor: nil, value: false),
-                                              right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
+                                              right: Expression.LiteralBool(false))
         XCTAssertEqual(try compile(expression: expr), [
             .push(0)
         ])
     }
     
     func testBinary_BooleanConstant_Ne_Bool() {
-        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBoolean(sourceAnchor: nil, value: false),
+        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeBool(value: false))
         XCTAssertEqual(try compile(expression: expr), [
             .push(0),
@@ -469,7 +464,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_BooleanConstant_Ne_U8() {
-        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBoolean(sourceAnchor: nil, value: false),
+        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1025,10 +1020,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_IntegerConstant_Plus_IntegerConstant() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
-                                     left: Expression.LiteralWord(sourceAnchor: nil, value: 1000),
-                                     right: Expression.LiteralWord(sourceAnchor: nil, value: 1))
+        let expr = Expression.Binary(op: .plus,
+                                     left: Expression.LiteralInt(1000),
+                                     right: Expression.LiteralInt(1))
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -1039,10 +1033,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Plus_IntegerConstant() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
-                                     right: Expression.LiteralWord(sourceAnchor: nil, value: 1))
+                                     right: Expression.LiteralInt(1))
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -1055,8 +1048,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Plus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
@@ -1071,8 +1063,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Plus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1084,8 +1075,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Plus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1096,8 +1086,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Plus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1109,8 +1098,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Plus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
@@ -1125,8 +1113,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Plus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1137,8 +1124,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Plus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .plus,
+        let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1149,8 +1135,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Plus_U8() {
-       let expr = Expression.Binary(sourceAnchor: nil,
-                                    op: .plus,
+       let expr = Expression.Binary(op: .plus,
                                     left: ExprUtils.makeBool(value: false),
                                     right: ExprUtils.makeU8(value: 1))
        XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1161,8 +1146,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
    }
     
     func testBinary_Bool_Plus_Bool() {
-       let expr = Expression.Binary(sourceAnchor: nil,
-                                    op: .plus,
+       let expr = Expression.Binary(op: .plus,
                                     left: ExprUtils.makeBool(value: false),
                                     right: ExprUtils.makeBool(value: false))
        XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1173,8 +1157,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
    }
     
     func testBinary_U16_Minus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
@@ -1189,8 +1172,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Minus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1202,8 +1184,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Minus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1214,8 +1195,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Minus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1227,8 +1207,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Minus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
@@ -1243,8 +1222,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Minus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1255,8 +1233,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Minus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1267,8 +1244,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Minus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1279,8 +1255,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Minus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .minus,
+        let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1291,8 +1266,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 256),
                                      right: ExprUtils.makeU16(value: 256))
         let ir = try! compile(expression: expr)
@@ -1307,8 +1281,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1320,8 +1293,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1332,8 +1304,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1345,8 +1316,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU8(value: 2),
                                      right: ExprUtils.makeU8(value: 3))
         let ir = try! compile(expression: expr)
@@ -1361,8 +1331,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1373,8 +1342,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Multiply_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1385,8 +1353,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Multiply_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1397,8 +1364,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Multiply_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
+        let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1409,8 +1375,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Divide_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 0x1000),
                                      right: ExprUtils.makeU16(value: 0x1000))
         let ir = try! compile(expression: expr)
@@ -1425,8 +1390,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Divide_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1438,8 +1402,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Divide_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1450,8 +1413,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Divide_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1463,8 +1425,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Divide_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU8(value: 12),
                                      right: ExprUtils.makeU8(value: 4))
         let ir = try! compile(expression: expr)
@@ -1479,8 +1440,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Divide_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1491,8 +1451,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Divide_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1503,8 +1462,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Divide_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1515,8 +1473,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Divide_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .divide,
+        let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1527,8 +1484,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Modulus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
@@ -1543,8 +1499,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Modulus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1556,8 +1511,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Modulus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1568,8 +1522,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Modulus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertEqual(try compile(expression: expr), [
@@ -1581,8 +1534,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Modulus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 15),
                                      right: ExprUtils.makeU8(value: 4))
         let ir = try! compile(expression: expr)
@@ -1597,8 +1549,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Modulus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1609,8 +1560,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Modulus_U16() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1621,8 +1571,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Modulus_U8() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1633,8 +1582,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Modulus_Bool() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .modulus,
+        let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try compile(expression: expr)) {
@@ -1645,7 +1593,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U8_Static() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .load(0x0010)
@@ -1653,7 +1601,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U16_Static() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: false)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .load16(0x0010)
@@ -1661,7 +1609,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U8_Stack() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .u8, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
@@ -1677,7 +1625,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U16_Stack() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .u16, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
@@ -1693,7 +1641,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_Boolean_Static() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .load(0x0010)
@@ -1701,14 +1649,14 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_UnresolvedIdentifier() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         XCTAssertThrowsError(try compile(expression: expr)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
         }
     }
     
     func testCompileIdentifierExpression_ArrayOfU16_Static() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: false)])
         var ir: [YertleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
@@ -1735,7 +1683,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_ArrayOfU16_Stack() {
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .array(count: 5, elementType: .u16),
                             offset: 0x0020,
                             isMutable: false,
@@ -1769,7 +1717,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_Bool_Static() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBoolean(sourceAnchor: nil, value: true))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
         XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
             .push(1),
@@ -1799,8 +1747,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_ArrayOfU16_Static() {
-        let arr = Expression.LiteralArray(sourceAnchor: nil,
-                                          explicitType: .u16,
+        let arr = Expression.LiteralArray(explicitType: .u16,
                                           explicitCount: nil,
                                           elements: [ExprUtils.makeU16(value: 1000),
                                                      ExprUtils.makeU16(value: 2000),
@@ -1836,7 +1783,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_Bool_Stack() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBoolean(sourceAnchor: nil, value: false))
+        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(false))
         let symbol = Symbol(type: .bool, offset: 0x0004, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
@@ -1866,8 +1813,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_ArrayOfU16_Stack() {
-        let arr = Expression.LiteralArray(sourceAnchor: nil,
-                                          explicitType: .u16,
+        let arr = Expression.LiteralArray(explicitType: .u16,
                                           explicitCount: nil,
                                           elements: [ExprUtils.makeU16(value: 1000),
                                                      ExprUtils.makeU16(value: 2000),
@@ -1913,9 +1859,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testExpressionIsNotAssignable_ConstInt() {
-        let expr = Expression.Assignment(sourceAnchor: nil,
-                                         lexpr: Expression.LiteralWord(sourceAnchor: nil, value: 0),
-                                         rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 0))
+        let expr = Expression.Assignment(lexpr: Expression.LiteralInt(0),
+                                         rexpr: Expression.LiteralInt(0))
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -1939,8 +1884,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsDueToUseOfUnresolvedIdentifierInFunctionCall() {
-        let expr = Expression.Call(sourceAnchor: nil,
-                                   callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [])
         XCTAssertThrowsError(try compile(expression: expr)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
@@ -1948,8 +1892,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseCannotCallValueOfNonFunctionType() {
-        let expr = Expression.Call(sourceAnchor: nil,
-                                   callee: Expression.Identifier(sourceAnchor: nil, identifier: "fn"),
+        let expr = Expression.Call(callee: Expression.Identifier("fn"),
                                    arguments: [])
         let symbols = SymbolTable([
             "fn" : Symbol(type: .u8, offset: 0x0000, isMutable: false, storage: .staticStorage)
@@ -1960,8 +1903,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBoolasVoid() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeBool(value: false),
+        let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
                                  targetType: .void)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1971,8 +1913,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBoolasU16() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeBool(value: false),
+        let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
                                  targetType: .u16)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1982,8 +1923,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBoolasU8() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeBool(value: false),
+        let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
                                  targetType: .u8)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1993,8 +1933,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBoolasBool() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeBool(value: true),
+        let expr = Expression.As(expr: ExprUtils.makeBool(value: true),
                                  targetType: .bool)
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -2003,8 +1942,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU8asVoid() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU8(value: 1),
+        let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
                                  targetType: .void)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2014,8 +1952,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU8asU16() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU8(value: 0xab),
+        let expr = Expression.As(expr: ExprUtils.makeU8(value: 0xab),
                                  targetType: .u16)
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -2024,8 +1961,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU8asU8() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU8(value: 1),
+        let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
                                  targetType: .u8)
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -2034,8 +1970,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU8asBool() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU8(value: 1),
+        let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
                                  targetType: .bool)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2045,8 +1980,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU16asVoid() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU16(value: 0xffff),
+        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
                                  targetType: .void)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2056,8 +1990,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU16asU16() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU16(value: 0xffff),
+        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
                                  targetType: .u16)
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -2067,8 +2000,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testU16asU8() {
         // Casting from U16 to U8 just drops the high byte.
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU16(value: 0xabcd),
+        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xabcd),
                                  targetType: .u8)
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
@@ -2077,8 +2009,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU16asBool() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: ExprUtils.makeU16(value: 0xffff),
+        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
                                  targetType: .bool)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2088,8 +2019,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testIntegerConstantAsU8_Overflows() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: Expression.LiteralWord(sourceAnchor: nil, value: 256),
+        let expr = Expression.As(expr: Expression.LiteralInt(256),
                                  targetType: .u8)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2099,8 +2029,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testIntegerConstantAsU16_Overflows() {
-        let expr = Expression.As(sourceAnchor: nil,
-                                 expr: Expression.LiteralWord(sourceAnchor: nil, value: 65536),
+        let expr = Expression.As(expr: Expression.LiteralInt(65536),
                                  targetType: .u16)
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2111,7 +2040,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testEmptyArray() {
         // The empty array is not actually materialized in memory.
-        let expr = Expression.LiteralArray(sourceAnchor: nil, explicitType: .u8, explicitCount: nil, elements: [])
+        let expr = Expression.LiteralArray(explicitType: .u8)
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         _ = try! executor.execute(ir: ir)
@@ -2119,8 +2048,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayU8() {
-        let expr = Expression.LiteralArray(sourceAnchor: nil,
-                                           explicitType: .u8,
+        let expr = Expression.LiteralArray(explicitType: .u8,
                                            explicitCount: nil,
                                            elements: [ExprUtils.makeU8(value: 0),
                                                       ExprUtils.makeU8(value: 1),
@@ -2140,8 +2068,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayU16() {
-        let expr = Expression.LiteralArray(sourceAnchor: nil,
-                                           explicitType: .u16,
+        let expr = Expression.LiteralArray(explicitType: .u16,
                                            explicitCount: nil,
                                            elements: [ExprUtils.makeU16(value: 1),
                                                       ExprUtils.makeU16(value: 2),
@@ -2161,12 +2088,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayBoolean() {
-        let expr = Expression.LiteralArray(sourceAnchor: nil,
-                                           explicitType: .bool,
+        let expr = Expression.LiteralArray(explicitType: .bool,
                                            explicitCount: nil,
-                                           elements: [Expression.LiteralBoolean(sourceAnchor: nil, value: false),
-                                                      Expression.LiteralBoolean(sourceAnchor: nil, value: false),
-                                                      Expression.LiteralBoolean(sourceAnchor: nil, value: true)])
+                                           elements: [Expression.LiteralBool(false),
+                                                      Expression.LiteralBool(false),
+                                                      Expression.LiteralBool(true)])
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -2182,10 +2108,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testArrayLiteralHasNonConvertibleType() {
-        let expr = Expression.LiteralArray(sourceAnchor: nil,
-                                           explicitType: .bool,
+        let expr = Expression.LiteralArray(explicitType: .bool,
                                            explicitCount: nil,
-                                           elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0),
+                                           elements: [Expression.LiteralInt(0),
                                                       ExprUtils.makeBool(value: false)])
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2195,13 +2120,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testMoreComplicatedConstantExpressionIsAlsoEvaluatedAtCompileTime() {
-        let expr = Expression.Binary(sourceAnchor: nil,
-                                     op: .multiply,
-                                     left: Expression.Binary(sourceAnchor: nil,
-                                                             op: .plus,
-                                                             left: Expression.LiteralWord(sourceAnchor: nil, value: 1000),
-                                                             right: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                                     right: Expression.LiteralWord(sourceAnchor: nil, value: 4))
+        let expr = Expression.Binary(op: .multiply,
+                                     left: Expression.Binary(op: .plus,
+                                                             left: Expression.LiteralInt(1000),
+                                                             right: Expression.LiteralInt(1)),
+                                     right: Expression.LiteralInt(4))
         let ir = try! compile(expression: expr)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -2226,7 +2149,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
-        let zero = Expression.LiteralWord(sourceAnchor: nil, value: 0)
+        let zero = Expression.LiteralInt(0)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -2257,7 +2180,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     private func checkArraySubscriptAccessesArrayElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0010, isMutable: false)])
-        let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralWord(sourceAnchor: nil, value: i))
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         var ir: [YertleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = YertleExecutor()
@@ -2306,7 +2229,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     private func checkDynamicArraySubscriptCanAccessEveryElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: .dynamicArray(elementType: elementType), offset: 0x0010, isMutable: false)])
-        let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralWord(sourceAnchor: nil, value: i))
+        let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         var ir: [YertleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = YertleExecutor()
@@ -2349,7 +2272,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfCount = 0x0012
         let addressOfData = 0x0014
         
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
+        let expr = Expression.Identifier("foo")
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: false),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: false)
@@ -2381,8 +2304,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfCount = 0x0012
         let addressOfData = 0x0014
         
-        let expr = ExprUtils.makeAssignment(lexpr: ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralWord(sourceAnchor: nil, value: 2)),
-                                            rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 0xcafe))
+        let expr = ExprUtils.makeAssignment(lexpr: ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(2)),
+                                            rexpr: Expression.LiteralInt(0xcafe))
         
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: true),
@@ -2411,7 +2334,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfPointer = 0x0010
         let addressOfCount = 0x0012
         let addressOfData = 0x0014
-        let expr = ExprUtils.makeAssignment(name: "dst", right: Expression.Identifier(sourceAnchor: nil, identifier: "src"))
+        let expr = ExprUtils.makeAssignment(name: "dst", right: Expression.Identifier("src"))
         let symbols = SymbolTable([
             "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true),
             "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0014, isMutable: false)
@@ -2436,14 +2359,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testAccessInvalidMemberOfLiteralArray() {
-        let expr = Expression.Get(sourceAnchor: nil,
-                                  expr: Expression.LiteralArray(sourceAnchor: nil,
-                                                                explicitType: .u8,
+        let expr = Expression.Get(expr: Expression.LiteralArray(explicitType: .u8,
                                                                 explicitCount: nil,
                                                                 elements: [ExprUtils.makeU8(value: 0),
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
-                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "length"))
+                                  member: Expression.Identifier("length"))
         XCTAssertThrowsError(try compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2452,14 +2373,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testGetLengthOfLiteralArray() {
-        let expr = Expression.Get(sourceAnchor: nil,
-                                  expr: Expression.LiteralArray(sourceAnchor: nil,
-                                                                explicitType: .u8,
+        let expr = Expression.Get(expr: Expression.LiteralArray(explicitType: .u8,
                                                                 explicitCount: nil,
                                                                 elements: [ExprUtils.makeU8(value: 0),
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
-                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+                                  member: Expression.Identifier("count"))
         var ir: [YertleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr))
         let executor = YertleExecutor()
@@ -2472,9 +2391,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testGetLengthOfArrayThroughIdentifier() {
-        let expr = Expression.Get(sourceAnchor: nil,
-                                  expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("count"))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: 0x0010, isMutable: false)
         ])
@@ -2490,9 +2408,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testGetLengthOfDynamicArray() {
-        let expr = Expression.Get(sourceAnchor: nil,
-                                  expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("count"))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
         ])

@@ -9,6 +9,10 @@
 public class TopLevel: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
+    public convenience init(children: [AbstractSyntaxTreeNode]) {
+        self.init(sourceAnchor: nil, children: children)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, children: [AbstractSyntaxTreeNode]) {
         self.children = children
         super.init(sourceAnchor: sourceAnchor)

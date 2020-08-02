@@ -13,30 +13,29 @@ import TurtleCompilerToolbox
 class ParameterListTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         // Does not equal a node of a different type.
-        XCTAssertNotEqual(ParameterList(sourceAnchor: nil, parameters: []),
-                          InstructionNode(sourceAnchor: nil,
-                                          instruction: "NOP",
-                                          parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+        XCTAssertNotEqual(ParameterList(parameters: []),
+                          InstructionNode(instruction: "NOP",
+                                          parameters: ParameterList(parameters: [])))
         
         // Does not equal a node with different parameters
-        XCTAssertNotEqual(ParameterList(sourceAnchor: nil, parameters: [ParameterRegister(sourceAnchor: nil, value: RegisterName.A)]),
-                          ParameterList(sourceAnchor: nil, parameters: [ParameterRegister(sourceAnchor: nil, value: RegisterName.B)]))
+        XCTAssertNotEqual(ParameterList(parameters: [ParameterRegister(value: RegisterName.A)]),
+                          ParameterList(parameters: [ParameterRegister(value: RegisterName.B)]))
                           
         // Does equal a node with same parameters
-        XCTAssertEqual(ParameterList(sourceAnchor: nil, parameters: [ParameterRegister(sourceAnchor: nil, value: RegisterName.B)]),
-                       ParameterList(sourceAnchor: nil, parameters: [ParameterRegister(sourceAnchor: nil, value: RegisterName.B)]))
+        XCTAssertEqual(ParameterList(parameters: [ParameterRegister(value: RegisterName.B)]),
+                       ParameterList(parameters: [ParameterRegister(value: RegisterName.B)]))
         
         // Two empty parameter lists are equal.
-        XCTAssertEqual(ParameterList(sourceAnchor: nil, parameters: []),
-                       ParameterList(sourceAnchor: nil, parameters: []))
+        XCTAssertEqual(ParameterList(parameters: []),
+                       ParameterList(parameters: []))
     }
     
     func testHash() {
-        XCTAssertEqual(ParameterList(sourceAnchor: nil, parameters: []).hashValue,
-                       ParameterList(sourceAnchor: nil, parameters: []).hashValue)
-        XCTAssertEqual(ParameterList(sourceAnchor: nil, parameters: [ParameterNumber(sourceAnchor: nil, value: 1)]).hashValue,
-                       ParameterList(sourceAnchor: nil, parameters: [ParameterNumber(sourceAnchor: nil, value: 1)]).hashValue)
-        XCTAssertEqual(ParameterList(sourceAnchor: nil, parameters: [ParameterRegister(sourceAnchor: nil, value: RegisterName.B)]).hashValue,
-                       ParameterList(sourceAnchor: nil, parameters: [ParameterRegister(sourceAnchor: nil, value: RegisterName.B)]).hashValue)
+        XCTAssertEqual(ParameterList(parameters: []).hashValue,
+                       ParameterList(parameters: []).hashValue)
+        XCTAssertEqual(ParameterList(parameters: [ParameterNumber(value: 1)]).hashValue,
+                       ParameterList(parameters: [ParameterNumber(value: 1)]).hashValue)
+        XCTAssertEqual(ParameterList(parameters: [ParameterRegister(value: RegisterName.B)]).hashValue,
+                       ParameterList(parameters: [ParameterRegister(value: RegisterName.B)]).hashValue)
     }
 }

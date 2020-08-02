@@ -126,7 +126,7 @@ open class Parser: NSObject {
     }
     
     open func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        throw CompilerError(sourceAnchor: nil, message: "override consumeStatement() in a child class")
+        throw CompilerError(message: "override consumeStatement() in a child class")
     }
     
     public func unexpectedEndOfInputError() -> CompilerError {

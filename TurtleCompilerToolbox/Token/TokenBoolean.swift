@@ -9,6 +9,10 @@
 public class TokenBoolean : Token {
     public let literal: Bool
     
+    public convenience init(_ literal: Bool) {
+        self.init(sourceAnchor: nil, literal: literal)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, literal: Bool) {
         self.literal = literal
         super.init(sourceAnchor: sourceAnchor)

@@ -143,7 +143,7 @@ class SymbolTableTests: XCTestCase {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbols = SymbolTable(parent: parent, dict: [:])
-        let resolution = try! symbols.resolveWithScopeDepth(sourceAnchor: nil, identifier: "foo")
+        let resolution = try! symbols.resolveWithScopeDepth(identifier: "foo")
         XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
         XCTAssertEqual(resolution.1, 1)
     }

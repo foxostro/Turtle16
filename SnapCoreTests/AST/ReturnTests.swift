@@ -12,19 +12,19 @@ import TurtleCompilerToolbox
 
 class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(Return(sourceAnchor: nil, expression: nil),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+        XCTAssertNotEqual(Return(),
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentExpression() {
-        XCTAssertNotEqual(Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                          Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertNotEqual(Return(Expression.LiteralInt(1)),
+                          Return(Expression.LiteralInt(2)))
     }
     
     func testHash() {
-        XCTAssertEqual(Return(sourceAnchor: nil, expression: nil).hashValue,
-                       Return(sourceAnchor: nil, expression: nil).hashValue)
-        XCTAssertEqual(Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue,
-                       Return(sourceAnchor: nil, expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue)
+        XCTAssertEqual(Return().hashValue,
+                       Return().hashValue)
+        XCTAssertEqual(Return(Expression.LiteralInt(1)).hashValue,
+                       Return(Expression.LiteralInt(1)).hashValue)
     }
 }

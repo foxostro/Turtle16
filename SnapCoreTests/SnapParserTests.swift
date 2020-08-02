@@ -106,7 +106,7 @@ class SnapParserTests: XCTestCase {
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 11),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -123,7 +123,7 @@ class SnapParserTests: XCTestCase {
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 15),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .u8,
-                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -245,7 +245,7 @@ class SnapParserTests: XCTestCase {
                                                                           explicitType: .u8,
                                                                           explicitCount: 0,
                                                                           elements: [
-                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
+                                        Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
                                       ]),
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -262,9 +262,9 @@ class SnapParserTests: XCTestCase {
                                           explicitType: .u8,
                                           explicitCount: nil,
                                           elements: [
-            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1),
-            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 2),
-            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(22, 23), value: 3)
+            Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1),
+            Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 2),
+            Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(22, 23), value: 3)
         ])
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
@@ -284,7 +284,7 @@ let foo = "Hello, World!"
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         let elements = "Hello, World!".utf8.map({
-            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(10, 25), value: Int($0))
+            Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 25), value: Int($0))
         })
         let arr = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 25),
                                           explicitType: .u8,
@@ -359,7 +359,7 @@ let foo: []u8 = bar
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 11),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
                                       storage: .stackStorage,
                                       isMutable: true)
         let actual = ast.children[0]
@@ -376,7 +376,7 @@ let foo: []u8 = bar
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 15),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: .u8,
-                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
                                       storage: .stackStorage,
                                       isMutable: true)
         let actual = ast.children[0]
@@ -401,7 +401,7 @@ let foo: []u8 = bar
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 18),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 14), identifier: "foo"),
                                       explicitType: nil,
-                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
                                       storage: .staticStorage,
                                       isMutable: true)
         let actual = ast.children[0]
@@ -418,7 +418,7 @@ let foo: []u8 = bar
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 18),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 14), identifier: "foo"),
                                       explicitType: nil,
-                                      expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
                                       storage: .staticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
@@ -432,7 +432,7 @@ let foo: []u8 = bar
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1)
+        let expected = Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1)
         XCTAssertEqual(expected, ast.children.first)
     }
     
@@ -443,7 +443,7 @@ let foo: []u8 = bar
         
         XCTAssertEqual(ast.children.count, 1)
         
-        let expected = Expression.LiteralBoolean(sourceAnchor: parser.lineMapper.anchor(0, 4), value: true)
+        let expected = Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(0, 4), value: true)
         XCTAssertEqual(expected, ast.children.first)
     }
     
@@ -482,7 +482,7 @@ let foo: []u8 = bar
         
         let expected = Expression.Unary(sourceAnchor: parser.lineMapper.anchor(0, 6),
                                         op: .minus,
-                                        expression: Expression.LiteralBoolean(sourceAnchor: parser.lineMapper.anchor(1, 6), value: false))
+                                        expression: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(1, 6), value: false))
         XCTAssertEqual(expected, ast.children.first)
     }
     
@@ -502,7 +502,7 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
                                          op: .multiply,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
                                                                  op: .minus,
                                                                  expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
@@ -518,7 +518,7 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
                                          op: .divide,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
                                                                  op: .minus,
                                                                  expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
@@ -534,7 +534,7 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
                                          op: .plus,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
                                                                  op: .minus,
                                                                  expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
@@ -550,7 +550,7 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
                                          op: .minus,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
                                                                  op: .minus,
                                                                  expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo")))
@@ -566,11 +566,11 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
                                          op: .plus,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 9),
                                                                   op: .multiply,
-                                                                  left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
-                                                                  right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
+                                                                  left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
+                                                                  right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
         XCTAssertEqual(expected, ast.children.first)
     }
     
@@ -583,11 +583,11 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
                                          op: .minus,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 9),
                                                                   op: .multiply,
-                                                                  left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
-                                                                  right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
+                                                                  left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
+                                                                  right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
         XCTAssertEqual(expected, ast.children.first)
     }
     
@@ -600,8 +600,8 @@ let foo: []u8 = bar
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                          op: .modulus,
-                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 7),
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 3))
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 7),
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 3))
         XCTAssertEqual(expected, ast.children.first)
     }
     
@@ -617,9 +617,9 @@ let foo: []u8 = bar
                                          left: Expression.Group(sourceAnchor: parser.lineMapper.anchor(0, 5), expression:
                                             Expression.Binary(sourceAnchor: parser.lineMapper.anchor(1, 4),
                                                               op: .minus,
-                                                              left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 2),
-                                                              right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1))),
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 4))
+                                                              left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 2),
+                                                              right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1))),
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 4))
         XCTAssertEqual(expected, ast?.children.first)
     }
     
@@ -642,7 +642,7 @@ foo = 2
         
         let expected = Expression.Assignment(sourceAnchor: parser.lineMapper.anchor(12+0, 12+7),
                                              lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12+0, 12+3), identifier: "foo"),
-                                             rexpr: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(12+6, 12+7), value: 2))
+                                             rexpr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(12+6, 12+7), value: 2))
         XCTAssertEqual(expected, ast?.children.last)
     }
         
@@ -654,12 +654,12 @@ foo = 2
 
         let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                       op: .plus,
-                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
-                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+                                      left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
                                          op: .eq,
                                          left: inner,
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
         XCTAssertEqual(expected, ast?.children.first)
     }
         
@@ -670,12 +670,12 @@ foo = 2
         XCTAssertEqual(ast?.children.count, 1)
         let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                       op: .plus,
-                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
-                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+                                      left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
                                          op: .ne,
                                          left: inner,
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
         XCTAssertEqual(expected, ast?.children.first)
     }
         
@@ -686,12 +686,12 @@ foo = 2
         XCTAssertEqual(ast?.children.count, 1)
         let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                       op: .plus,
-                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
-                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+                                      left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
                                          op: .lt,
                                          left: inner,
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 3))
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 3))
         XCTAssertEqual(expected, ast?.children.first)
     }
         
@@ -702,12 +702,12 @@ foo = 2
         XCTAssertEqual(ast?.children.count, 1)
         let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                       op: .plus,
-                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
-                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+                                      left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 9),
                                          op: .gt,
                                          left: inner,
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 3))
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 3))
         XCTAssertEqual(expected, ast?.children.first)
     }
         
@@ -718,12 +718,12 @@ foo = 2
         XCTAssertEqual(ast?.children.count, 1)
         let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                       op: .plus,
-                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
-                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+                                      left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
                                          op: .le,
                                          left: inner,
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
         XCTAssertEqual(expected, ast?.children.first)
     }
         
@@ -734,12 +734,12 @@ foo = 2
         XCTAssertEqual(ast?.children.count, 1)
         let inner = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
                                       op: .plus,
-                                      left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
-                                      right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+                                      left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                      right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 10),
                                          op: .ge,
                                          left: inner,
-                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 3))
         XCTAssertEqual(expected, ast?.children.first)
     }
         
@@ -795,12 +795,12 @@ if 1 {
         XCTAssertEqual(ast?.children.count, 1)
         
         let expected = If(sourceAnchor: parser.lineMapper.anchor(0, 24),
-                          condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+                          condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
                           then: Block(sourceAnchor: parser.lineMapper.anchor(5, 24), children: [
                             VarDeclaration(sourceAnchor: parser.lineMapper.anchor(11, 22),
                                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 18), identifier: "foo"),
                                            explicitType: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(21, 22), value: 2),
+                                           expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(21, 22), value: 2),
                                            storage: .stackStorage,
                                            isMutable: true)
                           ]),
@@ -871,15 +871,15 @@ if 1 {
         
         XCTAssertEqual(parser.syntaxTree?.children, [
             If(sourceAnchor: parser.lineMapper.anchor(0, 35),
-               condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+               condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
                then: Block(sourceAnchor: parser.lineMapper.anchor(5, 14), children: [
-                Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)
+                Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)
                ]),
                else: Block(sourceAnchor: parser.lineMapper.anchor(20, 35), children: [
-                Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(26, 27), value: 3),
-                Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(32, 33), value: 4)
+                Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(26, 27), value: 3),
+                Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(32, 33), value: 4)
                ])),
-            Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(36, 37), value: 5)])
+            Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(36, 37), value: 5)])
     }
         
     func testWellformedIfStatement_IncludingElseBranch_2() {
@@ -892,7 +892,7 @@ if 1 {
         
         XCTAssertEqual(parser.syntaxTree?.children,
                        [If(sourceAnchor: parser.lineMapper.anchor(0, 17),
-                           condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+                           condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
                            then: Block(sourceAnchor: parser.lineMapper.anchor(5, 8), children: []),
                            else: Block(sourceAnchor: parser.lineMapper.anchor(14, 17), children: []))
         ])
@@ -909,7 +909,7 @@ else {
         
         XCTAssertEqual(parser.syntaxTree?.children,
                        [If(sourceAnchor: parser.lineMapper.anchor(0, 17),
-                           condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+                           condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
                            then: Block(sourceAnchor: parser.lineMapper.anchor(5, 8), children: []),
                            else: Block(sourceAnchor: parser.lineMapper.anchor(14, 17), children: []))
         ])
@@ -926,12 +926,12 @@ else
         
         XCTAssertEqual(parser.syntaxTree?.children, [
             If(sourceAnchor: parser.lineMapper.anchor(0, 41),
-               condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+               condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
                then: Block(sourceAnchor: parser.lineMapper.anchor(4, 20), children: [
                 VarDeclaration(sourceAnchor: parser.lineMapper.anchor(9, 20),
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
                                explicitType: nil,
-                               expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
+                               expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
@@ -939,7 +939,7 @@ else
                 VarDeclaration(sourceAnchor: parser.lineMapper.anchor(30, 41),
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(34, 37), identifier: "bar"),
                                explicitType: nil,
-                               expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(40, 41), value: 1),
+                               expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(40, 41), value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]))
@@ -955,12 +955,12 @@ if 1
         
         XCTAssertEqual(parser.syntaxTree?.children, [
             If(sourceAnchor: parser.lineMapper.anchor(0, 20),
-               condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
+               condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1),
                then: Block(sourceAnchor: parser.lineMapper.anchor(4, 20), children: [
                 VarDeclaration(sourceAnchor: parser.lineMapper.anchor(9, 20),
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
                                explicitType: nil,
-                               expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
+                               expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
                                storage: .stackStorage,
                                isMutable: false)
                ]),
@@ -1020,12 +1020,12 @@ while 1 {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             While(sourceAnchor: parser.lineMapper.anchor(0, 27),
-                  condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
+                  condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
                   body: Block(sourceAnchor: parser.lineMapper.anchor(8, 27), children: [
                     VarDeclaration(sourceAnchor: parser.lineMapper.anchor(14, 25),
                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
                                    explicitType: nil,
-                                   expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 2),
+                                   expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 2),
                                    storage: .stackStorage,
                                    isMutable: true)
                   ]))
@@ -1041,7 +1041,7 @@ while 1 {
         
         XCTAssertEqual(parser.syntaxTree?.children, [
             While(sourceAnchor: parser.lineMapper.anchor(0, 11),
-                  condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
+                  condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
                   body: Block(sourceAnchor: parser.lineMapper.anchor(8, 11), children: []))
         ])
     }
@@ -1054,7 +1054,7 @@ while 1 {}
         
         XCTAssertEqual(parser.syntaxTree?.children, [
             While(sourceAnchor: parser.lineMapper.anchor(0, 10),
-                  condition: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
+                  condition: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 1),
                   body: Block(sourceAnchor: parser.lineMapper.anchor(8, 10), children: []))
         ])
     }
@@ -1072,19 +1072,19 @@ for var i = 0; i < 10; i = i + 1 {
                         initializerClause: VarDeclaration(sourceAnchor: parser.lineMapper.anchor(4, 13),
                                                           identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 9), identifier: "i"),
                                                           explicitType: nil,
-                                                          expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(12, 13), value: 0),
+                                                          expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(12, 13), value: 0),
                                                           storage: .stackStorage,
                                                           isMutable: true),
                         conditionClause: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(15, 21),
                                                            op: .lt,
                                                            left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 16), identifier: "i"),
-                                                           right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 21), value: 10)),
+                                                           right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 21), value: 10)),
                         incrementClause: Expression.Assignment(sourceAnchor: parser.lineMapper.anchor(23, 32),
                                                                lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(23, 24), identifier: "i"),
                                                                rexpr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(27, 32),
                                                                                         op: .plus,
                                                                                         left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(27, 28), identifier: "i"),
-                                                                                        right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(31, 32), value: 1))),
+                                                                                        right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(31, 32), value: 1))),
                         body: Block(sourceAnchor: parser.lineMapper.anchor(33, 52), children: [
                             VarDeclaration(sourceAnchor: parser.lineMapper.anchor(39, 50),
                                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(43, 46), identifier: "foo"),
@@ -1188,7 +1188,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 6),
                             callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1)])
+                            arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1)])
         ])
     }
     
@@ -1198,8 +1198,8 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 9),
                             callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
-                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 2)])
+                            arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
+                                        Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 2)])
         ])
     }
     
@@ -1209,11 +1209,11 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 13),
                               op: .plus,
-                              left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                              left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                               right: Expression.Call(sourceAnchor: parser.lineMapper.anchor(4, 13),
                                                      callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                                     arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 1),
-                                                                 Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)]))
+                                                     arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 1),
+                                                                 Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)]))
             
         ])
     }
@@ -1369,7 +1369,7 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 6), children: [
             Return(sourceAnchor: parser.lineMapper.anchor(0, 6),
-                   expression: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 1))
+                   expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 1))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1381,7 +1381,7 @@ for var i = 0; i < 10; i = i + 1 {
             Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 18),
                             callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 10),
                                                           identifier: "peekMemory"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 17),
+                            arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 17),
                                                                value: 0x0010)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
@@ -1393,8 +1393,8 @@ for var i = 0; i < 10; i = i + 1 {
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 24), children: [
             Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 24),
                             callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 10), identifier: "pokeMemory"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(11, 17), value: 0x0010),
-                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(19, 23), value: 0xab)])
+                            arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 17), value: 0x0010),
+                                        Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 23), value: 0xab)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1405,8 +1405,8 @@ for var i = 0; i < 10; i = i + 1 {
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 25), children: [
             Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 25),
                             callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 14), identifier: "peekPeripheral"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
-                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(23, 24), value: 7)])
+                            arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
+                                        Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(23, 24), value: 7)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1417,9 +1417,9 @@ for var i = 0; i < 10; i = i + 1 {
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 31), children: [
             Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 31),
                             callee: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 14), identifier: "pokePeripheral"),
-                            arguments: [Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
-                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(23, 27), value: 0xff),
-                                        Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(29, 30), value: 0)])
+                            arguments: [Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
+                                        Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(23, 27), value: 0xff),
+                                        Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(29, 30), value: 0)])
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1432,8 +1432,8 @@ for var i = 0; i < 10; i = i + 1 {
                                  identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
                                  expr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 7),
                                                          op: .plus,
-                                                         left: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
-                                                         right: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 2)))
+                                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
+                                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 2)))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1446,7 +1446,7 @@ for var i = 0; i < 10; i = i + 1 {
                                  identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
                                  expr: Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(4, 10),
                                                             identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                                            expr: Expression.LiteralWord(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 0)))
+                                                            expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 0)))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }

@@ -12,76 +12,63 @@ import TurtleCompilerToolbox
 
 class FunctionDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(sourceAnchor: nil, children: [])),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+                                              body: Block()),
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {
-        XCTAssertNotEqual(FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(sourceAnchor: nil, children: [])),
-                          FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                              body: Block()),
+                          FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])))
+                                              body: Block(children: [Expression.LiteralInt(1)])))
     }
     
     func testDoesNotEqualNodeWithDifferentReturnType() {
-        XCTAssertNotEqual(FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
                                               body: Block(sourceAnchor: nil)),
-                          FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                          FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .bool, arguments: []),
                                               body: Block(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentArguments() {
-        XCTAssertNotEqual(FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "foo", type: .u8)]),
                                               body: Block(sourceAnchor: nil)),
-                          FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                          FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "bar", type: .u8)]),
                                               body: Block(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        XCTAssertNotEqual(FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])),
-                          FunctionDeclaration(sourceAnchor: nil,
-                                              identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                                              body: Block(children: [Expression.LiteralInt(1)])),
+                          FunctionDeclaration(identifier: Expression.Identifier("bar"),
                                               functionType: FunctionType(returnType: .u8, arguments: []),
-                                              body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])))
+                                              body: Block(children: [Expression.LiteralInt(1)])))
     }
     
     func testSame() {
-        XCTAssertEqual(FunctionDeclaration(sourceAnchor: nil,
-                                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])),
-                       FunctionDeclaration(sourceAnchor: nil,
-                                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                           body: Block(children: [Expression.LiteralInt(1)])),
+                       FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])))
+                                           body: Block(children: [Expression.LiteralInt(1)])))
     }
     
     func testHash() {
-        XCTAssertEqual(FunctionDeclaration(sourceAnchor: nil,
-                                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])).hash,
-                       FunctionDeclaration(sourceAnchor: nil,
-                                           identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                           body: Block(children: [Expression.LiteralInt(1)])).hash,
+                       FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: FunctionType(returnType: .u8, arguments: []),
-                                           body: Block(sourceAnchor: nil, children: [Expression.LiteralWord(sourceAnchor: nil, value: 1)])).hash)
+                                           body: Block(children: [Expression.LiteralInt(1)])).hash)
     }
 }

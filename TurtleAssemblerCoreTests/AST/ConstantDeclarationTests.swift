@@ -13,43 +13,34 @@ import TurtleCompilerToolbox
 class ConstantDeclarationTests: XCTestCase {
     func testEquality() {
         // Does not equality node of another type.
-        XCTAssertNotEqual(ConstantDeclaration(sourceAnchor: nil,
-                                                  identifier: "foo",
-                                                  value: 1),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+        XCTAssertNotEqual(ConstantDeclaration(identifier: "foo",
+                                              value: 1),
+                          AbstractSyntaxTreeNode())
         
         
         // Does not equal node with a different identifier.
-        XCTAssertNotEqual(ConstantDeclaration(sourceAnchor: nil,
-                                                  identifier: "foo",
-                                                  value: 1),
-                          ConstantDeclaration(sourceAnchor: nil,
-                                                  identifier: "bar",
-                                                  value: 1))
+        XCTAssertNotEqual(ConstantDeclaration(identifier: "foo",
+                                              value: 1),
+                          ConstantDeclaration(identifier: "bar",
+                                              value: 1))
         
         // Does not equal node with a different number
-        XCTAssertNotEqual(ConstantDeclaration(sourceAnchor: nil,
-                                                  identifier: "foo",
-                                                  value: 1),
-                          ConstantDeclaration(sourceAnchor: nil,
-                                                  identifier: "foo",
-                                                  value: 2))
+        XCTAssertNotEqual(ConstantDeclaration(identifier: "foo",
+                                              value: 1),
+                          ConstantDeclaration(identifier: "foo",
+                                              value: 2))
         
         // The two nodes actually are equal
-        XCTAssertEqual(ConstantDeclaration(sourceAnchor: nil,
-                                               identifier: "foo",
-                                               value: 1),
-                       ConstantDeclaration(sourceAnchor: nil,
-                                               identifier: "foo",
-                                               value: 1))
+        XCTAssertEqual(ConstantDeclaration(identifier: "foo",
+                                           value: 1),
+                       ConstantDeclaration(identifier: "foo",
+                                           value: 1))
     }
     
     func testHash() {
-        XCTAssertEqual(ConstantDeclaration(sourceAnchor: nil,
-                                               identifier: "foo",
-                                               value: 1).hashValue,
-                       ConstantDeclaration(sourceAnchor: nil,
-                                               identifier: "foo",
-                                               value: 1).hashValue)
+        XCTAssertEqual(ConstantDeclaration(identifier: "foo",
+                                           value: 1).hashValue,
+                       ConstantDeclaration(identifier: "foo",
+                                           value: 1).hashValue)
     }
 }

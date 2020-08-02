@@ -19,6 +19,9 @@ public class SnapLexer: Lexer {
                 self!.advanceToNewline()
                 return nil
             },
+            Rule(pattern: "\\.") {
+                TokenDot(sourceAnchor: $0)
+            },
             Rule(pattern: ",") {
                 TokenComma(sourceAnchor: $0)
             },

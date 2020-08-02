@@ -50,6 +50,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(subscript: expr)
         case let expr as Expression.LiteralArray:
             return try check(literalArray: expr)
+        case let expr as Expression.Get:
+            return try check(get: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -497,6 +499,24 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         return arrayLiteralType
+    }
+    
+    public func check(get expr: Expression.Get) throws -> SymbolType {
+        let member = expr.member.identifier
+        let resultType = try check(expression: expr.expr)
+        switch resultType {
+        case .array:
+            if member == "count" {
+                return .u16
+            }
+        case .dynamicArray:
+            if member == "count" {
+                return .u16
+            }
+        default:
+            break
+        }
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(member)'")
     }
     
     func unsupportedError(expression: Expression) -> Error {

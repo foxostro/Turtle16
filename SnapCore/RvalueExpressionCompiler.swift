@@ -18,8 +18,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         "pokeMemory" : [.storeIndirect, .pop],
         "peekPeripheral" : [.peekPeripheral],
         "pokePeripheral" : [.pokePeripheral, .pop],
-        "hlt" : [.hlt],
-        "length" : [.pop16], // discard the dynamic array's pointer, leaving only the length
+        "hlt" : [.hlt]
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     
@@ -56,6 +55,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(literalArray: expr)
         case let expr as Expression.Subscript:
             return try compile(subscript: expr)
+        case let expr as Expression.Get:
+            return try compile(get: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -478,6 +479,30 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [YertleInstruction] = []
         instructions += try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
         instructions += indirectLoadValue(elementType)
+        return instructions
+    }
+    
+    public func compile(get expr: Expression.Get) throws -> [YertleInstruction] {
+        var instructions: [YertleInstruction] = []
+        
+        instructions += try compile(expression: expr.expr)
+        
+        let member = expr.member.identifier
+        let resultType = try typeChecker.check(expression: expr.expr)
+        switch resultType {
+        case .array(count: let count, elementType: _):
+            if member == "count" {
+                instructions += [.popn(resultType.sizeof)]
+                instructions += [.push16(count!)]
+            }
+        case .dynamicArray:
+            if member == "count" {
+                instructions += [.pop16] // discard the dynamic array's pointer, leaving only the length
+            }
+        default:
+            abort()
+        }
+        
         return instructions
     }
 }

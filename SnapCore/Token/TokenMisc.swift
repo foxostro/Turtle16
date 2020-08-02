@@ -25,3 +25,4 @@ public class TokenWhile : Token {}
 public class TokenFor : Token {}
 public class TokenStatic : Token {}
 public class TokenAs : Token {}
+public class TokenDot : Token {}

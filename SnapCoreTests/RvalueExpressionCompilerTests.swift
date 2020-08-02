@@ -13,7 +13,16 @@ import TurtleCompilerToolbox
 class RvalueExpressionCompilerTests: XCTestCase {
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [YertleInstruction] {
         let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try compiler.compile(expression: expression)
+        var ir: [YertleInstruction] = []
+        do {
+            ir = try compiler.compile(expression: expression)
+        } catch let error as CompilerError {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
+            print(omnibus.localizedDescription)
+            throw error
+        } catch let error {
+            throw error
+        }
         return ir
     }
     
@@ -2424,5 +2433,81 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir!)
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfPointer), UInt16(addressOfData))
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfCount), UInt16(count))
+    }
+    
+    func testAccessInvalidMemberOfLiteralArray() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.LiteralArray(sourceAnchor: nil,
+                                                                explicitType: .u8,
+                                                                explicitCount: nil,
+                                                                elements: [ExprUtils.makeU8(value: 0),
+                                                                           ExprUtils.makeU8(value: 1),
+                                                                           ExprUtils.makeU8(value: 2)]),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "length"))
+        XCTAssertThrowsError(try compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `[3]u8' has no member `length'")
+        }
+    }
+    
+    func testGetLengthOfLiteralArray() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.LiteralArray(sourceAnchor: nil,
+                                                                explicitType: .u8,
+                                                                explicitCount: nil,
+                                                                elements: [ExprUtils.makeU8(value: 0),
+                                                                           ExprUtils.makeU8(value: 1),
+                                                                           ExprUtils.makeU8(value: 2)]),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr))
+        let executor = YertleExecutor()
+        XCTAssertNotNil(ir)
+        guard ir != nil else {
+            return
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.stack16(at: 0), 3)
+    }
+    
+    func testGetLengthOfArrayThroughIdentifier() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: 0x0010, isMutable: false)
+        ])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        XCTAssertNotNil(ir)
+        guard ir != nil else {
+            return
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.stack16(at: 0), 3)
+    }
+    
+    func testGetLengthOfDynamicArray() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
+        ])
+        var ir: [YertleInstruction]? = nil
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        XCTAssertNotNil(ir)
+        guard ir != nil else {
+            return
+        }
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
+            computer.dataRAM.store16(value: 0x0003, to: 0x0012)
+        }
+        let computer = try! executor.execute(ir: ir!)
+        XCTAssertEqual(computer.stack16(at: 0), 3)
     }
 }

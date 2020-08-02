@@ -22,6 +22,9 @@ public class Expression: AbstractSyntaxTreeNode {
         return true
     }
     
+    // Useful for testing
+    public class UnsupportedExpression : Expression {}
+    
     public class LiteralWord: Expression {
         public let value: Int
         
@@ -409,6 +412,40 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
-    // Useful for testing
-    public class UnsupportedExpression : Expression {}
+    public class Get: Expression {
+        public let expr: Expression
+        public let member: Identifier
+        
+        public init(sourceAnchor: SourceAnchor?, expr: Expression, member: Identifier) {
+            self.expr = expr
+            self.member = member
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? Get else { return false }
+            guard expr == rhs.expr else { return false }
+            guard member == rhs.member else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(expr)
+            hasher.combine(member)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@: expr=%@, member=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          expr.makeIndentedDescription(depth: depth+1),
+                          member.makeIndentedDescription(depth: depth+1))
+        }
+    }
 }

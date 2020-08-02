@@ -28,6 +28,10 @@ public class TokenOperator : Token {
     }
     public let op: Operator
     
+    public convenience init(op: Operator) {
+        self.init(sourceAnchor: nil, op: op)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, op: Operator) {
         self.op = op
         super.init(sourceAnchor: sourceAnchor)

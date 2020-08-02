@@ -12,22 +12,22 @@ import TurtleAssemblerCore
 
 class LabelDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(LabelDeclaration(sourceAnchor: nil, identifier: "label"),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+        XCTAssertNotEqual(LabelDeclaration(identifier: "label"),
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        XCTAssertNotEqual(LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
-                          LabelDeclaration(sourceAnchor: nil, identifier: "bar"))
+        XCTAssertNotEqual(LabelDeclaration(identifier: "foo"),
+                          LabelDeclaration(identifier: "bar"))
     }
     
     func testEquality() {
-        XCTAssertEqual(LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
-                       LabelDeclaration(sourceAnchor: nil, identifier: "foo"))
+        XCTAssertEqual(LabelDeclaration(identifier: "foo"),
+                       LabelDeclaration(identifier: "foo"))
     }
     
     func testHash() {
-        XCTAssertEqual(LabelDeclaration(sourceAnchor: nil, identifier: "foo").hashValue,
-                       LabelDeclaration(sourceAnchor: nil, identifier: "foo").hashValue)
+        XCTAssertEqual(LabelDeclaration(identifier: "foo").hashValue,
+                       LabelDeclaration(identifier: "foo").hashValue)
     }
 }

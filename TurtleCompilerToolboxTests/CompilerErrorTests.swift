@@ -17,7 +17,7 @@ class CompilerErrorTests: XCTestCase {
     }
     
     func testOmnibusErrorWithOneError() {
-        let errors = [CompilerError(sourceAnchor: nil, message: "register cannot be used as a destination: `E'")]
+        let errors = [CompilerError(message: "register cannot be used as a destination: `E'")]
         let omnibusError = CompilerError.makeOmnibusError(fileName: "foo.s", errors: errors)
         XCTAssertEqual(omnibusError.sourceAnchor, nil)
         XCTAssertEqual(omnibusError.message, """
@@ -29,8 +29,8 @@ foo.s: register cannot be used as a destination: `E'
     
     func testOmnibusErrorWithMultipleErrors() {
         let errors = [
-            CompilerError(sourceAnchor: nil, message: "register cannot be used as a destination: `E'"),
-            CompilerError(sourceAnchor: nil, message: "operand type mismatch: `MOV'")
+            CompilerError(message: "register cannot be used as a destination: `E'"),
+            CompilerError(message: "operand type mismatch: `MOV'")
         ]
         let omnibusError = CompilerError.makeOmnibusError(fileName: "foo.s", errors: errors)
         XCTAssertEqual(omnibusError.sourceAnchor, nil)

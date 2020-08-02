@@ -10,6 +10,10 @@ open class CompilerError: Error {
     public let sourceAnchor: SourceAnchor?
     public let message: String
     
+    public convenience init(message: String) {
+        self.init(sourceAnchor: nil, message: message)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, message: String) {
         self.sourceAnchor = sourceAnchor
         self.message = message

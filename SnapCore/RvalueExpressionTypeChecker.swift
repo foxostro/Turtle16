@@ -28,9 +28,9 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
-        case let expr as Expression.LiteralWord:
+        case let expr as Expression.LiteralInt:
             return .constInt(expr.value)
-        case let expr as Expression.LiteralBoolean:
+        case let expr as Expression.LiteralBool:
             return .constBool(expr.value)
         case let expr as Expression.Group:
             return try check(expression: expr.expression)

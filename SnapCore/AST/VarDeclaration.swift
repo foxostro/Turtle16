@@ -15,6 +15,19 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     public let storage: SymbolStorage
     public let isMutable: Bool
     
+    public convenience init(identifier: Expression.Identifier,
+                            explicitType: SymbolType?,
+                            expression: Expression,
+                            storage: SymbolStorage,
+                            isMutable: Bool) {
+        self.init(sourceAnchor: nil,
+                  identifier: identifier,
+                  explicitType: explicitType,
+                  expression: expression,
+                  storage: storage,
+                  isMutable: isMutable)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
                          explicitType: SymbolType?,

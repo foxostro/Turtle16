@@ -11,6 +11,10 @@ import TurtleCompilerToolbox
 public class TokenRegister : Token {
     public let literal: RegisterName
     
+    public convenience init(literal: RegisterName) {
+        self.init(sourceAnchor: nil, literal: literal)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, literal: RegisterName) {
         self.literal = literal
         super.init(sourceAnchor: sourceAnchor)

@@ -11,7 +11,11 @@ import TurtleCompilerToolbox
 public class Return: AbstractSyntaxTreeNode {
     public let expression: Expression?
     
-    public required init(sourceAnchor: SourceAnchor?, expression: Expression? = nil) {
+    public convenience init(_ expression: Expression? = nil) {
+        self.init(sourceAnchor: nil, expression: expression)
+    }
+    
+    public required init(sourceAnchor: SourceAnchor?, expression: Expression?) {
         self.expression = expression
         super.init(sourceAnchor: sourceAnchor)
     }

@@ -12,53 +12,43 @@ import TurtleCompilerToolbox
 
 class WhileTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(While(sourceAnchor: nil,
-                                condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+        XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
+                                body: AbstractSyntaxTreeNode()),
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentCondition() {
-        XCTAssertNotEqual(While(sourceAnchor: nil,
-                                condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                body: AbstractSyntaxTreeNode(sourceAnchor: nil)),
-                          While(sourceAnchor: nil,
-                                condition: Expression.LiteralWord(sourceAnchor: nil, value: 2),
-                          body: AbstractSyntaxTreeNode(sourceAnchor: nil)))
+        XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
+                                body: AbstractSyntaxTreeNode()),
+                          While(condition: Expression.LiteralInt(2),
+                          body: AbstractSyntaxTreeNode()))
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {
-        XCTAssertNotEqual(While(sourceAnchor: nil,
-                                condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                body: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                          While(sourceAnchor: nil,
-                                condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                body: AbstractSyntaxTreeNode(sourceAnchor: nil)))
+        XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
+                                body: Expression.LiteralInt(1)),
+                          While(condition: Expression.LiteralInt(1),
+                                body: AbstractSyntaxTreeNode()))
     }
     
     func testSame() {
-        XCTAssertEqual(While(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             body: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                       While(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             body: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
+        XCTAssertEqual(While(condition: Expression.LiteralInt(1),
+                             body: Expression.LiteralInt(1)),
+                       While(condition: Expression.LiteralInt(1),
+                             body: Expression.LiteralInt(1)))
     }
     
     func testHash() {
-        XCTAssertEqual(While(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             body: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hash,
-                       While(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             body: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hash)
+        XCTAssertEqual(While(condition: Expression.LiteralInt(1),
+                             body: Expression.LiteralInt(1)).hash,
+                       While(condition: Expression.LiteralInt(1),
+                             body: Expression.LiteralInt(1)).hash)
     }
     
     func testGetters() {
-        let stmt = While(sourceAnchor: nil,
-                         condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                         body: Expression.LiteralWord(sourceAnchor: nil, value: 2))
-        XCTAssertEqual(stmt.condition, Expression.LiteralWord(sourceAnchor: nil, value: 1))
-        XCTAssertEqual(stmt.body, Expression.LiteralWord(sourceAnchor: nil, value: 2))
+        let stmt = While(condition: Expression.LiteralInt(1),
+                         body: Expression.LiteralInt(2))
+        XCTAssertEqual(stmt.condition, Expression.LiteralInt(1))
+        XCTAssertEqual(stmt.body, Expression.LiteralInt(2))
     }
 }

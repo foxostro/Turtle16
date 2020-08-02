@@ -427,7 +427,7 @@ public class SnapToYertleCompiler: NSObject {
             try compile(genericNode: child)
         }
         if shouldSynthesizeTerminalReturnStatement(func: node) {
-            try compile(return: Return(sourceAnchor: node.sourceAnchor))
+            try compile(return: Return(sourceAnchor: node.sourceAnchor, expression: nil))
         }
         popScopeForStackFrame()
         

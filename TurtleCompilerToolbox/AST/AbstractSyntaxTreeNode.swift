@@ -9,7 +9,7 @@
 open class AbstractSyntaxTreeNode : NSObject {
     public let sourceAnchor: SourceAnchor?
     
-    public init(sourceAnchor: SourceAnchor?) {
+    public init(sourceAnchor: SourceAnchor? = nil) {
         self.sourceAnchor = sourceAnchor
     }
     

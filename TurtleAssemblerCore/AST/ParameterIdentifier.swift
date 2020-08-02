@@ -11,6 +11,10 @@ import TurtleCompilerToolbox
 public class ParameterIdentifier: Parameter {
     public let value: String
     
+    public convenience init(value: String) {
+        self.init(sourceAnchor: nil, value: value)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, value: String) {
         self.value = value
         super.init(sourceAnchor: sourceAnchor)

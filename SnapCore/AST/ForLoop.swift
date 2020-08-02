@@ -14,6 +14,17 @@ public class ForLoop: AbstractSyntaxTreeNode {
     public let incrementClause: AbstractSyntaxTreeNode
     public let body: AbstractSyntaxTreeNode
     
+    public convenience init(initializerClause: AbstractSyntaxTreeNode,
+                            conditionClause: Expression,
+                            incrementClause: AbstractSyntaxTreeNode,
+                            body: AbstractSyntaxTreeNode) {
+        self.init(sourceAnchor: nil,
+                  initializerClause: initializerClause,
+                  conditionClause: conditionClause,
+                  incrementClause: incrementClause,
+                  body: body)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?,
                          initializerClause: AbstractSyntaxTreeNode,
                          conditionClause: Expression,

@@ -13,6 +13,15 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let functionType: FunctionType
     public let body: Block
     
+    public convenience init(identifier: Expression.Identifier,
+                            functionType: FunctionType,
+                            body: Block) {
+        self.init(sourceAnchor: nil,
+                  identifier: identifier,
+                  functionType: functionType,
+                  body: body)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
                          functionType: FunctionType,

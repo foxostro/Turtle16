@@ -11,34 +11,34 @@ import TurtleCompilerToolbox
 
 class TokenNumberTests: XCTestCase {
     func testTokenNumberDescription() {
-        XCTAssertEqual(TokenNumber(sourceAnchor: nil, literal: 1).description, "<TokenNumber: sourceAnchor=nil, lexeme=\"\", literal=1>")
+        XCTAssertEqual(TokenNumber(literal: 1).description, "<TokenNumber: sourceAnchor=nil, lexeme=\"\", literal=1>")
     }
     
     func testTokenNumberEquality() {
-        let a = TokenNumber(sourceAnchor: nil, literal: 1)
-        let b = TokenNumber(sourceAnchor: nil, literal: 1)
+        let a = TokenNumber(literal: 1)
+        let b = TokenNumber(literal: 1)
         XCTAssertEqual(a, b)
     }
     
     func testTokenNumberIsNotEqualToSomeOtherNSObject() {
-        let token = TokenNumber(sourceAnchor: nil, literal: 1)
+        let token = TokenNumber(literal: 1)
         XCTAssertNotEqual(token, NSArray())
     }
     
     func testTokenNumberIsNotEqualToTokenWithDifferentLiteral() {
-        let a = TokenNumber(sourceAnchor: nil, literal: 1)
-        let b = TokenNumber(sourceAnchor: nil, literal: 2)
+        let a = TokenNumber(literal: 1)
+        let b = TokenNumber(literal: 2)
         XCTAssertNotEqual(a, b)
     }
     
     func testTokenNumberIsNotEqualToTokenOfDifferentType() {
-        let a = TokenNumber(sourceAnchor: nil, literal: 1)
-        let b = TokenEOF(sourceAnchor: nil)
+        let a = TokenNumber(literal: 1)
+        let b = TokenEOF()
         XCTAssertNotEqual(a, b)
     }
     
     func testHash() {
-        XCTAssertEqual(TokenNumber(sourceAnchor: nil, literal: 1).hashValue,
-                       TokenNumber(sourceAnchor: nil, literal: 1).hashValue)
+        XCTAssertEqual(TokenNumber(literal: 1).hashValue,
+                       TokenNumber(literal: 1).hashValue)
     }
 }

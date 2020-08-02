@@ -12,9 +12,9 @@ import TurtleAssemblerCore
 import TurtleCompilerToolbox
 
 class AssemblerCodeGeneratorTests: XCTestCase {
-    let aabb = TokenNumber(sourceAnchor: nil, literal: 0xaabb)
-    let tooLargeAddress = TokenNumber(sourceAnchor: nil, literal: 0xffffffff)
-    let negativeAddress = TokenNumber(sourceAnchor: nil, literal: -1)
+    let aabb = TokenNumber(literal: 0xaabb)
+    let tooLargeAddress = TokenNumber(literal: 0xffffffff)
+    let negativeAddress = TokenNumber(literal: -1)
     
     var microcodeGenerator = MicrocodeGenerator()
     var nop: UInt8 = 0
@@ -53,16 +53,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testEmptyProgram() {
-        let instructions = mustCompile(TopLevel(sourceAnchor: nil, children: []))
+        let instructions = mustCompile(TopLevel(children: []))
         XCTAssertEqual(instructions.count, 1)
         XCTAssertEqual(instructions[0].opcode, nop)
     }
     
     func testNop() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
@@ -71,10 +70,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testHlt() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "HLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "HLT",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
@@ -83,21 +81,19 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileMOVWithNoOperands() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
     }
 
     func testFailToCompileMOVWithOneOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -105,13 +101,12 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithTooManyOperands() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterRegister(sourceAnchor: nil, value: .B),
-                                ParameterRegister(sourceAnchor: nil, value: .C),
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterRegister(value: .B),
+                                ParameterRegister(value: .C),
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -119,12 +114,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithNumberInFirstOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 1),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 1),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -132,12 +126,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithNumberInSecondOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterNumber(sourceAnchor: nil, value: 1)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterNumber(value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -145,12 +138,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithInvalidDestinationRegisterE() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .E),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .E),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -158,12 +150,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithInvalidDestinationRegisterC() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .C),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .C),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -171,12 +162,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileMOVWithInvalidSourceRegisterD() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterRegister(sourceAnchor: nil, value: .D)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterRegister(value: .D)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -184,12 +174,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testMov() throws {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "MOV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .D),
-                                ParameterRegister(sourceAnchor: nil, value: .A),
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "MOV",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .D),
+                                ParameterRegister(value: .A),
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -204,21 +193,19 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileLIWithNoOperands() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
     }
 
     func testFailToCompileLIWithOneOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 1)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -226,11 +213,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWhereDestinationIsANumber() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil, instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 1),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 1),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -238,12 +225,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWhereSourceIsARegister() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .B),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .B),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -251,13 +237,12 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileLIWithTooManyOperands() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterNumber(sourceAnchor: nil, value: 1),
-                                ParameterNumber(sourceAnchor: nil, value: 1)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterNumber(value: 1),
+                                ParameterNumber(value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -265,12 +250,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testLoadImmediate() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .D),
-                                ParameterNumber(sourceAnchor: nil, value: 42),
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .D),
+                                ParameterNumber(value: 42),
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -286,11 +270,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileADDWithIdentifierOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "ADD",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterIdentifier(sourceAnchor: nil, value: "label")
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "ADD",
+                            parameters: ParameterList(parameters: [
+                                ParameterIdentifier(value: "label")
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -298,11 +281,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileADDWithInvalidDestinationRegisterE() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "ADD",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .E)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "ADD",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .E)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -310,11 +292,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileADDWithInvalidDestinationRegisterC() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "ADD",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .C)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "ADD",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .C)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -322,11 +303,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testAdd() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "ADD",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .D)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "ADD",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .D)
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -344,22 +324,18 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmp() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+        let ast = TopLevel(children: [
+            LabelDeclaration(identifier: "foo"),
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterIdentifier(value: "foo")
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JMP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))])
+            InstructionNode(instruction: "JMP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -384,26 +360,20 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testForwardJmp() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterIdentifier(value: "foo")
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JMP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            LabelDeclaration(sourceAnchor: nil,
-                                 identifier: "foo"),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "HLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JMP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            LabelDeclaration(identifier: "foo"),
+            InstructionNode(instruction: "HLT",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -432,21 +402,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressZero() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 0)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 0)
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JMP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JMP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
 
@@ -472,21 +438,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressNegative() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: -1)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: -1)
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JMP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JMP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -494,21 +456,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJmpToAddressTooLarge() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 0x10000)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 0x10000)
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JMP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JMP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -516,22 +474,18 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJC() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+        let ast = TopLevel(children: [
+            LabelDeclaration(identifier: "foo"),
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterIdentifier(value: "foo")
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JC",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JC",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -558,21 +512,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressZero() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 0)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 0)
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JC",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JC",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -598,21 +548,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressNegative() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: -1)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: -1)
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JC",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JC",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -620,21 +566,17 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testJCToAddressTooLarge() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 0x10000)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LXY",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 0x10000)
                             ])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "JC",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [])),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "NOP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+            InstructionNode(instruction: "JC",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: [])),
+            InstructionNode(instruction: "NOP",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -642,10 +584,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testCMP() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "CMP",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "CMP",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -661,10 +602,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testINUV() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "INUV",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "INUV",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -676,10 +616,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testINXY() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "INXY",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "INXY",
+                            parameters: ParameterList(parameters: []))
         ])
         let instructions = mustCompile(ast)
         
@@ -691,21 +630,19 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileBLTWithNoOperands() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: []))
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: []))
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
     }
 
     func testFailToCompileBLTWithOneOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -713,13 +650,12 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithTooManyOperands() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterRegister(sourceAnchor: nil, value: .B),
-                                ParameterRegister(sourceAnchor: nil, value: .C),
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterRegister(value: .B),
+                                ParameterRegister(value: .C),
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -727,12 +663,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithNumberInFirstOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterNumber(sourceAnchor: nil, value: 1),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterNumber(value: 1),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -740,12 +675,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithNumberInSecondOperand() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterNumber(sourceAnchor: nil, value: 1)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterNumber(value: 1)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -753,12 +687,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithInvalidDestinationRegisterE() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .E),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .E),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -766,12 +699,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithInvalidDestinationRegisterC() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .C),
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .C),
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -779,12 +711,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
 
     func testFailToCompileBLTWithInvalidSourceRegisterD() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A),
-                                ParameterRegister(sourceAnchor: nil, value: .D)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A),
+                                ParameterRegister(value: .D)
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -792,12 +723,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testBLT() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "BLT",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .P),
-                                ParameterRegister(sourceAnchor: nil, value: .M),
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "BLT",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .P),
+                                ParameterRegister(value: .M),
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -814,34 +744,29 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testFailToCompileDueToRedefinitionOfLabel() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            LabelDeclaration(sourceAnchor: nil, identifier: "foo"),
-            LabelDeclaration(sourceAnchor: nil, identifier: "foo")
+        let ast = TopLevel(children: [
+            LabelDeclaration(identifier: "foo"),
+            LabelDeclaration(identifier: "foo")
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "label redefines existing symbol: `foo'")
     }
     
     func testFailToCompileDueToRedefinitionOfConstant() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            ConstantDeclaration(sourceAnchor: nil,
-                                    identifier: "foo",
-                                    value: 1),
-            ConstantDeclaration(sourceAnchor: nil,
-                                    identifier: "foo",
-                                    value: 42),
+        let ast = TopLevel(children: [
+            ConstantDeclaration(identifier: "foo", value: 1),
+            ConstantDeclaration(identifier: "foo", value: 42),
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "constant redefines existing symbol: `foo'")
     }
 
     func testLICannotUseUndeclaredSymbolAsSource() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .B),
-                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .B),
+                                ParameterIdentifier(value: "foo")
                             ]))
         ])
         let errors = mustFailToCompile(ast)
@@ -849,15 +774,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testLIWithConstantSource() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            ConstantDeclaration(sourceAnchor: nil,
-                                identifier: "foo",
+        let ast = TopLevel(children: [
+            ConstantDeclaration(identifier: "foo",
                                 value: 42),
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "LI",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .B),
-                                ParameterIdentifier(sourceAnchor: nil, value: "foo")
+            InstructionNode(instruction: "LI",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .B),
+                                ParameterIdentifier(value: "foo")
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -873,11 +796,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testDEA() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "DEA",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .D)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "DEA",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .D)
                             ]))
         ])
         let instructions = mustCompile(ast)
@@ -895,11 +817,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     }
     
     func testDCA() {
-        let ast = TopLevel(sourceAnchor: nil, children: [
-            InstructionNode(sourceAnchor: nil,
-                            instruction: "DCA",
-                            parameters: ParameterList(sourceAnchor: nil, parameters: [
-                                ParameterRegister(sourceAnchor: nil, value: .A)
+        let ast = TopLevel(children: [
+            InstructionNode(instruction: "DCA",
+                            parameters: ParameterList(parameters: [
+                                ParameterRegister(value: .A)
                             ]))
         ])
         let instructions = mustCompile(ast)

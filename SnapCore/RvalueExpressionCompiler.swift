@@ -31,9 +31,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         try typeChecker.check(expression: expression)
         
         switch expression {
-        case let literal as Expression.LiteralWord:
+        case let literal as Expression.LiteralInt:
             return try compile(literalInt: literal)
-        case let literal as Expression.LiteralBoolean:
+        case let literal as Expression.LiteralBool:
             return compile(literalBoolean: literal)
         case let binary as Expression.Binary:
             return try compile(binary: binary)
@@ -62,7 +62,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
     }
     
-    private func compile(literalInt: Expression.LiteralWord) throws -> [YertleInstruction] {
+    private func compile(literalInt: Expression.LiteralInt) throws -> [YertleInstruction] {
         let value = literalInt.value
         if value >= 0 && value < 256 {
             return [.push(value)]
@@ -78,7 +78,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return [.push(intValue)]
     }
     
-    private func compile(literalBoolean: Expression.LiteralBoolean) -> [YertleInstruction] {
+    private func compile(literalBoolean: Expression.LiteralBool) -> [YertleInstruction] {
         return compile(boolValue: literalBoolean.value)
     }
     
@@ -345,7 +345,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     Expression.As(sourceAnchor: identifier.sourceAnchor,
                                   expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
                                                              identifier: identifier,
-                                                             expr: Expression.LiteralWord(sourceAnchor: identifier.sourceAnchor, value: i)),
+                                                             expr: Expression.LiteralInt(sourceAnchor: identifier.sourceAnchor, value: i)),
                                   targetType: b)
                 })
                 let synthesized = Expression.LiteralArray(sourceAnchor: identifier.sourceAnchor,

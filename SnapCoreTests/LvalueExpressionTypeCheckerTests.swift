@@ -32,14 +32,14 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        let expr = Expression.Identifier(sourceAnchor: nil, identifier: ident)
+        let expr = Expression.Identifier(ident)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         return result
     }
     
     func testExpressionIsNotAssignable_ConstInt() {
-        let expr = Expression.LiteralWord(sourceAnchor: nil, value: 0)
+        let expr = Expression.LiteralInt(0)
         let typeChecker = LvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -49,7 +49,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testArraySubscriptYieldsMutableReferenceToArrayElement() {
-        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralWord(sourceAnchor: nil, value: 0))
+        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: true)])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -58,7 +58,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testElementsOfImmutableArraysCannotBeModified() {
-        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralWord(sourceAnchor: nil, value: 0))
+        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: false)])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {

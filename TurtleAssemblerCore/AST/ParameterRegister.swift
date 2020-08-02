@@ -11,6 +11,10 @@ import TurtleCompilerToolbox
 public class ParameterRegister: Parameter {
     public let value: RegisterName
     
+    public convenience init(value: RegisterName) {
+        self.init(sourceAnchor: nil, value: value)
+    }
+    
     public init(sourceAnchor: SourceAnchor?, value: RegisterName) {
         self.value = value
         super.init(sourceAnchor: sourceAnchor)

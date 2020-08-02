@@ -12,6 +12,10 @@ public class While: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let body: AbstractSyntaxTreeNode
     
+    public convenience init(condition: Expression, body: AbstractSyntaxTreeNode) {
+        self.init(sourceAnchor: nil, condition: condition, body: body)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?, condition: Expression, body: AbstractSyntaxTreeNode) {
         self.condition = condition
         self.body = body

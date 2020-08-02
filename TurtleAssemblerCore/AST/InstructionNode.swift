@@ -16,6 +16,10 @@ public class InstructionNode: AbstractSyntaxTreeNode {
         return (parameters.elements.first as! ParameterRegister).value
     }
     
+    public convenience init(instruction: String, parameters: ParameterList) {
+        self.init(sourceAnchor: nil, instruction: instruction, parameters: parameters)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?, instruction: String, parameters: ParameterList) {
         self.instruction = instruction
         self.parameters = parameters

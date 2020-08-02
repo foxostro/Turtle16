@@ -12,356 +12,284 @@ import TurtleCompilerToolbox
 
 class ExpressionTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+        XCTAssertNotEqual(Expression.LiteralInt(1),
+                          AbstractSyntaxTreeNode())
     }
     
     func testLiteralWordEquality() {
-        XCTAssertNotEqual(Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                          Expression.LiteralWord(sourceAnchor: nil, value: 2))
-        XCTAssertEqual(Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                       Expression.LiteralWord(sourceAnchor: nil, value: 1))
-        XCTAssertEqual(Expression.LiteralWord(sourceAnchor: nil, value: 1).hashValue,
-                       Expression.LiteralWord(sourceAnchor: nil, value: 1).hashValue)
+        XCTAssertNotEqual(Expression.LiteralInt(1),
+                          Expression.LiteralInt(2))
+        XCTAssertEqual(Expression.LiteralInt(1),
+                       Expression.LiteralInt(1))
+        XCTAssertEqual(Expression.LiteralInt(1).hashValue,
+                       Expression.LiteralInt(1).hashValue)
     }
     
     func testLiteralBooleanEquality() {
-        XCTAssertNotEqual(Expression.LiteralBoolean(sourceAnchor: nil, value: true),
-                          Expression.LiteralBoolean(sourceAnchor: nil, value: false))
-        XCTAssertEqual(Expression.LiteralBoolean(sourceAnchor: nil, value: true),
-                       Expression.LiteralBoolean(sourceAnchor: nil, value: true))
-        XCTAssertEqual(Expression.LiteralBoolean(sourceAnchor: nil, value: true).hashValue,
-                       Expression.LiteralBoolean(sourceAnchor: nil, value: true).hashValue)
+        XCTAssertNotEqual(Expression.LiteralBool(true),
+                          Expression.LiteralBool(false))
+        XCTAssertEqual(Expression.LiteralBool(true),
+                       Expression.LiteralBool(true))
+        XCTAssertEqual(Expression.LiteralBool(true).hashValue,
+                       Expression.LiteralBool(true).hashValue)
     }
     
     func testIdentifierEquality() {
-        XCTAssertNotEqual(Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                          Expression.Identifier(sourceAnchor: nil, identifier: "bar"))
-        XCTAssertEqual(Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                       Expression.Identifier(sourceAnchor: nil, identifier: "foo"))
-        XCTAssertEqual(Expression.Identifier(sourceAnchor: nil, identifier: "foo").hashValue,
-                       Expression.Identifier(sourceAnchor: nil, identifier: "foo").hashValue)
+        XCTAssertNotEqual(Expression.Identifier("foo"),
+                          Expression.Identifier("bar"))
+        XCTAssertEqual(Expression.Identifier("foo"),
+                       Expression.Identifier("foo"))
+        XCTAssertEqual(Expression.Identifier("foo").hashValue,
+                       Expression.Identifier("foo").hashValue)
     }
     
     func testGroupEquality() {
         // Different expressions
-        XCTAssertNotEqual(Expression.Group(sourceAnchor: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                          Expression.Group(sourceAnchor: nil,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertNotEqual(Expression.Group(Expression.LiteralInt(1)),
+                          Expression.Group(Expression.LiteralInt(2)))
         
         // Same
-        XCTAssertEqual(Expression.Group(sourceAnchor: nil,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                       Expression.Group(sourceAnchor: nil,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
+        XCTAssertEqual(Expression.Group(Expression.LiteralInt(1)),
+                       Expression.Group(Expression.LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Group(sourceAnchor: nil,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue,
-                       Expression.Group(sourceAnchor: nil,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue)
+        XCTAssertEqual(Expression.Group(Expression.LiteralInt(1)).hashValue,
+                       Expression.Group(Expression.LiteralInt(1)).hashValue)
     }
     
     func testUnaryEquality() {
         // Different expressions
-        XCTAssertNotEqual(Expression.Unary(sourceAnchor: nil,
-                                           op: .minus,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                          Expression.Unary(sourceAnchor: nil,
-                                           op: .minus,
-                                           expression: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertNotEqual(Expression.Unary(op: .minus,
+                                           expression: Expression.LiteralInt(1)),
+                          Expression.Unary(op: .minus,
+                                           expression: Expression.LiteralInt(2)))
         
         // Same
-        XCTAssertEqual(Expression.Unary(sourceAnchor: nil,
-                                        op: .minus,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                       Expression.Unary(sourceAnchor: nil,
-                                        op: .minus,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
+        XCTAssertEqual(Expression.Unary(op: .minus,
+                                        expression: Expression.LiteralInt(1)),
+                       Expression.Unary(op: .minus,
+                                        expression: Expression.LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Unary(sourceAnchor: nil,
-                                        op: .minus,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue,
-                       Expression.Unary(sourceAnchor: nil,
-                                        op: .minus,
-                                        expression: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hashValue)
+        XCTAssertEqual(Expression.Unary(op: .minus,
+                                        expression: Expression.LiteralInt(1)).hashValue,
+                       Expression.Unary(op: .minus,
+                                        expression: Expression.LiteralInt(1)).hashValue)
     }
     
     func testBinaryEquality() {
         // Different right expression
-        XCTAssertNotEqual(Expression.Binary(sourceAnchor: nil,
-                                            op: .plus,
-                                            left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                            right: Expression.LiteralWord(sourceAnchor: nil, value: 2)),
-                          Expression.Binary(sourceAnchor: nil,
-                                            op: .plus,
-                                            left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                            right: Expression.LiteralWord(sourceAnchor: nil, value: 9)))
+        XCTAssertNotEqual(Expression.Binary(op: .plus,
+                                            left: Expression.LiteralInt(1),
+                                            right: Expression.LiteralInt(2)),
+                          Expression.Binary(op: .plus,
+                                            left: Expression.LiteralInt(1),
+                                            right: Expression.LiteralInt(9)))
         
         // Different left expression
-        XCTAssertNotEqual(Expression.Binary(sourceAnchor: nil,
-                                            op: .plus,
-                                            left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                            right: Expression.LiteralWord(sourceAnchor: nil, value: 2)),
-                          Expression.Binary(sourceAnchor: nil,
-                                            op: .plus,
-                                            left: Expression.LiteralWord(sourceAnchor: nil, value: 42),
-                                            right: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertNotEqual(Expression.Binary(op: .plus,
+                                            left: Expression.LiteralInt(1),
+                                            right: Expression.LiteralInt(2)),
+                          Expression.Binary(op: .plus,
+                                            left: Expression.LiteralInt(42),
+                                            right: Expression.LiteralInt(2)))
         
         // Different tokens
-        XCTAssertNotEqual(Expression.Binary(sourceAnchor: nil,
-                                            op: .plus,
-                                            left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                            right: Expression.LiteralWord(sourceAnchor: nil, value: 2)),
-                          Expression.Binary(sourceAnchor: nil,
-                                            op: .minus,
-                                            left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                            right: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertNotEqual(Expression.Binary(op: .plus,
+                                            left: Expression.LiteralInt(1),
+                                            right: Expression.LiteralInt(2)),
+                          Expression.Binary(op: .minus,
+                                            left: Expression.LiteralInt(1),
+                                            right: Expression.LiteralInt(2)))
         
         // Same
-        XCTAssertEqual(Expression.Binary(sourceAnchor: nil,
-                                         op: .plus,
-                                         left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                         right: Expression.LiteralWord(sourceAnchor: nil, value: 2)),
-                        Expression.Binary(sourceAnchor: nil,
-                                          op: .plus,
-                                          left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                          right: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertEqual(Expression.Binary(op: .plus,
+                                         left: Expression.LiteralInt(1),
+                                         right: Expression.LiteralInt(2)),
+                        Expression.Binary(op: .plus,
+                                          left: Expression.LiteralInt(1),
+                                          right: Expression.LiteralInt(2)))
         
         // Hash
-        XCTAssertEqual(Expression.Binary(sourceAnchor: nil,
-                                         op: .plus,
-                                         left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                         right: Expression.LiteralWord(sourceAnchor: nil, value: 2)).hashValue,
-                       Expression.Binary(sourceAnchor: nil,
-                                         op: .plus,
-                                         left: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                                         right: Expression.LiteralWord(sourceAnchor: nil, value: 2)).hashValue)
+        XCTAssertEqual(Expression.Binary(op: .plus,
+                                         left: Expression.LiteralInt(1),
+                                         right: Expression.LiteralInt(2)).hashValue,
+                       Expression.Binary(op: .plus,
+                                         left: Expression.LiteralInt(1),
+                                         right: Expression.LiteralInt(2)).hashValue)
     }
     
     func testAssignmentEquality() {
-        let foo = Expression.Identifier(sourceAnchor: nil, identifier: "foo")
-        let bar = Expression.Identifier(sourceAnchor: nil, identifier: "bar")
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
         
         // Different right expression
-        XCTAssertNotEqual(Expression.Assignment(sourceAnchor: nil,
-                                                lexpr: foo,
-                                                rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                          Expression.Assignment(sourceAnchor: nil,
-                                                lexpr: foo,
-                                                rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 2)))
+        XCTAssertNotEqual(Expression.Assignment(lexpr: foo,
+                                                rexpr: Expression.LiteralInt(1)),
+                          Expression.Assignment(lexpr: foo,
+                                                rexpr: Expression.LiteralInt(2)))
         
         // Different left identifier
-        XCTAssertNotEqual(Expression.Assignment(sourceAnchor: nil,
-                                                lexpr: foo,
-                                                rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                          Expression.Assignment(sourceAnchor: nil,
-                                                lexpr: bar,
-                                                rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
+        XCTAssertNotEqual(Expression.Assignment(lexpr: foo,
+                                                rexpr: Expression.LiteralInt(1)),
+                          Expression.Assignment(lexpr: bar,
+                                                rexpr: Expression.LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Assignment(sourceAnchor: nil,
-                                             lexpr: foo,
-                                             rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)),
-                       Expression.Assignment(sourceAnchor: nil,
-                                             lexpr: foo,
-                                             rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
+        XCTAssertEqual(Expression.Assignment(lexpr: foo,
+                                             rexpr: Expression.LiteralInt(1)),
+                       Expression.Assignment(lexpr: foo,
+                                             rexpr: Expression.LiteralInt(1)))
         
         // Hash
-        XCTAssertEqual(Expression.Assignment(sourceAnchor: nil,
-                                             lexpr: foo,
-                                             rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hash,
-                       Expression.Assignment(sourceAnchor: nil,
-                                             lexpr: foo,
-                                             rexpr: Expression.LiteralWord(sourceAnchor: nil, value: 1)).hash)
+        XCTAssertEqual(Expression.Assignment(lexpr: foo,
+                                             rexpr: Expression.LiteralInt(1)).hash,
+                       Expression.Assignment(lexpr: foo,
+                                             rexpr: Expression.LiteralInt(1)).hash)
     }
     
     func testCallEquality() {
         // Different callee
-        XCTAssertNotEqual(Expression.Call(sourceAnchor: nil,
-                                          callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                          arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]),
-                          Expression.Call(sourceAnchor: nil,
-                                          callee: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
-                                          arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]))
+        XCTAssertNotEqual(Expression.Call(callee: Expression.Identifier("foo"),
+                                          arguments: [Expression.LiteralInt(1)]),
+                          Expression.Call(callee: Expression.Identifier("bar"),
+                                          arguments: [Expression.LiteralInt(1)]))
         // Different arguments
-        XCTAssertNotEqual(Expression.Call(sourceAnchor: nil,
-                                          callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                          arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]),
-                          Expression.Call(sourceAnchor: nil,
-                                          callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                          arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 2)]))
+        XCTAssertNotEqual(Expression.Call(callee: Expression.Identifier("foo"),
+                                          arguments: [Expression.LiteralInt(1)]),
+                          Expression.Call(callee: Expression.Identifier("foo"),
+                                          arguments: [Expression.LiteralInt(2)]))
         
         // Same
-        XCTAssertEqual(Expression.Call(sourceAnchor: nil,
-                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                       arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]),
-                       Expression.Call(sourceAnchor: nil,
-                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                       arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]))
+        XCTAssertEqual(Expression.Call(callee: Expression.Identifier("foo"),
+                                       arguments: [Expression.LiteralInt(1)]),
+                       Expression.Call(callee: Expression.Identifier("foo"),
+                                       arguments: [Expression.LiteralInt(1)]))
         
         // Hash
-        XCTAssertEqual(Expression.Call(sourceAnchor: nil,
-                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                       arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]).hash,
-                       Expression.Call(sourceAnchor: nil,
-                                       callee: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                        arguments: [Expression.LiteralWord(sourceAnchor: nil, value: 1)]).hash)
+        XCTAssertEqual(Expression.Call(callee: Expression.Identifier("foo"),
+                                       arguments: [Expression.LiteralInt(1)]).hash,
+                       Expression.Call(callee: Expression.Identifier("foo"),
+                                       arguments: [Expression.LiteralInt(1)]).hash)
     }
     
     func testAsEquality() {
         // Different expr
-        XCTAssertNotEqual(Expression.As(sourceAnchor: nil,
-                                        expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(Expression.As(expr: Expression.Identifier("foo"),
                                         targetType: .u8),
-                          Expression.As(sourceAnchor: nil,
-                                        expr: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                          Expression.As(expr: Expression.Identifier("bar"),
                                         targetType: .u8))
         
         // Different target type
-        XCTAssertNotEqual(Expression.As(sourceAnchor: nil,
-                                        expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertNotEqual(Expression.As(expr: Expression.Identifier("foo"),
                                         targetType: .u16),
-                          Expression.As(sourceAnchor: nil,
-                                        expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                          Expression.As(expr: Expression.Identifier("foo"),
                                         targetType: .u8))
         
         // Same
-        XCTAssertEqual(Expression.As(sourceAnchor: nil,
-                                     expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
                                      targetType: .u8),
-                       Expression.As(sourceAnchor: nil,
-                                     expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                       Expression.As(expr: Expression.Identifier("foo"),
                                      targetType: .u8))
         
         // Hash
-        XCTAssertEqual(Expression.As(sourceAnchor: nil,
-                                     expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+        XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
                                      targetType: .u8).hash,
-                       Expression.As(sourceAnchor: nil,
-                                     expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                       Expression.As(expr: Expression.Identifier("foo"),
                                      targetType: .u8).hash)
     }
     
     func testSubscriptEquality() {
         // Different identifier
-        XCTAssertNotEqual(Expression.Subscript(sourceAnchor: nil,
-                                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                               expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)),
-                          Expression.Subscript(sourceAnchor: nil,
-                                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
-                                               expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)))
+        XCTAssertNotEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                               expr: Expression.LiteralInt(0)),
+                          Expression.Subscript(identifier: Expression.Identifier("bar"),
+                                               expr: Expression.LiteralInt(0)))
         
         // Different expression
-        XCTAssertNotEqual(Expression.Subscript(sourceAnchor: nil,
-                                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                               expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)),
-                          Expression.Subscript(sourceAnchor: nil,
-                                               identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                               expr: Expression.LiteralWord(sourceAnchor: nil, value: 1)))
+        XCTAssertNotEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                               expr: Expression.LiteralInt(0)),
+                          Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                               expr: Expression.LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Subscript(sourceAnchor: nil,
-                                            identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                            expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)),
-                       Expression.Subscript(sourceAnchor: nil,
-                                            identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                            expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)))
+        XCTAssertEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                            expr: Expression.LiteralInt(0)),
+                       Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                            expr: Expression.LiteralInt(0)))
         
         // Hash
-        XCTAssertEqual(Expression.Subscript(sourceAnchor: nil,
-                                            identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                            expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)).hash,
-                       Expression.Subscript(sourceAnchor: nil,
-                                            identifier: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                            expr: Expression.LiteralWord(sourceAnchor: nil, value: 0)).hash)
+        XCTAssertEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                            expr: Expression.LiteralInt(0)).hash,
+                       Expression.Subscript(identifier: Expression.Identifier("foo"),
+                                            expr: Expression.LiteralInt(0)).hash)
     }
     
     func testLiteralArrayEquality() {
         // Different explicit lengths
-        XCTAssertNotEqual(Expression.LiteralArray(sourceAnchor: nil,
-                                                  explicitType: .u8,
+        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u8,
                                                   explicitCount: 1,
-                                                  elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0)]),
-                          Expression.LiteralArray(sourceAnchor: nil,
-                                                  explicitType: .u8,
+                                                  elements: [Expression.LiteralInt(0)]),
+                          Expression.LiteralArray(explicitType: .u8,
                                                   explicitCount: 2,
-                                                  elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0)]))
+                                                  elements: [Expression.LiteralInt(0)]))
         
         // Different explicit types
-        XCTAssertNotEqual(Expression.LiteralArray(sourceAnchor: nil,
-                                                  explicitType: .u16,
+        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u16,
                                                   explicitCount: nil,
-                                                  elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0)]),
-                          Expression.LiteralArray(sourceAnchor: nil,
-                                                  explicitType: .u8,
+                                                  elements: [Expression.LiteralInt(0)]),
+                          Expression.LiteralArray(explicitType: .u8,
                                                   explicitCount: nil,
-                                                  elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0)]))
+                                                  elements: [Expression.LiteralInt(0)]))
         
         // Different element expressions
-        XCTAssertNotEqual(Expression.LiteralArray(sourceAnchor: nil,
-                                                  explicitType: .u8,
+        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u8,
                                                   explicitCount: nil,
-                                                  elements: [Expression.LiteralWord(sourceAnchor: nil, value: 0)]),
-                          Expression.LiteralArray(sourceAnchor: nil,
-                                                  explicitType: .u8,
+                                                  elements: [Expression.LiteralInt(0)]),
+                          Expression.LiteralArray(explicitType: .u8,
                                                   explicitCount: nil,
-                                                  elements: [Expression.LiteralBoolean(sourceAnchor: nil, value: false)]))
+                                                  elements: [Expression.LiteralBool(false)]))
         
         // Same
-        XCTAssertEqual(Expression.LiteralArray(sourceAnchor: nil,
-                                               explicitType: .u8,
+        XCTAssertEqual(Expression.LiteralArray(explicitType: .u8,
                                                explicitCount: nil,
-                                               elements: [Expression.LiteralWord(value: 0)]),
-                       Expression.LiteralArray(sourceAnchor: nil,
-                                               explicitType: .u8,
+                                               elements: [Expression.LiteralInt(0)]),
+                       Expression.LiteralArray(explicitType: .u8,
                                                explicitCount: nil,
-                                               elements: [Expression.LiteralWord(value: 0)]))
+                                               elements: [Expression.LiteralInt(0)]))
         
         // Same hashes
-        XCTAssertEqual(Expression.LiteralArray(sourceAnchor: nil,
-                                               explicitType: .u8,
+        XCTAssertEqual(Expression.LiteralArray(explicitType: .u8,
                                                explicitCount: 1,
-                                               elements: [Expression.LiteralWord(value: 0)]).hash,
-                       Expression.LiteralArray(sourceAnchor: nil,
-                                               explicitType: .u8,
+                                               elements: [Expression.LiteralInt(0)]).hash,
+                       Expression.LiteralArray(explicitType: .u8,
                                                explicitCount: 1,
-                                               elements: [Expression.LiteralWord(value: 0)]).hash)
+                                               elements: [Expression.LiteralInt(0)]).hash)
     }
     
     func testGetEquality() {
         // Different expressions
-        XCTAssertNotEqual(Expression.Get(sourceAnchor: nil,
-                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")),
-                          Expression.Get(sourceAnchor: nil,
-                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
-                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")))
+        XCTAssertNotEqual(Expression.Get(expr: Expression.Identifier("foo"),
+                                         member: Expression.Identifier("foo")),
+                          Expression.Get(expr: Expression.Identifier("bar"),
+                                         member: Expression.Identifier("foo")))
         
         // Different members
-        XCTAssertNotEqual(Expression.Get(sourceAnchor: nil,
-                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")),
-                          Expression.Get(sourceAnchor: nil,
-                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "bar")))
+        XCTAssertNotEqual(Expression.Get(expr: Expression.Identifier("foo"),
+                                         member: Expression.Identifier("foo")),
+                          Expression.Get(expr: Expression.Identifier("foo"),
+                                         member: Expression.Identifier("bar")))
         
         // Same
-        XCTAssertEqual(Expression.Get(sourceAnchor: nil,
-                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")),
-                       Expression.Get(sourceAnchor: nil,
-                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")))
+        XCTAssertEqual(Expression.Get(expr: Expression.Identifier("foo"),
+                                      member: Expression.Identifier("foo")),
+                       Expression.Get(expr: Expression.Identifier("foo"),
+                                      member: Expression.Identifier("foo")))
         
         // Same
-        XCTAssertEqual(Expression.Get(sourceAnchor: nil,
-                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")).hashValue,
-                       Expression.Get(sourceAnchor: nil,
-                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
-                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")).hashValue)
+        XCTAssertEqual(Expression.Get(expr: Expression.Identifier("foo"),
+                                      member: Expression.Identifier("foo")).hashValue,
+                       Expression.Get(expr: Expression.Identifier("foo"),
+                                      member: Expression.Identifier("foo")).hashValue)
     }
 }

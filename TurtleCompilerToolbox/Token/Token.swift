@@ -12,7 +12,7 @@ open class Token : NSObject {
         String(sourceAnchor?.text ?? "")
     }
     
-    public init(sourceAnchor: SourceAnchor?) {
+    public init(sourceAnchor: SourceAnchor? = nil) {
         self.sourceAnchor = sourceAnchor
         super.init()
     }

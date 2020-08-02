@@ -12,82 +12,69 @@ import TurtleCompilerToolbox
 
 class IfTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+        XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
+                             then: AbstractSyntaxTreeNode(),
                              else: nil),
-                          AbstractSyntaxTreeNode(sourceAnchor: nil))
+                          AbstractSyntaxTreeNode())
     }
     
     func testDoesNotEqualNodeWithDifferentCondition() {
-        XCTAssertNotEqual(If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+        XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
+                             then: AbstractSyntaxTreeNode(),
                              else: nil),
-                          If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 2),
-                             then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+                          If(condition: Expression.LiteralInt(2),
+                             then: AbstractSyntaxTreeNode(),
                              else: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentThenBranch() {
-        XCTAssertNotEqual(If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             then: Expression.LiteralWord(sourceAnchor: nil, value: 1),
+        XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
+                             then: Expression.LiteralInt(1),
                              else: nil),
-                          If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 2),
-                             then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+                          If(condition: Expression.LiteralInt(2),
+                             then: AbstractSyntaxTreeNode(),
                              else: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentElseBranch() {
-        XCTAssertNotEqual(If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                             then: AbstractSyntaxTreeNode(sourceAnchor: nil),
-                             else: AbstractSyntaxTreeNode(sourceAnchor: nil)),
-                          If(sourceAnchor: nil,
-                             condition: Expression.LiteralWord(sourceAnchor: nil, value: 2),
-                             then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+        XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
+                             then: AbstractSyntaxTreeNode(),
+                             else: AbstractSyntaxTreeNode()),
+                          If(condition: Expression.LiteralInt(2),
+                             then: AbstractSyntaxTreeNode(),
                              else: nil))
     }
     
     func testSame() {
-        XCTAssertEqual(If(sourceAnchor: nil,
-                          condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                          then: AbstractSyntaxTreeNode(sourceAnchor: nil),
-                          else: AbstractSyntaxTreeNode(sourceAnchor: nil)),
-                       If(sourceAnchor: nil,
-                          condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                          then: AbstractSyntaxTreeNode(sourceAnchor: nil),
-                          else: AbstractSyntaxTreeNode(sourceAnchor: nil)))
+        XCTAssertEqual(If(condition: Expression.LiteralInt(1),
+                          then: AbstractSyntaxTreeNode(),
+                          else: AbstractSyntaxTreeNode()),
+                       If(condition: Expression.LiteralInt(1),
+                          then: AbstractSyntaxTreeNode(),
+                          else: AbstractSyntaxTreeNode()))
     }
     
     func testHash() {
-        XCTAssertEqual(If(sourceAnchor: nil,
-                          condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                          then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+        XCTAssertEqual(If(condition: Expression.LiteralInt(1),
+                          then: AbstractSyntaxTreeNode(),
                           else: nil).hash,
-                       If(sourceAnchor: nil,
-                          condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                          then: AbstractSyntaxTreeNode(sourceAnchor: nil),
+                       If(condition: Expression.LiteralInt(1),
+                          then: AbstractSyntaxTreeNode(),
                           else: nil).hash)
     }
     
     func testGetters() {
-        let stmt = If(sourceAnchor: nil,
-                      condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                      then: Expression.LiteralWord(sourceAnchor: nil, value: 2),
-                      else: Expression.LiteralWord(sourceAnchor: nil, value: 3))
-        XCTAssertEqual(stmt.condition, Expression.LiteralWord(sourceAnchor: nil, value: 1))
-        XCTAssertEqual(stmt.thenBranch, Expression.LiteralWord(sourceAnchor: nil, value: 2))
-        XCTAssertEqual(stmt.elseBranch, Expression.LiteralWord(sourceAnchor: nil, value: 3))
+        let stmt = If(condition: Expression.LiteralInt(1),
+                      then: Expression.LiteralInt(2),
+                      else: Expression.LiteralInt(3))
+        XCTAssertEqual(stmt.condition, Expression.LiteralInt(1))
+        XCTAssertEqual(stmt.thenBranch, Expression.LiteralInt(2))
+        XCTAssertEqual(stmt.elseBranch, Expression.LiteralInt(3))
     }
     
     func testElseGetterWithNilBranch() {
-        let stmt = If(sourceAnchor: nil,
-                      condition: Expression.LiteralWord(sourceAnchor: nil, value: 1),
-                      then: Expression.LiteralWord(sourceAnchor: nil, value: 2),
+        let stmt = If(condition: Expression.LiteralInt(1),
+                      then: Expression.LiteralInt(2),
                       else: nil)
         XCTAssertNil(stmt.elseBranch)
     }

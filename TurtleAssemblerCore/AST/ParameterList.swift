@@ -11,6 +11,10 @@ import TurtleCompilerToolbox
 public class ParameterList: AbstractSyntaxTreeNode {
     public let elements: [Parameter]
     
+    public convenience init(parameters: [Parameter]) {
+        self.init(sourceAnchor: nil, parameters: parameters)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?, parameters: [Parameter]) {
         self.elements = parameters
         super.init(sourceAnchor: sourceAnchor)

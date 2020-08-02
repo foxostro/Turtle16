@@ -32,7 +32,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], InstructionNode(sourceAnchor: nil, instruction: "NOP", parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "NOP", parameters: ParameterList(parameters: [])))
     }
 
     func testParseTwoNOPsYieldsTwoNOPNodes() {
@@ -43,11 +43,11 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0],
                        InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                        instruction: "NOP",
-                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+                                       parameters: ParameterList(parameters: [])))
         XCTAssertEqual(ast.children[1],
                        InstructionNode(sourceAnchor: parser.lineMapper.anchor(4, 7),
                                        instruction: "NOP",
-                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+                                       parameters: ParameterList(parameters: [])))
     }
 
     func testHLTParses() {
@@ -58,7 +58,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0],
                        InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                        instruction: "HLT",
-                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+                                       parameters: ParameterList(parameters: [])))
     }
 
     func testLabelDeclaration() {
@@ -79,7 +79,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0],
                        InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                        instruction: "NOP",
-                                       parameters: ParameterList(sourceAnchor: nil, parameters: [])))
+                                       parameters: ParameterList(parameters: [])))
         XCTAssertEqual(ast.children[1],
                        LabelDeclaration(sourceAnchor: parser.lineMapper.anchor(4, 10),
                                             identifier: "label"))

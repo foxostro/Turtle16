@@ -562,11 +562,11 @@ public class SnapParser: Parser {
     
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
-            return Expression.LiteralWord(sourceAnchor: numberToken.sourceAnchor,
+            return Expression.LiteralInt(sourceAnchor: numberToken.sourceAnchor,
                                           value: numberToken.literal)
         }
         else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
-            return Expression.LiteralBoolean(sourceAnchor: booleanToken.sourceAnchor,
+            return Expression.LiteralBool(sourceAnchor: booleanToken.sourceAnchor,
                                              value: booleanToken.literal)
         }
         else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
@@ -612,7 +612,7 @@ public class SnapParser: Parser {
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
             let sourceAnchor = literalString.sourceAnchor
             let elements = literalString.literal.utf8.map({
-                Expression.LiteralWord(sourceAnchor: sourceAnchor, value: Int($0))
+                Expression.LiteralInt(sourceAnchor: sourceAnchor, value: Int($0))
             })
             return Expression.LiteralArray(sourceAnchor: sourceAnchor,
                                            explicitType: .u8,

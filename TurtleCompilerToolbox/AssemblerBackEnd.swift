@@ -38,14 +38,14 @@ public class AssemblerBackEnd: NSObject {
     public func instruction(mnemonic: String, immediate: Int) throws {
         assert(isAssembling)
         if immediate < 0 || immediate > 255 {
-            throw CompilerError(sourceAnchor: nil, message: "immediate value is not between 0 and 255: `\(immediate)'")
+            throw CompilerError(message: "immediate value is not between 0 and 255: `\(immediate)'")
         }
         let maybeOpcode = microcodeGenerator.getOpcode(mnemonic: mnemonic)
         if let opcode = maybeOpcode {
             let inst = Instruction(opcode: UInt8(opcode), immediate: UInt8(immediate))
             instructions.append(inst)
         } else {
-            throw CompilerError(sourceAnchor: nil, message: "unrecognized mnemonic: `\(mnemonic)'")
+            throw CompilerError(message: "unrecognized mnemonic: `\(mnemonic)'")
         }
     }
     

@@ -27,7 +27,7 @@ class TokenTests: XCTestCase {
     
     func testTokenIsNotEqualToTokenOfDifferentType() {
         let a = Token(sourceAnchor: nil)
-        let b = TokenEOF(sourceAnchor: nil)
+        let b = TokenEOF()
         XCTAssertNotEqual(a, b)
     }
     

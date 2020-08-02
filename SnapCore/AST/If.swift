@@ -13,6 +13,15 @@ public class If: AbstractSyntaxTreeNode {
     public let thenBranch: AbstractSyntaxTreeNode
     public let elseBranch: AbstractSyntaxTreeNode?
     
+    public convenience init(condition: Expression,
+                            then thenBranch: AbstractSyntaxTreeNode,
+                            else elseBranch: AbstractSyntaxTreeNode?) {
+        self.init(sourceAnchor: nil,
+                  condition: condition,
+                  then: thenBranch,
+                  else: elseBranch)
+    }
+    
     public required init(sourceAnchor: SourceAnchor?,
                          condition: Expression,
                          then thenBranch: AbstractSyntaxTreeNode,

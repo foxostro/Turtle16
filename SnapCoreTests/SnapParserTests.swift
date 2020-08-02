@@ -1450,4 +1450,53 @@ for var i = 0; i < 10; i = i + 1 {
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
+    
+    func testFailedToGetProperty_ExpectedMemberNameFollowingDot() {
+        let parser = parse("foo.")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(3, 4))
+        XCTAssertEqual(parser.errors.first?.message, "expected member name following `.'")
+    }
+    
+    func testGetProperty_1() {
+        let parser = parse("foo.bar")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 7),
+                                      expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                      member: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "bar"))
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testGetProperty_2() {
+        let parser = parse("foo.bar.baz")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let first = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 7),
+                                      expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                      member: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "bar"))
+        let secnd = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                      expr: first,
+                                      member: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 11), identifier: "baz"))
+        XCTAssertEqual(ast.children.first, secnd)
+    }
 }

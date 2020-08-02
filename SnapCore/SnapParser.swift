@@ -525,20 +525,37 @@ public class SnapParser: Parser {
     
     private func consumeCall() throws -> Expression {
         var expr = try consumePrimary()
-        if nil != accept(TokenParenLeft.self) as? TokenParenLeft {
-            var arguments: [Expression] = []
-            if nil == accept(TokenParenRight.self) as? TokenParenRight {
-                repeat {
-                    while nil != accept(TokenNewline.self) {}
-                    arguments.append(try consumeExpression())
-                    while nil != accept(TokenNewline.self) {}
-                } while nil != accept(TokenComma.self)
-                try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)'"))
+        while true {
+            if nil != accept(TokenParenLeft.self) as? TokenParenLeft {
+                var arguments: [Expression] = []
+                if nil == accept(TokenParenRight.self) as? TokenParenRight {
+                    repeat {
+                        while nil != accept(TokenNewline.self) {}
+                        arguments.append(try consumeExpression())
+                        while nil != accept(TokenNewline.self) {}
+                    } while nil != accept(TokenComma.self)
+                    try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)'"))
+                }
+                let sourceAnchor = expr.sourceAnchor?.union(previous?.sourceAnchor)
+                expr = Expression.Call(sourceAnchor: sourceAnchor,
+                                       callee: expr,
+                                       arguments: arguments)
             }
-            let sourceAnchor = expr.sourceAnchor?.union(previous?.sourceAnchor)
-            expr = Expression.Call(sourceAnchor: sourceAnchor,
-                                   callee: expr,
-                                   arguments: arguments)
+            else if let dot = accept(TokenDot.self) as? TokenDot {
+                let lexeme = dot.sourceAnchor?.text ?? "."
+                let error = CompilerError(sourceAnchor: dot.sourceAnchor,
+                                          message: "expected member name following `\(lexeme)'")
+                let identifierToken = try expect(type: TokenIdentifier.self, error: error)
+                let member = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                                                   identifier: identifierToken.lexeme)
+                let sourceAnchor = expr.sourceAnchor?.union(member.sourceAnchor)
+                expr = Expression.Get(sourceAnchor: sourceAnchor,
+                                      expr: expr,
+                                      member: member)
+            }
+            else {
+                break
+            }
         }
         return expr
     }

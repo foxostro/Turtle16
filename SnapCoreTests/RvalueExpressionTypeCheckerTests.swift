@@ -2871,4 +2871,49 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
         }
     }
+    
+    func testAccessInvalidMemberOfLiteralArray() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.LiteralArray(sourceAnchor: nil,
+                                                                explicitType: .u8,
+                                                                explicitCount: nil,
+                                                                elements: [ExprUtils.makeU8(value: 0),
+                                                                           ExprUtils.makeU8(value: 1),
+                                                                           ExprUtils.makeU8(value: 2)]),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "length"))
+        let typeChecker = RvalueExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `[3]u8' has no member `length'")
+        }
+    }
+    
+    func testGetLengthOfLiteralArray() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.LiteralArray(sourceAnchor: nil,
+                                                                explicitType: .u8,
+                                                                explicitCount: nil,
+                                                                elements: [ExprUtils.makeU8(value: 0),
+                                                                           ExprUtils.makeU8(value: 1),
+                                                                           ExprUtils.makeU8(value: 2)]),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testGetLengthOfDynamicArray() {
+        let expr = Expression.Get(sourceAnchor: nil,
+                                  expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                  member: Expression.Identifier(sourceAnchor: nil, identifier: "count"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
 }

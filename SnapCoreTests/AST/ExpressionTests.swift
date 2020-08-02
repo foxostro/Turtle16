@@ -330,4 +330,38 @@ class ExpressionTests: XCTestCase {
                                                explicitCount: 1,
                                                elements: [Expression.LiteralWord(value: 0)]).hash)
     }
+    
+    func testGetEquality() {
+        // Different expressions
+        XCTAssertNotEqual(Expression.Get(sourceAnchor: nil,
+                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")),
+                          Expression.Get(sourceAnchor: nil,
+                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "bar"),
+                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")))
+        
+        // Different members
+        XCTAssertNotEqual(Expression.Get(sourceAnchor: nil,
+                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")),
+                          Expression.Get(sourceAnchor: nil,
+                                         expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                         member: Expression.Identifier(sourceAnchor: nil, identifier: "bar")))
+        
+        // Same
+        XCTAssertEqual(Expression.Get(sourceAnchor: nil,
+                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")),
+                       Expression.Get(sourceAnchor: nil,
+                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")))
+        
+        // Same
+        XCTAssertEqual(Expression.Get(sourceAnchor: nil,
+                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")).hashValue,
+                       Expression.Get(sourceAnchor: nil,
+                                      expr: Expression.Identifier(sourceAnchor: nil, identifier: "foo"),
+                                      member: Expression.Identifier(sourceAnchor: nil, identifier: "foo")).hashValue)
+    }
 }

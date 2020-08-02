@@ -470,10 +470,19 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
     }
     
-    func testTokenizeIdnetifierWithUnderscore() {
+    func testTokenizeIdentifierWithUnderscore() {
         let tokenizer = SnapLexer(withString: "foo_bar")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 7)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))])
+    }
+    
+    func testTokenizeDot() {
+        let tokenizer = SnapLexer(withString: "foo.bar")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
+                                          TokenDot(sourceAnchor: tokenizer.lineMapper.anchor(3, 4)),
+                                          TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(4, 7)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))])
     }
 }

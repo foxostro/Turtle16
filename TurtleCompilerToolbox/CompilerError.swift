@@ -50,7 +50,9 @@ open class CompilerError: Error {
             text.formIndex(after: &index)
         }
         result += "^"
-        text.formIndex(after: &index)
+        if index != anchor.range.upperBound {
+            text.formIndex(after: &index)
+        }
         while index != anchor.range.upperBound {
             result += "~"
             text.formIndex(after: &index)

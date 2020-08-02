@@ -1588,16 +1588,16 @@ class SnapToYertleCompilerTests: XCTestCase {
                            isMutable: false),
             Expression.Assignment(sourceAnchor: nil,
                                   lexpr: Expression.Identifier(sourceAnchor: nil, identifier: "r"),
-                                  rexpr: Expression.Call(sourceAnchor: nil,
-                                                         callee: Expression.Identifier(sourceAnchor: nil, identifier: "length"),
-                                                         arguments: [Expression.Identifier(sourceAnchor: nil, identifier: "b")]))
+                                  rexpr: Expression.Get(sourceAnchor: nil,
+                                                        expr: Expression.Identifier(sourceAnchor: nil, identifier: "b"),
+                                                        member: Expression.Identifier(sourceAnchor: nil, identifier: "count")))
             
         ])
         let compiler = SnapToYertleCompiler()
         compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
-            XCTFail()
             return
         }
         let ir = compiler.instructions

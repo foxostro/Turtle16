@@ -28,7 +28,6 @@ public class SnapToYertleCompiler: NSObject {
         bindCompilerInstrinsicPeekPeripheral()
         bindCompilerInstrinsicPokePeripheral()
         bindCompilerInstrinsicHlt()
-        bindCompilerInstrinsicLength()
     }
     
     private func bindCompilerInstrinsicPeekMemory() {
@@ -66,14 +65,6 @@ public class SnapToYertleCompiler: NSObject {
     private func bindCompilerInstrinsicHlt() {
         let name = "hlt"
         let functionType = FunctionType(returnType: .void, arguments: [])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    private func bindCompilerInstrinsicLength() {
-        let name = "length"
-        let functionType = FunctionType(returnType: .u16, arguments: [FunctionType.Argument(name: "array", type: .dynamicArray(elementType: .u8))])
         let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)

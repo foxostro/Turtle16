@@ -48,6 +48,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     
     let labelMaker = LabelMaker(prefix: ".LL")
     
+    public var injectCode: (YertleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
+    
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
     }
@@ -109,14 +111,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .pushReturnAddress: try pushReturnAddress()
             case .leafRet: try leafRet()
             case .ret: try ret()
-            case .hlt: assembler.hlt()
+            case .hlt: hlt()
             case .peekPeripheral: try peekPeripheral()
             case .pokePeripheral: try pokePeripheral()
             case .dup: try dup()
             case .dup16: try dup16()
             }
         }
-        insertProgramEpilogue()
+        try insertProgramEpilogue()
         assembler.end()
         let resolver: (SourceAnchor?, String) throws -> Int = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
             if let address = self!.labelTable[identifier] {
@@ -151,11 +153,12 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     // Inserts epilogue code into the program, presumably at the end.
-    func insertProgramEpilogue() {
+    func insertProgramEpilogue() throws {
         assembler.hlt()
+        try injectCode(self)
     }
     
-    private func push(_ value: Int) throws {
+    public func push(_ value: Int) throws {
         try decrementStackPointer()
         try loadStackPointerIntoUVandXY()
         
@@ -163,14 +166,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.M, value)
     }
     
-    private func push16(_ value: Int) throws {
+    public func push16(_ value: Int) throws {
         let hi = (value>>8) & 0xff
         let lo =  value & 0xff
         try push(lo)
         try push(hi)
     }
     
-    private func pushsp() throws {
+    public func pushsp() throws {
         // Load the 16-bit stack pointer into AB and then push to the stack.
         try assembler.li(.U, kStackPointerHiHi)
         try assembler.li(.V, kStackPointerHiLo)
@@ -283,13 +286,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try loadStackPointerIntoUVandXY()
     }
     
-    private func pop16() throws {
+    public func pop16() throws {
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.A, .B)
         try popInMemoryStackIntoRegisterB()
     }
     
-    private func eq() throws {
+    public func eq() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
@@ -305,7 +308,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-    private func eq16() throws {
+    public func eq16() throws {
         try eq16(valueOnPass: 1, valueOnFail: 0)
     }
     
@@ -362,7 +365,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try label(label_tail)
     }
     
-    private func ne() throws {
+    public func ne() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
@@ -378,11 +381,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-    private func ne16() throws {
+    public func ne16() throws {
         try eq16(valueOnPass: 0, valueOnFail: 1)
     }
     
-    private func lt() throws {
+    public func lt() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
@@ -398,7 +401,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-    private func lt16() throws {
+    public func lt16() throws {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         
@@ -488,7 +491,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func gt() throws {
+    public func gt() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
@@ -504,7 +507,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-    private func gt16() throws {
+    public func gt16() throws {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         let labelThen = labelMaker.next()
@@ -598,7 +601,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func le() throws {
+    public func le() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
@@ -614,7 +617,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-    private func le16() throws {
+    public func le16() throws {
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
 
@@ -669,7 +672,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func ge() throws {
+    public func ge() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
@@ -685,7 +688,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-    private func ge16() throws {
+    public func ge16() throws {
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
 
@@ -746,14 +749,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func add() throws {
+    public func add() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         try assembler.add(.NONE)
         try assembler.add(.M)
     }
     
-    private func add16() throws {
+    public func add16() throws {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+3)
@@ -795,14 +798,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func sub() throws {
+    public func sub() throws {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         try assembler.sub(.NONE)
         try assembler.sub(.M)
     }
     
-    private func sub16() throws {
+    public func sub16() throws {
         try pop16()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo+0)
@@ -844,7 +847,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func mul() throws {
+    public func mul() throws {
         try pop16()
         
         // A is the Multiplicand, B is the Multiplier
@@ -904,7 +907,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func mul16() throws {
+    public func mul16() throws {
         let multiplicandAddress = kScratchLo+0
         let multiplierAddress = kScratchLo+2
         let resultAddress = kScratchLo+4
@@ -1007,7 +1010,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func div() throws {
+    public func div() throws {
         try pop16()
         
         // A is the Dividend, B is the Divisor
@@ -1083,7 +1086,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func div16() throws {
+    public func div16() throws {
         let addressOfB = kScratchLo+0
         let addressOfA = kScratchLo+2
         let counterAddress = kScratchLo+4
@@ -1217,7 +1220,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func mod() throws {
+    public func mod() throws {
         try pop16()
         
         // A is the Dividend, B is the Divisor
@@ -1293,7 +1296,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func mod16() throws {
+    public func mod16() throws {
         let addressOfB = kScratchLo+0
         let addressOfA = kScratchLo+2
         let counterAddress = kScratchLo+4
@@ -1433,7 +1436,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func load(from address: Int) throws {
+    public func load(from address: Int) throws {
         try decrementStackPointer()
         
         // Load the value from RAM to A.
@@ -1447,7 +1450,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func load16(from address: Int) throws {
+    public func load16(from address: Int) throws {
         try assembler.li(.U, ((address+1) & 0xff00) >> 8)
         try assembler.li(.V,  (address+1) & 0x00ff)
         try assembler.mov(.A, .M)
@@ -1459,7 +1462,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func store(to address: Int) throws {
+    public func store(to address: Int) throws {
         try loadStackPointerIntoUVandXY()
         
         // Copy the stop of the stack into A.
@@ -1471,7 +1474,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func store16(to address: Int) throws {
+    public func store16(to address: Int) throws {
         try loadStackPointerIntoUVandXY()
         try assembler.mov(.A, .M)
         try assembler.li(.U, ((address+0) & 0xff00) >> 8)
@@ -1487,14 +1490,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func label(_ name: String) throws {
+    public func label(_ name: String) throws {
         guard labelTable[name] == nil else {
             throw CompilerError(sourceAnchor: currentSourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }
         labelTable[name] = assembler.programCounter
     }
     
-    private func loadIndirect() throws {
+    public func loadIndirect() throws {
         try pop16()
         try assembler.mov(.U, .A)
         try assembler.mov(.V, .B)
@@ -1502,7 +1505,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func loadIndirect16() throws {
+    public func loadIndirect16() throws {
         try pop16()
         
         // Stash the address in scratch memory.
@@ -1533,7 +1536,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func loadIndirectN(_ count: Int) throws {
+    public func loadIndirectN(_ count: Int) throws {
         try pop16()
         
         // Stash the source address in scratch memory @ (4,5)
@@ -1652,7 +1655,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         }
     }
     
-    private func storeIndirect() throws {
+    public func storeIndirect() throws {
         try pop16()
         
         // Stash the destination address in a well-known scratch location.
@@ -1679,7 +1682,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func storeIndirect16() throws {
+    public func storeIndirect16() throws {
         try pop16()
         
         // Stash the destination address in a well-known scratch location.
@@ -1710,7 +1713,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .B)
     }
     
-    private func storeIndirectN(_ count: Int) throws {
+    public func storeIndirectN(_ count: Int) throws {
         // TODO: storeIndirectN can probably be optimized. For example, use the BLT instructions and the ALU.
         try pop16()
         
@@ -1748,14 +1751,14 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         }
     }
     
-    private func jmp(_ label: String) throws {
+    public func jmp(_ label: String) throws {
         try setAddressToLabel(label)
         assembler.jmp()
         assembler.nop()
         assembler.nop()
     }
     
-    private func je(_ label: String) throws {
+    public func je(_ label: String) throws {
         try pop16()
         
         assembler.cmp()
@@ -1766,7 +1769,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
-    private func jalr(_ label: String) throws {
+    public func jalr(_ label: String) throws {
         try setAddressToLabel(label)
         assembler.jalr()
         assembler.nop()
@@ -1786,7 +1789,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.Y, 0xff)
     }
     
-    private func enter() throws {
+    public func enter() throws {
         // push fp in two bytes ; fp <- sp
         
         try assembler.li(.U, kFramePointerLoHi)
@@ -1814,7 +1817,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .Y)
     }
     
-    private func leave() throws {
+    public func leave() throws {
         // sp <- fp ; fp <- pop two bytes from the stack
         
         try assembler.li(.U, kFramePointerHiHi)
@@ -1857,7 +1860,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
-    private func ret() throws {
+    public func ret() throws {
         try popInMemoryStackIntoRegisterB()
         try assembler.li(.U, kScratchHi)
         try assembler.li(.V, kScratchLo)
@@ -1875,7 +1878,11 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
-    private func peekPeripheral() throws {
+    public func hlt() {
+        assembler.hlt()
+    }
+    
+    public func peekPeripheral() throws {
         try pop16()
         try assembler.mov(.U, .A)
         try assembler.mov(.V, .B)
@@ -1883,7 +1890,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func pokePeripheral() throws {
+    public func pokePeripheral() throws {
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.D, .B)
         
@@ -1911,13 +1918,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.P, .A)
     }
     
-    private func dup() throws {
+    public func dup() throws {
         let scratch = kScratchHi<<8 + kScratchLo
         try store(to: scratch)
         try load(from: scratch)
     }
     
-    private func dup16() throws {
+    public func dup16() throws {
         let scratch = kScratchHi<<8 + kScratchLo + 2
         try store16(to: scratch)
         try load16(from: scratch)

@@ -38,8 +38,8 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileAssignmentThroughArraySubscript() {
         let expr = Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                        expr: Expression.LiteralInt(0))
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .bool), offset: 0x0010, isMutable: true)])
+                                        expr: Expression.LiteralInt(1))
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 2, elementType: .bool), offset: 0x0010, isMutable: true)])
         var ir: [YertleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         if ir == nil {
@@ -48,7 +48,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         }
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir!)
-        XCTAssertEqual(computer.stack16(at: 0), 0x0010)
+        XCTAssertEqual(computer.stack16(at: 0), 0x0011)
     }
     
     func testCompileDynamicArraySubscriptLvalueExpression() {
@@ -82,5 +82,57 @@ class LvalueExpressionCompilerTests: XCTestCase {
         }
         let computer = try! executor.execute(ir: ir!)
         XCTAssertEqual(computer.stack16(at: 0), UInt16(addressOfData + 2*SymbolType.u16.sizeof))
+    }
+    
+    func testOutOfBoundsLvalueArrayAccessCausesPanic_StaticArray() {
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: true)
+        ])
+        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
+        var ir: [YertleInstruction] = []
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0xcd, to: 0x0011)
+        }
+        let computer = try! executor.execute(ir: ir)
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0xdead)
+    }
+    
+    func testLvalueDynamicArrayAccess_InBounds() {
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)
+        ])
+        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
+        var ir: [YertleInstruction] = []
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        executor.isVerboseLogging = true
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
+            computer.dataRAM.store16(value: 1, to: 0x0012)
+            computer.dataRAM.store(value: 0xcd, to: 0x0014)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0x0014)
+    }
+    
+    func testOutOfBoundsLvalueArrayAccessCausesPanic_DynamicArray() {
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)
+        ])
+        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
+        var ir: [YertleInstruction] = []
+        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let executor = YertleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
+            computer.dataRAM.store16(value: 0, to: 0x0012)
+            computer.dataRAM.store(value: 0xcd, to: 0x0014)
+        }
+        let computer = try! executor.execute(ir: ir)
+        
+        XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
 }

@@ -22,9 +22,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     
-    public override init(symbols: SymbolTable = SymbolTable()) {
+    public override init(symbols: SymbolTable = SymbolTable(), labelMaker: LabelMaker = LabelMaker()) {
         self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        super.init(symbols: symbols)
+        super.init(symbols: symbols, labelMaker: labelMaker)
     }
     
     public override func compile(expression: Expression) throws -> [YertleInstruction] {

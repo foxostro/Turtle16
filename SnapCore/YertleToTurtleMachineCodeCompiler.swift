@@ -46,6 +46,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     public private(set) var instructions: [Instruction] = []
     public var currentSourceAnchor: SourceAnchor? = nil
     
+    let labelMaker = LabelMaker(prefix: ".LL")
+    
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
     }
@@ -301,22 +303,13 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         assert(assembler.programCounter == jumpTarget)
     }
     
-     private var tempLabelCounter = 0
-    
-    // The generated program will need unique, temporary labels.
-    private func makeTempLabel() -> String {
-        let label = ".LL\(tempLabelCounter)"
-        tempLabelCounter += 1
-        return label
-    }
-    
     private func eq16() throws {
         try eq16(valueOnPass: 1, valueOnFail: 0)
     }
     
     private func eq16(valueOnPass: Int, valueOnFail: Int) throws {
-        let label_fail_test = makeTempLabel()
-        let label_tail = makeTempLabel()
+        let label_fail_test = labelMaker.next()
+        let label_tail = labelMaker.next()
         
         try pop16()
         try assembler.li(.U, kScratchHi)
@@ -404,8 +397,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func lt16() throws {
-        let labelFailEqualityTest = makeTempLabel()
-        let labelTail = makeTempLabel()
+        let labelFailEqualityTest = labelMaker.next()
+        let labelTail = labelMaker.next()
         
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
@@ -510,9 +503,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func gt16() throws {
-        let labelFailEqualityTest = makeTempLabel()
-        let labelTail = makeTempLabel()
-        let labelThen = makeTempLabel()
+        let labelFailEqualityTest = labelMaker.next()
+        let labelTail = labelMaker.next()
+        let labelThen = labelMaker.next()
         
         let addressOfA = kScratchLo+0
         let addressOfB = kScratchLo+2
@@ -657,7 +650,7 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, addressOfB+0)
         try assembler.mov(.B, .M)
         
-        let labelThen = makeTempLabel()
+        let labelThen = labelMaker.next()
         try setAddressToLabel(labelThen)
 
         // Compare the high bytes.
@@ -733,8 +726,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sbc(.NONE)
         
         // A <- (carry_flag) ? 0 : 1
-        let labelTail = makeTempLabel()
-        let labelThen = makeTempLabel()
+        let labelTail = labelMaker.next()
+        let labelThen = labelMaker.next()
         try setAddressToLabel(labelThen)
         assembler.jc()
         assembler.nop()
@@ -936,9 +929,9 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, resultAddress+1)
         try assembler.li(.M, 0)
         
-        let loopHead = makeTempLabel()
-        let loopTail = makeTempLabel()
-        let notDone = makeTempLabel()
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        let notDone = labelMaker.next()
         
         try label(loopHead)
         
@@ -1119,8 +1112,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, counterAddress+1)
         try assembler.li(.M, 0)
 
-        let loopHead = makeTempLabel()
-        let loopTail = makeTempLabel()
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
 
         // if b == 0 then bail because it's division by zero
         try setAddressToLabel(loopHead)
@@ -1329,8 +1322,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, counterAddress+1)
         try assembler.li(.M, 0)
 
-        let loopHead = makeTempLabel()
-        let loopTail = makeTempLabel()
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
 
         // if b == 0 then bail because it's division by zero
         try setAddressToLabel(loopHead)

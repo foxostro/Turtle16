@@ -10,11 +10,13 @@ import TurtleCompilerToolbox
 
 public class BaseExpressionCompiler: NSObject {
     public let symbols: SymbolTable
+    public let labelMaker: LabelMaker
     public let kFramePointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
     public let kFramePointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
-    public init(symbols: SymbolTable = SymbolTable()) {
+    public init(symbols: SymbolTable, labelMaker: LabelMaker) {
         self.symbols = symbols
+        self.labelMaker = labelMaker
     }
     
     public func compile(expression: Expression) throws -> [YertleInstruction] {
@@ -22,11 +24,11 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func rvalueContext() -> RvalueExpressionCompiler {
-        return RvalueExpressionCompiler(symbols: symbols)
+        return RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
     }
     
     public func lvalueContext() -> LvalueExpressionCompiler {
-        return LvalueExpressionCompiler(symbols: symbols)
+        return LvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
     }
     
     public func unsupportedError(expression: Expression) -> Error {
@@ -157,12 +159,12 @@ public class BaseExpressionCompiler: NSObject {
     
     // Compile an array element lookup through the subscript operator.
     public func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
-        abort() // stub
+        abort() // override in a subclass
     }
     
     // Compile an array element lookup in a dynamic array through the subscript operator.
     public func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
-        abort() // stub
+        abort() // override in a subclass
     }
     
     public func arraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {

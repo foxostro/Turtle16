@@ -17,7 +17,7 @@ public class SnapToYertleCompiler: NSObject {
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
-    private var tempLabelCounter = 0
+    private let labelMaker = LabelMaker()
     private var staticStoragePointer = SnapToYertleCompiler.kStaticStorageStartAddress
     
     public override init() {
@@ -68,13 +68,6 @@ public class SnapToYertleCompiler: NSObject {
         let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    // The generated program will need unique, temporary labels.
-    private func makeTempLabel() -> String {
-        let label = ".L\(tempLabelCounter)"
-        tempLabelCounter += 1
-        return label
     }
     
     // Static storage is allocated in a region starting at this address.
@@ -290,15 +283,15 @@ public class SnapToYertleCompiler: NSObject {
     // The expression will push the result onto the stack. The client assumes the
     // responsibility of cleaning up.
     private func compile(expression: Expression) throws {
-        let exprCompiler = RvalueExpressionCompiler(symbols: symbols)
+        let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
         let ir = try exprCompiler.compile(expression: expression)
         instructions += ir
     }
     
     private func compile(if stmt: If) throws {
         if let elseBranch = stmt.elseBranch {
-            let labelElse = makeTempLabel()
-            let labelTail = makeTempLabel()
+            let labelElse = labelMaker.next()
+            let labelTail = labelMaker.next()
             try compile(expression: stmt.condition)
             instructions += [
                 .push(0),
@@ -312,7 +305,7 @@ public class SnapToYertleCompiler: NSObject {
             try compile(genericNode: elseBranch)
             instructions += [.label(labelTail)]
         } else {
-            let labelTail = makeTempLabel()
+            let labelTail = labelMaker.next()
             try compile(expression: stmt.condition)
             instructions += [
                 .push(0),
@@ -324,8 +317,8 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(while stmt: While) throws {
-        let labelHead = makeTempLabel()
-        let labelTail = makeTempLabel()
+        let labelHead = labelMaker.next()
+        let labelTail = labelMaker.next()
         instructions += [.label(labelHead)]
         try compile(expression: stmt.condition)
         instructions += [
@@ -340,8 +333,8 @@ public class SnapToYertleCompiler: NSObject {
     }
     
     private func compile(forLoop stmt: ForLoop) throws {
-        let labelHead = makeTempLabel()
-        let labelTail = makeTempLabel()
+        let labelHead = labelMaker.next()
+        let labelTail = labelMaker.next()
         try compile(genericNode: stmt.initializerClause)
         instructions += [.label(labelHead)]
         try compile(expression: stmt.conditionClause)

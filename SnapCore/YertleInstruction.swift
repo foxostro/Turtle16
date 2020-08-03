@@ -62,6 +62,8 @@ public enum YertleInstruction: Equatable {
     case hlt // Halt the machine. This is useful for debugging.
     case peekPeripheral
     case pokePeripheral
+    case dup
+    case dup16
     
     public var description: String {
         switch self {
@@ -165,6 +167,10 @@ public enum YertleInstruction: Equatable {
             return "PEEK-PERIPHERAL"
         case .pokePeripheral:
             return "POKE-PERIPHERAL"
+        case .dup:
+            return "DUP"
+        case .dup16:
+            return "DUP16"
         }
     }
     

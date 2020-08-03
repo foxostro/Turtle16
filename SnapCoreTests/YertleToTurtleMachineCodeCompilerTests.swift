@@ -1036,4 +1036,21 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: address + 1), 0x02)
         XCTAssertEqual(computer.dataRAM.load(from: address + 2), 0x03)
     }
+    
+    func testDup() {
+        let computer = try! execute(ir: [.push(0xab), .dup])
+        XCTAssertEqual(computer.stack(at: 0), 0xab)
+        XCTAssertEqual(computer.stack(at: 1), 0xab)
+    }
+    
+    func testDup16() {
+        let computer = try! execute(ir: [.push16(0xabcd), .dup16])
+        XCTAssertEqual(computer.stack16(at: 0), 0xabcd)
+        XCTAssertEqual(computer.stack16(at: 2), 0xabcd)
+    }
+    
+    func testLt16_0x0012_gt_0x0011_is_true() {
+        let computer = try! execute(ir: [.push16(0x0011), .push16(0x0012), .gt16])
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
 }

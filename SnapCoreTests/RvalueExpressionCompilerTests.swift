@@ -1620,7 +1620,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
-            computer.dataRAM.store(value: 0xaa, to: 0xfff0)
+            computer.dataRAM.store(value: 0xaa, to: 0xffef)
         }
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack(at: 0), 0xaa)
@@ -1636,7 +1636,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
-            computer.dataRAM.store16(value: 0xabcd, to: 0xfff0)
+            computer.dataRAM.store16(value: 0xabcd, to: 0xffef)
         }
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xabcd)
@@ -1702,7 +1702,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
-            let address = Int(UInt16(0) &- UInt16(0x0020))
+            let address = Int(UInt16(0xffff) &- UInt16(0x0020))
             computer.dataRAM.store16(value: 1000, to: address + 0)
             computer.dataRAM.store16(value: 2000, to: address + 2)
             computer.dataRAM.store16(value: 3000, to: address + 4)
@@ -1791,7 +1791,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = try! compile(expression: expr, symbols: symbols)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0)
     }
     
     func testCompileAssignment_U8_Stack() {
@@ -1801,7 +1801,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = try! compile(expression: expr, symbols: symbols)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0xaa)
     }
     
     func testCompileAssignment_U16_Stack() {
@@ -1811,7 +1811,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = try! compile(expression: expr, symbols: symbols)
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), 0xabcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffb), 0xabcd)
     }
     
     func testCompileAssignment_ArrayOfU16_Stack() {
@@ -1832,7 +1832,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             return
         }
         let computer = try! executor.execute(ir: ir!)
-        let address = 0xfff0
+        let address = 0xffef
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 3000)
@@ -2450,9 +2450,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = YertleExecutor()
         executor.configure = { computer in
-            computer.dataRAM.store16(value: 0x0013, to: 0x0010)
+            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
             computer.dataRAM.store16(value: 0, to: 0x0012)
-            computer.dataRAM.store(value: 0xcd, to: 0x0013)
+            computer.dataRAM.store(value: 0xcd, to: 0x0014)
         }
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)

@@ -13,10 +13,10 @@ import TurtleCompilerToolbox
 public class YertleToTurtleMachineCodeCompiler: NSObject {
     // Programs written in Snap use a push down stack, and store the stack
     // pointer in data RAM at addresses 0x0000 and 0x0001.
-    // This is initialized on launch to 0x0000.
+    // This is initialized on launch to 0xffff.
     public static let kStackPointerAddressHi: UInt16 = 0x0000
     public static let kStackPointerAddressLo: UInt16 = 0x0001
-    public static let kStackPointerInitialValue: Int = 0x0000
+    public static let kStackPointerInitialValue: Int = 0xffff
     let kStackPointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
     let kStackPointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
     let kStackPointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
@@ -25,10 +25,10 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
     let kStackPointerInitialValueLo: Int =  kStackPointerInitialValue & 0x00ff
     
     // Programs written in Snap store the frame pointer in data RAM at
-    // addresses 0x0002 and 0x0003. This is initialized on launch to 0x0000.
+    // addresses 0x0002 and 0x0003. This is initialized on launch to 0xffff.
     public static let kFramePointerAddressHi: UInt16 = 0x0002
     public static let kFramePointerAddressLo: UInt16 = 0x0003
-    public static let kFramePointerInitialValue: Int = 0x0000
+    public static let kFramePointerInitialValue: Int = 0xffff
     let kFramePointerHiHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
     let kFramePointerHiLo = Int( YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
     let kFramePointerLoHi = Int((YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)

@@ -241,7 +241,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff3)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff2)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 2), 0xd)
     }
     
@@ -477,7 +477,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = YertleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0xaa)
     }
     
     func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {

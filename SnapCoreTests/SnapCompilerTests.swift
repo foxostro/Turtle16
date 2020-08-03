@@ -693,6 +693,7 @@ let arr: [_]u16 = [_]u16{42 as u8}
     
     func test_EndToEndIntegration_ReadArrayElement_U16() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 var result: u16 = 0
 let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
@@ -753,6 +754,7 @@ arr = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
     
     func test_EndToEndIntegration_ReassignArrayContentsWithArrayIdentifier() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
 let b: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
@@ -772,6 +774,7 @@ a = b
     
     func test_EndToEndIntegration_ReassignArrayContents_ConvertingFromArrayOfU8ToArrayOfU16() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
 let b = [_]u8{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
@@ -830,6 +833,7 @@ let foo = sum()
     
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_1() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 func sum(a: [3]u16) -> u16 {
     return a[0] + a[1] + a[2]
@@ -841,6 +845,7 @@ let foo = sum([3]u16{1, 2, 3})
     
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_2() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 func sum(a: [3]u16) -> u16 {
     var accum: u16 = 0
@@ -882,6 +887,7 @@ let foo = makeArray()
     
     func test_EndToEndIntegration_PassTwoArraysAsFunctionParameters_1() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 func sum(a: [3]u8, b: [3]u8, c: u8) -> u8 {
     return (a[0] + b[0] + a[1] + b[1] + a[2] + b[2]) * c
@@ -893,6 +899,7 @@ let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
     
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
     var result = [_]u8{0, 0, 0}
@@ -910,6 +917,7 @@ let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
     
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 func sum(a: [3]u16, b: [3]u16, c: u16) -> [3]u16 {
     var result = [_]u16{0, 0, 0}
@@ -969,5 +977,21 @@ panic("oops!")
 puts("Hello, World!")
 """)
         XCTAssertEqual(serialOutput, "PANIC: oops!")
+    }
+    
+    func testArrayOutOfBoundsError() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+let arr = "Hello"
+let foo = arr[10]
+""")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds")
     }
 }

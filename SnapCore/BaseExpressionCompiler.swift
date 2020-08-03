@@ -210,9 +210,8 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     private func panic() -> [YertleInstruction] {
-        // TOOD: Call the panicOutOfBoundsError() function in the stdlib and print a good error message.
         var instructions: [YertleInstruction] = []
-        instructions += [.push16(0xdead), .hlt]
+        instructions += [.jalr("panicOutOfBoundsError")]
         return instructions
     }
     

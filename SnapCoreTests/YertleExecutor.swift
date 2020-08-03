@@ -16,7 +16,7 @@ class YertleExecutor: NSObject {
     public var isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
-    var configure: (Computer)->Void = {_ in}
+    var configure: (Computer) -> Void = {_ in}
     
     override init() {
         microcodeGenerator = MicrocodeGenerator()
@@ -33,6 +33,11 @@ class YertleExecutor: NSObject {
         
         do {
             let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
+            compiler.injectCode = { (compiler: YertleToTurtleMachineCodeCompiler) in
+                try compiler.label("panicOutOfBoundsError")
+                try compiler.push16(0xdead)
+                compiler.hlt()
+            }
             try compiler.compile(ir: ir, base: 0)
             let instructions = compiler.instructions
             computer = try execute(instructions: instructions)

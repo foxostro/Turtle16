@@ -180,7 +180,64 @@ public class BaseExpressionCompiler: NSObject {
     // stack as it was before this check. Else, panic with an appropriate
     // error message.
     private func arrayBoundsCheck(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        return []
+        let label = labelMaker.next()
+        var instructions: [YertleInstruction] = []
+        instructions += [
+            // Duplicate the address of the access for the comparison, below.
+            .dup16,
+        ]
+        instructions += pushAddressOfSymbol(symbol, depth)
+        instructions += [
+            // Indented four times to indicate that the stack holds the two
+            // addresses pushed above. Each change in level of indent indicates
+            // a change in stack depth of one word.
+                            .push16(determineArrayCount(symbol.type)),
+                                    .push16(determineArrayElementType(symbol.type).sizeof),
+                                            .mul16,
+                                    .add16,
+                            // The 16-bit array limit is now on the top of the stack.
+                            // If the limit is greater than the access address
+                            // then the access is acceptable.
+                            .gt16,
+                .push(1),
+                    .je(label)
+            // At end of list, relative change in stack depth is zero.
+            // The address of access is still on the top.
+        ]
+        instructions += panic()
+        instructions += [.label(label)]
+        return instructions
+    }
+    
+    private func panic() -> [YertleInstruction] {
+        // TOOD: Call the panic function in the stdlib and print a good error message.
+        var instructions: [YertleInstruction] = []
+        instructions += [.push16(0xdead), .hlt]
+        return instructions
+    }
+    
+    private func determineArrayCount(_ type: SymbolType) -> Int {
+        let count: Int
+        switch type {
+        case .array(count: let n, elementType: _):
+            count = n!
+        default:
+            abort()
+        }
+        return count
+    }
+    
+    private func determineArrayElementType(_ type: SymbolType) -> SymbolType {
+        let result: SymbolType
+        switch type {
+        case .array(count: _, let elementType):
+            result = elementType
+        case .dynamicArray(elementType: let elementType):
+            result = elementType
+        default:
+            abort()
+        }
+        return result
     }
     
     public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
@@ -188,7 +245,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += pushAddressOfSymbol(symbol, depth)
         instructions += [.loadIndirect16]
         instructions += try loadAddressOfArrayElement(expr, elementType)
-        instructions += dynamicArrayBoundsCheck(symbol, depth)
+//        instructions += dynamicArrayBoundsCheck(symbol, depth)
         return instructions
     }
     
@@ -197,7 +254,44 @@ public class BaseExpressionCompiler: NSObject {
     // the stack as it was before this check. Else, panic with an appropriate
     // error message.
     private func dynamicArrayBoundsCheck(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        return []
+        let label = labelMaker.next()
+        var instructions: [YertleInstruction] = []
+        instructions += [
+            // Duplicate the address of the access for the comparison, below.
+            .dup16,
+                    .dup16
+        ]
+        instructions +=     pushAddressOfSymbol(symbol, depth)
+        instructions += [
+            // Indented to indicate stack depth. Each change in level of indent
+            // indicates a change in stack depth of one word.
+                                    // Load the two word dynamic pointer onto the top of the stack.
+                                    // Pop to discard the base address, leaving only the count.
+                                    .loadIndirectN(4),
+                                                    .pop16,
+                                            // Multiply the count by the size of an individual element to get
+                                            // the total array size.
+                                            .push16(determineArrayElementType(symbol.type).sizeof),
+                                            .mul16,
+            ]
+        instructions +=                     pushAddressOfSymbol(symbol, depth)
+        instructions += [
+                                            // Load the base address
+                                            .loadIndirect16,
+                                            // Add the base pointer to the array length to get the limit.
+                                            .add16,
+                                    // The 16-bit array limit is now on the top of the stack.
+                                    // If the limit is greater than the access address
+                                    // then the access is acceptable.
+                                    .gt16,
+                        .push(1),
+                            .je(label),
+            // At end of list, relative change in stack depth is zero.
+            // The address of access is still on the top.
+        ]
+        instructions += panic()
+        instructions += [.label(label)]
+        return instructions
     }
     
     // Given an array address on the stack, determine the address of the array

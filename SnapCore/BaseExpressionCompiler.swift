@@ -171,7 +171,7 @@ public class BaseExpressionCompiler: NSObject {
         var instructions: [YertleInstruction] = []
         instructions += pushAddressOfSymbol(symbol, depth)
         instructions += try loadAddressOfArrayElement(expr, elementType)
-        instructions += arrayBoundsCheck(symbol, depth)
+        instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
         return instructions
     }
     
@@ -179,7 +179,7 @@ public class BaseExpressionCompiler: NSObject {
     // is within the specified fixed array. If so then leave the address on the
     // stack as it was before this check. Else, panic with an appropriate
     // error message.
-    private func arrayBoundsCheck(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    private func arrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         let label = labelMaker.next()
         var instructions: [YertleInstruction] = []
         instructions += [
@@ -204,14 +204,32 @@ public class BaseExpressionCompiler: NSObject {
             // At end of list, relative change in stack depth is zero.
             // The address of access is still on the top.
         ]
-        instructions += panic()
+        instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
         instructions += [.label(label)]
         return instructions
     }
     
-    private func panic() -> [YertleInstruction] {
+    private func panicOutOfBoundsError(sourceAnchor: SourceAnchor?) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
-        instructions += [.jalr("panicOutOfBoundsError")]
+        var message = "array access is out of bounds"
+        if let sourceAnchor = sourceAnchor {
+            message += ": `\(sourceAnchor.text)'"
+            if let lineNumbers = sourceAnchor.lineNumbers {
+                message += " on line \(lineNumbers.lowerBound)"
+            }
+        }
+        let arr: [Int] = message.utf8.reversed().map({Int($0)})
+        let n = arr.count
+        for c in arr {
+            instructions += [.push(c)]
+        }
+        instructions += [
+            .push16(n),
+            .push16(4),
+            .pushsp,
+            .add16
+        ]
+        instructions += [.jalr("panic")]
         return instructions
     }
     
@@ -244,7 +262,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += pushAddressOfSymbol(symbol, depth)
         instructions += [.loadIndirect16]
         instructions += try loadAddressOfArrayElement(expr, elementType)
-        instructions += dynamicArrayBoundsCheck(symbol, depth)
+        instructions += dynamicArrayBoundsCheck(expr.sourceAnchor, symbol, depth)
         return instructions
     }
     
@@ -252,7 +270,7 @@ public class BaseExpressionCompiler: NSObject {
     // is within the specified dynamic array. If so then leave the address on
     // the stack as it was before this check. Else, panic with an appropriate
     // error message.
-    private func dynamicArrayBoundsCheck(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    private func dynamicArrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         let label = labelMaker.next()
         instructions += [
@@ -289,7 +307,7 @@ public class BaseExpressionCompiler: NSObject {
             // At end of list, relative change in stack depth is zero.
             // The address of access is still on the top.
         ]
-        instructions += panic()
+        instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
         instructions += [
             .label(label)
         ]

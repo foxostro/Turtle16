@@ -992,6 +992,6 @@ puts("Hello, World!")
 let arr = "Hello"
 let foo = arr[10]
 """)
-        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 1")
     }
 }

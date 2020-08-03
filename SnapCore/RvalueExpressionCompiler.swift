@@ -341,7 +341,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
                 }
             case let identifier as Expression.Identifier:
-                let elements = stride(from: 0, through: n!, by: 1).map({i in
+                let elements = stride(from: 0, through: n!-1, by: 1).map({i in
                     Expression.As(sourceAnchor: identifier.sourceAnchor,
                                   expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
                                                              identifier: identifier,

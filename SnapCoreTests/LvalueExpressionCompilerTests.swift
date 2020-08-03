@@ -108,7 +108,6 @@ class LvalueExpressionCompilerTests: XCTestCase {
         var ir: [YertleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = YertleExecutor()
-        executor.isVerboseLogging = true
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0x0014, to: 0x0010)
             computer.dataRAM.store16(value: 1, to: 0x0012)

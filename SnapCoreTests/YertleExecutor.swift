@@ -34,7 +34,7 @@ class YertleExecutor: NSObject {
         do {
             let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
             compiler.injectCode = { (compiler: YertleToTurtleMachineCodeCompiler) in
-                try compiler.label("panicOutOfBoundsError")
+                try compiler.label("panic")
                 try compiler.push16(0xdead)
                 compiler.hlt()
             }

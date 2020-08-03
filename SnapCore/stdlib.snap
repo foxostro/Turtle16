@@ -1,7 +1,3 @@
-func panicOutOfBoundsError() {
-    panic("array access is out of bounds")
-}
-
 func panic(message: []u8) {
     puts("PANIC: ")
     puts(message)

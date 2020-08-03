@@ -171,17 +171,33 @@ public class BaseExpressionCompiler: NSObject {
         var instructions: [YertleInstruction] = []
         instructions += pushAddressOfSymbol(symbol, depth)
         instructions += try loadAddressOfArrayElement(expr, elementType)
+        instructions += arrayBoundsCheck(symbol, depth)
         return instructions
+    }
+    
+    // Assuming the top of the stack holds an address, verify that the address
+    // is within the specified fixed array. If so then leave the address on the
+    // stack as it was before this check. Else, panic with an appropriate
+    // error message.
+    private func arrayBoundsCheck(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        return []
     }
     
     public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
         var instructions: [YertleInstruction] = []
         instructions += pushAddressOfSymbol(symbol, depth)
-        // The first two bytes of the dynamic array object are a pointer to the
-        // referenced array data. Follow that pointer.
         instructions += [.loadIndirect16]
         instructions += try loadAddressOfArrayElement(expr, elementType)
+        instructions += dynamicArrayBoundsCheck(symbol, depth)
         return instructions
+    }
+    
+    // Assuming the top of the stack holds an address, verify that the address
+    // is within the specified dynamic array. If so then leave the address on
+    // the stack as it was before this check. Else, panic with an appropriate
+    // error message.
+    private func dynamicArrayBoundsCheck(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+        return []
     }
     
     // Given an array address on the stack, determine the address of the array

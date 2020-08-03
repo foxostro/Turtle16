@@ -11,14 +11,16 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class RvalueExpressionCompilerTests: XCTestCase {
-    func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [YertleInstruction] {
+    func compile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [YertleInstruction] {
         let compiler = RvalueExpressionCompiler(symbols: symbols)
         var ir: [YertleInstruction] = []
         do {
             ir = try compiler.compile(expression: expression)
         } catch let error as CompilerError {
-            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
-            print(omnibus.localizedDescription)
+            if shouldPrintErrors {
+                let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
+                print(omnibus.localizedDescription)
+            }
             throw error
         } catch let error {
             throw error

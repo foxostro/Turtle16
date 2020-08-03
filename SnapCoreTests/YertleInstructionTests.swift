@@ -63,6 +63,8 @@ class YertleInstructionTests: XCTestCase {
         XCTAssertEqual(YertleInstruction.hlt.description, "HLT")
         XCTAssertEqual(YertleInstruction.peekPeripheral.description, "PEEK-PERIPHERAL")
         XCTAssertEqual(YertleInstruction.pokePeripheral.description, "POKE-PERIPHERAL")
+        XCTAssertEqual(YertleInstruction.dup.description, "DUP")
+        XCTAssertEqual(YertleInstruction.dup16.description, "DUP16")
     }
     
     func testMakeListing_Empty() {

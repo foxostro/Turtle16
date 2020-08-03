@@ -112,6 +112,8 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
             case .hlt: assembler.hlt()
             case .peekPeripheral: try peekPeripheral()
             case .pokePeripheral: try pokePeripheral()
+            case .dup: try dup()
+            case .dup16: try dup16()
             }
         }
         insertProgramEpilogue()
@@ -1907,5 +1909,17 @@ public class YertleToTurtleMachineCodeCompiler: NSObject {
         
         // Store A to the destination address on the peripheral bus.
         try assembler.mov(.P, .A)
+    }
+    
+    private func dup() throws {
+        let scratch = kScratchHi<<8 + kScratchLo
+        try store(to: scratch)
+        try load(from: scratch)
+    }
+    
+    private func dup16() throws {
+        let scratch = kScratchHi<<8 + kScratchLo + 2
+        try store16(to: scratch)
+        try load16(from: scratch)
     }
 }

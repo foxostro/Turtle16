@@ -196,10 +196,17 @@ public class BaseExpressionCompiler: NSObject {
                                             .mul16,
                                     .add16,
                             // The 16-bit array limit is now on the top of the stack.
-                            // If the limit is greater than the access address
-                            // then the access is acceptable.
-                            .gt16,
-                .push(1),
+                            // Subtract one element so we can avoid a limit which
+                            // might wrap around the bottom of the stack from
+                            // 0xffff to 0x0000.
+                            .push16(determineArrayElementType(symbol.type).sizeof),
+                                    .sub16,
+                            .push16(0),
+                                    .sub16,
+                            // If (limit-1) < (access address) then the access
+                            // is unacceptable.
+                            .lt16,
+                .push(0),
                     .je(label)
             // At end of list, relative change in stack depth is zero.
             // The address of access is still on the top.
@@ -299,10 +306,17 @@ public class BaseExpressionCompiler: NSObject {
                                     // the array.
                                     .add16,
                             // The 16-bit array limit is now on the top of the stack.
-                            // If the limit is greater than the access address
-                            // then the access is acceptable.
-                            .gt16,
-                .push(1),
+                            // Subtract one element so we can avoid a limit which
+                            // might wrap around the bottom of the stack from
+                            // 0xffff to 0x0000.
+                            .push16(determineArrayElementType(symbol.type).sizeof),
+                                    .sub16,
+                            .push16(0),
+                                    .sub16,
+                            // If (limit-1) < (access address) then the access
+                            // is unacceptable.
+                            .lt16,
+                .push(0),
                     .je(label)
             // At end of list, relative change in stack depth is zero.
             // The address of access is still on the top.

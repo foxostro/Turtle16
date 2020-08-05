@@ -74,7 +74,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 3)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
-        XCTAssertEqual(computer.stackPointer, 0xfffc)
+        XCTAssertEqual(computer.stackPointer, 0xfffd)
     }
     
     func testPushFourValues() {
@@ -83,7 +83,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 1), 3)
         XCTAssertEqual(computer.stack(at: 2), 2)
         XCTAssertEqual(computer.stack(at: 3), 1)
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
     func testPushManyValues() {
@@ -111,15 +111,15 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     
     func testPushTwoDoubleWordValues() {
         let computer = try! execute(ir: [.push16(0x5678), .push16(0x1234)])
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffb), 0x12)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0x34)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0x56)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x78)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0x12)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffd), 0x34)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffe), 0x56)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0x78)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffd), 0x5678)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffb), 0x1234)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffe), 0x5678)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), 0x1234)
         
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
     
         XCTAssertEqual(computer.stack(at: 0), 0x12)
         XCTAssertEqual(computer.stack(at: 1), 0x34)
@@ -149,7 +149,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     
     func testPushStackPointer() {
         let computer = try! execute(ir: [.push16(0xabcd), .pushsp])
-        XCTAssertEqual(computer.stack16(at: 0), 0xfffd)
+        XCTAssertEqual(computer.stack16(at: 0), 0xfffe)
     }
     
     func testPopWithStackDepthFive() {
@@ -158,7 +158,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 1), 3)
         XCTAssertEqual(computer.stack(at: 2), 2)
         XCTAssertEqual(computer.stack(at: 3), 1)
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
     func testPop16WithStackDepthFive() {
@@ -167,7 +167,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack16(at: 2), 3000)
         XCTAssertEqual(computer.stack16(at: 4), 2000)
         XCTAssertEqual(computer.stack16(at: 6), 1000)
-        XCTAssertEqual(computer.stackPointer, 0xfff7)
+        XCTAssertEqual(computer.stackPointer, 0xfff8)
     }
     
     func testPopnWithStackDepthFive() {
@@ -176,7 +176,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack16(at: 2), 3000)
         XCTAssertEqual(computer.stack16(at: 4), 2000)
         XCTAssertEqual(computer.stack16(at: 6), 1000)
-        XCTAssertEqual(computer.stackPointer, 0xfff7)
+        XCTAssertEqual(computer.stackPointer, 0xfff8)
     }
     
     func testEq16_0x0000_and_0x0000() {
@@ -689,7 +689,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), value)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 1)
-        XCTAssertEqual(computer.stackPointer, 0xfffc)
+        XCTAssertEqual(computer.stackPointer, 0xfffd)
     }
     
     func testLoad16() {
@@ -704,7 +704,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack16(at: 0), value)
         XCTAssertEqual(computer.stack(at: 2), 2)
         XCTAssertEqual(computer.stack(at: 3), 1)
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
     func testStoreWithStackDepthOne() {
@@ -728,7 +728,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 3)
-        XCTAssertEqual(computer.stackPointer, 0xfffc)
+        XCTAssertEqual(computer.stackPointer, 0xfffd)
     }
     
     func testStoreWithStackDepthFour() {
@@ -738,7 +738,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 1)
         XCTAssertEqual(computer.stack(at: 1), 2)
         XCTAssertEqual(computer.stack(at: 2), 3)
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
     func testStore16() {
@@ -749,7 +749,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack16(at: 0), 0x1234)
         XCTAssertEqual(computer.stack(at: 2), 1)
         XCTAssertEqual(computer.stack(at: 3), 2)
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {
@@ -831,41 +831,41 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 3)
         XCTAssertEqual(computer.stack(at: 1), 4)
         XCTAssertEqual(computer.stack(at: 2), 5)
-        XCTAssertEqual(computer.stackPointer, 0xfffc)
+        XCTAssertEqual(computer.stackPointer, 0xfffd)
     }
     
     func testEnter() {
         let computer = try! execute(ir: [.enter])
-        XCTAssertEqual(computer.stack16(at: 0), 0xffff)
-        XCTAssertEqual(computer.stackPointer, 0xfffd)
-        XCTAssertEqual(computer.framePointer, 0xfffd)
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
+        XCTAssertEqual(computer.stackPointer, 0xfffe)
+        XCTAssertEqual(computer.framePointer, 0xfffe)
     }
     
     func testEnterThenLeave() {
         let computer = try! execute(ir: [.enter, .leave])
-        XCTAssertEqual(computer.stackPointer, 0xffff)
-        XCTAssertEqual(computer.framePointer, 0xffff)
+        XCTAssertEqual(computer.stackPointer, 0x0000)
+        XCTAssertEqual(computer.framePointer, 0x0000)
     }
     
     func testEnterEnter() {
         let computer = try! execute(ir: [.enter, .enter])
-        XCTAssertEqual(computer.stack16(at: 2), 0xffff)
-        XCTAssertEqual(computer.stack16(at: 0), 0xfffd)
-        XCTAssertEqual(computer.stackPointer, 0xfffb)
-        XCTAssertEqual(computer.framePointer, 0xfffb)
+        XCTAssertEqual(computer.stack16(at: 2), 0x0000)
+        XCTAssertEqual(computer.stack16(at: 0), 0xfffe)
+        XCTAssertEqual(computer.stackPointer, 0xfffc)
+        XCTAssertEqual(computer.framePointer, 0xfffc)
     }
     
     func testEnterEnterLeave() {
         let computer = try! execute(ir: [.enter, .enter, .leave])
-        XCTAssertEqual(computer.stack16(at: 0), 0xffff)
-        XCTAssertEqual(computer.stackPointer, 0xfffd)
-        XCTAssertEqual(computer.framePointer, 0xfffd)
+        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
+        XCTAssertEqual(computer.stackPointer, 0xfffe)
+        XCTAssertEqual(computer.framePointer, 0xfffe)
     }
     
     func testEnterEnterLeaveLeave() {
         let computer = try! execute(ir: [.enter, .enter, .leave, .leave])
-        XCTAssertEqual(computer.stackPointer, 0xffff)
-        XCTAssertEqual(computer.framePointer, 0xffff)
+        XCTAssertEqual(computer.stackPointer, 0x0000)
+        XCTAssertEqual(computer.framePointer, 0x0000)
     }
     
     func testLoadIndirectWithStackDepthTwo() {

@@ -12,7 +12,7 @@ import TurtleCore
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
     public var ast: TopLevel! = nil
-    public var ir: [YertleInstruction] = []
+    public var ir: [IRInstruction] = []
     public var instructions: [Instruction] = []
     
     public let kStandardLibrarySourceFileName = "stdlib"
@@ -86,27 +86,27 @@ public class SnapCompiler: NSObject {
         ast = parser.syntaxTree
         
         // Compile the AST to IR code
-        let snapToYertle = SnapToYertleCompiler()
-        snapToYertle.compile(ast: ast)
-        if snapToYertle.hasError {
-            errors = snapToYertle.errors
+        let snapToIR = SnapToIRCompiler()
+        snapToIR.compile(ast: ast)
+        if snapToIR.hasError {
+            errors = snapToIR.errors
             return
         }
-        ir = snapToYertle.instructions
-        let mapInstructionToSource = snapToYertle.mapInstructionToSource
+        ir = snapToIR.instructions
+        let mapInstructionToSource = snapToIR.mapInstructionToSource
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
-        let yertleToMachineCode = YertleToTurtleMachineCodeCompiler(assembler: assembler)
+        let irToMachineCode = IRToTurtleMachineCodeCompiler(assembler: assembler)
         do {
-            try yertleToMachineCode.compile(ir: ir, mapInstructionToSource: mapInstructionToSource, base: base)
+            try irToMachineCode.compile(ir: ir, mapInstructionToSource: mapInstructionToSource, base: base)
         } catch let error as CompilerError {
             errors = [error]
             return
         } catch {
             abort()
         }
-        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: yertleToMachineCode.instructions)
+        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: irToMachineCode.instructions)
     }
     
     private func makeAssembler() -> AssemblerBackEnd {

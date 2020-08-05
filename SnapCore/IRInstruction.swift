@@ -1,5 +1,5 @@
 //
-//  YertleInstruction.swift
+//  IRInstruction.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/22/20.
@@ -8,10 +8,8 @@
 
 import TurtleCompilerToolbox
 
-// Defines a stack-based intermediate representation, "Yertle" for the
-// Snap compiler. The intermediate language has no textual representation.
-// It's nothing more than a list of these instructions.
-public enum YertleInstruction: Equatable {
+// Defines a stack-based intermediate language.
+public enum IRInstruction: Equatable {
     case push(Int) // push the specified word-sized value to the stack
     case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack
     case pushsp // push the value of stack pointer (before instruction executes) to the stack
@@ -174,7 +172,7 @@ public enum YertleInstruction: Equatable {
         }
     }
     
-    public static func makeListing(instructions: [YertleInstruction]) -> String {
+    public static func makeListing(instructions: [IRInstruction]) -> String {
         return instructions.map{ $0.description }.joined(separator: "\n") + "\n"
     }
 }

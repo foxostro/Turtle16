@@ -1,5 +1,5 @@
 //
-//  SnapToYertleCompilerTests.swift
+//  SnapToIRCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -11,22 +11,22 @@ import SnapCore
 import TurtleCompilerToolbox
 import TurtleCore
 
-class SnapToYertleCompilerTests: XCTestCase {
+class SnapToIRCompilerTests: XCTestCase {
     func testNoErrorsAtFirst() {
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         XCTAssertFalse(compiler.hasError)
         XCTAssertTrue(compiler.errors.isEmpty)
     }
     
     func testCompileEmptyProgram() {
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: TopLevel(children: []))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
     
     func testAbstractSyntaxTreeNodeIsIgnoredInProgramCompilation() {
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: TopLevel(children: [AbstractSyntaxTreeNode()]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
@@ -34,7 +34,7 @@ class SnapToYertleCompilerTests: XCTestCase {
     
     func testCompilationIgnoresUnknownNodes() {
         class UnknownNode: AbstractSyntaxTreeNode {}
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: TopLevel(children: [UnknownNode(sourceAnchor: nil)]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
@@ -48,9 +48,9 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .push(1),
@@ -76,7 +76,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "constant redefines existing symbol: `foo'")
@@ -95,9 +95,9 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
-        let addressBar = SnapToYertleCompiler.kStaticStorageStartAddress+1
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let addressBar = SnapToIRCompiler.kStaticStorageStartAddress+1
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -121,8 +121,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -148,8 +148,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -178,8 +178,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -209,7 +209,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
@@ -229,8 +229,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         
@@ -239,7 +239,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, Symbol(type: .dynamicArray(elementType: .u8), offset: addressFoo, isMutable: false))
         
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff3)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 2), 0xd)
@@ -254,8 +254,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         var symbol: Symbol? = nil
@@ -283,16 +283,16 @@ class SnapToYertleCompilerTests: XCTestCase {
                            isMutable: true)
         ])
         
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
         var symbolFoo: Symbol? = nil
         XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo, isMutable: true))
         
-        let addressBar = SnapToYertleCompiler.kStaticStorageStartAddress+2
+        let addressBar = SnapToIRCompiler.kStaticStorageStartAddress+2
         var symbolBar: Symbol? = nil
         XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(identifier: "bar"))
         XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar, isMutable: true))
@@ -321,7 +321,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "variable redefines existing symbol: `foo'")
@@ -359,11 +359,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 2)
     }
@@ -404,11 +404,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
     }
@@ -430,11 +430,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
     }
@@ -447,8 +447,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -471,11 +471,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                                isMutable: true)
             ])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa)
     }
@@ -495,11 +495,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1)
@@ -515,7 +515,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Expression.LiteralInt(1)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [ .push(1), .pop ])
@@ -534,7 +534,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                                Expression.LiteralInt(1),
                                                Expression.LiteralInt(2)])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -558,7 +558,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                                ExprUtils.makeU16(value: 0xbbbb),
                                                ExprUtils.makeU16(value: 0xcccc)])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -591,7 +591,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                                    ExprUtils.makeU16(value: 0xffff)])
             ])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -617,8 +617,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                else: nil)
         ])
         
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
@@ -651,8 +651,8 @@ class SnapToYertleCompilerTests: XCTestCase {
                else: ExprUtils.makeAssignment(name: "foo",
                                               right: Expression.LiteralInt(2)))
         ])
-        let addressFoo = SnapToYertleCompiler.kStaticStorageStartAddress
-        let compiler = SnapToYertleCompiler()
+        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
@@ -683,7 +683,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             While(condition: Expression.LiteralInt(1),
                   body: Expression.LiteralInt(2))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
@@ -709,7 +709,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
@@ -732,12 +732,12 @@ class SnapToYertleCompilerTests: XCTestCase {
                     incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: Expression.Identifier("i"), right: Expression.LiteralInt(1))),
                     body: ExprUtils.makeAssignment(name: "foo", right: Expression.Identifier("i")))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
         let L1 = ".L1"
-        let expected: [YertleInstruction] = [
+        let expected: [IRInstruction] = [
             .push(0),
             .store(0x0010),
             .pop,
@@ -777,7 +777,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             ]),
             ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(0))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
@@ -789,7 +789,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block())
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = "foo"
@@ -820,11 +820,11 @@ class SnapToYertleCompilerTests: XCTestCase {
             Expression.Call(callee: Expression.Identifier("foo"),
                             arguments: [])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
     }
@@ -835,7 +835,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block())
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
@@ -849,7 +849,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Return(ExprUtils.makeBool(value: true))
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -863,7 +863,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Return(nil)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "non-void function should return a value")
@@ -878,7 +878,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Expression.LiteralBool(false)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "code after return will never be executed")
@@ -897,7 +897,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -916,7 +916,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -934,7 +934,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -954,7 +954,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -974,11 +974,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
@@ -997,11 +997,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xabcd)
     }
@@ -1020,11 +1020,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x00aa)
     }
@@ -1040,7 +1040,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                        else: nil)
                                 ]))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
@@ -1052,7 +1052,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block())
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
@@ -1072,7 +1072,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8' in call to `foo'")
@@ -1082,7 +1082,7 @@ class SnapToYertleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Return(Expression.LiteralBool(true))
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
@@ -1102,11 +1102,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
@@ -1131,11 +1131,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
@@ -1154,11 +1154,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
@@ -1188,11 +1188,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
     }
@@ -1227,11 +1227,11 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb)
     }
@@ -1273,14 +1273,14 @@ class SnapToYertleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = YertleExecutor()
+            let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         }
@@ -1295,14 +1295,14 @@ class SnapToYertleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = YertleExecutor()
+            let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         }
@@ -1322,7 +1322,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1338,7 +1338,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                 .store(0x0011),
                 .pop,
             ])
-            let executor = YertleExecutor()
+            let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xaa)
@@ -1351,7 +1351,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                             arguments: [Expression.LiteralInt(0xab),
                                         Expression.LiteralInt(0x0010)])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1364,7 +1364,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                 .storeIndirect,
                 .pop
             ])
-            let executor = YertleExecutor()
+            let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
         }
@@ -1385,14 +1385,14 @@ class SnapToYertleCompilerTests: XCTestCase {
                                 Expression.LiteralInt(1)
             ])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = YertleExecutor()
+            let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), 0xff)
             XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), 0xff)
@@ -1410,14 +1410,14 @@ class SnapToYertleCompilerTests: XCTestCase {
                             arguments: [Expression.LiteralInt(0xcd),
                                         Expression.LiteralInt(0x0010)])
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = YertleExecutor()
+            let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
         }
@@ -1450,7 +1450,7 @@ class SnapToYertleCompilerTests: XCTestCase {
                                                         member: Expression.Identifier("count")))
             
         ])
-        let compiler = SnapToYertleCompiler()
+        let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
@@ -1458,7 +1458,7 @@ class SnapToYertleCompilerTests: XCTestCase {
             return
         }
         let ir = compiler.instructions
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
     }

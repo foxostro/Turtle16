@@ -1,5 +1,5 @@
 //
-//  YertleToTurtleMachineCodeCompilerTests.swift
+//  IRToTurtleMachineCodeCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -12,9 +12,9 @@ import TurtleSimulatorCore
 import TurtleCompilerToolbox
 import TurtleCore
 
-class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
-    let kFramePointerHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
-    let kFramePointerLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
+class IRToTurtleMachineCodeCompilerTests: XCTestCase {
+    let kFramePointerHi = Int(IRToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+    let kFramePointerLo = Int(IRToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
     func disassemble(_ instructions: [Instruction]) -> String {
         let microcodeGenerator = MicrocodeGenerator()
@@ -31,25 +31,25 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
         return result
     }
     
-    func compile(_ instructions: [YertleInstruction]) -> [Instruction] {
+    func compile(_ instructions: [IRInstruction]) -> [Instruction] {
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
-        let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
+        let compiler = IRToTurtleMachineCodeCompiler(assembler: assembler)
         try! compiler.compile(ir: instructions, base: 0)
         let instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: assembler.instructions)
         return instructions
     }
     
-    func execute(ir: [YertleInstruction]) throws -> Computer {
-        let executor = YertleExecutor()
+    func execute(ir: [IRInstruction]) throws -> Computer {
+        let executor = IRExecutor()
         let computer = try executor.execute(ir: ir)
         return computer
     }
     
     func testEmptyProgram() {
-        let kFramePointerInitialValue = YertleToTurtleMachineCodeCompiler.kFramePointerInitialValue
-        let kStackPointerInitialValue = YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue
+        let kFramePointerInitialValue = IRToTurtleMachineCodeCompiler.kFramePointerInitialValue
+        let kStackPointerInitialValue = IRToTurtleMachineCodeCompiler.kStackPointerInitialValue
         let computer = try! execute(ir: [])
         XCTAssertEqual(computer.framePointer, kFramePointerInitialValue)
         XCTAssertEqual(computer.stackPointer, kStackPointerInitialValue)
@@ -87,9 +87,9 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testPushManyValues() {
-        let kStackPointerInitialValue = UInt16(YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue)
+        let kStackPointerInitialValue = UInt16(IRToTurtleMachineCodeCompiler.kStackPointerInitialValue)
         let count = 300
-        var ir: [YertleInstruction] = []
+        var ir: [IRInstruction] = []
         for i in 0..<count {
             let value = UInt8(i % 256)
             ir.append(.push(Int(value)))
@@ -131,9 +131,9 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testPushManyDoubleWordValues() {
-        let kStackPointerInitialValue = UInt16(YertleToTurtleMachineCodeCompiler.kStackPointerInitialValue)
+        let kStackPointerInitialValue = UInt16(IRToTurtleMachineCodeCompiler.kStackPointerInitialValue)
         let count = 1000
-        var ir: [YertleInstruction] = []
+        var ir: [IRInstruction] = []
         for i in 0..<count {
             ir.append(.push16(i))
         }
@@ -658,7 +658,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testLoadWithEmptyStack() {
         let value: UInt8 = 0xab
         let address = 0x0010
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: value, to: address)
         }
@@ -669,7 +669,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testLoadWithStackDepthOne() {
         let value: UInt8 = 0xab
         let address = 0x0010
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: value, to: address)
         }
@@ -681,7 +681,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testLoadWithStackDepthTwo() {
         let value: UInt8 = 0xab
         let address = 0x0010
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: value, to: address)
         }
@@ -695,7 +695,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testLoad16() {
         let value: UInt16 = 0xabcd
         let address = 0x0010
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: UInt8((value>>8)&0xff), to: address+0)
             computer.dataRAM.store(value: UInt8(value&0xff), to: address+1)
@@ -753,14 +753,14 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {
-        let instructions: [YertleInstruction] = [
+        let instructions: [IRInstruction] = [
             .label("foo"),
             .label("foo")
         ]
         let microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
         let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
-        let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
+        let compiler = IRToTurtleMachineCodeCompiler(assembler: assembler)
         XCTAssertThrowsError(try compiler.compile(ir: instructions, base: 0)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -769,7 +769,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJmp() {
-        let instructions: [YertleInstruction] = [
+        let instructions: [IRInstruction] = [
             .push(1),
             .jmp("foo"),
             .push(42),
@@ -780,7 +780,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJalr() {
-        let instructions: [YertleInstruction] = [
+        let instructions: [IRInstruction] = [
             .push(1),
             .jalr("foo"),
             .push(42),
@@ -791,7 +791,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJe_TakeTheBranch() {
-        let instructions: [YertleInstruction] = [
+        let instructions: [IRInstruction] = [
             .push(1),
             .push(1),
             .je("foo"),
@@ -804,7 +804,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJe_DoNotTakeTheBranch() {
-        let instructions: [YertleInstruction] = [
+        let instructions: [IRInstruction] = [
             .push(1),
             .push(0),
             .je("foo"),
@@ -818,7 +818,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testJe_StackDepthThree() {
-        let instructions: [YertleInstruction] = [
+        let instructions: [IRInstruction] = [
             .push(5), // will end up in 0xfffd
             .push(4), // will end up in B
             .push(3), // will end up in A
@@ -869,7 +869,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirectWithStackDepthTwo() {
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
@@ -878,7 +878,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirectWithStackDepthThree() {
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
@@ -888,7 +888,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirectWithStackDepthFour() {
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: 0xaa, to: 0x0010)
         }
@@ -899,7 +899,7 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirect16() {
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store16(value: 0x1234, to: 0x0010)
         }
@@ -994,11 +994,11 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirectN_1() {
-        let ir: [YertleInstruction] = [
+        let ir: [IRInstruction] = [
             .push16(0x0010),
             .loadIndirectN(1)
         ]
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: 0x01, to: 0x0010)
         }
@@ -1007,11 +1007,11 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirectN_2() {
-        let ir: [YertleInstruction] = [
+        let ir: [IRInstruction] = [
             .push16(0x0010),
             .loadIndirectN(2)
         ]
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store16(value: 0xabcd, to: 0x0010)
         }
@@ -1020,11 +1020,11 @@ class YertleToTurtleMachineCodeCompilerTests: XCTestCase {
     }
     
     func testLoadIndirectN_3() {
-        let ir: [YertleInstruction] = [
+        let ir: [IRInstruction] = [
             .push16(0x0010),
             .loadIndirectN(3)
         ]
-        let executor = YertleExecutor()
+        let executor = IRExecutor()
         executor.configure = {computer in
             computer.dataRAM.store(value: 0x01, to: 0x0010)
             computer.dataRAM.store(value: 0x02, to: 0x0011)

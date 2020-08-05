@@ -11,15 +11,15 @@ import TurtleCompilerToolbox
 public class BaseExpressionCompiler: NSObject {
     public let symbols: SymbolTable
     public let labelMaker: LabelMaker
-    public let kFramePointerAddressHi = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
-    public let kFramePointerAddressLo = Int(YertleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
+    public let kFramePointerAddressHi = Int(IRToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+    public let kFramePointerAddressLo = Int(IRToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
     public init(symbols: SymbolTable, labelMaker: LabelMaker) {
         self.symbols = symbols
         self.labelMaker = labelMaker
     }
     
-    public func compile(expression: Expression) throws -> [YertleInstruction] {
+    public func compile(expression: Expression) throws -> [IRInstruction] {
         return [] // stub
     }
     
@@ -36,12 +36,12 @@ public class BaseExpressionCompiler: NSObject {
                              message: "unsupported expression: \(expression)")
     }
     
-    public func loadStaticSymbol(_ symbol: Symbol) -> [YertleInstruction] {
+    public func loadStaticSymbol(_ symbol: Symbol) -> [IRInstruction] {
         return loadStaticValue(type: symbol.type, offset: symbol.offset)
     }
     
-    public func loadStaticValue(type: SymbolType, offset: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func loadStaticValue(type: SymbolType, offset: Int) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         switch type.sizeof {
         case 0: break
         case 1: instructions += [.load(offset)]
@@ -55,25 +55,25 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    public func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    public func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [IRInstruction] {
         return loadStackValue(type: symbol.type,
                               offset: symbol.offset,
                               depth: depth)
     }
     
-    public func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
         instructions += indirectLoadValue(type)
         return instructions
     }
     
-    public func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    public func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [IRInstruction] {
         return computeAddressOfLocalVariable(offset: symbol.offset, depth: depth)
     }
     
-    public func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         
         if offset >= 0 {
             // Push the symbol offset. This is used in the subtraction below.
@@ -83,7 +83,7 @@ public class BaseExpressionCompiler: NSObject {
             instructions += [.load16(kFramePointerAddressHi)]
             
             // Follow the frame pointer `depth' times.
-            instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
+            instructions += [IRInstruction].init(repeating: .loadIndirect16, count: depth)
             
             // Apply the offset to get the final address.
             instructions += [.sub16]
@@ -95,7 +95,7 @@ public class BaseExpressionCompiler: NSObject {
             instructions += [.load16(kFramePointerAddressHi)]
             
             // Follow the frame pointer `depth' times.
-            instructions += [YertleInstruction].init(repeating: .loadIndirect16, count: depth)
+            instructions += [IRInstruction].init(repeating: .loadIndirect16, count: depth)
             
             // Apply the offset to get the final address.
             instructions += [.add16]
@@ -104,8 +104,8 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    public func indirectStoreOfValue(type: SymbolType) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func indirectStoreOfValue(type: SymbolType) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         let size = type.sizeof
         switch size {
         case 0:  break
@@ -117,8 +117,8 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     // Given an address on the stack, load a typed value from that address.
-    public func indirectLoadValue(_ type: SymbolType) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func indirectLoadValue(_ type: SymbolType) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         switch type.sizeof {
         case 0:  break
         case 1:  instructions += [.loadIndirect]
@@ -129,8 +129,8 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     // Compute and push the address of the specified symbol.
-    public func pushAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func pushAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         switch symbol.storage {
         case .staticStorage: instructions += [.push16(symbol.offset)]
         case .stackStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
@@ -138,8 +138,8 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    public func compile(subscript expr: Expression.Subscript) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func compile(subscript expr: Expression.Subscript) throws -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.identifier.sourceAnchor, identifier: expr.identifier.identifier)
         let symbol = resolution.0
@@ -158,17 +158,17 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     // Compile an array element lookup through the subscript operator.
-    public func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+    public func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
         abort() // override in a subclass
     }
     
     // Compile an array element lookup in a dynamic array through the subscript operator.
-    public func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+    public func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
         abort() // override in a subclass
     }
     
-    public func arraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func arraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         instructions += pushAddressOfSymbol(symbol, depth)
         instructions += try loadAddressOfArrayElement(expr, elementType)
         instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
@@ -179,9 +179,9 @@ public class BaseExpressionCompiler: NSObject {
     // is within the specified fixed array. If so then leave the address on the
     // stack as it was before this check. Else, panic with an appropriate
     // error message.
-    private func arrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
+    private func arrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [IRInstruction] {
         let label = labelMaker.next()
-        var instructions: [YertleInstruction] = []
+        var instructions: [IRInstruction] = []
         instructions += [
             // Duplicate the address of the access for the comparison, below.
             .dup16,
@@ -216,8 +216,8 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    private func panicOutOfBoundsError(sourceAnchor: SourceAnchor?) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    private func panicOutOfBoundsError(sourceAnchor: SourceAnchor?) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         var message = "array access is out of bounds"
         if let sourceAnchor = sourceAnchor {
             message += ": `\(sourceAnchor.text)'"
@@ -264,8 +264,8 @@ public class BaseExpressionCompiler: NSObject {
         return result
     }
     
-    public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         instructions += pushAddressOfSymbol(symbol, depth)
         instructions += [.loadIndirect16]
         instructions += try loadAddressOfArrayElement(expr, elementType)
@@ -277,8 +277,8 @@ public class BaseExpressionCompiler: NSObject {
     // is within the specified dynamic array. If so then leave the address on
     // the stack as it was before this check. Else, panic with an appropriate
     // error message.
-    private func dynamicArrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    private func dynamicArrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         let label = labelMaker.next()
         instructions += [
             // Duplicate the address of the access for the comparison, below.
@@ -330,8 +330,8 @@ public class BaseExpressionCompiler: NSObject {
     
     // Given an array address on the stack, determine the address of the array
     // element at an index determined by the expression, and push to the stack.
-    public func loadAddressOfArrayElement(_ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    public func loadAddressOfArrayElement(_ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         
         // Push instructions to compute the subscript index.
         // This must be converted to u16 so we can do math with the address.

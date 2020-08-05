@@ -1,5 +1,5 @@
 //
-//  YertleExecutor.swift
+//  IRExecutor.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -11,8 +11,8 @@ import TurtleCore
 import TurtleCompilerToolbox
 import TurtleSimulatorCore
 
-// Simulates execution of a program written in the Yertle intermediate language.
-class YertleExecutor: NSObject {
+// Simulates execution of a program written in the intermediate language.
+class IRExecutor: NSObject {
     public var isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
@@ -24,16 +24,16 @@ class YertleExecutor: NSObject {
         assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
     }
     
-    func execute(ir: [YertleInstruction]) throws -> Computer {
+    func execute(ir: [IRInstruction]) throws -> Computer {
         if isVerboseLogging {
-            print("IR:\n" + YertleInstruction.makeListing(instructions: ir) + "\n\n")
+            print("IR:\n" + IRInstruction.makeListing(instructions: ir) + "\n\n")
         }
         
         var computer: Computer!
         
         do {
-            let compiler = YertleToTurtleMachineCodeCompiler(assembler: assembler)
-            compiler.injectCode = { (compiler: YertleToTurtleMachineCodeCompiler) in
+            let compiler = IRToTurtleMachineCodeCompiler(assembler: assembler)
+            compiler.injectCode = { (compiler: IRToTurtleMachineCodeCompiler) in
                 try compiler.label("panic")
                 try compiler.push16(0xdead)
                 compiler.hlt()

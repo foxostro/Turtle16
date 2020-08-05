@@ -18,7 +18,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         super.init(symbols: symbols, labelMaker: labelMaker)
     }
     
-    public override func compile(expression: Expression) throws -> [YertleInstruction] {
+    public override func compile(expression: Expression) throws -> [IRInstruction] {
         try typeChecker.check(expression: expression)
         
         switch expression {
@@ -31,8 +31,8 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         }
     }
     
-    private func compile(identifier expr: Expression.Identifier) throws -> [YertleInstruction] {
-        var instructions: [YertleInstruction] = []
+    private func compile(identifier expr: Expression.Identifier) throws -> [IRInstruction] {
+        var instructions: [IRInstruction] = []
         
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
@@ -51,11 +51,11 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
         return try arraySubscriptLvalue(symbol, depth, expr, elementType)
     }
     
-    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [YertleInstruction] {
+    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
         return try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
     }
 }

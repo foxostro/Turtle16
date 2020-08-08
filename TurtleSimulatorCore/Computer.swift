@@ -18,6 +18,7 @@ public class Computer: NSObject {
     public var instructionDecoder: InstructionDecoder
     public let microcodeGenerator = MicrocodeGenerator()
     public let instructionFormatter = InstructionFormatter()
+    public var programDebugInfo: ProgramDebugInfo? = nil
     
     var internalLogger:Logger? = nil
     public var logger:Logger? {
@@ -119,6 +120,7 @@ public class Computer: NSObject {
         factory.stopwatch = stopwatch
         factory.logger = logger
         factory.interpreter = makeInterpreter()
+        factory.programDebugInfo = programDebugInfo
         let vm = factory.makeVirtualMachine()
         self.vm = vm
     }

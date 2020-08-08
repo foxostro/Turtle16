@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class AssemblerLexer: Lexer {
     public required init(withString string: String) {

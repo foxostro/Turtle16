@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class VarDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier

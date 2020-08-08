@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constInt(Int), constBool(Bool)

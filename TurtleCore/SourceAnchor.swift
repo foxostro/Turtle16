@@ -7,8 +7,8 @@
 //
 
 public class SourceAnchor: NSObject {
-    let range: Range<String.Index>
-    let lineMapper: SourceLineRangeMapper
+    public let range: Range<String.Index>
+    public let lineMapper: SourceLineRangeMapper
     
     public override var debugDescription: String {
         var begin = 0
@@ -63,5 +63,42 @@ public class SourceAnchor: NSObject {
             return false
         }
         return true
+    }
+    
+    public var lineNumberPrefix: String? {
+        var result: String? = nil
+        if let lineNumbers = lineNumbers {
+            if lineNumbers.count == 1 {
+                result = "\(lineNumbers.lowerBound+1):"
+            } else {
+                result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound):"
+            }
+        }
+        return result
+    }
+    
+    public var context: String {
+        let text = lineMapper.text
+        let lineRange = text.lineRange(for: range)
+        let line = text[lineRange]
+        var result = "\t\(line)"
+        if !line.hasSuffix("\n") {
+            result += "\n"
+        }
+        result += "\t"
+        var index = lineRange.lowerBound
+        while index != range.lowerBound {
+            result += " "
+            text.formIndex(after: &index)
+        }
+        result += "^"
+        if index != range.upperBound {
+            text.formIndex(after: &index)
+        }
+        while index != range.upperBound {
+            result += "~"
+            text.formIndex(after: &index)
+        }
+        return result
     }
 }

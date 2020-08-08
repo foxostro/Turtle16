@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class Expression: AbstractSyntaxTreeNode {
     public override func isEqual(_ rhs: Any?) -> Bool {

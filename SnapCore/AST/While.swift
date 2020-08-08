@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class While: AbstractSyntaxTreeNode {
     public let condition: Expression

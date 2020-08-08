@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class ParameterRegister: Parameter {
     public let value: RegisterName

@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 public class TokenOperator : Token {
     public enum Operator {
         case eq, ne, lt, gt, le, ge, plus, minus, multiply, divide, modulus

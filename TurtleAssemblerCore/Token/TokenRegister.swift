@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class TokenRegister : Token {
     public let literal: RegisterName

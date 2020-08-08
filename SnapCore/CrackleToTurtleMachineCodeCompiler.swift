@@ -1,5 +1,5 @@
 //
-//  IRToTurtleMachineCodeCompiler.swift
+//  CrackleToTurtleMachineCodeCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -10,17 +10,17 @@ import TurtleCore
 import TurtleCompilerToolbox
 
 // Generates machine code for given IR code.
-public class IRToTurtleMachineCodeCompiler: NSObject {
+public class CrackleToTurtleMachineCodeCompiler: NSObject {
     // Programs written in Snap use a push down stack, and store the stack
     // pointer in data RAM at addresses 0x0000 and 0x0001.
     // This is initialized on launch to 0x0000.
     public static let kStackPointerAddressHi: UInt16 = 0x0000
     public static let kStackPointerAddressLo: UInt16 = 0x0001
     public static let kStackPointerInitialValue: Int = 0x0000
-    let kStackPointerHiHi = Int((IRToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
-    let kStackPointerHiLo = Int( IRToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
-    let kStackPointerLoHi = Int((IRToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
-    let kStackPointerLoLo = Int( IRToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0x00ff)
+    let kStackPointerHiHi = Int((CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
+    let kStackPointerHiLo = Int( CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
+    let kStackPointerLoHi = Int((CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
+    let kStackPointerLoLo = Int( CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0x00ff)
     let kStackPointerInitialValueHi: Int = (kStackPointerInitialValue & 0xff00) >> 8
     let kStackPointerInitialValueLo: Int =  kStackPointerInitialValue & 0x00ff
     
@@ -29,10 +29,10 @@ public class IRToTurtleMachineCodeCompiler: NSObject {
     public static let kFramePointerAddressHi: UInt16 = 0x0002
     public static let kFramePointerAddressLo: UInt16 = 0x0003
     public static let kFramePointerInitialValue: Int = 0x0000
-    let kFramePointerHiHi = Int((IRToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
-    let kFramePointerHiLo = Int( IRToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
-    let kFramePointerLoHi = Int((IRToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
-    let kFramePointerLoLo = Int( IRToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+    let kFramePointerHiHi = Int((CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+    let kFramePointerHiLo = Int( CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
+    let kFramePointerLoHi = Int((CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+    let kFramePointerLoLo = Int( CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
     let kFramePointerInitialValueHi: Int = (kFramePointerInitialValue & 0xff00) >> 8
     let kFramePointerInitialValueLo: Int =  kFramePointerInitialValue & 0x00ff
     
@@ -48,13 +48,13 @@ public class IRToTurtleMachineCodeCompiler: NSObject {
     
     let labelMaker = LabelMaker(prefix: ".LL")
     
-    public var injectCode: (IRToTurtleMachineCodeCompiler) throws -> Void = {_ in}
+    public var injectCode: (CrackleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
     
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
     }
     
-    public func compile(ir: [IRInstruction],
+    public func compile(ir: [CrackleInstruction],
                         mapInstructionToSource: [Int:SourceAnchor?] = [:],
                         base: Int = 0x0000) throws {
         patcherActions = []

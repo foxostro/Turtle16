@@ -80,8 +80,8 @@ public class SnapCommandLineDriver: NSObject {
         status = 0
     }
     
-    func writeToFile(ir: [IRInstruction]) throws {
-        let string = IRInstruction.makeListing(instructions: ir)
+    func writeToFile(ir: [CrackleInstruction]) throws {
+        let string = CrackleInstruction.makeListing(instructions: ir)
         try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     

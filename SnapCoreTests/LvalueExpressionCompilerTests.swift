@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class LvalueExpressionCompilerTests: XCTestCase {
-    func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [IRInstruction] {
+    func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [CrackleInstruction] {
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try compiler.compile(expression: expression)
         return ir
@@ -31,7 +31,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
         let ir = try! compile(expression: expr, symbols: symbols)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0x0010)
     }
@@ -40,13 +40,13 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Subscript(identifier: Expression.Identifier("foo"),
                                         expr: Expression.LiteralInt(1))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 2, elementType: .bool), offset: 0x0010, isMutable: true)])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         if ir == nil {
             XCTFail()
             return
         }
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir!)
         XCTAssertEqual(computer.stack16(at: 0), 0x0011)
     }
@@ -66,9 +66,9 @@ class LvalueExpressionCompilerTests: XCTestCase {
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: true)
         ])
         
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -89,9 +89,9 @@ class LvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: true)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcd, to: 0x0011)
         }
@@ -105,9 +105,9 @@ class LvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0x0014, to: 0x0010)
             computer.dataRAM.store16(value: 1, to: 0x0012)
@@ -122,9 +122,9 @@ class LvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0x0014, to: 0x0010)
             computer.dataRAM.store16(value: 0, to: 0x0012)

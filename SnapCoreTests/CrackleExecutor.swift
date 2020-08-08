@@ -1,5 +1,5 @@
 //
-//  IRExecutor.swift
+//  CrackleExecutor.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 import TurtleSimulatorCore
 
 // Simulates execution of a program written in the intermediate language.
-class IRExecutor: NSObject {
+class CrackleExecutor: NSObject {
     public var isVerboseLogging = false
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
@@ -24,16 +24,16 @@ class IRExecutor: NSObject {
         assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
     }
     
-    func execute(ir: [IRInstruction]) throws -> Computer {
+    func execute(ir: [CrackleInstruction]) throws -> Computer {
         if isVerboseLogging {
-            print("IR:\n" + IRInstruction.makeListing(instructions: ir) + "\n\n")
+            print("IR:\n" + CrackleInstruction.makeListing(instructions: ir) + "\n\n")
         }
         
         var computer: Computer!
         
         do {
-            let compiler = IRToTurtleMachineCodeCompiler(assembler: assembler)
-            compiler.injectCode = { (compiler: IRToTurtleMachineCodeCompiler) in
+            let compiler = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
+            compiler.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
                 try compiler.label("panic")
                 try compiler.push16(0xdead)
                 compiler.hlt()

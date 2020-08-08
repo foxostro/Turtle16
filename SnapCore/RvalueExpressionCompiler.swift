@@ -9,11 +9,11 @@
 import TurtleCompilerToolbox
 
 // Takes an expression and generates intermediate code which can be more easily
-// compiled to machine code. (see also IRToTurtleMachineCodeCompiler)
+// compiled to machine code. (see also CrackleToTurtleMachineCodeCompiler)
 // The expression will push the result onto the stack. The client assumes the
 // responsibility of cleaning up.
 public class RvalueExpressionCompiler: BaseExpressionCompiler {
-    let compilerInstrinsicFunctions: [String: [IRInstruction]] = [
+    let compilerInstrinsicFunctions: [String: [CrackleInstruction]] = [
         "peekMemory" : [.loadIndirect],
         "pokeMemory" : [.storeIndirect, .pop],
         "peekPeripheral" : [.peekPeripheral],
@@ -27,7 +27,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         super.init(symbols: symbols, labelMaker: labelMaker)
     }
     
-    public override func compile(expression: Expression) throws -> [IRInstruction] {
+    public override func compile(expression: Expression) throws -> [CrackleInstruction] {
         try typeChecker.check(expression: expression)
         
         switch expression {
@@ -62,7 +62,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
     }
     
-    private func compile(literalInt: Expression.LiteralInt) throws -> [IRInstruction] {
+    private func compile(literalInt: Expression.LiteralInt) throws -> [CrackleInstruction] {
         let value = literalInt.value
         if value >= 0 && value < 256 {
             return [.push(value)]
@@ -74,22 +74,22 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         throw CompilerError(sourceAnchor: literalInt.sourceAnchor, message: "integer literal `\(lexeme)' overflows when stored into `u16'")
     }
     
-    private func compile(intValue: Int) -> [IRInstruction] {
+    private func compile(intValue: Int) -> [CrackleInstruction] {
         return [.push(intValue)]
     }
     
-    private func compile(literalBoolean: Expression.LiteralBool) -> [IRInstruction] {
+    private func compile(literalBoolean: Expression.LiteralBool) -> [CrackleInstruction] {
         return compile(boolValue: literalBoolean.value)
     }
     
-    private func compile(boolValue: Bool) -> [IRInstruction] {
+    private func compile(boolValue: Bool) -> [CrackleInstruction] {
         return compile(intValue: boolValue ? 1 : 0)
     }
     
-    private func compile(unary: Expression.Unary) throws -> [IRInstruction] {
+    private func compile(unary: Expression.Unary) throws -> [CrackleInstruction] {
         let childExpr = try compile(expression: unary.child)
         let childType = try typeChecker.check(expression: unary.child)
-        var result: [IRInstruction] = []
+        var result: [CrackleInstruction] = []
         switch childType {
         case .u16:
             result += childExpr
@@ -119,11 +119,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return CompilerError(sourceAnchor: unary.sourceAnchor, message: "`\(unary.op)' is not a prefix unary operator")
     }
     
-    private func compile(binary: Expression.Binary) throws -> [IRInstruction] {
-        let right: [IRInstruction] = try compile(expression: binary.right)
+    private func compile(binary: Expression.Binary) throws -> [CrackleInstruction] {
+        let right: [CrackleInstruction] = try compile(expression: binary.right)
         let rightType = try typeChecker.check(expression: binary.right)
         
-        let left: [IRInstruction] = try compile(expression: binary.left)
+        let left: [CrackleInstruction] = try compile(expression: binary.left)
         let leftType = try typeChecker.check(expression: binary.left)
         
         switch (binary.op, leftType, rightType) {
@@ -264,7 +264,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
     }
     
-    private func compile(identifier: Expression.Identifier) throws -> [IRInstruction] {
+    private func compile(identifier: Expression.Identifier) throws -> [CrackleInstruction] {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
@@ -276,36 +276,36 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
     }
     
-    public func compile(assignment: Expression.Assignment) throws -> [IRInstruction] {
+    public func compile(assignment: Expression.Assignment) throws -> [CrackleInstruction] {
         let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
-        var instructions: [IRInstruction] = []
+        var instructions: [CrackleInstruction] = []
         instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
         instructions += try lvalueContext().compile(expression: assignment.lexpr)
         instructions += indirectStoreOfValue(type: ltype)
         return instructions
     }
     
-    private func compile(assignment: Expression.InitialAssignment) throws -> [IRInstruction] {
+    private func compile(assignment: Expression.InitialAssignment) throws -> [CrackleInstruction] {
         let identifier = (assignment.lexpr as! Expression.Identifier).identifier
         let sourceAnchor = assignment.sourceAnchor
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
         let symbol = resolution.0
         
-        var instructions: [IRInstruction] = []
+        var instructions: [CrackleInstruction] = []
         instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: symbol.type)
         return instructions
     }
     
-    private func compileAndConvertExpressionForAssignment(rexpr: Expression, ltype: SymbolType) throws -> [IRInstruction] {
+    private func compileAndConvertExpressionForAssignment(rexpr: Expression, ltype: SymbolType) throws -> [CrackleInstruction] {
         return try rvalueContext().compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: false)
     }
     
-    public func compileAndConvertExpressionForExplicitCast(rexpr: Expression, ltype: SymbolType) throws -> [IRInstruction] {
+    public func compileAndConvertExpressionForExplicitCast(rexpr: Expression, ltype: SymbolType) throws -> [CrackleInstruction] {
         return try compileAndConvertExpression(rexpr: rexpr, ltype: ltype, isExplicitCast: true)
     }
     
-    private func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    private func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         let rtype = try typeChecker.check(expression: rexpr)
         switch (rtype, ltype) {
         case (.bool, .bool), (.u8, .u8), (.u16, .u16):
@@ -395,12 +395,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func compile(call node: Expression.Call) throws -> [IRInstruction] {
+    private func compile(call node: Expression.Call) throws -> [CrackleInstruction] {
         let identifier = (node.callee as! Expression.Identifier).identifier
         let symbol = try symbols.resolve(sourceAnchor: node.sourceAnchor, identifier: identifier)
         switch symbol.type {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
-            var instructions: [IRInstruction] = []
+            var instructions: [CrackleInstruction] = []
             if let ins = compilerInstrinsicFunctions[mangledName] {
                 instructions += try pushFunctionArguments(typ, node)
                 instructions += ins
@@ -417,18 +417,18 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
     }
     
-    private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         
         // Allocate space for the return value, if any. When we pop arguments
         // off the stack, we leave the return value in place.
-        instructions += [IRInstruction].init(repeating: .push(0), count: typ.returnType.sizeof)
+        instructions += [CrackleInstruction].init(repeating: .push(0), count: typ.returnType.sizeof)
         
         return instructions
     }
     
-    private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         
         // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
@@ -439,8 +439,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func popFunctionArguments(_ typ: FunctionType) -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    private func popFunctionArguments(_ typ: FunctionType) -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         for arg in typ.arguments.reversed() {
             let size = arg.argumentType.sizeof
             switch size {
@@ -453,13 +453,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func compile(as expr: Expression.As) throws -> [IRInstruction] {
+    private func compile(as expr: Expression.As) throws -> [CrackleInstruction] {
         let instructions = try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: expr.targetType)
         return instructions
     }
     
-    private func compile(literalArray expr: Expression.LiteralArray) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    private func compile(literalArray expr: Expression.LiteralArray) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         for el in expr.elements.reversed() {
             instructions += try compile(expression: el)
         }
@@ -467,23 +467,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     // Compile an array element lookup through the subscript operator.
-    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         instructions += try arraySubscriptLvalue(symbol, depth, expr, elementType)
         instructions += indirectLoadValue(elementType)
         return instructions
     }
     
     // Compile an array element lookup in a dynamic array through the subscript operator.
-    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         instructions += try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
         instructions += indirectLoadValue(elementType)
         return instructions
     }
     
-    public func compile(get expr: Expression.Get) throws -> [IRInstruction] {
-        var instructions: [IRInstruction] = []
+    public func compile(get expr: Expression.Get) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
         
         instructions += try compile(expression: expr.expr)
         

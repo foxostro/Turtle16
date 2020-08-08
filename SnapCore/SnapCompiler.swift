@@ -12,7 +12,7 @@ import TurtleCore
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
     public var ast: TopLevel! = nil
-    public var ir: [IRInstruction] = []
+    public var ir: [CrackleInstruction] = []
     public var instructions: [Instruction] = []
     
     public let kStandardLibrarySourceFileName = "stdlib"
@@ -86,7 +86,7 @@ public class SnapCompiler: NSObject {
         ast = parser.syntaxTree
         
         // Compile the AST to IR code
-        let snapToIR = SnapToIRCompiler()
+        let snapToIR = SnapToCrackleCompiler()
         snapToIR.compile(ast: ast)
         if snapToIR.hasError {
             errors = snapToIR.errors
@@ -97,7 +97,7 @@ public class SnapCompiler: NSObject {
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
-        let irToMachineCode = IRToTurtleMachineCodeCompiler(assembler: assembler)
+        let irToMachineCode = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
         do {
             try irToMachineCode.compile(ir: ir, mapInstructionToSource: mapInstructionToSource, base: base)
         } catch let error as CompilerError {

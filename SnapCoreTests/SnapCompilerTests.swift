@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCore
 
 class SnapCompilerTests: XCTestCase {
-    let kStaticStorageStartAddress = SnapToIRCompiler.kStaticStorageStartAddress
+    let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
     
     func testCompileFailsDuringLexing() {
         let compiler = SnapCompiler()

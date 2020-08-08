@@ -10,8 +10,12 @@ import TurtleCompilerToolbox
 
 // Compiles a Snap AST to the IR language.
 public class SnapToIRCompiler: NSObject {
+    // Static storage is allocated in a region starting at this address.
+    // The allocator is a simple bump pointer.
+    public static let kStaticStorageStartAddress = 0x0010
+    
     public private(set) var errors: [CompilerError] = []
-    public var hasError:Bool { !errors.isEmpty }
+    public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [IRInstruction] = []
     public private(set) var mapInstructionToSource: [Int:SourceAnchor?] = [:]
     public let globalSymbols = SymbolTable()
@@ -69,10 +73,6 @@ public class SnapToIRCompiler: NSObject {
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
     }
-    
-    // Static storage is allocated in a region starting at this address.
-    // The allocator is a simple bump pointer.
-    public static let kStaticStorageStartAddress: Int = 0x0010
     
     public func compile(ast: TopLevel) {
         instructions = []

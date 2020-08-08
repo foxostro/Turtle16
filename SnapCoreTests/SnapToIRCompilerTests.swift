@@ -12,6 +12,8 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class SnapToIRCompilerTests: XCTestCase {
+    let kStaticStorageStartAddress = SnapToIRCompiler.kStaticStorageStartAddress
+    
     func testNoErrorsAtFirst() {
         let compiler = SnapToIRCompiler()
         XCTAssertFalse(compiler.hasError)
@@ -365,7 +367,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 2)
     }
     
     func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_2() {
@@ -410,7 +412,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 3)
     }
     
     func testCompileVarDeclaration_ShadowsExistingSymbolInEnclosingScope() {
@@ -436,7 +438,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
     func testCompileVarDeclaration_TypeIsInferredFromTheExpression() {
@@ -501,9 +503,9 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1000)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 1)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+4), 2)
     }
     
     func testCompileSimplestExpressionStatement() {
@@ -739,25 +741,25 @@ class SnapToIRCompilerTests: XCTestCase {
         let L1 = ".L1"
         let expected: [IRInstruction] = [
             .push(0),
-            .store(0x0010),
+            .store(kStaticStorageStartAddress+0),
             .pop,
             .push(0),
-            .store(0x0011),
+            .store(kStaticStorageStartAddress+1),
             .pop,
             .label(L0),
             .push(10),
-            .load(0x0011),
+            .load(kStaticStorageStartAddress+1),
             .lt,
             .push(0),
             .je(L1),
-            .load(0x0011),
-            .push16(0x0010),
+            .load(kStaticStorageStartAddress+1),
+            .push16(kStaticStorageStartAddress),
             .storeIndirect,
             .pop,
             .push(1),
-            .load(0x0011),
+            .load(kStaticStorageStartAddress+1),
             .add,
-            .push16(0x0011),
+            .push16(kStaticStorageStartAddress+1),
             .storeIndirect,
             .pop,
             .jmp(L0),
@@ -826,7 +828,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
     func testCompilationFailsBecauseFunctionIsMissingAReturnStatement() {
@@ -980,7 +982,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func testCompileFunctionWithReturnValueU16() {
@@ -1003,7 +1005,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xabcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xabcd)
     }
     
     func testCompileFunctionWithReturnValueU8PromotedToU16() {
@@ -1026,7 +1028,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x00aa)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
     }
     
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {
@@ -1108,7 +1110,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     // We take steps to ensure parameters and local variables do not overlap.
@@ -1137,7 +1139,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func testCompileFunctionWithParameters_3_ConvertIntegerConstantsToMatchingConcreteTypes() {
@@ -1160,7 +1162,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func testCompileNestedFunction() {
@@ -1194,7 +1196,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func testFunctionNamesAreNotUnique() {
@@ -1233,7 +1235,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xbb)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xbb)
     }
     
     func testMutuallyRecursiveFunctions() {
@@ -1282,7 +1284,7 @@ class SnapToIRCompilerTests: XCTestCase {
             let ir = compiler.instructions
             let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
-            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+            XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
     }
         
@@ -1304,7 +1306,7 @@ class SnapToIRCompilerTests: XCTestCase {
             let ir = compiler.instructions
             let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
-            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+            XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
     }
         
@@ -1318,7 +1320,7 @@ class SnapToIRCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("b"),
                            explicitType: nil,
                            expression: Expression.Call(callee: Expression.Identifier("peekMemory"),
-                                                       arguments: [Expression.LiteralInt(0x0010)]),
+                                                       arguments: [Expression.LiteralInt(kStaticStorageStartAddress)]),
                            storage: .staticStorage,
                            isMutable: false)
         ])
@@ -1331,17 +1333,17 @@ class SnapToIRCompilerTests: XCTestCase {
             let ir = compiler.instructions
             XCTAssertEqual(ir, [
                 .push(0xaa),
-                .store(0x0010),
+                .store(kStaticStorageStartAddress),
                 .pop,
-                .push16(0x0010),
+                .push16(kStaticStorageStartAddress),
                 .loadIndirect,
-                .store(0x0011),
+                .store(kStaticStorageStartAddress+1),
                 .pop,
             ])
             let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
-            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
-            XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xaa)
+            XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xaa)
+            XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xaa)
         }
     }
         
@@ -1349,7 +1351,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xab),
-                                        Expression.LiteralInt(0x0010)])
+                                        Expression.LiteralInt(kStaticStorageStartAddress)])
         ])
         let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
@@ -1360,13 +1362,13 @@ class SnapToIRCompilerTests: XCTestCase {
             let ir = compiler.instructions
             XCTAssertEqual(ir, [
                 .push(0xab),
-                .push16(0x0010),
+                .push16(kStaticStorageStartAddress),
                 .storeIndirect,
                 .pop
             ])
             let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
-            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+            XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
     }
         
@@ -1403,12 +1405,12 @@ class SnapToIRCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xab),
-                                        Expression.LiteralInt(0x0010)]),
+                                        Expression.LiteralInt(kStaticStorageStartAddress)]),
             Expression.Call(callee: Expression.Identifier("hlt"),
                             arguments: []),
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xcd),
-                                        Expression.LiteralInt(0x0010)])
+                                        Expression.LiteralInt(kStaticStorageStartAddress)])
         ])
         let compiler = SnapToIRCompiler()
         compiler.compile(ast: ast)
@@ -1419,7 +1421,7 @@ class SnapToIRCompilerTests: XCTestCase {
             let ir = compiler.instructions
             let executor = IRExecutor()
             let computer = try! executor.execute(ir: ir)
-            XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+            XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
     }
         
@@ -1460,6 +1462,6 @@ class SnapToIRCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = IRExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 3)
     }
 }

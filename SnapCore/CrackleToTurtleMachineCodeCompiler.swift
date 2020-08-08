@@ -44,7 +44,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public private(set) var labelTable: [String:Int] = [:]
     public private(set) var instructions: [Instruction] = []
-    public var currentSourceAnchor: SourceAnchor? = nil
+    private var mapAssemblyInstructionToSource: [Int:SourceAnchor?] = [:]
+    public private(set) var mapProgramCounterToSource: [Int:SourceAnchor?] = [:]
+    private var currentSourceAnchor: SourceAnchor? = nil
     
     let labelMaker = LabelMaker(prefix: ".LL")
     
@@ -55,69 +57,12 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func compile(ir: [CrackleInstruction],
-                        mapInstructionToSource: [Int:SourceAnchor?] = [:],
+                        mapCrackleInstructionToSource: [Int:SourceAnchor?] = [:],
                         base: Int = 0x0000) throws {
         patcherActions = []
         assembler.begin()
         try insertProgramPrologue()
-        for i in 0..<ir.count {
-            let instruction = ir[i]
-            currentSourceAnchor = mapInstructionToSource[i] ?? nil
-            switch instruction {
-            case .push(let value): try push(value)
-            case .push16(let value): try push16(value)
-            case .pushsp: try pushsp()
-            case .pop: try pop()
-            case .pop16: try pop16()
-            case .popn(let count): try popn(count)
-            case .eq:  try eq()
-            case .eq16:  try eq16()
-            case .ne:  try ne()
-            case .ne16:  try ne16()
-            case .lt:  try lt()
-            case .lt16:  try lt16()
-            case .gt:  try gt()
-            case .gt16:  try gt16()
-            case .le:  try le()
-            case .le16:  try le16()
-            case .ge:  try ge()
-            case .ge16:  try ge16()
-            case .add: try add()
-            case .add16: try add16()
-            case .sub: try sub()
-            case .sub16: try sub16()
-            case .mul: try mul()
-            case .mul16: try mul16()
-            case .div: try div()
-            case .div16: try div16()
-            case .mod: try mod()
-            case .mod16: try mod16()
-            case .load(let address): try load(from: address)
-            case .load16(let address): try load16(from: address)
-            case .store(let address): try store(to: address)
-            case .store16(let address): try store16(to: address)
-            case .loadIndirect: try loadIndirect()
-            case .loadIndirect16: try loadIndirect16()
-            case .loadIndirectN(let count): try loadIndirectN(count)
-            case .storeIndirect: try storeIndirect()
-            case .storeIndirect16: try storeIndirect16()
-            case .storeIndirectN(let count): try storeIndirectN(count)
-            case .label(let name): try label(name)
-            case .jmp(let label): try jmp(label)
-            case .je(let label): try je(label)
-            case .jalr(let label): try jalr(label)
-            case .enter: try enter()
-            case .leave: try leave()
-            case .pushReturnAddress: try pushReturnAddress()
-            case .leafRet: try leafRet()
-            case .ret: try ret()
-            case .hlt: hlt()
-            case .peekPeripheral: try peekPeripheral()
-            case .pokePeripheral: try pokePeripheral()
-            case .dup: try dup()
-            case .dup16: try dup16()
-            }
-        }
+        try compileProgramBody(ir, mapCrackleInstructionToSource)
         try insertProgramEpilogue()
         assembler.end()
         let resolver: (SourceAnchor?, String) throws -> Int = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
@@ -132,6 +77,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                               actions: patcherActions,
                               base: base)
         instructions = try patcher.patch()
+        
+        for (instructionIndex, sourceAnchor) in mapAssemblyInstructionToSource {
+            mapProgramCounterToSource[instructionIndex+base] = sourceAnchor
+        }
     }
     
     // Inserts prologue code into the program, presumably at the beginning.
@@ -150,6 +99,78 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.M, kFramePointerInitialValueHi)
         assembler.inuv()
         try assembler.li(.M, kFramePointerInitialValueLo)
+    }
+    
+    private func compileProgramBody(_ ir: [CrackleInstruction], _ mapCrackleInstructionToSource: [Int : SourceAnchor?]) throws {
+        for i in 0..<ir.count {
+            currentSourceAnchor = mapCrackleInstructionToSource[i] ?? nil
+            let instruction = ir[i]
+            try compileSingleCrackleInstruction(instruction)
+        }
+    }
+    
+    private func compileSingleCrackleInstruction(_ instruction: CrackleInstruction) throws {
+        let instructionsBegin = assembler.instructions.count
+        switch instruction {
+        case .push(let value): try push(value)
+        case .push16(let value): try push16(value)
+        case .pushsp: try pushsp()
+        case .pop: try pop()
+        case .pop16: try pop16()
+        case .popn(let count): try popn(count)
+        case .eq:  try eq()
+        case .eq16:  try eq16()
+        case .ne:  try ne()
+        case .ne16:  try ne16()
+        case .lt:  try lt()
+        case .lt16:  try lt16()
+        case .gt:  try gt()
+        case .gt16:  try gt16()
+        case .le:  try le()
+        case .le16:  try le16()
+        case .ge:  try ge()
+        case .ge16:  try ge16()
+        case .add: try add()
+        case .add16: try add16()
+        case .sub: try sub()
+        case .sub16: try sub16()
+        case .mul: try mul()
+        case .mul16: try mul16()
+        case .div: try div()
+        case .div16: try div16()
+        case .mod: try mod()
+        case .mod16: try mod16()
+        case .load(let address): try load(from: address)
+        case .load16(let address): try load16(from: address)
+        case .store(let address): try store(to: address)
+        case .store16(let address): try store16(to: address)
+        case .loadIndirect: try loadIndirect()
+        case .loadIndirect16: try loadIndirect16()
+        case .loadIndirectN(let count): try loadIndirectN(count)
+        case .storeIndirect: try storeIndirect()
+        case .storeIndirect16: try storeIndirect16()
+        case .storeIndirectN(let count): try storeIndirectN(count)
+        case .label(let name): try label(name)
+        case .jmp(let label): try jmp(label)
+        case .je(let label): try je(label)
+        case .jalr(let label): try jalr(label)
+        case .enter: try enter()
+        case .leave: try leave()
+        case .pushReturnAddress: try pushReturnAddress()
+        case .leafRet: try leafRet()
+        case .ret: try ret()
+        case .hlt: hlt()
+        case .peekPeripheral: try peekPeripheral()
+        case .pokePeripheral: try pokePeripheral()
+        case .dup: try dup()
+        case .dup16: try dup16()
+        }
+        let instructionsEnd = assembler.instructions.count
+        if instructionsBegin < instructionsEnd {
+            for i in instructionsBegin..<instructionsEnd {
+                mapAssemblyInstructionToSource[i] = currentSourceAnchor
+            }
+        }
     }
     
     // Inserts epilogue code into the program, presumably at the end.

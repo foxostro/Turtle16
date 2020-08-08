@@ -8,6 +8,7 @@
 
 import XCTest
 import TurtleCompilerToolbox
+import TurtleCore
 
 class CompilerErrorTests: XCTestCase {
     func testOmnibusErrorWithNoErrors() {

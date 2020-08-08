@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 // Compiles a Snap AST to the IR language.
 public class SnapToCrackleCompiler: NSObject {
@@ -23,6 +24,7 @@ public class SnapToCrackleCompiler: NSObject {
     private var symbols: SymbolTable
     private let labelMaker = LabelMaker()
     private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
+    private var currentSourceAnchor: SourceAnchor? = nil
     
     public override init() {
         symbols = globalSymbols
@@ -83,6 +85,17 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
+    private func emit(_ ins: [CrackleInstruction]) {
+        let instructionsBegin = instructions.count
+        instructions += ins
+        let instructionsEnd = instructions.count
+        if instructionsBegin < instructionsEnd {
+            for i in instructionsBegin..<instructionsEnd {
+                mapInstructionToSource[i] = currentSourceAnchor
+            }
+        }
+    }
+    
     private func tryCompile(ast: TopLevel) throws {
         try compile(topLevel: ast)
     }
@@ -127,7 +140,7 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
-        let instructionsBegin = instructions.count
+        currentSourceAnchor = genericNode.sourceAnchor
         switch genericNode {
         case let node as VarDeclaration:
             try compile(varDecl: node)
@@ -147,12 +160,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(func: node)
         default:
             break
-        }
-        let instructionsEnd = instructions.count
-        if instructionsBegin < instructionsEnd {
-            for i in (instructionsBegin+1)..<instructionsEnd {
-                mapInstructionToSource[i] = genericNode.sourceAnchor
-            }
         }
     }
     
@@ -236,23 +243,23 @@ public class SnapToCrackleCompiler: NSObject {
     private func storeStaticValue(symbolType: SymbolType, offset: Int) {
         switch symbolType {
         case .u16:
-            instructions += [
+            emit([
                 .store16(offset),
                 .pop16
-            ]
+            ])
         case .bool, .u8:
-            instructions += [
+            emit([
                 .store(offset),
                 .pop
-            ]
+            ])
         default:
             let numWords = symbolType.sizeof
             if numWords > 0 {
-                instructions += [
+                emit([
                     .push16(offset),
                     .storeIndirectN(numWords),
                     .popn(numWords)
-                ]
+                ])
             }
         }
     }
@@ -260,21 +267,22 @@ public class SnapToCrackleCompiler: NSObject {
     // A statement can be a bare expression. The expression value is popped
     // from the stack at the end.
     private func compile(expressionStatement node: Expression) throws {
+        currentSourceAnchor = node.sourceAnchor
         try compile(expression: node)
         let returnExpressionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node)
         switch returnExpressionType {
         case .u16:
-            instructions += [.pop16]
+            emit([.pop16])
         case .u8, .bool, .constBool:
-            instructions += [.pop]
+            emit([.pop])
         case .constInt(let a):
-            instructions += [a > 255 ? .pop16 : .pop]
+            emit([a > 255 ? .pop16 : .pop])
         case .void:
             break
         case .array:
-            instructions += [.popn(returnExpressionType.sizeof)]
+            emit([.popn(returnExpressionType.sizeof)])
         case .dynamicArray:
-            instructions += [.popn(4)]
+            emit([.popn(4)])
         default:
             abort()
         }
@@ -283,74 +291,79 @@ public class SnapToCrackleCompiler: NSObject {
     // The expression will push the result onto the stack. The client assumes the
     // responsibility of cleaning up.
     private func compile(expression: Expression) throws {
+        currentSourceAnchor = expression.sourceAnchor
         let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
         let ir = try exprCompiler.compile(expression: expression)
-        instructions += ir
+        emit(ir)
     }
     
     private func compile(if stmt: If) throws {
+        currentSourceAnchor = stmt.sourceAnchor
         if let elseBranch = stmt.elseBranch {
             let labelElse = labelMaker.next()
             let labelTail = labelMaker.next()
             try compile(expression: stmt.condition)
-            instructions += [
+            emit([
                 .push(0),
                 .je(labelElse),
-            ]
+            ])
             try compile(genericNode: stmt.thenBranch)
-            instructions += [
+            emit([
                 .jmp(labelTail),
                 .label(labelElse),
-            ]
+            ])
             try compile(genericNode: elseBranch)
-            instructions += [.label(labelTail)]
+            emit([.label(labelTail)])
         } else {
             let labelTail = labelMaker.next()
             try compile(expression: stmt.condition)
-            instructions += [
+            emit([
                 .push(0),
                 .je(labelTail)
-            ]
+            ])
             try compile(genericNode: stmt.thenBranch)
-            instructions += [.label(labelTail)]
+            emit([.label(labelTail)])
         }
     }
     
     private func compile(while stmt: While) throws {
+        currentSourceAnchor = stmt.sourceAnchor
         let labelHead = labelMaker.next()
         let labelTail = labelMaker.next()
-        instructions += [.label(labelHead)]
+        emit([.label(labelHead)])
         try compile(expression: stmt.condition)
-        instructions += [
+        emit([
             .push(0),
             .je(labelTail)
-        ]
+        ])
         try compile(genericNode: stmt.body)
-        instructions += [
+        emit([
             .jmp(labelHead),
             .label(labelTail)
-        ]
+        ])
     }
     
     private func compile(forLoop stmt: ForLoop) throws {
+        currentSourceAnchor = stmt.sourceAnchor
         let labelHead = labelMaker.next()
         let labelTail = labelMaker.next()
         try compile(genericNode: stmt.initializerClause)
-        instructions += [.label(labelHead)]
+        emit([.label(labelHead)])
         try compile(expression: stmt.conditionClause)
-        instructions += [
+        emit([
             .push(0),
             .je(labelTail)
-        ]
+        ])
         try compile(genericNode: stmt.body)
         try compile(genericNode: stmt.incrementClause)
-        instructions += [
+        emit([
             .jmp(labelHead),
             .label(labelTail)
-        ]
+        ])
     }
     
     private func compile(block: Block) throws {
+        currentSourceAnchor = block.sourceAnchor
         pushScopeForBlock()
         performDeclPass(block: block)
         for child in block.children {
@@ -393,24 +406,28 @@ public class SnapToCrackleCompiler: NSObject {
         } else if .void != enclosingFunctionType.returnType {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "non-void function should return a value")
         }
-        instructions += [
+        
+        currentSourceAnchor = node.sourceAnchor
+        emit([
             .leave,
             .ret
-        ]
+        ])
     }
     
     private func compile(func node: FunctionDeclaration) throws {
+        currentSourceAnchor = node.sourceAnchor
+        
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
         let mangledName = makeMangledFunctionName(node)
         let labelHead = mangledName
         let labelTail = "__\(mangledName)_tail"
-        instructions += [
+        emit([
             .jmp(labelTail),
             .label(labelHead),
             .pushReturnAddress,
             .enter
-        ]
+        ])
         
         pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.identifier,
                                   enclosingFunctionType: node.functionType)
@@ -424,9 +441,9 @@ public class SnapToCrackleCompiler: NSObject {
         }
         popScopeForStackFrame()
         
-        instructions += [
+        emit([
             .label(labelTail),
-        ]
+        ])
     }
     
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,

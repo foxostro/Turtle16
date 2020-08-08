@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 // Given an expression, determines the result type.
 // Throws a compiler error when the result type cannot be determined, e.g., due

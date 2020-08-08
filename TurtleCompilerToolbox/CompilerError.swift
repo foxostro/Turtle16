@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 open class CompilerError: Error {
     public let sourceAnchor: SourceAnchor?
     public let message: String
@@ -25,43 +27,11 @@ open class CompilerError: Error {
     }
     
     private var lineNumberPrefix: String? {
-        var result: String? = nil
-        if let lineNumbers = sourceAnchor?.lineNumbers {
-            if lineNumbers.count == 1 {
-                result = "\(lineNumbers.lowerBound+1):"
-            } else {
-                result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound):"
-            }
-        }
-        return result
+        return sourceAnchor?.lineNumberPrefix ?? nil
     }
     
     public var context: String? {
-        guard let anchor = sourceAnchor else {
-            return nil
-        }
-        let text = anchor.lineMapper.text
-        let lineRange = text.lineRange(for: anchor.range)
-        let line = text[lineRange]
-        var result = "\t\(line)"
-        if !line.hasSuffix("\n") {
-            result += "\n"
-        }
-        result += "\t"
-        var index = lineRange.lowerBound
-        while index != anchor.range.lowerBound {
-            result += " "
-            text.formIndex(after: &index)
-        }
-        result += "^"
-        if index != anchor.range.upperBound {
-            text.formIndex(after: &index)
-        }
-        while index != anchor.range.upperBound {
-            result += "~"
-            text.formIndex(after: &index)
-        }
-        return result
+        return sourceAnchor?.context ?? nil
     }
     
     public var localizedDescription: String {

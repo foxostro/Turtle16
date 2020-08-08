@@ -17,14 +17,16 @@ public class InterpretingVM: VirtualMachine {
                 dataRAM: Memory,
                 instructionMemory: InstructionMemory,
                 flagBreak: AtomicBooleanFlag,
-                interpreter: Interpreter) {
+                interpreter: Interpreter,
+                programDebugInfo: ProgramDebugInfo? = nil) {
         self.interpreter = interpreter
         super.init(cpuState: cpuState,
                    microcodeGenerator: microcodeGenerator,
                    peripherals: peripherals,
                    dataRAM: dataRAM,
                    instructionMemory: instructionMemory,
-                   flagBreak: flagBreak)
+                   flagBreak: flagBreak,
+                   programDebugInfo: programDebugInfo)
         self.interpreter.delegate = self
     }
     
@@ -46,6 +48,16 @@ public class InterpretingVM: VirtualMachine {
         }
         
         if let logger = logger {
+            if let sourceAnchor = programDebugInfo?.mapProgramCounterToSource[Int(cpuState.pc.value)] ?? nil {
+                var message = "executing line"
+                if let lineNumberPrefix = sourceAnchor.lineNumberPrefix {
+                    message += " \(lineNumberPrefix)\n"
+                } else {
+                    message += ":\n"
+                }
+                message += sourceAnchor.context
+                logger.append(message)
+            }
             CPUStateSnapshot.logChanges(logger: logger,
                                         prevState: prevState,
                                         nextState: cpuState)

@@ -28,6 +28,7 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     public let peripherals: ComputerPeripherals
     public let dataRAM: Memory
     public let instructionMemory: InstructionMemory
+    public let programDebugInfo: ProgramDebugInfo?
     
     // For debugging and diagnostics, the virtual machine can optionally record
     // execution states over time.
@@ -43,13 +44,15 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
                 peripherals: ComputerPeripherals,
                 dataRAM: Memory,
                 instructionMemory: InstructionMemory,
-                flagBreak: AtomicBooleanFlag) {
+                flagBreak: AtomicBooleanFlag,
+                programDebugInfo: ProgramDebugInfo? = nil) {
         self.cpuState = cpuState
         self.microcodeGenerator = microcodeGenerator
         self.peripherals = peripherals
         self.dataRAM = dataRAM
         self.instructionMemory = instructionMemory
         self.flagBreak = flagBreak
+        self.programDebugInfo = programDebugInfo
     }
     
     // This method duplicates the functionality of the hardware reset button.

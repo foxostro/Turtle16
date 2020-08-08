@@ -33,6 +33,7 @@ class SnapExecutor: NSObject {
             return Computer()
         } else {
             let instructions = compiler.instructions
+            let programDebugInfo = compiler.programDebugInfo
             
             if isVerboseLogging {
                 print("AST:\n" + compiler.ast.description + "\n\n")
@@ -42,13 +43,14 @@ class SnapExecutor: NSObject {
                 print("IR:\n" + CrackleInstruction.makeListing(instructions: compiler.ir) + "\n\n")
             }
 
-            let computer = try execute(instructions: instructions)
+            let computer = try execute(instructions: instructions, programDebugInfo: programDebugInfo)
             return computer
         }
     }
     
-    func execute(instructions: [Instruction]) throws -> Computer {
+    func execute(instructions: [Instruction], programDebugInfo: ProgramDebugInfo? = nil) throws -> Computer {
         let computer = makeComputer(microcodeGenerator: microcodeGenerator)
+        computer.programDebugInfo = programDebugInfo
         computer.provideInstructions(instructions)
         
         // Ensure unpatched branches cause the machine to halt by inserting a

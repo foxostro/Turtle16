@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class LabelDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String

@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 open class AbstractSyntaxTreeNode : NSObject {
     public let sourceAnchor: SourceAnchor?
     

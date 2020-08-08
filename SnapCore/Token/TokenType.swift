@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class TokenType : Token {
     public let representedType: SymbolType

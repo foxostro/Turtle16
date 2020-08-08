@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class ConstantDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String

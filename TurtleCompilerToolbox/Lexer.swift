@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 open class Lexer: NSObject {
     public let string: String
     private var position: String.Index

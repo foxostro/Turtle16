@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 open class Parser: NSObject {
     public let lineMapper: SourceLineRangeMapper!
     public var tokens: [Token] = []

@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class AssemblerParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {

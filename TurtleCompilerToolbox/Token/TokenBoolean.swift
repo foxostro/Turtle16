@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 public class TokenBoolean : Token {
     public let literal: Bool
     

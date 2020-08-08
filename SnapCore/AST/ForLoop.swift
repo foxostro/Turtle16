@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class ForLoop: AbstractSyntaxTreeNode {
     public let initializerClause: AbstractSyntaxTreeNode

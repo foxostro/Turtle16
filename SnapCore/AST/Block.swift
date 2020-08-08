@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class Block: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]

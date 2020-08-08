@@ -6,6 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 public class TokenNumber : Token {
     public let literal: Int
     

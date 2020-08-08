@@ -22,7 +22,8 @@ public class TracingInterpretingVM: VirtualMachine {
                 dataRAM: Memory,
                 instructionMemory: InstructionMemory,
                 flagBreak: AtomicBooleanFlag,
-                interpreter: Interpreter) {
+                interpreter: Interpreter,
+                programDebugInfo: ProgramDebugInfo? = nil) {
         self.interpreter = interpreter
         super.init(cpuState: cpuState,
                    microcodeGenerator: microcodeGenerator,

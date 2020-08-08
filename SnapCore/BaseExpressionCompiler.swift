@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class BaseExpressionCompiler: NSObject {
     public let symbols: SymbolTable

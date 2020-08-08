@@ -7,6 +7,7 @@
 //
 
 import TurtleCompilerToolbox
+import TurtleCore
 
 public class If: AbstractSyntaxTreeNode {
     public let condition: Expression

@@ -11,6 +11,8 @@ import SnapCore
 import TurtleCore
 
 class SnapCompilerTests: XCTestCase {
+    let kStaticStorageStartAddress = SnapToIRCompiler.kStaticStorageStartAddress
+    
     func testCompileFailsDuringLexing() {
         let compiler = SnapCompiler()
         compiler.compile("@")
@@ -54,7 +56,7 @@ class SnapCompilerTests: XCTestCase {
         let computer = try! executor.execute(program: """
 let a = 42
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_ForLoop() {
@@ -65,7 +67,7 @@ for var i = 0; i < 10; i = i + 1 {
     a = i
 }
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 9)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 9)
     }
     
     func test_EndToEndIntegration_ForLoop_SingleStatement() {
@@ -75,7 +77,7 @@ var a = 255
 for var i = 0; i < 10; i = i + 1
     a = i
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 9)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 9)
     }
     
     func test_EndToEndIntegration_Fibonacci() {
@@ -90,8 +92,8 @@ for var i = 0; i < 10; i = i + 1 {
     b = fib
 }
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 89)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 144)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 89)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 144)
     }
     
     func test_EndToEndIntegration_Fibonacci_ExercisingStaticKeyword() {
@@ -105,8 +107,8 @@ for var i = 0; i < 10; i = i + 1 {
     b = fib
 }
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 89)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 144)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 89)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 144)
     }
     
     func testLocalVariablesDoNotSurviveTheLocalScope() {
@@ -148,7 +150,7 @@ func foo() {
 }
 foo()
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa) // var a
     }
     
     // Local variables declared in a local scope are not necessarily associated
@@ -165,9 +167,9 @@ var a = 0xaa
     }
 }
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xbb) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 0xcc) // var c
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xbb) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 0xcc) // var c
     }
     
     // Local variables declared in a local scope are not necessarily associated
@@ -189,9 +191,9 @@ var a = 0xaa
 }
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xaa) // var b
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 0xaa) // var c
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xaa) // var b
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 0xaa) // var c
     }
     
     func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes() {
@@ -209,7 +211,7 @@ func foo() -> u8 {
 let a = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa) // var a
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa) // var a
     }
     
     func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU8() {
@@ -221,7 +223,7 @@ func foo() -> u8 {
 let a = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU16() {
@@ -233,7 +235,7 @@ func foo() -> u16 {
 let a = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xabcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xabcd)
     }
     
     func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU8PromotedToU16() {
@@ -245,7 +247,7 @@ func foo() -> u16 {
 let a = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x00aa)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
     }
     
     func test_EndToEndIntegration_NestedFunctionDeclarations() {
@@ -261,7 +263,7 @@ func foo() -> u8 {
 let a = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func test_EndToEndIntegration_ReturnFromInsideIfStmt() {
@@ -277,7 +279,7 @@ func foo() -> u8 {
 let a = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     func testMissingReturn_1() {
@@ -330,7 +332,7 @@ var result = 0xabcd
 result = 42
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_PromoteParameterInCall() {
@@ -343,7 +345,7 @@ func foo(n: u16) {
 foo(42)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_PromoteReturnValue() {
@@ -355,7 +357,7 @@ func foo(n: u8) -> u16 {
 let result = foo(42)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 42)
     }
     
 func test_EndToEndIntegration_MutuallyRecursiveFunctions() {
@@ -380,7 +382,7 @@ func isOdd(n: u8) -> bool {
 let a = isOdd(7)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
     func test_EndToEndIntegration_MutuallyRecursiveFunctions_u16() {
@@ -405,7 +407,7 @@ func isOdd(n: u16) -> bool {
 let a = isOdd(3)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
     func test_EndToEndIntegration_RecursiveFunctions_u8() {
@@ -421,7 +423,7 @@ func foo(n: u8) {
 foo(10)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 10)
     }
     
     func test_EndToEndIntegration_RecursiveFunctions_u16() {
@@ -437,7 +439,7 @@ func foo(n: u16) {
 foo(10)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 10)
     }
     
     func test_EndToEndIntegration_FunctionCallsInExpression() {
@@ -449,7 +451,7 @@ func foo(n: u8) -> u8 {
 let r = foo(2) + 1
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 3)
     }
     
     func test_EndToEndIntegration_RecursiveFunctions_() {
@@ -464,7 +466,7 @@ func foo(n: u8) -> u8 {
 let count = foo(1)
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
         
     func test_EndToEndIntegration_ReturnInVoidFunction() {
@@ -483,7 +485,7 @@ foo()
 let foo: u16 = 0xffff
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xffff)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xffff)
     }
         
     func test_EndToEndIntegration_DeclareVariableWithExplicitType_Var() {
@@ -492,7 +494,7 @@ let foo: u16 = 0xffff
 var foo: u16 = 0xffff
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xffff)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xffff)
     }
         
     func test_EndToEndIntegration_DeclareVariableWithExplicitType_PromoteU8ToU16() {
@@ -501,7 +503,7 @@ var foo: u16 = 0xffff
 let foo: u16 = 10
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 10)
     }
         
     func test_EndToEndIntegration_DeclareVariableWithExplicitType_Bool() {
@@ -510,7 +512,7 @@ let foo: u16 = 10
 let foo: bool = true
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
         
     func test_EndToEndIntegration_DeclareVariableWithExplicitType_CannotConvertU16ToBool() {
@@ -532,28 +534,28 @@ var foo: u16 = 1
 let bar: u8 = foo as u8
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 1)
     }
         
     func test_EndToEndIntegration_PokeMemory() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-pokeMemory(0xab, 0x0010)
+pokeMemory(0xab, \(kStaticStorageStartAddress))
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
     }
     
     func test_EndToEndIntegration_PeekMemory() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 let a = 0xab
-let b = peekMemory(0x0010)
+let b = peekMemory(\(kStaticStorageStartAddress))
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0xab)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xab)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xab)
     }
         
     func test_EndToEndIntegration_PokePeripheral() {
@@ -591,19 +593,19 @@ let b = peekPeripheral(0, 1)
         
         XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0), 0)
         XCTAssertEqual(computer.upperInstructionRAM.load(from: 0), 0)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0)
     }
         
     func test_EndToEndIntegration_Hlt() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-pokeMemory(0xab, 0x0010)
+pokeMemory(0xab, \(kStaticStorageStartAddress))
 hlt()
-pokeMemory(0xcd, 0x0010)
+pokeMemory(0xcd, \(kStaticStorageStartAddress))
 """)
         
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 0xab)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
     }
     
     func test_EndToEndIntegration_DeclareArrayType_InferredType() {
@@ -611,9 +613,9 @@ pokeMemory(0xcd, 0x0010)
         let computer = try! executor.execute(program: """
 let arr = [_]u8{1, 2, 3}
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 3)
     }
     
     func test_EndToEndIntegration_DeclareArrayType_ExplicitType() {
@@ -621,9 +623,9 @@ let arr = [_]u8{1, 2, 3}
         let computer = try! executor.execute(program: """
 let arr: [_]u8 = [_]u8{1, 2, 3}
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 3)
     }
     
     func test_EndToEndIntegration_FailToAssignScalarToArray() {
@@ -671,16 +673,16 @@ let bar = 1 + foo
         let computer = try! executor.execute(program: """
 let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x00), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x02), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x04), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x06), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x08), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x10), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x12), 109)
     }
     
     func test_EndToEndIntegration_ArrayOfU8ConvertedToArrayOfU16OnInitialAssignment() {
@@ -688,7 +690,7 @@ let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
         let computer = try! executor.execute(program: """
 let arr: [_]u16 = [_]u16{42 as u8}
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_ReadArrayElement_U16() {
@@ -699,7 +701,7 @@ var result: u16 = 0
 let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 result = arr[0]
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 100)
     }
     
     func test_EndToEndIntegration_CastArrayLiteralFromArrayOfU8ToArrayOfU16() {
@@ -707,9 +709,9 @@ result = arr[0]
         let computer = try! executor.execute(program: """
 let foo = [_]u8{1, 2, 3} as [_]u16
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 2)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x2), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x4), 3)
     }
     
     func test_EndToEndIntegration_FailToCastIntegerLiteralToArrayOfU8BecauseOfOverflow() {
@@ -729,9 +731,9 @@ let foo = [_]u8{0x1001, 0x1002, 0x1003} as [_]u8
         let computer = try! executor.execute(program: """
 let foo = [_]u16{0x1001 as u16, 0x1002 as u16, 0x1003 as u16} as [_]u8
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 3)
     }
     
     func test_EndToEndIntegration_ReassignArrayContentsWithLiteralArray() {
@@ -740,16 +742,16 @@ let foo = [_]u16{0x1001 as u16, 0x1002 as u16, 0x1003 as u16} as [_]u8
 var arr: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
 arr = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x00), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x02), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x04), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x06), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x08), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x10), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x12), 109)
     }
     
     func test_EndToEndIntegration_ReassignArrayContentsWithArrayIdentifier() {
@@ -760,16 +762,16 @@ var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0
 let b: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 a = b
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x00), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x02), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x04), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x06), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x08), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x10), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x12), 109)
     }
     
     func test_EndToEndIntegration_ReassignArrayContents_ConvertingFromArrayOfU8ToArrayOfU16() {
@@ -780,16 +782,16 @@ var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0
 let b = [_]u8{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
 a = b
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 100)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 101)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 102)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 103)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 104)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001a), 105)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001c), 106)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x001e), 107)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0020), 108)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0022), 109)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x00), 100)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x02), 101)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x04), 102)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x06), 103)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x08), 104)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0a), 105)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0c), 106)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x0e), 107)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x10), 108)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0x12), 109)
     }
     
     func test_EndToEndIntegration_AccessVariableInFunction_U8() {
@@ -801,7 +803,7 @@ func foo() -> u8 {
 }
 let bar = foo()
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_AccessVariableInFunction_U16() {
@@ -813,7 +815,7 @@ func foo() -> u16 {
 }
 let bar: u16 = foo()
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_SumLoop() {
@@ -828,7 +830,7 @@ func sum() -> u8 {
 }
 let foo = sum()
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 3)
     }
     
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_1() {
@@ -840,7 +842,7 @@ func sum(a: [3]u16) -> u16 {
 }
 let foo = sum([3]u16{1, 2, 3})
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 6)
     }
     
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_2() {
@@ -856,7 +858,7 @@ func sum(a: [3]u16) -> u16 {
 }
 let foo = sum([_]u16{1, 2, 3})
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 6)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 6)
     }
     
     func test_EndToEndIntegration_ReturnArrayByValue_U8() {
@@ -867,9 +869,9 @@ func makeArray() -> [3]u8 {
 }
 let foo = makeArray()
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 2)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 3)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 3)
     }
     
     func test_EndToEndIntegration_ReturnArrayByValue_U16() {
@@ -880,9 +882,9 @@ func makeArray() -> [3]u16 {
 }
 let foo = makeArray()
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0x1234)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 0x5678)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 0x9abc)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 0x1234)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 0x5678)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+4), 0x9abc)
     }
     
     func test_EndToEndIntegration_PassTwoArraysAsFunctionParameters_1() {
@@ -894,7 +896,7 @@ func sum(a: [3]u8, b: [3]u8, c: u8) -> u8 {
 }
 let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
@@ -910,9 +912,9 @@ func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
 }
 let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
 """)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 10)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0011), 14)
-        XCTAssertEqual(computer.dataRAM.load(from: 0x0012), 18)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 10)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 14)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+2), 18)
     }
     
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() {
@@ -928,9 +930,9 @@ func sum(a: [3]u16, b: [3]u16, c: u16) -> [3]u16 {
 }
 let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 10)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 14)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 18)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 10)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 14)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+4), 18)
     }
     
     func test_EndToEndIntegration_BugWhenStackVariablesAreDeclaredAfterForLoop() {
@@ -945,7 +947,7 @@ func foo() -> u16 {
 let b = foo()
 """)
         
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 42)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 42)
     }
     
     func testSerialOutput_HelloWorld() {

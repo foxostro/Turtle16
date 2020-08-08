@@ -11,9 +11,9 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class RvalueExpressionCompilerTests: XCTestCase {
-    func compile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [IRInstruction] {
+    func compile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
         let compiler = RvalueExpressionCompiler(symbols: symbols)
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         do {
             ir = try compiler.compile(expression: expression)
         } catch let error as CompilerError {
@@ -65,7 +65,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU8(value: 42))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(42),
@@ -83,7 +83,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -98,7 +98,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -123,7 +123,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1001),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -137,7 +137,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -151,7 +151,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -197,7 +197,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -211,7 +211,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(0),
@@ -303,7 +303,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -317,7 +317,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1001))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1001),
@@ -373,7 +373,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -387,7 +387,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(0),
@@ -478,13 +478,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Lt_U16_1() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 500))
-        let expectedIr: [IRInstruction] = [
+        let expectedIr: [CrackleInstruction] = [
             .push16(500),
             .push16(1000),
             .lt16
         ]
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, expectedIr)
         XCTAssertEqual(computer.stack(at: 0), 0)
@@ -493,13 +493,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Lt_U16_2() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1001))
-        let expectedIr: [IRInstruction] = [
+        let expectedIr: [CrackleInstruction] = [
             .push16(1001),
             .push16(1000),
             .lt16
         ]
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, expectedIr)
         XCTAssertEqual(computer.stack(at: 0), 1)
@@ -540,13 +540,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Lt_U8_1() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let expectedIr: [IRInstruction] = [
+        let expectedIr: [CrackleInstruction] = [
             .push(1),
             .push(1),
             .lt
         ]
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, expectedIr)
         XCTAssertEqual(computer.stack(at: 0), 0)
@@ -555,13 +555,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Lt_U8_2() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU8(value: 0),
                                               right: ExprUtils.makeU8(value: 1))
-        let expectedIr: [IRInstruction] = [
+        let expectedIr: [CrackleInstruction] = [
             .push(1),
             .push(0),
             .lt
         ]
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, expectedIr)
         XCTAssertEqual(computer.stack(at: 0), 1)
@@ -601,7 +601,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 0x2000),
                                               right: ExprUtils.makeU16(value: 0x1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(0x1000),
@@ -615,7 +615,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 0x1000),
                                               right: ExprUtils.makeU16(value: 0x2000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(0x2000),
@@ -629,7 +629,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 0x1000),
                                               right: ExprUtils.makeU16(value: 0x1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(0x1000),
@@ -675,7 +675,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -689,7 +689,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(0),
@@ -733,7 +733,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 500),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -747,7 +747,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -761,7 +761,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 500))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(500),
@@ -807,7 +807,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 0),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -821,7 +821,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -835,7 +835,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(0),
@@ -879,7 +879,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 500),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -893,7 +893,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -907,7 +907,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 500))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(500),
@@ -953,7 +953,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 0),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -967,7 +967,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -981,7 +981,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(0),
@@ -1026,7 +1026,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: Expression.LiteralInt(1000),
                                      right: Expression.LiteralInt(1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1001)
@@ -1039,7 +1039,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: Expression.LiteralInt(1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1),
@@ -1054,7 +1054,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -1104,7 +1104,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -1163,7 +1163,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -1213,7 +1213,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU8(value: 1))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -1272,7 +1272,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU16(value: 256),
                                      right: ExprUtils.makeU16(value: 256))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(256),
@@ -1322,7 +1322,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU8(value: 2),
                                      right: ExprUtils.makeU8(value: 3))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(3),
@@ -1381,7 +1381,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU16(value: 0x1000),
                                      right: ExprUtils.makeU16(value: 0x1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(0x1000),
@@ -1431,7 +1431,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU8(value: 12),
                                      right: ExprUtils.makeU8(value: 4))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(4),
@@ -1490,7 +1490,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -1540,7 +1540,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      left: ExprUtils.makeU8(value: 15),
                                      right: ExprUtils.makeU8(value: 4))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(4),
@@ -1615,7 +1615,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbol = Symbol(type: .u8, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = {computer in
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
@@ -1631,7 +1631,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbol = Symbol(type: .u16, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = {computer in
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
@@ -1660,9 +1660,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileIdentifierExpression_ArrayOfU16_Static() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: false)])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -1691,13 +1691,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
                             isMutable: false,
                             storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         if ir == nil {
             XCTFail()
             return
         }
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = {computer in
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
@@ -1758,9 +1758,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true)])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -1789,7 +1789,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbol = Symbol(type: .bool, offset: 0x0004, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0)
     }
@@ -1799,7 +1799,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbol = Symbol(type: .u8, offset: 0x0004, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xaa)
     }
@@ -1809,7 +1809,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbol = Symbol(type: .u16, offset: 0x0004, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let ir = try! compile(expression: expr, symbols: symbols)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), 0xabcd)
     }
@@ -1824,9 +1824,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true, storage: .stackStorage)])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -1874,9 +1874,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -1938,7 +1938,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: true),
                                  targetType: .bool)
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack(at: 0), 1)
     }
@@ -1957,7 +1957,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 0xab),
                                  targetType: .u16)
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0x00ab)
     }
@@ -1966,7 +1966,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
                                  targetType: .u8)
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack(at: 0), 1)
     }
@@ -1995,7 +1995,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
                                  targetType: .u16)
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xffff)
     }
@@ -2005,7 +2005,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xabcd),
                                  targetType: .u8)
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack(at: 0), 0xcd)
     }
@@ -2044,7 +2044,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // The empty array is not actually materialized in memory.
         let expr = Expression.LiteralArray(explicitType: .u8)
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         _ = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [])
     }
@@ -2056,7 +2056,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                       ExprUtils.makeU8(value: 1),
                                                       ExprUtils.makeU8(value: 2)])
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(2),
@@ -2076,7 +2076,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                       ExprUtils.makeU16(value: 2),
                                                       ExprUtils.makeU16(value: 1000)])
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(1000),
@@ -2096,7 +2096,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                       Expression.LiteralBool(false),
                                                       Expression.LiteralBool(true)])
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push(1),
@@ -2128,7 +2128,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                              right: Expression.LiteralInt(1)),
                                      right: Expression.LiteralInt(4))
         let ir = try! compile(expression: expr)
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
             .push16(4004)
@@ -2183,9 +2183,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0010, isMutable: false)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             for j in 0..<n {
                 switch elementType.sizeof {
@@ -2232,9 +2232,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: .dynamicArray(elementType: elementType), offset: 0x0010, isMutable: false)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             let addressOfPointer = 0x0010
             let addressOfCount = 0x0012
@@ -2279,9 +2279,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: false),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: false)
         ])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -2313,9 +2313,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: true),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: true)
         ])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -2341,9 +2341,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true),
             "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0014, isMutable: false)
         ])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
@@ -2381,9 +2381,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
                                   member: Expression.Identifier("count"))
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         XCTAssertNotNil(ir)
         guard ir != nil else {
             return
@@ -2398,9 +2398,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: 0x0010, isMutable: false)
         ])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         XCTAssertNotNil(ir)
         guard ir != nil else {
             return
@@ -2415,9 +2415,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
         ])
-        var ir: [IRInstruction]? = nil
+        var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         XCTAssertNotNil(ir)
         guard ir != nil else {
             return
@@ -2433,9 +2433,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testOutOfBoundsRvalueArrayAccessCausesPanic_FixedArray() {
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: true)])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcd, to: 0x0011)
         }
@@ -2446,9 +2446,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testOutOfBoundsRvalueArrayAccessCausesPanic_DynamicArray() {
         let symbols = SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
-        var ir: [IRInstruction] = []
+        var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0x0014, to: 0x0010)
             computer.dataRAM.store16(value: 0, to: 0x0012)

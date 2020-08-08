@@ -1,5 +1,5 @@
 //
-//  SnapToIRCompilerTests.swift
+//  SnapToCrackleCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -11,24 +11,24 @@ import SnapCore
 import TurtleCompilerToolbox
 import TurtleCore
 
-class SnapToIRCompilerTests: XCTestCase {
-    let kStaticStorageStartAddress = SnapToIRCompiler.kStaticStorageStartAddress
+class SnapToCrackleCompilerTests: XCTestCase {
+    let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
     
     func testNoErrorsAtFirst() {
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         XCTAssertFalse(compiler.hasError)
         XCTAssertTrue(compiler.errors.isEmpty)
     }
     
     func testCompileEmptyProgram() {
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: TopLevel(children: []))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
     }
     
     func testAbstractSyntaxTreeNodeIsIgnoredInProgramCompilation() {
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: TopLevel(children: [AbstractSyntaxTreeNode()]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
@@ -36,7 +36,7 @@ class SnapToIRCompilerTests: XCTestCase {
     
     func testCompilationIgnoresUnknownNodes() {
         class UnknownNode: AbstractSyntaxTreeNode {}
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: TopLevel(children: [UnknownNode(sourceAnchor: nil)]))
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [])
@@ -50,9 +50,9 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .push(1),
@@ -78,7 +78,7 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "constant redefines existing symbol: `foo'")
@@ -97,9 +97,9 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
-        let addressBar = SnapToIRCompiler.kStaticStorageStartAddress+1
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressBar = SnapToCrackleCompiler.kStaticStorageStartAddress+1
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -123,8 +123,8 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -150,8 +150,8 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -180,8 +180,8 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -211,7 +211,7 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
@@ -231,8 +231,8 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         
@@ -241,7 +241,7 @@ class SnapToIRCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, Symbol(type: .dynamicArray(elementType: .u8), offset: addressFoo, isMutable: false))
         
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff3)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 2), 0xd)
@@ -256,8 +256,8 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         var symbol: Symbol? = nil
@@ -285,16 +285,16 @@ class SnapToIRCompilerTests: XCTestCase {
                            isMutable: true)
         ])
         
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
         var symbolFoo: Symbol? = nil
         XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo, isMutable: true))
         
-        let addressBar = SnapToIRCompiler.kStaticStorageStartAddress+2
+        let addressBar = SnapToCrackleCompiler.kStaticStorageStartAddress+2
         var symbolBar: Symbol? = nil
         XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(identifier: "bar"))
         XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar, isMutable: true))
@@ -323,7 +323,7 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "variable redefines existing symbol: `foo'")
@@ -361,11 +361,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 2)
     }
@@ -406,11 +406,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 3)
     }
@@ -432,11 +432,11 @@ class SnapToIRCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
@@ -449,8 +449,8 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress+0
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -473,11 +473,11 @@ class SnapToIRCompilerTests: XCTestCase {
                                isMutable: true)
             ])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa)
     }
@@ -497,11 +497,11 @@ class SnapToIRCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 1)
@@ -517,7 +517,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Expression.LiteralInt(1)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [ .push(1), .pop ])
@@ -536,7 +536,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                                Expression.LiteralInt(1),
                                                Expression.LiteralInt(2)])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -560,7 +560,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                                ExprUtils.makeU16(value: 0xbbbb),
                                                ExprUtils.makeU16(value: 0xcccc)])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -593,7 +593,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                                    ExprUtils.makeU16(value: 0xffff)])
             ])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -619,8 +619,8 @@ class SnapToIRCompilerTests: XCTestCase {
                else: nil)
         ])
         
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
@@ -653,8 +653,8 @@ class SnapToIRCompilerTests: XCTestCase {
                else: ExprUtils.makeAssignment(name: "foo",
                                               right: Expression.LiteralInt(2)))
         ])
-        let addressFoo = SnapToIRCompiler.kStaticStorageStartAddress
-        let compiler = SnapToIRCompiler()
+        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
@@ -685,7 +685,7 @@ class SnapToIRCompilerTests: XCTestCase {
             While(condition: Expression.LiteralInt(1),
                   body: Expression.LiteralInt(2))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
@@ -711,7 +711,7 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
@@ -734,12 +734,12 @@ class SnapToIRCompilerTests: XCTestCase {
                     incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: Expression.Identifier("i"), right: Expression.LiteralInt(1))),
                     body: ExprUtils.makeAssignment(name: "foo", right: Expression.Identifier("i")))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
         let L1 = ".L1"
-        let expected: [IRInstruction] = [
+        let expected: [CrackleInstruction] = [
             .push(0),
             .store(kStaticStorageStartAddress+0),
             .pop,
@@ -779,7 +779,7 @@ class SnapToIRCompilerTests: XCTestCase {
             ]),
             ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(0))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
@@ -791,7 +791,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .void, arguments: []),
                                 body: Block())
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = "foo"
@@ -822,11 +822,11 @@ class SnapToIRCompilerTests: XCTestCase {
             Expression.Call(callee: Expression.Identifier("foo"),
                             arguments: [])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
@@ -837,7 +837,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block())
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
@@ -851,7 +851,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Return(ExprUtils.makeBool(value: true))
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -865,7 +865,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Return(nil)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "non-void function should return a value")
@@ -880,7 +880,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Expression.LiteralBool(false)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "code after return will never be executed")
@@ -899,7 +899,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -918,7 +918,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -936,7 +936,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -956,7 +956,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
@@ -976,11 +976,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
@@ -999,11 +999,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xabcd)
     }
@@ -1022,11 +1022,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
     }
@@ -1042,7 +1042,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                        else: nil)
                                 ]))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
@@ -1054,7 +1054,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                 functionType: FunctionType(returnType: .u8, arguments: []),
                                 body: Block())
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
@@ -1074,7 +1074,7 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8' in call to `foo'")
@@ -1084,7 +1084,7 @@ class SnapToIRCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Return(Expression.LiteralBool(true))
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
@@ -1104,11 +1104,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
@@ -1133,11 +1133,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
@@ -1156,11 +1156,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
@@ -1190,11 +1190,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
@@ -1229,11 +1229,11 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xbb)
     }
@@ -1275,14 +1275,14 @@ class SnapToIRCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = IRExecutor()
+            let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
@@ -1297,14 +1297,14 @@ class SnapToIRCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = IRExecutor()
+            let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
@@ -1324,7 +1324,7 @@ class SnapToIRCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1340,7 +1340,7 @@ class SnapToIRCompilerTests: XCTestCase {
                 .store(kStaticStorageStartAddress+1),
                 .pop,
             ])
-            let executor = IRExecutor()
+            let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xaa)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xaa)
@@ -1353,7 +1353,7 @@ class SnapToIRCompilerTests: XCTestCase {
                             arguments: [Expression.LiteralInt(0xab),
                                         Expression.LiteralInt(kStaticStorageStartAddress)])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1366,7 +1366,7 @@ class SnapToIRCompilerTests: XCTestCase {
                 .storeIndirect,
                 .pop
             ])
-            let executor = IRExecutor()
+            let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
@@ -1387,14 +1387,14 @@ class SnapToIRCompilerTests: XCTestCase {
                                 Expression.LiteralInt(1)
             ])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = IRExecutor()
+            let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), 0xff)
             XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), 0xff)
@@ -1412,14 +1412,14 @@ class SnapToIRCompilerTests: XCTestCase {
                             arguments: [Expression.LiteralInt(0xcd),
                                         Expression.LiteralInt(kStaticStorageStartAddress)])
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
         } else {
             let ir = compiler.instructions
-            let executor = IRExecutor()
+            let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
@@ -1452,7 +1452,7 @@ class SnapToIRCompilerTests: XCTestCase {
                                                         member: Expression.Identifier("count")))
             
         ])
-        let compiler = SnapToIRCompiler()
+        let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
@@ -1460,7 +1460,7 @@ class SnapToIRCompilerTests: XCTestCase {
             return
         }
         let ir = compiler.instructions
-        let executor = IRExecutor()
+        let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 3)
     }

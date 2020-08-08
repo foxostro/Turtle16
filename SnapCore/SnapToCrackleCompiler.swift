@@ -1,5 +1,5 @@
 //
-//  SnapToIRCompiler.swift
+//  SnapToCrackleCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 5/31/20.
@@ -9,20 +9,20 @@
 import TurtleCompilerToolbox
 
 // Compiles a Snap AST to the IR language.
-public class SnapToIRCompiler: NSObject {
+public class SnapToCrackleCompiler: NSObject {
     // Static storage is allocated in a region starting at this address.
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress = 0x0010
     
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }
-    public private(set) var instructions: [IRInstruction] = []
+    public private(set) var instructions: [CrackleInstruction] = []
     public private(set) var mapInstructionToSource: [Int:SourceAnchor?] = [:]
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
     private let labelMaker = LabelMaker()
-    private var staticStoragePointer = SnapToIRCompiler.kStaticStorageStartAddress
+    private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
     
     public override init() {
         symbols = globalSymbols

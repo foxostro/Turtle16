@@ -63,6 +63,17 @@ public enum CrackleInstruction: Equatable {
     case dup
     case dup16
     
+    case tac_add(Int, Int, Int)
+    case tac_add16(Int, Int, Int)
+    case tac_sub(Int, Int, Int)
+    case tac_sub16(Int, Int, Int)
+    case tac_mul(Int, Int, Int)
+    case tac_mul16(Int, Int, Int)
+    case tac_div(Int, Int, Int)
+    case tac_div16(Int, Int, Int)
+    case tac_mod(Int, Int, Int)
+    case tac_mod16(Int, Int, Int)
+    
     public var description: String {
         switch self {
         case .push(let value):
@@ -169,6 +180,26 @@ public enum CrackleInstruction: Equatable {
             return "DUP"
         case .dup16:
             return "DUP16"
+        case .tac_add(let c, let a, let b):
+            return String(format: "ADD 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_add16(let c, let a, let b):
+            return String(format: "ADD16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_sub(let c, let a, let b):
+            return String(format: "SUB 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_sub16(let c, let a, let b):
+            return String(format: "SUB16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_mul(let c, let a, let b):
+            return String(format: "MUL 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_mul16(let c, let a, let b):
+            return String(format: "MUL16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_div(let c, let a, let b):
+            return String(format: "DIV 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_div16(let c, let a, let b):
+            return String(format: "DIV16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_mod(let c, let a, let b):
+            return String(format: "MOD 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_mod16(let c, let a, let b):
+            return String(format: "MOD16 0x%04x, 0x%04x, 0x%04x", c, a, b)
         }
     }
     

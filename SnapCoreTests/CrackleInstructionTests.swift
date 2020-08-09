@@ -65,6 +65,16 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.pokePeripheral.description, "POKE-PERIPHERAL")
         XCTAssertEqual(CrackleInstruction.dup.description, "DUP")
         XCTAssertEqual(CrackleInstruction.dup16.description, "DUP16")
+        XCTAssertEqual(CrackleInstruction.tac_add(0xffff, 0xffff, 0xffff).description, "ADD 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_add16(0xffff, 0xffff, 0xffff).description, "ADD16 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_sub(0xffff, 0xffff, 0xffff).description, "SUB 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_sub16(0xffff, 0xffff, 0xffff).description, "SUB16 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_mul(0xffff, 0xffff, 0xffff).description, "MUL 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_mul16(0xffff, 0xffff, 0xffff).description, "MUL16 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_div(0xffff, 0xffff, 0xffff).description, "DIV 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_div16(0xffff, 0xffff, 0xffff).description, "DIV16 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_mod(0xffff, 0xffff, 0xffff).description, "MOD 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_mod16(0xffff, 0xffff, 0xffff).description, "MOD16 0xffff, 0xffff, 0xffff")
     }
     
     func testMakeListing_Empty() {

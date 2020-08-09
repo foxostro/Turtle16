@@ -164,6 +164,16 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .pokePeripheral: try pokePeripheral()
         case .dup: try dup()
         case .dup16: try dup16()
+        case .tac_add(let c, let a, let b): try tac_add(c, a, b)
+        case .tac_add16(let c, let a, let b): try tac_add16(c, a, b)
+        case .tac_sub(let c, let a, let b): try tac_sub(c, a, b)
+        case .tac_sub16(let c, let a, let b): try tac_sub16(c, a, b)
+        case .tac_mul(let c, let a, let b): try tac_mul(c, a, b)
+        case .tac_mul16(let c, let a, let b): try tac_mul16(c, a, b)
+        case .tac_div(let c, let a, let b): try tac_div(c, a, b)
+        case .tac_div16(let c, let a, let b): try tac_div16(c, a, b)
+        case .tac_mod(let c, let a, let b): try tac_mod(c, a, b)
+        case .tac_mod16(let c, let a, let b): try tac_mod16(c, a, b)
         }
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
@@ -778,43 +788,35 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func add16() throws {
+        let a = (kScratchHi<<8) + (kScratchLo+0)
+        let b = (kScratchHi<<8) + (kScratchLo+2)
+        let c = (kScratchHi<<8) + (kScratchLo+2)
+        
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.U, ((b+1)>>8) & 0xff)
+        try assembler.li(.V, ((b+1)   ) & 0xff)
         try assembler.mov(.M, .B)
-        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.U, ((b+0)>>8) & 0xff)
+        try assembler.li(.V, ((b+0)   ) & 0xff)
         try assembler.mov(.M, .A)
         
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
+        try assembler.li(.U, ((a+1)>>8) & 0xff)
+        try assembler.li(.V, ((a+1)   ) & 0xff)
         try assembler.mov(.M, .B)
-        try assembler.li(.V, kScratchLo+0)
+        try assembler.li(.U, ((a+0)>>8) & 0xff)
+        try assembler.li(.V, ((a+0)   ) & 0xff)
         try assembler.mov(.M, .A)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+3)
-        try assembler.mov(.B, .M)
-        try assembler.add(.NONE)
-        try assembler.add(.M)
+        try tac_add16(c, a, b)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+2)
-        try assembler.mov(.B, .M)
-        try assembler.adc(.NONE)
-        try assembler.adc(.M)
-        
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.U, ((c+1)>>8) & 0xff)
+        try assembler.li(.V, ((c+1)   ) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.U, ((c+0)>>8) & 0xff)
+        try assembler.li(.V, ((c+0)   ) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -827,43 +829,35 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func sub16() throws {
-        try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
-        try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.M, .B)
+        let a = (kScratchHi<<8) + (kScratchLo+0)
+        let b = (kScratchHi<<8) + (kScratchLo+2)
+        let c = (kScratchHi<<8) + (kScratchLo+2)
         
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
-        try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.U, ((b+1)>>8) & 0xff)
+        try assembler.li(.V, ((b+1)   ) & 0xff)
         try assembler.mov(.M, .B)
+        try assembler.li(.U, ((b+0)>>8) & 0xff)
+        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try assembler.mov(.M, .A)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+3)
-        try assembler.mov(.B, .M)
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
+        try pop16()
+        try assembler.li(.U, ((a+1)>>8) & 0xff)
+        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try assembler.mov(.M, .B)
+        try assembler.li(.U, ((a+0)>>8) & 0xff)
+        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try assembler.mov(.M, .A)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+2)
-        try assembler.mov(.B, .M)
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.M)
+        try tac_sub16(c, b, a)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try assembler.li(.U, ((c+1)>>8) & 0xff)
+        try assembler.li(.V, ((c+1)   ) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try assembler.li(.U, ((c+0)>>8) & 0xff)
+        try assembler.li(.V, ((c+0)   ) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -872,54 +866,25 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         
         // A is the Multiplicand, B is the Multiplier
-        let multiplierAddress = kScratchLo
-        let multiplicandAddress = kScratchLo+1
-        let resultAddress = kScratchLo+2
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, multiplierAddress)
+        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+0)
+        let multiplicandAddress = (kScratchHi<<8) + (kScratchLo+1)
+        let resultAddress = (kScratchHi<<8) + (kScratchLo+2)
+        
+        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
+        try assembler.li(.V, multiplierAddress & 0xff)
         try assembler.mov(.M, .B)
-        try assembler.li(.V, multiplicandAddress)
+        if multiplicandAddress != multiplierAddress {
+            try assembler.li(.U, (multiplicandAddress>>8) & 0xff)
+            try assembler.li(.V, multiplicandAddress & 0xff)
+        }
         try assembler.mov(.M, .A)
-        try assembler.li(.V, resultAddress)
+        if resultAddress != multiplicandAddress {
+            try assembler.li(.U, (resultAddress>>8) & 0xff)
+            try assembler.li(.V, resultAddress & 0xff)
+        }
         try assembler.li(.M, 0)
         
-        let loopHead = assembler.programCounter
-        let loopTail = loopHead + 26
-        
-        // If the multiplier is equal to zero then bail because we're done.
-        try assembler.li(.X, (loopTail & 0xff00) >> 8)
-        try assembler.li(.Y,  loopTail & 0x00ff)
-        try assembler.li(.V, multiplierAddress)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 0)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.je()
-        assembler.nop()
-        assembler.nop()
-        
-        // Add the multiplicand to the result.
-        try assembler.li(.V, multiplicandAddress)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, resultAddress)
-        try assembler.mov(.A, .M)
-        try assembler.add(.NONE)
-        try assembler.add(.M)
-        
-        // Decrement the multiplier.
-        try assembler.li(.V, multiplierAddress)
-        try assembler.mov(.A, .M)
-        try assembler.dea(.NONE)
-        try assembler.dea(.M)
-
-        // Jump back to the beginning of the loop
-        try assembler.li(.X, (loopHead & 0xff00) >> 8)
-        try assembler.li(.Y,  loopHead & 0x00ff)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        assert(assembler.programCounter == loopTail)
+        try tac_mul(resultAddress, multiplicandAddress, multiplierAddress)
         
         // Load the result into A.
         try assembler.li(.V, resultAddress)
@@ -929,104 +894,40 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func mul16() throws {
-        let multiplicandAddress = kScratchLo+0
-        let multiplierAddress = kScratchLo+2
-        let resultAddress = kScratchLo+4
+        let multiplicandAddress = (kScratchHi<<8) + (kScratchLo+0)
+        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+2)
+        let resultAddress = (kScratchHi<<8) + (kScratchLo+4)
         
         // Pop the multiplicand and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, multiplicandAddress+0)
+        try assembler.li(.U, ((multiplicandAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (multiplicandAddress+0) & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, multiplicandAddress+1)
+        try assembler.li(.U, ((multiplicandAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (multiplicandAddress+1) & 0xff)
         try assembler.mov(.M, .B)
         
         // Pop the multiplier and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, multiplierAddress+0)
+        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, multiplierAddress+1)
+        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
         try assembler.mov(.M, .B)
         
-        // Initialize the result to zero.
-        try assembler.li(.V, resultAddress+0)
-        try assembler.li(.M, 0)
-        try assembler.li(.V, resultAddress+1)
-        try assembler.li(.M, 0)
-        
-        let loopHead = labelMaker.next()
-        let loopTail = labelMaker.next()
-        let notDone = labelMaker.next()
-        
-        try label(loopHead)
-        
-        // If the multiplier is equal to zero then bail because we're done.
-        try setAddressToLabel(notDone)
-        try assembler.li(.V, multiplierAddress+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 0)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.V, multiplierAddress+0)
-        try assembler.mov(.A, .M)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try setAddressToLabel(loopTail)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        try label(notDone)
-        
-        // Add the multiplicand to the result.
-        try assembler.li(.V, multiplicandAddress+1)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, resultAddress+1)
-        try assembler.mov(.A, .M)
-        try assembler.add(.NONE)
-        try assembler.add(.M)
-        try assembler.li(.V, multiplicandAddress+0)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, resultAddress+0)
-        try assembler.mov(.A, .M)
-        try assembler.adc(.NONE)
-        try assembler.adc(.M)
-        
-        // Decrement the multiplier.
-        try assembler.li(.V, multiplierAddress+1)
-        try assembler.mov(.A, .M)
-        try assembler.dea(.NONE)
-        try assembler.dea(.M)
-        try assembler.li(.V, multiplierAddress+0)
-        try assembler.mov(.A, .M)
-        try assembler.dca(.NONE)
-        try assembler.dca(.M)
-
-        // Jump back to the beginning of the loop
-        try setAddressToLabel(loopHead)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        try label(loopTail)
+        try tac_mul16(resultAddress, multiplicandAddress, multiplierAddress)
         
         // Push the result onto the stack.
         // First the low byte
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, resultAddress+1)
+        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+1) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
         // Then the high byte
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, resultAddress+0)
+        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+0) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1034,209 +935,63 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func div() throws {
         try pop16()
         
+        let dividend = (kScratchHi<<8) + (kScratchLo+0)
+        let divisor = (kScratchHi<<8) + (kScratchLo+1)
+        let counter = (kScratchHi<<8) + (kScratchLo+2)
+        
         // A is the Dividend, B is the Divisor
-        let a = kScratchLo+0
-        let b = kScratchLo+1
-        let counter = kScratchLo+2
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, a)
+        try assembler.li(.U, (dividend>>8) & 0xff)
+        try assembler.li(.V,  dividend & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, b)
+        try assembler.li(.U, (divisor>>8) & 0xff)
+        try assembler.li(.V,  divisor & 0xff)
         try assembler.mov(.M, .B)
-        try assembler.li(.V, counter)
-        try assembler.li(.M, 0)
         
-        let loopHead = assembler.programCounter + 11
-        let loopTail = loopHead + 28
-        
-        // if b == 0 then bail because it's division by zero
-        try assembler.li(.X, (loopTail & 0xff00) >> 8)
-        try assembler.li(.Y,  loopTail & 0x00ff)
-        try assembler.li(.V, b)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 0)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.je()
-        assembler.nop()
-        assembler.nop()
-        
-        // while a >= b
-        assert(assembler.programCounter == loopHead)
-        try assembler.li(.X, (loopTail & 0xff00) >> 8)
-        try assembler.li(.Y,  loopTail & 0x00ff)
-        try assembler.li(.V, a)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, b)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jl()
-        assembler.nop()
-        assembler.nop()
-        
-        // a = a - b
-        try assembler.li(.V, b)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, a)
-        try assembler.mov(.A, .M)
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
-        
-        // c += 1
-        try assembler.li(.V, counter)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 1)
-        try assembler.add(.NONE)
-        try assembler.add(.M)
-
-        // loop
-        try assembler.li(.X, (loopHead & 0xff00) >> 8)
-        try assembler.li(.Y,  loopHead & 0x00ff)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        assert(assembler.programCounter == loopTail)
+        try div_modifyingA(counter, dividend, divisor)
         
         // Return the result in the A register.
-        try assembler.li(.V, counter)
+        try assembler.li(.U, (counter>>8) & 0xff)
+        try assembler.li(.V,  counter & 0xff)
         try assembler.mov(.A, .M)
         
         try pushAToStack()
     }
     
     public func div16() throws {
-        let addressOfB = kScratchLo+0
-        let addressOfA = kScratchLo+2
-        let counterAddress = kScratchLo+4
+        let addressOfB = (kScratchHi<<8) + (kScratchLo+0)
+        let addressOfA = (kScratchHi<<8) + (kScratchLo+2)
+        let counterAddress = (kScratchHi<<8) + (kScratchLo+4)
 
         // Pop the divisor and store in scratch memory.
         // `b' is the Divisor
         try pop16()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
+        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+0) & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
+        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+1) & 0xff)
         try assembler.mov(.M, .B)
 
         // Pop the dividend and store in scratch memory.
         // `a' is the Dividend
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfA+1)
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
         try assembler.mov(.M, .B)
 
-        // Initialize the counter to zero.
-        // `c' is the counter
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+0)
-        try assembler.li(.M, 0)
-        try assembler.li(.V, counterAddress+1)
-        try assembler.li(.M, 0)
-
-        let loopHead = labelMaker.next()
-        let loopTail = labelMaker.next()
-
-        // if b == 0 then bail because it's division by zero
-        try setAddressToLabel(loopHead)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 0)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.A, .M)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try setAddressToLabel(loopTail)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-
-        // while a >= b
-        try label(loopHead)
-
-        // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.B, .M)
-
-        // Compare the low bytes.
-        try assembler.sub(.NONE)
-        try assembler.sub(.NONE)
-
-        // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.B, .M)
-
-        // Compare the high bytes.
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.NONE)
-
-        try setAddressToLabel(loopTail)
-        assembler.jnc()
-        assembler.nop()
-        assembler.nop()
-
-        // a = a - b
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, addressOfA+1)
-        try assembler.mov(.A, .M)
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.A, .M)
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.M)
-
-        // c += 1
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+0)
-        try assembler.mov(.X, .M)
-        try assembler.li(.V, counterAddress+1)
-        try assembler.mov(.Y, .M)
-        assembler.inxy()
-        try assembler.li(.V, counterAddress+0)
-        try assembler.mov(.M, .X)
-        try assembler.li(.V, counterAddress+1)
-        try assembler.mov(.M, .Y)
-
-        // loop
-        try setAddressToLabel(loopHead)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        try label(loopTail)
+        try div16_modifyingA(counterAddress, addressOfA, addressOfB)
 
         // Push the result to the stack. First the low byte, then the high byte.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+1)
+        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+1) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+0)
+        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+0) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1244,215 +999,63 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func mod() throws {
         try pop16()
         
+        let dividend = (kScratchHi<<8) + (kScratchLo+0)
+        let divisor = (kScratchHi<<8) + (kScratchLo+1)
+        let counter = (kScratchHi<<8) + (kScratchLo+2)
+        
         // A is the Dividend, B is the Divisor
-        let a = kScratchLo+0
-        let b = kScratchLo+1
-        let counter = kScratchLo+2
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, a)
+        try assembler.li(.U, (dividend>>8) & 0xff)
+        try assembler.li(.V,  dividend & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, b)
+        try assembler.li(.U, (divisor>>8) & 0xff)
+        try assembler.li(.V,  divisor & 0xff)
         try assembler.mov(.M, .B)
-        try assembler.li(.V, counter)
-        try assembler.li(.M, 0)
         
-        let loopHead = assembler.programCounter + 11
-        let loopTail = loopHead + 28
-        
-        // if b == 0 then bail because it's division by zero
-        try assembler.li(.X, (loopTail & 0xff00) >> 8)
-        try assembler.li(.Y,  loopTail & 0x00ff)
-        try assembler.li(.V, b)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 0)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.je()
-        assembler.nop()
-        assembler.nop()
-        
-        // while a >= b
-        assert(assembler.programCounter == loopHead)
-        try assembler.li(.X, (loopTail & 0xff00) >> 8)
-        try assembler.li(.Y,  loopTail & 0x00ff)
-        try assembler.li(.V, a)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, b)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jl()
-        assembler.nop()
-        assembler.nop()
-        
-        // a = a - b
-        try assembler.li(.V, b)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, a)
-        try assembler.mov(.A, .M)
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
-        
-        // c += 1
-        try assembler.li(.V, counter)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 1)
-        try assembler.add(.NONE)
-        try assembler.add(.M)
-
-        // loop
-        try assembler.li(.X, (loopHead & 0xff00) >> 8)
-        try assembler.li(.Y,  loopHead & 0x00ff)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        assert(assembler.programCounter == loopTail)
+        try div_modifyingA(counter, dividend, divisor)
         
         // Return the result in the A register.
-        try assembler.li(.V, a)
+        try assembler.li(.U, (dividend>>8) & 0xff)
+        try assembler.li(.V,  dividend & 0xff)
         try assembler.mov(.A, .M)
         
         try pushAToStack()
     }
     
     public func mod16() throws {
-        let addressOfB = kScratchLo+0
-        let addressOfA = kScratchLo+2
-        let counterAddress = kScratchLo+4
+        let addressOfB = (kScratchHi<<8) + (kScratchLo+0)
+        let addressOfA = (kScratchHi<<8) + (kScratchLo+2)
+        let counterAddress = (kScratchHi<<8) + (kScratchLo+4)
 
         // Pop the divisor and store in scratch memory.
         // `b' is the Divisor
         try pop16()
         try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
+        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+0) & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
+        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+1) & 0xff)
         try assembler.mov(.M, .B)
 
         // Pop the dividend and store in scratch memory.
         // `a' is the Dividend
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfA+1)
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
         try assembler.mov(.M, .B)
 
-        // Initialize the counter to zero.
-        // `c' is the counter
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+0)
-        try assembler.li(.M, 0)
-        try assembler.li(.V, counterAddress+1)
-        try assembler.li(.M, 0)
+        try div16_modifyingA(counterAddress, addressOfA, addressOfB)
 
-        let loopHead = labelMaker.next()
-        let loopTail = labelMaker.next()
-
-        // if b == 0 then bail because it's division by zero
-        try setAddressToLabel(loopHead)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.B, 0)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.A, .M)
-        assembler.cmp()
-        assembler.cmp()
-        assembler.nop()
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
-        try assembler.li(.M, 0)
-        try assembler.li(.V, addressOfA+1)
-        try assembler.li(.M, 0)
-        try setAddressToLabel(loopTail)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-
-        // while a >= b
-        try label(loopHead)
-
-        // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.B, .M)
-
-        // Compare the low bytes.
-        try assembler.sub(.NONE)
-        try assembler.sub(.NONE)
-
-        // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.B, .M)
-
-        // Compare the high bytes.
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.NONE)
-
-        try setAddressToLabel(loopTail)
-        assembler.jnc()
-        assembler.nop()
-        assembler.nop()
-
-        // a = a - b
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+1)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, addressOfA+1)
-        try assembler.mov(.A, .M)
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
-        try assembler.li(.V, addressOfB+0)
-        try assembler.mov(.B, .M)
-        try assembler.li(.V, addressOfA+0)
-        try assembler.mov(.A, .M)
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.M)
-
-        // c += 1
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, counterAddress+0)
-        try assembler.mov(.X, .M)
-        try assembler.li(.V, counterAddress+1)
-        try assembler.mov(.Y, .M)
-        assembler.inxy()
-        try assembler.li(.V, counterAddress+0)
-        try assembler.mov(.M, .X)
-        try assembler.li(.V, counterAddress+1)
-        try assembler.mov(.M, .Y)
-
-        // loop
-        try setAddressToLabel(loopHead)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        try label(loopTail)
-
-        // The result is in `a'. Push it to the stack.
-        // First the low byte, then the high byte.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        // Push the result to the stack. First the low byte, then the high byte.
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1949,5 +1552,468 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let scratch = kScratchHi<<8 + kScratchLo + 2
         try store16(to: scratch)
         try load16(from: scratch)
+    }
+        
+    private func tac_add(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setupALUOperandsAndDestinationAddress(c, a, b)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+    }
+        
+    private func setupALUOperandsAndDestinationAddress(_ c: Int, _ a: Int, _ b: Int) throws {
+        try assembler.li(.U, (b >> 8) & 0xff)
+        try assembler.li(.V, b & 0xff)
+        try assembler.mov(.B, .M)
+        if a != b {
+            try assembler.li(.U, (a >> 8) & 0xff)
+            try assembler.li(.V, a & 0xff)
+        }
+        try assembler.mov(.A, .M)
+        if c != a {
+            try assembler.li(.U, (c >> 8) & 0xff)
+            try assembler.li(.V, c & 0xff)
+        }
+    }
+    
+    private func tac_add16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try assembler.li(.U, ((a+1)>>8) & 0xff)
+        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((b+1)>>8) & 0xff)
+        try assembler.li(.V, ((b+1)   ) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((c+1)>>8) & 0xff)
+        try assembler.li(.V, ((c+1)   ) & 0xff)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        
+        try assembler.li(.U, ((a+0)>>8) & 0xff)
+        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((b+0)>>8) & 0xff)
+        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((c+0)>>8) & 0xff)
+        try assembler.li(.V, ((c+0)   ) & 0xff)
+        try assembler.adc(.NONE)
+        try assembler.adc(.M)
+    }
+    
+    private func tac_sub(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setupALUOperandsAndDestinationAddress(c, a, b)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+    }
+    
+    private func tac_sub16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try assembler.li(.U, ((a+1)>>8) & 0xff)
+        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((b+1)>>8) & 0xff)
+        try assembler.li(.V, ((b+1)   ) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((c+1)>>8) & 0xff)
+        try assembler.li(.V, ((c+1)   ) & 0xff)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        
+        try assembler.li(.U, ((a+0)>>8) & 0xff)
+        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((b+0)>>8) & 0xff)
+        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((c+0)>>8) & 0xff)
+        try assembler.li(.V, ((c+0)   ) & 0xff)
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.M)
+    }
+    
+    private func tac_mul(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        // Copy the multiplier to a scratch location because we modify it in
+        // the loop.
+        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+3)
+        try assembler.li(.U, (originalMultiplierAddress>>8) & 0xff)
+        try assembler.li(.V, originalMultiplierAddress & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
+        try assembler.li(.V, multiplierAddress & 0xff)
+        try assembler.mov(.M, .A)
+        
+        try label(loopHead)
+        
+        // If the multiplier is equal to zero then bail because we're done.
+        try setAddressToLabel(loopTail)
+        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
+        try assembler.li(.V, multiplierAddress & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        // Add the multiplicand to the result.
+        try assembler.li(.U, (multiplicandAddress>>8) & 0xff)
+        try assembler.li(.V, multiplicandAddress & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, (resultAddress>>8) & 0xff)
+        try assembler.li(.V, resultAddress & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        
+        // Decrement the multiplier.
+        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
+        try assembler.li(.V, multiplierAddress & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        
+        try jmp(loopHead) // Jump back to the beginning of the loop
+        try label(loopTail)
+    }
+    
+    private func tac_mul16(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
+        // Copy the multiplier to a scratch location because we modify it in
+        // the loop.
+        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+6)
+        try assembler.li(.U, ((originalMultiplierAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (originalMultiplierAddress+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try assembler.mov(.M, .A)
+        try assembler.li(.U, ((originalMultiplierAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (originalMultiplierAddress+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try assembler.mov(.M, .A)
+        
+        // Initialize the result to zero.
+        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try assembler.li(.M, 0)
+        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try assembler.li(.M, 0)
+        
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        let notDone = labelMaker.next()
+        
+        try label(loopHead)
+        
+        // If the multiplier is equal to zero then bail because we're done.
+        try setAddressToLabel(notDone)
+        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try assembler.mov(.A, .M)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try setAddressToLabel(loopTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(notDone)
+        
+        // Add the multiplicand to the result.
+        try assembler.li(.U, ((multiplicandAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (multiplicandAddress+1) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        try assembler.li(.U, ((multiplicandAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (multiplicandAddress+0) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.adc(.NONE)
+        try assembler.adc(.M)
+        
+        // Decrement the multiplier.
+        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.dca(.NONE)
+        try assembler.dca(.M)
+        
+        // Jump back to the beginning of the loop
+        try jmp(loopHead)
+        try label(loopTail)
+    }
+    
+    private func tac_div(_ counter: Int, _ originalA: Int, _ b: Int) throws {
+        // Copy `a' to a scratch location because we modify it in the loop.
+        let a = (kScratchHi<<8) + (kScratchLo+3)
+        try assembler.li(.U, (originalA>>8) & 0xff)
+        try assembler.li(.V,  originalA & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, (a>>8) & 0xff)
+        try assembler.li(.V,  a & 0xff)
+        try assembler.mov(.M, .A)
+        
+        try div_modifyingA(counter, a, b)
+    }
+    
+    private func div_modifyingA(_ counter: Int, _ a: Int, _ b: Int) throws {
+        // Reset the counter
+        try assembler.li(.U, (counter>>8) & 0xff)
+        try assembler.li(.V,  counter & 0xff)
+        try assembler.li(.M, 0)
+        
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        // if b == 0 then bail because it's division by zero
+        try setAddressToLabel(loopHead)
+        try assembler.li(.U, (b>>8) & 0xff)
+        try assembler.li(.V,  b & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.U, (a>>8) & 0xff)
+        try assembler.li(.V,  a & 0xff)
+        try assembler.li(.M, 0)
+        try jmp(loopTail)
+        
+        // while a >= b
+        try label(loopHead)
+        try setAddressToLabel(loopTail)
+        try assembler.li(.U, (a>>8) & 0xff)
+        try assembler.li(.V,  a & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, (b>>8) & 0xff)
+        try assembler.li(.V,  b & 0xff)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jl()
+        assembler.nop()
+        assembler.nop()
+        
+        // a = a - b
+        try assembler.li(.U, (b>>8) & 0xff)
+        try assembler.li(.V,  b & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, (a>>8) & 0xff)
+        try assembler.li(.V,  a & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        
+        // c += 1
+        try assembler.li(.U, (counter>>8) & 0xff)
+        try assembler.li(.V,  counter & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 1)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        
+        // loop
+        try jmp(loopHead)
+        try label(loopTail)
+    }
+    
+    private func tac_div16(_ counterAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+        // Copy the dividend `a' to a scratch location because we modify it in
+        // the loop.
+        let addressOfA = (kScratchHi<<8) + (kScratchLo+6)
+        try assembler.li(.U, ((addressOfOriginalA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfOriginalA+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try assembler.mov(.M, .A)
+        try assembler.li(.U, ((addressOfOriginalA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfOriginalA+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try assembler.mov(.M, .A)
+        
+        try div16_modifyingA(counterAddress, addressOfA, addressOfB)
+    }
+    
+    private func div16_modifyingA(_ counterAddress: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+        // Initialize the counter to zero.
+        // `c' is the counter
+        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try assembler.li(.M, 0)
+        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try assembler.li(.M, 0)
+        
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        // if b == 0 then bail because it's division by zero
+        try setAddressToLabel(loopHead)
+        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try assembler.mov(.A, .M)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try assembler.li(.M, 0)
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try assembler.li(.M, 0)
+        try jmp(loopTail)
+        
+        // while a >= b
+        try label(loopHead)
+        
+        // Load the low bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try assembler.mov(.B, .M)
+        
+        // Compare the low bytes.
+        try assembler.sub(.NONE)
+        try assembler.sub(.NONE)
+        
+        // Load the high bytes of `a' and `b' into the A and B registers.
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try assembler.mov(.B, .M)
+        
+        // Compare the high bytes.
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.NONE)
+        
+        try setAddressToLabel(loopTail)
+        assembler.jnc()
+        assembler.nop()
+        assembler.nop()
+        
+        // a = a - b
+        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try assembler.mov(.B, .M)
+        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.M)
+        
+        // c += 1
+        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try assembler.mov(.X, .M)
+        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try assembler.mov(.Y, .M)
+        assembler.inxy()
+        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try assembler.mov(.M, .X)
+        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try assembler.mov(.M, .Y)
+        
+        // loop
+        try jmp(loopHead)
+        try label(loopTail)
+    }
+    
+    private func tac_mod(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+        let counterAddress = (kScratchHi<<8) + (kScratchLo+3)
+        
+        // Copy `a' to a scratch location because we modify it in the loop.
+        try assembler.li(.U, (addressOfOriginalA>>8) & 0xff)
+        try assembler.li(.V,  addressOfOriginalA & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, (resultAddress>>8) & 0xff)
+        try assembler.li(.V,  resultAddress & 0xff)
+        try assembler.mov(.M, .A)
+        
+        try div_modifyingA(counterAddress, resultAddress, addressOfB)
+    }
+    
+    private func tac_mod16(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+        let counterAddress = (kScratchHi<<8) + (kScratchLo+6)
+        
+        // Copy the dividend `a' to a scratch location because we modify it in
+        // the loop.
+        try assembler.li(.U, ((addressOfOriginalA+0)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfOriginalA+0) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try assembler.mov(.M, .A)
+        try assembler.li(.U, ((addressOfOriginalA+1)>>8) & 0xff)
+        try assembler.li(.V,  (addressOfOriginalA+1) & 0xff)
+        try assembler.mov(.A, .M)
+        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
+        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try assembler.mov(.M, .A)
+        
+        try div16_modifyingA(counterAddress, resultAddress, addressOfB)
     }
 }

@@ -196,7 +196,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .tac_mod(let c, let a, let b): try tac_mod(c, a, b)
         case .tac_mod16(let c, let a, let b): try tac_mod16(c, a, b)
         case .tac_eq(let c, let a, let b): try tac_eq(c, a, b)
+        case .tac_eq16(let c, let a, let b): try tac_eq16(c, a, b)
         case .tac_ne(let c, let a, let b): try tac_ne(c, a, b)
+        case .tac_ne16(let c, let a, let b): try tac_ne16(c, a, b)
         case .tac_lt(let c, let a, let b): try tac_lt(c, a, b)
         case .tac_gt(let c, let a, let b): try tac_gt(c, a, b)
         case .tac_le(let c, let a, let b): try tac_le(c, a, b)
@@ -361,24 +363,31 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func eq16(valueOnPass: Int, valueOnFail: Int) throws {
+        let a = allocateScratchMemory(2)
+        let b = allocateScratchMemory(2)
+        let c = allocateScratchMemory(1)
+        
+        try pop16()
+        try setUV(a+1)
+        try assembler.mov(.M, .A)
+        try setUV(a+0)
+        try assembler.mov(.M, .B)
+        
+        try pop16()
+        try setUV(b+1)
+        try assembler.mov(.M, .A)
+        try setUV(b+0)
+        try assembler.mov(.M, .B)
+        
+        try eq16(c, a, b, valueOnPass, valueOnFail)
+        
+        try load(from: c)
+    }
+    
+    private func eq16(_ c: Int, _ a: Int, _ b: Int, _ valueOnPass: Int, _ valueOnFail: Int) throws {
         let label_fail_test = labelMaker.next()
         let label_tail = labelMaker.next()
         
-        let a = allocateScratchMemory(2)
-        let b = allocateScratchMemory(2)
-        
-        try pop16()
-        try setUV(a+1)
-        try assembler.mov(.M, .A)
-        try setUV(a+0)
-        try assembler.mov(.M, .B)
-        
-        try pop16()
-        try setUV(b+1)
-        try assembler.mov(.M, .A)
-        try setUV(b+0)
-        try assembler.mov(.M, .B)
-        
         try setUV(b+1)
         try assembler.mov(.A, .M)
         try setUV(a+1)
@@ -403,11 +412,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         assembler.nop()
         
-        try push(valueOnPass)
+        try setUV(c)
+        try assembler.li(.M, valueOnPass)
         try jmp(label_tail)
         
         try label(label_fail_test)
-        try push(valueOnFail)
+        try setUV(c)
+        try assembler.li(.M, valueOnFail)
         
         try label(label_tail)
     }
@@ -1892,5 +1903,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         try assembler.li(.M, 0)
         try label(tail)
+    }
+    
+    private func tac_eq16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try eq16(c, a, b, 1, 0)
+    }
+    
+    private func tac_ne16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try eq16(c, a, b, 0, 1)
     }
 }

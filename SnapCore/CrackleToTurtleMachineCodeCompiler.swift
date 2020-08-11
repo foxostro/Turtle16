@@ -202,6 +202,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .tac_lt(let c, let a, let b): try tac_lt(c, a, b)
         case .tac_lt16(let c, let a, let b): try tac_lt16(c, a, b)
         case .tac_gt(let c, let a, let b): try tac_gt(c, a, b)
+        case .tac_gt16(let c, let a, let b): try tac_gt16(c, a, b)
         case .tac_le(let c, let a, let b): try tac_le(c, a, b)
         case .tac_ge(let c, let a, let b): try tac_ge(c, a, b)
         }
@@ -498,12 +499,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func gt16() throws {
-        let labelFailEqualityTest = labelMaker.next()
-        let labelTail = labelMaker.next()
-        let labelThen = labelMaker.next()
-        
-        let addressOfA = allocateScratchMemory(2) // kScratchLo+0
-        let addressOfB = allocateScratchMemory(2) // kScratchLo+2
+        let addressOfA = allocateScratchMemory(2)
+        let addressOfB = allocateScratchMemory(2)
+        let addressOfC = allocateScratchMemory(1)
 
         // Pop `a' and store in scratch memory.
         try pop16()
@@ -519,70 +517,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
         
-        // Compare low bytes of `a' and `b' into the A and B registers.
-        try setUV(addressOfA+1)
-        try assembler.mov(.A, .M)
-        try setUV(addressOfB+1)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        try setAddressToLabel(labelFailEqualityTest)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
+        try tac_gt16(addressOfC, addressOfA, addressOfB)
         
-        // Compare high bytes of `a' and `b' into the A and B registers.
-        try setUV(addressOfA+0)
-        try assembler.mov(.A, .M)
-        try setUV(addressOfB+0)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        try setAddressToLabel(labelFailEqualityTest)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        
-        // The two operands are equal so return true.
-        try jmp(labelThen)
-        
-        try label(labelFailEqualityTest)
-        
-        // Load the low bytes of `a' and `b' into the A and B registers.
-        try setUV(addressOfA+1)
-        try assembler.mov(.A, .M)
-        try setUV(addressOfB+1)
-        try assembler.mov(.B, .M)
-
-        // Compare the low bytes.
-        try assembler.sub(.NONE)
-        try assembler.sub(.NONE)
-
-        // Load the high bytes of `a' and `b' into the A and B registers.
-        try setUV(addressOfA+0)
-        try assembler.mov(.A, .M)
-        try setUV(addressOfB+0)
-        try assembler.mov(.B, .M)
-
-        // Compare the high bytes.
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.NONE)
-        
-        // A <- (carry_flag) ? 0 : 1
-        try setAddressToLabel(labelThen)
-        assembler.jnc()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.A, 1)
-        try setAddressToLabel(labelTail)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-        try label(labelThen)
-        try assembler.li(.A, 0)
-        try label(labelTail)
-        
-        try pushAToStack()
+        try load(from: addressOfC)
     }
     
     public func le() throws {
@@ -1915,6 +1852,79 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.jc()
         assembler.nop()
         assembler.nop()
+        try assembler.li(.A, 0)
+        try label(labelTail)
+        
+        // Store the value in the A register to the result, in `c'.
+        try setUV(addressOfC)
+        try assembler.mov(.M, .A)
+    }
+    
+    private func tac_gt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+        let labelFailEqualityTest = labelMaker.next()
+        let labelTail = labelMaker.next()
+        let labelThen = labelMaker.next()
+        
+        // Compare low bytes of `a' and `b' into the A and B registers.
+        try setUV(addressOfA+1)
+        try assembler.mov(.A, .M)
+        try setUV(addressOfB+1)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // Compare high bytes of `a' and `b' into the A and B registers.
+        try setUV(addressOfA+0)
+        try assembler.mov(.A, .M)
+        try setUV(addressOfB+0)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(labelFailEqualityTest)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // The two operands are equal so return true.
+        try jmp(labelThen)
+        
+        try label(labelFailEqualityTest)
+        
+        // Load the low bytes of `a' and `b' into the A and B registers.
+        try setUV(addressOfA+1)
+        try assembler.mov(.A, .M)
+        try setUV(addressOfB+1)
+        try assembler.mov(.B, .M)
+        
+        // Compare the low bytes.
+        try assembler.sub(.NONE)
+        try assembler.sub(.NONE)
+        
+        // Load the high bytes of `a' and `b' into the A and B registers.
+        try setUV(addressOfA+0)
+        try assembler.mov(.A, .M)
+        try setUV(addressOfB+0)
+        try assembler.mov(.B, .M)
+        
+        // Compare the high bytes.
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.NONE)
+        
+        // A <- (carry_flag) ? 0 : 1
+        try setAddressToLabel(labelThen)
+        assembler.jnc()
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.A, 1)
+        try setAddressToLabel(labelTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(labelThen)
         try assembler.li(.A, 0)
         try label(labelTail)
         

@@ -17,6 +17,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public static let kStackPointerAddressHi: UInt16 = 0x0000
     public static let kStackPointerAddressLo: UInt16 = 0x0001
     public static let kStackPointerInitialValue: Int = 0x0000
+    let kStackPointerAddressHi: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
+    let kStackPointerAddressLo: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo)
     let kStackPointerHiHi = Int((CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
     let kStackPointerHiLo = Int( CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
     let kStackPointerLoHi = Int((CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
@@ -29,6 +31,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public static let kFramePointerAddressHi: UInt16 = 0x0002
     public static let kFramePointerAddressLo: UInt16 = 0x0003
     public static let kFramePointerInitialValue: Int = 0x0000
+    let kFramePointerAddressHi: Int = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+    let kFramePointerAddressLo: Int = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     let kFramePointerHiHi = Int((CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
     let kFramePointerHiLo = Int( CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
     let kFramePointerLoHi = Int((CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
@@ -36,8 +40,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     let kFramePointerInitialValueHi: Int = (kFramePointerInitialValue & 0xff00) >> 8
     let kFramePointerInitialValueLo: Int =  kFramePointerInitialValue & 0x00ff
     
-    let kScratchHi = 0
-    let kScratchLo = 4
+    private var beginningOfScratchMemory = 0x0004
+    private var scratchPointer: Int
     
     let assembler: AssemblerBackEnd
     var patcherActions: [Patcher.Action] = []
@@ -54,6 +58,23 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
+        scratchPointer = beginningOfScratchMemory
+    }
+    
+    private func allocateScratchMemory(_ numWords: Int) -> Int {
+        let result = scratchPointer
+        scratchPointer += numWords
+        return result
+    }
+    
+    private func setUV(_ value: Int) throws {
+        try assembler.li(.U, (value>>8) & 0xff)
+        try assembler.li(.V, value & 0xff)
+    }
+    
+    private func setXY(_ value: Int) throws {
+        try assembler.li(.X, (value>>8) & 0xff)
+        try assembler.li(.Y, value & 0xff)
     }
     
     public func compile(ir: [CrackleInstruction],
@@ -90,8 +111,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     // inititalization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
         assembler.nop()
-        try assembler.li(.U, 0)
-        try assembler.li(.V, 0)
+        try setUV(0)
         try assembler.li(.M, kStackPointerInitialValueHi)
         assembler.inuv()
         try assembler.li(.M, kStackPointerInitialValueLo)
@@ -110,6 +130,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func compileSingleCrackleInstruction(_ instruction: CrackleInstruction) throws {
+        scratchPointer = beginningOfScratchMemory
         let instructionsBegin = assembler.instructions.count
         switch instruction {
         case .push(let value): try push(value)
@@ -212,11 +233,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public func pushsp() throws {
         // Load the 16-bit stack pointer into AB and then push to the stack.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.A, .M)
         try pushAToStack()
         try assembler.mov(.A, .B)
@@ -225,11 +244,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func loadStackPointerIntoUVandXY() throws {
         // Load the 16-bit stack pointer into XY.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.X, .M)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.Y, .M)
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
@@ -237,13 +254,12 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func decrementStackPointer() throws {
         // First, save A in a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo)
+        let scratch = allocateScratchMemory(1)
+        try setUV(scratch)
         try assembler.mov(.M, .A)
         
         // Decrement the low byte of the 16-bit stack pointer.
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.A, .M)
         try assembler.dea(.NONE)
         try assembler.dea(.A)
@@ -255,8 +271,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // Decrement the high byte of the 16-bit stack pointer, but only if the
         // above decrement set the carry flag.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.A, .M)
         try assembler.dca(.NONE)
         try assembler.dca(.A)
@@ -268,8 +283,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // Restore A
         // (We saved this to a well-known scratch location earlier.)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo)
+        try setUV(scratch)
         try assembler.mov(.A, .M)
     }
     
@@ -309,11 +323,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func storeXYToStackPointer() throws {
         // Write the modified stack pointer back to memory.
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.M, .X)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.M, .Y)
     }
     
@@ -333,8 +345,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
-        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
-        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        try setXY(jumpTarget)
         assembler.cmp()
         assembler.cmp()
         try assembler.li(.M, 1)
@@ -353,24 +364,24 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let label_fail_test = labelMaker.next()
         let label_tail = labelMaker.next()
         
+        let a = allocateScratchMemory(2)
+        let b = allocateScratchMemory(2)
+        
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try setUV(a+1)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+2)
+        try setUV(a+0)
         try assembler.mov(.M, .B)
         
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(b+1)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+0)
+        try setUV(b+0)
         try assembler.mov(.M, .B)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(b+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+3)
+        try setUV(a+1)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -380,10 +391,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         assembler.nop()
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        try setUV(b+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+2)
+        try setUV(a+0)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -406,8 +416,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
-        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
-        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        try setXY(jumpTarget)
         assembler.cmp()
         assembler.cmp()
         try assembler.li(.M, 1)
@@ -426,8 +435,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
-        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
-        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        try setXY(jumpTarget)
         assembler.cmp()
         assembler.cmp()
         try assembler.li(.M, 1)
@@ -442,30 +450,27 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         
-        let addressOfA = kScratchLo+0
-        let addressOfB = kScratchLo+2
+        let addressOfA = allocateScratchMemory(2)
+        let addressOfB = allocateScratchMemory(2)
 
         // Pop `b' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .B)
         
         // Compare low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -475,10 +480,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // Compare high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -494,10 +498,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(labelFailEqualityTest)
         
         // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
 
         // Compare the low bytes.
@@ -505,10 +508,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sub(.NONE)
 
         // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
 
         try setAddressToLabel(labelTail)
@@ -532,8 +534,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
-        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
-        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        try setXY(jumpTarget)
         assembler.cmp()
         assembler.cmp()
         try assembler.li(.M, 1)
@@ -549,30 +550,27 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let labelTail = labelMaker.next()
         let labelThen = labelMaker.next()
         
-        let addressOfA = kScratchLo+0
-        let addressOfB = kScratchLo+2
+        let addressOfA = allocateScratchMemory(2) // kScratchLo+0
+        let addressOfB = allocateScratchMemory(2) // kScratchLo+2
 
         // Pop `a' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .B)
 
         // Pop `b' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
         
         // Compare low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -582,10 +580,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // Compare high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -600,10 +597,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(labelFailEqualityTest)
         
         // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
 
         // Compare the low bytes.
@@ -611,10 +607,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sub(.NONE)
 
         // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
 
         // Compare the high bytes.
@@ -642,8 +637,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
-        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
-        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        try setXY(jumpTarget)
         assembler.cmp()
         assembler.cmp()
         try assembler.li(.M, 1)
@@ -655,30 +649,27 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func le16() throws {
-        let addressOfA = kScratchLo+0
-        let addressOfB = kScratchLo+2
+        let addressOfA = allocateScratchMemory(2) // kScratchLo+0
+        let addressOfB = allocateScratchMemory(2) // kScratchLo+2
 
         // Pop `b' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .B)
 
         // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
 
         // Compare the low bytes.
@@ -686,10 +677,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sub(.NONE)
 
         // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
         
         let labelThen = labelMaker.next()
@@ -713,8 +703,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popTwoDecrementStackPointerAndLeaveInUVandXY()
         
         let jumpTarget = assembler.programCounter + 9
-        try assembler.li(.X, (jumpTarget & 0xff00) >> 8)
-        try assembler.li(.Y,  jumpTarget & 0x00ff)
+        try setXY(jumpTarget)
         assembler.cmp()
         assembler.cmp()
         try assembler.li(.M, 1)
@@ -726,30 +715,27 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func ge16() throws {
-        let addressOfA = kScratchLo+0
-        let addressOfB = kScratchLo+2
+        let addressOfA = allocateScratchMemory(2) // kScratchLo+0
+        let addressOfB = allocateScratchMemory(2) // kScratchLo+2
 
         // Pop `b' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
 
         // Pop `a' and store in scratch memory.
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .B)
 
         // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+1)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+1)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
 
         // Compare the low bytes.
@@ -757,10 +743,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sub(.NONE)
 
         // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, addressOfA+0)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, addressOfB+0)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
 
         // Compare the high bytes.
@@ -794,35 +779,29 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func add16() throws {
-        let a = (kScratchHi<<8) + (kScratchLo+0)
-        let b = (kScratchHi<<8) + (kScratchLo+2)
-        let c = (kScratchHi<<8) + (kScratchLo+2)
+        let a = allocateScratchMemory(2)
+        let b = allocateScratchMemory(2)
+        let c = allocateScratchMemory(2)
         
         try pop16()
-        try assembler.li(.U, ((b+1)>>8) & 0xff)
-        try assembler.li(.V, ((b+1)   ) & 0xff)
+        try setUV(b+1)
         try assembler.mov(.M, .B)
-        try assembler.li(.U, ((b+0)>>8) & 0xff)
-        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try setUV(b+0)
         try assembler.mov(.M, .A)
         
         try pop16()
-        try assembler.li(.U, ((a+1)>>8) & 0xff)
-        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try setUV(a+1)
         try assembler.mov(.M, .B)
-        try assembler.li(.U, ((a+0)>>8) & 0xff)
-        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try setUV(a+0)
         try assembler.mov(.M, .A)
         
         try tac_add16(c, a, b)
         
-        try assembler.li(.U, ((c+1)>>8) & 0xff)
-        try assembler.li(.V, ((c+1)   ) & 0xff)
+        try setUV(c+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, ((c+0)>>8) & 0xff)
-        try assembler.li(.V, ((c+0)   ) & 0xff)
+        try setUV(c+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -835,35 +814,29 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func sub16() throws {
-        let a = (kScratchHi<<8) + (kScratchLo+0)
-        let b = (kScratchHi<<8) + (kScratchLo+2)
-        let c = (kScratchHi<<8) + (kScratchLo+2)
+        let a = allocateScratchMemory(2)
+        let b = allocateScratchMemory(2)
+        let c = allocateScratchMemory(2)
         
         try pop16()
-        try assembler.li(.U, ((b+1)>>8) & 0xff)
-        try assembler.li(.V, ((b+1)   ) & 0xff)
+        try setUV(b+1)
         try assembler.mov(.M, .B)
-        try assembler.li(.U, ((b+0)>>8) & 0xff)
-        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try setUV(b+0)
         try assembler.mov(.M, .A)
         
         try pop16()
-        try assembler.li(.U, ((a+1)>>8) & 0xff)
-        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try setUV(a+1)
         try assembler.mov(.M, .B)
-        try assembler.li(.U, ((a+0)>>8) & 0xff)
-        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try setUV(a+0)
         try assembler.mov(.M, .A)
         
         try tac_sub16(c, b, a)
         
-        try assembler.li(.U, ((c+1)>>8) & 0xff)
-        try assembler.li(.V, ((c+1)   ) & 0xff)
+        try setUV(c+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, ((c+0)>>8) & 0xff)
-        try assembler.li(.V, ((c+0)   ) & 0xff)
+        try setUV(c+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -872,22 +845,15 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         
         // A is the Multiplicand, B is the Multiplier
-        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+0)
-        let multiplicandAddress = (kScratchHi<<8) + (kScratchLo+1)
-        let resultAddress = (kScratchHi<<8) + (kScratchLo+2)
+        let multiplierAddress = allocateScratchMemory(1)
+        let multiplicandAddress = allocateScratchMemory(1)
+        let resultAddress = allocateScratchMemory(1)
         
-        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
-        try assembler.li(.V, multiplierAddress & 0xff)
+        try setUV(multiplierAddress)
         try assembler.mov(.M, .B)
-        if multiplicandAddress != multiplierAddress {
-            try assembler.li(.U, (multiplicandAddress>>8) & 0xff)
-            try assembler.li(.V, multiplicandAddress & 0xff)
-        }
+        try setUV(multiplicandAddress)
         try assembler.mov(.M, .A)
-        if resultAddress != multiplicandAddress {
-            try assembler.li(.U, (resultAddress>>8) & 0xff)
-            try assembler.li(.V, resultAddress & 0xff)
-        }
+        try setUV(resultAddress)
         try assembler.li(.M, 0)
         
         try tac_mul(resultAddress, multiplicandAddress, multiplierAddress)
@@ -900,40 +866,34 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func mul16() throws {
-        let multiplicandAddress = (kScratchHi<<8) + (kScratchLo+0)
-        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+2)
-        let resultAddress = (kScratchHi<<8) + (kScratchLo+4)
+        let multiplicandAddress = allocateScratchMemory(2)
+        let multiplierAddress = allocateScratchMemory(2)
+        let resultAddress = allocateScratchMemory(2)
         
         // Pop the multiplicand and store in scratch memory.
         try pop16()
-        try assembler.li(.U, ((multiplicandAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (multiplicandAddress+0) & 0xff)
+        try setUV(multiplicandAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((multiplicandAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (multiplicandAddress+1) & 0xff)
+        try setUV(multiplicandAddress+1)
         try assembler.mov(.M, .B)
         
         // Pop the multiplier and store in scratch memory.
         try pop16()
-        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try setUV(multiplierAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try setUV(multiplierAddress+1)
         try assembler.mov(.M, .B)
         
         try tac_mul16(resultAddress, multiplicandAddress, multiplierAddress)
         
         // Push the result onto the stack.
         // First the low byte
-        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try setUV(resultAddress+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
         // Then the high byte
-        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try setUV(resultAddress+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -941,63 +901,53 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func div() throws {
         try pop16()
         
-        let dividend = (kScratchHi<<8) + (kScratchLo+0)
-        let divisor = (kScratchHi<<8) + (kScratchLo+1)
-        let counter = (kScratchHi<<8) + (kScratchLo+2)
+        let dividend = allocateScratchMemory(1)
+        let divisor = allocateScratchMemory(1)
+        let counter = allocateScratchMemory(1)
         
         // A is the Dividend, B is the Divisor
-        try assembler.li(.U, (dividend>>8) & 0xff)
-        try assembler.li(.V,  dividend & 0xff)
+        try setUV(dividend)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, (divisor>>8) & 0xff)
-        try assembler.li(.V,  divisor & 0xff)
+        try setUV(divisor)
         try assembler.mov(.M, .B)
         
         try div_modifyingA(counter, dividend, divisor)
         
         // Return the result in the A register.
-        try assembler.li(.U, (counter>>8) & 0xff)
-        try assembler.li(.V,  counter & 0xff)
+        try setUV(counter)
         try assembler.mov(.A, .M)
         
         try pushAToStack()
     }
     
     public func div16() throws {
-        let addressOfB = (kScratchHi<<8) + (kScratchLo+0)
-        let addressOfA = (kScratchHi<<8) + (kScratchLo+2)
-        let counterAddress = (kScratchHi<<8) + (kScratchLo+4)
+        let addressOfB = allocateScratchMemory(2)
+        let addressOfA = allocateScratchMemory(2)
+        let counterAddress = allocateScratchMemory(2)
 
         // Pop the divisor and store in scratch memory.
         // `b' is the Divisor
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try setUV(addressOfB+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
 
         // Pop the dividend and store in scratch memory.
         // `a' is the Dividend
         try pop16()
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .B)
 
         try div16_modifyingA(counterAddress, addressOfA, addressOfB)
 
         // Push the result to the stack. First the low byte, then the high byte.
-        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try setUV(counterAddress+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
-        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try setUV(counterAddress+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1005,63 +955,53 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func mod() throws {
         try pop16()
         
-        let dividend = (kScratchHi<<8) + (kScratchLo+0)
-        let divisor = (kScratchHi<<8) + (kScratchLo+1)
-        let counter = (kScratchHi<<8) + (kScratchLo+2)
+        let dividend = allocateScratchMemory(1)
+        let divisor = allocateScratchMemory(1)
+        let counter = allocateScratchMemory(1)
         
         // A is the Dividend, B is the Divisor
-        try assembler.li(.U, (dividend>>8) & 0xff)
-        try assembler.li(.V,  dividend & 0xff)
+        try setUV(dividend)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, (divisor>>8) & 0xff)
-        try assembler.li(.V,  divisor & 0xff)
+        try setUV(divisor)
         try assembler.mov(.M, .B)
         
         try div_modifyingA(counter, dividend, divisor)
         
         // Return the result in the A register.
-        try assembler.li(.U, (dividend>>8) & 0xff)
-        try assembler.li(.V,  dividend & 0xff)
+        try setUV(dividend)
         try assembler.mov(.A, .M)
         
         try pushAToStack()
     }
     
     public func mod16() throws {
-        let addressOfB = (kScratchHi<<8) + (kScratchLo+0)
-        let addressOfA = (kScratchHi<<8) + (kScratchLo+2)
-        let counterAddress = (kScratchHi<<8) + (kScratchLo+4)
+        let addressOfB = allocateScratchMemory(2)
+        let addressOfA = allocateScratchMemory(2)
+        let counterAddress = allocateScratchMemory(2)
 
         // Pop the divisor and store in scratch memory.
         // `b' is the Divisor
         try pop16()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try setUV(addressOfB+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try setUV(addressOfB+1)
         try assembler.mov(.M, .B)
 
         // Pop the dividend and store in scratch memory.
         // `a' is the Dividend
         try pop16()
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .B)
 
         try div16_modifyingA(counterAddress, addressOfA, addressOfB)
 
         // Push the result to the stack. First the low byte, then the high byte.
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1070,8 +1010,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try decrementStackPointer()
         
         // Load the value from RAM to A.
-        try assembler.li(.U, (address & 0xff00) >> 8)
-        try assembler.li(.V,  address & 0x00ff)
+        try setUV(address)
         try assembler.mov(.A, .M)
         
         try loadStackPointerIntoUVandXY()
@@ -1081,13 +1020,11 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func load16(from address: Int) throws {
-        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+1) & 0x00ff)
+        try setUV(address+1)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+0) & 0x00ff)
+        try setUV(address+0)
         try assembler.mov(.A, .M)
         try pushAToStack()
     }
@@ -1099,24 +1036,21 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         
         // Now write A into the specified address.
-        try assembler.li(.U, (address & 0xff00) >> 8)
-        try assembler.li(.V,  address & 0x00ff)
+        try setUV(address)
         try assembler.mov(.M, .A)
     }
     
     public func store16(to address: Int) throws {
         try loadStackPointerIntoUVandXY()
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((address+0) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+0) & 0x00ff)
+        try setUV(address+0)
         try assembler.mov(.M, .A)
         
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
         assembler.inuv()
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((address+1) & 0xff00) >> 8)
-        try assembler.li(.V,  (address+1) & 0x00ff)
+        try setUV(address+1)
         try assembler.mov(.M, .A)
     }
     
@@ -1138,11 +1072,12 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func loadIndirect16() throws {
         try pop16()
         
+        let a = allocateScratchMemory(2)
+        
         // Stash the address in scratch memory.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try setUV(a+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+3)
+        try setUV(a+1)
         try assembler.mov(.M, .B)
         
         // Load the low word and push to the stack.
@@ -1153,10 +1088,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
         
         // Retrieve the address from scratch memory.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try setUV(a+0)
         try assembler.mov(.X, .M)
-        try assembler.li(.V, kScratchLo+3)
+        try setUV(a+1)
         try assembler.mov(.Y, .M)
         
         // Load the high word and push to the stack.
@@ -1169,83 +1103,72 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func loadIndirectN(_ count: Int) throws {
         try pop16()
         
-        // Stash the source address in scratch memory @ (4,5)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+4)
+        // Stash the source address in scratch memory
+        let sourceAddress = allocateScratchMemory(2)
+        try setUV(sourceAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+5)
+        try setUV(sourceAddress+1)
         try assembler.mov(.M, .B)
         
-        // Stash the stack pointer in scratch memory @ (0,1)
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        // Stash the stack pointer in scratch memory
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        let stashedStackPointerAddress = allocateScratchMemory(2)
+        try setUV(stashedStackPointerAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedStackPointerAddress+1)
         try assembler.mov(.M, .A)
         
-        // Stash the count in scratch memory. @ (2,3)
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
-        try assembler.li(.M, Int((UInt16(count) & 0xff00) >> 8))
-        try assembler.li(.V, kScratchLo+3)
-        try assembler.li(.M, Int((UInt16(count) & 0x00ff)))
+        // Stash the count in scratch memory.
+        let stashedCountAddress = allocateScratchMemory(2)
+        try setUV(stashedCountAddress+0)
+        try assembler.li(.M, (count>>8) & 0xff)
+        try setUV(stashedCountAddress+1)
+        try assembler.li(.M, count & 0xff)
         
         // Perform a 16-bit subtraction to subtract the count from SP.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedStackPointerAddress+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+3)
+        try setUV(stashedCountAddress+1)
         try assembler.mov(.B, .M)
         try assembler.sub(.NONE)
         try assembler.sub(.M)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        try setUV(stashedStackPointerAddress+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.V, kScratchLo+2)
+        try setUV(stashedCountAddress+0)
         try assembler.mov(.B, .M)
         try assembler.sbc(.NONE)
         try assembler.sbc(.M)
         
         // Store the updated stack pointer back to memory.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+2)
+        try setUV(stashedCountAddress+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.M, .A)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+3)
+        try setUV(stashedCountAddress+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.M, .A)
         
         // Copy bytes from the source address to the destination address on the stack.
         for i in 0..<count {
             // Load a byte from the source address into A.
-            try assembler.li(.U, kScratchHi)
-            try assembler.li(.V, kScratchLo+4)
+            try setUV(sourceAddress+0)
             try assembler.mov(.X, .M)
-            try assembler.li(.V, kScratchLo+5)
+            try setUV(sourceAddress+1)
             try assembler.mov(.Y, .M)
             try assembler.mov(.U, .X)
             try assembler.mov(.V, .Y)
             try assembler.mov(.A, .M)
             
             // Store A to the destination address
-            try assembler.li(.U, kScratchHi)
-            try assembler.li(.V, kScratchLo+2)
+            try setUV(stashedCountAddress+0)
             try assembler.mov(.X, .M)
-            try assembler.li(.V, kScratchLo+3)
+            try setUV(stashedCountAddress+1)
             try assembler.mov(.Y, .M)
             try assembler.mov(.U, .X)
             try assembler.mov(.V, .Y)
@@ -1253,33 +1176,29 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
             
             if i < count - 1 {
                 // Increment and write back the source address
-                try assembler.li(.U, kScratchHi)
-                try assembler.li(.V, kScratchLo+4)
+                try setUV(sourceAddress+0)
                 try assembler.mov(.X, .M)
-                try assembler.li(.V, kScratchLo+5)
+                try setUV(sourceAddress+1)
                 try assembler.mov(.Y, .M)
                 try assembler.mov(.U, .X)
                 try assembler.mov(.V, .Y)
                 assembler.inxy()
-                try assembler.li(.U, kScratchHi)
-                try assembler.li(.V, kScratchLo+4)
+                try setUV(sourceAddress+0)
                 try assembler.mov(.M, .X)
-                try assembler.li(.V, kScratchLo+5)
+                try setUV(sourceAddress+1)
                 try assembler.mov(.M, .Y)
                 
                 // Increment and write back the destination address
-                try assembler.li(.U, kScratchHi)
-                try assembler.li(.V, kScratchLo+2)
+                try setUV(stashedCountAddress+0)
                 try assembler.mov(.X, .M)
-                try assembler.li(.V, kScratchLo+3)
+                try setUV(stashedCountAddress+1)
                 try assembler.mov(.Y, .M)
                 try assembler.mov(.U, .X)
                 try assembler.mov(.V, .Y)
                 assembler.inxy()
-                try assembler.li(.U, kScratchHi)
-                try assembler.li(.V, kScratchLo+2)
+                try setUV(stashedCountAddress+0)
                 try assembler.mov(.M, .X)
-                try assembler.li(.V, kScratchLo+3)
+                try setUV(stashedCountAddress+1)
                 try assembler.mov(.M, .Y)
             }
         }
@@ -1289,10 +1208,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         
         // Stash the destination address in a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        let stashedDestinationAddress = allocateScratchMemory(2)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.M, .B)
         
         // Copy the top of the stack into A.
@@ -1300,10 +1219,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         
         // Restore the stashed destination address to UV and XY.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.X, .M)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.Y, .M)
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
@@ -1316,10 +1234,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         
         // Stash the destination address in a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        let stashedDestinationAddress = allocateScratchMemory(2)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.M, .B)
         
         // Copy the two bytes at the top of the stack into A and B
@@ -1329,10 +1247,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.B, .M)
         
         // Restore the stashed destination address to UV and XY.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.X, .M)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.Y, .M)
         try assembler.mov(.U, .X)
         try assembler.mov(.V, .Y)
@@ -1348,10 +1265,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         
         // Stash the destination address in a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        let stashedDestinationAddress = allocateScratchMemory(2)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.M, .B)
         
         for i in 0..<count {
@@ -1363,10 +1280,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
             try assembler.mov(.A, .M)
             
             // Restore the stashed destination address to UV and XY.
-            try assembler.li(.U, kScratchHi)
-            try assembler.li(.V, kScratchLo+0)
+            try setUV(stashedDestinationAddress+0)
             try assembler.mov(.X, .M)
-            try assembler.li(.V, kScratchLo+1)
+            try setUV(stashedDestinationAddress+1)
             try assembler.mov(.Y, .M)
             try assembler.mov(.U, .X)
             try assembler.mov(.V, .Y)
@@ -1422,56 +1338,44 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func enter() throws {
         // push fp in two bytes ; fp <- sp
         
-        try assembler.li(.U, kFramePointerLoHi)
-        try assembler.li(.V, kFramePointerLoLo)
+        try setUV(kFramePointerAddressLo)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, kFramePointerHiHi)
-        try assembler.li(.V, kFramePointerHiLo)
+        try setUV(kFramePointerAddressHi)
         try assembler.mov(.A, .M)
         try pushAToStack()
         
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.X, .M)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.Y, .M)
 
-        try assembler.li(.U, kFramePointerHiHi)
-        try assembler.li(.V, kFramePointerHiLo)
+        try setUV(kFramePointerAddressHi)
         try assembler.mov(.M, .X)
-        try assembler.li(.U, kFramePointerLoHi)
-        try assembler.li(.V, kFramePointerLoLo)
+        try setUV(kFramePointerAddressLo)
         try assembler.mov(.M, .Y)
     }
     
     public func leave() throws {
         // sp <- fp ; fp <- pop two bytes from the stack
         
-        try assembler.li(.U, kFramePointerHiHi)
-        try assembler.li(.V, kFramePointerHiLo)
+        try setUV(kFramePointerAddressHi)
         try assembler.mov(.X, .M)
-        try assembler.li(.U, kFramePointerLoHi)
-        try assembler.li(.V, kFramePointerLoLo)
+        try setUV(kFramePointerAddressLo)
         try assembler.mov(.Y, .M)
         
-        try assembler.li(.U, kStackPointerHiHi)
-        try assembler.li(.V, kStackPointerHiLo)
+        try setUV(kStackPointerAddressHi)
         try assembler.mov(.M, .X)
-        try assembler.li(.U, kStackPointerLoHi)
-        try assembler.li(.V, kStackPointerLoLo)
+        try setUV(kStackPointerAddressLo)
         try assembler.mov(.M, .Y)
         
         try popInMemoryStackIntoRegisterB()
-        try assembler.li(.U, kFramePointerHiHi)
-        try assembler.li(.V, kFramePointerHiLo)
+        try setUV(kFramePointerAddressHi)
         try assembler.mov(.M, .B)
         
         try popInMemoryStackIntoRegisterB()
-        try assembler.li(.U, kFramePointerLoHi)
-        try assembler.li(.V, kFramePointerLoLo)
+        try setUV(kFramePointerAddressLo)
         try assembler.mov(.M, .B)
     }
     
@@ -1491,16 +1395,16 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func ret() throws {
+        let addressOfReturnAddressHi = allocateScratchMemory(1)
+        
         try popInMemoryStackIntoRegisterB()
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo)
+        try setUV(addressOfReturnAddressHi)
         try assembler.mov(.M, .B)
         
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.Y, .B)
         
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo)
+        try setUV(addressOfReturnAddressHi)
         try assembler.mov(.X, .M)
         
         assembler.jmp()
@@ -1527,10 +1431,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pop16()
         
         // Stash the destination address in a well-known scratch location.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        let stashedDestinationAddress = allocateScratchMemory(2)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.M, .B)
         
         // Copy the top of the stack into A.
@@ -1538,10 +1442,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         
         // Restore the stashed destination address to XY.
-        try assembler.li(.U, kScratchHi)
-        try assembler.li(.V, kScratchLo+0)
+        try setUV(stashedDestinationAddress+0)
         try assembler.mov(.X, .M)
-        try assembler.li(.V, kScratchLo+1)
+        try setUV(stashedDestinationAddress+1)
         try assembler.mov(.Y, .M)
         
         // Store A to the destination address on the peripheral bus.
@@ -1549,13 +1452,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func dup() throws {
-        let scratch = kScratchHi<<8 + kScratchLo
+        let scratch = allocateScratchMemory(1)
         try store(to: scratch)
         try load(from: scratch)
     }
     
     public func dup16() throws {
-        let scratch = kScratchHi<<8 + kScratchLo + 2
+        let scratch = allocateScratchMemory(2)
         try store16(to: scratch)
         try load16(from: scratch)
     }
@@ -1567,40 +1470,27 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
         
     private func setupALUOperandsAndDestinationAddress(_ c: Int, _ a: Int, _ b: Int) throws {
-        try assembler.li(.U, (b >> 8) & 0xff)
-        try assembler.li(.V, b & 0xff)
+        try setUV(b)
         try assembler.mov(.B, .M)
-        if a != b {
-            try assembler.li(.U, (a >> 8) & 0xff)
-            try assembler.li(.V, a & 0xff)
-        }
+        try setUV(a)
         try assembler.mov(.A, .M)
-        if c != a {
-            try assembler.li(.U, (c >> 8) & 0xff)
-            try assembler.li(.V, c & 0xff)
-        }
+        try setUV(c)
     }
     
     private func tac_add16(_ c: Int, _ a: Int, _ b: Int) throws {
-        try assembler.li(.U, ((a+1)>>8) & 0xff)
-        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try setUV(a+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((b+1)>>8) & 0xff)
-        try assembler.li(.V, ((b+1)   ) & 0xff)
+        try setUV(b+1)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((c+1)>>8) & 0xff)
-        try assembler.li(.V, ((c+1)   ) & 0xff)
+        try setUV(c+1)
         try assembler.add(.NONE)
         try assembler.add(.M)
         
-        try assembler.li(.U, ((a+0)>>8) & 0xff)
-        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try setUV(a+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((b+0)>>8) & 0xff)
-        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try setUV(b+0)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((c+0)>>8) & 0xff)
-        try assembler.li(.V, ((c+0)   ) & 0xff)
+        try setUV(c+0)
         try assembler.adc(.NONE)
         try assembler.adc(.M)
     }
@@ -1612,25 +1502,19 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func tac_sub16(_ c: Int, _ a: Int, _ b: Int) throws {
-        try assembler.li(.U, ((a+1)>>8) & 0xff)
-        try assembler.li(.V, ((a+1)   ) & 0xff)
+        try setUV(a+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((b+1)>>8) & 0xff)
-        try assembler.li(.V, ((b+1)   ) & 0xff)
+        try setUV(b+1)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((c+1)>>8) & 0xff)
-        try assembler.li(.V, ((c+1)   ) & 0xff)
+        try setUV(c+1)
         try assembler.sub(.NONE)
         try assembler.sub(.M)
         
-        try assembler.li(.U, ((a+0)>>8) & 0xff)
-        try assembler.li(.V, ((a+0)   ) & 0xff)
+        try setUV(a+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((b+0)>>8) & 0xff)
-        try assembler.li(.V, ((b+0)   ) & 0xff)
+        try setUV(b+0)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((c+0)>>8) & 0xff)
-        try assembler.li(.V, ((c+0)   ) & 0xff)
+        try setUV(c+0)
         try assembler.sbc(.NONE)
         try assembler.sbc(.M)
     }
@@ -1641,20 +1525,17 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // Copy the multiplier to a scratch location because we modify it in
         // the loop.
-        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+3)
-        try assembler.li(.U, (originalMultiplierAddress>>8) & 0xff)
-        try assembler.li(.V, originalMultiplierAddress & 0xff)
+        let multiplierAddress = allocateScratchMemory(1)
+        try setUV(originalMultiplierAddress)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
-        try assembler.li(.V, multiplierAddress & 0xff)
+        try setUV(multiplierAddress)
         try assembler.mov(.M, .A)
         
         try label(loopHead)
         
         // If the multiplier is equal to zero then bail because we're done.
         try setAddressToLabel(loopTail)
-        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
-        try assembler.li(.V, multiplierAddress & 0xff)
+        try setUV(multiplierAddress)
         try assembler.mov(.A, .M)
         try assembler.li(.B, 0)
         assembler.cmp()
@@ -1665,18 +1546,15 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // Add the multiplicand to the result.
-        try assembler.li(.U, (multiplicandAddress>>8) & 0xff)
-        try assembler.li(.V, multiplicandAddress & 0xff)
+        try setUV(multiplicandAddress)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, (resultAddress>>8) & 0xff)
-        try assembler.li(.V, resultAddress & 0xff)
+        try setUV(resultAddress)
         try assembler.mov(.A, .M)
         try assembler.add(.NONE)
         try assembler.add(.M)
         
         // Decrement the multiplier.
-        try assembler.li(.U, (multiplierAddress>>8) & 0xff)
-        try assembler.li(.V, multiplierAddress & 0xff)
+        try setUV(multiplierAddress)
         try assembler.mov(.A, .M)
         try assembler.dea(.NONE)
         try assembler.dea(.M)
@@ -1688,26 +1566,20 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     private func tac_mul16(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
         // Copy the multiplier to a scratch location because we modify it in
         // the loop.
-        let multiplierAddress = (kScratchHi<<8) + (kScratchLo+6)
-        try assembler.li(.U, ((originalMultiplierAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (originalMultiplierAddress+0) & 0xff)
+        let multiplierAddress = allocateScratchMemory(2)
+        try setUV(originalMultiplierAddress+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try setUV(multiplierAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((originalMultiplierAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (originalMultiplierAddress+1) & 0xff)
+        try setUV(originalMultiplierAddress+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try setUV(multiplierAddress+1)
         try assembler.mov(.M, .A)
         
         // Initialize the result to zero.
-        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try setUV(resultAddress+0)
         try assembler.li(.M, 0)
-        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try setUV(resultAddress+1)
         try assembler.li(.M, 0)
         
         let loopHead = labelMaker.next()
@@ -1718,8 +1590,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // If the multiplier is equal to zero then bail because we're done.
         try setAddressToLabel(notDone)
-        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try setUV(multiplierAddress+1)
         try assembler.mov(.A, .M)
         try assembler.li(.B, 0)
         assembler.cmp()
@@ -1728,8 +1599,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.jne()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try setUV(multiplierAddress+0)
         try assembler.mov(.A, .M)
         assembler.cmp()
         assembler.cmp()
@@ -1744,31 +1614,25 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(notDone)
         
         // Add the multiplicand to the result.
-        try assembler.li(.U, ((multiplicandAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (multiplicandAddress+1) & 0xff)
+        try setUV(multiplicandAddress+1)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try setUV(resultAddress+1)
         try assembler.mov(.A, .M)
         try assembler.add(.NONE)
         try assembler.add(.M)
-        try assembler.li(.U, ((multiplicandAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (multiplicandAddress+0) & 0xff)
+        try setUV(multiplicandAddress+0)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try setUV(resultAddress+0)
         try assembler.mov(.A, .M)
         try assembler.adc(.NONE)
         try assembler.adc(.M)
         
         // Decrement the multiplier.
-        try assembler.li(.U, ((multiplierAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+1) & 0xff)
+        try setUV(multiplierAddress+1)
         try assembler.mov(.A, .M)
         try assembler.dea(.NONE)
         try assembler.dea(.M)
-        try assembler.li(.U, ((multiplierAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (multiplierAddress+0) & 0xff)
+        try setUV(multiplierAddress+0)
         try assembler.mov(.A, .M)
         try assembler.dca(.NONE)
         try assembler.dca(.M)
@@ -1780,12 +1644,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func tac_div(_ counter: Int, _ originalA: Int, _ b: Int) throws {
         // Copy `a' to a scratch location because we modify it in the loop.
-        let a = (kScratchHi<<8) + (kScratchLo+3)
-        try assembler.li(.U, (originalA>>8) & 0xff)
-        try assembler.li(.V,  originalA & 0xff)
+        let a = allocateScratchMemory(1)
+        try setUV(originalA)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, (a>>8) & 0xff)
-        try assembler.li(.V,  a & 0xff)
+        try setUV(a)
         try assembler.mov(.M, .A)
         
         try div_modifyingA(counter, a, b)
@@ -1793,8 +1655,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func div_modifyingA(_ counter: Int, _ a: Int, _ b: Int) throws {
         // Reset the counter
-        try assembler.li(.U, (counter>>8) & 0xff)
-        try assembler.li(.V,  counter & 0xff)
+        try setUV(counter)
         try assembler.li(.M, 0)
         
         let loopHead = labelMaker.next()
@@ -1802,8 +1663,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // if b == 0 then bail because it's division by zero
         try setAddressToLabel(loopHead)
-        try assembler.li(.U, (b>>8) & 0xff)
-        try assembler.li(.V,  b & 0xff)
+        try setUV(b)
         try assembler.mov(.A, .M)
         try assembler.li(.B, 0)
         assembler.cmp()
@@ -1812,19 +1672,16 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.jne()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.U, (a>>8) & 0xff)
-        try assembler.li(.V,  a & 0xff)
+        try setUV(a)
         try assembler.li(.M, 0)
         try jmp(loopTail)
         
         // while a >= b
         try label(loopHead)
         try setAddressToLabel(loopTail)
-        try assembler.li(.U, (a>>8) & 0xff)
-        try assembler.li(.V,  a & 0xff)
+        try setUV(a)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, (b>>8) & 0xff)
-        try assembler.li(.V,  b & 0xff)
+        try setUV(b)
         try assembler.mov(.B, .M)
         assembler.cmp()
         assembler.cmp()
@@ -1834,18 +1691,15 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // a = a - b
-        try assembler.li(.U, (b>>8) & 0xff)
-        try assembler.li(.V,  b & 0xff)
+        try setUV(b)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, (a>>8) & 0xff)
-        try assembler.li(.V,  a & 0xff)
+        try setUV(a)
         try assembler.mov(.A, .M)
         try assembler.sub(.NONE)
         try assembler.sub(.M)
         
         // c += 1
-        try assembler.li(.U, (counter>>8) & 0xff)
-        try assembler.li(.V,  counter & 0xff)
+        try setUV(counter)
         try assembler.mov(.A, .M)
         try assembler.li(.B, 1)
         try assembler.add(.NONE)
@@ -1859,18 +1713,14 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     private func tac_div16(_ counterAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         // Copy the dividend `a' to a scratch location because we modify it in
         // the loop.
-        let addressOfA = (kScratchHi<<8) + (kScratchLo+6)
-        try assembler.li(.U, ((addressOfOriginalA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfOriginalA+0) & 0xff)
+        let addressOfA = allocateScratchMemory(2)
+        try setUV(addressOfOriginalA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((addressOfOriginalA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfOriginalA+1) & 0xff)
+        try setUV(addressOfOriginalA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.mov(.M, .A)
         
         try div16_modifyingA(counterAddress, addressOfA, addressOfB)
@@ -1879,11 +1729,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     private func div16_modifyingA(_ counterAddress: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         // Initialize the counter to zero.
         // `c' is the counter
-        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try setUV(counterAddress+0)
         try assembler.li(.M, 0)
-        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try setUV(counterAddress+1)
         try assembler.li(.M, 0)
         
         let loopHead = labelMaker.next()
@@ -1891,8 +1739,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // if b == 0 then bail because it's division by zero
         try setAddressToLabel(loopHead)
-        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try setUV(addressOfB+1)
         try assembler.mov(.A, .M)
         try assembler.li(.B, 0)
         assembler.cmp()
@@ -1901,8 +1748,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.jne()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try setUV(addressOfB+0)
         try assembler.mov(.A, .M)
         assembler.cmp()
         assembler.cmp()
@@ -1910,11 +1756,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.jne()
         assembler.nop()
         assembler.nop()
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.li(.M, 0)
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.li(.M, 0)
         try jmp(loopTail)
         
@@ -1922,11 +1766,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(loopHead)
         
         // Load the low bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
         
         // Compare the low bytes.
@@ -1934,11 +1776,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sub(.NONE)
         
         // Load the high bytes of `a' and `b' into the A and B registers.
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
         
         // Compare the high bytes.
@@ -1951,36 +1791,28 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         
         // a = a - b
-        try assembler.li(.U, ((addressOfB+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+1) & 0xff)
+        try setUV(addressOfB+1)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((addressOfA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+1) & 0xff)
+        try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
         try assembler.sub(.NONE)
         try assembler.sub(.M)
-        try assembler.li(.U, ((addressOfB+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfB+0) & 0xff)
+        try setUV(addressOfB+0)
         try assembler.mov(.B, .M)
-        try assembler.li(.U, ((addressOfA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfA+0) & 0xff)
+        try setUV(addressOfA+0)
         try assembler.mov(.A, .M)
         try assembler.sbc(.NONE)
         try assembler.sbc(.M)
         
         // c += 1
-        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try setUV(counterAddress+0)
         try assembler.mov(.X, .M)
-        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try setUV(counterAddress+1)
         try assembler.mov(.Y, .M)
         assembler.inxy()
-        try assembler.li(.U, ((counterAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+0) & 0xff)
+        try setUV(counterAddress+0)
         try assembler.mov(.M, .X)
-        try assembler.li(.U, ((counterAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (counterAddress+1) & 0xff)
+        try setUV(counterAddress+1)
         try assembler.mov(.M, .Y)
         
         // loop
@@ -1989,35 +1821,29 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func tac_mod(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
-        let counterAddress = (kScratchHi<<8) + (kScratchLo+3)
+        let counterAddress = allocateScratchMemory(1)
         
         // Copy `a' to a scratch location because we modify it in the loop.
-        try assembler.li(.U, (addressOfOriginalA>>8) & 0xff)
-        try assembler.li(.V,  addressOfOriginalA & 0xff)
+        try setUV(addressOfOriginalA)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, (resultAddress>>8) & 0xff)
-        try assembler.li(.V,  resultAddress & 0xff)
+        try setUV(resultAddress)
         try assembler.mov(.M, .A)
         
         try div_modifyingA(counterAddress, resultAddress, addressOfB)
     }
     
     private func tac_mod16(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
-        let counterAddress = (kScratchHi<<8) + (kScratchLo+6)
+        let counterAddress = allocateScratchMemory(2)
         
         // Copy the dividend `a' to a scratch location because we modify it in
         // the loop.
-        try assembler.li(.U, ((addressOfOriginalA+0)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfOriginalA+0) & 0xff)
+        try setUV(addressOfOriginalA+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((resultAddress+0)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+0) & 0xff)
+        try setUV(resultAddress+0)
         try assembler.mov(.M, .A)
-        try assembler.li(.U, ((addressOfOriginalA+1)>>8) & 0xff)
-        try assembler.li(.V,  (addressOfOriginalA+1) & 0xff)
+        try setUV(addressOfOriginalA+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.U, ((resultAddress+1)>>8) & 0xff)
-        try assembler.li(.V,  (resultAddress+1) & 0xff)
+        try setUV(resultAddress+1)
         try assembler.mov(.M, .A)
         
         try div16_modifyingA(counterAddress, resultAddress, addressOfB)
@@ -2048,16 +1874,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func tac_comparison(_ comparison: String, _ c: Int, _ a: Int, _ b: Int) throws {
-        try assembler.li(.U, (a>>8) & 0xff)
-        try assembler.li(.V,  a & 0xff)
+        try setUV(a)
         try assembler.mov(.A, .M)
         
-        try assembler.li(.U, (b>>8) & 0xff)
-        try assembler.li(.V,  b & 0xff)
+        try setUV(b)
         try assembler.mov(.B, .M)
         
-        try assembler.li(.U, (c>>8) & 0xff)
-        try assembler.li(.V,  c & 0xff)
+        try setUV(c)
         
         let tail = labelMaker.next()
         try setAddressToLabel(tail)

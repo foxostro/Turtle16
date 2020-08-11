@@ -174,6 +174,12 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .tac_div16(let c, let a, let b): try tac_div16(c, a, b)
         case .tac_mod(let c, let a, let b): try tac_mod(c, a, b)
         case .tac_mod16(let c, let a, let b): try tac_mod16(c, a, b)
+        case .tac_eq(let c, let a, let b): try tac_eq(c, a, b)
+        case .tac_ne(let c, let a, let b): try tac_ne(c, a, b)
+        case .tac_lt(let c, let a, let b): try tac_lt(c, a, b)
+        case .tac_gt(let c, let a, let b): try tac_gt(c, a, b)
+        case .tac_le(let c, let a, let b): try tac_le(c, a, b)
+        case .tac_ge(let c, let a, let b): try tac_ge(c, a, b)
         }
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
@@ -2015,5 +2021,53 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
         
         try div16_modifyingA(counterAddress, resultAddress, addressOfB)
+    }
+    
+    public func tac_eq(_ c: Int, _ a: Int, _ b: Int) throws {
+        try tac_comparison("JE", c, a, b)
+    }
+    
+    public func tac_ne(_ c: Int, _ a: Int, _ b: Int) throws {
+        try tac_comparison("JNE", c, a, b)
+    }
+    
+    public func tac_lt(_ c: Int, _ a: Int, _ b: Int) throws {
+        try tac_comparison("JL", c, a, b)
+    }
+    
+    public func tac_gt(_ c: Int, _ a: Int, _ b: Int) throws {
+        try tac_comparison("JG", c, a, b)
+    }
+    
+    public func tac_le(_ c: Int, _ a: Int, _ b: Int) throws {
+        try tac_comparison("JLE", c, a, b)
+    }
+    
+    public func tac_ge(_ c: Int, _ a: Int, _ b: Int) throws {
+        try tac_comparison("JGE", c, a, b)
+    }
+    
+    private func tac_comparison(_ comparison: String, _ c: Int, _ a: Int, _ b: Int) throws {
+        try assembler.li(.U, (a>>8) & 0xff)
+        try assembler.li(.V,  a & 0xff)
+        try assembler.mov(.A, .M)
+        
+        try assembler.li(.U, (b>>8) & 0xff)
+        try assembler.li(.V,  b & 0xff)
+        try assembler.mov(.B, .M)
+        
+        try assembler.li(.U, (c>>8) & 0xff)
+        try assembler.li(.V,  c & 0xff)
+        
+        let tail = labelMaker.next()
+        try setAddressToLabel(tail)
+        assembler.cmp()
+        assembler.cmp()
+        try assembler.li(.M, 1)
+        try assembler.instruction(mnemonic: comparison, immediate: 0)
+        assembler.nop()
+        assembler.nop()
+        try assembler.li(.M, 0)
+        try label(tail)
     }
 }

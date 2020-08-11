@@ -1605,4 +1605,244 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: b), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 10%1000)
     }
+    
+    func testTAC_Eq_42_eq_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_eq(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Eq_42_eq_0() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_eq(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Ne_42_ne_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_ne(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Ne_42_ne_0() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_ne(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Lt_42_lt_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_lt(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Lt_42_lt_0() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_lt(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Lt_0_lt_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_lt(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Gt_42_gt_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_gt(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Gt_42_gt_0() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_gt(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Gt_0_gt_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_gt(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Le_42_le_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_le(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Le_42_le_0() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_le(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Le_0_le_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_le(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Ge_42_ge_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_ge(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Ge_42_ge_0() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 42, to: a)
+            computer.dataRAM.store(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_ge(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testTAC_Ge_0_ge_42() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0, to: a)
+            computer.dataRAM.store(value: 42, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_ge(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
 }

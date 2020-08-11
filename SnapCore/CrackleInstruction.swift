@@ -74,7 +74,9 @@ public enum CrackleInstruction: Equatable {
     case tac_mod(Int, Int, Int)
     case tac_mod16(Int, Int, Int)
     case tac_eq(Int, Int, Int)
+    case tac_eq16(Int, Int, Int)
     case tac_ne(Int, Int, Int)
+    case tac_ne16(Int, Int, Int)
     case tac_lt(Int, Int, Int)
     case tac_gt(Int, Int, Int)
     case tac_le(Int, Int, Int)
@@ -208,8 +210,12 @@ public enum CrackleInstruction: Equatable {
             return String(format: "MOD16 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .tac_eq(let c, let a, let b):
             return String(format: "EQ 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_eq16(let c, let a, let b):
+            return String(format: "EQ16 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .tac_ne(let c, let a, let b):
             return String(format: "NE 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_ne16(let c, let a, let b):
+            return String(format: "NE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .tac_lt(let c, let a, let b):
             return String(format: "LT 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .tac_gt(let c, let a, let b):

@@ -1957,4 +1957,49 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
+    
+    func testTAC_Gt16_0x0000_gt_0x1000() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0x0000, to: a)
+            computer.dataRAM.store16(value: 0x1000, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_gt16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Gt16_0x1000_gt_0x1000() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0x1000, to: a)
+            computer.dataRAM.store16(value: 0x1000, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_gt16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
+    
+    func testTAC_Gt16_0x1000_gt_0x0000() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0x1000, to: a)
+            computer.dataRAM.store16(value: 0x0000, to: b)
+        }
+        let computer = try! executor.execute(ir: [.tac_gt16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
 }

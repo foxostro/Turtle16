@@ -84,7 +84,9 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.tac_gt(0xffff, 0xffff, 0xffff).description, "GT 0xffff, 0xffff, 0xffff")
         XCTAssertEqual(CrackleInstruction.tac_gt16(0xffff, 0xffff, 0xffff).description, "GT16 0xffff, 0xffff, 0xffff")
         XCTAssertEqual(CrackleInstruction.tac_le(0xffff, 0xffff, 0xffff).description, "LE 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_le16(0xffff, 0xffff, 0xffff).description, "LE16 0xffff, 0xffff, 0xffff")
         XCTAssertEqual(CrackleInstruction.tac_ge(0xffff, 0xffff, 0xffff).description, "GE 0xffff, 0xffff, 0xffff")
+        XCTAssertEqual(CrackleInstruction.tac_ge16(0xffff, 0xffff, 0xffff).description, "GE16 0xffff, 0xffff, 0xffff")
     }
     
     func testMakeListing_Empty() {

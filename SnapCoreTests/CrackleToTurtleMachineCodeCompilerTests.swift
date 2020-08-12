@@ -748,6 +748,20 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
+    func testStoreImmediate() {
+        let address = 0x0010
+        let value = 0xff
+        let computer = try! execute(ir: [.storeImmediate(address, value)])
+        XCTAssertEqual(computer.dataRAM.load(from: address), UInt8(value))
+    }
+    
+    func testStoreImmediate_TruncatesTheValue() {
+        let address = 0x0010
+        let value = 0xabcd
+        let computer = try! execute(ir: [.storeImmediate(address, value)])
+        XCTAssertEqual(computer.dataRAM.load(from: address), UInt8(value & 0xff))
+    }
+    
     func testStore16() {
         let address = 0x0010
         let computer = try! execute(ir: [.push(2), .push(1), .push16(0x1234), .store16(address)])
@@ -757,6 +771,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 2), 1)
         XCTAssertEqual(computer.stack(at: 3), 2)
         XCTAssertEqual(computer.stackPointer, 0xfffc)
+    }
+    
+    func testStoreImmediate16() {
+        let address = 0x0010
+        let value = 0xabcd
+        let computer = try! execute(ir: [.storeImmediate16(address, value)])
+        XCTAssertEqual(computer.dataRAM.load16(from: address), UInt16(value))
     }
     
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {

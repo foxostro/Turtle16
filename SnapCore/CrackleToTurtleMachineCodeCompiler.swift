@@ -164,7 +164,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .load(let address): try load(from: address)
         case .load16(let address): try load16(from: address)
         case .store(let address): try store(to: address)
+        case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .store16(let address): try store16(to: address)
+        case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
         case .loadIndirect: try loadIndirect()
         case .loadIndirect16: try loadIndirect16()
         case .loadIndirectN(let count): try loadIndirectN(count)
@@ -871,6 +873,11 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
+    public func storeImmediate(_ address: Int, _ value: Int) throws {
+        try setUV(address)
+        try assembler.li(.M, value & 0xff)
+    }
+    
     public func store16(to address: Int) throws {
         try loadStackPointerIntoUVandXY()
         try assembler.mov(.A, .M)
@@ -883,6 +890,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         try setUV(address+1)
         try assembler.mov(.M, .A)
+    }
+    
+    public func storeImmediate16(_ address: Int, _ value: Int) throws {
+        try setUV(address+0)
+        try assembler.li(.M, (value>>8) & 0xff)
+        try setUV(address+1)
+        try assembler.li(.M, value & 0xff)
     }
     
     public func label(_ name: String) throws {

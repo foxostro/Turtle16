@@ -41,7 +41,9 @@ public enum CrackleInstruction: Equatable {
     case load(Int) // load from the specified address, push to the stack
     case load16(Int) // load a 16-bit value from the specified address, push to the stack in two words
     case store(Int) // peek at the stack top and store that value to the specified address
+    case storeImmediate(Int, Int)
     case store16(Int) // peek at the top two bytes of the stack and store that 16-bit value to the specified address
+    case storeImmediate16(Int, Int)
     case loadIndirect // Pop a sixteen-bit address from the stack. Load the eight-bit value at that address and push it to the stack.
     case loadIndirect16 // Pop a sixteen-bit address from the stack. Load the sixteen-bit value at that address and push it to the stack.
     case loadIndirectN(Int) // Pop a sixteen-bit address from the stack. Load the N words in memory at that address and push them to the stack as a unit.
@@ -150,8 +152,12 @@ public enum CrackleInstruction: Equatable {
             return String(format: "LOAD16 0x%04x", address)
         case .store(let address):
             return String(format: "STORE 0x%04x", address)
+        case .storeImmediate(let address, let value):
+            return String(format: "STORE 0x%04x, 0x%02x", address, value)
         case .store16(let address):
             return String(format: "STORE16 0x%04x", address)
+        case .storeImmediate16(let address, let value):
+            return String(format: "STORE 0x%04x, 0x%04x", address, value)
         case .loadIndirect:
             return "LOAD-INDIRECT"
         case .loadIndirect16:

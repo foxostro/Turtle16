@@ -12,12 +12,14 @@ import TurtleCore
 public class BaseExpressionCompiler: NSObject {
     public let symbols: SymbolTable
     public let labelMaker: LabelMaker
+    public let temporaries: CompilerTemporaries
     public let kFramePointerAddressHi = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
     public let kFramePointerAddressLo = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
-    public init(symbols: SymbolTable, labelMaker: LabelMaker) {
+    public init(symbols: SymbolTable, labelMaker: LabelMaker, temporaries: CompilerTemporaries) {
         self.symbols = symbols
         self.labelMaker = labelMaker
+        self.temporaries = temporaries
     }
     
     public func compile(expression: Expression) throws -> [CrackleInstruction] {
@@ -25,11 +27,11 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func rvalueContext() -> RvalueExpressionCompiler {
-        return RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
+        return RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
     }
     
     public func lvalueContext() -> LvalueExpressionCompiler {
-        return LvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
+        return LvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
     }
     
     public func unsupportedError(expression: Expression) -> Error {

@@ -11,6 +11,11 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class RvalueExpressionCompilerTests: XCTestCase {
+    let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
+    let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
+    let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
+    let t3 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
+    
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
         let compiler = RvalueExpressionCompiler(symbols: symbols)
         var ir: [CrackleInstruction] = []
@@ -38,13 +43,21 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileLiteralIntExpression_FitsIntoU8() {
-        XCTAssertEqual(try compile(expression: Expression.LiteralInt(1)), [.push(1)])
-        XCTAssertEqual(try compile(expression: Expression.LiteralInt(2)), [.push(2)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0xff)
+        ]
+        var actual: [CrackleInstruction] = []
+        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralInt(0xff)))
+        XCTAssertEqual(expected, actual)
     }
     
     func testCompileLiteralIntExpression_FitsIntoU16() {
-        XCTAssertEqual(try compile(expression: Expression.LiteralInt(0xffff)), [.push16(0xffff)])
-        XCTAssertEqual(try compile(expression: Expression.LiteralInt(256)), [.push16(256)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0xffff)
+        ]
+        var actual: [CrackleInstruction] = []
+        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralInt(0xffff)))
+        XCTAssertEqual(expected, actual)
     }
     
     func testCompileLiteralIntExpression_TooLarge() {
@@ -56,57 +69,70 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
-    func testCompileLiteralBooleanExpression() {
-        XCTAssertEqual(try compile(expression: Expression.LiteralBool(true)), [.push(1)])
-        XCTAssertEqual(try compile(expression: Expression.LiteralBool(false)), [.push(0)])
+    func testCompileLiteralBooleanExpression_true() {
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        var actual: [CrackleInstruction] = []
+        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralBool(true)))
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testCompileLiteralBooleanExpression_false() {
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        var actual: [CrackleInstruction] = []
+        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralBool(false)))
+        XCTAssertEqual(expected, actual)
     }
         
     func testUnaryNegationOfU8() {
         let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU8(value: 42))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 42),
+            .storeImmediate(t1, 0),
+            .tac_sub(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(42),
-            .push(0),
-            .sub
-        ])
-        XCTAssertEqual(ir, try compile(expression: Expression.Binary(op: .minus,
-                                                                     left: ExprUtils.makeU8(value: 0),
-                                                                     right: ExprUtils.makeU8(value: 42))))
-        let expected = UInt8(0) &- UInt8(42)
-        XCTAssertEqual(computer.stack(at: 0), expected)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        let expectedResult = UInt8(0) &- UInt8(42)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
     }
     
     func testUnaryNegationOfU16() {
         let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 0),
+            .tac_sub16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(0),
-            .sub16
-        ])
-        let expected = UInt16(0) &- UInt16(1000)
-        XCTAssertEqual(computer.stack16(at: 0), expected)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        let expectedResult = UInt16(0) &- UInt16(1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
     }
     
     func testUnaryNegationOfIntegerConstant() {
         let expr = Expression.Unary(op: .minus,
                                     expression: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 0),
+            .tac_sub16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(0),
-            .sub16
-        ])
-        let expected = UInt16(0) &- UInt16(1000)
-        XCTAssertEqual(computer.stack16(at: 0), expected)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        let expectedResult = UInt16(0) &- UInt16(1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
     }
     
     func testFailToCompileInvalidPrefixUnaryOperator() {
@@ -122,44 +148,47 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Eq_U16_1() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1001),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1001),
+            .tac_eq16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1001),
-            .eq16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Eq_U16_2() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_eq16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .eq16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Eq_U8() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_eq16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .eq16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Eq_Bool() {
@@ -185,40 +214,47 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Eq_U16() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .eq16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_eq16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 0)
     }
     
     func testBinary_U8_Eq_U8_1() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_eq(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .eq
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Eq_U8_2() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 1),
+            .tac_eq(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(0),
-            .push(1),
-            .eq
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Eq_Bool() {
@@ -244,21 +280,31 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeBool(value: false),
                                               right: Expression.LiteralBool(false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
-            .push(0),
-            .eq
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 0),
+            .tac_eq(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_Bool_Eq_Bool() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
-            .push(0),
-            .eq
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 0),
+            .tac_eq(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_Bool_Eq_U8() {
@@ -274,19 +320,29 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_BooleanConstant_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
                                               right: Expression.LiteralBool(false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1)
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
     func testBinary_BooleanConstant_Eq_Bool() {
         let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
-            .push(0),
-            .eq
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 0),
+            .tac_eq(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_BooleanConstant_Eq_U8() {
@@ -302,40 +358,47 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Ne_U16_1() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_ne16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .ne16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Ne_U16_2() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1001))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1001),
+            .storeImmediate16(t1, 1000),
+            .tac_ne16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1001),
-            .push16(1000),
-            .ne16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Ne_U8() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .ne16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_ne16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Ne_Bool() {
@@ -361,40 +424,47 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Ne_U16() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .ne16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_ne16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
     
     func testBinary_U8_Ne_U8_1() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_ne(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .ne
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Ne_U8_2() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 1),
+            .tac_ne(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(0),
-            .push(1),
-            .ne
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Ne_Bool() {
@@ -420,21 +490,31 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeBool(value: false),
                                               right: Expression.LiteralBool(false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
-            .push(0),
-            .ne
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 0),
+            .tac_ne(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_Bool_Ne_Bool() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
-            .push(0),
-            .ne
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 0),
+            .tac_ne(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_Bool_Ne_U8() {
@@ -450,19 +530,29 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_BooleanConstant_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
                                               right: Expression.LiteralBool(false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0)
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
     
     func testBinary_BooleanConstant_Ne_Bool() {
         let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(0),
-            .push(0),
-            .ne
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 0),
+            .tac_ne(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_BooleanConstant_Ne_U8() {
@@ -478,42 +568,47 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Lt_U16_1() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 500))
-        let expectedIr: [CrackleInstruction] = [
-            .push16(500),
-            .push16(1000),
-            .lt16
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 500),
+            .storeImmediate16(t1, 1000),
+            .tac_lt16(t2, t1, t0)
         ]
-        let ir = try! compile(expression: expr)
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, expectedIr)
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Lt_U16_2() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1001))
-        let expectedIr: [CrackleInstruction] = [
-            .push16(1001),
-            .push16(1000),
-            .lt16
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1001),
+            .storeImmediate16(t1, 1000),
+            .tac_lt16(t2, t1, t0)
         ]
-        let ir = try! compile(expression: expr)
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, expectedIr)
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Lt_U8() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .lt16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_lt16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Lt_Bool() {
@@ -529,42 +624,49 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Lt_U16() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .lt16
-        ])
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_lt16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
     
     func testBinary_U8_Lt_U8_1() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let expectedIr: [CrackleInstruction] = [
-            .push(1),
-            .push(1),
-            .lt
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_lt(t2, t1, t0)
         ]
-        let ir = try! compile(expression: expr)
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, expectedIr)
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Lt_U8_2() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU8(value: 0),
                                               right: ExprUtils.makeU8(value: 1))
-        let expectedIr: [CrackleInstruction] = [
-            .push(1),
-            .push(0),
-            .lt
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 0),
+            .tac_lt(t2, t1, t0)
         ]
-        let ir = try! compile(expression: expr)
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, expectedIr)
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Lt_Bool() {
@@ -600,54 +702,63 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Gt_U16_1() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 0x2000),
                                               right: ExprUtils.makeU16(value: 0x1000))
-        let ir = try! compile(expression: expr)
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x1000),
+            .storeImmediate16(t1, 0x2000),
+            .tac_gt16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(0x1000),
-            .push16(0x2000),
-            .gt16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Gt_U16_2() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 0x1000),
                                               right: ExprUtils.makeU16(value: 0x2000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x2000),
+            .storeImmediate16(t1, 0x1000),
+            .tac_gt16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(0x2000),
-            .push16(0x1000),
-            .gt16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Gt_U16_3() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 0x1000),
                                               right: ExprUtils.makeU16(value: 0x1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x1000),
+            .storeImmediate16(t1, 0x1000),
+            .tac_gt16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(0x1000),
-            .push16(0x1000),
-            .gt16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Gt_U8() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .gt16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_gt16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Gt_Bool() {
@@ -663,40 +774,47 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Gt_U16() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .gt16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_gt16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Gt_U8_0() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_gt(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .gt
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Gt_U8_1() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 1),
+            .tac_gt(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(0),
-            .push(1),
-            .gt
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Gt_Bool() {
@@ -732,54 +850,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Le_U16_1() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 500),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 500),
+            .tac_le16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(500),
-            .le16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Le_U16_2() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_le16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .le16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Le_U16_3() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 500))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 500),
+            .storeImmediate16(t1, 1000),
+            .tac_le16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(500),
-            .push16(1000),
-            .le16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Le_U8() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .le16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_le16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Le_Bool() {
@@ -795,54 +921,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Le_U16() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .le16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_le16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
     
     func testBinary_U8_Le_U8_1() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 0),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 0),
+            .tac_le(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(0),
-            .le
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Le_U8_2() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_le(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .le
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Le_U8_3() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 1),
+            .tac_le(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(0),
-            .push(1),
-            .le
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Le_Bool() {
@@ -878,54 +1012,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Ge_U16_1() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 500),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 500),
+            .tac_ge16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(500),
-            .ge16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U16_Ge_U16_2() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_ge16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .ge16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Ge_U16_3() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU16(value: 500))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 500),
+            .storeImmediate16(t1, 1000),
+            .tac_ge16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(500),
-            .push16(1000),
-            .ge16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Ge_U8() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .ge16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_ge16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U16_Ge_Bool() {
@@ -941,54 +1083,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Ge_U16() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .ge16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_ge16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 0)
     }
     
     func testBinary_U8_Ge_U8_1() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 0),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 0),
+            .tac_ge(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(0),
-            .ge
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
     
     func testBinary_U8_Ge_U8_2() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_ge(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .ge
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Ge_U8_3() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU8(value: 0))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+            .storeImmediate(t1, 1),
+            .tac_ge(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(0),
-            .push(1),
-            .ge
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Ge_Bool() {
@@ -1029,51 +1179,58 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push16(1001)
+            .storeImmediate16(t0, 1001)
         ])
-        XCTAssertEqual(computer.stack16(at: 0), 1001)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1001)
     }
     
     func testBinary_U16_Plus_IntegerConstant() {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: Expression.LiteralInt(1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1),
+            .storeImmediate16(t1, 1000),
+            .tac_add16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1),
-            .push16(1000),
-            .add16
-        ])
-        XCTAssertEqual(computer.stack16(at: 0), 1001)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
     func testBinary_U16_Plus_U16() {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_add16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .add16
-        ])
-        XCTAssertEqual(computer.stack16(at: 0), 2000)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
     
     func testBinary_U16_Plus_U8() {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .add16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_add16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
     func testBinary_U16_Plus_Bool() {
@@ -1091,27 +1248,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .add16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_add16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1001)
     }
     
     func testBinary_U8_Plus_U8() {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_add(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .add
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 2)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 2)
     }
     
     func testBinary_U8_Plus_Bool() {
@@ -1162,27 +1325,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_sub16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .sub16
-        ])
-        XCTAssertEqual(computer.stack16(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
     
     func testBinary_U16_Minus_U8() {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .sub16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_sub16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 999)
     }
     
     func testBinary_U16_Minus_Bool() {
@@ -1200,27 +1369,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .sub16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_sub16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), UInt16(1) &- UInt16(1000))
     }
     
     func testBinary_U8_Minus_U8() {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU8(value: 1))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_sub(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(1),
-            .sub
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
     
     func testBinary_U8_Minus_Bool() {
@@ -1271,27 +1446,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 256),
                                      right: ExprUtils.makeU16(value: 256))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 256),
+            .storeImmediate16(t1, 256),
+            .tac_mul16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(256),
-            .push16(256),
-            .mul16
-        ])
-        XCTAssertEqual(computer.stack16(at: 0), UInt16(256) &* UInt16(256))
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), UInt16(256) &* UInt16(256))
     }
     
     func testBinary_U16_Multiply_U8() {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .mul16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_mul16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
     
     func testBinary_U16_Multiply_Bool() {
@@ -1309,27 +1490,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .mul16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_mul16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1000)
     }
     
     func testBinary_U8_Multiply_U8() {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU8(value: 2),
                                      right: ExprUtils.makeU8(value: 3))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 3),
+            .storeImmediate(t1, 2),
+            .tac_mul(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(3),
-            .push(2),
-            .mul
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 6)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 6)
     }
     
     func testBinary_U8_Multiply_Bool() {
@@ -1380,27 +1567,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 0x1000),
                                      right: ExprUtils.makeU16(value: 0x1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x1000),
+            .storeImmediate16(t1, 0x1000),
+            .tac_div16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(0x1000),
-            .push16(0x1000),
-            .div16
-        ])
-        XCTAssertEqual(computer.stack16(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
     
     func testBinary_U16_Divide_U8() {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .div16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_div16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
     
     func testBinary_U16_Divide_Bool() {
@@ -1418,27 +1611,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .div16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_div16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 0)
     }
     
     func testBinary_U8_Divide_U8() {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU8(value: 12),
                                      right: ExprUtils.makeU8(value: 4))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 4),
+            .storeImmediate(t1, 12),
+            .tac_div(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(4),
-            .push(12),
-            .div
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 3)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
     func testBinary_U8_Divide_Bool() {
@@ -1489,27 +1688,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU16(value: 1000))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_mod16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(1000),
-            .mod16
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
     
     func testBinary_U16_Modulus_U8() {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push(1),
-            .push(0),
-            .push16(1000),
-            .mod16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .copyWordZeroExtend(t1, t0),
+            .storeImmediate16(t0, 1000),
+            .tac_mod16(t2, t0, t1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
     
     func testBinary_U16_Modulus_Bool() {
@@ -1527,27 +1732,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertEqual(try compile(expression: expr), [
-            .push16(1000),
-            .push(1),
-            .push(0),
-            .mod16
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate(t1, 1),
+            .copyWordZeroExtend(t2, t1),
+            .tac_mod16(t1, t2, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1)
     }
     
     func testBinary_U8_Modulus_U8() {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 15),
                                      right: ExprUtils.makeU8(value: 4))
-        let ir = try! compile(expression: expr)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 4),
+            .storeImmediate(t1, 15),
+            .tac_mod(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(4),
-            .push(15),
-            .mod
-        ])
-        XCTAssertEqual(computer.stack(at: 0), 3)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
     func testBinary_U8_Modulus_Bool() {

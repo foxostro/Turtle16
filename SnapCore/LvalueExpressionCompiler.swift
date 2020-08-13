@@ -13,9 +13,9 @@ import TurtleCompilerToolbox
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
     let typeChecker: LvalueExpressionTypeChecker
     
-    public override init(symbols: SymbolTable = SymbolTable(), labelMaker: LabelMaker = LabelMaker()) {
+    public override init(symbols: SymbolTable = SymbolTable(), labelMaker: LabelMaker = LabelMaker(), temporaries: CompilerTemporaries = CompilerTemporaries()) {
         self.typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        super.init(symbols: symbols, labelMaker: labelMaker)
+        super.init(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
     }
     
     public override func compile(expression: Expression) throws -> [CrackleInstruction] {

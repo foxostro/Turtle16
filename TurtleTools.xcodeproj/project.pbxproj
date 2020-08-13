@@ -10,6 +10,7 @@
 		6F0144A024D4941900071EC0 /* ParameterIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F01449F24D4941900071EC0 /* ParameterIdentifier.swift */; };
 		6F0144A224D4943D00071EC0 /* ParameterNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0144A124D4943D00071EC0 /* ParameterNumber.swift */; };
 		6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */; };
+		6F16314524E45BB300F3E10F /* CompilerTemporaries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16314424E45BB300F3E10F /* CompilerTemporaries.swift */; };
 		6F17182D2471C56600AE60C2 /* TurtleCompilerToolbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6F1718302471C56600AE60C2 /* TurtleCompilerToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; };
 		6F1718312471C56600AE60C2 /* TurtleCompilerToolbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -604,6 +605,7 @@
 		6F0880A2230FC09B00AB2339 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
 		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionTests.swift; sourceTree = "<group>"; };
+		6F16314424E45BB300F3E10F /* CompilerTemporaries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerTemporaries.swift; sourceTree = "<group>"; };
 		6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleCompilerToolbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleCompilerToolbox.h; sourceTree = "<group>"; };
 		6F17181E2471C56600AE60C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1107,6 +1109,7 @@
 			children = (
 				6F53372F2474BE0B00CFD33C /* AST */,
 				6F5337322474BE4B00CFD33C /* Token */,
+				6F16314424E45BB300F3E10F /* CompilerTemporaries.swift */,
 				6F915D4924D14F99002B3850 /* BaseExpressionCompiler.swift */,
 				6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */,
 				6F25325B24CB799A00339332 /* LvalueExpressionCompiler.swift */,
@@ -1999,6 +2002,7 @@
 				6F915D4A24D14F99002B3850 /* BaseExpressionCompiler.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,
+				6F16314524E45BB300F3E10F /* CompilerTemporaries.swift in Sources */,
 				6F25325824CB5A7200339332 /* LvalueExpressionTypeChecker.swift in Sources */,
 				6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */,
 				6F1D24C524823DD90095D7B4 /* If.swift in Sources */,

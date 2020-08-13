@@ -209,6 +209,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .tac_le16(let c, let a, let b): try tac_le16(c, a, b)
         case .tac_ge(let c, let a, let b): try tac_ge(c, a, b)
         case .tac_ge16(let c, let a, let b): try tac_ge16(c, a, b)
+        case .copyWordZeroExtend(let b, let a): try copyWordZeroExtend(b, a)
         }
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
@@ -1964,5 +1965,16 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         try setUV(addressOfC)
         try assembler.mov(.M, .A)
+    }
+    
+    public func copyWordZeroExtend(_ dst: Int, _ src: Int) throws {
+        try setUV(src)
+        try assembler.mov(.X, .M)
+        
+        try setUV(dst)
+        try assembler.li(.M, 0)
+        
+        assembler.inuv()
+        try assembler.mov(.M, .X)
     }
 }

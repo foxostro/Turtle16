@@ -2113,4 +2113,17 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
+    
+    func testCopyWordZeroExtend() {
+        let a = 0x0104
+        let b = 0x0108
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0xcafe, to: a)
+            computer.dataRAM.store16(value: 0xbeef, to: b)
+        }
+        let computer = try! executor.execute(ir: [.copyWordZeroExtend(b, a)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0xcafe)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0x00ca)
+    }
 }

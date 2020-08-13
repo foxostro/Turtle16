@@ -88,6 +88,8 @@ public enum CrackleInstruction: Equatable {
     case tac_ge(Int, Int, Int)
     case tac_ge16(Int, Int, Int)
     
+    case copyWordZeroExtend(Int, Int) // copies an 8-bit word at the specified source address to a 16-bit slot at the specified destination address, filling the high bits with zero
+    
     public var description: String {
         switch self {
         case .push(let value):
@@ -153,11 +155,11 @@ public enum CrackleInstruction: Equatable {
         case .store(let address):
             return String(format: "STORE 0x%04x", address)
         case .storeImmediate(let address, let value):
-            return String(format: "STORE 0x%04x, 0x%02x", address, value)
+            return String(format: "STORE-IMMEDIATE 0x%04x, 0x%02x", address, value)
         case .store16(let address):
             return String(format: "STORE16 0x%04x", address)
         case .storeImmediate16(let address, let value):
-            return String(format: "STORE 0x%04x, 0x%04x", address, value)
+            return String(format: "STORE-IMMEDIATE16 0x%04x, 0x%04x", address, value)
         case .loadIndirect:
             return "LOAD-INDIRECT"
         case .loadIndirect16:
@@ -242,6 +244,8 @@ public enum CrackleInstruction: Equatable {
             return String(format: "GE 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .tac_ge16(let c, let a, let b):
             return String(format: "GE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .copyWordZeroExtend(let b, let a):
+            return String(format: "COPY-WORD-ZERO-EXTEND 0x%04x, 0x%04x", b, a)
         }
     }
     

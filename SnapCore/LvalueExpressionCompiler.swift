@@ -43,7 +43,9 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         
         switch symbol.storage {
         case .staticStorage:
-            instructions += [.push16(symbol.offset)]
+            let dst = temporaries.allocate()
+            temporaries.push(dst)
+            instructions += [.storeImmediate16(dst.address, symbol.offset)]
         case .stackStorage:
             instructions += computeAddressOfLocalVariable(symbol, depth)
         }

@@ -38,14 +38,39 @@ class CrackleExecutor: NSObject {
                 try compiler.push16(0xdead)
                 compiler.hlt()
             }
-            try compiler.compile(ir: ir, base: 0)
+            let base = 0
+            try compiler.compile(ir: ir, base: base)
             let instructions = compiler.instructions
+            
+            if isVerboseLogging {
+                let disassembly = makeDisassembly(base, instructions, compiler.mapProgramCounterToCrackleInstruction)
+                print("Assembly:\n\(disassembly)\n")
+            }
+            
             computer = try execute(instructions: instructions)
         } catch let e as CompilerError {
             print(e.message)
             throw e
         }
         return computer
+    }
+    
+    func makeDisassembly(_ base: Int, _ instructions: [Instruction], _ mapProgramCounterToCrackleInstruction: [Int:CrackleInstruction]) -> String {
+        var previousCrackleInstruction: CrackleInstruction? = nil
+        var disassembly: String = ""
+        let formattedInstructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: instructions)
+        for i in 0..<formattedInstructions.count {
+            let instruction = formattedInstructions[i]
+            let pc = base+i
+            if let crackleInstruction = mapProgramCounterToCrackleInstruction[pc] {
+                if previousCrackleInstruction != crackleInstruction {
+                    disassembly += "\n# \(crackleInstruction)\n"
+                }
+                previousCrackleInstruction = crackleInstruction
+            }
+            disassembly += (instruction.disassembly ?? instruction.description) + "\n"
+        }
+        return disassembly
     }
     
     func execute(instructions: [Instruction]) throws -> Computer {

@@ -50,6 +50,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public private(set) var instructions: [Instruction] = []
     private var mapAssemblyInstructionToSource: [Int:SourceAnchor?] = [:]
     public private(set) var mapProgramCounterToSource: [Int:SourceAnchor?] = [:]
+    private var mapAssemblyInstructionToCrackleInstruction: [Int:CrackleInstruction] = [:]
+    public private(set) var mapProgramCounterToCrackleInstruction: [Int:CrackleInstruction] = [:]
     private var currentSourceAnchor: SourceAnchor? = nil
     
     let labelMaker = LabelMaker(prefix: ".LL")
@@ -101,6 +103,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         for (instructionIndex, sourceAnchor) in mapAssemblyInstructionToSource {
             mapProgramCounterToSource[instructionIndex+base] = sourceAnchor
+        }
+        
+        for (instructionIndex, crackleInstruction) in mapAssemblyInstructionToCrackleInstruction {
+            mapProgramCounterToCrackleInstruction[instructionIndex+base] = crackleInstruction
         }
     }
     
@@ -210,11 +216,15 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .tac_ge(let c, let a, let b): try tac_ge(c, a, b)
         case .tac_ge16(let c, let a, let b): try tac_ge16(c, a, b)
         case .copyWordZeroExtend(let b, let a): try copyWordZeroExtend(b, a)
+        case .copyWords(let dst, let src, let count): try copyWords(dst, src, count)
+        case .copyWordsIndirectSource(let dst, let srcPtr, let count): try copyWordsIndirectSource(dst, srcPtr, count)
+        case .copyWordsIndirectDestination(let dstPtr, let src, let count): try copyWordsIndirectDestination(dstPtr, src, count)
         }
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
             for i in instructionsBegin..<instructionsEnd {
                 mapAssemblyInstructionToSource[i] = currentSourceAnchor
+                mapAssemblyInstructionToCrackleInstruction[i] = instruction
             }
         }
     }
@@ -1976,5 +1986,58 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         assembler.inuv()
         try assembler.mov(.M, .X)
+    }
+    
+    public func copyWords(_ dst: Int, _ src: Int, _ count: Int) throws {
+        for i in 0..<count {
+            try setUV(src + i)
+            try assembler.mov(.A, .M)
+            try setUV(dst + i)
+            try assembler.mov(.M, .A)
+        }
+    }
+    
+    public func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ count: Int) throws {
+        if count == 0 {
+            return
+        }
+        
+        try setUV(srcPtr)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        
+        for i in 0..<count {
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.A, .M)
+            try setUV(dst + i)
+            try assembler.mov(.M, .A)
+            if i != count-1 {
+                assembler.inxy()
+            }
+        }
+    }
+    
+    public func copyWordsIndirectDestination(_ dstPtr: Int, _ src: Int, _ count: Int) throws {
+        if count == 0 {
+            return
+        }
+        
+        try setUV(dstPtr)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        
+        for i in 0..<count {
+            try setUV(src + i)
+            try assembler.mov(.A, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.M, .A)
+            if i != count-1 {
+                assembler.inxy()
+            }
+        }
     }
 }

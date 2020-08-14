@@ -516,9 +516,25 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public func compile(assignment: Expression.Assignment) throws -> [CrackleInstruction] {
         let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
         var instructions: [CrackleInstruction] = []
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
-        instructions += try lvalueContext().compile(expression: assignment.lexpr)
-        instructions += indirectStoreOfValue(type: ltype)
+        
+        // Calculate the lvalue, the destination in memory for the assignment.
+        let lvalue_proc = try lvalueContext().compile(expression: assignment.lexpr)
+        instructions += lvalue_proc
+        let lvalue = temporaries.pop()
+        
+        // Calculate the rvalue, the value that is being assigned.
+        // To handle automatic conversion and promotion, this value of this
+        // expression is converted now to the type of the destination variable.
+        let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
+        instructions += rvalue_proc
+        let rvalue = temporaries.pop()
+        
+        // Copy the value into memory at the address specified by the lvalue.
+        instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
+        
+        lvalue.consume()
+        rvalue.consume()
+        
         return instructions
     }
     
@@ -577,7 +593,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 abort()
             }
             instructions += try compile(expression: rexpr)
-            instructions += [.pop]
+            let dst = temporaries.allocate()
+            let src = temporaries.pop()
+            temporaries.push(dst)
+            src.consume()
+            instructions += [.copyWords(dst.address, src.address, 1)]
         case (.array(let n, let a), .array(let m, let b)):
             guard n == m || m == nil else {
                 abort()
@@ -619,7 +639,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 let symbol = resolution.0
                 let depth = symbols.stackFrameIndex - resolution.1
                 instructions += [.push16(n)]
-                instructions += pushAddressOfSymbol(symbol, depth)
+                instructions += computeAddressOfSymbol(symbol, depth)
             default:
                 // The dynamic array must bind to a temporary value on the stack.
                 // TODO: The way this is written now, the stack will continue to grow and will eventually overflow. We need something like a way to signal that additional bytes must be popped at the end of the statement.

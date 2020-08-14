@@ -14,7 +14,6 @@ class RvalueExpressionCompilerTests: XCTestCase {
     let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
     let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
     let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
-    let t3 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
     
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
         let compiler = RvalueExpressionCompiler(symbols: symbols)
@@ -1807,58 +1806,101 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_U8_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .load(0x0010)
-        ])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: false)])
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, 0x0100, 1)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0xab, to: 0x0100)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0xab)
     }
     
     func testCompileIdentifierExpression_U16_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: false)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .load16(0x0010)
-        ])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0100, isMutable: false)])
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, 0x0100, 2)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0xabcd, to: 0x0100)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 0xabcd)
     }
     
     func testCompileIdentifierExpression_U8_Stack() {
+        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .u8, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        let ir = try! compile(expression: expr, symbols: symbols)
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
+            .storeImmediate16(t1, 0x0010),           // t1 = 0x0010
+            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .copyWordsIndirectSource(t0, t2, 1),     // t0 = *t2
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        executor.configure = {computer in
+        executor.configure = { computer in
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
             computer.dataRAM.store(value: 0xaa, to: 0xfff0)
         }
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack(at: 0), 0xaa)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 0x0010)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0xfff0)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfff0), 0xaa)
     }
     
     func testCompileIdentifierExpression_U16_Stack() {
+        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .u16, offset: 0x0010, isMutable: false, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        let ir = try! compile(expression: expr, symbols: symbols)
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
+            .storeImmediate16(t1, 0x0010),           // t1 = 0x0010
+            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .copyWordsIndirectSource(t0, t2, 2),     // t0 = *t2
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        executor.configure = {computer in
+        executor.configure = { computer in
             // Set the value of the local variable on the stack.
             // We're going to assume the initial value of the frame pointer,
             // which is 0x0000.
             computer.dataRAM.store16(value: 0xabcd, to: 0xfff0)
         }
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack16(at: 0), 0xabcd)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 0xabcd)
     }
     
     func testCompileIdentifierExpression_Boolean_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .load(0x0010)
-        ])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0100, isMutable: false)])
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, 0x0100, 1)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 1, to: 0x0100)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
     func testCompileIdentifierExpression_UnresolvedIdentifier() {
@@ -1930,33 +1972,55 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_Bool_Static() {
+        let offset = 0x0100
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .push(1),
-            .push16(0x0010),
-            .storeIndirect
-        ])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: true)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, offset),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: offset), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), UInt16(offset))
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
     
     func testCompileAssignment_U8_Static() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .push(42),
-            .push16(0x0010),
-            .storeIndirect
-        ])
+        let offset = 0x0100
+        let value = 42
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: offset, isMutable: true)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, offset),
+            .storeImmediate(t1, 42),
+            .copyWordsIndirectDestination(t0, t1, 1)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: offset), 42)
     }
     
     func testCompileAssignment_U16_Static() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: 0xabcd))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .push16(0xabcd),
-            .push16(0x0010),
-            .storeIndirect16
-        ])
+        let offset = 0x0100
+        let value = 0xabcd
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset, isMutable: true)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, offset),
+            .storeImmediate16(t1, 0xabcd),
+            .copyWordsIndirectDestination(t0, t1, 2)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset), UInt16(value))
     }
     
     func testCompileAssignment_ArrayOfU16_Static() {
@@ -1985,44 +2049,83 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignment_PromoteU8ToU16() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
-        XCTAssertEqual(try compile(expression: expr, symbols: symbols), [
-            .push(42),
-            .push(0),
-            .push16(0x0010),
-            .storeIndirect16
-        ])
+        let offset = 0x0100
+        let value = 42
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset, isMutable: true)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, offset),
+            .storeImmediate(t1, value),
+            .copyWordZeroExtend(t2, t1),
+            .copyWordsIndirectDestination(t0, t2, 2)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset), UInt16(value))
     }
     
     func testCompileAssignment_Bool_Stack() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(false))
-        let symbol = Symbol(type: .bool, offset: 0x0004, isMutable: true, storage: .stackStorage)
+        let offset = 0x0004
+        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
+        let symbol = Symbol(type: .bool, offset: offset, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        let ir = try! compile(expression: expr, symbols: symbols)
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
+            .storeImmediate16(t1, offset),           // t1 = offset
+            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .storeImmediate(t0, 1),                  // t0 = true
+            .copyWordsIndirectDestination(t2, t0, 1) // *t2 = t0
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 1)
     }
     
     func testCompileAssignment_U8_Stack() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
-        let symbol = Symbol(type: .u8, offset: 0x0004, isMutable: true, storage: .stackStorage)
+        let offset = 0x0004
+        let value = 42
+        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
+        let symbol = Symbol(type: .u8, offset: offset, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        let ir = try! compile(expression: expr, symbols: symbols)
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
+            .storeImmediate16(t1, offset),           // t1 = offset
+            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .storeImmediate(t0, 42),                 // t0 = 42
+            .copyWordsIndirectDestination(t2, t0, 1) // *t2 = t0
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 0xaa)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 42)
     }
     
     func testCompileAssignment_U16_Stack() {
-        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: 0xabcd))
-        let symbol = Symbol(type: .u16, offset: 0x0004, isMutable: true, storage: .stackStorage)
+        let offset = 0x0004
+        let value = 0xabcd
+        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
+        let symbol = Symbol(type: .u16, offset: offset, isMutable: true, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        let ir = try! compile(expression: expr, symbols: symbols)
+        let expected: [CrackleInstruction] = [
+            .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
+            .storeImmediate16(t1, offset),           // t1 = offset
+            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .storeImmediate16(t0, value),            // t0 = value
+            .copyWordsIndirectDestination(t2, t0, 2) // *t2 = t0
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), 0xabcd)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), UInt16(value))
     }
     
     func testCompileAssignment_ArrayOfU16_Stack() {
@@ -2084,7 +2187,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0100, isMutable: true)])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
@@ -2093,7 +2196,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             return
         }
         let computer = try! executor.execute(ir: ir!)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load16(from: 0x0100), 0xaa)
     }
     
     func testCompilationFailsDueToUseOfUnresolvedIdentifierInFunctionCall() {
@@ -2146,12 +2249,15 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBoolasBool() {
-        let expr = Expression.As(expr: ExprUtils.makeBool(value: true),
-                                 targetType: .bool)
-        let ir = try! compile(expression: expr)
+        let expr = Expression.As(expr: ExprUtils.makeBool(value: true), targetType: .bool)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
     func testU8asVoid() {
@@ -2165,21 +2271,29 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU8asU16() {
-        let expr = Expression.As(expr: ExprUtils.makeU8(value: 0xab),
-                                 targetType: .u16)
-        let ir = try! compile(expression: expr)
+        let value = 42
+        let expr = Expression.As(expr: ExprUtils.makeU8(value: value), targetType: .u16)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, value),
+            .copyWordZeroExtend(t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack16(at: 0), 0x00ab)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), UInt16(value))
     }
     
     func testU8asU8() {
-        let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
-                                 targetType: .u8)
-        let ir = try! compile(expression: expr)
+        let expr = Expression.As(expr: ExprUtils.makeU8(value: 42), targetType: .u8)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 42)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack(at: 0), 1)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 42)
     }
     
     func testU8asBool() {
@@ -2203,22 +2317,29 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testU16asU16() {
-        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
-                                 targetType: .u16)
-        let ir = try! compile(expression: expr)
+        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xabcd), targetType: .u16)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0xabcd)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack16(at: 0), 0xffff)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 0xabcd)
     }
     
     func testU16asU8() {
         // Casting from U16 to U8 just drops the high byte.
-        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xabcd),
-                                 targetType: .u8)
-        let ir = try! compile(expression: expr)
+        let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xabcd), targetType: .u8)
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0xabcd),
+            .copyWords(t1, t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack(at: 0), 0xcd)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 0xab)
     }
     
     func testU16asBool() {

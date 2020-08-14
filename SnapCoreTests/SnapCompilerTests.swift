@@ -959,10 +959,11 @@ let b = foo()
                 serialOutput = $0
             }
         }
-        _ = try! executor.execute(program: """
+        let computer = try! executor.execute(program: """
 puts("Hello, World!")
 """)
         XCTAssertEqual(serialOutput, "Hello, World!")
+        print(computer.cpuState.uptime)
     }
     
     func testSerialOutput_Panic() {

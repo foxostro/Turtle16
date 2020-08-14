@@ -44,17 +44,10 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func loadStaticValue(type: SymbolType, offset: Int) -> [CrackleInstruction] {
+        let dst = temporaries.allocate()
+        temporaries.push(dst)
         var instructions: [CrackleInstruction] = []
-        switch type.sizeof {
-        case 0: break
-        case 1: instructions += [.load(offset)]
-        case 2: instructions += [.load16(offset)]
-        default:
-            instructions += [
-                .push16(offset),
-                .loadIndirectN(type.sizeof)
-            ]
-        }
+        instructions += [.copyWords(dst.address, offset, type.sizeof)]
         return instructions
     }
     
@@ -65,9 +58,16 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [CrackleInstruction] {
+        guard type.sizeof <= 2 else {
+            abort() // TODO: how do we handle values which are too large to fit into a temporary? fall back to the stack?
+        }
         var instructions: [CrackleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
-        instructions += indirectLoadValue(type)
+        let src = temporaries.pop()
+        let dst = temporaries.allocate()
+        temporaries.push(dst)
+        src.consume()
+        instructions += [.copyWordsIndirectSource(dst.address, src.address, type.sizeof)]
         return instructions
     }
     
@@ -78,37 +78,27 @@ public class BaseExpressionCompiler: NSObject {
     public func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        if offset >= 0 {
-            // Push the symbol offset. This is used in the subtraction below.
-            instructions += [.push16(offset)]
-            
-            // Load the frame pointer.
-            instructions += [.load16(kFramePointerAddressHi)]
-            
-            // Follow the frame pointer `depth' times.
-            instructions += [CrackleInstruction].init(repeating: .loadIndirect16, count: depth)
-            
-            // Apply the offset to get the final address.
-            instructions += [.sub16]
-        } else {
-            // Push the symbol offset. This is used in the subtraction below.
-            instructions += [.push16(-offset)]
-            
-            // Load the frame pointer.
-            instructions += [.load16(kFramePointerAddressHi)]
-            
-            // Follow the frame pointer `depth' times.
-            instructions += [CrackleInstruction].init(repeating: .loadIndirect16, count: depth)
-            
-            // Apply the offset to get the final address.
-            instructions += [.add16]
-        }
+        let temp_framePointer = temporaries.allocate()
+        instructions += [.copyWords(temp_framePointer.address, kFramePointerAddressHi, 2)]
+        
+        let temp_offset = temporaries.allocate()
+        instructions += [.storeImmediate16(temp_offset.address, offset)]
+        
+        let temp_result = temporaries.allocate()
+        temporaries.push(temp_result)
+        temp_offset.consume()
+        temp_framePointer.consume()
+        instructions += [.tac_sub16(temp_result.address, temp_framePointer.address, temp_offset.address)]
+        
+        // TODO: need to account for the case where offset<0
+        // TODO: need to account for the case where depth>0
         
         return instructions
     }
     
     public func indirectStoreOfValue(type: SymbolType) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
+        
         let size = type.sizeof
         switch size {
         case 0:  break
@@ -132,10 +122,13 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     // Compute and push the address of the specified symbol.
-    public func pushAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
+    public func computeAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         switch symbol.storage {
-        case .staticStorage: instructions += [.push16(symbol.offset)]
+        case .staticStorage:
+            let temp = temporaries.allocate()
+            temporaries.push(temp)
+            instructions += [.storeImmediate16(temp.address, symbol.offset)]
         case .stackStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
         }
         return instructions
@@ -172,9 +165,9 @@ public class BaseExpressionCompiler: NSObject {
     
     public func arraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        instructions += pushAddressOfSymbol(symbol, depth)
-        instructions += try loadAddressOfArrayElement(expr, elementType)
-        instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        instructions += computeAddressOfSymbol(symbol, depth)
+        instructions += try computeAddressOfArrayElement(expr, elementType)
+//        instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
         return instructions
     }
     
@@ -189,7 +182,7 @@ public class BaseExpressionCompiler: NSObject {
             // Duplicate the address of the access for the comparison, below.
             .dup16,
         ]
-        instructions += pushAddressOfSymbol(symbol, depth)
+        instructions += computeAddressOfSymbol(symbol, depth)
         instructions += [
             // Indented four times to indicate that the stack holds the two
             // addresses pushed above. Each change in level of indent indicates
@@ -269,10 +262,19 @@ public class BaseExpressionCompiler: NSObject {
     
     public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        instructions += pushAddressOfSymbol(symbol, depth)
-        instructions += [.loadIndirect16]
-        instructions += try loadAddressOfArrayElement(expr, elementType)
-        instructions += dynamicArrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        
+        instructions += computeAddressOfSymbol(symbol, depth)
+        let sliceAddress = temporaries.pop()
+        
+        // Extract the array base address from the slice structure.
+        let baseAddress = temporaries.allocate()
+        temporaries.push(baseAddress)
+        sliceAddress.consume()
+        instructions += [.copyWordsIndirectSource(baseAddress.address, sliceAddress.address, 2)]
+        
+        instructions += try computeAddressOfArrayElement(expr, elementType)
+        
+//        instructions += dynamicArrayBoundsCheck(expr.sourceAnchor, symbol, depth)
         return instructions
     }
     
@@ -287,7 +289,7 @@ public class BaseExpressionCompiler: NSObject {
             // Duplicate the address of the access for the comparison, below.
             .dup16
         ]
-        instructions += pushAddressOfSymbol(symbol, depth)
+        instructions += computeAddressOfSymbol(symbol, depth)
         instructions += [
             // Indented to indicate stack depth. Each change in level of indent
             // indicates a change in stack depth of one word.
@@ -300,7 +302,7 @@ public class BaseExpressionCompiler: NSObject {
                                     .push16(determineArrayElementType(symbol.type).sizeof),
                                     .mul16,
             ]
-        instructions +=             pushAddressOfSymbol(symbol, depth)
+        instructions +=             computeAddressOfSymbol(symbol, depth)
         instructions += [
                                     // Load the base address
                                     .loadIndirect16,
@@ -331,22 +333,39 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    // Given an array address on the stack, determine the address of the array
-    // element at an index determined by the expression, and push to the stack.
-    public func loadAddressOfArrayElement(_ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    // Given an array address on the compiler temporaries stack, determine the
+    // address of the array element at an index determined by the expression,
+    // and push to the stack.
+    public func computeAddressOfArrayElement(_ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        // Push instructions to compute the subscript index.
+        // Assume that the temporary which holds the array base address is on
+        // top of the compiler temporaries stack.
+        let baseAddress = temporaries.pop()
+        
+        // Compute the array subscript index.
         // This must be converted to u16 so we can do math with the address.
         instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
+        let subscriptIndex = temporaries.pop()
         
-        // Multiply the index by the size of an element.
-        // Add the element offset to the array address.
-        instructions += [
-            .push16(elementType.sizeof),
-            .mul16,
-            .add16
-        ]
+        let elementSize = temporaries.allocate()
+        temporaries.push(elementSize)
+        instructions += [.storeImmediate16(elementSize.address, elementType.sizeof)]
+        
+        let accessOffset = temporaries.allocate()
+        temporaries.push(accessOffset)
+        elementSize.consume()
+        subscriptIndex.consume()
+        instructions += [.tac_mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]
+        
+        let accessAddress = temporaries.allocate()
+        temporaries.push(accessAddress)
+        accessOffset.consume()
+        baseAddress.consume()
+        instructions += [.tac_add16(accessAddress.address, baseAddress.address, accessOffset.address)]
+        
+        // At this point, the temporary which holds the address of the array
+        // access is on top of the compiler temporaries stack.
         
         return instructions
     }

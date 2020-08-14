@@ -90,6 +90,12 @@ public enum CrackleInstruction: Equatable {
     
     case copyWordZeroExtend(Int, Int) // copies an 8-bit word at the specified source address to a 16-bit slot at the specified destination address, filling the high bits with zero
     
+    case copyWords(Int, Int, Int) // (dst, src, N) -- copies N words starting at the specified source address to the destination address.
+    
+    case copyWordsIndirectSource(Int, Int, Int) // (dst, srcPtr, N) -- copies N words starting at the source address to the destination address. The source address is located in memory at the address given by `srcPtr'.
+    
+    case copyWordsIndirectDestination(Int, Int, Int) // (dstPtr, src, N) -- copies N words starting at the source address to the destination address. The destination address is located in memory at the address given by `dstPtr'.
+    
     public var description: String {
         switch self {
         case .push(let value):
@@ -246,6 +252,12 @@ public enum CrackleInstruction: Equatable {
             return String(format: "GE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .copyWordZeroExtend(let b, let a):
             return String(format: "COPY-WORD-ZERO-EXTEND 0x%04x, 0x%04x", b, a)
+        case .copyWords(let dst, let src, let numberOfWords):
+            return String(format: "COPY-WORDS 0x%04x, 0x%04x, %d", dst, src, numberOfWords)
+        case .copyWordsIndirectSource(let dst, let src, let numberOfWords):
+            return String(format: "COPY-WORDS-INDIRECT-SOURCE 0x%04x, 0x%04x, %d", dst, src, numberOfWords)
+        case .copyWordsIndirectDestination(let dstPtr, let src, let numberOfWords):
+            return String(format: "COPY-WORDS-INDIRECT-DESTINATION 0x%04x, 0x%04x, %d", dstPtr, src, numberOfWords)
         }
     }
     

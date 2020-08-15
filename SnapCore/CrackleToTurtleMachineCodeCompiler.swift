@@ -215,6 +215,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .tac_le16(let c, let a, let b): try tac_le16(c, a, b)
         case .tac_ge(let c, let a, let b): try tac_ge(c, a, b)
         case .tac_ge16(let c, let a, let b): try tac_ge16(c, a, b)
+        case .tac_jz(let label, let test): try tac_jz(label, test)
         case .copyWordZeroExtend(let b, let a): try copyWordZeroExtend(b, a)
         case .copyWords(let dst, let src, let count): try copyWords(dst, src, count)
         case .copyWordsIndirectSource(let dst, let srcPtr, let count): try copyWordsIndirectSource(dst, srcPtr, count)
@@ -1977,7 +1978,23 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    public func copyWordZeroExtend(_ dst: Int, _ src: Int) throws {
+    private func tac_jz(_ label: String, _ test: Int) throws {
+        try tac_jei(label, test, 0)
+    }
+    
+    private func tac_jei(_ label: String, _ addressOfTestValue: Int, _ valueToTestAgainst: Int) throws {
+        try setUV(addressOfTestValue)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, valueToTestAgainst)
+        assembler.cmp()
+        assembler.cmp()
+        try setAddressToLabel(label)
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+    }
+    
+    private func copyWordZeroExtend(_ dst: Int, _ src: Int) throws {
         try setUV(src)
         try assembler.mov(.X, .M)
         
@@ -1988,7 +2005,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .X)
     }
     
-    public func copyWords(_ dst: Int, _ src: Int, _ count: Int) throws {
+    private func copyWords(_ dst: Int, _ src: Int, _ count: Int) throws {
         for i in 0..<count {
             try setUV(src + i)
             try assembler.mov(.A, .M)
@@ -1997,7 +2014,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         }
     }
     
-    public func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ count: Int) throws {
+    private func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ count: Int) throws {
         if count == 0 {
             return
         }
@@ -2019,7 +2036,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         }
     }
     
-    public func copyWordsIndirectDestination(_ dstPtr: Int, _ src: Int, _ count: Int) throws {
+    private func copyWordsIndirectDestination(_ dstPtr: Int, _ src: Int, _ count: Int) throws {
         if count == 0 {
             return
         }

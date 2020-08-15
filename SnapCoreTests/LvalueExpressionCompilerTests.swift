@@ -97,49 +97,32 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testOutOfBoundsLvalueArrayAccessCausesPanic_StaticArray() {
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: true)
+            "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0100, isMutable: true)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
         var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
         executor.configure = { computer in
-            computer.dataRAM.store(value: 0xcd, to: 0x0011)
+            computer.dataRAM.store(value: 0xcd, to: 0x0101)
         }
         let computer = try! executor.execute(ir: ir)
         
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
     
-    func testLvalueDynamicArrayAccess_InBounds() {
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)
-        ])
-        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
-        var ir: [CrackleInstruction] = []
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = CrackleExecutor()
-        executor.configure = { computer in
-            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
-            computer.dataRAM.store16(value: 1, to: 0x0012)
-            computer.dataRAM.store(value: 0xcd, to: 0x0014)
-        }
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack16(at: 0), 0x0014)
-    }
-    
     func testOutOfBoundsLvalueArrayAccessCausesPanic_DynamicArray() {
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0100, isMutable: true)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
         executor.configure = { computer in
-            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
-            computer.dataRAM.store16(value: 0, to: 0x0012)
-            computer.dataRAM.store(value: 0xcd, to: 0x0014)
+            computer.dataRAM.store16(value: 0x0104, to: 0x0100)
+            computer.dataRAM.store16(value: 0, to: 0x0102)
+            computer.dataRAM.store(value: 0xcd, to: 0x0104)
         }
         let computer = try! executor.execute(ir: ir)
         

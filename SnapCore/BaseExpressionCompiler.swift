@@ -167,7 +167,7 @@ public class BaseExpressionCompiler: NSObject {
         var instructions: [CrackleInstruction] = []
         instructions += computeAddressOfSymbol(symbol, depth)
         instructions += try computeAddressOfArrayElement(expr, elementType)
-//        instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
         return instructions
     }
     
@@ -178,37 +178,50 @@ public class BaseExpressionCompiler: NSObject {
     private func arrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
         let label = labelMaker.next()
         var instructions: [CrackleInstruction] = []
-        instructions += [
-            // Duplicate the address of the access for the comparison, below.
-            .dup16,
-        ]
+        
+        let tempAccessAddress = temporaries.peek()
+        
         instructions += computeAddressOfSymbol(symbol, depth)
-        instructions += [
-            // Indented four times to indicate that the stack holds the two
-            // addresses pushed above. Each change in level of indent indicates
-            // a change in stack depth of one word.
-                            .push16(determineArrayCount(symbol.type)),
-                                    .push16(determineArrayElementType(symbol.type).sizeof),
-                                            .mul16,
-                                    .add16,
-                            // The 16-bit array limit is now on the top of the stack.
-                            // Subtract one element so we can avoid a limit which
-                            // might wrap around the bottom of the stack from
-                            // 0xffff to 0x0000.
-                            .push16(determineArrayElementType(symbol.type).sizeof),
-                                    .sub16,
-                            .push16(0),
-                                    .sub16,
-                            // If (limit-1) < (access address) then the access
-                            // is unacceptable.
-                            .lt16,
-                .push(0),
-                    .je(label)
-            // At end of list, relative change in stack depth is zero.
-            // The address of access is still on the top.
-        ]
+        let tempBaseAddress = temporaries.pop()
+        
+        let tempArrayCount = temporaries.allocate()
+        instructions += [.storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type))]
+        
+        let tempArrayElementSize = temporaries.allocate()
+        instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
+        
+        let tempArraySize = temporaries.allocate()
+        instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
+        tempArrayCount.consume()
+        tempArrayElementSize.consume()
+        
+        let tempArrayLimit = temporaries.allocate()
+        instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
+        tempBaseAddress.consume()
+        tempArraySize.consume()
+        
+        // Subtract one so we can avoid a limit which might wrap around the
+        // bottom of the stack from 0xffff to 0x0000.
+        let tempOne = temporaries.allocate()
+        instructions += [.storeImmediate16(tempOne.address, 1)]
+        instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
+        tempOne.consume()
+        
+        // If (limit-1) < (access address) then the access is unacceptable.
+        let tempIsUnacceptable = temporaries.allocate()
+        instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
+        // Specifically do not conusme tempAccessAddress as we need to leave
+        // that in place on the stack when we're done.
+        tempArrayLimit.consume()
+        
+        // If the access is not unacceptable (that is, the access is acceptable)
+        // then take the branch to skip the panic.
+        instructions += [.tac_jz(label, tempIsUnacceptable.address)]
+        tempIsUnacceptable.consume()
+        
         instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
         instructions += [.label(label)]
+        
         return instructions
     }
     
@@ -274,7 +287,8 @@ public class BaseExpressionCompiler: NSObject {
         
         instructions += try computeAddressOfArrayElement(expr, elementType)
         
-//        instructions += dynamicArrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        instructions += dynamicArrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        
         return instructions
     }
     
@@ -283,53 +297,67 @@ public class BaseExpressionCompiler: NSObject {
     // the stack as it was before this check. Else, panic with an appropriate
     // error message.
     private func dynamicArrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
         let label = labelMaker.next()
-        instructions += [
-            // Duplicate the address of the access for the comparison, below.
-            .dup16
-        ]
+        var instructions: [CrackleInstruction] = []
+        
+        let tempAccessAddress = temporaries.pop()
+        
         instructions += computeAddressOfSymbol(symbol, depth)
-        instructions += [
-            // Indented to indicate stack depth. Each change in level of indent
-            // indicates a change in stack depth of one word.
-                            // Load the array count from memory.
-                            .push16(2),
-                                    .add16,
-                            .loadIndirect16,
-                                    // Multiply the count by the size of an individual element to get
-                                    // the total array size.
-                                    .push16(determineArrayElementType(symbol.type).sizeof),
-                                    .mul16,
-            ]
-        instructions +=             computeAddressOfSymbol(symbol, depth)
-        instructions += [
-                                    // Load the base address
-                                    .loadIndirect16,
-                                    // Add the base pointer to the array length
-                                    // to get the address just past the end of
-                                    // the array.
-                                    .add16,
-                            // The 16-bit array limit is now on the top of the stack.
-                            // Subtract one element so we can avoid a limit which
-                            // might wrap around the bottom of the stack from
-                            // 0xffff to 0x0000.
-                            .push16(determineArrayElementType(symbol.type).sizeof),
-                                    .sub16,
-                            .push16(0),
-                                    .sub16,
-                            // If (limit-1) < (access address) then the access
-                            // is unacceptable.
-                            .lt16,
-                .push(0),
-                    .je(label)
-            // At end of list, relative change in stack depth is zero.
-            // The address of access is still on the top.
-        ]
+        let tempSliceAddress = temporaries.pop()
+        
+        let tempBaseAddress = temporaries.allocate()
+        let tempTwo = temporaries.allocate()
+        let tempArrayCountAddress = temporaries.allocate()
+        let tempArrayCount = temporaries.allocate()
+        let tempArrayElementSize = temporaries.allocate()
+        let tempArraySize = temporaries.allocate()
+        let tempArrayLimit = temporaries.allocate()
+        let tempOne = temporaries.allocate()
+        let tempIsUnacceptable = temporaries.allocate()
+        
+        // Extract the array base address from the slice structure.
+        instructions += [.copyWordsIndirectSource(tempBaseAddress.address, tempSliceAddress.address, 2)]
+        
+        // Extract the count from the slice structure too.
+        instructions += [.storeImmediate16(tempTwo.address, 2)]
+        instructions += [.tac_add16(tempArrayCountAddress.address, tempSliceAddress.address, tempTwo.address)]
+        instructions += [.copyWordsIndirectSource(tempArrayCount.address, tempArrayCountAddress.address, 2)]
+        
+        instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
+        instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
+        
+        instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
+        
+        // Subtract one so we can avoid a limit which might wrap around the
+        // bottom of the stack from 0xffff to 0x0000.
+        instructions += [.storeImmediate16(tempOne.address, 1)]
+        instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
+        
+        // If (limit-1) < (access address) then the access is unacceptable.
+        instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
+        
+        // If the access is not unacceptable (that is, the access is acceptable)
+        // then take the branch to skip the panic.
+        instructions += [.tac_jz(label, tempIsUnacceptable.address)]
+        
         instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
-        instructions += [
-            .label(label)
-        ]
+        instructions += [.label(label)]
+        
+        tempBaseAddress.consume()
+        tempTwo.consume()
+        tempArrayCountAddress.consume()
+        tempArrayCount.consume()
+        tempArrayElementSize.consume()
+        tempArraySize.consume()
+        tempArrayLimit.consume()
+        tempOne.consume()
+        tempIsUnacceptable.consume()
+        
+        // Specifically do not conusme tempAccessAddress as we need to leave
+        // that in place on the stack when we're done.
+        
+        temporaries.push(tempAccessAddress)
+        
         return instructions
     }
     

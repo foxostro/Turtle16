@@ -2190,4 +2190,30 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: src), 0xcafe)
         XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
     }
+    
+    func testJz_TakeTheBranch() {
+        let a = 0x0100
+        let b = 0x0102
+        let computer = try! execute(ir: [
+            .storeImmediate(a, 0xaa),
+            .storeImmediate(b, 0),
+            .tac_jz(".L0", b),
+            .storeImmediate(a, 0xbb),
+            .label(".L0")
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0xaa)
+    }
+    
+    func testJz_DoNotTakeTheBranch() {
+        let a = 0x0100
+        let b = 0x0102
+        let computer = try! execute(ir: [
+            .storeImmediate(a, 0xaa),
+            .storeImmediate(b, 1),
+            .tac_jz(".L0", b),
+            .storeImmediate(a, 0xbb),
+            .label(".L0")
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0xbb)
+    }
 }

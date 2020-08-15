@@ -33,6 +33,10 @@ public class CompilerTemporaries: NSObject {
         temporaryStack.append(temporary)
     }
     
+    public func peek() -> Temporary {
+        return temporaryStack.last!
+    }
+    
     public func pop() -> Temporary {
         return temporaryStack.popLast()!
     }

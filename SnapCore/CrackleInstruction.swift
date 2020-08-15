@@ -88,6 +88,8 @@ public enum CrackleInstruction: Equatable {
     case tac_ge(Int, Int, Int)
     case tac_ge16(Int, Int, Int)
     
+    case tac_jz(String, Int) // (label, test) -- Branch if the word in memory at the address given by `test' is zero
+    
     case copyWordZeroExtend(Int, Int) // copies an 8-bit word at the specified source address to a 16-bit slot at the specified destination address, filling the high bits with zero
     
     case copyWords(Int, Int, Int) // (dst, src, N) -- copies N words starting at the specified source address to the destination address.
@@ -250,6 +252,8 @@ public enum CrackleInstruction: Equatable {
             return String(format: "GE 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .tac_ge16(let c, let a, let b):
             return String(format: "GE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .tac_jz(let label, let test):
+            return String(format: "JZ %@, 0x%04x", label, test)
         case .copyWordZeroExtend(let b, let a):
             return String(format: "COPY-WORD-ZERO-EXTEND 0x%04x, 0x%04x", b, a)
         case .copyWords(let dst, let src, let numberOfWords):

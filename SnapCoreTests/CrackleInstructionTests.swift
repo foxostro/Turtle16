@@ -90,10 +90,11 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.tac_ge(0xffff, 0xffff, 0xffff).description, "GE 0xffff, 0xffff, 0xffff")
         XCTAssertEqual(CrackleInstruction.tac_ge16(0xffff, 0xffff, 0xffff).description, "GE16 0xffff, 0xffff, 0xffff")
         XCTAssertEqual(CrackleInstruction.tac_jz(L0, 0xffff).description, "JZ .L0, 0xffff")
-        XCTAssertEqual(CrackleInstruction.copyWordZeroExtend(0xbbbb, 0xaaaa).description, "COPY-WORD-ZERO-EXTEND 0xbbbb, 0xaaaa")
-        XCTAssertEqual(CrackleInstruction.copyWords(0xa, 0xb, 0xc).description, "COPY-WORDS 0x000a, 0x000b, 12")
-        XCTAssertEqual(CrackleInstruction.copyWordsIndirectSource(0xa, 0xb, 0xc).description, "COPY-WORDS-INDIRECT-SOURCE 0x000a, 0x000b, 12")
-        XCTAssertEqual(CrackleInstruction.copyWordsIndirectDestination(0xa, 0xb, 0xc).description, "COPY-WORDS-INDIRECT-DESTINATION 0x000a, 0x000b, 12")
+        XCTAssertEqual(CrackleInstruction.copyWordZeroExtend(0xbbbb, 0xaaaa).description, "COPY-ZX 0xbbbb, 0xaaaa")
+        XCTAssertEqual(CrackleInstruction.copyWords(0xa, 0xb, 0xc).description, "COPY 0x000a, 0x000b, 12")
+        XCTAssertEqual(CrackleInstruction.copyWordsIndirectSource(0xa, 0xb, 0xc).description, "COPY-IS 0x000a, 0x000b, 12")
+        XCTAssertEqual(CrackleInstruction.copyWordsIndirectDestination(0xa, 0xb, 0xc).description, "COPY-ID 0x000a, 0x000b, 12")
+        XCTAssertEqual(CrackleInstruction.copyWordsIndirectDestinationIndirectSource(0xa, 0xb, 0xc).description, "COPY-IDIS 0x000a, 0x000b, 12")
     }
     
     func testMakeListing_Empty() {

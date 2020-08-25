@@ -792,7 +792,20 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         instructions += try arraySubscriptLvalue(symbol, depth, expr, elementType)
-        instructions += indirectLoadValue(elementType)
+        instructions += try loadFromLvalueIntoTemporary(elementType)
+        return instructions
+    }
+    
+    // Assuming the top of the temporaries stack holds an lvalue, load the
+    // value in memory at that address into a new temporary.
+    // Leave that temporary on top of the temporaries stack too.
+    private func loadFromLvalueIntoTemporary(_ elementType: SymbolType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        let tempLvalue = temporaries.pop()
+        let tempResult = temporaries.allocate()
+        temporaries.push(tempResult)
+        instructions += [.copyWordsIndirectSource(tempResult.address, tempLvalue.address, elementType.sizeof)]
+        tempLvalue.consume()
         return instructions
     }
     

@@ -963,7 +963,7 @@ let b = foo()
 puts("Hello, World!")
 """)
         XCTAssertEqual(serialOutput, "Hello, World!")
-        print(computer.cpuState.uptime)
+        print("total running time: \(computer.cpuState.uptime) cycles")
     }
     
     func testSerialOutput_Panic() {

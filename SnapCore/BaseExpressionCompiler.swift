@@ -305,55 +305,53 @@ public class BaseExpressionCompiler: NSObject {
         instructions += computeAddressOfSymbol(symbol, depth)
         let tempSliceAddress = temporaries.pop()
         
-        let tempBaseAddress = temporaries.allocate()
-        let tempTwo = temporaries.allocate()
-        let tempArrayCountAddress = temporaries.allocate()
-        let tempArrayCount = temporaries.allocate()
-        let tempArrayElementSize = temporaries.allocate()
-        let tempArraySize = temporaries.allocate()
-        let tempArrayLimit = temporaries.allocate()
-        let tempOne = temporaries.allocate()
-        let tempIsUnacceptable = temporaries.allocate()
-        
         // Extract the array base address from the slice structure.
+        let tempBaseAddress = temporaries.allocate()
         instructions += [.copyWordsIndirectSource(tempBaseAddress.address, tempSliceAddress.address, 2)]
         
         // Extract the count from the slice structure too.
+        let tempTwo = temporaries.allocate()
         instructions += [.storeImmediate16(tempTwo.address, 2)]
+        tempTwo.consume()
+        let tempArrayCountAddress = temporaries.allocate()
         instructions += [.tac_add16(tempArrayCountAddress.address, tempSliceAddress.address, tempTwo.address)]
+        let tempArrayCount = temporaries.allocate()
         instructions += [.copyWordsIndirectSource(tempArrayCount.address, tempArrayCountAddress.address, 2)]
+        tempArrayCountAddress.consume()
         
+        let tempArrayElementSize = temporaries.allocate()
         instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
+        let tempArraySize = temporaries.allocate()
         instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
+        tempArrayElementSize.consume()
+        tempArrayCount.consume()
         
+        let tempArrayLimit = temporaries.allocate()
         instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
+        tempArraySize.consume()
+        tempBaseAddress.consume()
         
         // Subtract one so we can avoid a limit which might wrap around the
         // bottom of the stack from 0xffff to 0x0000.
+        let tempOne = temporaries.allocate()
         instructions += [.storeImmediate16(tempOne.address, 1)]
+        tempOne.consume()
         instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
         
         // If (limit-1) < (access address) then the access is unacceptable.
+        let tempIsUnacceptable = temporaries.allocate()
         instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
+        tempArrayLimit.consume()
         
         // If the access is not unacceptable (that is, the access is acceptable)
         // then take the branch to skip the panic.
         instructions += [.tac_jz(label, tempIsUnacceptable.address)]
+        tempIsUnacceptable.consume()
         
         instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
         instructions += [.label(label)]
         
-        tempBaseAddress.consume()
-        tempTwo.consume()
-        tempArrayCountAddress.consume()
-        tempArrayCount.consume()
-        tempArrayElementSize.consume()
-        tempArraySize.consume()
-        tempArrayLimit.consume()
-        tempOne.consume()
-        tempIsUnacceptable.consume()
-        
-        // Specifically do not conusme tempAccessAddress as we need to leave
+        // Specifically do not consume tempAccessAddress as we need to leave
         // that in place on the stack when we're done.
         
         temporaries.push(tempAccessAddress)

@@ -813,7 +813,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         instructions += try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
-        instructions += indirectLoadValue(elementType)
+        instructions += try loadFromLvalueIntoTemporary(elementType)
         return instructions
     }
     

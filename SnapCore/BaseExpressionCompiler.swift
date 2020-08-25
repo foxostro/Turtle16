@@ -96,31 +96,6 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    public func indirectStoreOfValue(type: SymbolType) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        
-        let size = type.sizeof
-        switch size {
-        case 0:  break
-        case 1:  instructions += [.storeIndirect]
-        case 2:  instructions += [.storeIndirect16]
-        default: instructions += [.storeIndirectN(size)]
-        }
-        return instructions
-    }
-    
-    // Given an address on the stack, load a typed value from that address.
-    public func indirectLoadValue(_ type: SymbolType) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        switch type.sizeof {
-        case 0:  break
-        case 1:  instructions += [.loadIndirect]
-        case 2:  instructions += [.loadIndirect16]
-        default: instructions += [.loadIndirectN(type.sizeof)]
-        }
-        return instructions
-    }
-    
     // Compute and push the address of the specified symbol.
     public func computeAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []

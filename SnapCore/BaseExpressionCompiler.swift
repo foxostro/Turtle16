@@ -59,7 +59,7 @@ public class BaseExpressionCompiler: NSObject {
     
     public func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [CrackleInstruction] {
         guard type.sizeof <= 2 else {
-            abort() // TODO: how do we handle values which are too large to fit into a temporary? fall back to the stack?
+            return [] // TODO: how do we handle values which are too large to fit into a temporary? fall back to the stack?
         }
         var instructions: [CrackleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)

@@ -2629,9 +2629,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignmentThroughArraySubscript_DynamicArray() {
         let count = 5
         
-        let addressOfPointer = 0x0010
-        let addressOfCount = 0x0012
-        let addressOfData = 0x0014
+        let addressOfPointer = 0x0100
+        let addressOfCount = 0x0102
+        let addressOfData = 0x0104
         
         let expr = ExprUtils.makeAssignment(lexpr: ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(2)),
                                             rexpr: Expression.LiteralInt(0xcafe))

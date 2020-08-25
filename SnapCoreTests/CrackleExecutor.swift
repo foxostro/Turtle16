@@ -64,7 +64,7 @@ class CrackleExecutor: NSObject {
             let pc = base+i
             if let crackleInstruction = mapProgramCounterToCrackleInstruction[pc] {
                 if previousCrackleInstruction != crackleInstruction {
-                    disassembly += "\n# \(crackleInstruction)\n"
+                    disassembly += "\n# \(crackleInstruction.description)\n"
                 }
                 previousCrackleInstruction = crackleInstruction
             }

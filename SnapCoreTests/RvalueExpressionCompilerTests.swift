@@ -2563,41 +2563,35 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     private func checkDynamicArraySubscriptCanAccessEveryElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable([ident : Symbol(type: .dynamicArray(elementType: elementType), offset: 0x0010, isMutable: false)])
+        let addressOfPointer = 0x0100
+        let addressOfCount = 0x0102
+        let addressOfData = 0x0104
+        let symbols = SymbolTable([ident : Symbol(type: .dynamicArray(elementType: elementType), offset: addressOfPointer, isMutable: false)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
-        var ir: [CrackleInstruction] = []
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaries.peek()
+        
         let executor = CrackleExecutor()
         executor.configure = { computer in
-            let addressOfPointer = 0x0010
-            let addressOfCount = 0x0012
-            let addressOfData = 0x0014
-            
             // A dynamic array is an object containing a pointer and a length
             computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
             computer.dataRAM.store16(value: UInt16(n), to: addressOfCount)
             
             // Initialize the underlying data that the dynamic array is referencing
             for j in 0..<n {
-                switch elementType.sizeof {
-                case 2:
-                    computer.dataRAM.store16(value: UInt16(j), to: addressOfData + j*elementType.sizeof)
-                case 1:
-                    computer.dataRAM.store(value: UInt8(j), to: addressOfData + j*elementType.sizeof)
-                default:
-                    abort()
-                }
+                computer.dataRAM.storeValue(value: j,
+                                            ofType: elementType,
+                                            to: addressOfData + j*elementType.sizeof)
             }
         }
         let computer = try! executor.execute(ir: ir)
-        switch elementType.sizeof {
-        case 2:
-            XCTAssertEqual(computer.stack16(at: 0), UInt16(i))
-        case 1:
-            XCTAssertEqual(computer.stack(at: 0), UInt8(i))
-        default:
-            abort()
-        }
+        let actual = computer.dataRAM.loadValue(ofType: elementType, from: tempResult.address)
+        XCTAssertEqual(actual, i)
     }
     
     func testCompileIdentifierExpression_DynamicArrayOfU16_Static() {

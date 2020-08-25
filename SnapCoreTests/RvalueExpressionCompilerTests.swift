@@ -1912,7 +1912,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_ArrayOfU16_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: false)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset, isMutable: false)])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
@@ -1921,12 +1922,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
             return
         }
         executor.configure = { computer in
-            let address = 0x0010
-            computer.dataRAM.store16(value: 1000, to: address + 0)
-            computer.dataRAM.store16(value: 2000, to: address + 2)
-            computer.dataRAM.store16(value: 3000, to: address + 4)
-            computer.dataRAM.store16(value: 4000, to: address + 6)
-            computer.dataRAM.store16(value: 5000, to: address + 8)
+            computer.dataRAM.store16(value: 1000, to: offset + 0)
+            computer.dataRAM.store16(value: 2000, to: offset + 2)
+            computer.dataRAM.store16(value: 3000, to: offset + 4)
+            computer.dataRAM.store16(value: 4000, to: offset + 6)
+            computer.dataRAM.store16(value: 5000, to: offset + 8)
         }
         let computer = try! executor.execute(ir: ir!)
         let address = computer.stackPointer
@@ -2032,7 +2032,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 4000),
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset, isMutable: true)])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
@@ -2041,11 +2042,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
             return
         }
         let computer = try! executor.execute(ir: ir!)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0010), 1000)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0012), 2000)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0014), 3000)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0016), 4000)
-        XCTAssertEqual(computer.dataRAM.load16(from: 0x0018), 5000)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset+0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset+2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset+4), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset+6), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset+8), 5000)
     }
     
     func testCompileAssignment_PromoteU8ToU16() {

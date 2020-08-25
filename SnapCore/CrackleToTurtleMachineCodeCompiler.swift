@@ -220,6 +220,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .copyWords(let dst, let src, let count): try copyWords(dst, src, count)
         case .copyWordsIndirectSource(let dst, let srcPtr, let count): try copyWordsIndirectSource(dst, srcPtr, count)
         case .copyWordsIndirectDestination(let dstPtr, let src, let count): try copyWordsIndirectDestination(dstPtr, src, count)
+        case .copyWordsIndirectDestinationIndirectSource(let dstPtr, let srcPtr, let count): try copyWordsIndirectDestinationIndirectSource(dstPtr, srcPtr, count)
         }
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
@@ -2054,6 +2055,74 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
             try assembler.mov(.M, .A)
             if i != count-1 {
                 assembler.inxy()
+            }
+        }
+    }
+    
+    private func copyWordsIndirectDestinationIndirectSource(_ originalDstPtr: Int, _ originalSrcPtr: Int, _ count: Int) throws {
+        if count == 0 {
+            return
+        }
+        
+        // Copy the destination address to scratch memory.
+        let dstPtr = allocateScratchMemory(2)
+        try setUV(originalDstPtr)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        try setUV(dstPtr)
+        try assembler.mov(.M, .X)
+        assembler.inuv()
+        try assembler.mov(.M, .Y)
+        
+        // Copy the source address to scratch memory.
+        let srcPtr = allocateScratchMemory(2)
+        try setUV(originalSrcPtr)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        try setUV(srcPtr)
+        try assembler.mov(.M, .X)
+        assembler.inuv()
+        try assembler.mov(.M, .Y)
+        
+        // Copy the bytes.
+        for i in 0..<count {
+            try setUV(srcPtr)
+            try assembler.mov(.X, .M)
+            assembler.inuv()
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.A, .M)
+            
+            try setUV(dstPtr)
+            try assembler.mov(.X, .M)
+            assembler.inuv()
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
+            try assembler.mov(.M, .A)
+            
+            // Increment the pointers in-place.
+            if i != count-1 {
+                try setUV(srcPtr)
+                try assembler.mov(.X, .M)
+                assembler.inuv()
+                try assembler.mov(.Y, .M)
+                assembler.inxy()
+                try assembler.mov(.M, .Y)
+                try setUV(srcPtr)
+                try assembler.mov(.M, .X)
+                
+                try setUV(dstPtr)
+                try assembler.mov(.X, .M)
+                assembler.inuv()
+                try assembler.mov(.Y, .M)
+                assembler.inxy()
+                try assembler.mov(.M, .Y)
+                try setUV(dstPtr)
+                try assembler.mov(.M, .X)
             }
         }
     }

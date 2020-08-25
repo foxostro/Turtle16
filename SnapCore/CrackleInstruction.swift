@@ -98,6 +98,8 @@ public enum CrackleInstruction: Equatable {
     
     case copyWordsIndirectDestination(Int, Int, Int) // (dstPtr, src, N) -- copies N words starting at the source address to the destination address. The destination address is located in memory at the address given by `dstPtr'.
     
+    case copyWordsIndirectDestinationIndirectSource(Int, Int, Int) // (dstPtr, srcPtr, N) -- copies N words starting at the source address to the destination address. The destination address is located in memory at the address given by `dstPtr'. The source address is located in memory at the address given by `srcPtr'.
+    
     public var description: String {
         switch self {
         case .push(let value):
@@ -255,13 +257,15 @@ public enum CrackleInstruction: Equatable {
         case .tac_jz(let label, let test):
             return String(format: "JZ %@, 0x%04x", label, test)
         case .copyWordZeroExtend(let b, let a):
-            return String(format: "COPY-WORD-ZERO-EXTEND 0x%04x, 0x%04x", b, a)
+            return String(format: "COPY-ZX 0x%04x, 0x%04x", b, a)
         case .copyWords(let dst, let src, let numberOfWords):
-            return String(format: "COPY-WORDS 0x%04x, 0x%04x, %d", dst, src, numberOfWords)
+            return String(format: "COPY 0x%04x, 0x%04x, %d", dst, src, numberOfWords)
         case .copyWordsIndirectSource(let dst, let src, let numberOfWords):
-            return String(format: "COPY-WORDS-INDIRECT-SOURCE 0x%04x, 0x%04x, %d", dst, src, numberOfWords)
+            return String(format: "COPY-IS 0x%04x, 0x%04x, %d", dst, src, numberOfWords)
         case .copyWordsIndirectDestination(let dstPtr, let src, let numberOfWords):
-            return String(format: "COPY-WORDS-INDIRECT-DESTINATION 0x%04x, 0x%04x, %d", dstPtr, src, numberOfWords)
+            return String(format: "COPY-ID 0x%04x, 0x%04x, %d", dstPtr, src, numberOfWords)
+        case .copyWordsIndirectDestinationIndirectSource(let dstPtr, let src, let numberOfWords):
+            return String(format: "COPY-IDIS 0x%04x, 0x%04x, %d", dstPtr, src, numberOfWords)
         }
     }
     

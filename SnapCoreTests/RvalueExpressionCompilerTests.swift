@@ -2157,7 +2157,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCannotAssignToAnImmutableValue_Word() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: offset, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2167,7 +2168,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCannotAssignToAnImmutableValue_Boolean() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2178,7 +2180,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testExpressionIsNotAssignable_ConstInt() {
         let expr = Expression.Assignment(lexpr: Expression.LiteralInt(0),
                                          rexpr: Expression.LiteralInt(0))
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2188,7 +2191,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0100, isMutable: true)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset, isMutable: true)])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
@@ -2483,7 +2487,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
+        let offset = 0x0100
+        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: offset, isMutable: false)])
         let zero = Expression.LiteralInt(0)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
@@ -2514,7 +2519,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     private func checkArraySubscriptAccessesArrayElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable([ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable([ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0100, isMutable: false)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
@@ -2728,8 +2733,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testGetLengthOfArrayThroughIdentifier() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("count"))
+        let offset = 0x0100
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: 0x0010, isMutable: false)
+            "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: offset, isMutable: false)
         ])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
@@ -2745,8 +2751,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testGetLengthOfDynamicArray() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("count"))
+        let offset = 0x0100
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset, isMutable: false)
         ])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
@@ -2756,36 +2763,38 @@ class RvalueExpressionCompilerTests: XCTestCase {
             return
         }
         executor.configure = { computer in
-            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
-            computer.dataRAM.store16(value: 0x0003, to: 0x0012)
+            computer.dataRAM.store16(value: UInt16(offset+4), to: offset+0)
+            computer.dataRAM.store16(value: 0x0003, to: offset+2)
         }
         let computer = try! executor.execute(ir: ir!)
         XCTAssertEqual(computer.stack16(at: 0), 3)
     }
     
     func testOutOfBoundsRvalueArrayAccessCausesPanic_FixedArray() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: true)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: offset, isMutable: true)])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
         var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
         executor.configure = { computer in
-            computer.dataRAM.store(value: 0xcd, to: 0x0011)
+            computer.dataRAM.store(value: 0xcd, to: offset+1)
         }
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
     
     func testOutOfBoundsRvalueArrayAccessCausesPanic_DynamicArray() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true)])
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset, isMutable: true)])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         var ir: [CrackleInstruction] = []
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
         let executor = CrackleExecutor()
         executor.configure = { computer in
-            computer.dataRAM.store16(value: 0x0014, to: 0x0010)
-            computer.dataRAM.store16(value: 0, to: 0x0012)
-            computer.dataRAM.store(value: 0xcd, to: 0x0014)
+            computer.dataRAM.store16(value: UInt16(offset+4), to: offset+0)
+            computer.dataRAM.store16(value: 0, to: offset+2)
+            computer.dataRAM.store(value: 0xcd, to: offset+4)
         }
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)

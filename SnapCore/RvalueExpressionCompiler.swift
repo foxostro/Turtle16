@@ -522,18 +522,73 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         instructions += lvalue_proc
         let lvalue = temporaries.pop()
         
-        // Calculate the rvalue, the value that is being assigned.
-        // To handle automatic conversion and promotion, this value of this
-        // expression is converted now to the type of the destination variable.
-        let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
-        instructions += rvalue_proc
-        let rvalue = temporaries.pop()
-        
-        // Copy the value into memory at the address specified by the lvalue.
-        instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
+        // Different implementations of assignment for different types.
+        let rtype = try typeChecker.check(expression: assignment.rexpr)
+        switch (rtype, ltype) {
+        case (.array(let n, _), .array(let m, let b)):
+            guard n == m || m == nil else {
+                abort()
+            }
+            switch assignment.rexpr {
+            case let literalArray as Expression.LiteralArray:
+                // In the case where we assign a literal array to some array
+                // symbol, iterate the expressions for each element, evaluate
+                // the expression, and copy the result to the address of the
+                // next array element.
+                let tempElementSize = temporaries.allocate()
+                instructions += [.storeImmediate16(tempElementSize.address, b.sizeof)]
+                
+                for i in 0..<literalArray.elements.count {
+                    let el = literalArray.elements[i]
+                    
+                    // Evaluate the expression and copy to the destination.
+                    instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: false)
+                    let tempElementValue = temporaries.pop()
+                    assert(b.sizeof <= 2)
+                    instructions += [
+                        .copyWordsIndirectDestination(lvalue.address, tempElementValue.address, b.sizeof)
+                    ]
+                    tempElementValue.consume()
+
+                    // Increment the lvalue so we can do the next element.
+                    if i != literalArray.elements.count-1 {
+                        instructions += [.tac_add16(lvalue.address, lvalue.address, tempElementSize.address)]
+                    }
+                }
+                
+                tempElementSize.consume()
+            default:
+                abort() // unimplemented
+            }
+        default:
+            // Calculate the rvalue, the value that is being assigned.
+            // To handle automatic conversion and promotion, this value of this
+            // expression is converted now to the type of the destination variable.
+            let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
+            instructions += rvalue_proc
+            let rvalue = temporaries.pop()
+            
+            // Emit code to copy the rvalue to the address given by the lvalue.
+            // If the lvalue type is small enough then the result of the
+            // expression can be assumed to fit into a pseudo-register. In that
+            // case, the contents can be copied in a straight forward manner. If
+            // the type is larger than the size of a register then the result is
+            // assumed to have been placed on the stack. In this case, copy the
+            // bytes from the stack to the destination.
+            switch ltype.sizeof {
+            case 0...2:
+                instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
+            default:
+                instructions += [
+                    .push16(lvalue.address),
+                    .storeIndirectN(ltype.sizeof)
+                ]
+            }
+            
+            rvalue.consume()
+        }
         
         lvalue.consume()
-        rvalue.consume()
         
         return instructions
     }

@@ -210,15 +210,23 @@ public class CPUStateSnapshot: NSObject {
         }
         if prevState.registerA != nextState.registerA {
             logger.append("registerA: 0x%02x --> 0x%02x", prevState.registerA.value, nextState.registerA.value)
+        } else {
+            logger.append("registerA: 0x%02x (unchanged)", nextState.registerA.value)
         }
         if prevState.registerB != nextState.registerB {
             logger.append("registerB: 0x%02x --> 0x%02x", prevState.registerB.value, nextState.registerB.value)
+        } else {
+            logger.append("registerB: 0x%02x (unchanged)", nextState.registerB.value)
         }
         if prevState.registerC != nextState.registerC {
             logger.append("registerC: 0x%02x --> 0x%02x", prevState.registerC.value, nextState.registerC.value)
+        } else {
+            logger.append("registerC: 0x%02x (unchanged)", nextState.registerC.value)
         }
         if prevState.registerD != nextState.registerD {
             logger.append("registerD: 0x%02x --> 0x%02x", prevState.registerD.value, nextState.registerD.value)
+        } else {
+            logger.append("registerD: 0x%02x (unchanged)", nextState.registerD.value)
         }
         if prevState.registerG != nextState.registerG {
             logger.append("registerG: 0x%02x --> 0x%02x", prevState.registerG.value, nextState.registerG.value)
@@ -228,15 +236,23 @@ public class CPUStateSnapshot: NSObject {
         }
         if prevState.registerX != nextState.registerX {
             logger.append("registerX: 0x%02x --> 0x%02x", prevState.registerX.value, nextState.registerX.value)
+        } else {
+            logger.append("registerX: 0x%02x (unchanged)", nextState.registerX.value)
         }
         if prevState.registerY != nextState.registerY {
             logger.append("registerY: 0x%02x --> 0x%02x", prevState.registerY.value, nextState.registerY.value)
+        } else {
+            logger.append("registerY: 0x%02x (unchanged)", nextState.registerY.value)
         }
         if prevState.registerU != nextState.registerU {
             logger.append("registerU: 0x%02x --> 0x%02x", prevState.registerU.value, nextState.registerU.value)
+        } else {
+            logger.append("registerU: 0x%02x (unchanged)", nextState.registerU.value)
         }
         if prevState.registerV != nextState.registerV {
             logger.append("registerV: 0x%02x --> 0x%02x", prevState.registerV.value, nextState.registerV.value)
+        } else {
+            logger.append("registerV: 0x%02x (unchanged)", nextState.registerV.value)
         }
         if prevState.aluResultBuffer != nextState.aluResultBuffer {
             logger.append("aluResultBuffer: %@ --> %@", prevState.aluResultBuffer, nextState.aluResultBuffer)

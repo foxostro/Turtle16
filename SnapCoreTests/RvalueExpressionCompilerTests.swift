@@ -2597,9 +2597,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileIdentifierExpression_DynamicArrayOfU16_Static() {
         let count = 5
         
-        let addressOfPointer = 0x0010
-        let addressOfCount = 0x0012
-        let addressOfData = 0x0014
+        let addressOfPointer = 0x0100
+        let addressOfCount = 0x0102
+        let addressOfData = 0x0104
         
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable([
@@ -2660,21 +2660,21 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
         let count = 5
-        let addressOfPointer = 0x0010
-        let addressOfCount = 0x0012
-        let addressOfData = 0x0014
+        let addressOfPointer = 0x0100
+        let addressOfCount = 0x0102
+        let addressOfData = 0x0104
         let expr = ExprUtils.makeAssignment(name: "dst", right: Expression.Identifier("src"))
         let symbols = SymbolTable([
-            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: true),
-            "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0014, isMutable: false)
+            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: addressOfPointer, isMutable: true),
+            "src" : Symbol(type: .array(count: count, elementType: .u8), offset: addressOfData, isMutable: false)
         ])
         var ir: [CrackleInstruction]? = nil
         XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        let executor = CrackleExecutor()
         if ir == nil {
             XCTFail()
             return
         }
+        let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0xcdcd, to: addressOfPointer)
             computer.dataRAM.store16(value: 0xcdcd, to: addressOfCount)

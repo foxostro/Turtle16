@@ -647,21 +647,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let rvalue = temporaryStack.pop()
             
             // Emit code to copy the rvalue to the address given by the lvalue.
-            // If the lvalue type is small enough then the result of the
-            // expression can be assumed to fit into a pseudo-register. In that
-            // case, the contents can be copied in a straight forward manner. If
-            // the type is larger than the size of a register then the result is
-            // assumed to have been placed on the stack. In this case, copy the
-            // bytes from the stack to the destination.
-            switch ltype.sizeof {
-            case 0...2:
-                instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
-            default:
-                instructions += [
-                    .push16(lvalue.address),
-                    .storeIndirectN(ltype.sizeof)
-                ]
-            }
+            // The expression result is assumed to be small enough to fit into
+            // a temporary allocated from the scratch memory region.
+            // If it doesn't fit then an error would have been raised before
+            // this point.
+            instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
             
             rvalue.consume()
         }
@@ -768,11 +758,28 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
             switch rexpr {
             case let identifier as Expression.Identifier:
+                // Create a new temporary for the array slice which represents
+                // the dynamic array. Populate it with information relating to
+                // the underlying fixed-size array.
                 let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
                 let symbol = resolution.0
                 let depth = symbols.stackFrameIndex - resolution.1
-                instructions += [.push16(n)]
+                
+                let kSliceBaseAddressOffset = 0
+                let kSliceCountOffset = 2
+                let kSliceSize = 4
+                
+                let tempArraySlice = temporaryAllocator.allocate(size: kSliceSize)
+                
                 instructions += computeAddressOfSymbol(symbol, depth)
+                let tempBaseAddress = temporaryStack.pop()
+                
+                instructions += [.copyWords(tempArraySlice.address + kSliceBaseAddressOffset, tempBaseAddress.address, 2)]
+                tempBaseAddress.consume()
+                
+                instructions += [.storeImmediate16(tempArraySlice.address + kSliceCountOffset, n)]
+                
+                temporaryStack.push(tempArraySlice)
             default:
                 // The dynamic array must bind to a temporary value on the stack.
                 // TODO: The way this is written now, the stack will continue to grow and will eventually overflow. We need something like a way to signal that additional bytes must be popped at the end of the statement.

@@ -1914,13 +1914,16 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Identifier("foo")
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset, isMutable: false)])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
-        if ir == nil {
-            XCTFail()
-            return
-        }
         executor.configure = { computer in
             computer.dataRAM.store16(value: 1000, to: offset + 0)
             computer.dataRAM.store16(value: 2000, to: offset + 2)
@@ -1928,13 +1931,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 4000, to: offset + 6)
             computer.dataRAM.store16(value: 5000, to: offset + 8)
         }
-        let computer = try! executor.execute(ir: ir!)
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 3000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 6), 4000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 8), 5000)
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 6), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 8), 5000)
     }
     
     func testCompileIdentifierExpression_ArrayOfU16_Stack() {
@@ -1944,12 +1946,15 @@ class RvalueExpressionCompilerTests: XCTestCase {
                             isMutable: false,
                             storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        if ir == nil {
-            XCTFail()
-            return
-        }
+        
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
         executor.configure = {computer in
             // Set the value of the local variable on the stack.
@@ -1962,13 +1967,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 4000, to: address + 6)
             computer.dataRAM.store16(value: 5000, to: address + 8)
         }
-        let computer = try! executor.execute(ir: ir!)
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 3000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 6), 4000)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 8), 5000)
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 3000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 6), 4000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 8), 5000)
     }
     
     func testCompileAssignment_Bool_Static() {
@@ -2386,7 +2390,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(ir, [])
     }
     
-    func testArrayU8() {
+    func testLiteralArrayOfU8() {
         let expr = Expression.LiteralArray(explicitType: .u8,
                                            explicitCount: nil,
                                            elements: [ExprUtils.makeU8(value: 0),
@@ -2406,7 +2410,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: address + 2), 2)
     }
     
-    func testArrayU16() {
+    func testLiteralArrayOfU16() {
         let expr = Expression.LiteralArray(explicitType: .u16,
                                            explicitCount: nil,
                                            elements: [ExprUtils.makeU16(value: 1),
@@ -2426,7 +2430,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 1000)
     }
     
-    func testArrayBoolean() {
+    func testLiteralArrayOfBool() {
         let expr = Expression.LiteralArray(explicitType: .bool,
                                            explicitCount: nil,
                                            elements: [Expression.LiteralBool(false),
@@ -2527,7 +2531,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
         // since nothing has consumed the value.
-        let tempResult = compiler.temporaries.peek()
+        let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
         executor.configure = { computer in
@@ -2574,7 +2578,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
         // since nothing has consumed the value.
-        let tempResult = compiler.temporaries.peek()
+        let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
         executor.configure = { computer in
@@ -2606,13 +2610,16 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: false),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: false)
         ])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
-        if ir == nil {
-            XCTFail()
-            return
-        }
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
             computer.dataRAM.store16(value: UInt16(count), to: addressOfCount)
@@ -2620,10 +2627,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(1000*i), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir!)
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), UInt16(addressOfData))
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), UInt16(count))
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), UInt16(addressOfData))
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), UInt16(count))
     }
     
     func testCompileAssignmentThroughArraySubscript_DynamicArray() {

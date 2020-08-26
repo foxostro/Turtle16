@@ -52,7 +52,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         // temporaries stack to determine which temporary contains the lvalue.
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)
-        let dst = compiler.temporaries.pop()
+        let dst = compiler.temporaryStack.pop()
         
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
@@ -81,7 +81,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         // temporaries stack to determine which temporary contains the lvalue.
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)
-        let dst = compiler.temporaries.pop()
+        let dst = compiler.temporaryStack.pop()
         
         let executor = CrackleExecutor()
         executor.configure = { computer in

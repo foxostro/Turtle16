@@ -12,14 +12,20 @@ import TurtleCore
 public class BaseExpressionCompiler: NSObject {
     public let symbols: SymbolTable
     public let labelMaker: LabelMaker
-    public let temporaries: CompilerTemporaries
+    public let temporaryStack: CompilerTemporariesStack
+    public let temporaryAllocator: CompilerTemporariesAllocator
+    
     public let kFramePointerAddressHi = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
     public let kFramePointerAddressLo = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
-    public init(symbols: SymbolTable, labelMaker: LabelMaker, temporaries: CompilerTemporaries) {
+    public init(symbols: SymbolTable,
+                labelMaker: LabelMaker,
+                temporaryStack: CompilerTemporariesStack,
+                temporaryAllocator: CompilerTemporariesAllocator) {
         self.symbols = symbols
         self.labelMaker = labelMaker
-        self.temporaries = temporaries
+        self.temporaryStack = temporaryStack
+        self.temporaryAllocator = temporaryAllocator
     }
     
     public func compile(expression: Expression) throws -> [CrackleInstruction] {
@@ -27,11 +33,17 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func rvalueContext() -> RvalueExpressionCompiler {
-        return RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
+        return RvalueExpressionCompiler(symbols: symbols,
+                                        labelMaker: labelMaker,
+                                        temporaryStack: temporaryStack,
+                                        temporaryAllocator: temporaryAllocator)
     }
     
     public func lvalueContext() -> LvalueExpressionCompiler {
-        return LvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
+        return LvalueExpressionCompiler(symbols: symbols,
+                                        labelMaker: labelMaker,
+                                        temporaryStack: temporaryStack,
+                                        temporaryAllocator: temporaryAllocator)
     }
     
     public func unsupportedError(expression: Expression) -> Error {
@@ -44,8 +56,8 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func loadStaticValue(type: SymbolType, offset: Int) -> [CrackleInstruction] {
-        let dst = temporaries.allocate()
-        temporaries.push(dst)
+        let dst = temporaryAllocator.allocate(size: type.sizeof)
+        temporaryStack.push(dst)
         var instructions: [CrackleInstruction] = []
         instructions += [.copyWords(dst.address, offset, type.sizeof)]
         return instructions
@@ -58,14 +70,11 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [CrackleInstruction] {
-        guard type.sizeof <= 2 else {
-            return [] // TODO: how do we handle values which are too large to fit into a temporary? fall back to the stack?
-        }
         var instructions: [CrackleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
-        let src = temporaries.pop()
-        let dst = temporaries.allocate()
-        temporaries.push(dst)
+        let src = temporaryStack.pop()
+        let dst = temporaryAllocator.allocate(size: type.sizeof)
+        temporaryStack.push(dst)
         src.consume()
         instructions += [.copyWordsIndirectSource(dst.address, src.address, type.sizeof)]
         return instructions
@@ -78,20 +87,22 @@ public class BaseExpressionCompiler: NSObject {
     public func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let temp_framePointer = temporaries.allocate()
+        let temp_framePointer = temporaryAllocator.allocate()
         instructions += [.copyWords(temp_framePointer.address, kFramePointerAddressHi, 2)]
         
-        let temp_offset = temporaries.allocate()
+        let temp_offset = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(temp_offset.address, offset)]
         
-        let temp_result = temporaries.allocate()
-        temporaries.push(temp_result)
+        let temp_result = temporaryAllocator.allocate()
+        temporaryStack.push(temp_result)
         temp_offset.consume()
         temp_framePointer.consume()
         instructions += [.tac_sub16(temp_result.address, temp_framePointer.address, temp_offset.address)]
         
         // TODO: need to account for the case where offset<0
+        assert(offset >= 0)
         // TODO: need to account for the case where depth>0
+        assert(depth == 0)
         
         return instructions
     }
@@ -101,8 +112,8 @@ public class BaseExpressionCompiler: NSObject {
         var instructions: [CrackleInstruction] = []
         switch symbol.storage {
         case .staticStorage:
-            let temp = temporaries.allocate()
-            temporaries.push(temp)
+            let temp = temporaryAllocator.allocate()
+            temporaryStack.push(temp)
             instructions += [.storeImmediate16(temp.address, symbol.offset)]
         case .stackStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
         }
@@ -154,36 +165,36 @@ public class BaseExpressionCompiler: NSObject {
         let label = labelMaker.next()
         var instructions: [CrackleInstruction] = []
         
-        let tempAccessAddress = temporaries.peek()
+        let tempAccessAddress = temporaryStack.peek()
         
         instructions += computeAddressOfSymbol(symbol, depth)
-        let tempBaseAddress = temporaries.pop()
+        let tempBaseAddress = temporaryStack.pop()
         
-        let tempArrayCount = temporaries.allocate()
+        let tempArrayCount = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type))]
         
-        let tempArrayElementSize = temporaries.allocate()
+        let tempArrayElementSize = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
         
-        let tempArraySize = temporaries.allocate()
+        let tempArraySize = temporaryAllocator.allocate()
         instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
         tempArrayCount.consume()
         tempArrayElementSize.consume()
         
-        let tempArrayLimit = temporaries.allocate()
+        let tempArrayLimit = temporaryAllocator.allocate()
         instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
         tempBaseAddress.consume()
         tempArraySize.consume()
         
         // Subtract one so we can avoid a limit which might wrap around the
         // bottom of the stack from 0xffff to 0x0000.
-        let tempOne = temporaries.allocate()
+        let tempOne = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempOne.address, 1)]
         instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
         tempOne.consume()
         
         // If (limit-1) < (access address) then the access is unacceptable.
-        let tempIsUnacceptable = temporaries.allocate()
+        let tempIsUnacceptable = temporaryAllocator.allocate()
         instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
         // Specifically do not conusme tempAccessAddress as we need to leave
         // that in place on the stack when we're done.
@@ -252,11 +263,11 @@ public class BaseExpressionCompiler: NSObject {
         var instructions: [CrackleInstruction] = []
         
         instructions += computeAddressOfSymbol(symbol, depth)
-        let sliceAddress = temporaries.pop()
+        let sliceAddress = temporaryStack.pop()
         
         // Extract the array base address from the slice structure.
-        let baseAddress = temporaries.allocate()
-        temporaries.push(baseAddress)
+        let baseAddress = temporaryAllocator.allocate()
+        temporaryStack.push(baseAddress)
         sliceAddress.consume()
         instructions += [.copyWordsIndirectSource(baseAddress.address, sliceAddress.address, 2)]
         
@@ -275,46 +286,46 @@ public class BaseExpressionCompiler: NSObject {
         let label = labelMaker.next()
         var instructions: [CrackleInstruction] = []
         
-        let tempAccessAddress = temporaries.pop()
+        let tempAccessAddress = temporaryStack.pop()
         
         instructions += computeAddressOfSymbol(symbol, depth)
-        let tempSliceAddress = temporaries.pop()
+        let tempSliceAddress = temporaryStack.pop()
         
         // Extract the array base address from the slice structure.
-        let tempBaseAddress = temporaries.allocate()
+        let tempBaseAddress = temporaryAllocator.allocate()
         instructions += [.copyWordsIndirectSource(tempBaseAddress.address, tempSliceAddress.address, 2)]
         
         // Extract the count from the slice structure too.
-        let tempTwo = temporaries.allocate()
+        let tempTwo = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempTwo.address, 2)]
         tempTwo.consume()
-        let tempArrayCountAddress = temporaries.allocate()
+        let tempArrayCountAddress = temporaryAllocator.allocate()
         instructions += [.tac_add16(tempArrayCountAddress.address, tempSliceAddress.address, tempTwo.address)]
-        let tempArrayCount = temporaries.allocate()
+        let tempArrayCount = temporaryAllocator.allocate()
         instructions += [.copyWordsIndirectSource(tempArrayCount.address, tempArrayCountAddress.address, 2)]
         tempArrayCountAddress.consume()
         
-        let tempArrayElementSize = temporaries.allocate()
+        let tempArrayElementSize = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
-        let tempArraySize = temporaries.allocate()
+        let tempArraySize = temporaryAllocator.allocate()
         instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
         tempArrayElementSize.consume()
         tempArrayCount.consume()
         
-        let tempArrayLimit = temporaries.allocate()
+        let tempArrayLimit = temporaryAllocator.allocate()
         instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
         tempArraySize.consume()
         tempBaseAddress.consume()
         
         // Subtract one so we can avoid a limit which might wrap around the
         // bottom of the stack from 0xffff to 0x0000.
-        let tempOne = temporaries.allocate()
+        let tempOne = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempOne.address, 1)]
         tempOne.consume()
         instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
         
         // If (limit-1) < (access address) then the access is unacceptable.
-        let tempIsUnacceptable = temporaries.allocate()
+        let tempIsUnacceptable = temporaryAllocator.allocate()
         instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
         tempArrayLimit.consume()
         
@@ -329,7 +340,7 @@ public class BaseExpressionCompiler: NSObject {
         // Specifically do not consume tempAccessAddress as we need to leave
         // that in place on the stack when we're done.
         
-        temporaries.push(tempAccessAddress)
+        temporaryStack.push(tempAccessAddress)
         
         return instructions
     }
@@ -342,25 +353,25 @@ public class BaseExpressionCompiler: NSObject {
         
         // Assume that the temporary which holds the array base address is on
         // top of the compiler temporaries stack.
-        let baseAddress = temporaries.pop()
+        let baseAddress = temporaryStack.pop()
         
         // Compute the array subscript index.
         // This must be converted to u16 so we can do math with the address.
         instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
-        let subscriptIndex = temporaries.pop()
+        let subscriptIndex = temporaryStack.pop()
         
-        let elementSize = temporaries.allocate()
-        temporaries.push(elementSize)
+        let elementSize = temporaryAllocator.allocate()
+        temporaryStack.push(elementSize)
         instructions += [.storeImmediate16(elementSize.address, elementType.sizeof)]
         
-        let accessOffset = temporaries.allocate()
-        temporaries.push(accessOffset)
+        let accessOffset = temporaryAllocator.allocate()
+        temporaryStack.push(accessOffset)
         elementSize.consume()
         subscriptIndex.consume()
         instructions += [.tac_mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]
         
-        let accessAddress = temporaries.allocate()
-        temporaries.push(accessAddress)
+        let accessAddress = temporaryAllocator.allocate()
+        temporaryStack.push(accessAddress)
         accessOffset.consume()
         baseAddress.consume()
         instructions += [.tac_add16(accessAddress.address, baseAddress.address, accessOffset.address)]

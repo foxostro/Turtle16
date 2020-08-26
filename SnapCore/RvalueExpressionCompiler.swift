@@ -22,9 +22,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     
-    public override init(symbols: SymbolTable = SymbolTable(), labelMaker: LabelMaker = LabelMaker(), temporaries: CompilerTemporaries = CompilerTemporaries()) {
+    public override init(symbols: SymbolTable = SymbolTable(),
+                         labelMaker: LabelMaker = LabelMaker(),
+                         temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
+                         temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        super.init(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
+        super.init(symbols: symbols,
+                   labelMaker: labelMaker,
+                   temporaryStack: temporaryStack,
+                   temporaryAllocator: temporaryAllocator)
     }
     
     public override func compile(expression: Expression) throws -> [CrackleInstruction] {
@@ -63,13 +69,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(literalInt: Expression.LiteralInt) throws -> [CrackleInstruction] {
-        let temp = temporaries.allocate()
-        temporaries.push(temp)
         let value = literalInt.value
         if value >= 0 && value < 256 {
+            let temp = temporaryAllocator.allocate()
+            temporaryStack.push(temp)
             return [.storeImmediate(temp.address, value)]
         }
         if value >= 256 && value < 65536 {
+            let temp = temporaryAllocator.allocate()
+            temporaryStack.push(temp)
             return [.storeImmediate16(temp.address, value)]
         }
         let lexeme = literalInt.sourceAnchor?.text ?? "\(value)"
@@ -77,8 +85,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(literalBoolean: Expression.LiteralBool) -> [CrackleInstruction] {
-        let temp = temporaries.allocate()
-        temporaries.push(temp)
+        let temp = temporaryAllocator.allocate()
+        temporaryStack.push(temp)
         return [.storeImmediate(temp.address, literalBoolean.value ? 1 : 0)]
     }
     
@@ -86,12 +94,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let childExpr = try compile(expression: unary.child)
         let childType = try typeChecker.check(expression: unary.child)
         
-        let a = temporaries.allocate()
-        let c = temporaries.allocate()
-        let b = temporaries.pop()
-        temporaries.push(c)
-        a.consume()
-        b.consume()
+        let a = temporaryAllocator.allocate()
+        let c = temporaryAllocator.allocate()
+        let b = temporaryStack.pop()
+        temporaryStack.push(c)
         
         var result: [CrackleInstruction] = []
         switch (childType, unary.op) {
@@ -106,6 +112,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         default:
             throw invalidUnaryOperator(unary)
         }
+        
+        a.consume()
+        b.consume()
+        
         return result
     }
     
@@ -126,13 +136,14 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.eq, .constInt, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_eq(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_eq(c.address, a.address, b.address)]
+            return instructions
         case (.eq, .u8, .u16),
              (.eq, .u16, .u8),
              (.eq, .u16, .u16),
@@ -140,45 +151,48 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.eq, .constInt, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_eq16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_eq16(c.address, a.address, b.address)]
+            return instructions
         case (.eq, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a == b) ? 1 : 0)]
         case (.eq, .bool, .bool),
              (.eq, .bool, .constBool),
              (.eq, .constBool, .bool):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_eq(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_eq(c.address, a.address, b.address)]
+            return instructions
         case (.eq, .constBool(let a), .constBool(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a == b) ? 1 : 0)]
         case (.ne, .u8, .u8),
              (.ne, .u8, .constInt),
              (.ne, .constInt, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_ne(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_ne(c.address, a.address, b.address)]
+            return instructions
         case (.ne, .u8, .u16),
              (.ne, .u16, .u8),
              (.ne, .u16, .u16),
@@ -186,45 +200,48 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.ne, .constInt, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_ne16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_ne16(c.address, a.address, b.address)]
+            return instructions
         case (.ne, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a != b) ? 1 : 0)]
         case (.ne, .bool, .bool),
              (.ne, .bool, .constBool),
              (.ne, .constBool, .bool):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_ne(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_ne(c.address, a.address, b.address)]
+            return instructions
         case (.ne, .constBool(let a), .constBool(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a != b) ? 1 : 0)]
         case (.lt, .u8, .u8),
              (.lt, .u8, .constInt),
              (.lt, .constInt, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_lt(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_lt(c.address, a.address, b.address)]
+            return instructions
         case (.lt, .u8, .u16),
              (.lt, .u16, .u8),
              (.lt, .u16, .u16),
@@ -232,29 +249,31 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.lt, .constInt, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_lt16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_lt16(c.address, a.address, b.address)]
+            return instructions
         case (.lt, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a < b) ? 1 : 0)]
         case (.gt, .u8, .u8),
              (.gt, .constInt, .u8),
              (.gt, .u8, .constInt):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_gt(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_gt(c.address, a.address, b.address)]
+            return instructions
         case (.gt, .u8, .u16),
              (.gt, .u16, .u8),
              (.gt, .u16, .u16),
@@ -262,29 +281,31 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.gt, .constInt, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_gt16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_gt16(c.address, a.address, b.address)]
+            return instructions
         case (.gt, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a > b) ? 1 : 0)]
         case (.le, .u8, .u8),
              (.le, .u8, .constInt),
              (.le, .constInt, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_le(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_le(c.address, a.address, b.address)]
+            return instructions
         case (.le, .u8, .u16),
              (.le, .u16, .u8),
              (.le, .u16, .u16),
@@ -292,29 +313,31 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.le, .constInt, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_le16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_le16(c.address, a.address, b.address)]
+            return instructions
         case (.le, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a <= b) ? 1 : 0)]
         case (.ge, .u8, .u8),
              (.ge, .u8, .constInt),
              (.ge, .constInt, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_ge(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_ge(c.address, a.address, b.address)]
+            return instructions
         case (.ge, .u8, .u16),
              (.ge, .u16, .u8),
              (.ge, .u16, .u16),
@@ -322,79 +345,101 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.ge, .constInt, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_ge16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_ge16(c.address, a.address, b.address)]
+            return instructions
         case (.ge, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             return [.storeImmediate(dst.address, (a >= b) ? 1 : 0)]
         case (.plus, .u8, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_add(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_add(c.address, a.address, b.address)]
-        case (.plus, .u8, .constInt(let a)): return [.push(a)] + left + [.add]
+            return instructions
+        case (.plus, .u8, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push(a)] + left + [.add]
         case (.plus, .u8, .u16),
              (.plus, .u16, .u8),
              (.plus, .u16, .u16),
              (.plus, .u16, .constInt):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_add16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_add16(c.address, a.address, b.address)]
-        case (.plus, .constInt(let a), .u8): return right + [.push(a)] + [.add]
-        case (.plus, .constInt(let a), .u16): return right + [.push16(a)] + [.add16]
+            return instructions
+        case (.plus, .constInt(let a), .u8):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push(a)] + [.add]
+        case (.plus, .constInt(let a), .u16):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push16(a)] + [.add16]
         case (.plus, .constInt(let a), .constInt(let b)):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
             let value = a + b
             if value > 255 {
+                let dst = temporaryAllocator.allocate()
+                temporaryStack.push(dst)
                 return [.storeImmediate16(dst.address, value)]
             } else {
+                let dst = temporaryAllocator.allocate()
+                temporaryStack.push(dst)
                 return [.storeImmediate(dst.address, value)]
             }
         case (.minus, .u8, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_sub(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_sub(c.address, a.address, b.address)]
-        case (.minus, .u8, .constInt(let a)): return [.push(a)] + left + [.sub]
+            return instructions
+        case (.minus, .u8, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push(a)] + left + [.sub]
         case (.minus, .u8, .u16),
              (.minus, .u16, .u8),
              (.minus, .u16, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_sub16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_sub16(c.address, a.address, b.address)]
-        case (.minus, .u16, .constInt(let a)): return [.push16(a)] + left + [.sub16]
-        case (.minus, .constInt(let a), .u8): return right + [.push(a)] + [.sub]
-        case (.minus, .constInt(let a), .u16): return right + [.push16(a)] + [.sub16]
+            return instructions
+        case (.minus, .u16, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push16(a)] + left + [.sub16]
+        case (.minus, .constInt(let a), .u8):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push(a)] + [.sub]
+        case (.minus, .constInt(let a), .u16):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push16(a)] + [.sub16]
         case (.minus, .constInt(let a), .constInt(let b)):
+            // TODO: need to convert this case to TAC instructions too
             if a - b > 255 {
                 return [.push16(a - b)]
             } else {
@@ -403,30 +448,41 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case (.multiply, .u8, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_mul(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_mul(c.address, a.address, b.address)]
-        case (.multiply, .u8, .constInt(let a)): return [.push(a)] + left + [.mul]
+            return instructions
+        case (.multiply, .u8, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push(a)] + left + [.mul]
         case (.multiply, .u8, .u16),
              (.multiply, .u16, .u8),
              (.multiply, .u16, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_mul16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_mul16(c.address, a.address, b.address)]
-        case (.multiply, .u16, .constInt(let a)): return [.push16(a)] + left + [.mul16]
-        case (.multiply, .constInt(let a), .u8): return right + [.push(a)] + [.mul16]
-        case (.multiply, .constInt(let a), .u16): return right + [.push16(a)] + [.mul16]
+            return instructions
+        case (.multiply, .u16, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push16(a)] + left + [.mul16]
+        case (.multiply, .constInt(let a), .u8):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push(a)] + [.mul16]
+        case (.multiply, .constInt(let a), .u16):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push16(a)] + [.mul16]
         case (.multiply, .constInt(let a), .constInt(let b)):
+            // TODO: need to convert this case to TAC instructions too
             if a * b > 255 {
                 return [.push16(a * b)]
             } else {
@@ -435,30 +491,41 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case (.divide, .u8, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_div(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_div(c.address, a.address, b.address)]
-        case (.divide, .u8, .constInt(let a)): return [.push(a)] + left + [.div]
+            return instructions
+        case (.divide, .u8, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push(a)] + left + [.div]
         case (.divide, .u8, .u16),
              (.divide, .u16, .u8),
              (.divide, .u16, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_div16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_div16(c.address, a.address, b.address)]
-        case (.divide, .u16, .constInt(let a)): return [.push16(a)] + left + [.div16]
-        case (.divide, .constInt(let a), .u8): return right + [.push(a)] + [.div16]
-        case (.divide, .constInt(let a), .u16): return right + [.push16(a)] + [.div16]
+            return instructions
+        case (.divide, .u16, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push16(a)] + left + [.div16]
+        case (.divide, .constInt(let a), .u8):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push(a)] + [.div16]
+        case (.divide, .constInt(let a), .u16):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push16(a)] + [.div16]
         case (.divide, .constInt(let a), .constInt(let b)):
+            // TODO: need to convert this case to TAC instructions too
             if a / b > 255 {
                 return [.push16(a / b)]
             } else {
@@ -467,30 +534,41 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case (.modulus, .u8, .u8):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_mod(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_mod(c.address, a.address, b.address)]
-        case (.modulus, .u8, .constInt(let a)): return [.push(a)] + left + [.mod]
+            return instructions
+        case (.modulus, .u8, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push(a)] + left + [.mod]
         case (.modulus, .u8, .u16),
              (.modulus, .u16, .u8),
              (.modulus, .u16, .u16):
             let right2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left2: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
-            let c = temporaries.allocate()
-            let a = temporaries.pop()
-            let b = temporaries.pop()
-            temporaries.push(c)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
+            let instructions = right2 + left2 + [.tac_mod16(c.address, a.address, b.address)]
+            temporaryStack.push(c)
             a.consume()
             b.consume()
-            return right2 + left2 + [.tac_mod16(c.address, a.address, b.address)]
-        case (.modulus, .u16, .constInt(let a)): return [.push16(a)] + left + [.mod16]
-        case (.modulus, .constInt(let a), .u8): return right + [.push(a)] + [.mod16]
-        case (.modulus, .constInt(let a), .u16): return right + [.push16(a)] + [.mod16]
+            return instructions
+        case (.modulus, .u16, .constInt(let a)):
+            // TODO: need to convert this case to TAC instructions too
+            return [.push16(a)] + left + [.mod16]
+        case (.modulus, .constInt(let a), .u8):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push(a)] + [.mod16]
+        case (.modulus, .constInt(let a), .u16):
+            // TODO: need to convert this case to TAC instructions too
+            return right + [.push16(a)] + [.mod16]
         case (.modulus, .constInt(let a), .constInt(let b)):
+            // TODO: need to convert this case to TAC instructions too
             if a % b > 255 {
                 return [.push16(a % b)]
             } else {
@@ -520,7 +598,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // Calculate the lvalue, the destination in memory for the assignment.
         let lvalue_proc = try lvalueContext().compile(expression: assignment.lexpr)
         instructions += lvalue_proc
-        let lvalue = temporaries.pop()
+        let lvalue = temporaryStack.pop()
         
         // Different implementations of assignment for different types.
         let rtype = try typeChecker.check(expression: assignment.rexpr)
@@ -535,7 +613,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 // symbol, iterate the expressions for each element, evaluate
                 // the expression, and copy the result to the address of the
                 // next array element.
-                let tempElementSize = temporaries.allocate()
+                let tempElementSize = temporaryAllocator.allocate()
                 instructions += [.storeImmediate16(tempElementSize.address, b.sizeof)]
                 
                 for i in 0..<literalArray.elements.count {
@@ -543,7 +621,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     
                     // Evaluate the expression and copy to the destination.
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: false)
-                    let tempElementValue = temporaries.pop()
+                    let tempElementValue = temporaryStack.pop()
                     assert(b.sizeof <= 2)
                     instructions += [
                         .copyWordsIndirectDestination(lvalue.address, tempElementValue.address, b.sizeof)
@@ -566,7 +644,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             // expression is converted now to the type of the destination variable.
             let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
             instructions += rvalue_proc
-            let rvalue = temporaries.pop()
+            let rvalue = temporaryStack.pop()
             
             // Emit code to copy the rvalue to the address given by the lvalue.
             // If the lvalue type is small enough then the result of the
@@ -622,37 +700,37 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             guard a >= 0 && a < 256 else {
                 throw CompilerError(sourceAnchor: rexpr.sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u8'")
             }
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
+            temporaryStack.push(dst)
             instructions += [.storeImmediate(dst.address, a)]
         case (.constInt(let a), .u16):
             guard a >= 0 && a < 65536 else {
                 throw CompilerError(sourceAnchor: rexpr.sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u16'")
             }
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate16(dst.address, a)]
+            temporaryStack.push(dst)
         case (.constBool(let a), .bool):
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate(dst.address, a ? 1 : 0)]
+            temporaryStack.push(dst)
         case (.u8, .u16):
             instructions += try compile(expression: rexpr)
-            let dst = temporaries.allocate()
-            let src = temporaries.pop()
-            temporaries.push(dst)
-            src.consume()
+            let dst = temporaryAllocator.allocate()
+            let src = temporaryStack.pop()
             instructions += [.copyWordZeroExtend(dst.address, src.address)]
+            temporaryStack.push(dst)
+            src.consume()
         case (.u16, .u8):
             guard isExplicitCast else {
                 abort()
             }
             instructions += try compile(expression: rexpr)
-            let dst = temporaries.allocate()
-            let src = temporaries.pop()
-            temporaries.push(dst)
-            src.consume()
+            let dst = temporaryAllocator.allocate()
+            let src = temporaryStack.pop()
             instructions += [.copyWords(dst.address, src.address, 1)]
+            temporaryStack.push(dst)
+            src.consume()
         case (.array(let n, let a), .array(let m, let b)):
             guard n == m || m == nil else {
                 abort()
@@ -801,10 +879,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     // Leave that temporary on top of the temporaries stack too.
     private func loadFromLvalueIntoTemporary(_ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        let tempLvalue = temporaries.pop()
-        let tempResult = temporaries.allocate()
-        temporaries.push(tempResult)
+        let tempLvalue = temporaryStack.pop()
+        let tempResult = temporaryAllocator.allocate()
         instructions += [.copyWordsIndirectSource(tempResult.address, tempLvalue.address, elementType.sizeof)]
+        temporaryStack.push(tempResult)
         tempLvalue.consume()
         return instructions
     }

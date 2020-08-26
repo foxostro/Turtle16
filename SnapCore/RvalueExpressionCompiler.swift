@@ -913,23 +913,29 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public func compile(get expr: Expression.Get) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
+        let tempCount = temporaryAllocator.allocate()
+        
         instructions += try compile(expression: expr.expr)
+        let tempExprResult = temporaryStack.pop()
         
         let member = expr.member.identifier
         let resultType = try typeChecker.check(expression: expr.expr)
         switch resultType {
         case .array(count: let count, elementType: _):
             if member == "count" {
-                instructions += [.popn(resultType.sizeof)]
-                instructions += [.push16(count!)]
+                instructions += [.storeImmediate16(tempCount.address, count!)]
             }
         case .dynamicArray:
             if member == "count" {
+                abort() // TODO: need to fix this
                 instructions += [.pop16] // discard the dynamic array's pointer, leaving only the length
             }
         default:
             abort()
         }
+        
+        tempExprResult.consume()
+        temporaryStack.push(tempCount)
         
         return instructions
     }

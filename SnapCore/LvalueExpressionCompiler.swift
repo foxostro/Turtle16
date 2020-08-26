@@ -13,9 +13,15 @@ import TurtleCompilerToolbox
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
     let typeChecker: LvalueExpressionTypeChecker
     
-    public override init(symbols: SymbolTable = SymbolTable(), labelMaker: LabelMaker = LabelMaker(), temporaries: CompilerTemporaries = CompilerTemporaries()) {
+    public override init(symbols: SymbolTable = SymbolTable(),
+                         labelMaker: LabelMaker = LabelMaker(),
+                         temporaryStack: CompilerTemporariesStack =     CompilerTemporariesStack(),
+                         temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        super.init(symbols: symbols, labelMaker: labelMaker, temporaries: temporaries)
+        super.init(symbols: symbols,
+                   labelMaker: labelMaker,
+                   temporaryStack: temporaryStack,
+                   temporaryAllocator: temporaryAllocator)
     }
     
     public override func compile(expression: Expression) throws -> [CrackleInstruction] {
@@ -43,8 +49,8 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         
         switch symbol.storage {
         case .staticStorage:
-            let dst = temporaries.allocate()
-            temporaries.push(dst)
+            let dst = temporaryAllocator.maybeAllocate(size: 2)!
+            temporaryStack.push(dst)
             instructions += [.storeImmediate16(dst.address, symbol.offset)]
         case .stackStorage:
             instructions += computeAddressOfLocalVariable(symbol, depth)

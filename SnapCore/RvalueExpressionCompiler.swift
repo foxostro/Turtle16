@@ -867,9 +867,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private func compile(literalArray expr: Expression.LiteralArray) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        for el in expr.elements.reversed() {
+        let resultType = try typeChecker.check(expression: expr)
+        let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
+        var offset = 0
+        for el in expr.elements {
             instructions += try compile(expression: el)
+            let tempElement = temporaryStack.pop()
+            instructions += [.copyWords(tempResult.address + offset, tempElement.address, expr.explicitType.sizeof)]
+            tempElement.consume()
+            offset += expr.explicitType.sizeof
         }
+        temporaryStack.push(tempResult)
         return instructions
     }
     

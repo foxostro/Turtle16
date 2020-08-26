@@ -2396,18 +2396,19 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            elements: [ExprUtils.makeU8(value: 0),
                                                       ExprUtils.makeU8(value: 1),
                                                       ExprUtils.makeU8(value: 2)])
-        let ir = try! compile(expression: expr)
+        let compiler = RvalueExpressionCompiler()
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(2),
-            .push(1),
-            .push(0)
-        ])
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load(from: address + 0), 0)
-        XCTAssertEqual(computer.dataRAM.load(from: address + 1), 1)
-        XCTAssertEqual(computer.dataRAM.load(from: address + 2), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 0), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), 2)
     }
     
     func testLiteralArrayOfU16() {
@@ -2416,18 +2417,19 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            elements: [ExprUtils.makeU16(value: 1),
                                                       ExprUtils.makeU16(value: 2),
                                                       ExprUtils.makeU16(value: 1000)])
-        let ir = try! compile(expression: expr)
+        let compiler = RvalueExpressionCompiler()
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push16(1000),
-            .push16(2),
-            .push16(1)
-        ])
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2)
-        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 1000)
     }
     
     func testLiteralArrayOfBool() {
@@ -2436,18 +2438,19 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            elements: [Expression.LiteralBool(false),
                                                       Expression.LiteralBool(false),
                                                       Expression.LiteralBool(true)])
-        let ir = try! compile(expression: expr)
+        let compiler = RvalueExpressionCompiler()
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(ir, [
-            .push(1),
-            .push(0),
-            .push(0)
-        ])
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load(from: address + 0), 0)
-        XCTAssertEqual(computer.dataRAM.load(from: address + 1), 0)
-        XCTAssertEqual(computer.dataRAM.load(from: address + 2), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 0), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), 1)
     }
     
     func testArrayLiteralHasNonConvertibleType() {

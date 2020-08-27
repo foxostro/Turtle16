@@ -1975,6 +1975,26 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 8), 5000)
     }
     
+    func testCompileInitialAssignment_Bool_Static() {
+        // An initial assignment is allowed to disregard rules about
+        // immutability because it sets the initial value in the first place.
+        let offset = 0x0100
+        let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"), rexpr: Expression.LiteralBool(true))
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, offset),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
+        ]
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: offset), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), UInt16(offset))
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
+    }
+    
     func testCompileAssignment_Bool_Static() {
         let offset = 0x0100
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))

@@ -12,6 +12,7 @@ import TurtleCompilerToolbox
 // pushes a destination address to the stack. (or else a type error)
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
     let typeChecker: LvalueExpressionTypeChecker
+    public var shouldAllowAssignmentToImmutableVariables = false
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
@@ -43,7 +44,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
-        guard symbol.isMutable else {
+        guard symbol.isMutable || shouldAllowAssignmentToImmutableVariables else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to immutable variable `\(expr.identifier)'")
         }
         

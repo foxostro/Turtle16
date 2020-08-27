@@ -29,6 +29,21 @@ class LvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testCannotAssignToAnImmutableVariableExceptOnInitialAssignment() {
+        let expr = Expression.Identifier("foo")
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: false)])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x0100)
+        ]
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        compiler.shouldAllowAssignmentToImmutableVariables = true
+        let actual = try! compiler.compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 0x0100)
+    }
+    
     func testAssignToMutableVariable() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: true)])

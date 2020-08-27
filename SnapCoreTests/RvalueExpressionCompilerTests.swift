@@ -144,6 +144,32 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_ConstantInteger_Eq_ConstantInteger_false() {
+        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralInt(sourceAnchor: nil, value: 1001),
+                                              right: Expression.LiteralInt(sourceAnchor: nil, value: 1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
+    }
+    
+    func testBinary_ConstantInteger_Eq_ConstantInteger_true() {
+        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralInt(sourceAnchor: nil, value: 1001),
+                                              right: Expression.LiteralInt(sourceAnchor: nil, value: 1001))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
     func testBinary_U16_Eq_U16_1() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1001),
                                               right: ExprUtils.makeU16(value: 1000))

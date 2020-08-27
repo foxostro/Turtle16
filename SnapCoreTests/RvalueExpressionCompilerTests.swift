@@ -2825,4 +2825,19 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
+        
+    func testGroupExpressionWithUnaryNegationOfU8() {
+        let expr = Expression.Group(Expression.Unary(op: .minus, expression: ExprUtils.makeU8(value: 42)))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 42),
+            .storeImmediate(t1, 0),
+            .tac_sub(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        let expectedResult = UInt8(0) &- UInt8(42)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
+    }
 }

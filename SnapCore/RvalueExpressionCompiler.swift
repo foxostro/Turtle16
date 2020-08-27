@@ -66,6 +66,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case let expr as Expression.Get:
             return try compile(get: expr)
         default:
+            // This is basically unreachable since the type checker will
+            // typically throw an error about an unsupported expression before
+            // we get to this point.
+            assert(false)
             throw unsupportedError(expression: expression)
         }
     }
@@ -112,6 +116,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             result += [.storeImmediate(a.address, 0)]
             result += [.tac_sub(c.address, a.address, b.address)]
         default:
+            // This is basically unreachable since the type checker will
+            // typically throw an error about an invalid unary operator before
+            // we get to this point.
+            assert(false)
             throw invalidUnaryOperator(unary)
         }
         
@@ -786,7 +794,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
             instructions += try compile(expression: rexpr)
         default:
-            abort()
+            assert(false) // unreachable
         }
         return instructions
     }
@@ -919,7 +927,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, 2)]
             }
         default:
-            abort()
+            assert(false) // unreachable
         }
         
         tempExprResult.consume()

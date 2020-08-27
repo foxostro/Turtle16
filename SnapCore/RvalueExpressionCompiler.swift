@@ -49,8 +49,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(unary: unary)
         case let identifier as Expression.Identifier:
             return try compile(identifier: identifier)
-        case let assignment as Expression.InitialAssignment:
-            return try compile(assignment: assignment)
         case let assignment as Expression.Assignment:
             return try compile(assignment: assignment)
         case let call as Expression.Call:
@@ -596,7 +594,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         
         // Calculate the lvalue, the destination in memory for the assignment.
-        let lvalue_proc = try lvalueContext().compile(expression: assignment.lexpr)
+        let ctx = lvalueContext()
+        ctx.shouldAllowAssignmentToImmutableVariables = assignment is Expression.InitialAssignment
+        let lvalue_proc = try ctx.compile(expression: assignment.lexpr)
         instructions += lvalue_proc
         let lvalue = temporaryStack.pop()
         
@@ -658,17 +658,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         lvalue.consume()
         
-        return instructions
-    }
-    
-    private func compile(assignment: Expression.InitialAssignment) throws -> [CrackleInstruction] {
-        let identifier = (assignment.lexpr as! Expression.Identifier).identifier
-        let sourceAnchor = assignment.sourceAnchor
-        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
-        let symbol = resolution.0
-        
-        var instructions: [CrackleInstruction] = []
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: symbol.type)
         return instructions
     }
     

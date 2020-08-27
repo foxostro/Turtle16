@@ -616,9 +616,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let rtype = try typeChecker.check(expression: assignment.rexpr)
         switch (rtype, ltype) {
         case (.array(let n, _), .array(let m, let b)):
-            guard n == m || m == nil else {
-                abort()
-            }
+            assert(n == m || m == nil)
             switch assignment.rexpr {
             case let literalArray as Expression.LiteralArray:
                 // In the case where we assign a literal array to some array
@@ -713,9 +711,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             temporaryStack.push(dst)
             src.consume()
         case (.u16, .u8):
-            guard isExplicitCast else {
-                abort()
-            }
+            assert(isExplicitCast)
             instructions += try compile(expression: rexpr)
             let dst = temporaryAllocator.allocate()
             let src = temporaryStack.pop()
@@ -723,9 +719,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             temporaryStack.push(dst)
             src.consume()
         case (.array(let n, let a), .array(let m, let b)):
-            guard n == m || m == nil else {
-                abort()
-            }
+            assert(n == m || m == nil)
             switch rexpr {
             case let literalArray as Expression.LiteralArray:
                 for el in literalArray.elements.reversed() {
@@ -745,18 +739,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                                                           elements: elements)
                 instructions += try compile(expression: synthesized)
             default:
-                guard a == b else {
-                    abort()
-                }
+                assert(a == b)
                 instructions += try compile(expression: rexpr)
             }
         case (.array(let n, let a), .dynamicArray(elementType: let b)):
-            guard let n = n else {
-                abort()
-            }
-            guard a == b else {
-                abort()
-            }
+            assert(n != nil)
+            let n = n!
+            assert(a == b)
             switch rexpr {
             case let identifier as Expression.Identifier:
                 // Create a new temporary for the array slice which represents
@@ -789,9 +778,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 ]
             }
         case (.dynamicArray(elementType: let a), .dynamicArray(elementType: let b)):
-            guard a == b else {
-                abort()
-            }
+            assert(a == b)
             instructions += try compile(expression: rexpr)
         default:
             assert(false) // unreachable

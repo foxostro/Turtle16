@@ -22,6 +22,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     ]
     public let typeChecker: RvalueExpressionTypeChecker
     
+    private let kSliceBaseAddressOffset = 0
+    private let kSliceCountOffset = 2
+    private let kSliceSize = 4
+    
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
                          temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
@@ -754,10 +758,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 let symbol = resolution.0
                 let depth = symbols.stackFrameIndex - resolution.1
                 
-                let kSliceBaseAddressOffset = 0
-                let kSliceCountOffset = 2
-                let kSliceSize = 4
-                
                 let tempArraySlice = temporaryAllocator.allocate(size: kSliceSize)
                 
                 instructions += computeAddressOfSymbol(symbol, depth)
@@ -916,8 +916,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
         case .dynamicArray:
             if member == "count" {
-                abort() // TODO: need to fix this
-                instructions += [.pop16] // discard the dynamic array's pointer, leaving only the length
+                instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, 2)]
             }
         default:
             abort()

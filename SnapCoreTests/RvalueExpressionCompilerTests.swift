@@ -2781,19 +2781,23 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset, isMutable: false)
         ])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
         let executor = CrackleExecutor()
-        XCTAssertNotNil(ir)
-        guard ir != nil else {
-            return
-        }
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(offset+4), to: offset+0)
             computer.dataRAM.store16(value: 0x0003, to: offset+2)
         }
-        let computer = try! executor.execute(ir: ir!)
-        XCTAssertEqual(computer.stack16(at: 0), 3)
+        let computer = try! executor.execute(ir: ir)
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 3)
     }
     
     func testOutOfBoundsRvalueArrayAccessCausesPanic_FixedArray() {

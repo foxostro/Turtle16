@@ -1275,9 +1275,11 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func peekPeripheral() throws {
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.D, .B)
         try pop16()
-        try assembler.mov(.U, .A)
-        try assembler.mov(.V, .B)
+        try assembler.mov(.X, .A)
+        try assembler.mov(.Y, .B)
         try assembler.mov(.A, .P)
         try pushAToStack()
     }

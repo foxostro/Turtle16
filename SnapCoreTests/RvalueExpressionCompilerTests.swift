@@ -236,6 +236,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_U8_Plus_IntegerConstant() {
+        let expr = Expression.Binary(op: .plus,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(1))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_add(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 2)
+    }
+    
     func testBinary_U8_Eq_U16() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeU16(value: 1000))
@@ -342,7 +358,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
-    func testBinary_BooleanConstant_Eq_BooleanConstant() {
+    func testBinary_BooleanConstant_Eq_BooleanConstant_true() {
         let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
                                               right: Expression.LiteralBool(false))
         let expected: [CrackleInstruction] = [
@@ -353,6 +369,19 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_BooleanConstant_Eq_BooleanConstant_false() {
+        let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
+                                              right: Expression.LiteralBool(true))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0),
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
     
     func testBinary_BooleanConstant_Eq_Bool() {
@@ -378,6 +407,32 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const bool' and `u8'")
         }
+    }
+    
+    func testBinary_ConstantInteger_Ne_ConstantInteger_false() {
+        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralInt(sourceAnchor: nil, value: 1000),
+                                              right: Expression.LiteralInt(sourceAnchor: nil, value: 1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
+    }
+    
+    func testBinary_ConstantInteger_Ne_ConstantInteger_true() {
+        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralInt(sourceAnchor: nil, value: 1000),
+                                              right: Expression.LiteralInt(sourceAnchor: nil, value: 1001))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
     func testBinary_U16_Ne_U16_1() {
@@ -552,7 +607,20 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
-    func testBinary_BooleanConstant_Ne_BooleanConstant() {
+    func testBinary_BooleanConstant_Ne_BooleanConstant_true() {
+        let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
+                                              right: Expression.LiteralBool(true))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_BooleanConstant_Ne_BooleanConstant_false() {
         let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
                                               right: Expression.LiteralBool(false))
         let expected: [CrackleInstruction] = [
@@ -588,6 +656,32 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const bool' and `u8'")
         }
+    }
+    
+    func testBinary_IntegerConstant_Lt_IntegerConstant_true() {
+        let expr = ExprUtils.makeComparisonLt(left: Expression.LiteralInt(500),
+                                              right: Expression.LiteralInt(1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_Lt_IntegerConstant_false() {
+        let expr = ExprUtils.makeComparisonLt(left: Expression.LiteralInt(1000),
+                                              right: Expression.LiteralInt(500))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
     
     func testBinary_U16_Lt_U16_1() {
@@ -722,6 +816,34 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `bool' and `u8'")
         }
+    }
+    
+    func testBinary_IntegerConstant_Gt_IntegerConstant_true() {
+        let expr = ExprUtils.makeComparisonGt(left: Expression.LiteralInt(0x2000),
+                                              right: Expression.LiteralInt(0x1000))
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_Gt_IntegerConstant_false() {
+        let expr = ExprUtils.makeComparisonGt(left: Expression.LiteralInt(0x1000),
+                                              right: Expression.LiteralInt(0x2000))
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
     
     func testBinary_U16_Gt_U16_1() {
@@ -870,6 +992,34 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `bool' and `u8'")
         }
+    }
+    
+    func testBinary_IntegerConstant_Le_IntegerConstant_true() {
+        let expr = ExprUtils.makeComparisonLe(left: Expression.LiteralInt(0x1000),
+                                              right: Expression.LiteralInt(0x1000))
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_Le_IntegerConstant_false() {
+        let expr = ExprUtils.makeComparisonLe(left: Expression.LiteralInt(0x2000),
+                                              right: Expression.LiteralInt(0x1000))
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
     
     func testBinary_U16_Le_U16_1() {
@@ -1034,6 +1184,34 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_IntegerConstant_Ge_IntegerConstant_true() {
+        let expr = ExprUtils.makeComparisonGe(left: Expression.LiteralInt(0x2000),
+                                              right: Expression.LiteralInt(0x1000))
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_Ge_IntegerConstant_false() {
+        let expr = ExprUtils.makeComparisonGe(left: Expression.LiteralInt(0x1000),
+                                              right: Expression.LiteralInt(0x2000))
+        
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
+    }
+    
     func testBinary_U16_Ge_U16_1() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 500),
                                               right: ExprUtils.makeU16(value: 1000))
@@ -1196,6 +1374,19 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_IntegerConstant_Plus_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .plus,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(1))
+        let ir = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(ir, [
+            .storeImmediate(t0, 2)
+        ])
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 2)
+    }
+    
     func testBinary_IntegerConstant_Plus_IntegerConstant() {
         let expr = Expression.Binary(op: .plus,
                                      left: Expression.LiteralInt(1000),
@@ -1207,6 +1398,38 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1001)
         ])
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 1001)
+    }
+    
+    func testBinary_IntegerConstant_Plus_U16() {
+        let expr = Expression.Binary(op: .plus,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU16(value: 1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_add16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+    }
+    
+    func testBinary_IntegerConstant_Plus_U8() {
+        let expr = Expression.Binary(op: .plus,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 1))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 1),
+            .tac_add(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 2)
     }
     
     func testBinary_U16_Plus_IntegerConstant() {
@@ -1345,6 +1568,82 @@ class RvalueExpressionCompilerTests: XCTestCase {
            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to two `bool' operands")
        }
    }
+   
+   func testBinary_IntegerConstant_Minus_IntegerConstant_Small() {
+       let expr = Expression.Binary(op: .minus,
+                                    left: Expression.LiteralInt(1000),
+                                    right: Expression.LiteralInt(999))
+       let expected: [CrackleInstruction] = [
+           .storeImmediate(t0, 1)
+       ]
+       let actual = try! compile(expression: expr)
+       let executor = CrackleExecutor()
+       let computer = try! executor.execute(ir: actual)
+       XCTAssertEqual(actual, expected)
+       XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+   }
+   
+   func testBinary_IntegerConstant_Minus_IntegerConstant_Big() {
+       let expr = Expression.Binary(op: .minus,
+                                    left: Expression.LiteralInt(1000),
+                                    right: Expression.LiteralInt(1))
+       let expected: [CrackleInstruction] = [
+           .storeImmediate16(t0, 999)
+       ]
+       let actual = try! compile(expression: expr)
+       let executor = CrackleExecutor()
+       let computer = try! executor.execute(ir: actual)
+       XCTAssertEqual(actual, expected)
+       XCTAssertEqual(computer.dataRAM.load16(from: t0), 999)
+   }
+   
+   func testBinary_IntegerConstant_Minus_U16() {
+       let expr = Expression.Binary(op: .minus,
+                                    left: Expression.LiteralInt(1000),
+                                    right: ExprUtils.makeU16(value: 999))
+       let expected: [CrackleInstruction] = [
+           .storeImmediate16(t0, 999),
+           .storeImmediate16(t1, 1000),
+           .tac_sub16(t2, t1, t0)
+       ]
+       let actual = try! compile(expression: expr)
+       let executor = CrackleExecutor()
+       let computer = try! executor.execute(ir: actual)
+       XCTAssertEqual(actual, expected)
+       XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+   }
+   
+   func testBinary_IntegerConstant_Minus_U8() {
+       let expr = Expression.Binary(op: .minus,
+                                    left: Expression.LiteralInt(255),
+                                    right: ExprUtils.makeU8(value: 1))
+       let expected: [CrackleInstruction] = [
+           .storeImmediate(t0, 1),
+           .storeImmediate(t1, 255),
+           .tac_sub(t2, t1, t0)
+       ]
+       let actual = try! compile(expression: expr)
+       let executor = CrackleExecutor()
+       let computer = try! executor.execute(ir: actual)
+       XCTAssertEqual(actual, expected)
+       XCTAssertEqual(computer.dataRAM.load(from: t2), 254)
+   }
+   
+   func testBinary_U16_Minus_IntegerConstant() {
+       let expr = Expression.Binary(op: .minus,
+                                    left: ExprUtils.makeU16(value: 1000),
+                                    right: Expression.LiteralInt(999))
+       let expected: [CrackleInstruction] = [
+           .storeImmediate16(t0, 999),
+           .storeImmediate16(t1, 1000),
+           .tac_sub16(t2, t1, t0)
+       ]
+       let actual = try! compile(expression: expr)
+       let executor = CrackleExecutor()
+       let computer = try! executor.execute(ir: actual)
+       XCTAssertEqual(actual, expected)
+       XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+   }
     
     func testBinary_U16_Minus_U16() {
         let expr = Expression.Binary(op: .minus,
@@ -1390,6 +1689,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_U8_Minus_IntegerConstant() {
+        let expr = Expression.Binary(op: .minus,
+                                     left: ExprUtils.makeU8(value: 2),
+                                     right: Expression.LiteralInt(1))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 2),
+            .tac_sub(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
+    }
+    
     func testBinary_U8_Minus_U16() {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
@@ -1409,18 +1724,18 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_U8_Minus_U8() {
         let expr = Expression.Binary(op: .minus,
-                                     left: ExprUtils.makeU8(value: 1),
+                                     left: ExprUtils.makeU8(value: 2),
                                      right: ExprUtils.makeU8(value: 1))
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
-            .storeImmediate(t1, 1),
+            .storeImmediate(t1, 2),
             .tac_sub(t2, t1, t0)
         ]
         let actual = try! compile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
     func testBinary_U8_Minus_Bool() {
@@ -1467,6 +1782,82 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_IntegerConstant_Multiply_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .multiply,
+                                     left: Expression.LiteralInt(8),
+                                     right: Expression.LiteralInt(2))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 16)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 16)
+    }
+    
+    func testBinary_IntegerConstant_Multiply_IntegerConstant_Big() {
+        let expr = Expression.Binary(op: .multiply,
+                                     left: Expression.LiteralInt(100),
+                                     right: Expression.LiteralInt(100))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, Int(10000))
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 10000)
+    }
+    
+    func testBinary_IntegerConstant_Multiply_U16() {
+        let expr = Expression.Binary(op: .multiply,
+                                     left: Expression.LiteralInt(256),
+                                     right: ExprUtils.makeU16(value: 256))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 256),
+            .storeImmediate16(t1, 256),
+            .tac_mul16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), UInt16(256) &* UInt16(256))
+    }
+    
+    func testBinary_IntegerConstant_Multiply_U8() {
+        let expr = Expression.Binary(op: .multiply,
+                                     left: Expression.LiteralInt(255),
+                                     right: ExprUtils.makeU8(value: 1))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1),
+            .storeImmediate(t1, 255),
+            .tac_mul(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 255)
+    }
+    
+    func testBinary_U16_Multiply_IntegerConstant() {
+        let expr = Expression.Binary(op: .multiply,
+                                     left: ExprUtils.makeU16(value: 256),
+                                     right: Expression.LiteralInt(256))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 256),
+            .storeImmediate16(t1, 256),
+            .tac_mul16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), UInt16(256) &* UInt16(256))
+    }
+    
     func testBinary_U16_Multiply_U16() {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 256),
@@ -1509,6 +1900,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `u16' and `bool'")
         }
+    }
+    
+    func testBinary_U8_Multiply_IntegerConstant() {
+        let expr = Expression.Binary(op: .multiply,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(255))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 255),
+            .storeImmediate(t1, 1),
+            .tac_mul(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 255)
     }
     
     func testBinary_U8_Multiply_U16() {
@@ -1588,6 +1995,82 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_IntegerConstant_Divide_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .divide,
+                                     left: Expression.LiteralInt(1000),
+                                     right: Expression.LiteralInt(1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_Divide_IntegerConstant_Big() {
+        let expr = Expression.Binary(op: .divide,
+                                     left: Expression.LiteralInt(1000),
+                                     right: Expression.LiteralInt(1))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1000)
+    }
+    
+    func testBinary_IntegerConstant_Divide_U16() {
+        let expr = Expression.Binary(op: .divide,
+                                     left: Expression.LiteralInt(0x1000),
+                                     right: ExprUtils.makeU16(value: 0x1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x1000),
+            .storeImmediate16(t1, 0x1000),
+            .tac_div16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+    }
+    
+    func testBinary_IntegerConstant_Divide_U8() {
+        let expr = Expression.Binary(op: .divide,
+                                     left: Expression.LiteralInt(12),
+                                     right: ExprUtils.makeU8(value: 4))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 4),
+            .storeImmediate(t1, 12),
+            .tac_div(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
+    }
+    
+    func testBinary_U16_Divide_IntegerConstant() {
+        let expr = Expression.Binary(op: .divide,
+                                     left: ExprUtils.makeU16(value: 0x1000),
+                                     right: Expression.LiteralInt(0x1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 0x1000),
+            .storeImmediate16(t1, 0x1000),
+            .tac_div16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+    }
+    
     func testBinary_U16_Divide_U16() {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 0x1000),
@@ -1630,6 +2113,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `u16' and `bool'")
         }
+    }
+    
+    func testBinary_U8_Divide_IntegerConstant() {
+        let expr = Expression.Binary(op: .divide,
+                                     left: ExprUtils.makeU8(value: 12),
+                                     right: Expression.LiteralInt(4))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 4),
+            .storeImmediate(t1, 12),
+            .tac_div(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
     func testBinary_U8_Divide_U16() {
@@ -1709,6 +2208,82 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testBinary_IntegerConstant_Modulus_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .modulus,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 1)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_Modulus_IntegerConstant_Big() {
+        let expr = Expression.Binary(op: .modulus,
+                                     left: Expression.LiteralInt(999),
+                                     right: Expression.LiteralInt(1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 999)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 999)
+    }
+    
+    func testBinary_IntegerConstant_Modulus_U16() {
+        let expr = Expression.Binary(op: .modulus,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU16(value: 1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_mod16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
+    }
+    
+    func testBinary_IntegerConstant_Modulus_U8() {
+        let expr = Expression.Binary(op: .modulus,
+                                     left: Expression.LiteralInt(15),
+                                     right: ExprUtils.makeU8(value: 4))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 4),
+            .storeImmediate(t1, 15),
+            .tac_mod(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
+    }
+    
+    func testBinary_U16_Modulus_IntegerConstant() {
+        let expr = Expression.Binary(op: .modulus,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: Expression.LiteralInt(1000))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t0, 1000),
+            .storeImmediate16(t1, 1000),
+            .tac_mod16(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
+    }
+    
     func testBinary_U16_Modulus_U16() {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
@@ -1751,6 +2326,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `u16' and `bool'")
         }
+    }
+    
+    func testBinary_U8_Modulus_IntegerConstant() {
+        let expr = Expression.Binary(op: .modulus,
+                                     left: ExprUtils.makeU8(value: 15),
+                                     right: Expression.LiteralInt(4))
+        let expected: [CrackleInstruction] = [
+            .storeImmediate(t0, 4),
+            .storeImmediate(t1, 15),
+            .tac_mod(t2, t1, t0)
+        ]
+        let actual = try! compile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
     func testBinary_U8_Modulus_U16() {
@@ -2227,7 +2818,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
-    func testExpressionIsNotAssignable_ConstInt() {
+    func testExpressionIsNotAssignable_IntegerConstant() {
         let expr = Expression.Assignment(lexpr: Expression.LiteralInt(0),
                                          rexpr: Expression.LiteralInt(0))
         let offset = 0x0100
@@ -2457,6 +3048,23 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), 2)
     }
     
+//    func testLiteralArrayOfU8AsU16() {
+//        let expr = Expression.As(expr: Expression.LiteralArray(explicitType: .u8, explicitCount: nil, elements: [ExprUtils.makeU8(value: 0), ExprUtils.makeU8(value: 1), ExprUtils.makeU8(value: 2)]), targetType: .array(count: nil, elementType: .u16))
+//        let compiler = RvalueExpressionCompiler()
+//        let ir = try! compiler.compile(expression: expr)
+//
+//        // The expression is evaluated and the result is written to a temporary.
+//        // The temporary is left at the top of the compiler's temporaries stack
+//        // since nothing has consumed the value.
+//        let tempResult = compiler.temporaryStack.peek()
+//
+//        let executor = CrackleExecutor()
+//        let computer = try! executor.execute(ir: ir)
+//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0)
+//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 1)
+//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 2)
+//    }
+    
     func testLiteralArrayOfU16() {
         let expr = Expression.LiteralArray(explicitType: .u16,
                                            explicitCount: nil,
@@ -2521,9 +3129,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
-            .push16(4004)
+            .storeImmediate16(t0, 4004)
         ])
-        XCTAssertEqual(computer.stack16(at: 0), 4004)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 4004)
     }
     
     func testSubscriptOfZeroWithU8() {

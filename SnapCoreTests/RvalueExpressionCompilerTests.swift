@@ -3040,6 +3040,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 5, to: offset + 4)
         }
         let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(tempResult.size, 10)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 3)
@@ -3506,5 +3507,108 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         let expectedResult = UInt8(0) &- UInt8(42)
         XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
+    }
+        
+    func testCallCompilerIntrinsicFunction_peekMemory() {
+        let expr = Expression.Call(callee: Expression.Identifier("peekMemory"), arguments: [ExprUtils.makeU16(value: 0xabcd)])
+        let symbols = bindCompilerInstrinsicPeekMemory(symbols: SymbolTable())
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0xcc, to: 0xabcd)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.stack(at: 0), 0xcc)
+    }
+    
+    private func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
+        let name = "peekMemory"
+        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+        
+    func testCallCompilerIntrinsicFunction_pokeMemory() {
+        let expr = Expression.Call(callee: Expression.Identifier("pokeMemory"), arguments: [ExprUtils.makeU8(value: 0xcc), ExprUtils.makeU16(value: 0xabcd)])
+        let symbols = bindCompilerInstrinsicPokeMemory(symbols: SymbolTable())
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 0xcc)
+    }
+    
+    private func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
+        let name = "pokeMemory"
+        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+        
+    func testCallCompilerIntrinsicFunction_peekPeripheral() {
+        let address = 0xffff
+        let HLT: UInt16 = 0x0100
+        let expr = Expression.Call(callee: Expression.Identifier("peekPeripheral"), arguments: [ExprUtils.makeU16(value: address), ExprUtils.makeU8(value: 0)])
+        let symbols = bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable())
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let executor = CrackleExecutor()
+        executor.isVerboseLogging = true
+        executor.configure = { computer in
+            computer.upperInstructionRAM.store(value: UInt8((HLT >> 8) & 0xff), to: address)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.stack(at: 0), UInt8((HLT >> 8) & 0xff))
+    }
+    
+    private func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
+        let name = "peekPeripheral"
+        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    func testCallCompilerIntrinsicFunction_pokePeripheral() {
+        let expr = Expression.Call(callee: Expression.Identifier("pokePeripheral"), arguments: [ExprUtils.makeU8(value: 42), ExprUtils.makeU16(value: 0xffff), ExprUtils.makeU8(value: 0)])
+        let symbols = bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable())
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        
+        // There's a hardware bug in Rev 2 where the bits of the instruction
+        // RAM port connected to the data bus are in reverse order.
+        XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), UInt8(42).reverseBits())
+    }
+    
+    private func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
+        let name = "pokePeripheral"
+        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    func testCallCompilerIntrinsicFunction_hlt() {
+        let expr = Expression.Call(callee: Expression.Identifier("hlt"), arguments: [])
+        let expected: [CrackleInstruction] = [
+            .hlt
+        ]
+        let symbols = bindCompilerInstrinsicHlt(symbols: SymbolTable())
+        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    private func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
+        let name = "hlt"
+        let functionType = FunctionType(returnType: .void, arguments: [])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
     }
 }

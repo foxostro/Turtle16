@@ -6,6 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore // for UInt8.reverseBits
+
 public class InstructionRAMPeripheral: ComputerPeripheral {
     public let store: (_ value: UInt8, _ address: Int) -> Void
     public let load: (_ address: Int) -> UInt8
@@ -18,24 +20,11 @@ public class InstructionRAMPeripheral: ComputerPeripheral {
         super.init(name: name)
     }
     
-    func reverseBits(_ value: UInt8) -> UInt8 {
-        var n = value
-        var result: UInt8 = 0
-        while (n > 0) {
-            result <<= 1
-            if ((n & 1) == 1) {
-                result ^= 1
-            }
-            n >>= 1
-        }
-        return result
-    }
-    
     public override func onControlClock() {
         if (PO == .active) {
             // There's a hardware bug in Rev 2 where the bits of the instruction
             // RAM port connected to the data bus are in reverse order.
-            bus = Register(withValue: reverseBits(load(valueOfXYPair())))
+            bus = Register(withValue: load(valueOfXYPair()).reverseBits())
         }
     }
     
@@ -43,7 +32,7 @@ public class InstructionRAMPeripheral: ComputerPeripheral {
         if (PI == .active) {
             // There's a hardware bug in Rev 2 where the bits of the instruction
             // RAM port connected to the data bus are in reverse order.
-            store(reverseBits(bus.value), valueOfXYPair())
+            store(bus.value.reverseBits(), valueOfXYPair())
         }
     }
 }

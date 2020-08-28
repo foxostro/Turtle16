@@ -736,6 +736,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             default:
                 // The dynamic array must bind to a temporary value on the stack.
                 // TODO: The way this is written now, the stack will continue to grow and will eventually overflow. We need something like a way to signal that additional bytes must be popped at the end of the statement.
+                assert(false) // TODO: FIXME. This is incorrect after changes made for TAC IR.
                 instructions += try compile(expression: rexpr)
                 instructions += [
                     .push16(n),
@@ -790,8 +791,22 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
+            let type = typ.arguments[i].argumentType
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i],
-                                                                         ltype: typ.arguments[i].argumentType)
+                                                                         ltype: type)
+            let tempArgumentValue = temporaryStack.pop()
+            switch type.sizeof {
+            case 0:
+                break
+            case 1:
+                instructions += [.load(tempArgumentValue.address)]
+            case 2:
+                instructions += [.load16(tempArgumentValue.address)]
+            default:
+                assert(false)
+                abort() // unreachable
+            }
+            tempArgumentValue.consume()
         }
         
         return instructions

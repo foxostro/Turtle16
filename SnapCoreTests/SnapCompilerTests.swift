@@ -567,21 +567,8 @@ pokePeripheral(0xcd, 0xffff, 0)
         
         // There's a hardware bug in Rev 2 where the bits of the instruction
         // RAM port connected to the data bus are in reverse order.
-        XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), reverseBits(0xab))
-        XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), reverseBits(0xcd))
-    }
-    
-    private func reverseBits(_ value: UInt8) -> UInt8 {
-        var n = value
-        var result: UInt8 = 0
-        while (n > 0) {
-            result <<= 1
-            if ((n & 1) == 1) {
-                result ^= 1
-            }
-            n >>= 1
-        }
-        return result
+        XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), UInt8(0xab).reverseBits())
+        XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), UInt8(0xcd).reverseBits())
     }
         
     func test_EndToEndIntegration_PeekPeripheral() {

@@ -680,13 +680,20 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             src.consume()
         case (.array(let n, let a), .array(let m, let b)):
             assert(n == m || m == nil)
+            let n = n!
             switch rexpr {
             case let literalArray as Expression.LiteralArray:
-                for el in literalArray.elements.reversed() {
+                let dst = temporaryAllocator.allocate(size: n * b.sizeof)
+                for i in 0..<literalArray.elements.count {
+                    let el = literalArray.elements[i]
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
+                    let src = temporaryStack.pop()
+                    instructions += [.copyWords(dst.address + i * b.sizeof, src.address, b.sizeof)]
+                    src.consume()
                 }
+                temporaryStack.push(dst)
             case let identifier as Expression.Identifier:
-                let elements = stride(from: 0, through: n!-1, by: 1).map({i in
+                let elements = stride(from: 0, through: n-1, by: 1).map({i in
                     Expression.As(sourceAnchor: identifier.sourceAnchor,
                                   expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
                                                              identifier: identifier,

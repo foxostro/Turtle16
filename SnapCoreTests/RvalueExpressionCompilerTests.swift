@@ -3018,6 +3018,35 @@ class RvalueExpressionCompilerTests: XCTestCase {
         }
     }
     
+    func testArrayIdentifierOfU8AsU16() {
+        let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: .array(count: nil, elementType: .u16))
+        let offset = 0x0100
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u8), offset: offset, isMutable: false)])
+        
+        let compiler = RvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 1, to: offset + 0)
+            computer.dataRAM.store(value: 2, to: offset + 1)
+            computer.dataRAM.store(value: 3, to: offset + 2)
+            computer.dataRAM.store(value: 4, to: offset + 3)
+            computer.dataRAM.store(value: 5, to: offset + 4)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 3)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 6), 4)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 8), 5)
+    }
+    
     func testEmptyArray() {
         // The empty array is not actually materialized in memory.
         let expr = Expression.LiteralArray(explicitType: .u8)
@@ -3048,22 +3077,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), 2)
     }
     
-//    func testLiteralArrayOfU8AsU16() {
-//        let expr = Expression.As(expr: Expression.LiteralArray(explicitType: .u8, explicitCount: nil, elements: [ExprUtils.makeU8(value: 0), ExprUtils.makeU8(value: 1), ExprUtils.makeU8(value: 2)]), targetType: .array(count: nil, elementType: .u16))
-//        let compiler = RvalueExpressionCompiler()
-//        let ir = try! compiler.compile(expression: expr)
-//
-//        // The expression is evaluated and the result is written to a temporary.
-//        // The temporary is left at the top of the compiler's temporaries stack
-//        // since nothing has consumed the value.
-//        let tempResult = compiler.temporaryStack.peek()
-//
-//        let executor = CrackleExecutor()
-//        let computer = try! executor.execute(ir: ir)
-//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0)
-//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 1)
-//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 2)
-//    }
+    func testLiteralArrayOfU8AsU16() {
+        let expr = Expression.As(expr: Expression.LiteralArray(explicitType: .u8, explicitCount: nil, elements: [ExprUtils.makeU8(value: 0), ExprUtils.makeU8(value: 1), ExprUtils.makeU8(value: 2)]), targetType: .array(count: nil, elementType: .u16))
+        let compiler = RvalueExpressionCompiler()
+        let ir = try! compiler.compile(expression: expr)
+
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 2)
+    }
     
     func testLiteralArrayOfU16() {
         let expr = Expression.LiteralArray(explicitType: .u16,

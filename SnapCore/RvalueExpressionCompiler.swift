@@ -13,18 +13,12 @@ import TurtleCompilerToolbox
 // The expression will push the result onto the stack. The client assumes the
 // responsibility of cleaning up.
 public class RvalueExpressionCompiler: BaseExpressionCompiler {
-    let compilerInstrinsicFunctions: [String: [CrackleInstruction]] = [
-        "peekMemory" : [.loadIndirect],
-        "pokeMemory" : [.storeIndirect, .pop],
-        "peekPeripheral" : [.peekPeripheral],
-        "pokePeripheral" : [.pokePeripheral, .pop],
-        "hlt" : [.hlt]
-    ]
     public let typeChecker: RvalueExpressionTypeChecker
     
     private let kSliceBaseAddressOffset = 0
     private let kSliceCountOffset = 2
     private let kSliceSize = 4
+    private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
     
     public static func bindCompilerIntrinsicFunctions(symbols: SymbolTable) -> SymbolTable {
         return bindCompilerInstrinsicHlt(symbols:
@@ -813,23 +807,61 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         switch symbol.type {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [CrackleInstruction] = []
-            if let ins = compilerInstrinsicFunctions[mangledName] {
-                // TODO: because compiler intrinsics are always simple leaf functions, we can evaluate the function arguments and push them to the temporary stack instead of the program stack.
+            switch mangledName {
+            case "peekMemory":
+                instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
+                let tempArgumentValue = temporaryStack.pop()
+                let tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+                instructions += [
+                    .copyWordsIndirectSource(tempReturnValue.address, tempArgumentValue.address, typ.returnType.sizeof)
+                ]
+                tempArgumentValue.consume()
+                temporaryStack.push(tempReturnValue)
+            case "pokeMemory":
+                instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
+                let tempAddressArg = temporaryStack.pop()
+                let tempValueArg = temporaryStack.pop()
+                instructions += [
+                    .copyWordsIndirectDestination(tempAddressArg.address, tempValueArg.address, 1)
+                ]
+                tempValueArg.consume()
+                tempAddressArg.consume()
+            case "peekPeripheral":
                 instructions += try pushFunctionArguments(typ, node)
-                instructions += ins
-            } else {
+                instructions += [.peekPeripheral]
+                instructions += moveFunctionReturnValueFromStackToTemporary(typ)
+            case "pokePeripheral":
+                instructions += try pushFunctionArguments(typ, node)
+                instructions += [
+                    .pokePeripheral,
+                    .pop
+                ]
+                instructions += moveFunctionReturnValueFromStackToTemporary(typ)
+            case "hlt":
+                instructions += [.hlt]
+            default:
                 // TODO: need to save/restore temporaries when making a function call
                 instructions += try pushToAllocateFunctionReturnValue(typ)
                 instructions += try pushFunctionArguments(typ, node)
                 instructions += [.jalr(mangledName)]
                 instructions += popFunctionArguments(typ)
+                instructions += moveFunctionReturnValueFromStackToTemporary(typ)
             }
-            instructions += moveFunctionReturnValueFromStackToTemporary(typ)
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: message)
         }
+    }
+    
+    private func pushFunctionArgumentsToCompilerTemporariesStack(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        // Push function arguments to the compiler temporaries stack
+        // with appropriate type conversions.
+        var instructions: [CrackleInstruction] = []
+        for i in 0..<typ.arguments.count {
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i].argumentType)
+        }
+        return instructions
     }
     
     private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
@@ -887,7 +919,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         guard typ.returnType.sizeof > 0 else {
             return []
         }
-        let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
         let size = typ.returnType.sizeof
         let tempReturnValue = temporaryAllocator.allocate(size: size)
         let instructions: [CrackleInstruction] = [

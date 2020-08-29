@@ -3521,6 +3521,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Call(callee: Expression.Identifier("pokeMemory"), arguments: [ExprUtils.makeU8(value: 0xcc), ExprUtils.makeU16(value: 0xabcd)])
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
+        executor.isVerboseLogging = true
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 0xcc)
     }

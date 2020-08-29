@@ -808,50 +808,63 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [CrackleInstruction] = []
             switch mangledName {
-            case "peekMemory":
-                instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
-                let tempArgumentValue = temporaryStack.pop()
-                let tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
-                instructions += [
-                    .copyWordsIndirectSource(tempReturnValue.address, tempArgumentValue.address, typ.returnType.sizeof)
-                ]
-                tempArgumentValue.consume()
-                temporaryStack.push(tempReturnValue)
-            case "pokeMemory":
-                instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
-                let tempAddressArg = temporaryStack.pop()
-                let tempValueArg = temporaryStack.pop()
-                instructions += [
-                    .copyWordsIndirectDestination(tempAddressArg.address, tempValueArg.address, 1)
-                ]
-                tempValueArg.consume()
-                tempAddressArg.consume()
-            case "peekPeripheral":
-                instructions += try pushFunctionArguments(typ, node)
-                instructions += [.peekPeripheral]
-                instructions += moveFunctionReturnValueFromStackToTemporary(typ)
-            case "pokePeripheral":
-                instructions += try pushFunctionArguments(typ, node)
-                instructions += [
-                    .pokePeripheral,
-                    .pop
-                ]
-                instructions += moveFunctionReturnValueFromStackToTemporary(typ)
-            case "hlt":
-                instructions += [.hlt]
-            default:
-                // TODO: need to save/restore temporaries when making a function call
-                instructions += try pushToAllocateFunctionReturnValue(typ)
-                instructions += try pushFunctionArguments(typ, node)
-                instructions += [.jalr(mangledName)]
-                instructions += popFunctionArguments(typ)
-                instructions += moveFunctionReturnValueFromStackToTemporary(typ)
+            case "peekMemory":      instructions += try compileFunctionPeekMemory(typ, node)
+            case "pokeMemory":      instructions += try compileFunctionPokeMemory(typ, node)
+            case "peekPeripheral":  instructions += try compileFunctionPeekPeripheral(typ, node)
+            case "pokePeripheral":  instructions += try compileFunctionPokePeripheral(typ, node)
+            case "hlt":             instructions += [.hlt]
+            default:                instructions += try compileFunctionUserDefined(typ, node, mangledName)
             }
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: message)
         }
+    }
+    
+    private func compileFunctionPeekMemory(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
+        let tempArgumentValue = temporaryStack.pop()
+        let tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+        instructions += [
+            .copyWordsIndirectSource(tempReturnValue.address, tempArgumentValue.address, typ.returnType.sizeof)
+        ]
+        tempArgumentValue.consume()
+        temporaryStack.push(tempReturnValue)
+        return instructions
+    }
+    
+    private func compileFunctionPokeMemory(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
+        let tempAddressArg = temporaryStack.pop()
+        let tempValueArg = temporaryStack.pop()
+        instructions += [
+            .copyWordsIndirectDestination(tempAddressArg.address, tempValueArg.address, 1)
+        ]
+        tempValueArg.consume()
+        tempAddressArg.consume()
+        return instructions
+    }
+    
+    private func compileFunctionPeekPeripheral(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        instructions += try pushFunctionArguments(typ, node)
+        instructions += [.peekPeripheral]
+        instructions += moveFunctionReturnValueFromStackToTemporary(typ)
+        return instructions
+    }
+    
+    private func compileFunctionPokePeripheral(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        instructions += try pushFunctionArguments(typ, node)
+        instructions += [
+            .pokePeripheral,
+            .pop
+        ]
+        instructions += moveFunctionReturnValueFromStackToTemporary(typ)
+        return instructions
     }
     
     private func pushFunctionArgumentsToCompilerTemporariesStack(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
@@ -861,6 +874,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         for i in 0..<typ.arguments.count {
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i].argumentType)
         }
+        return instructions
+    }
+    
+    private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call, _ mangledName: String) throws -> [CrackleInstruction] {
+        // TODO: need to save/restore temporaries when making a function call
+        var instructions: [CrackleInstruction] = []
+        instructions += try pushToAllocateFunctionReturnValue(typ)
+        instructions += try pushFunctionArguments(typ, node)
+        instructions += [.jalr(mangledName)]
+        instructions += popFunctionArguments(typ)
+        instructions += moveFunctionReturnValueFromStackToTemporary(typ)
         return instructions
     }
     

@@ -33,53 +33,8 @@ public class SnapToCrackleCompiler: NSObject {
     private var currentSourceAnchor: SourceAnchor? = nil
     
     public override init() {
-        symbols = globalSymbols
+        symbols = RvalueExpressionCompiler.bindCompilerIntrinsicFunctions(symbols: globalSymbols)
         super.init()
-        bindCompilerInstrinsicPeekMemory()
-        bindCompilerInstrinsicPokeMemory()
-        bindCompilerInstrinsicPeekPeripheral()
-        bindCompilerInstrinsicPokePeripheral()
-        bindCompilerInstrinsicHlt()
-    }
-    
-    private func bindCompilerInstrinsicPeekMemory() {
-        let name = "peekMemory"
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    private func bindCompilerInstrinsicPokeMemory() {
-        let name = "pokeMemory"
-        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    private func bindCompilerInstrinsicPeekPeripheral() {
-        let name = "peekPeripheral"
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    private func bindCompilerInstrinsicPokePeripheral() {
-        let name = "pokePeripheral"
-        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    private func bindCompilerInstrinsicHlt() {
-        let name = "hlt"
-        let functionType = FunctionType(returnType: .void, arguments: [])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
     }
     
     public func compile(ast: TopLevel) {

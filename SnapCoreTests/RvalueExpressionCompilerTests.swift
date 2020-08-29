@@ -15,8 +15,34 @@ class RvalueExpressionCompilerTests: XCTestCase {
     let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
     let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
     
-    func compile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
+    func mustCompile(compiler: RvalueExpressionCompiler, expression: Expression, symbols: SymbolTable = SymbolTable()) -> [CrackleInstruction] {
+        return try! compile(compiler: compiler,
+                            expression: expression,
+                            symbols: symbols,
+                            shouldPrintErrors: true)
+    }
+    
+    func mustCompile(expression: Expression, symbols: SymbolTable = SymbolTable()) -> [CrackleInstruction] {
+        return try! compile(compiler: makeCompiler(symbols: symbols),
+                            expression: expression,
+                            symbols: symbols,
+                            shouldPrintErrors: true)
+    }
+    
+    func tryCompile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
+        return try compile(compiler: makeCompiler(symbols: symbols),
+                           expression: expression,
+                           symbols: symbols,
+                           shouldPrintErrors: shouldPrintErrors)
+    }
+    
+    func makeCompiler(symbols: SymbolTable = SymbolTable()) -> RvalueExpressionCompiler {
+        let symbols2 = RvalueExpressionCompiler.bindCompilerIntrinsicFunctions(symbols: symbols)
+        let compiler = RvalueExpressionCompiler(symbols: symbols2)
+        return compiler
+    }
+    
+    func compile(compiler: RvalueExpressionCompiler, expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
         var ir: [CrackleInstruction] = []
         do {
             ir = try compiler.compile(expression: expression)
@@ -34,7 +60,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCannotCompileUnsupportedExpression() {
         let expr = Expression.UnsupportedExpression(sourceAnchor: nil)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression>")
@@ -45,8 +71,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0xff)
         ]
-        var actual: [CrackleInstruction] = []
-        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralInt(0xff)))
+        let actual = mustCompile(expression: Expression.LiteralInt(0xff))
         XCTAssertEqual(expected, actual)
     }
     
@@ -54,14 +79,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0xffff)
         ]
-        var actual: [CrackleInstruction] = []
-        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralInt(0xffff)))
+        let actual = mustCompile(expression: Expression.LiteralInt(0xffff))
         XCTAssertEqual(expected, actual)
     }
     
     func testCompileLiteralIntExpression_TooLarge() {
         let expr = Expression.LiteralInt(65536)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "integer literal `65536' overflows when stored into `u16'")
@@ -72,8 +96,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        var actual: [CrackleInstruction] = []
-        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralBool(true)))
+        let actual = mustCompile(expression: Expression.LiteralBool(true))
         XCTAssertEqual(expected, actual)
     }
     
@@ -81,8 +104,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        var actual: [CrackleInstruction] = []
-        XCTAssertNoThrow(actual = try compile(expression: Expression.LiteralBool(false)))
+        let actual = mustCompile(expression: Expression.LiteralBool(false))
         XCTAssertEqual(expected, actual)
     }
         
@@ -94,7 +116,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_sub(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -110,7 +132,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0),
             .tac_sub16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -126,7 +148,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0),
             .tac_sub16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -137,7 +159,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testFailToCompileInvalidPrefixUnaryOperator() {
         let expr = Expression.Unary(op: .multiply,
                                     expression: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`*' is not a prefix unary operator")
@@ -150,7 +172,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -163,7 +185,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -178,7 +200,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1001),
             .tac_eq16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -193,7 +215,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_eq16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -209,7 +231,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_eq16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -219,7 +241,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Eq_Bool() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `bool'")
@@ -229,7 +251,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU16(value: 1000),
                                               right: Expression.LiteralBool(false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `const bool'")
@@ -245,7 +267,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_add(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -261,7 +283,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_eq16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -276,7 +298,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_eq(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -291,7 +313,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_eq(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -301,7 +323,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Eq_Bool() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `bool'")
@@ -311,7 +333,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Eq_BooleanConstant() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeU8(value: 1),
                                               right: Expression.LiteralBool(false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `const bool'")
@@ -326,7 +348,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_eq(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -341,7 +363,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_eq(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -351,7 +373,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Eq_U8() {
         let expr = ExprUtils.makeComparisonEq(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u8'")
@@ -364,7 +386,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -377,7 +399,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -392,7 +414,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_eq(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -402,7 +424,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_BooleanConstant_Eq_U8() {
         let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const bool' and `u8'")
@@ -415,7 +437,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -428,7 +450,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -443,7 +465,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_ne16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -458,7 +480,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_ne16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -474,7 +496,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_ne16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -484,7 +506,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Ne_Bool() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `bool'")
@@ -494,7 +516,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU16(value: 1000),
                                               right: Expression.LiteralBool(false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `const bool'")
@@ -510,7 +532,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_ne16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -525,7 +547,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_ne(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -540,7 +562,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_ne(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -550,7 +572,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Ne_Bool() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `bool'")
@@ -560,7 +582,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Ne_BooleanConstant() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeU8(value: 1),
                                               right: Expression.LiteralBool(false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `const bool'")
@@ -575,7 +597,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_ne(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -590,7 +612,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_ne(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -600,7 +622,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Ne_U8() {
         let expr = ExprUtils.makeComparisonNe(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u8'")
@@ -613,7 +635,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -626,7 +648,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -641,7 +663,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_ne(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -651,7 +673,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_BooleanConstant_Ne_U8() {
         let expr = ExprUtils.makeComparisonNe(left: Expression.LiteralBool(false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const bool' and `u8'")
@@ -664,7 +686,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -677,7 +699,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -692,7 +714,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_lt16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -707,7 +729,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_lt16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -723,7 +745,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_lt16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -733,7 +755,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Lt_Bool() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `u16' and `bool'")
@@ -750,7 +772,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_lt16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -766,7 +788,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_lt(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -781,7 +803,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_lt(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -791,7 +813,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Lt_Bool() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `u8' and `bool'")
@@ -801,7 +823,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Lt_Bool() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to two `bool' operands")
@@ -811,7 +833,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Lt_U8() {
         let expr = ExprUtils.makeComparisonLt(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `bool' and `u8'")
@@ -825,7 +847,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -839,7 +861,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -855,7 +877,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0x2000),
             .tac_gt16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -870,7 +892,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0x1000),
             .tac_gt16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -885,7 +907,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0x1000),
             .tac_gt16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -901,7 +923,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_gt16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -911,7 +933,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Gt_Bool() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `u16' and `bool'")
@@ -927,7 +949,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_gt16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -942,7 +964,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_gt(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -957,7 +979,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_gt(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -967,7 +989,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Gt_Bool() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `u8' and `bool'")
@@ -977,7 +999,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Gt_Bool() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to two `bool' operands")
@@ -987,7 +1009,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Gt_U8() {
         let expr = ExprUtils.makeComparisonGt(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `bool' and `u8'")
@@ -1001,7 +1023,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1015,7 +1037,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1030,7 +1052,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 500),
             .tac_le16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1045,7 +1067,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_le16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1060,7 +1082,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_le16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1076,7 +1098,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_le16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1086,7 +1108,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Le_Bool() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `u16' and `bool'")
@@ -1102,7 +1124,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_le16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1117,7 +1139,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_le(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1132,7 +1154,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_le(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1147,7 +1169,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_le(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1157,7 +1179,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Le_Bool() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `u8' and `bool'")
@@ -1167,7 +1189,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Le_Bool() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to two `bool' operands")
@@ -1177,7 +1199,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Le_U8() {
         let expr = ExprUtils.makeComparisonLe(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `bool' and `u8'")
@@ -1191,7 +1213,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1205,7 +1227,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1220,7 +1242,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 500),
             .tac_ge16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1235,7 +1257,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_ge16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1250,7 +1272,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_ge16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1266,7 +1288,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_ge16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1276,7 +1298,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U16_Ge_Bool() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU16(value: 1000),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `u16' and `bool'")
@@ -1292,7 +1314,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_ge16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1307,7 +1329,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_ge(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1322,7 +1344,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_ge(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1337,7 +1359,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_ge(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1347,7 +1369,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_U8_Ge_Bool() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeU8(value: 1),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `u8' and `bool'")
@@ -1357,7 +1379,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Ge_Bool() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to two `bool' operands")
@@ -1367,7 +1389,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBinary_Bool_Ge_U8() {
         let expr = ExprUtils.makeComparisonGe(left: ExprUtils.makeBool(value: false),
                                               right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `bool' and `u8'")
@@ -1378,7 +1400,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .plus,
                                      left: Expression.LiteralInt(1),
                                      right: Expression.LiteralInt(1))
-        let ir = try! compile(expression: expr)
+        let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
@@ -1391,7 +1413,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .plus,
                                      left: Expression.LiteralInt(1000),
                                      right: Expression.LiteralInt(1))
-        let ir = try! compile(expression: expr)
+        let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
@@ -1409,7 +1431,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_add16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1425,7 +1447,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_add(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1441,7 +1463,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_add16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1457,7 +1479,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_add16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1474,7 +1496,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_add16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1485,7 +1507,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u16' and `bool'")
@@ -1502,7 +1524,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_add16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1518,7 +1540,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_add(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1529,7 +1551,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
@@ -1540,7 +1562,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `bool' and `u16'")
@@ -1551,7 +1573,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expr = Expression.Binary(op: .plus,
                                     left: ExprUtils.makeBool(value: false),
                                     right: ExprUtils.makeU8(value: 1))
-       XCTAssertThrowsError(try compile(expression: expr)) {
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
            let compilerError = $0 as? CompilerError
            XCTAssertNotNil(compilerError)
            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `bool' and `u8'")
@@ -1562,7 +1584,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expr = Expression.Binary(op: .plus,
                                     left: ExprUtils.makeBool(value: false),
                                     right: ExprUtils.makeBool(value: false))
-       XCTAssertThrowsError(try compile(expression: expr)) {
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
            let compilerError = $0 as? CompilerError
            XCTAssertNotNil(compilerError)
            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to two `bool' operands")
@@ -1576,7 +1598,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expected: [CrackleInstruction] = [
            .storeImmediate(t0, 1)
        ]
-       let actual = try! compile(expression: expr)
+       let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
        let computer = try! executor.execute(ir: actual)
        XCTAssertEqual(actual, expected)
@@ -1590,7 +1612,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expected: [CrackleInstruction] = [
            .storeImmediate16(t0, 999)
        ]
-       let actual = try! compile(expression: expr)
+       let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
        let computer = try! executor.execute(ir: actual)
        XCTAssertEqual(actual, expected)
@@ -1606,7 +1628,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
            .storeImmediate16(t1, 1000),
            .tac_sub16(t2, t1, t0)
        ]
-       let actual = try! compile(expression: expr)
+       let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
        let computer = try! executor.execute(ir: actual)
        XCTAssertEqual(actual, expected)
@@ -1622,7 +1644,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
            .storeImmediate(t1, 255),
            .tac_sub(t2, t1, t0)
        ]
-       let actual = try! compile(expression: expr)
+       let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
        let computer = try! executor.execute(ir: actual)
        XCTAssertEqual(actual, expected)
@@ -1638,7 +1660,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
            .storeImmediate16(t1, 1000),
            .tac_sub16(t2, t1, t0)
        ]
-       let actual = try! compile(expression: expr)
+       let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
        let computer = try! executor.execute(ir: actual)
        XCTAssertEqual(actual, expected)
@@ -1654,7 +1676,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_sub16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1671,7 +1693,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_sub16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1682,7 +1704,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `u16' and `bool'")
@@ -1698,7 +1720,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 2),
             .tac_sub(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1715,7 +1737,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_sub16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1731,7 +1753,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 2),
             .tac_sub(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1742,7 +1764,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `u8' and `bool'")
@@ -1753,7 +1775,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `bool' and `u16'")
@@ -1764,7 +1786,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `bool' and `u8'")
@@ -1775,7 +1797,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .minus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to two `bool' operands")
@@ -1789,7 +1811,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 16)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1803,7 +1825,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, Int(10000))
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1819,7 +1841,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 256),
             .tac_mul16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1835,7 +1857,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 255),
             .tac_mul(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1851,7 +1873,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 256),
             .tac_mul16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1867,7 +1889,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 256),
             .tac_mul16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1884,7 +1906,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_mul16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1895,7 +1917,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `u16' and `bool'")
@@ -1911,7 +1933,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .tac_mul(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1928,7 +1950,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_mul16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1944,7 +1966,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 2),
             .tac_mul(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -1955,7 +1977,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `u8' and `bool'")
@@ -1966,7 +1988,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `bool' and `u16'")
@@ -1977,7 +1999,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `bool' and `u8'")
@@ -1988,7 +2010,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .multiply,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to two `bool' operands")
@@ -2002,7 +2024,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2016,7 +2038,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2032,7 +2054,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0x1000),
             .tac_div16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2048,7 +2070,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 12),
             .tac_div(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2064,7 +2086,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0x1000),
             .tac_div16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2080,7 +2102,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0x1000),
             .tac_div16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2097,7 +2119,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_div16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2108,7 +2130,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `u16' and `bool'")
@@ -2124,7 +2146,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 12),
             .tac_div(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2141,7 +2163,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_div16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2157,7 +2179,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 12),
             .tac_div(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2168,7 +2190,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `u8' and `bool'")
@@ -2179,7 +2201,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `bool' and `u16'")
@@ -2190,7 +2212,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `bool' and `u8'")
@@ -2201,7 +2223,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .divide,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to two `bool' operands")
@@ -2215,7 +2237,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2229,7 +2251,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 999)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2245,7 +2267,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_mod16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2261,7 +2283,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 15),
             .tac_mod(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2277,7 +2299,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_mod16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2293,7 +2315,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1000),
             .tac_mod16(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2310,7 +2332,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .tac_mod16(t2, t0, t1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2321,7 +2343,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `u16' and `bool'")
@@ -2337,7 +2359,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 15),
             .tac_mod(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2354,7 +2376,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .tac_mod16(t1, t2, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2370,7 +2392,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 15),
             .tac_mod(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2381,7 +2403,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `u8' and `bool'")
@@ -2392,7 +2414,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `bool' and `u16'")
@@ -2403,7 +2425,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `bool' and `u8'")
@@ -2414,7 +2436,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to two `bool' operands")
@@ -2427,7 +2449,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .copyWords(t0, 0x0100, 1)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xab, to: 0x0100)
@@ -2443,7 +2465,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .copyWords(t0, 0x0100, 2)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0xabcd, to: 0x0100)
@@ -2464,7 +2486,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
             .copyWordsIndirectSource(t0, t2, 1),     // t0 = *t2
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             // Set the value of the local variable on the stack.
@@ -2491,7 +2513,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
             .copyWordsIndirectSource(t0, t2, 2),     // t0 = *t2
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             // Set the value of the local variable on the stack.
@@ -2510,7 +2532,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .copyWords(t0, 0x0100, 1)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 1, to: 0x0100)
@@ -2522,7 +2544,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_UnresolvedIdentifier() {
         let expr = Expression.Identifier("foo")
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
         }
     }
@@ -2532,8 +2554,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset, isMutable: false)])
         
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -2564,8 +2586,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                             storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
         
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -2603,7 +2625,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .copyWordsIndirectDestination(t0, t1, 1)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2621,7 +2643,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 1),
             .copyWordsIndirectDestination(t0, t1, 1)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2640,7 +2662,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 42),
             .copyWordsIndirectDestination(t0, t1, 1)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2657,7 +2679,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t1, 0xabcd),
             .copyWordsIndirectDestination(t0, t1, 2)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2675,14 +2697,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset, isMutable: true)])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        if ir == nil {
-            XCTFail()
-            return
-        }
-        let computer = try! executor.execute(ir: ir!)
+        let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+2), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+4), 3000)
@@ -2701,7 +2718,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .copyWordZeroExtend(t2, t1),
             .copyWordsIndirectDestination(t0, t2, 2)
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2721,7 +2738,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),                  // t0 = true
             .copyWordsIndirectDestination(t2, t0, 1) // *t2 = t0
         ]
-        let actual = try! compile(expression: expr, symbols: symbols)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2742,7 +2759,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 42),                 // t0 = 42
             .copyWordsIndirectDestination(t2, t0, 1) // *t2 = t0
         ]
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2763,7 +2780,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, value),            // t0 = value
             .copyWordsIndirectDestination(t2, t0, 2) // *t2 = t0
         ]
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2780,14 +2797,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, isMutable: true, storage: .stackStorage)])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        if ir == nil {
-            XCTFail()
-            return
-        }
-        let computer = try! executor.execute(ir: ir!)
+        let computer = try! executor.execute(ir: ir)
         let address = 0xfff0
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
@@ -2800,7 +2812,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: offset, isMutable: false)])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
@@ -2811,7 +2823,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: true))
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
@@ -2823,7 +2835,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                          rexpr: Expression.LiteralInt(0))
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "expression is not assignable")
@@ -2834,21 +2846,16 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset, isMutable: true)])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        if ir == nil {
-            XCTFail()
-            return
-        }
-        let computer = try! executor.execute(ir: ir!)
+        let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0100), 0xaa)
     }
     
     func testCompilationFailsDueToUseOfUnresolvedIdentifierInFunctionCall() {
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [])
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "use of unresolved identifier: `foo'")
         }
     }
@@ -2859,7 +2866,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "fn" : Symbol(type: .u8, offset: 0x0000, isMutable: false, storage: .staticStorage)
         ])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "cannot call value of non-function type `u8'")
         }
     }
@@ -2867,7 +2874,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBoolasVoid() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
                                  targetType: .void)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `void'")
@@ -2877,7 +2884,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBoolasU16() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
                                  targetType: .u16)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `u16'")
@@ -2887,7 +2894,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testBoolasU8() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
                                  targetType: .u8)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to type `u8'")
@@ -2899,7 +2906,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2909,7 +2916,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testU8asVoid() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
                                  targetType: .void)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `void'")
@@ -2923,7 +2930,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, value),
             .copyWordZeroExtend(t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2935,7 +2942,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 42)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2945,7 +2952,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testU8asBool() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
                                  targetType: .bool)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `bool'")
@@ -2955,7 +2962,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testU16asVoid() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
                                  targetType: .void)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `u16' to type `void'")
@@ -2967,7 +2974,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0xabcd)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2981,7 +2988,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 0xabcd),
             .copyWords(t1, t0, 1)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -2991,7 +2998,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testU16asBool() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
                                  targetType: .bool)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `u16' to type `bool'")
@@ -3001,7 +3008,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testIntegerConstantAsU8_Overflows() {
         let expr = Expression.As(expr: Expression.LiteralInt(256),
                                  targetType: .u8)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "integer constant `256' overflows when stored into `u8'")
@@ -3011,7 +3018,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testIntegerConstantAsU16_Overflows() {
         let expr = Expression.As(expr: Expression.LiteralInt(65536),
                                  targetType: .u16)
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "integer constant `65536' overflows when stored into `u16'")
@@ -3023,8 +3030,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u8), offset: offset, isMutable: false)])
         
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3051,7 +3058,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testEmptyArray() {
         // The empty array is not actually materialized in memory.
         let expr = Expression.LiteralArray(explicitType: .u8)
-        let ir = try! compile(expression: expr)
+        let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         _ = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [])
@@ -3063,8 +3070,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            elements: [ExprUtils.makeU8(value: 0),
                                                       ExprUtils.makeU8(value: 1),
                                                       ExprUtils.makeU8(value: 2)])
-        let compiler = RvalueExpressionCompiler()
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3080,8 +3087,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testLiteralArrayOfU8AsU16() {
         let expr = Expression.As(expr: Expression.LiteralArray(explicitType: .u8, explicitCount: nil, elements: [ExprUtils.makeU8(value: 0), ExprUtils.makeU8(value: 1), ExprUtils.makeU8(value: 2)]), targetType: .array(count: nil, elementType: .u16))
-        let compiler = RvalueExpressionCompiler()
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
 
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3101,8 +3108,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            elements: [ExprUtils.makeU16(value: 1),
                                                       ExprUtils.makeU16(value: 2),
                                                       ExprUtils.makeU16(value: 1000)])
-        let compiler = RvalueExpressionCompiler()
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3122,8 +3129,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            elements: [Expression.LiteralBool(false),
                                                       Expression.LiteralBool(false),
                                                       Expression.LiteralBool(true)])
-        let compiler = RvalueExpressionCompiler()
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3142,7 +3149,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                            explicitCount: nil,
                                            elements: [Expression.LiteralInt(0),
                                                       ExprUtils.makeBool(value: false)])
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `const int' to type `bool' in `[2]bool' array literal")
@@ -3155,7 +3162,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                              left: Expression.LiteralInt(1000),
                                                              right: Expression.LiteralInt(1)),
                                      right: Expression.LiteralInt(4))
-        let ir = try! compile(expression: expr)
+        let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(ir, [
@@ -3182,7 +3189,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: offset, isMutable: false)])
         let zero = Expression.LiteralInt(0)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "value of type `\(symbolType)' has no subscripts")
@@ -3212,8 +3219,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ident = "foo"
         let symbols = SymbolTable([ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0100, isMutable: false)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3259,8 +3266,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfData = 0x0104
         let symbols = SymbolTable([ident : Symbol(type: .dynamicArray(elementType: elementType), offset: addressOfPointer, isMutable: false)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3298,8 +3305,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: false)
         ])
         
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3333,13 +3340,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: true),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: true)
         ])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        if ir == nil {
-            XCTFail()
-            return
-        }
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
             computer.dataRAM.store16(value: UInt16(count), to: addressOfCount)
@@ -3347,7 +3349,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir!)
+        let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfData + 2*SymbolType.u16.sizeof), 0xcafe)
     }
     
@@ -3361,12 +3363,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: addressOfPointer, isMutable: true),
             "src" : Symbol(type: .array(count: count, elementType: .u8), offset: addressOfData, isMutable: false)
         ])
-        var ir: [CrackleInstruction]? = nil
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
-        if ir == nil {
-            XCTFail()
-            return
-        }
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0xcdcd, to: addressOfPointer)
@@ -3375,7 +3372,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir!)
+        let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfPointer), UInt16(addressOfData))
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfCount), UInt16(count))
     }
@@ -3387,7 +3384,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
                                   member: Expression.Identifier("length"))
-        XCTAssertThrowsError(try compile(expression: expr)) {
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "value of type `[3]u8' has no member `length'")
@@ -3402,8 +3399,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                                            ExprUtils.makeU8(value: 2)]),
                                   member: Expression.Identifier("count"))
         
-        let compiler = RvalueExpressionCompiler()
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3424,8 +3421,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: offset, isMutable: false)
         ])
         
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3446,8 +3443,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset, isMutable: false)
         ])
         
-        let compiler = RvalueExpressionCompiler(symbols: symbols)
-        let ir = try! compiler.compile(expression: expr)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
         
         // The expression is evaluated and the result is written to a temporary.
         // The temporary is left at the top of the compiler's temporaries stack
@@ -3468,8 +3465,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: offset, isMutable: true)])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
-        var ir: [CrackleInstruction] = []
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcd, to: offset+1)
@@ -3482,8 +3478,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset, isMutable: true)])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
-        var ir: [CrackleInstruction] = []
-        XCTAssertNoThrow(ir = try compile(expression: expr, symbols: symbols))
+        let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(offset+4), to: offset+0)
@@ -3501,7 +3496,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t1, 0),
             .tac_sub(t2, t1, t0)
         ]
-        let actual = try! compile(expression: expr)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
@@ -3511,8 +3506,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
     func testCallCompilerIntrinsicFunction_peekMemory() {
         let expr = Expression.Call(callee: Expression.Identifier("peekMemory"), arguments: [ExprUtils.makeU16(value: 0xabcd)])
-        let symbols = bindCompilerInstrinsicPeekMemory(symbols: SymbolTable())
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcc, to: 0xabcd)
@@ -3520,42 +3514,21 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(computer.stack(at: 0), 0xcc)
     }
-    
-    private func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
-        let name = "peekMemory"
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-        return symbols
-    }
         
     func testCallCompilerIntrinsicFunction_pokeMemory() {
         let expr = Expression.Call(callee: Expression.Identifier("pokeMemory"), arguments: [ExprUtils.makeU8(value: 0xcc), ExprUtils.makeU16(value: 0xabcd)])
-        let symbols = bindCompilerInstrinsicPokeMemory(symbols: SymbolTable())
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 0xcc)
-    }
-    
-    private func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
-        let name = "pokeMemory"
-        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-        return symbols
     }
         
     func testCallCompilerIntrinsicFunction_peekPeripheral() {
         let address = 0xffff
         let HLT: UInt16 = 0x0100
         let expr = Expression.Call(callee: Expression.Identifier("peekPeripheral"), arguments: [ExprUtils.makeU16(value: address), ExprUtils.makeU8(value: 0)])
-        let symbols = bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable())
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        executor.isVerboseLogging = true
         executor.configure = { computer in
             computer.upperInstructionRAM.store(value: UInt8((HLT >> 8) & 0xff), to: address)
         }
@@ -3563,19 +3536,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), UInt8((HLT >> 8) & 0xff))
     }
     
-    private func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
-        let name = "peekPeripheral"
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-        return symbols
-    }
-    
     func testCallCompilerIntrinsicFunction_pokePeripheral() {
         let expr = Expression.Call(callee: Expression.Identifier("pokePeripheral"), arguments: [ExprUtils.makeU8(value: 42), ExprUtils.makeU16(value: 0xffff), ExprUtils.makeU8(value: 0)])
-        let symbols = bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable())
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         
@@ -3584,31 +3547,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), UInt8(42).reverseBits())
     }
     
-    private func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
-        let name = "pokePeripheral"
-        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-        return symbols
-    }
-    
     func testCallCompilerIntrinsicFunction_hlt() {
         let expr = Expression.Call(callee: Expression.Identifier("hlt"), arguments: [])
         let expected: [CrackleInstruction] = [
             .hlt
         ]
-        let symbols = bindCompilerInstrinsicHlt(symbols: SymbolTable())
-        let actual = try! compile(expression: expr, symbols: symbols, shouldPrintErrors: true)
+        let actual = mustCompile(expression: expr)
         XCTAssertEqual(actual, expected)
-    }
-    
-    private func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
-        let name = "hlt"
-        let functionType = FunctionType(returnType: .void, arguments: [])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
-        symbols.bind(identifier: name, symbol: symbol)
-        return symbols
     }
 }

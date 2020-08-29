@@ -26,6 +26,59 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private let kSliceCountOffset = 2
     private let kSliceSize = 4
     
+    public static func bindCompilerIntrinsicFunctions(symbols: SymbolTable) -> SymbolTable {
+        return bindCompilerInstrinsicHlt(symbols:
+            bindCompilerInstrinsicPokePeripheral(symbols:
+                bindCompilerInstrinsicPeekPeripheral(symbols:
+                    bindCompilerInstrinsicPokeMemory(symbols:
+                        bindCompilerInstrinsicPeekMemory(symbols: symbols)))))
+    }
+    
+    private static func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
+        let name = "peekMemory"
+        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    private static func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
+        let name = "pokeMemory"
+        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    private static func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
+        let name = "peekPeripheral"
+        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    private static func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
+        let name = "pokePeripheral"
+        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    private static func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
+        let name = "hlt"
+        let functionType = FunctionType(returnType: .void, arguments: [])
+        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
                          temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
@@ -792,8 +845,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
             let type = typ.arguments[i].argumentType
-            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i],
-                                                                         ltype: type)
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
             switch type.sizeof {
             case 0:

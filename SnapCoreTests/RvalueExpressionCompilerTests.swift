@@ -3506,13 +3506,15 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
     func testCallCompilerIntrinsicFunction_peekMemory() {
         let expr = Expression.Call(callee: Expression.Identifier("peekMemory"), arguments: [ExprUtils.makeU16(value: 0xabcd)])
-        let actual = mustCompile(expression: expr)
+        let compiler = makeCompiler()
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcc, to: 0xabcd)
         }
         let computer = try! executor.execute(ir: actual)
-        XCTAssertEqual(computer.stack(at: 0), 0xcc)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0xcc)
     }
         
     func testCallCompilerIntrinsicFunction_pokeMemory() {
@@ -3527,13 +3529,15 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let address = 0xffff
         let HLT: UInt16 = 0x0100
         let expr = Expression.Call(callee: Expression.Identifier("peekPeripheral"), arguments: [ExprUtils.makeU16(value: address), ExprUtils.makeU8(value: 0)])
-        let actual = mustCompile(expression: expr)
+        let compiler = makeCompiler()
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.upperInstructionRAM.store(value: UInt8((HLT >> 8) & 0xff), to: address)
         }
         let computer = try! executor.execute(ir: actual)
-        XCTAssertEqual(computer.stack(at: 0), UInt8((HLT >> 8) & 0xff))
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), UInt8((HLT >> 8) & 0xff))
     }
     
     func testCallCompilerIntrinsicFunction_pokePeripheral() {

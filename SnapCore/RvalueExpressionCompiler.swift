@@ -667,7 +667,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
         default:
             // Calculate the rvalue, the value that is being assigned.
-            // To handle automatic conversion and promotion, this value of this
+            // To handle automatic conversion and promotion, the value of this
             // expression is converted now to the type of the destination variable.
             let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
             instructions += rvalue_proc
@@ -760,7 +760,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 instructions += try compile(expression: synthesized)
             default:
                 assert(a == b)
-                instructions += try compile(expression: rexpr)
+                abort() // unimplemented
             }
         case (.array(let n, let a), .dynamicArray(elementType: let b)):
             assert(n != nil)
@@ -814,14 +814,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case .function(name: _, mangledName: let mangledName, functionType: let typ):
             var instructions: [CrackleInstruction] = []
             if let ins = compilerInstrinsicFunctions[mangledName] {
+                // TODO: because compiler intrinsics are always simple leaf functions, we can evaluate the function arguments and push them to the temporary stack instead of the program stack.
                 instructions += try pushFunctionArguments(typ, node)
                 instructions += ins
             } else {
+                // TODO: need to save/restore temporaries when making a function call
                 instructions += try pushToAllocateFunctionReturnValue(typ)
                 instructions += try pushFunctionArguments(typ, node)
                 instructions += [.jalr(mangledName)]
                 instructions += popFunctionArguments(typ)
             }
+            instructions += moveFunctionReturnValueFromStackToTemporary(typ)
             return instructions
         default:
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
@@ -875,6 +878,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             default: instructions += [.popn(size)]
             }
         }
+        return instructions
+    }
+    
+    // The function put the return value on the stack. Move that value
+    // to a compiler temporary in the scratch memory region.
+    private func moveFunctionReturnValueFromStackToTemporary(_ typ: FunctionType) -> [CrackleInstruction] {
+        guard typ.returnType.sizeof > 0 else {
+            return []
+        }
+        let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
+        let size = typ.returnType.sizeof
+        let tempReturnValue = temporaryAllocator.allocate(size: size)
+        let instructions: [CrackleInstruction] = [
+            .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, size),
+            .popn(size)
+        ]
+        temporaryStack.push(tempReturnValue)
         return instructions
     }
     

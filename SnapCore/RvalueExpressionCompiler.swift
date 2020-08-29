@@ -817,6 +817,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
             return instructions
         default:
+            // This is basically unreachable since the type checker will
+            // typically throw an error before we get to this point.
+            assert(false)
             let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: message)
         }

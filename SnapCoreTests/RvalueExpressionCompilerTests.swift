@@ -3560,4 +3560,17 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let actual = mustCompile(expression: expr)
         XCTAssertEqual(actual, expected)
     }
+    
+    func testCannotCallValueOfNonFunctionType() {
+        let expr = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
+        let offset = 0x0100
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .u8, offset: offset, isMutable: false)
+        ])
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot call value of non-function type `u8'")
+        }
+    }
 }

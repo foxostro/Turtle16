@@ -13,10 +13,11 @@ import TurtleSimulatorCore
 
 // Simulates execution of a program written in the intermediate language.
 class CrackleExecutor: NSObject {
-    public var isVerboseLogging = false
+    var isVerboseLogging = false
+    var configure: (Computer) -> Void = {_ in}
+    var injectCode: (CrackleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
-    var configure: (Computer) -> Void = {_ in}
     
     override init() {
         microcodeGenerator = MicrocodeGenerator()
@@ -33,7 +34,8 @@ class CrackleExecutor: NSObject {
         
         do {
             let compiler = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
-            compiler.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
+            compiler.injectCode = { [weak self] (compiler: CrackleToTurtleMachineCodeCompiler) in
+                try self!.injectCode(compiler)
                 try compiler.label("panic")
                 try compiler.push16(0xdead)
                 compiler.hlt()

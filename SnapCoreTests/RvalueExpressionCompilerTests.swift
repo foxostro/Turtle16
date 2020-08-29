@@ -15,24 +15,21 @@ class RvalueExpressionCompilerTests: XCTestCase {
     let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
     let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
     
-    func mustCompile(compiler: RvalueExpressionCompiler, expression: Expression, symbols: SymbolTable = SymbolTable()) -> [CrackleInstruction] {
+    func mustCompile(compiler: RvalueExpressionCompiler, expression: Expression) -> [CrackleInstruction] {
         return try! compile(compiler: compiler,
                             expression: expression,
-                            symbols: symbols,
                             shouldPrintErrors: true)
     }
     
     func mustCompile(expression: Expression, symbols: SymbolTable = SymbolTable()) -> [CrackleInstruction] {
         return try! compile(compiler: makeCompiler(symbols: symbols),
                             expression: expression,
-                            symbols: symbols,
                             shouldPrintErrors: true)
     }
     
     func tryCompile(expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
         return try compile(compiler: makeCompiler(symbols: symbols),
                            expression: expression,
-                           symbols: symbols,
                            shouldPrintErrors: shouldPrintErrors)
     }
     
@@ -42,7 +39,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         return compiler
     }
     
-    func compile(compiler: RvalueExpressionCompiler, expression: Expression, symbols: SymbolTable = SymbolTable(), shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
+    func compile(compiler: RvalueExpressionCompiler, expression: Expression, shouldPrintErrors: Bool = false) throws -> [CrackleInstruction] {
         var ir: [CrackleInstruction] = []
         do {
             ir = try compiler.compile(expression: expression)
@@ -3548,7 +3545,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: actual)
         
         // There's a hardware bug in Rev 2 where the bits of the instruction
-        // RAM port connected to the data bus are in reverse order.
+        // RAM port are connected to the data bus are in reverse order.
         XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), UInt8(42).reverseBits())
     }
     
@@ -3572,5 +3569,22 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot call value of non-function type `u8'")
         }
+    }
+    
+    func testCallVoidFunctionWithNoArgs() {
+        let expr = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: FunctionType(returnType: .void, arguments: [])), offset: 0, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let executor = CrackleExecutor()
+        executor.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
+            try compiler.label("foo")
+            try compiler.storeImmediate(0xabcd, 42)
+            try compiler.leafRet()
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
     }
 }

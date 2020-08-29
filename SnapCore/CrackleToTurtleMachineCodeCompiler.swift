@@ -1237,14 +1237,14 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .B)
     }
     
-    private func pushReturnAddress() throws {
+    public func pushReturnAddress() throws {
         try assembler.mov(.A, .H)
         try pushAToStack()
         try assembler.mov(.A, .G)
         try pushAToStack()
     }
     
-    private func leafRet() throws {
+    public func leafRet() throws {
         try assembler.mov(.X, .G)
         try assembler.mov(.Y, .H)
         assembler.jmp()

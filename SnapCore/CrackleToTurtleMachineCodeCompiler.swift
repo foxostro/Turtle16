@@ -56,11 +56,18 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     let labelMaker = LabelMaker(prefix: ".LL")
     
-    public var injectCode: (CrackleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
+    public var doAtEpilogue: (CrackleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
     
     public init(assembler: AssemblerBackEnd) {
         self.assembler = assembler
         scratchPointer = beginningOfScratchMemory
+    }
+    
+    public func injectCode(_ ir: [CrackleInstruction]) throws {
+        currentSourceAnchor = nil
+        for instruction in ir {
+            try compileSingleCrackleInstruction(instruction)
+        }
     }
     
     private func allocateScratchMemory(_ numWords: Int) -> Int {
@@ -234,7 +241,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     // Inserts epilogue code into the program, presumably at the end.
     func insertProgramEpilogue() throws {
         assembler.hlt()
-        try injectCode(self)
+        try doAtEpilogue(self)
     }
     
     public func push(_ value: Int) throws {
@@ -1237,14 +1244,14 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .B)
     }
     
-    public func pushReturnAddress() throws {
+    private func pushReturnAddress() throws {
         try assembler.mov(.A, .H)
         try pushAToStack()
         try assembler.mov(.A, .G)
         try pushAToStack()
     }
     
-    public func leafRet() throws {
+    private func leafRet() throws {
         try assembler.mov(.X, .G)
         try assembler.mov(.Y, .H)
         assembler.jmp()

@@ -8,6 +8,7 @@
 
 public class CompilerTemporariesAllocator: NSObject {
     var indexSet: IndexSet
+    public private(set) var liveTemporaries: [CompilerTemporary] = []
     
     public convenience override init() {
         self.init(base: SnapToCrackleCompiler.kTemporaryStorageStartAddress, limit: SnapToCrackleCompiler.kTemporaryStorageStartAddress + SnapToCrackleCompiler.kTemporaryStorageLength)
@@ -30,6 +31,7 @@ public class CompilerTemporariesAllocator: NSObject {
             if range.count >= size {
                 indexSet.remove(integersIn: range.startIndex ..< (range.startIndex+size))
                 let temporary = CompilerTemporary(address: range.startIndex, size: size, allocator: self)
+                liveTemporaries.append(temporary)
                 return temporary
             }
         }
@@ -39,5 +41,8 @@ public class CompilerTemporariesAllocator: NSObject {
     public func free(_ temporary: CompilerTemporary) {
         assert(temporary.refCount == 0)
         indexSet.insert(integersIn: temporary.address ..< (temporary.address+temporary.size))
+        liveTemporaries.removeAll(where: {
+            indexSet.contains(integersIn: $0.address ..< ($0.address+$0.size))
+        })
     }
 }

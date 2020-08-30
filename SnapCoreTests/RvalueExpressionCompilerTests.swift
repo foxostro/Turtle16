@@ -3518,7 +3518,6 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Call(callee: Expression.Identifier("pokeMemory"), arguments: [ExprUtils.makeU8(value: 0xcc), ExprUtils.makeU16(value: 0xabcd)])
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        executor.isVerboseLogging = true
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 0xcc)
     }
@@ -3579,12 +3578,61 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
         let executor = CrackleExecutor()
-        executor.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
-            try compiler.label("foo")
-            try compiler.storeImmediate(0xabcd, 42)
-            try compiler.leafRet()
-        }
+        injectFunctionFooWhichWritesToMemoryAsSideEffect(executor)
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
+    }
+    
+    fileprivate func injectFunctionFooWhichWritesToMemoryAsSideEffect(_ executor: CrackleExecutor) {
+        executor.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
+            try! compiler.injectCode([
+                .label("foo"),
+                .storeImmediate(0xabcd, 42),
+                .leafRet
+            ])
+        }
+    }
+    
+    func testNestFunctionCallInAdditionOnRight() {
+        let left = ExprUtils.makeU16(value: 42)
+        let right = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
+        let expr = Expression.Binary(op: .plus, left: left, right: right)
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: FunctionType(returnType: .u16, arguments: [])), offset: 0, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        injectFunctionFooWhichReturnsU16AndStompsOnTemporaries(executor)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 42)
+    }
+    
+    func testNestFunctionCallInAdditionOnLeft() {
+        let left = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
+        let right = ExprUtils.makeU16(value: 42)
+        let expr = Expression.Binary(op: .plus, left: left, right: right)
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: FunctionType(returnType: .u16, arguments: [])), offset: 0, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        injectFunctionFooWhichReturnsU16AndStompsOnTemporaries(executor)
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 42)
+    }
+    
+    fileprivate func injectFunctionFooWhichReturnsU16AndStompsOnTemporaries(_ executor: CrackleExecutor) {
+        executor.injectCode = { [weak self] (compiler: CrackleToTurtleMachineCodeCompiler) in
+            try! compiler.injectCode([
+                .label("foo"),
+                .storeImmediate16(self!.t0, 0xffff),
+                .storeImmediate16(self!.t1, 0xffff),
+                .leafRet
+            ])
+        }
     }
 }

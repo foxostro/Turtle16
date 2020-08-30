@@ -881,13 +881,69 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call, _ mangledName: String) throws -> [CrackleInstruction] {
-        // TODO: need to save/restore temporaries when making a function call
         var instructions: [CrackleInstruction] = []
+        var tempReturnValue: CompilerTemporary!
+        
+        if typ.returnType.sizeof > 0 {
+            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+        }
+        
+        // Save all live temporaries to preserve their values across the call.
+        // We cannot know which temporaries will be invalidated by code in
+        // the function body.
+        for temporary in temporaryAllocator.liveTemporaries {
+            // Do not save the temporary we allocated for the return address.
+            if (tempReturnValue != nil) && (temporary.address == tempReturnValue.address) {
+                continue
+            }
+            instructions += pushTemporary(temporary)
+        }
+        
         instructions += try pushToAllocateFunctionReturnValue(typ)
         instructions += try pushFunctionArguments(typ, node)
         instructions += [.jalr(mangledName)]
         instructions += popFunctionArguments(typ)
-        instructions += moveFunctionReturnValueFromStackToTemporary(typ)
+        
+        // Restore live temporaries after the function call returns.
+        for temporary in temporaryAllocator.liveTemporaries.reversed() {
+            // Do not restore the temporary we allocated for the return address.
+            if (tempReturnValue != nil) && (temporary.address == tempReturnValue.address) {
+                continue
+            }
+            instructions += popTemporary(temporary)
+        }
+        
+        // If there is a return value then copy the top of the stack into it now.
+        if tempReturnValue != nil {
+            instructions += [
+                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
+                .popn(typ.returnType.sizeof)
+            ]
+            temporaryStack.push(tempReturnValue)
+        }
+        
+        return instructions
+    }
+    
+    private func pushTemporary(_ temporary: CompilerTemporary, _ size: Int? = nil) -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        switch size ?? temporary.size {
+        case 0:  break // nothing to do
+        case 1:  instructions += [.load(temporary.address)]
+        case 2:  instructions += [.load16(temporary.address)]
+        default: abort() // unimplemented
+        }
+        return instructions
+    }
+    
+    private func popTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        switch temporary.size {
+        case 0:  break // nothing to do
+        case 1:  instructions += [.store(temporary.address), .pop]
+        case 2:  instructions += [.store16(temporary.address), .pop16]
+        default: abort() // unimplemented
+        }
         return instructions
     }
     
@@ -896,6 +952,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         // Allocate space for the return value, if any. When we pop arguments
         // off the stack, we leave the return value in place.
+        // TODO: add a pushn instruction so we can do something like pushn(typ.returnType.sizeof)
         instructions += [CrackleInstruction].init(repeating: .push(0), count: typ.returnType.sizeof)
         
         return instructions
@@ -909,17 +966,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let type = typ.arguments[i].argumentType
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
-            switch type.sizeof {
-            case 0:
-                break
-            case 1:
-                instructions += [.load(tempArgumentValue.address)]
-            case 2:
-                instructions += [.load16(tempArgumentValue.address)]
-            default:
-                assert(false)
-                abort() // unreachable
-            }
+            instructions += pushTemporary(tempArgumentValue, type.sizeof)
             tempArgumentValue.consume()
         }
         
@@ -927,17 +974,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func popFunctionArguments(_ typ: FunctionType) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        for arg in typ.arguments.reversed() {
-            let size = arg.argumentType.sizeof
-            switch size {
-            case 0:  break
-            case 1:  instructions += [.pop]
-            case 2:  instructions += [.pop16]
-            default: instructions += [.popn(size)]
-            }
+        var totalSize = 0
+        for arg in typ.arguments {
+            totalSize += arg.argumentType.sizeof
         }
-        return instructions
+        return [.popn(totalSize)]
     }
     
     // The function put the return value on the stack. Move that value

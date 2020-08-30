@@ -34,7 +34,7 @@ class CrackleExecutor: NSObject {
         
         do {
             let compiler = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
-            compiler.injectCode = { [weak self] (compiler: CrackleToTurtleMachineCodeCompiler) in
+            compiler.doAtEpilogue = { [weak self] (compiler: CrackleToTurtleMachineCodeCompiler) in
                 try self!.injectCode(compiler)
                 try compiler.label("panic")
                 try compiler.push16(0xdead)

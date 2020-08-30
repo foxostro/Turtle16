@@ -2203,7 +2203,6 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(dst), to: dstPtr)
             computer.dataRAM.store16(value: UInt16(src), to: srcPtr)
         }
-        executor.isVerboseLogging = true
         let computer = try! executor.execute(ir: [.copyWordsIndirectDestinationIndirectSource(dstPtr, srcPtr, 2)])
         XCTAssertEqual(computer.dataRAM.load16(from: dst), 0xcafe)
         XCTAssertEqual(computer.dataRAM.load16(from: src), 0xcafe)

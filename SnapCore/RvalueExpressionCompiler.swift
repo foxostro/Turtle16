@@ -16,8 +16,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public let typeChecker: RvalueExpressionTypeChecker
     
     private let kSliceBaseAddressOffset = 0
+    private let kSliceBaseAddressSize = 2
     private let kSliceCountOffset = 2
-    private let kSliceSize = 4
+    private let kSliceCountSize = 2
+    private let kSliceSize = 4 // kSliceBaseAddressSize + kSliceCountSize
     private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
     
     public static func bindCompilerIntrinsicFunctions(symbols: SymbolTable) -> SymbolTable {
@@ -925,10 +927,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func pushTemporary(_ temporary: CompilerTemporary, _ size: Int? = nil) -> [CrackleInstruction] {
+    private func pushTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
+        return pushTemporary(temporary: temporary, explicitSize: temporary.size)
+    }
+    
+    private func pushTemporary(temporary: CompilerTemporary, explicitSize: Int) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        switch size ?? temporary.size {
-        case 0:  break // nothing to do
+        switch explicitSize {
         case 1:  instructions += [.load(temporary.address)]
         case 2:  instructions += [.load16(temporary.address)]
         default: abort() // unimplemented
@@ -939,7 +944,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func popTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         switch temporary.size {
-        case 0:  break // nothing to do
         case 1:  instructions += [.store(temporary.address), .pop]
         case 2:  instructions += [.store16(temporary.address), .pop16]
         default: abort() // unimplemented
@@ -966,7 +970,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let type = typ.arguments[i].argumentType
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
-            instructions += pushTemporary(tempArgumentValue, type.sizeof)
+            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
             tempArgumentValue.consume()
         }
         
@@ -1057,15 +1061,14 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         let member = expr.member.identifier
         let resultType = try typeChecker.check(expression: expr.expr)
+        
+        assert(member == "count") // other members are unimplemented right now
+        
         switch resultType {
         case .array(count: let count, elementType: _):
-            if member == "count" {
-                instructions += [.storeImmediate16(tempCount.address, count!)]
-            }
+            instructions += [.storeImmediate16(tempCount.address, count!)]
         case .dynamicArray:
-            if member == "count" {
-                instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, 2)]
-            }
+            instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, kSliceCountSize)]
         default:
             assert(false) // unreachable
         }

@@ -91,16 +91,20 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.copyWords(temp_framePointer.address, kFramePointerAddressHi, 2)]
         
         let temp_offset = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(temp_offset.address, offset)]
-        
         let temp_result = temporaryAllocator.allocate()
+        
+        if offset >= 0 {
+            instructions += [.storeImmediate16(temp_offset.address, offset)]
+            instructions += [.tac_sub16(temp_result.address, temp_framePointer.address, temp_offset.address)]
+        } else {
+            instructions += [.storeImmediate16(temp_offset.address, -offset)]
+            instructions += [.tac_add16(temp_result.address, temp_framePointer.address, temp_offset.address)]
+        }
+        
         temporaryStack.push(temp_result)
         temp_offset.consume()
         temp_framePointer.consume()
-        instructions += [.tac_sub16(temp_result.address, temp_framePointer.address, temp_offset.address)]
         
-        // TODO: need to account for the case where offset<0
-        assert(offset >= 0)
         // TODO: need to account for the case where depth>0
         assert(depth == 0)
         

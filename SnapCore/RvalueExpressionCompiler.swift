@@ -886,42 +886,40 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         var tempReturnValue: CompilerTemporary!
         
-        if typ.returnType.sizeof > 0 {
-            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
-        }
-        
         // Save all live temporaries to preserve their values across the call.
         // We cannot know which temporaries will be invalidated by code in
         // the function body.
-        for temporary in temporaryAllocator.liveTemporaries {
-            // Do not save the temporary we allocated for the return address.
-            if (tempReturnValue != nil) && (temporary.address == tempReturnValue.address) {
-                continue
-            }
+        let temporariesToPreserve = temporaryAllocator.liveTemporaries
+        for temporary in temporariesToPreserve {
             instructions += pushTemporary(temporary)
+        }
+        
+        if typ.returnType.sizeof > 0 {
+            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
         }
         
         instructions += try pushToAllocateFunctionReturnValue(typ)
         instructions += try pushFunctionArguments(typ, node)
         instructions += [.jalr(mangledName)]
         instructions += popFunctionArguments(typ)
-        
-        // Restore live temporaries after the function call returns.
-        for temporary in temporaryAllocator.liveTemporaries.reversed() {
-            // Do not restore the temporary we allocated for the return address.
-            if (tempReturnValue != nil) && (temporary.address == tempReturnValue.address) {
-                continue
+                
+        // If there is a return value then it can be found at the top of the
+        // stack. Copy it to the temporary we allocated for it, above.
+        if typ.returnType.sizeof > 0 {
+            instructions += [
+                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof)
+            ]
+            switch typ.returnType.sizeof {
+            case 1:  instructions += [.pop]
+            case 2:  instructions += [.pop16]
+            default: instructions += [.popn(typ.returnType.sizeof)]
             }
-            instructions += popTemporary(temporary)
+            temporaryStack.push(tempReturnValue)
         }
         
-        // If there is a return value then copy the top of the stack into it now.
-        if tempReturnValue != nil {
-            instructions += [
-                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
-                .popn(typ.returnType.sizeof)
-            ]
-            temporaryStack.push(tempReturnValue)
+        // Restore live temporaries after the function call returns.
+        for temporary in temporariesToPreserve.reversed() {
+            instructions += popTemporary(temporary)
         }
         
         return instructions
@@ -982,7 +980,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         for arg in typ.arguments {
             totalSize += arg.argumentType.sizeof
         }
-        return [.popn(totalSize)]
+        if totalSize > 0 {
+            return [.popn(totalSize)]
+        } else {
+            return []
+        }
     }
     
     // The function put the return value on the stack. Move that value

@@ -105,12 +105,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(1),
-            .store(addressFoo),
-            .pop,
-            .load(addressFoo),
-            .store(addressBar),
-            .pop
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            .storeImmediate16(t0, addressBar),
+            .copyWords(t1, addressFoo, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "bar"))

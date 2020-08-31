@@ -12,6 +12,8 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class SnapToCrackleCompilerTests: XCTestCase {
+    let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
+    let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
     let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
     
     func testNoErrorsAtFirst() {
@@ -55,9 +57,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(1),
-            .store(addressFoo),
-            .pop
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))

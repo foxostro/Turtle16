@@ -165,8 +165,6 @@ public class SnapToCrackleCompiler: NSObject {
         try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
                                                              lexpr: varDecl.identifier,
                                                              rexpr: varDecl.expression))
-                                                             
-        storeSymbol(symbol)
     }
     
     private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
@@ -188,41 +186,6 @@ public class SnapToCrackleCompiler: NSObject {
             offset = symbols.storagePointer
         }
         return offset
-    }
-    
-    private func storeSymbol(_ symbol: Symbol) {
-        switch symbol.storage {
-        case .staticStorage:
-            storeStaticValue(symbolType: symbol.type, offset: symbol.offset)
-        case .stackStorage:
-            // Evaluation of the expression has left the stack symbol's value
-            // on the stack already. Nothing to do here.
-            break
-        }
-    }
-    
-    private func storeStaticValue(symbolType: SymbolType, offset: Int) {
-        switch symbolType {
-        case .u16:
-            emit([
-                .store16(offset),
-                .pop16
-            ])
-        case .bool, .u8:
-            emit([
-                .store(offset),
-                .pop
-            ])
-        default:
-            let numWords = symbolType.sizeof
-            if numWords > 0 {
-                emit([
-                    .push16(offset),
-                    .storeIndirectN(numWords),
-                    .popn(numWords)
-                ])
-            }
-        }
     }
     
     // A statement can be a bare expression. The expression value is popped
@@ -249,8 +212,6 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    // The expression will push the result onto the stack. The client assumes the
-    // responsibility of cleaning up.
     private func compile(expression: Expression) throws {
         currentSourceAnchor = expression.sourceAnchor
         let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)

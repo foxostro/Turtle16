@@ -15,6 +15,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
     let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
     let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
+    let t3 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
     
     func testNoErrorsAtFirst() {
@@ -538,7 +539,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     
     func testCompileExpressionStatement_ArrayOfU8() {
         let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
-        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 3
+        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
         
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
@@ -787,32 +788,46 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
         let L1 = ".L1"
+        let addressOfFoo: Int = kStaticStorageStartAddress+0
+        let addressOfI: Int = kStaticStorageStartAddress+1
         let expected: [CrackleInstruction] = [
-            .push(0),
-            .store(kStaticStorageStartAddress+0),
-            .pop,
-            .push(0),
-            .store(kStaticStorageStartAddress+1),
-            .pop,
-            .label(L0),
-            .push(10),
-            .load(kStaticStorageStartAddress+1),
-            .lt,
-            .push(0),
-            .je(L1),
-            .load(kStaticStorageStartAddress+1),
-            .push16(kStaticStorageStartAddress),
-            .storeIndirect,
-            .pop,
-            .push(1),
-            .load(kStaticStorageStartAddress+1),
-            .add,
-            .push16(kStaticStorageStartAddress+1),
-            .storeIndirect,
-            .pop,
+            // foo = 0
+            .storeImmediate16(t0, addressOfFoo),
+            .storeImmediate(t1, 0),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
+            // i = 0
+            .storeImmediate16(t0, addressOfI),
+            .storeImmediate(t1, 0),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
+            .label(".L0"),
+            
+            // Jump if the condition `i < 10' fails.
+            .storeImmediate(t0, 10),
+            .copyWords(t1, addressOfI, 1),
+            .tac_lt(t2, t1, t0),
+            .tac_jz(L1, t2),
+            
+            // foo = i
+            .storeImmediate16(t0, addressOfFoo),
+            .copyWords(t1, addressOfI, 1),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
+            // i = i + 1
+            .storeImmediate16(t0, addressOfI),
+            .storeImmediate(t1, 1),
+            .copyWords(t2, addressOfI, 1),
+            .tac_add(t3, t2, t1),
+            .copyWordsIndirectDestination(t0, t3, 1),
+            
+            // Loop
             .jmp(L0),
             .label(L1)
         ]
+        for i in 0..<expected.count {
+            assert(compiler.instructions[i] == expected[i])
+        }
         XCTAssertEqual(compiler.instructions, expected)
     }
     

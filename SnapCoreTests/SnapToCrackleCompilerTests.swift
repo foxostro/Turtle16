@@ -14,6 +14,7 @@ import TurtleCore
 class SnapToCrackleCompilerTests: XCTestCase {
     let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
     let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
+    let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
     let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
     
     func testNoErrorsAtFirst() {
@@ -130,9 +131,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(1),
-            .store(addressFoo),
-            .pop
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -157,12 +158,16 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(2),
-            .push(1),
-            .push(0),
-            .push16(addressFoo),
-            .storeIndirectN(3),
-            .popn(3)
+            .storeImmediate16(t0, 272),
+            .storeImmediate16(t1, 1),
+            .storeImmediate(t2, 0),
+            .copyWordsIndirectDestination(t0, t2, 1),
+            .tac_add16(t0, t0, t1),
+            .storeImmediate(t2, 1),
+            .copyWordsIndirectDestination(t0, t2, 1),
+            .tac_add16(t0, t0, 18),
+            .storeImmediate(t2, 2),
+            .copyWordsIndirectDestination(t0, t2, 1)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
@@ -187,12 +192,16 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(2),
-            .push(1),
-            .push(0),
-            .push16(addressFoo),
-            .storeIndirectN(3),
-            .popn(3)
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate16(t1, 1),
+            .storeImmediate(t2, 0),
+            .copyWordsIndirectDestination(t0, t2, 1),
+            .tac_add16(t0, t0, t1),
+            .storeImmediate(t2, 1),
+            .copyWordsIndirectDestination(t0, t2, 1),
+            .tac_add16(t0, t0, t1),
+            .storeImmediate(t2, 2),
+            .copyWordsIndirectDestination(t0, t2, 1)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
@@ -266,9 +275,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: true))
         XCTAssertEqual(compiler.instructions, [
-            .push(1),
-            .store(addressFoo),
-            .pop
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
         ])
     }
     
@@ -302,12 +311,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar, isMutable: true))
         
         XCTAssertEqual(compiler.instructions, [
-            .push16(0xabcd),
-            .store16(addressFoo),
-            .pop16,
-            .push16(0xabcd),
-            .store16(addressBar),
-            .pop16
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate16(t1, 0xabcd),
+            .copyWordsIndirectDestination(t0, t1, 2),
+            .storeImmediate16(t0, addressBar),
+            .storeImmediate16(t1, 0xabcd),
+            .copyWordsIndirectDestination(t0, t1, 2)
         ])
     }
     
@@ -456,9 +465,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(1),
-            .store(addressFoo),
-            .pop
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1)
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -522,10 +531,15 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [ .push(1), .pop ])
+        XCTAssertEqual(compiler.instructions, [
+            .storeImmediate(t0, 1)
+        ])
     }
     
     func testCompileExpressionStatement_ArrayOfU8() {
+        let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
+        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 3
+        
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
         // When an expression is compiled as an independent statement, the
@@ -534,22 +548,27 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Expression.LiteralArray(explicitType: .u8,
                                     explicitCount: 3,
-                                    elements: [Expression.LiteralInt(0),
-                                               Expression.LiteralInt(1),
-                                               Expression.LiteralInt(2)])
+                                    elements: [Expression.LiteralInt(0xa),
+                                               Expression.LiteralInt(0xb),
+                                               Expression.LiteralInt(0xc)])
         ])
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push(2),
-            .push(1),
-            .push(0),
-            .popn(3)
+            .storeImmediate(t1, 0xa),
+            .copyWords(t0+0, t1, 1),
+            .storeImmediate(t1, 0xb),
+            .copyWords(t0+1, t1, 1),
+            .storeImmediate(t1, 0xc),
+            .copyWords(t0+2, t1, 1)
         ])
     }
     
     func testCompileExpressionStatement_ArrayOfU16() {
+        let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
+        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
+        
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
         // When an expression is compiled as an independent statement, the
@@ -566,14 +585,21 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
-            .push16(0xcccc),
-            .push16(0xbbbb),
-            .push16(0xaaaa),
-            .popn(6)
+            .storeImmediate16(t1, 0xaaaa),
+            .copyWords(t0+0, t1, 2),
+            .storeImmediate16(t1, 0xbbbb),
+            .copyWords(t0+2, t1, 2),
+            .storeImmediate16(t1, 0xcccc),
+            .copyWords(t0+4, t1, 2)
         ])
     }
     
     func testCompileExpressionStatement_ArrayOfArrayOfU16() {
+        let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
+        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
+        let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 12
+        let t3 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 18
+        
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
         // When an expression is compiled as an independent statement, the
@@ -598,15 +624,23 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [
-            .push16(0xffff),
-            .push16(0xeeee),
-            .push16(0xdddd),
-            .push16(0xcccc),
-            .push16(0xbbbb),
-            .push16(0xaaaa),
-            .popn(12)
-        ])
+        let expected: [CrackleInstruction] = [
+            .storeImmediate16(t3, 0xaaaa),
+            .copyWords(t2+0, t3, 2),
+            .storeImmediate16(t3, 0xbbbb),
+            .copyWords(t2+2, t3, 2),
+            .storeImmediate16(t3, 0xcccc),
+            .copyWords(t2+4, t3, 2),
+            .copyWords(t0, t2, 6),
+            .storeImmediate16(t3, 0xdddd),
+            .copyWords(t2+0, t3, 2),
+            .storeImmediate16(t3, 0xeeee),
+            .copyWords(t2+2, t3, 2),
+            .storeImmediate16(t3, 0xffff),
+            .copyWords(t2+4, t3, 2),
+            .copyWords(t1, t2, 6)
+        ]
+        XCTAssertEqual(compiler.instructions, expected)
     }
     
     func testCompileIfStatementWithoutElseBranch() {
@@ -1334,13 +1368,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             XCTAssertEqual(ir, [
-                .push(0xaa),
-                .store(kStaticStorageStartAddress),
-                .pop,
-                .push16(kStaticStorageStartAddress),
-                .loadIndirect,
-                .store(kStaticStorageStartAddress+1),
-                .pop,
+                .storeImmediate16(t0, kStaticStorageStartAddress+0),
+                .storeImmediate(t1, 0xaa),
+                .copyWordsIndirectDestination(t0, t1, 1),
+                .storeImmediate16(t0, kStaticStorageStartAddress+1),
+                .storeImmediate16(t1, kStaticStorageStartAddress+0),
+                .copyWordsIndirectSource(t2, t1, 1),
+                .copyWordsIndirectDestination(t0, t2, 1)
             ])
             let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)
@@ -1363,10 +1397,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             XCTAssertEqual(ir, [
-                .push(0xab),
-                .push16(kStaticStorageStartAddress),
-                .storeIndirect,
-                .pop
+                .storeImmediate(t0, 0xab),
+                .storeImmediate16(t1, kStaticStorageStartAddress),
+                .copyWordsIndirectDestination(t1, t0, 1)
             ])
             let executor = CrackleExecutor()
             let computer = try! executor.execute(ir: ir)

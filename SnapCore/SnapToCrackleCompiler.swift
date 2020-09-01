@@ -188,28 +188,9 @@ public class SnapToCrackleCompiler: NSObject {
         return offset
     }
     
-    // A statement can be a bare expression. The expression value is popped
-    // from the stack at the end.
+    // A statement can be a bare expression too.
     private func compile(expressionStatement node: Expression) throws {
-        currentSourceAnchor = node.sourceAnchor
         try compile(expression: node)
-        let returnExpressionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node)
-        switch returnExpressionType {
-        case .u16:
-            emit([.pop16])
-        case .u8, .bool, .constBool:
-            emit([.pop])
-        case .constInt(let a):
-            emit([a > 255 ? .pop16 : .pop])
-        case .void:
-            break
-        case .array:
-            emit([.popn(returnExpressionType.sizeof)])
-        case .dynamicArray:
-            emit([.popn(4)])
-        default:
-            abort()
-        }
     }
     
     private func compile(expression: Expression) throws {

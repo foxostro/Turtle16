@@ -783,16 +783,33 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 
                 temporaryStack.push(tempArraySlice)
             default:
-                // The dynamic array must bind to a temporary value on the stack.
-                // TODO: The way this is written now, the stack will continue to grow and will eventually overflow. We need something like a way to signal that additional bytes must be popped at the end of the statement.
-                assert(false) // TODO: FIXME. This is incorrect after changes made for TAC IR.
+                // Allocate a temporary value on the stack for the source array.
+                // Copy the value of the right expression into that temporary.
+                let rhsSize = n * b.sizeof
                 instructions += try compile(expression: rexpr)
+                let tempRightExpr = temporaryStack.pop()
+                
+                let tempRhsSize = temporaryAllocator.allocate()
                 instructions += [
-                    .push16(n),
-                    .push16(4),
-                    .pushsp,
-                    .add16
+                    // stackPointer -= rhsSize
+                    .storeImmediate16(tempRhsSize.address, rhsSize),
+                    .tac_sub16(kStackPointerAddress, kStackPointerAddress, tempRhsSize.address),
                 ]
+                tempRhsSize.consume()
+                
+                instructions += [
+                    // Copy the rhs result to the stack.
+                    .copyWordsIndirectDestination(kStackPointerAddress, tempRightExpr.address, rhsSize)
+                ]
+                tempRightExpr.consume()
+                
+                // Then, bind the dynamic array to that temporary.
+                let tempArraySlice = temporaryAllocator.allocate(size: kSliceSize)
+                instructions += [
+                    .copyWords(tempArraySlice.address + kSliceBaseAddressOffset, kStackPointerAddress, 2),
+                    .storeImmediate16(tempArraySlice.address + kSliceCountOffset, rhsSize)
+                ]
+                temporaryStack.push(tempArraySlice)
             }
         case (.dynamicArray(elementType: let a), .dynamicArray(elementType: let b)):
             assert(a == b)

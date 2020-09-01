@@ -650,7 +650,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            expression: Expression.LiteralInt(0),
                            storage: .staticStorage,
                            isMutable: true),
-            If(condition: Expression.LiteralInt(1),
+            If(condition: Expression.LiteralBool(true),
                then: ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(1)),
                else: nil)
         ])
@@ -661,16 +661,22 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
         XCTAssertEqual(compiler.instructions, [
-            .push(0),
-            .store(addressFoo),
-            .pop,
-            .push(1),
-            .push(0),
-            .je(L0),
-            .push(1),
-            .push16(addressFoo),
-            .storeIndirect,
-            .pop,
+            // foo = 0
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 0),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
+            // the condition `true'
+            .storeImmediate(t0, 1),
+            
+            // if the condition is equal to zero then jump to L0 (else)
+            .tac_jz(L0, t0),
+            
+            // foo = 1
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
             .label(L0)
         ])
     }
@@ -696,22 +702,30 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let L0 = ".L0"
         let L1 = ".L1"
         XCTAssertEqual(compiler.instructions, [
-            .push(0),
-            .store(addressFoo),
-            .pop,
-            .push(1),
-            .push(0),
-            .je(L0),
-            .push(1),
-            .push16(addressFoo),
-            .storeIndirect,
-            .pop,
+            // foo = 0
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 0),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
+            // the condition `true'
+            .storeImmediate(t0, 1),
+            
+            // if the condition is equal to zero then jump to L0 (else)
+            .tac_jz(L0, t0),
+            
+            // foo = 1
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 1),
+            .copyWordsIndirectDestination(t0, t1, 1),
             .jmp(L1),
+            
             .label(L0),
-            .push(2),
-            .push16(addressFoo),
-            .storeIndirect,
-            .pop,
+            
+            // foo = 2
+            .storeImmediate16(t0, addressFoo),
+            .storeImmediate(t1, 2),
+            .copyWordsIndirectDestination(t0, t1, 1),
+            
             .label(L1)
         ])
     }

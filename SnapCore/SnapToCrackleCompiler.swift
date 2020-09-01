@@ -193,11 +193,12 @@ public class SnapToCrackleCompiler: NSObject {
         try compile(expression: node)
     }
     
-    private func compile(expression: Expression) throws {
+    @discardableResult private func compile(expression: Expression) throws -> RvalueExpressionCompiler {
         currentSourceAnchor = expression.sourceAnchor
         let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
         let ir = try exprCompiler.compile(expression: expression)
         emit(ir)
+        return exprCompiler
     }
     
     private func compile(if stmt: If) throws {
@@ -205,10 +206,9 @@ public class SnapToCrackleCompiler: NSObject {
         if let elseBranch = stmt.elseBranch {
             let labelElse = labelMaker.next()
             let labelTail = labelMaker.next()
-            try compile(expression: stmt.condition)
+            let tempConditionResult = try compile(expression: stmt.condition).temporaryStack.pop()
             emit([
-                .push(0),
-                .je(labelElse),
+                .tac_jz(labelElse, tempConditionResult.address)
             ])
             try compile(genericNode: stmt.thenBranch)
             emit([
@@ -219,13 +219,14 @@ public class SnapToCrackleCompiler: NSObject {
             emit([.label(labelTail)])
         } else {
             let labelTail = labelMaker.next()
-            try compile(expression: stmt.condition)
+            let tempConditionResult = try compile(expression: stmt.condition).temporaryStack.pop()
             emit([
-                .push(0),
-                .je(labelTail)
+                .tac_jz(labelTail, tempConditionResult.address)
             ])
             try compile(genericNode: stmt.thenBranch)
-            emit([.label(labelTail)])
+            emit([
+                .label(labelTail)
+            ])
         }
     }
     

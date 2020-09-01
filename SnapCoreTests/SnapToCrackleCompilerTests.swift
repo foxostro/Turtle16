@@ -689,7 +689,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true),
             If(sourceAnchor: nil,
-               condition: Expression.LiteralInt(1),
+               condition: Expression.LiteralBool(true),
                then: ExprUtils.makeAssignment(name: "foo",
                                               right: Expression.LiteralInt(1)),
                else: ExprUtils.makeAssignment(name: "foo",
@@ -732,23 +732,21 @@ class SnapToCrackleCompilerTests: XCTestCase {
     
     func testCompileWhileStatement() {
         let ast = TopLevel(children: [
-            While(condition: Expression.LiteralInt(1),
+            While(condition: Expression.LiteralBool(true),
                   body: Expression.LiteralInt(2))
         ])
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
-        let L0 = ".L0"
-        let L1 = ".L1"
+        let head = ".L0"
+        let tail = ".L1"
         XCTAssertEqual(compiler.instructions, [
-            .label(L0),
-            .push(1),
-            .push(0),
-            .je(L1),
-            .push(2),
-            .pop,
-            .jmp(L0),
-            .label(L1)
+            .label(head),
+            .storeImmediate(t0, 1), // the condition `true'
+            .tac_jz(tail, t0),
+            .storeImmediate(t0, 2),
+            .jmp(head),
+            .label(tail)
         ])
     }
     

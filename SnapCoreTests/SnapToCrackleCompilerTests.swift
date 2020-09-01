@@ -255,6 +255,24 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
+        
+        // The statement puts the string on the stack.
+        XCTAssertEqual(computer.stackPointer, Int(UInt16(0) &- UInt16(0xd)))
+        XCTAssertEqual(computer.stack(at: 0x0), 0x48) // H
+        XCTAssertEqual(computer.stack(at: 0x1), 0x65) // e
+        XCTAssertEqual(computer.stack(at: 0x2), 0x6c) // l
+        XCTAssertEqual(computer.stack(at: 0x3), 0x6c) // l
+        XCTAssertEqual(computer.stack(at: 0x4), 0x6f) // o
+        XCTAssertEqual(computer.stack(at: 0x5), 0x2c) // ,
+        XCTAssertEqual(computer.stack(at: 0x6), 0x20) //
+        XCTAssertEqual(computer.stack(at: 0x7), 0x57) // W
+        XCTAssertEqual(computer.stack(at: 0x8), 0x6f) // o
+        XCTAssertEqual(computer.stack(at: 0x9), 0x72) // r
+        XCTAssertEqual(computer.stack(at: 0xa), 0x6c) // l
+        XCTAssertEqual(computer.stack(at: 0xb), 0x64) // d
+        XCTAssertEqual(computer.stack(at: 0xc), 0x21) // !
+        
+        // And binds an array slice to it.
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 0), 0xfff3)
         XCTAssertEqual(computer.dataRAM.load16(from: addressFoo + 2), 0xd)
     }
@@ -473,25 +491,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: true))
-    }
-    
-    func testCompileVarDeclaration_StackLocalVariable() {
-        let ast = TopLevel(children: [
-            Block(children: [
-                VarDeclaration(identifier: Expression.Identifier("foo"),
-                               explicitType: nil,
-                               expression: Expression.LiteralInt(0xaa),
-                               storage: .stackStorage,
-                               isMutable: true)
-            ])
-        ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
-        XCTAssertFalse(compiler.hasError)
-        let ir = compiler.instructions
-        let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xffff), 0xaa)
     }
     
     func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {

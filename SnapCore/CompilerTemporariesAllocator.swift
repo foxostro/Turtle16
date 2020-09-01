@@ -25,8 +25,11 @@ public class CompilerTemporariesAllocator: NSObject {
         return maybeAllocate(size: size)!
     }
     
-    public func maybeAllocate(size: Int) -> CompilerTemporary? {
-        assert(size >= 0)
+    public func maybeAllocate(size size0: Int) -> CompilerTemporary? {
+        assert(size0 >= 0)
+        
+        let size = size0 + (size0 % 2) // round up to nearest multiple of two
+        
         for range in indexSet.rangeView {
             if range.count >= size {
                 indexSet.remove(integersIn: range.startIndex ..< (range.startIndex+size))

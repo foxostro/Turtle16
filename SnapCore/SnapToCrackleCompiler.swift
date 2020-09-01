@@ -252,10 +252,9 @@ public class SnapToCrackleCompiler: NSObject {
         let labelTail = labelMaker.next()
         try compile(genericNode: stmt.initializerClause)
         emit([.label(labelHead)])
-        try compile(expression: stmt.conditionClause)
+        let tempConditionResult = try compile(expression: stmt.conditionClause).temporaryStack.pop()
         emit([
-            .push(0),
-            .je(labelTail)
+            .tac_jz(labelTail, tempConditionResult.address)
         ])
         try compile(genericNode: stmt.body)
         try compile(genericNode: stmt.incrementClause)

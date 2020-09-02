@@ -2983,13 +2983,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xabcd), targetType: .u8)
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0xabcd),
-            .copyWords(t1, t0, 1)
+            .copyWords(t1, t0+1, 1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(computer.dataRAM.load(from: t1), 0xab)
+        XCTAssertEqual(computer.dataRAM.load(from: t1), 0xcd)
     }
     
     func testU16asBool() {

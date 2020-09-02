@@ -734,7 +734,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += try compile(expression: rexpr)
             let dst = temporaryAllocator.allocate()
             let src = temporaryStack.pop()
-            instructions += [.copyWords(dst.address, src.address, 1)]
+            instructions += [.copyWords(dst.address, src.address+1, 1)]
             temporaryStack.push(dst)
             src.consume()
         case (.array(let n, let a), .array(let m, let b)):

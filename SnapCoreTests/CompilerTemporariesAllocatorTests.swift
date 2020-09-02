@@ -13,7 +13,7 @@ class CompilerTemporariesAllocatorTests: XCTestCase {
     func testAllocateOneByte() {
         let size = 1
         let base = 0
-        let limit = 1
+        let limit = 2
         let allocator = CompilerTemporariesAllocator(base: base, limit: limit)
         let temporary = allocator.maybeAllocate(size: size)
         XCTAssertEqual(temporary?.refCount, 1)

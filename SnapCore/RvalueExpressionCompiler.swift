@@ -659,27 +659,37 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 
                 tempElementSize.consume()
             default:
-                abort() // unimplemented
+                instructions += try compileGenericAssignment(assignment, lvalue)
             }
         default:
-            // Calculate the rvalue, the value that is being assigned.
-            // To handle automatic conversion and promotion, the value of this
-            // expression is converted now to the type of the destination variable.
-            let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
-            instructions += rvalue_proc
-            let rvalue = temporaryStack.pop()
-            
-            // Emit code to copy the rvalue to the address given by the lvalue.
-            // The expression result is assumed to be small enough to fit into
-            // a temporary allocated from the scratch memory region.
-            // If it doesn't fit then an error would have been raised before
-            // this point.
-            instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
-            
-            rvalue.consume()
+            instructions += try compileGenericAssignment(assignment, lvalue)
         }
         
         lvalue.consume()
+        
+        return instructions
+    }
+    
+    private func compileGenericAssignment(_ assignment: Expression.Assignment, _ lvalue: CompilerTemporary) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
+        
+        // Calculate the rvalue, the value that is being assigned.
+        // To handle automatic conversion and promotion, the value of this
+        // expression is converted now to the type of the destination variable.
+        let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
+        instructions += rvalue_proc
+        let rvalue = temporaryStack.pop()
+        
+        // Emit code to copy the rvalue to the address given by the lvalue.
+        // The expression result is assumed to be small enough to fit into
+        // a temporary allocated from the scratch memory region.
+        // If it doesn't fit then an error would have been raised before
+        // this point.
+        instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
+        
+        rvalue.consume()
         
         return instructions
     }
@@ -756,7 +766,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 instructions += try compile(expression: synthesized)
             default:
                 assert(a == b)
-                abort() // unimplemented
+                instructions += try compile(expression: rexpr)
             }
         case (.array(let n, let a), .dynamicArray(elementType: let b)):
             assert(n != nil)

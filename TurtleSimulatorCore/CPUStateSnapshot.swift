@@ -203,6 +203,8 @@ public class CPUStateSnapshot: NSObject {
         }
         if prevState.if_id != nextState.if_id {
             logger.append("if_id: %@ --> %@", prevState.if_id, nextState.if_id)
+        } else {
+            logger.append("if_id: %@ (unchanged)", nextState.if_id)
         }
         if prevState.controlWord != nextState.controlWord {
             logger.append("controlWord: 0x%04x --> 0x%04x", prevState.controlWord.unsignedIntegerValue, nextState.controlWord.unsignedIntegerValue)

@@ -1212,6 +1212,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store(value: 0, to: a)
             computer.dataRAM.store(value: 0, to: b)
+            computer.dataRAM.store(value: 0xff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
@@ -1227,6 +1228,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 0, to: b)
+            computer.dataRAM.store(value: 0xff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
@@ -1242,6 +1244,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 1, to: b)
+            computer.dataRAM.store(value: 0xff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
@@ -1257,6 +1260,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store(value: 4, to: a)
             computer.dataRAM.store(value: 3, to: b)
+            computer.dataRAM.store(value: 0xff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 4)
@@ -1273,6 +1277,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store(value: 255, to: a)
             computer.dataRAM.store(value: 2, to: b)
+            computer.dataRAM.store(value: 0xff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 255)
@@ -1288,6 +1293,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
+            computer.dataRAM.store16(value: 0xffff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
@@ -1303,6 +1309,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store16(value: 0x00ff, to: a)
             computer.dataRAM.store16(value: 0x0002, to: b)
+            computer.dataRAM.store16(value: 0xffff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x00ff)
@@ -1319,6 +1326,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         executor.configure = { (computer: Computer) in
             computer.dataRAM.store16(value: 2000, to: a)
             computer.dataRAM.store16(value: 2000, to: b)
+            computer.dataRAM.store16(value: 0xffff, to: c)
         }
         let computer = try! executor.execute(ir: [.tac_mul16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 2000)

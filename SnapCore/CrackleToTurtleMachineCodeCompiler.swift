@@ -1390,6 +1390,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
+        // Reset the result to zero since we accumulate in it over the loop.
+        try setUV(resultAddress)
+        try assembler.li(.M, 0)
+        
         // Copy the multiplier to a scratch location because we modify it in
         // the loop.
         let multiplierAddress = allocateScratchMemory(1)

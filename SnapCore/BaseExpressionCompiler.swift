@@ -90,6 +90,13 @@ public class BaseExpressionCompiler: NSObject {
         let temp_framePointer = temporaryAllocator.allocate()
         instructions += [.copyWords(temp_framePointer.address, kFramePointerAddressHi, 2)]
         
+        // Follow the frame pointer `depth' times.
+        for _ in 0..<depth {
+            instructions += [
+                .copyWordsIndirectSource(temp_framePointer.address, temp_framePointer.address, 2)
+            ]
+        }
+        
         let temp_offset = temporaryAllocator.allocate()
         let temp_result = temporaryAllocator.allocate()
         
@@ -104,9 +111,6 @@ public class BaseExpressionCompiler: NSObject {
         temporaryStack.push(temp_result)
         temp_offset.consume()
         temp_framePointer.consume()
-        
-        // TODO: need to account for the case where depth>0
-        assert(depth == 0)
         
         return instructions
     }

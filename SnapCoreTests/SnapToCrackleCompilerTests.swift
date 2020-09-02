@@ -1167,6 +1167,19 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
     }
     
+    func testItIsCompletelyValidToHaveMeaninglessReturnStatementAtBottomOfVoidFunction() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: FunctionType(returnType: .void, arguments: []),
+                                body: Block(children: [
+                                    Return()
+                                ]))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+    }
+    
     func testCompileFunctionWithParameters_1() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),

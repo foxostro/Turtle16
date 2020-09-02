@@ -1152,6 +1152,21 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
     }
     
+    func testUnexpectedNonVoidReturnValueInVoidFunction() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: FunctionType(returnType: .void, arguments: []),
+                                body: Block(children: [
+                                    Return(ExprUtils.makeU8(value: 1))
+                                ]))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
+    }
+    
     func testCompileFunctionWithParameters_1() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),

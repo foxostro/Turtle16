@@ -369,20 +369,18 @@ public class BaseExpressionCompiler: NSObject {
         let subscriptIndex = temporaryStack.pop()
         
         let elementSize = temporaryAllocator.allocate()
-        temporaryStack.push(elementSize)
         instructions += [.storeImmediate16(elementSize.address, elementType.sizeof)]
         
         let accessOffset = temporaryAllocator.allocate()
-        temporaryStack.push(accessOffset)
+        instructions += [.tac_mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]
         elementSize.consume()
         subscriptIndex.consume()
-        instructions += [.tac_mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]
         
         let accessAddress = temporaryAllocator.allocate()
-        temporaryStack.push(accessAddress)
+        instructions += [.tac_add16(accessAddress.address, baseAddress.address, accessOffset.address)]
         accessOffset.consume()
         baseAddress.consume()
-        instructions += [.tac_add16(accessAddress.address, baseAddress.address, accessOffset.address)]
+        temporaryStack.push(accessAddress)
         
         // At this point, the temporary which holds the address of the array
         // access is on top of the compiler temporaries stack.

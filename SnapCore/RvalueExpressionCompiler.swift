@@ -961,7 +961,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         switch explicitSize {
         case 1:  instructions += [.load(temporary.address)]
         case 2:  instructions += [.load16(temporary.address)]
-        default: abort() // unimplemented
+        default:
+            // TODO: a dedicated LOADN instruction would help here, removing the need for a PUSH16.
+            instructions += [
+                .push16(temporary.address),
+                .loadIndirectN(explicitSize)
+            ]
         }
         return instructions
     }

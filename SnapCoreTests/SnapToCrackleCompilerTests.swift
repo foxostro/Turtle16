@@ -1228,6 +1228,34 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileNestedFunction() {
+        // This AST is equivalent to the following code:
+        //    func foo() -> u8 {
+        //        let a = 0xaa
+        //        func bar() -> u8 {
+        //            return a
+        //        }
+        //        return bar()
+        //    }
+        //    let a = foo()
+        //
+        // The variable `a' at the bottom is a static u8 var located at kStaticStorageStartAddress.
+        // The variable `a' at the top is a stack local u8 var located at offset=1.
+        // The stack is setup like so at the point where bar returns:
+        //    0xffff -- Preserved temporary 0x0010
+        //    0xfffe --   "
+        //    0xfffd -- Stack local variable "__returnValue" from `foo'
+        //    0xfffc -- Return address from `foo'
+        //    0xfffb --  "
+        //    0xfffa -- Preserved frame pointer
+        //    0xfff9 --  "
+        //    0xfff8 -- Stack local variable "a" in `foo'
+        //    0xfff7 -- Preserved temporary 0x0014
+        //    0xfff6 --  "
+        //    0xfff5 -- Stack local variable "__returnValue" from `bar'
+        //    0xfff4 -- Return address from `bar'
+        //    0xfff3 --  "
+        //    0xfff2 -- Preserved frame pointer
+        //    0xfff1 --  "
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: FunctionType(returnType: .u8, arguments: []),

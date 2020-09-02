@@ -21,6 +21,8 @@ public class SnapToCrackleCompiler: NSObject {
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress = kTemporaryStorageStartAddress + kTemporaryStorageLength
     
+    private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
+    
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [CrackleInstruction] = []
@@ -161,6 +163,17 @@ public class SnapToCrackleCompiler: NSObject {
         }
         let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
         symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
+        
+        // If the symbol is on the stack then allocate storage for it now.
+        if symbol.storage == .stackStorage {
+            let temporaryAllocator = CompilerTemporariesAllocator()
+            let temp = temporaryAllocator.allocate()
+            emit([
+                .storeImmediate16(temp.address, symbol.type.sizeof),
+                .tac_sub16(kStackPointerAddress, kStackPointerAddress, temp.address),
+            ])
+            temp.consume()
+        }
         
         try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
                                                              lexpr: varDecl.identifier,

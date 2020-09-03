@@ -226,40 +226,6 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
-    func testStoreWithStackDepthOne() {
-        let address = 0x0010
-        let computer = try! execute(ir: [.push(1), .store(address)])
-        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-    }
-    
-    func testStoreWithStackDepthTwo() {
-        let address = 0x0010
-        let computer = try! execute(ir: [.push(2), .push(1), .store(address)])
-        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-        XCTAssertEqual(computer.stack(at: 0), 1)
-        XCTAssertEqual(computer.stack(at: 1), 2)
-    }
-    
-    func testStoreWithStackDepthThree() {
-        let address = 0x0010
-        let computer = try! execute(ir: [.push(3), .push(2), .push(1), .store(address)])
-        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-        XCTAssertEqual(computer.stack(at: 0), 1)
-        XCTAssertEqual(computer.stack(at: 1), 2)
-        XCTAssertEqual(computer.stack(at: 2), 3)
-        XCTAssertEqual(computer.stackPointer, 0xfffd)
-    }
-    
-    func testStoreWithStackDepthFour() {
-        let address = 0x0010
-        let computer = try! execute(ir: [.push(4), .push(3), .push(2), .push(1), .store(address)])
-        XCTAssertEqual(computer.dataRAM.load(from: address), 1)
-        XCTAssertEqual(computer.stack(at: 0), 1)
-        XCTAssertEqual(computer.stack(at: 1), 2)
-        XCTAssertEqual(computer.stack(at: 2), 3)
-        XCTAssertEqual(computer.stackPointer, 0xfffc)
-    }
-    
     func testStoreImmediate() {
         let address = 0x0010
         let value = 0xff
@@ -272,17 +238,6 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         let value = 0xabcd
         let computer = try! execute(ir: [.storeImmediate(address, value)])
         XCTAssertEqual(computer.dataRAM.load(from: address), UInt8(value & 0xff))
-    }
-    
-    func testStore16() {
-        let address = 0x0010
-        let computer = try! execute(ir: [.push(2), .push(1), .push16(0x1234), .store16(address)])
-        XCTAssertEqual(computer.dataRAM.load(from: address+0), 0x12)
-        XCTAssertEqual(computer.dataRAM.load(from: address+1), 0x34)
-        XCTAssertEqual(computer.stack16(at: 0), 0x1234)
-        XCTAssertEqual(computer.stack(at: 2), 1)
-        XCTAssertEqual(computer.stack(at: 3), 2)
-        XCTAssertEqual(computer.stackPointer, 0xfffc)
     }
     
     func testStoreImmediate16() {

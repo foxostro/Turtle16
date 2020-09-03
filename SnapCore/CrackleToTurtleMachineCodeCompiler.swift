@@ -81,11 +81,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, value & 0xff)
     }
     
-    private func setXY(_ value: Int) throws {
-        try assembler.li(.X, (value>>8) & 0xff)
-        try assembler.li(.Y, value & 0xff)
-    }
-    
     public func compile(ir: [CrackleInstruction],
                         mapCrackleInstructionToSource: [Int:SourceAnchor?] = [:],
                         base: Int = 0x0000) throws {
@@ -121,7 +116,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     // Insert a NOP at the beginning of every program because correct operation
     // of the hardware reset cycle requires this.
     // Likewise, correct operation of a program written in Snap requires some
-    // inititalization to be performed before anything else occurs.
+    // initialization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
         assembler.nop()
         try setUV(0)
@@ -148,47 +143,18 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         switch instruction {
         case .push(let value): try push(value)
         case .push16(let value): try push16(value)
-        case .pushsp: try pushsp()
         case .pop: try pop()
         case .pop16: try pop16()
         case .popn(let count): try popn(count)
-        case .eq:  try eq()
-        case .eq16:  try eq16()
-        case .ne:  try ne()
-        case .ne16:  try ne16()
-        case .lt:  try lt()
-        case .lt16:  try lt16()
-        case .gt:  try gt()
-        case .gt16:  try gt16()
-        case .le:  try le()
-        case .le16:  try le16()
-        case .ge:  try ge()
-        case .ge16:  try ge16()
-        case .add: try add()
-        case .add16: try add16()
-        case .sub: try sub()
-        case .sub16: try sub16()
-        case .mul: try mul()
-        case .mul16: try mul16()
-        case .div: try div()
-        case .div16: try div16()
-        case .mod: try mod()
-        case .mod16: try mod16()
         case .load(let address): try load(from: address)
         case .load16(let address): try load16(from: address)
         case .store(let address): try store(to: address)
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .store16(let address): try store16(to: address)
         case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
-        case .loadIndirect: try loadIndirect()
-        case .loadIndirect16: try loadIndirect16()
         case .loadIndirectN(let count): try loadIndirectN(count)
-        case .storeIndirect: try storeIndirect()
-        case .storeIndirect16: try storeIndirect16()
-        case .storeIndirectN(let count): try storeIndirectN(count)
         case .label(let name): try label(name)
         case .jmp(let label): try jmp(label)
-        case .je(let label): try je(label)
         case .jalr(let label): try jalr(label)
         case .enter: try enter()
         case .leave: try leave()
@@ -198,8 +164,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .hlt: hlt()
         case .peekPeripheral: try peekPeripheral()
         case .pokePeripheral: try pokePeripheral()
-        case .dup: try dup()
-        case .dup16: try dup16()
         case .tac_add(let c, let a, let b): try tac_add(c, a, b)
         case .tac_add16(let c, let a, let b): try tac_add16(c, a, b)
         case .tac_sub(let c, let a, let b): try tac_sub(c, a, b)
@@ -257,17 +221,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let lo =  value & 0xff
         try push(lo)
         try push(hi)
-    }
-    
-    public func pushsp() throws {
-        // Load the 16-bit stack pointer into AB and then push to the stack.
-        try setUV(kStackPointerAddressHi)
-        try assembler.mov(.B, .M)
-        try setUV(kStackPointerAddressLo)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        try assembler.mov(.A, .B)
-        try pushAToStack()
     }
     
     private func loadStackPointerIntoUVandXY() throws {
@@ -357,506 +310,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .Y)
     }
     
-    private func popTwoDecrementStackPointerAndLeaveInUVandXY() throws {
-        try pop16()
-        try decrementStackPointer()
-        try loadStackPointerIntoUVandXY()
-    }
-    
     public func pop16() throws {
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.A, .B)
         try popInMemoryStackIntoRegisterB()
-    }
-    
-    public func eq() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        let jumpTarget = assembler.programCounter + 9
-        try setXY(jumpTarget)
-        assembler.cmp()
-        assembler.cmp()
-        try assembler.li(.M, 1)
-        assembler.je()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.M, 0)
-        assert(assembler.programCounter == jumpTarget)
-    }
-    
-    public func eq16() throws {
-        try eq16(valueOnPass: 1, valueOnFail: 0)
-    }
-    
-    private func eq16(valueOnPass: Int, valueOnFail: Int) throws {
-        let a = allocateScratchMemory(2)
-        let b = allocateScratchMemory(2)
-        let c = allocateScratchMemory(1)
-        
-        try pop16()
-        try setUV(a+1)
-        try assembler.mov(.M, .A)
-        try setUV(a+0)
-        try assembler.mov(.M, .B)
-        
-        try pop16()
-        try setUV(b+1)
-        try assembler.mov(.M, .A)
-        try setUV(b+0)
-        try assembler.mov(.M, .B)
-        
-        try eq16(c, a, b, valueOnPass, valueOnFail)
-        
-        try load(from: c)
-    }
-    
-    private func eq16(_ c: Int, _ a: Int, _ b: Int, _ valueOnPass: Int, _ valueOnFail: Int) throws {
-        let label_fail_test = labelMaker.next()
-        let label_tail = labelMaker.next()
-        
-        try setUV(b+1)
-        try assembler.mov(.A, .M)
-        try setUV(a+1)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        
-        try setAddressToLabel(label_fail_test)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        
-        try setUV(b+0)
-        try assembler.mov(.A, .M)
-        try setUV(a+0)
-        try assembler.mov(.B, .M)
-        assembler.cmp()
-        assembler.cmp()
-        
-        try setAddressToLabel(label_fail_test)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        
-        try setUV(c)
-        try assembler.li(.M, valueOnPass)
-        try jmp(label_tail)
-        
-        try label(label_fail_test)
-        try setUV(c)
-        try assembler.li(.M, valueOnFail)
-        
-        try label(label_tail)
-    }
-    
-    public func ne() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        let jumpTarget = assembler.programCounter + 9
-        try setXY(jumpTarget)
-        assembler.cmp()
-        assembler.cmp()
-        try assembler.li(.M, 1)
-        assembler.jne()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.M, 0)
-        assert(assembler.programCounter == jumpTarget)
-    }
-    
-    public func ne16() throws {
-        try eq16(valueOnPass: 0, valueOnFail: 1)
-    }
-    
-    public func lt() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        let jumpTarget = assembler.programCounter + 9
-        try setXY(jumpTarget)
-        assembler.cmp()
-        assembler.cmp()
-        try assembler.li(.M, 1)
-        assembler.jl()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.M, 0)
-        assert(assembler.programCounter == jumpTarget)
-    }
-    
-    public func lt16() throws {
-        let addressOfA = allocateScratchMemory(2)
-        let addressOfB = allocateScratchMemory(2)
-        let addressOfC = allocateScratchMemory(1)
-
-        // Pop `b' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfB+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfB+1)
-        try assembler.mov(.M, .B)
-
-        // Pop `a' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfA+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfA+1)
-        try assembler.mov(.M, .B)
-        
-        try tac_lt16(addressOfC, addressOfB, addressOfA)
-        
-        try load(from: addressOfC)
-    }
-    
-    public func gt() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        let jumpTarget = assembler.programCounter + 9
-        try setXY(jumpTarget)
-        assembler.cmp()
-        assembler.cmp()
-        try assembler.li(.M, 1)
-        assembler.jg()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.M, 0)
-        assert(assembler.programCounter == jumpTarget)
-    }
-    
-    public func gt16() throws {
-        let addressOfA = allocateScratchMemory(2)
-        let addressOfB = allocateScratchMemory(2)
-        let addressOfC = allocateScratchMemory(1)
-
-        // Pop `a' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfA+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfA+1)
-        try assembler.mov(.M, .B)
-
-        // Pop `b' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfB+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfB+1)
-        try assembler.mov(.M, .B)
-        
-        try tac_gt16(addressOfC, addressOfA, addressOfB)
-        
-        try load(from: addressOfC)
-    }
-    
-    public func le() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        let jumpTarget = assembler.programCounter + 9
-        try setXY(jumpTarget)
-        assembler.cmp()
-        assembler.cmp()
-        try assembler.li(.M, 1)
-        assembler.jle()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.M, 0)
-        assert(assembler.programCounter == jumpTarget)
-    }
-    
-    public func le16() throws {
-        let addressOfA = allocateScratchMemory(2)
-        let addressOfB = allocateScratchMemory(2)
-        let addressOfC = allocateScratchMemory(1)
-
-        // Pop `b' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfB+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfB+1)
-        try assembler.mov(.M, .B)
-
-        // Pop `a' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfA+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfA+1)
-        try assembler.mov(.M, .B)
-
-        try tac_le16(addressOfC, addressOfB, addressOfA)
-        
-        try load(from: addressOfC)
-    }
-    
-    public func ge() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        let jumpTarget = assembler.programCounter + 9
-        try setXY(jumpTarget)
-        assembler.cmp()
-        assembler.cmp()
-        try assembler.li(.M, 1)
-        assembler.jge()
-        assembler.nop()
-        assembler.nop()
-        try assembler.li(.M, 0)
-        assert(assembler.programCounter == jumpTarget)
-    }
-    
-    public func ge16() throws {
-        let addressOfA = allocateScratchMemory(2)
-        let addressOfB = allocateScratchMemory(2)
-        let addressOfC = allocateScratchMemory(1)
-
-        // Pop `b' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfB+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfB+1)
-        try assembler.mov(.M, .B)
-
-        // Pop `a' and store in scratch memory.
-        try pop16()
-        try setUV(addressOfA+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfA+1)
-        try assembler.mov(.M, .B)
-
-        try tac_ge16(addressOfC, addressOfA, addressOfB)
-        
-        try load(from: addressOfC)
-    }
-    
-    public func add() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        try assembler.add(.NONE)
-        try assembler.add(.M)
-    }
-    
-    public func add16() throws {
-        let a = allocateScratchMemory(2)
-        let b = allocateScratchMemory(2)
-        let c = allocateScratchMemory(2)
-        
-        try pop16()
-        try setUV(b+1)
-        try assembler.mov(.M, .B)
-        try setUV(b+0)
-        try assembler.mov(.M, .A)
-        
-        try pop16()
-        try setUV(a+1)
-        try assembler.mov(.M, .B)
-        try setUV(a+0)
-        try assembler.mov(.M, .A)
-        
-        try tac_add16(c, a, b)
-        
-        try setUV(c+1)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        try setUV(c+0)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-    }
-    
-    public func sub() throws {
-        try popTwoDecrementStackPointerAndLeaveInUVandXY()
-        
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
-    }
-    
-    public func sub16() throws {
-        let a = allocateScratchMemory(2)
-        let b = allocateScratchMemory(2)
-        let c = allocateScratchMemory(2)
-        
-        try pop16()
-        try setUV(b+1)
-        try assembler.mov(.M, .B)
-        try setUV(b+0)
-        try assembler.mov(.M, .A)
-        
-        try pop16()
-        try setUV(a+1)
-        try assembler.mov(.M, .B)
-        try setUV(a+0)
-        try assembler.mov(.M, .A)
-        
-        try tac_sub16(c, b, a)
-        
-        try setUV(c+1)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        try setUV(c+0)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-    }
-    
-    public func mul() throws {
-        try pop16()
-        
-        // A is the Multiplicand, B is the Multiplier
-        let multiplierAddress = allocateScratchMemory(1)
-        let multiplicandAddress = allocateScratchMemory(1)
-        let resultAddress = allocateScratchMemory(1)
-        
-        try setUV(multiplierAddress)
-        try assembler.mov(.M, .B)
-        try setUV(multiplicandAddress)
-        try assembler.mov(.M, .A)
-        try setUV(resultAddress)
-        try assembler.li(.M, 0)
-        
-        try tac_mul(resultAddress, multiplicandAddress, multiplierAddress)
-        
-        // Load the result into A.
-        try assembler.li(.V, resultAddress)
-        try assembler.mov(.A, .M)
-        
-        try pushAToStack()
-    }
-    
-    public func mul16() throws {
-        let multiplicandAddress = allocateScratchMemory(2)
-        let multiplierAddress = allocateScratchMemory(2)
-        let resultAddress = allocateScratchMemory(2)
-        
-        // Pop the multiplicand and store in scratch memory.
-        try pop16()
-        try setUV(multiplicandAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(multiplicandAddress+1)
-        try assembler.mov(.M, .B)
-        
-        // Pop the multiplier and store in scratch memory.
-        try pop16()
-        try setUV(multiplierAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(multiplierAddress+1)
-        try assembler.mov(.M, .B)
-        
-        try tac_mul16(resultAddress, multiplicandAddress, multiplierAddress)
-        
-        // Push the result onto the stack.
-        // First the low byte
-        try setUV(resultAddress+1)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        // Then the high byte
-        try setUV(resultAddress+0)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-    }
-    
-    public func div() throws {
-        try pop16()
-        
-        let dividend = allocateScratchMemory(1)
-        let divisor = allocateScratchMemory(1)
-        let counter = allocateScratchMemory(1)
-        
-        // A is the Dividend, B is the Divisor
-        try setUV(dividend)
-        try assembler.mov(.M, .A)
-        try setUV(divisor)
-        try assembler.mov(.M, .B)
-        
-        try div_modifyingA(counter, dividend, divisor)
-        
-        // Return the result in the A register.
-        try setUV(counter)
-        try assembler.mov(.A, .M)
-        
-        try pushAToStack()
-    }
-    
-    public func div16() throws {
-        let addressOfB = allocateScratchMemory(2)
-        let addressOfA = allocateScratchMemory(2)
-        let counterAddress = allocateScratchMemory(2)
-
-        // Pop the divisor and store in scratch memory.
-        // `b' is the Divisor
-        try pop16()
-        try setUV(addressOfB+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfB+1)
-        try assembler.mov(.M, .B)
-
-        // Pop the dividend and store in scratch memory.
-        // `a' is the Dividend
-        try pop16()
-        try setUV(addressOfA+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfA+1)
-        try assembler.mov(.M, .B)
-
-        try div16_modifyingA(counterAddress, addressOfA, addressOfB)
-
-        // Push the result to the stack. First the low byte, then the high byte.
-        try setUV(counterAddress+1)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        try setUV(counterAddress+0)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-    }
-    
-    public func mod() throws {
-        try pop16()
-        
-        let dividend = allocateScratchMemory(1)
-        let divisor = allocateScratchMemory(1)
-        let counter = allocateScratchMemory(1)
-        
-        // A is the Dividend, B is the Divisor
-        try setUV(dividend)
-        try assembler.mov(.M, .A)
-        try setUV(divisor)
-        try assembler.mov(.M, .B)
-        
-        try div_modifyingA(counter, dividend, divisor)
-        
-        // Return the result in the A register.
-        try setUV(dividend)
-        try assembler.mov(.A, .M)
-        
-        try pushAToStack()
-    }
-    
-    public func mod16() throws {
-        let addressOfB = allocateScratchMemory(2)
-        let addressOfA = allocateScratchMemory(2)
-        let counterAddress = allocateScratchMemory(2)
-
-        // Pop the divisor and store in scratch memory.
-        // `b' is the Divisor
-        try pop16()
-        try setUV(addressOfB+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfB+1)
-        try assembler.mov(.M, .B)
-
-        // Pop the dividend and store in scratch memory.
-        // `a' is the Dividend
-        try pop16()
-        try setUV(addressOfA+0)
-        try assembler.mov(.M, .A)
-        try setUV(addressOfA+1)
-        try assembler.mov(.M, .B)
-
-        try div16_modifyingA(counterAddress, addressOfA, addressOfB)
-
-        // Push the result to the stack. First the low byte, then the high byte.
-        try setUV(addressOfA+1)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        try setUV(addressOfA+0)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
     }
     
     public func load(from address: Int) throws {
@@ -924,45 +381,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
             throw CompilerError(sourceAnchor: currentSourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }
         labelTable[name] = assembler.programCounter
-    }
-    
-    public func loadIndirect() throws {
-        try pop16()
-        try assembler.mov(.U, .A)
-        try assembler.mov(.V, .B)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-    }
-    
-    public func loadIndirect16() throws {
-        try pop16()
-        
-        let a = allocateScratchMemory(2)
-        
-        // Stash the address in scratch memory.
-        try setUV(a+0)
-        try assembler.mov(.M, .A)
-        try setUV(a+1)
-        try assembler.mov(.M, .B)
-        
-        // Load the low word and push to the stack.
-        try assembler.mov(.U, .A)
-        try assembler.mov(.V, .B)
-        assembler.inuv()
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        // Retrieve the address from scratch memory.
-        try setUV(a+0)
-        try assembler.mov(.X, .M)
-        try setUV(a+1)
-        try assembler.mov(.Y, .M)
-        
-        // Load the high word and push to the stack.
-        try assembler.mov(.U, .X)
-        try assembler.mov(.V, .Y)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
     }
     
     public func loadIndirectN(_ count: Int) throws {
@@ -1069,113 +487,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         }
     }
     
-    public func storeIndirect() throws {
-        try pop16()
-        
-        // Stash the destination address in a well-known scratch location.
-        let stashedDestinationAddress = allocateScratchMemory(2)
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.M, .B)
-        
-        // Copy the top of the stack into A.
-        try loadStackPointerIntoUVandXY()
-        try assembler.mov(.A, .M)
-        
-        // Restore the stashed destination address to UV and XY.
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.X, .M)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.Y, .M)
-        try assembler.mov(.U, .X)
-        try assembler.mov(.V, .Y)
-        
-        // Store A to the destination address.
-        try assembler.mov(.M, .A)
-    }
-    
-    public func storeIndirect16() throws {
-        try pop16()
-        
-        // Stash the destination address in a well-known scratch location.
-        let stashedDestinationAddress = allocateScratchMemory(2)
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.M, .B)
-        
-        // Copy the two bytes at the top of the stack into A and B
-        try loadStackPointerIntoUVandXY()
-        try assembler.mov(.A, .M)
-        assembler.inuv()
-        try assembler.mov(.B, .M)
-        
-        // Restore the stashed destination address to UV and XY.
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.X, .M)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.Y, .M)
-        try assembler.mov(.U, .X)
-        try assembler.mov(.V, .Y)
-        
-        // Store A and B to the destination address.
-        try assembler.mov(.M, .A)
-        assembler.inuv()
-        try assembler.mov(.M, .B)
-    }
-    
-    public func storeIndirectN(_ count: Int) throws {
-        // TODO: storeIndirectN can probably be optimized. For example, use the BLT instructions and the ALU.
-        try pop16()
-        
-        // Stash the destination address in a well-known scratch location.
-        let stashedDestinationAddress = allocateScratchMemory(2)
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.M, .B)
-        
-        for i in 0..<count {
-            // Copy the i-th word on the stack to A.
-            try loadStackPointerIntoUVandXY()
-            for _ in 0..<i {
-                assembler.inuv()
-            }
-            try assembler.mov(.A, .M)
-            
-            // Restore the stashed destination address to UV and XY.
-            try setUV(stashedDestinationAddress+0)
-            try assembler.mov(.X, .M)
-            try setUV(stashedDestinationAddress+1)
-            try assembler.mov(.Y, .M)
-            try assembler.mov(.U, .X)
-            try assembler.mov(.V, .Y)
-            
-            // Offset to get the destination of the i-th word
-            for _ in 0..<i {
-                assembler.inuv()
-            }
-            
-            // Store the i-th word
-            try assembler.mov(.M, .A)
-        }
-    }
-    
     public func jmp(_ label: String) throws {
         try setAddressToLabel(label)
         assembler.jmp()
-        assembler.nop()
-        assembler.nop()
-    }
-    
-    public func je(_ label: String) throws {
-        try pop16()
-        
-        assembler.cmp()
-        assembler.cmp()
-        try setAddressToLabel(label)
-        assembler.je()
         assembler.nop()
         assembler.nop()
     }
@@ -1316,18 +630,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         
         // Store A to the destination address on the peripheral bus.
         try assembler.mov(.P, .A)
-    }
-    
-    public func dup() throws {
-        let scratch = allocateScratchMemory(1)
-        try store(to: scratch)
-        try load(from: scratch)
-    }
-    
-    public func dup16() throws {
-        let scratch = allocateScratchMemory(2)
-        try store16(to: scratch)
-        try load16(from: scratch)
     }
         
     private func tac_add(_ c: Int, _ a: Int, _ b: Int) throws {
@@ -1771,6 +1073,45 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func tac_ne16(_ c: Int, _ a: Int, _ b: Int) throws {
         try eq16(c, a, b, 0, 1)
+    }
+    
+    private func eq16(_ c: Int, _ a: Int, _ b: Int, _ valueOnPass: Int, _ valueOnFail: Int) throws {
+        let label_fail_test = labelMaker.next()
+        let label_tail = labelMaker.next()
+        
+        try setUV(b+1)
+        try assembler.mov(.A, .M)
+        try setUV(a+1)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        
+        try setAddressToLabel(label_fail_test)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        try setUV(b+0)
+        try assembler.mov(.A, .M)
+        try setUV(a+0)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        
+        try setAddressToLabel(label_fail_test)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        try setUV(c)
+        try assembler.li(.M, valueOnPass)
+        try jmp(label_tail)
+        
+        try label(label_fail_test)
+        try setUV(c)
+        try assembler.li(.M, valueOnFail)
+        
+        try label(label_tail)
     }
     
     private func tac_lt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {

@@ -965,12 +965,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func popTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        switch temporary.size {
-        case 1:  instructions += [.store(temporary.address), .pop]
-        case 2:  instructions += [.store16(temporary.address), .pop16]
-        default: abort() // unimplemented
-        }
+        let instructions: [CrackleInstruction] = [
+            .copyWordsIndirectSource(temporary.address, kStackPointerAddress, temporary.size),
+            .popn(temporary.size)
+        ]
         return instructions
     }
     

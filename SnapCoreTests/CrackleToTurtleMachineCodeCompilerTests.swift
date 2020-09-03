@@ -165,6 +165,11 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfff8)
     }
     
+    func testSubsp() {
+        let computer = try! execute(ir: [.subsp(500)])
+        XCTAssertEqual(computer.stackPointer, Int(UInt16(0) &- 500))
+    }
+    
     func testPopnWithStackDepthFive() {
         let computer = try! execute(ir: [.push16(1000), .push16(2000), .push16(3000), .push16(4000), .push16(5000), .popn(2)])
         XCTAssertEqual(computer.stack16(at: 0), 4000)

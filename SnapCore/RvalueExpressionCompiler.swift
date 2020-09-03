@@ -950,17 +950,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func pushTemporary(temporary: CompilerTemporary, explicitSize: Int) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        switch explicitSize {
-        case 1:  instructions += [.load(temporary.address)]
-        case 2:  instructions += [.load16(temporary.address)]
-        default:
-            // TODO: a dedicated LOADN instruction would help here, removing the need for a PUSH16.
-            instructions += [
-                .push16(temporary.address),
-                .loadIndirectN(explicitSize)
-            ]
-        }
+        let instructions: [CrackleInstruction] = [
+            .subsp(explicitSize),
+            .copyWordsIndirectDestination(kStackPointerAddress, temporary.address, explicitSize)
+        ]
         return instructions
     }
     
@@ -973,14 +966,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        
-        // Allocate space for the return value, if any. When we pop arguments
-        // off the stack, we leave the return value in place.
-        // TODO: add a pushn instruction so we can do something like pushn(typ.returnType.sizeof)
-        instructions += [CrackleInstruction].init(repeating: .push(0), count: typ.returnType.sizeof)
-        
-        return instructions
+        return [.subsp(typ.returnType.sizeof)]
     }
     
     private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {

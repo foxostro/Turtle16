@@ -239,12 +239,7 @@ public class BaseExpressionCompiler: NSObject {
         let n = arr.count
         
         // Allocate space on the stack for `n' characters and an array slice.
-        let tempAllocationSize = temporaryAllocator.allocate()
-        instructions += [
-            .storeImmediate16(tempAllocationSize.address, n+kSliceSize),
-            .tac_sub16(kStackPointerAddress, kStackPointerAddress, tempAllocationSize.address)
-        ]
-        tempAllocationSize.consume()
+        instructions += [.subsp(n+kSliceSize)]
         
         // Copy the string onto the stack.
         let tempDstAddress = temporaryAllocator.allocate()

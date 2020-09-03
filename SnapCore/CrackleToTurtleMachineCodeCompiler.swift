@@ -145,6 +145,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .push16(let value): try push16(value)
         case .pop: try pop()
         case .pop16: try pop16()
+        case .subsp(let count): try subsp(count)
         case .popn(let count): try popn(count)
         case .load(let address): try load(from: address)
         case .load16(let address): try load16(from: address)
@@ -268,6 +269,22 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     private func pop() throws {
         try popInMemoryStackIntoRegisterB()
+    }
+    
+    private func subsp(_ count: Int) throws {
+        try setUV(kStackPointerAddressLo)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, count & 0xff)
+        try setUV(kStackPointerAddressLo)
+        try assembler.sub(.NONE)
+        try assembler.sub(.M)
+        
+        try setUV(kStackPointerAddressHi)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, (count >> 8) & 0xff)
+        try setUV(kStackPointerAddressHi)
+        try assembler.sbc(.NONE)
+        try assembler.sbc(.M)
     }
     
     private func popn(_ count: Int) throws {

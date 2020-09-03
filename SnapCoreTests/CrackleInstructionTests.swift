@@ -17,6 +17,7 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.push16(0xffff).description, "PUSH16 0xffff")
         XCTAssertEqual(CrackleInstruction.pop.description, "POP")
         XCTAssertEqual(CrackleInstruction.pop16.description, "POP16")
+        XCTAssertEqual(CrackleInstruction.subsp(42).description, "SUBSP 42")
         XCTAssertEqual(CrackleInstruction.popn(42).description, "POPN 42")
         XCTAssertEqual(CrackleInstruction.load(0xffff).description, "LOAD 0xffff")
         XCTAssertEqual(CrackleInstruction.load16(0xffff).description, "LOAD16 0xffff")

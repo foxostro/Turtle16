@@ -15,13 +15,6 @@ import TurtleCompilerToolbox
 public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public let typeChecker: RvalueExpressionTypeChecker
     
-    private let kSliceBaseAddressOffset = 0
-    private let kSliceBaseAddressSize = 2
-    private let kSliceCountOffset = 2
-    private let kSliceCountSize = 2
-    private let kSliceSize = 4 // kSliceBaseAddressSize + kSliceCountSize
-    private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
-    
     public static func bindCompilerIntrinsicFunctions(symbols: SymbolTable) -> SymbolTable {
         return bindCompilerInstrinsicHlt(symbols:
             bindCompilerInstrinsicPokePeripheral(symbols:

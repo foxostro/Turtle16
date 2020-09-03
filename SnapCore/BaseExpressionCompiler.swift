@@ -15,8 +15,15 @@ public class BaseExpressionCompiler: NSObject {
     public let temporaryStack: CompilerTemporariesStack
     public let temporaryAllocator: CompilerTemporariesAllocator
     
-    public let kFramePointerAddressHi = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
-    public let kFramePointerAddressLo = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
+    let kFramePointerAddressHi = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+    let kFramePointerAddressLo = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
+    let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
+    
+    let kSliceBaseAddressOffset = 0
+    let kSliceBaseAddressSize = 2
+    let kSliceCountOffset = 2
+    let kSliceCountSize = 2
+    let kSliceSize = 4 // kSliceBaseAddressSize + kSliceCountSize
     
     public init(symbols: SymbolTable,
                 labelMaker: LabelMaker,
@@ -228,18 +235,64 @@ public class BaseExpressionCompiler: NSObject {
                 message += " on line \(lineNumbers.lowerBound)"
             }
         }
-        let arr: [Int] = message.utf8.reversed().map({Int($0)})
+        let arr: [Int] = message.utf8.map({Int($0)})
         let n = arr.count
-        for c in arr {
-            instructions += [.push(c)]
-        }
+        
+        // Allocate space on the stack for `n' characters and an array slice.
+        let tempAllocationSize = temporaryAllocator.allocate()
         instructions += [
-            .push16(n),
-            .push16(4),
-            .pushsp,
-            .add16
+            .storeImmediate16(tempAllocationSize.address, n+kSliceSize),
+            .tac_sub16(kStackPointerAddress, kStackPointerAddress, tempAllocationSize.address)
         ]
-        instructions += [.jalr("panic")]
+        tempAllocationSize.consume()
+        
+        // Copy the string onto the stack.
+        let tempDstAddress = temporaryAllocator.allocate()
+        let tempOffset = temporaryAllocator.allocate()
+        let tempCharacter = temporaryAllocator.allocate()
+        instructions += [
+            .storeImmediate16(tempOffset.address, kSliceSize),
+            .tac_add16(tempDstAddress.address, kStackPointerAddress, tempOffset.address),
+            .storeImmediate16(tempOffset.address, 1)
+        ]
+        for i in 0..<n {
+            instructions += [
+                .storeImmediate(tempCharacter.address, arr[i]),
+                .copyWordsIndirectDestination(tempDstAddress.address, tempCharacter.address, 1)
+            ]
+            if i != n-1 {
+                instructions += [
+                    .tac_add16(tempDstAddress.address, tempDstAddress.address, tempOffset.address)
+                ]
+            }
+        }
+        tempCharacter.consume()
+        
+        // Form an array slice on the top of the stack.
+        let tempArrayBaseAddress = temporaryAllocator.allocate()
+        let tempCount = temporaryAllocator.allocate()
+        assert(kSliceBaseAddressOffset == 0)
+        assert(kSliceBaseAddressSize == 2)
+        instructions += [
+            .storeImmediate16(tempOffset.address, kSliceSize),
+            .tac_add16(tempArrayBaseAddress.address, kStackPointerAddress, tempOffset.address),
+            .copyWordsIndirectDestination(kStackPointerAddress, tempArrayBaseAddress.address, kSliceBaseAddressSize),
+                
+            .storeImmediate16(tempOffset.address, kSliceCountOffset),
+            .tac_add16(tempDstAddress.address, kStackPointerAddress, tempOffset.address),
+            .storeImmediate16(tempCount.address, n),
+            .copyWordsIndirectDestination(tempDstAddress.address, tempCount.address, kSliceCountSize),
+        ]
+        tempCount.consume()
+        tempArrayBaseAddress.consume()
+        tempOffset.consume()
+        tempDstAddress.consume()
+        
+        // Jump to the panic routine.
+        instructions += [
+            .jalr("panic")
+        ]
+        
         return instructions
     }
     

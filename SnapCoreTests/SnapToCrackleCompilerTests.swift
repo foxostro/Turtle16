@@ -163,10 +163,10 @@ class SnapToCrackleCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1),
             .storeImmediate(t2, 0),
             .copyWordsIndirectDestination(t0, t2, 1),
-            .tac_add16(t0, t0, t1),
+            .add16(t0, t0, t1),
             .storeImmediate(t2, 1),
             .copyWordsIndirectDestination(t0, t2, 1),
-            .tac_add16(t0, t0, 18),
+            .add16(t0, t0, 18),
             .storeImmediate(t2, 2),
             .copyWordsIndirectDestination(t0, t2, 1)
         ])
@@ -197,10 +197,10 @@ class SnapToCrackleCompilerTests: XCTestCase {
             .storeImmediate16(t1, 1),
             .storeImmediate(t2, 0),
             .copyWordsIndirectDestination(t0, t2, 1),
-            .tac_add16(t0, t0, t1),
+            .add16(t0, t0, t1),
             .storeImmediate(t2, 1),
             .copyWordsIndirectDestination(t0, t2, 1),
-            .tac_add16(t0, t0, t1),
+            .add16(t0, t0, t1),
             .storeImmediate(t2, 2),
             .copyWordsIndirectDestination(t0, t2, 1)
         ])
@@ -670,7 +670,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             
             // if the condition is equal to zero then jump to L0 (else)
-            .tac_jz(L0, t0),
+            .jz(L0, t0),
             
             // foo = 1
             .storeImmediate16(t0, addressFoo),
@@ -711,7 +711,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             
             // if the condition is equal to zero then jump to L0 (else)
-            .tac_jz(L0, t0),
+            .jz(L0, t0),
             
             // foo = 1
             .storeImmediate16(t0, addressFoo),
@@ -743,7 +743,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             .label(head),
             .storeImmediate(t0, 1), // the condition `true'
-            .tac_jz(tail, t0),
+            .jz(tail, t0),
             .storeImmediate(t0, 2),
             .jmp(head),
             .label(tail)
@@ -805,8 +805,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
             // Jump if the condition `i < 10' fails.
             .storeImmediate(t0, 10),
             .copyWords(t1, addressOfI, 1),
-            .tac_lt(t2, t1, t0),
-            .tac_jz(L1, t2),
+            .lt(t2, t1, t0),
+            .jz(L1, t2),
             
             // foo = i
             .storeImmediate16(t0, addressOfFoo),
@@ -817,7 +817,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             .storeImmediate16(t0, addressOfI),
             .storeImmediate(t1, 1),
             .copyWords(t2, addressOfI, 1),
-            .tac_add(t3, t2, t1),
+            .add(t3, t2, t1),
             .copyWordsIndirectDestination(t0, t3, 1),
             
             // Loop

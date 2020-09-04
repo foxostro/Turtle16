@@ -188,12 +188,12 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
         
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)] // TODO: a MULI16 instruction would be useful here.
+        instructions += [.mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)] // TODO: a MULI16 instruction would be useful here.
         tempArrayCount.consume()
         tempArrayElementSize.consume()
         
         let tempArrayLimit = temporaryAllocator.allocate()
-        instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
+        instructions += [.add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
         tempBaseAddress.consume()
         tempArraySize.consume()
         
@@ -203,14 +203,14 @@ public class BaseExpressionCompiler: NSObject {
         
         // If (limit-1) < (access address) then the access is unacceptable.
         let tempIsUnacceptable = temporaryAllocator.allocate()
-        instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
+        instructions += [.lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
         // Specifically do not conusme tempAccessAddress as we need to leave
         // that in place on the stack when we're done.
         tempArrayLimit.consume()
         
         // If the access is not unacceptable (that is, the access is acceptable)
         // then take the branch to skip the panic.
-        instructions += [.tac_jz(label, tempIsUnacceptable.address)]
+        instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
         instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
@@ -343,7 +343,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.storeImmediate16(tempTwo.address, 2)]
         tempTwo.consume()
         let tempArrayCountAddress = temporaryAllocator.allocate()
-        instructions += [.tac_add16(tempArrayCountAddress.address, tempSliceAddress.address, tempTwo.address)]
+        instructions += [.add16(tempArrayCountAddress.address, tempSliceAddress.address, tempTwo.address)]
         let tempArrayCount = temporaryAllocator.allocate()
         instructions += [.copyWordsIndirectSource(tempArrayCount.address, tempArrayCountAddress.address, 2)]
         tempArrayCountAddress.consume()
@@ -351,12 +351,12 @@ public class BaseExpressionCompiler: NSObject {
         let tempArrayElementSize = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
+        instructions += [.mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
         tempArrayElementSize.consume()
         tempArrayCount.consume()
         
         let tempArrayLimit = temporaryAllocator.allocate()
-        instructions += [.tac_add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
+        instructions += [.add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]
         tempArraySize.consume()
         tempBaseAddress.consume()
         
@@ -365,16 +365,16 @@ public class BaseExpressionCompiler: NSObject {
         let tempOne = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempOne.address, 1)]
         tempOne.consume()
-        instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
+        instructions += [.sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
         
         // If (limit-1) < (access address) then the access is unacceptable.
         let tempIsUnacceptable = temporaryAllocator.allocate()
-        instructions += [.tac_lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
+        instructions += [.lt16(tempIsUnacceptable.address, tempArrayLimit.address, tempAccessAddress.address)]
         tempArrayLimit.consume()
         
         // If the access is not unacceptable (that is, the access is acceptable)
         // then take the branch to skip the panic.
-        instructions += [.tac_jz(label, tempIsUnacceptable.address)]
+        instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
         instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
@@ -407,12 +407,12 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.storeImmediate16(elementSize.address, elementType.sizeof)]
         
         let accessOffset = temporaryAllocator.allocate()
-        instructions += [.tac_mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]
+        instructions += [.mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]
         elementSize.consume()
         subscriptIndex.consume()
         
         let accessAddress = temporaryAllocator.allocate()
-        instructions += [.tac_add16(accessAddress.address, baseAddress.address, accessOffset.address)]
+        instructions += [.add16(accessAddress.address, baseAddress.address, accessOffset.address)]
         accessOffset.consume()
         baseAddress.consume()
         temporaryStack.push(accessAddress)

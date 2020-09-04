@@ -217,7 +217,7 @@ public class SnapToCrackleCompiler: NSObject {
             let labelTail = labelMaker.next()
             let tempConditionResult = try compile(expression: stmt.condition).temporaryStack.pop()
             emit([
-                .tac_jz(labelElse, tempConditionResult.address)
+                .jz(labelElse, tempConditionResult.address)
             ])
             try compile(genericNode: stmt.thenBranch)
             emit([
@@ -230,7 +230,7 @@ public class SnapToCrackleCompiler: NSObject {
             let labelTail = labelMaker.next()
             let tempConditionResult = try compile(expression: stmt.condition).temporaryStack.pop()
             emit([
-                .tac_jz(labelTail, tempConditionResult.address)
+                .jz(labelTail, tempConditionResult.address)
             ])
             try compile(genericNode: stmt.thenBranch)
             emit([
@@ -246,7 +246,7 @@ public class SnapToCrackleCompiler: NSObject {
         emit([.label(labelHead)])
         let tempConditionResult = try compile(expression: stmt.condition).temporaryStack.pop()
         emit([
-            .tac_jz(labelTail, tempConditionResult.address)
+            .jz(labelTail, tempConditionResult.address)
         ])
         try compile(genericNode: stmt.body)
         emit([
@@ -263,7 +263,7 @@ public class SnapToCrackleCompiler: NSObject {
         emit([.label(labelHead)])
         let tempConditionResult = try compile(expression: stmt.conditionClause).temporaryStack.pop()
         emit([
-            .tac_jz(labelTail, tempConditionResult.address)
+            .jz(labelTail, tempConditionResult.address)
         ])
         try compile(genericNode: stmt.body)
         try compile(genericNode: stmt.incrementClause)

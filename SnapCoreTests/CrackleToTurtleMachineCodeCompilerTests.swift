@@ -273,7 +273,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.framePointer, 0x0000)
     }
     
-    func testTAC_Add() {
+    func testAdd() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -282,13 +282,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 2, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_add(c, a, b)])
+        let computer = try! executor.execute(ir: [.add(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 2)
         XCTAssertEqual(computer.dataRAM.load(from: c), 3)
     }
     
-    func testTAC_Add16_0x0000_and_0x0000() {
+    func testAdd16_0x0000_and_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -297,13 +297,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_add16(c, a, b)])
+        let computer = try! executor.execute(ir: [.add16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0000)
     }
     
-    func testTAC_Add16_0x0001_and_0x0001() {
+    func testAdd16_0x0001_and_0x0001() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -312,13 +312,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0001, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_add16(c, a, b)])
+        let computer = try! executor.execute(ir: [.add16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0002)
     }
     
-    func testTAC_Add16_0xfffe_and_0x0001() {
+    func testAdd16_0xfffe_and_0x0001() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -327,13 +327,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0xfffe, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_add16(c, a, b)])
+        let computer = try! executor.execute(ir: [.add16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0xfffe)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0xffff)
     }
     
-    func testTAC_Add16_0xffff_and_0x0001() {
+    func testAdd16_0xffff_and_0x0001() {
         // TODO: ADD16 does not set the carry flag. Should it?
         let a = 0x0104
         let b = 0x0108
@@ -343,13 +343,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0xffff, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_add16(c, a, b)])
+        let computer = try! executor.execute(ir: [.add16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0xffff)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0000)
     }
     
-    func testTAC_Sub() {
+    func testSub() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -358,13 +358,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 3, to: a)
             computer.dataRAM.store(value: 2, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_sub(c, a, b)])
+        let computer = try! executor.execute(ir: [.sub(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 3)
         XCTAssertEqual(computer.dataRAM.load(from: b), 2)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Sub16_0x0001_and_0x0001() {
+    func testSub16_0x0001_and_0x0001() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -373,13 +373,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0001, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_sub16(c, a, b)])
+        let computer = try! executor.execute(ir: [.sub16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0000)
     }
     
-    func testTAC_Sub16_0x0000_and_0x0001() {
+    func testSub16_0x0000_and_0x0001() {
         // TODO: SUB16 does not set the carry flag. Should it?
         let a = 0x0104
         let b = 0x0108
@@ -389,13 +389,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_sub16(c, a, b)])
+        let computer = try! executor.execute(ir: [.sub16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0xffff)
     }
     
-    func testTAC_Mul_0x0() {
+    func testMul_0x0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -405,13 +405,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: b)
             computer.dataRAM.store(value: 0xff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Mul_1x0() {
+    func testMul_1x0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -421,13 +421,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: b)
             computer.dataRAM.store(value: 0xff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Mul_1x1() {
+    func testMul_1x1() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -437,13 +437,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: b)
             computer.dataRAM.store(value: 0xff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 1)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Mul_4x3() {
+    func testMul_4x3() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -453,13 +453,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 3, to: b)
             computer.dataRAM.store(value: 0xff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 4)
         XCTAssertEqual(computer.dataRAM.load(from: b), 3)
         XCTAssertEqual(computer.dataRAM.load(from: c), 12)
     }
     
-    func testTAC_Mul_255x2() {
+    func testMul_255x2() {
         // Multiplication is basically modulo 255.
         let a = 0x0104
         let b = 0x0108
@@ -470,13 +470,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 2, to: b)
             computer.dataRAM.store(value: 0xff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 255)
         XCTAssertEqual(computer.dataRAM.load(from: b), 2)
         XCTAssertEqual(computer.dataRAM.load(from: c), 254)
     }
     
-    func testTAC_Mul16_0x0() {
+    func testMul16_0x0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -486,13 +486,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: b)
             computer.dataRAM.store16(value: 0xffff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0000)
     }
     
-    func testTAC_Mul16_255x2() {
+    func testMul16_255x2() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -502,13 +502,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0002, to: b)
             computer.dataRAM.store16(value: 0xffff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x00ff)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0002)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x01fe)
     }
     
-    func testTAC_Mul16_2000x2000() {
+    func testMul16_2000x2000() {
         // Multiplication is basically modulo 65536.
         let a = 0x0104
         let b = 0x0108
@@ -519,13 +519,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 2000, to: b)
             computer.dataRAM.store16(value: 0xffff, to: c)
         }
-        let computer = try! executor.execute(ir: [.tac_mul16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mul16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: c), UInt16((2000*2000)%65536))
     }
     
-    func testTAC_Div_1div0() {
+    func testDiv_1div0() {
         // There's a check in the DIV command to ensure that all division by
         // zero yields a result of zero.
         let a = 0x0104
@@ -536,13 +536,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div(c, a, b)])
+        let computer = try! executor.execute(ir: [.div(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Div_0div1() {
+    func testDiv_0div1() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -551,13 +551,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: a)
             computer.dataRAM.store(value: 1, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div(c, a, b)])
+        let computer = try! executor.execute(ir: [.div(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load(from: b), 1)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Div_2div1() {
+    func testDiv_2div1() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -566,13 +566,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 2, to: a)
             computer.dataRAM.store(value: 1, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div(c, a, b)])
+        let computer = try! executor.execute(ir: [.div(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 2)
         XCTAssertEqual(computer.dataRAM.load(from: b), 1)
         XCTAssertEqual(computer.dataRAM.load(from: c), 2)
     }
     
-    func testTAC_Div_4div2() {
+    func testDiv_4div2() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -581,13 +581,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 4, to: a)
             computer.dataRAM.store(value: 2, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div(c, a, b)])
+        let computer = try! executor.execute(ir: [.div(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 4)
         XCTAssertEqual(computer.dataRAM.load(from: b), 2)
         XCTAssertEqual(computer.dataRAM.load(from: c), 2)
     }
     
-    func testTAC_Div_3div4() {
+    func testDiv_3div4() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -596,13 +596,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 3, to: a)
             computer.dataRAM.store(value: 4, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div(c, a, b)])
+        let computer = try! executor.execute(ir: [.div(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 3)
         XCTAssertEqual(computer.dataRAM.load(from: b), 4)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Div16_0x0001_div_0x0000() {
+    func testDiv16_0x0001_div_0x0000() {
         // There's a check in the DIV command to ensure that all division by
         // zero yields a result of zero.
         let a = 0x0104
@@ -613,13 +613,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0001, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0000)
     }
     
-    func testTAC_Div16_0x0001_div_0x0100() {
+    func testDiv16_0x0001_div_0x0100() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -628,13 +628,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0001, to: a)
             computer.dataRAM.store16(value: 0x0100, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0100)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0000)
     }
     
-    func testTAC_Div16_0x0001_div_0x0001() {
+    func testDiv16_0x0001_div_0x0001() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -643,13 +643,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0001, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0001)
     }
     
-    func testTAC_Div16_0x0080_div_0x0002() {
+    func testDiv16_0x0080_div_0x0002() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -658,13 +658,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0080, to: a)
             computer.dataRAM.store16(value: 0x0002, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0080)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0002)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0040)
     }
     
-    func testTAC_Div16_0x00ff_div_0x00ff() {
+    func testDiv16_0x00ff_div_0x00ff() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -673,13 +673,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x00ff, to: a)
             computer.dataRAM.store16(value: 0x00ff, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x00ff)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x00ff)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0001)
     }
     
-    func testTAC_Div16_0x0100_div_0x0001() {
+    func testDiv16_0x0100_div_0x0001() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -688,13 +688,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0100, to: a)
             computer.dataRAM.store16(value: 0x0001, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0100)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0001)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0100)
     }
     
-    func testTAC_Div16_0xffff_div_0xffff() {
+    func testDiv16_0xffff_div_0xffff() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -703,13 +703,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0xffff, to: a)
             computer.dataRAM.store16(value: 0xffff, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_div16(c, a, b)])
+        let computer = try! executor.execute(ir: [.div16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0xffff)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0xffff)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0x0001)
     }
     
-    func testTAC_Mod_1mod0() {
+    func testMod_1mod0() {
         // There's a check in the MOD command to ensure that all division by
         // zero yields a result of zero.
         let a = 0x0104
@@ -720,13 +720,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Mod_1mod1() {
+    func testMod_1mod1() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -735,13 +735,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 1, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 1)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Mod_1mod2() {
+    func testMod_1mod2() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -750,13 +750,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: a)
             computer.dataRAM.store(value: 2, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load(from: b), 2)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Mod_7mod4() {
+    func testMod_7mod4() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -765,13 +765,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 7, to: a)
             computer.dataRAM.store(value: 4, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 7)
         XCTAssertEqual(computer.dataRAM.load(from: b), 4)
         XCTAssertEqual(computer.dataRAM.load(from: c), 3)
     }
     
-    func testTAC_Mod16_1_mod_0() {
+    func testMod16_1_mod_0() {
         // There's a check in the MOD16 command to ensure that all division by
         // zero yields a result of zero.
         let a = 0x0104
@@ -782,13 +782,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 1, to: a)
             computer.dataRAM.store16(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 0)
     }
     
-    func testTAC_Mod16_1_mod_1() {
+    func testMod16_1_mod_1() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -797,13 +797,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 1, to: a)
             computer.dataRAM.store16(value: 1, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 1%1)
     }
     
-    func testTAC_Mod16_1000_mod_10() {
+    func testMod16_1000_mod_10() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -812,13 +812,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 1000, to: a)
             computer.dataRAM.store16(value: 10, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 10)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 1000%10)
     }
     
-    func testTAC_Mod16_10_mod_1000() {
+    func testMod16_10_mod_1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -827,13 +827,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 10, to: a)
             computer.dataRAM.store16(value: 1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_mod16(c, a, b)])
+        let computer = try! executor.execute(ir: [.mod16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 10)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: c), 10%1000)
     }
     
-    func testTAC_Eq_42_eq_42() {
+    func testEq_42_eq_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -842,13 +842,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_eq(c, a, b)])
+        let computer = try! executor.execute(ir: [.eq(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Eq_42_eq_0() {
+    func testEq_42_eq_0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -857,13 +857,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_eq(c, a, b)])
+        let computer = try! executor.execute(ir: [.eq(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Ne_42_ne_42() {
+    func testNe_42_ne_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -872,13 +872,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ne(c, a, b)])
+        let computer = try! executor.execute(ir: [.ne(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Ne_42_ne_0() {
+    func testNe_42_ne_0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -887,13 +887,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ne(c, a, b)])
+        let computer = try! executor.execute(ir: [.ne(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Lt_42_lt_42() {
+    func testLt_42_lt_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -902,13 +902,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_lt(c, a, b)])
+        let computer = try! executor.execute(ir: [.lt(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Lt_42_lt_0() {
+    func testLt_42_lt_0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -917,13 +917,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_lt(c, a, b)])
+        let computer = try! executor.execute(ir: [.lt(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Lt_0_lt_42() {
+    func testLt_0_lt_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -932,13 +932,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_lt(c, a, b)])
+        let computer = try! executor.execute(ir: [.lt(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Gt_42_gt_42() {
+    func testGt_42_gt_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -947,13 +947,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_gt(c, a, b)])
+        let computer = try! executor.execute(ir: [.gt(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Gt_42_gt_0() {
+    func testGt_42_gt_0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -962,13 +962,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_gt(c, a, b)])
+        let computer = try! executor.execute(ir: [.gt(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Gt_0_gt_42() {
+    func testGt_0_gt_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -977,13 +977,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_gt(c, a, b)])
+        let computer = try! executor.execute(ir: [.gt(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Le_42_le_42() {
+    func testLe_42_le_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -992,13 +992,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_le(c, a, b)])
+        let computer = try! executor.execute(ir: [.le(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Le_42_le_0() {
+    func testLe_42_le_0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1007,13 +1007,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_le(c, a, b)])
+        let computer = try! executor.execute(ir: [.le(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Le_0_le_42() {
+    func testLe_0_le_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1022,13 +1022,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_le(c, a, b)])
+        let computer = try! executor.execute(ir: [.le(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Ge_42_ge_42() {
+    func testGe_42_ge_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1037,13 +1037,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ge(c, a, b)])
+        let computer = try! executor.execute(ir: [.ge(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Ge_42_ge_0() {
+    func testGe_42_ge_0() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1052,13 +1052,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: a)
             computer.dataRAM.store(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ge(c, a, b)])
+        let computer = try! executor.execute(ir: [.ge(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 42)
         XCTAssertEqual(computer.dataRAM.load(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Ge_0_ge_42() {
+    func testGe_0_ge_42() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1067,13 +1067,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: a)
             computer.dataRAM.store(value: 42, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ge(c, a, b)])
+        let computer = try! executor.execute(ir: [.ge(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load(from: b), 42)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Eq16_0x0000_and_0x0000() {
+    func testEq16_0x0000_and_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1082,13 +1082,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0, to: a)
             computer.dataRAM.store16(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_eq16(c, a, b)])
+        let computer = try! executor.execute(ir: [.eq16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Eq16_0xffff_and_0x00ff() {
+    func testEq16_0xffff_and_0x00ff() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1097,13 +1097,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0xffff, to: a)
             computer.dataRAM.store16(value: 0x00ff, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_eq16(c, a, b)])
+        let computer = try! executor.execute(ir: [.eq16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0xffff)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x00ff)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Ne16_0x0000_and_0x0000() {
+    func testNe16_0x0000_and_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1112,13 +1112,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0, to: a)
             computer.dataRAM.store16(value: 0, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ne16(c, a, b)])
+        let computer = try! executor.execute(ir: [.ne16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Ne16_0xffff_and_0x00ff() {
+    func testNe16_0xffff_and_0x00ff() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1127,13 +1127,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0xffff, to: a)
             computer.dataRAM.store16(value: 0x00ff, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ne16(c, a, b)])
+        let computer = try! executor.execute(ir: [.ne16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0xffff)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x00ff)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Lt16_0x0000_lt_0x1000() {
+    func testLt16_0x0000_lt_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1142,13 +1142,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_lt16(c, a, b)])
+        let computer = try! executor.execute(ir: [.lt16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Lt16_0x1000_lt_0x1000() {
+    func testLt16_0x1000_lt_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1157,13 +1157,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_lt16(c, a, b)])
+        let computer = try! executor.execute(ir: [.lt16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Lt16_0x1000_lt_0x0000() {
+    func testLt16_0x1000_lt_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1172,13 +1172,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_lt16(c, a, b)])
+        let computer = try! executor.execute(ir: [.lt16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Gt16_0x0000_gt_0x1000() {
+    func testGt16_0x0000_gt_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1187,13 +1187,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_gt16(c, a, b)])
+        let computer = try! executor.execute(ir: [.gt16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Gt16_0x1000_gt_0x1000() {
+    func testGt16_0x1000_gt_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1202,13 +1202,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_gt16(c, a, b)])
+        let computer = try! executor.execute(ir: [.gt16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Gt16_0x1000_gt_0x0000() {
+    func testGt16_0x1000_gt_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1217,13 +1217,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_gt16(c, a, b)])
+        let computer = try! executor.execute(ir: [.gt16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Le16_0x0000_le_0x1000() {
+    func testLe16_0x0000_le_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1232,13 +1232,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_le16(c, a, b)])
+        let computer = try! executor.execute(ir: [.le16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Le16_0x1000_le_0x1000() {
+    func testLe16_0x1000_le_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1247,13 +1247,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_le16(c, a, b)])
+        let computer = try! executor.execute(ir: [.le16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Le16_0x1000_le_0x0000() {
+    func testLe16_0x1000_le_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1262,13 +1262,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_le16(c, a, b)])
+        let computer = try! executor.execute(ir: [.le16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Ge16_0x0000_ge_0x1000() {
+    func testGe16_0x0000_ge_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1277,13 +1277,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ge16(c, a, b)])
+        let computer = try! executor.execute(ir: [.ge16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x0000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 0)
     }
     
-    func testTAC_Ge16_0x1000_ge_0x1000() {
+    func testGe16_0x1000_ge_0x1000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1292,13 +1292,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x1000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ge16(c, a, b)])
+        let computer = try! executor.execute(ir: [.ge16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x1000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
     }
     
-    func testTAC_Ge16_0x1000_ge_0x0000() {
+    func testGe16_0x1000_ge_0x0000() {
         let a = 0x0104
         let b = 0x0108
         let c = 0x010a
@@ -1307,7 +1307,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x1000, to: a)
             computer.dataRAM.store16(value: 0x0000, to: b)
         }
-        let computer = try! executor.execute(ir: [.tac_ge16(c, a, b)])
+        let computer = try! executor.execute(ir: [.ge16(c, a, b)])
         XCTAssertEqual(computer.dataRAM.load16(from: a), 0x1000)
         XCTAssertEqual(computer.dataRAM.load16(from: b), 0x0000)
         XCTAssertEqual(computer.dataRAM.load(from: c), 1)
@@ -1415,7 +1415,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! execute(ir: [
             .storeImmediate(a, 0xaa),
             .storeImmediate(b, 0),
-            .tac_jz(".L0", b),
+            .jz(".L0", b),
             .storeImmediate(a, 0xbb),
             .label(".L0")
         ])
@@ -1428,7 +1428,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! execute(ir: [
             .storeImmediate(a, 0xaa),
             .storeImmediate(b, 1),
-            .tac_jz(".L0", b),
+            .jz(".L0", b),
             .storeImmediate(a, 0xbb),
             .label(".L0")
         ])

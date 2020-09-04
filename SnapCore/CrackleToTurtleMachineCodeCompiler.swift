@@ -160,29 +160,29 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .hlt: hlt()
         case .peekPeripheral: try peekPeripheral()
         case .pokePeripheral: try pokePeripheral()
-        case .tac_add(let c, let a, let b): try tac_add(c, a, b)
-        case .tac_add16(let c, let a, let b): try tac_add16(c, a, b)
-        case .tac_sub(let c, let a, let b): try tac_sub(c, a, b)
-        case .tac_sub16(let c, let a, let b): try tac_sub16(c, a, b)
-        case .tac_mul(let c, let a, let b): try tac_mul(c, a, b)
-        case .tac_mul16(let c, let a, let b): try tac_mul16(c, a, b)
-        case .tac_div(let c, let a, let b): try tac_div(c, a, b)
-        case .tac_div16(let c, let a, let b): try tac_div16(c, a, b)
-        case .tac_mod(let c, let a, let b): try tac_mod(c, a, b)
-        case .tac_mod16(let c, let a, let b): try tac_mod16(c, a, b)
-        case .tac_eq(let c, let a, let b): try tac_eq(c, a, b)
-        case .tac_eq16(let c, let a, let b): try tac_eq16(c, a, b)
-        case .tac_ne(let c, let a, let b): try tac_ne(c, a, b)
-        case .tac_ne16(let c, let a, let b): try tac_ne16(c, a, b)
-        case .tac_lt(let c, let a, let b): try tac_lt(c, a, b)
-        case .tac_lt16(let c, let a, let b): try tac_lt16(c, a, b)
-        case .tac_gt(let c, let a, let b): try tac_gt(c, a, b)
-        case .tac_gt16(let c, let a, let b): try tac_gt16(c, a, b)
-        case .tac_le(let c, let a, let b): try tac_le(c, a, b)
-        case .tac_le16(let c, let a, let b): try tac_le16(c, a, b)
-        case .tac_ge(let c, let a, let b): try tac_ge(c, a, b)
-        case .tac_ge16(let c, let a, let b): try tac_ge16(c, a, b)
-        case .tac_jz(let label, let test): try tac_jz(label, test)
+        case .add(let c, let a, let b): try add(c, a, b)
+        case .add16(let c, let a, let b): try add16(c, a, b)
+        case .sub(let c, let a, let b): try sub(c, a, b)
+        case .sub16(let c, let a, let b): try sub16(c, a, b)
+        case .mul(let c, let a, let b): try mul(c, a, b)
+        case .mul16(let c, let a, let b): try mul16(c, a, b)
+        case .div(let c, let a, let b): try div(c, a, b)
+        case .div16(let c, let a, let b): try div16(c, a, b)
+        case .mod(let c, let a, let b): try mod(c, a, b)
+        case .mod16(let c, let a, let b): try mod16(c, a, b)
+        case .eq(let c, let a, let b): try eq(c, a, b)
+        case .eq16(let c, let a, let b): try eq16(c, a, b)
+        case .ne(let c, let a, let b): try ne(c, a, b)
+        case .ne16(let c, let a, let b): try ne16(c, a, b)
+        case .lt(let c, let a, let b): try lt(c, a, b)
+        case .lt16(let c, let a, let b): try lt16(c, a, b)
+        case .gt(let c, let a, let b): try gt(c, a, b)
+        case .gt16(let c, let a, let b): try gt16(c, a, b)
+        case .le(let c, let a, let b): try le(c, a, b)
+        case .le16(let c, let a, let b): try le16(c, a, b)
+        case .ge(let c, let a, let b): try ge(c, a, b)
+        case .ge16(let c, let a, let b): try ge16(c, a, b)
+        case .jz(let label, let test): try jz(label, test)
         case .copyWordZeroExtend(let b, let a): try copyWordZeroExtend(b, a)
         case .copyWords(let dst, let src, let count): try copyWords(dst, src, count)
         case .copyWordsIndirectSource(let dst, let srcPtr, let count): try copyWordsIndirectSource(dst, srcPtr, count)
@@ -427,14 +427,14 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .B)
     }
     
-    private func pushReturnAddress() throws {
+    private func pushReturnAddress() throws { // TODO: need unit test for pushReturnAddress
         try assembler.mov(.A, .H)
         try pushAToStack()
         try assembler.mov(.A, .G)
         try pushAToStack()
     }
     
-    private func leafRet() throws {
+    private func leafRet() throws { // TODO: need unit test for leafRet
         try assembler.mov(.X, .G)
         try assembler.mov(.Y, .H)
         assembler.jmp()
@@ -442,7 +442,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
-    public func ret() throws {
+    public func ret() throws { // TODO: need unit test for ret
         let addressOfReturnAddressHi = allocateScratchMemory(1)
         
         try popInMemoryStackIntoRegisterB()
@@ -464,7 +464,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.hlt()
     }
     
-    public func peekPeripheral() throws {
+    public func peekPeripheral() throws { // TODO: need unit test for peekPeripheral
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.D, .B)
         try pop16()
@@ -474,7 +474,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    public func pokePeripheral() throws {
+    public func pokePeripheral() throws { // TODO: need unit test for pokePeripheral
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.D, .B)
         
@@ -501,7 +501,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.P, .A)
     }
         
-    private func tac_add(_ c: Int, _ a: Int, _ b: Int) throws {
+    private func add(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         try assembler.add(.NONE)
         try assembler.add(.M)
@@ -515,7 +515,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try setUV(c)
     }
     
-    private func tac_add16(_ c: Int, _ a: Int, _ b: Int) throws {
+    private func add16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         try assembler.mov(.A, .M)
         try setUV(b+1)
@@ -533,13 +533,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.adc(.M)
     }
     
-    private func tac_sub(_ c: Int, _ a: Int, _ b: Int) throws {
+    private func sub(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         try assembler.sub(.NONE)
         try assembler.sub(.M)
     }
     
-    private func tac_sub16(_ c: Int, _ a: Int, _ b: Int) throws {
+    private func sub16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         try assembler.mov(.A, .M)
         try setUV(b+1)
@@ -557,7 +557,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.sbc(.M)
     }
     
-    private func tac_mul(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
+    private func mul(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
@@ -605,7 +605,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func tac_mul16(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
+    private func mul16(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
         // Copy the multiplier to a scratch location because we modify it in
         // the loop.
         let multiplierAddress = allocateScratchMemory(2)
@@ -684,7 +684,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func tac_div(_ counter: Int, _ originalA: Int, _ b: Int) throws {
+    private func div(_ counter: Int, _ originalA: Int, _ b: Int) throws {
         // Copy `a' to a scratch location because we modify it in the loop.
         let a = allocateScratchMemory(1)
         try setUV(originalA)
@@ -752,7 +752,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func tac_div16(_ counterAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+    private func div16(_ counterAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         // Copy the dividend `a' to a scratch location because we modify it in
         // the loop.
         let addressOfA = allocateScratchMemory(2)
@@ -862,7 +862,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func tac_mod(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+    private func mod(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         let counterAddress = allocateScratchMemory(1)
         
         // Copy `a' to a scratch location because we modify it in the loop.
@@ -874,7 +874,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try div_modifyingA(counterAddress, resultAddress, addressOfB)
     }
     
-    private func tac_mod16(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+    private func mod16(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         let counterAddress = allocateScratchMemory(2)
         
         // Copy the dividend `a' to a scratch location because we modify it in
@@ -891,31 +891,31 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try div16_modifyingA(counterAddress, resultAddress, addressOfB)
     }
     
-    public func tac_eq(_ c: Int, _ a: Int, _ b: Int) throws {
-        try tac_comparison("JE", c, a, b)
+    public func eq(_ c: Int, _ a: Int, _ b: Int) throws {
+        try comparison("JE", c, a, b)
     }
     
-    public func tac_ne(_ c: Int, _ a: Int, _ b: Int) throws {
-        try tac_comparison("JNE", c, a, b)
+    public func ne(_ c: Int, _ a: Int, _ b: Int) throws {
+        try comparison("JNE", c, a, b)
     }
     
-    public func tac_lt(_ c: Int, _ a: Int, _ b: Int) throws {
-        try tac_comparison("JL", c, a, b)
+    public func lt(_ c: Int, _ a: Int, _ b: Int) throws {
+        try comparison("JL", c, a, b)
     }
     
-    public func tac_gt(_ c: Int, _ a: Int, _ b: Int) throws {
-        try tac_comparison("JG", c, a, b)
+    public func gt(_ c: Int, _ a: Int, _ b: Int) throws {
+        try comparison("JG", c, a, b)
     }
     
-    public func tac_le(_ c: Int, _ a: Int, _ b: Int) throws {
-        try tac_comparison("JLE", c, a, b)
+    public func le(_ c: Int, _ a: Int, _ b: Int) throws {
+        try comparison("JLE", c, a, b)
     }
     
-    public func tac_ge(_ c: Int, _ a: Int, _ b: Int) throws {
-        try tac_comparison("JGE", c, a, b)
+    public func ge(_ c: Int, _ a: Int, _ b: Int) throws {
+        try comparison("JGE", c, a, b)
     }
     
-    private func tac_comparison(_ comparison: String, _ c: Int, _ a: Int, _ b: Int) throws {
+    private func comparison(_ comparison: String, _ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a)
         try assembler.mov(.A, .M)
         
@@ -936,11 +936,11 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(tail)
     }
     
-    private func tac_eq16(_ c: Int, _ a: Int, _ b: Int) throws {
+    private func eq16(_ c: Int, _ a: Int, _ b: Int) throws {
         try eq16(c, a, b, 1, 0)
     }
     
-    private func tac_ne16(_ c: Int, _ a: Int, _ b: Int) throws {
+    private func ne16(_ c: Int, _ a: Int, _ b: Int) throws {
         try eq16(c, a, b, 0, 1)
     }
     
@@ -983,7 +983,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try label(label_tail)
     }
     
-    private func tac_lt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    private func lt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         
@@ -1052,7 +1052,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func tac_gt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    private func gt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         let labelThen = labelMaker.next()
@@ -1125,7 +1125,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func tac_le16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    private func le16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         // Load the low bytes of `a' and `b' into the A and B registers.
         try setUV(addressOfB+1)
         try assembler.mov(.A, .M)
@@ -1161,7 +1161,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func tac_ge16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    private func ge16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         // Load the low bytes of `a' and `b' into the A and B registers.
         try setUV(addressOfA+1)
         try assembler.mov(.A, .M)
@@ -1202,11 +1202,11 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .A)
     }
     
-    private func tac_jz(_ label: String, _ test: Int) throws {
-        try tac_jei(label, test, 0)
+    private func jz(_ label: String, _ test: Int) throws {
+        try jei(label, test, 0)
     }
     
-    private func tac_jei(_ label: String, _ addressOfTestValue: Int, _ valueToTestAgainst: Int) throws {
+    private func jei(_ label: String, _ addressOfTestValue: Int, _ valueToTestAgainst: Int) throws {
         try setUV(addressOfTestValue)
         try assembler.mov(.A, .M)
         try assembler.li(.B, valueToTestAgainst)
@@ -1239,7 +1239,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ count: Int) throws {
-        if count == 0 {
+        if count == 0 { // TODO: need unit test for case where count is zero
             return
         }
         
@@ -1261,7 +1261,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func copyWordsIndirectDestination(_ dstPtr: Int, _ src: Int, _ count: Int) throws {
-        if count == 0 {
+        if count == 0 { // TODO: need unit test for case where count is zero
             return
         }
         
@@ -1283,7 +1283,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func copyWordsIndirectDestinationIndirectSource(_ originalDstPtr: Int, _ originalSrcPtr: Int, _ count: Int) throws {
-        if count == 0 {
+        if count == 0 { // TODO: need unit test for case where count is zero
             return
         }
         

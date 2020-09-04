@@ -30,30 +30,30 @@ public enum CrackleInstruction: Equatable {
     case peekPeripheral
     case pokePeripheral
     
-    case tac_add(Int, Int, Int)
-    case tac_add16(Int, Int, Int)
-    case tac_sub(Int, Int, Int)
-    case tac_sub16(Int, Int, Int)
-    case tac_mul(Int, Int, Int)
-    case tac_mul16(Int, Int, Int)
-    case tac_div(Int, Int, Int)
-    case tac_div16(Int, Int, Int)
-    case tac_mod(Int, Int, Int)
-    case tac_mod16(Int, Int, Int)
-    case tac_eq(Int, Int, Int)
-    case tac_eq16(Int, Int, Int)
-    case tac_ne(Int, Int, Int)
-    case tac_ne16(Int, Int, Int)
-    case tac_lt(Int, Int, Int)
-    case tac_lt16(Int, Int, Int)
-    case tac_gt(Int, Int, Int)
-    case tac_gt16(Int, Int, Int)
-    case tac_le(Int, Int, Int)
-    case tac_le16(Int, Int, Int)
-    case tac_ge(Int, Int, Int)
-    case tac_ge16(Int, Int, Int)
+    case add(Int, Int, Int)
+    case add16(Int, Int, Int)
+    case sub(Int, Int, Int)
+    case sub16(Int, Int, Int)
+    case mul(Int, Int, Int)
+    case mul16(Int, Int, Int)
+    case div(Int, Int, Int)
+    case div16(Int, Int, Int)
+    case mod(Int, Int, Int)
+    case mod16(Int, Int, Int)
+    case eq(Int, Int, Int)
+    case eq16(Int, Int, Int)
+    case ne(Int, Int, Int)
+    case ne16(Int, Int, Int)
+    case lt(Int, Int, Int)
+    case lt16(Int, Int, Int)
+    case gt(Int, Int, Int)
+    case gt16(Int, Int, Int)
+    case le(Int, Int, Int)
+    case le16(Int, Int, Int)
+    case ge(Int, Int, Int)
+    case ge16(Int, Int, Int)
     
-    case tac_jz(String, Int) // (label, test) -- Branch if the word in memory at the address given by `test' is zero
+    case jz(String, Int) // (label, test) -- Branch if the word in memory at the address given by `test' is zero
     
     case copyWordZeroExtend(Int, Int) // copies an 8-bit word at the specified source address to a 16-bit slot at the specified destination address, filling the high bits with zero
     
@@ -105,51 +105,51 @@ public enum CrackleInstruction: Equatable {
             return "PEEK-PERIPHERAL"
         case .pokePeripheral:
             return "POKE-PERIPHERAL"
-        case .tac_add(let c, let a, let b):
+        case .add(let c, let a, let b):
             return String(format: "ADD 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_add16(let c, let a, let b):
+        case .add16(let c, let a, let b):
             return String(format: "ADD16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_sub(let c, let a, let b):
+        case .sub(let c, let a, let b):
             return String(format: "SUB 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_sub16(let c, let a, let b):
+        case .sub16(let c, let a, let b):
             return String(format: "SUB16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_mul(let c, let a, let b):
+        case .mul(let c, let a, let b):
             return String(format: "MUL 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_mul16(let c, let a, let b):
+        case .mul16(let c, let a, let b):
             return String(format: "MUL16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_div(let c, let a, let b):
+        case .div(let c, let a, let b):
             return String(format: "DIV 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_div16(let c, let a, let b):
+        case .div16(let c, let a, let b):
             return String(format: "DIV16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_mod(let c, let a, let b):
+        case .mod(let c, let a, let b):
             return String(format: "MOD 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_mod16(let c, let a, let b):
+        case .mod16(let c, let a, let b):
             return String(format: "MOD16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_eq(let c, let a, let b):
+        case .eq(let c, let a, let b):
             return String(format: "EQ 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_eq16(let c, let a, let b):
+        case .eq16(let c, let a, let b):
             return String(format: "EQ16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_ne(let c, let a, let b):
+        case .ne(let c, let a, let b):
             return String(format: "NE 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_ne16(let c, let a, let b):
+        case .ne16(let c, let a, let b):
             return String(format: "NE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_lt(let c, let a, let b):
+        case .lt(let c, let a, let b):
             return String(format: "LT 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_lt16(let c, let a, let b):
+        case .lt16(let c, let a, let b):
             return String(format: "LT16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_gt(let c, let a, let b):
+        case .gt(let c, let a, let b):
             return String(format: "GT 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_gt16(let c, let a, let b):
+        case .gt16(let c, let a, let b):
             return String(format: "GT16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_le(let c, let a, let b):
+        case .le(let c, let a, let b):
             return String(format: "LE 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_le16(let c, let a, let b):
+        case .le16(let c, let a, let b):
             return String(format: "LE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_ge(let c, let a, let b):
+        case .ge(let c, let a, let b):
             return String(format: "GE 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_ge16(let c, let a, let b):
+        case .ge16(let c, let a, let b):
             return String(format: "GE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
-        case .tac_jz(let label, let test):
+        case .jz(let label, let test):
             return String(format: "JZ %@, 0x%04x", label, test)
         case .copyWordZeroExtend(let b, let a):
             return String(format: "COPY-ZX 0x%04x, 0x%04x", b, a)

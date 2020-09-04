@@ -927,13 +927,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // stack. Copy it to the temporary we allocated for it, above.
         if typ.returnType.sizeof > 0 {
             instructions += [
-                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof)
+                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
+                .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
             ]
-            switch typ.returnType.sizeof {
-            case 1:  instructions += [.pop]
-            case 2:  instructions += [.pop16]
-            default: instructions += [.popn(typ.returnType.sizeof)]
-            }
             temporaryStack.push(tempReturnValue)
         }
         
@@ -951,7 +947,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private func pushTemporary(temporary: CompilerTemporary, explicitSize: Int) -> [CrackleInstruction] {
         let instructions: [CrackleInstruction] = [
-            .subsp(explicitSize),
+            .subi16(kStackPointerAddress, kStackPointerAddress, explicitSize),
             .copyWordsIndirectDestination(kStackPointerAddress, temporary.address, explicitSize)
         ]
         return instructions
@@ -960,13 +956,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func popTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
         let instructions: [CrackleInstruction] = [
             .copyWordsIndirectSource(temporary.address, kStackPointerAddress, temporary.size),
-            .popn(temporary.size)
+            .addi16(kStackPointerAddress, kStackPointerAddress, temporary.size)
         ]
         return instructions
     }
     
     private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
-        return [.subsp(typ.returnType.sizeof)]
+        return [.subi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)]
     }
     
     private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
@@ -990,7 +986,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             totalSize += arg.argumentType.sizeof
         }
         if totalSize > 0 {
-            return [.popn(totalSize)]
+            return [.addi16(kStackPointerAddress, kStackPointerAddress, totalSize)]
         } else {
             return []
         }
@@ -1006,7 +1002,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let tempReturnValue = temporaryAllocator.allocate(size: size)
         let instructions: [CrackleInstruction] = [
             .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, size),
-            .popn(size)
+            .addi16(kStackPointerAddress, kStackPointerAddress, size)
         ]
         temporaryStack.push(tempReturnValue)
         return instructions

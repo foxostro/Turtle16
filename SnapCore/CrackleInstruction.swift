@@ -14,8 +14,8 @@ public enum CrackleInstruction: Equatable {
     case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack
     case pop // pop the stack
     case pop16 // pop a sixteen-bit value from the stack
-    case subsp(Int) // subtract the specified immediate value from the stack pointer
-    case popn(Int) // pop the specified number of words from the stack
+    case subi16(Int, Int, Int) // (c, a, imm) -- computes c = a - imm
+    case addi16(Int, Int, Int) // (c, a, imm) -- computes c = a + imm
     case load(Int) // load from the specified address, push to the stack
     case load16(Int) // load a 16-bit value from the specified address, push to the stack in two words
     case storeImmediate(Int, Int)
@@ -78,10 +78,10 @@ public enum CrackleInstruction: Equatable {
             return "POP"
         case .pop16:
             return "POP16"
-        case .subsp(let count):
-            return "SUBSP \(count)"
-        case .popn(let count):
-            return "POPN \(count)"
+        case .subi16(let c, let a, let imm):
+            return String(format: "SUBI16 0x%04x, 0x%04x, 0x%04x", c, a, imm)
+        case .addi16(let c, let a, let imm):
+            return String(format: "ADDI16 0x%04x, 0x%04x, 0x%04x", c, a, imm)
         case .load(let address):
             return String(format: "LOAD 0x%04x", address)
         case .load16(let address):

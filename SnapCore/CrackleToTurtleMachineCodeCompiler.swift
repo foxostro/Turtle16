@@ -145,8 +145,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .push16(let value): try push16(value)
         case .pop: try pop()
         case .pop16: try pop16()
-        case .subsp(let count): try subsp(count)
-        case .popn(let count): try popn(count)
+        case .subi16(let c, let a, let b): try subi16(c, a, b)
+        case .addi16(let c, let a, let b): try addi16(c, a, b)
         case .load(let address): try load(from: address)
         case .load16(let address): try load16(from: address)
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
@@ -271,27 +271,36 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popInMemoryStackIntoRegisterB()
     }
     
-    private func subsp(_ count: Int) throws {
-        try setUV(kStackPointerAddressLo)
+    private func subi16(_ c: Int, _ a: Int, _ imm: Int) throws {
+        try setUV(a+1)
         try assembler.mov(.A, .M)
-        try assembler.li(.B, count & 0xff)
-        try setUV(kStackPointerAddressLo)
+        try assembler.li(.B, imm & 0xff)
+        try setUV(c+1)
         try assembler.sub(.NONE)
         try assembler.sub(.M)
         
-        try setUV(kStackPointerAddressHi)
+        try setUV(a+0)
         try assembler.mov(.A, .M)
-        try assembler.li(.B, (count >> 8) & 0xff)
-        try setUV(kStackPointerAddressHi)
+        try assembler.li(.B, (imm >> 8) & 0xff)
+        try setUV(c+0)
         try assembler.sbc(.NONE)
         try assembler.sbc(.M)
     }
     
-    private func popn(_ count: Int) throws {
-        // This can probably be optimized.
-        for _ in 0..<count {
-            try pop()
-        }
+    private func addi16(_ c: Int, _ a: Int, _ imm: Int) throws {
+        try setUV(a+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, imm & 0xff)
+        try setUV(c+1)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        
+        try setUV(a+0)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, (imm >> 8) & 0xff)
+        try setUV(c+0)
+        try assembler.adc(.NONE)
+        try assembler.adc(.M)
     }
     
     private func pushAToStack() throws {

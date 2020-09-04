@@ -13,6 +13,7 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
+    let kStackPointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
     let kFramePointerHi = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
     let kFramePointerLo = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
     
@@ -165,13 +166,13 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfff8)
     }
     
-    func testSubsp() {
-        let computer = try! execute(ir: [.subsp(500)])
+    func testSubi16() {
+        let computer = try! execute(ir: [.subi16(kStackPointerAddress, kStackPointerAddress, 500)])
         XCTAssertEqual(computer.stackPointer, Int(UInt16(0) &- 500))
     }
     
-    func testPopnWithStackDepthFive() {
-        let computer = try! execute(ir: [.push16(1000), .push16(2000), .push16(3000), .push16(4000), .push16(5000), .popn(2)])
+    func testAddi16() {
+        let computer = try! execute(ir: [.push16(1000), .push16(2000), .push16(3000), .push16(4000), .push16(5000), .addi16(kStackPointerAddress, kStackPointerAddress, 2)])
         XCTAssertEqual(computer.stack16(at: 0), 4000)
         XCTAssertEqual(computer.stack16(at: 2), 3000)
         XCTAssertEqual(computer.stack16(at: 4), 2000)

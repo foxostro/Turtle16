@@ -152,11 +152,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case (.u16, .minus):
             result += childExpr
             result += [.storeImmediate16(a.address, 0)]
-            result += [.tac_sub16(c.address, a.address, b.address)]
+            result += [.sub16(c.address, a.address, b.address)]
         case (.u8, .minus):
             result += childExpr
             result += [.storeImmediate(a.address, 0)]
-            result += [.tac_sub(c.address, a.address, b.address)]
+            result += [.sub(c.address, a.address, b.address)]
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error about an invalid unary operator before
@@ -184,7 +184,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_eq(c.address, a.address, b.address)]
+            let instructions = right + left + [.eq(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -199,7 +199,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_eq16(c.address, a.address, b.address)]
+            let instructions = right + left + [.eq16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -216,7 +216,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_eq(c.address, a.address, b.address)]
+            let instructions = right + left + [.eq(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -233,7 +233,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_ne(c.address, a.address, b.address)]
+            let instructions = right + left + [.ne(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -248,7 +248,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_ne16(c.address, a.address, b.address)]
+            let instructions = right + left + [.ne16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -265,7 +265,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_ne(c.address, a.address, b.address)]
+            let instructions = right + left + [.ne(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -282,7 +282,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_lt(c.address, a.address, b.address)]
+            let instructions = right + left + [.lt(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -297,7 +297,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_lt16(c.address, a.address, b.address)]
+            let instructions = right + left + [.lt16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -314,7 +314,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_gt(c.address, a.address, b.address)]
+            let instructions = right + left + [.gt(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -329,7 +329,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_gt16(c.address, a.address, b.address)]
+            let instructions = right + left + [.gt16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -346,7 +346,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_le(c.address, a.address, b.address)]
+            let instructions = right + left + [.le(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -361,7 +361,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_le16(c.address, a.address, b.address)]
+            let instructions = right + left + [.le16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -378,7 +378,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_ge(c.address, a.address, b.address)]
+            let instructions = right + left + [.ge(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -393,7 +393,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_ge16(c.address, a.address, b.address)]
+            let instructions = right + left + [.ge16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -410,7 +410,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_add(c.address, a.address, b.address)]
+            let instructions = right + left + [.add(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -425,7 +425,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_add16(c.address, a.address, b.address)]
+            let instructions = right + left + [.add16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -447,7 +447,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_sub(c.address, a.address, b.address)]
+            let instructions = right + left + [.sub(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -462,7 +462,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_sub16(c.address, a.address, b.address)]
+            let instructions = right + left + [.sub16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -484,7 +484,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_mul(c.address, a.address, b.address)]
+            let instructions = right + left + [.mul(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -499,7 +499,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_mul16(c.address, a.address, b.address)]
+            let instructions = right + left + [.mul16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -521,7 +521,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_div(c.address, a.address, b.address)]
+            let instructions = right + left + [.div(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -536,7 +536,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_div16(c.address, a.address, b.address)]
+            let instructions = right + left + [.div16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -558,7 +558,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_mod(c.address, a.address, b.address)]
+            let instructions = right + left + [.mod(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -573,7 +573,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
-            let instructions = right + left + [.tac_mod16(c.address, a.address, b.address)]
+            let instructions = right + left + [.mod16(c.address, a.address, b.address)]
             temporaryStack.push(c)
             a.consume()
             b.consume()
@@ -646,7 +646,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
 
                     // Increment the lvalue so we can do the next element.
                     if i != literalArray.elements.count-1 {
-                        instructions += [.tac_add16(lvalue.address, lvalue.address, tempElementSize.address)]
+                        instructions += [.add16(lvalue.address, lvalue.address, tempElementSize.address)]
                     }
                 }
                 

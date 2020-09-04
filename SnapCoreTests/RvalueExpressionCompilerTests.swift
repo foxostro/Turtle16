@@ -111,7 +111,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 42),
             .storeImmediate(t1, 0),
-            .tac_sub(t2, t1, t0)
+            .sub(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -127,7 +127,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 0),
-            .tac_sub16(t2, t1, t0)
+            .sub16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -143,7 +143,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 0),
-            .tac_sub16(t2, t1, t0)
+            .sub16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -195,7 +195,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1001),
-            .tac_eq16(t2, t1, t0)
+            .eq16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -210,7 +210,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_eq16(t2, t1, t0)
+            .eq16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -226,7 +226,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_eq16(t2, t0, t1)
+            .eq16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -262,7 +262,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_add(t2, t1, t0)
+            .add(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -278,7 +278,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_eq16(t1, t2, t0)
+            .eq16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -293,7 +293,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_eq(t2, t1, t0)
+            .eq(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -308,7 +308,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 1),
-            .tac_eq(t2, t1, t0)
+            .eq(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -343,7 +343,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 0),
-            .tac_eq(t2, t1, t0)
+            .eq(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -358,7 +358,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 0),
-            .tac_eq(t2, t1, t0)
+            .eq(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -409,7 +409,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 0),
-            .tac_eq(t2, t1, t0)
+            .eq(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -460,7 +460,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_ne16(t2, t1, t0)
+            .ne16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -475,7 +475,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1001),
             .storeImmediate16(t1, 1000),
-            .tac_ne16(t2, t1, t0)
+            .ne16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -491,7 +491,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_ne16(t2, t0, t1)
+            .ne16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -527,7 +527,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_ne16(t1, t2, t0)
+            .ne16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -542,7 +542,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_ne(t2, t1, t0)
+            .ne(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -557,7 +557,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 1),
-            .tac_ne(t2, t1, t0)
+            .ne(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -592,7 +592,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 0),
-            .tac_ne(t2, t1, t0)
+            .ne(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -607,7 +607,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 0),
-            .tac_ne(t2, t1, t0)
+            .ne(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -658,7 +658,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 0),
-            .tac_ne(t2, t1, t0)
+            .ne(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -709,7 +709,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 500),
             .storeImmediate16(t1, 1000),
-            .tac_lt16(t2, t1, t0)
+            .lt16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -724,7 +724,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1001),
             .storeImmediate16(t1, 1000),
-            .tac_lt16(t2, t1, t0)
+            .lt16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -740,7 +740,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_lt16(t2, t0, t1)
+            .lt16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -767,7 +767,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_lt16(t1, t2, t0)
+            .lt16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -783,7 +783,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_lt(t2, t1, t0)
+            .lt(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -798,7 +798,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 0),
-            .tac_lt(t2, t1, t0)
+            .lt(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -872,7 +872,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x1000),
             .storeImmediate16(t1, 0x2000),
-            .tac_gt16(t2, t1, t0)
+            .gt16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -887,7 +887,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x2000),
             .storeImmediate16(t1, 0x1000),
-            .tac_gt16(t2, t1, t0)
+            .gt16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -902,7 +902,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x1000),
             .storeImmediate16(t1, 0x1000),
-            .tac_gt16(t2, t1, t0)
+            .gt16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -918,7 +918,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_gt16(t2, t0, t1)
+            .gt16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -944,7 +944,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_gt16(t1, t2, t0)
+            .gt16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -959,7 +959,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_gt(t2, t1, t0)
+            .gt(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -974,7 +974,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 1),
-            .tac_gt(t2, t1, t0)
+            .gt(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1047,7 +1047,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 500),
-            .tac_le16(t2, t1, t0)
+            .le16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1062,7 +1062,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_le16(t2, t1, t0)
+            .le16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1077,7 +1077,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 500),
             .storeImmediate16(t1, 1000),
-            .tac_le16(t2, t1, t0)
+            .le16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1093,7 +1093,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_le16(t2, t0, t1)
+            .le16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1119,7 +1119,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_le16(t1, t2, t0)
+            .le16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1134,7 +1134,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 0),
-            .tac_le(t2, t1, t0)
+            .le(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1149,7 +1149,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_le(t2, t1, t0)
+            .le(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1164,7 +1164,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 1),
-            .tac_le(t2, t1, t0)
+            .le(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1237,7 +1237,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 500),
-            .tac_ge16(t2, t1, t0)
+            .ge16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1252,7 +1252,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_ge16(t2, t1, t0)
+            .ge16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1267,7 +1267,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 500),
             .storeImmediate16(t1, 1000),
-            .tac_ge16(t2, t1, t0)
+            .ge16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1283,7 +1283,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_ge16(t2, t0, t1)
+            .ge16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1309,7 +1309,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_ge16(t1, t2, t0)
+            .ge16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1324,7 +1324,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 0),
-            .tac_ge(t2, t1, t0)
+            .ge(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1339,7 +1339,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_ge(t2, t1, t0)
+            .ge(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1354,7 +1354,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 0),
             .storeImmediate(t1, 1),
-            .tac_ge(t2, t1, t0)
+            .ge(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1426,7 +1426,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_add16(t2, t1, t0)
+            .add16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1442,7 +1442,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_add(t2, t1, t0)
+            .add(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1458,7 +1458,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1),
             .storeImmediate16(t1, 1000),
-            .tac_add16(t2, t1, t0)
+            .add16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1474,7 +1474,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_add16(t2, t1, t0)
+            .add16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1491,7 +1491,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_add16(t2, t0, t1)
+            .add16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1519,7 +1519,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_add16(t1, t2, t0)
+            .add16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1535,7 +1535,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 1),
-            .tac_add(t2, t1, t0)
+            .add(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1623,7 +1623,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expected: [CrackleInstruction] = [
            .storeImmediate16(t0, 999),
            .storeImmediate16(t1, 1000),
-           .tac_sub16(t2, t1, t0)
+           .sub16(t2, t1, t0)
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
@@ -1639,7 +1639,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expected: [CrackleInstruction] = [
            .storeImmediate(t0, 1),
            .storeImmediate(t1, 255),
-           .tac_sub(t2, t1, t0)
+           .sub(t2, t1, t0)
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
@@ -1655,7 +1655,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        let expected: [CrackleInstruction] = [
            .storeImmediate16(t0, 999),
            .storeImmediate16(t1, 1000),
-           .tac_sub16(t2, t1, t0)
+           .sub16(t2, t1, t0)
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
@@ -1671,7 +1671,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_sub16(t2, t1, t0)
+            .sub16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1688,7 +1688,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_sub16(t2, t0, t1)
+            .sub16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1715,7 +1715,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 2),
-            .tac_sub(t2, t1, t0)
+            .sub(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1732,7 +1732,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_sub16(t1, t2, t0)
+            .sub16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1748,7 +1748,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 2),
-            .tac_sub(t2, t1, t0)
+            .sub(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1836,7 +1836,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 256),
             .storeImmediate16(t1, 256),
-            .tac_mul16(t2, t1, t0)
+            .mul16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1852,7 +1852,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 1),
             .storeImmediate(t1, 255),
-            .tac_mul(t2, t1, t0)
+            .mul(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1868,7 +1868,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 256),
             .storeImmediate16(t1, 256),
-            .tac_mul16(t2, t1, t0)
+            .mul16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1884,7 +1884,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 256),
             .storeImmediate16(t1, 256),
-            .tac_mul16(t2, t1, t0)
+            .mul16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1901,7 +1901,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_mul16(t2, t0, t1)
+            .mul16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1928,7 +1928,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 255),
             .storeImmediate(t1, 1),
-            .tac_mul(t2, t1, t0)
+            .mul(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1945,7 +1945,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_mul16(t1, t2, t0)
+            .mul16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -1961,7 +1961,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 3),
             .storeImmediate(t1, 2),
-            .tac_mul(t2, t1, t0)
+            .mul(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2049,7 +2049,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x1000),
             .storeImmediate16(t1, 0x1000),
-            .tac_div16(t2, t1, t0)
+            .div16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2065,7 +2065,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 4),
             .storeImmediate(t1, 12),
-            .tac_div(t2, t1, t0)
+            .div(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2081,7 +2081,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x1000),
             .storeImmediate16(t1, 0x1000),
-            .tac_div16(t2, t1, t0)
+            .div16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2097,7 +2097,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x1000),
             .storeImmediate16(t1, 0x1000),
-            .tac_div16(t2, t1, t0)
+            .div16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2114,7 +2114,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_div16(t2, t0, t1)
+            .div16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2141,7 +2141,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 4),
             .storeImmediate(t1, 12),
-            .tac_div(t2, t1, t0)
+            .div(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2158,7 +2158,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_div16(t1, t2, t0)
+            .div16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2174,7 +2174,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 4),
             .storeImmediate(t1, 12),
-            .tac_div(t2, t1, t0)
+            .div(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2262,7 +2262,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_mod16(t2, t1, t0)
+            .mod16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2278,7 +2278,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 4),
             .storeImmediate(t1, 15),
-            .tac_mod(t2, t1, t0)
+            .mod(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2294,7 +2294,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_mod16(t2, t1, t0)
+            .mod16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2310,7 +2310,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 1000),
             .storeImmediate16(t1, 1000),
-            .tac_mod16(t2, t1, t0)
+            .mod16(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2327,7 +2327,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate(t0, 1),
             .copyWordZeroExtend(t1, t0),
             .storeImmediate16(t0, 1000),
-            .tac_mod16(t2, t0, t1)
+            .mod16(t2, t0, t1)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2354,7 +2354,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 4),
             .storeImmediate(t1, 15),
-            .tac_mod(t2, t1, t0)
+            .mod(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2371,7 +2371,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 1000),
             .storeImmediate(t1, 1),
             .copyWordZeroExtend(t2, t1),
-            .tac_mod16(t1, t2, t0)
+            .mod16(t1, t2, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -2387,7 +2387,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 4),
             .storeImmediate(t1, 15),
-            .tac_mod(t2, t1, t0)
+            .mod(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -3485,7 +3485,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expected: [CrackleInstruction] = [
             .storeImmediate(t0, 42),
             .storeImmediate(t1, 0),
-            .tac_sub(t2, t1, t0)
+            .sub(t2, t1, t0)
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()

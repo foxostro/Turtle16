@@ -166,13 +166,9 @@ public class SnapToCrackleCompiler: NSObject {
         
         // If the symbol is on the stack then allocate storage for it now.
         if symbol.storage == .stackStorage {
-            let temporaryAllocator = CompilerTemporariesAllocator()
-            let temp = temporaryAllocator.allocate()
             emit([
-                .storeImmediate16(temp.address, symbol.type.sizeof),
-                .tac_sub16(kStackPointerAddress, kStackPointerAddress, temp.address),
+                .subi16(kStackPointerAddress, kStackPointerAddress, symbol.type.sizeof)
             ])
-            temp.consume()
         }
         
         try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,

@@ -2479,9 +2479,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
-            .storeImmediate16(t1, 0x0010),           // t1 = 0x0010
-            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
-            .copyWordsIndirectSource(t0, t2, 1),     // t0 = *t2
+            .subi16(t1, t0, 0x0010),                 // t1 = t0 - offset
+            .copyWordsIndirectSource(t0, t1, 1),     // t0 = *t1
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
@@ -2494,8 +2493,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0xaa)
-        XCTAssertEqual(computer.dataRAM.load16(from: t1), 0x0010)
-        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0xfff0)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 0xfff0)
         XCTAssertEqual(computer.dataRAM.load(from: 0xfff0), 0xaa)
     }
     
@@ -2506,9 +2504,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
-            .storeImmediate16(t1, 0x0010),           // t1 = 0x0010
-            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
-            .copyWordsIndirectSource(t0, t2, 2),     // t0 = *t2
+            .subi16(t1, t0, 0x0010),                 // t1 = t0 - 0x0010
+            .copyWordsIndirectSource(t0, t1, 2),     // t0 = *t1
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
@@ -2730,10 +2727,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
-            .storeImmediate16(t1, offset),           // t1 = offset
-            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .subi16(t1, t0, offset),                 // t1 = t0 - offset
             .storeImmediate(t0, 1),                  // t0 = true
-            .copyWordsIndirectDestination(t2, t0, 1) // *t2 = t0
+            .copyWordsIndirectDestination(t1, t0, 1) // *t1 = t0
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
@@ -2751,10 +2747,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
-            .storeImmediate16(t1, offset),           // t1 = offset
-            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .subi16(t1, t0, offset),                 // t1 = t0 - offset
             .storeImmediate(t0, 42),                 // t0 = 42
-            .copyWordsIndirectDestination(t2, t0, 1) // *t2 = t0
+            .copyWordsIndirectDestination(t1, t0, 1) // *t1 = t0
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
@@ -2772,10 +2767,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
-            .storeImmediate16(t1, offset),           // t1 = offset
-            .tac_sub16(t2, t0, t1),                  // t2 = t0 - t1
+            .subi16(t1, t0, offset),                 // t1 = t0 - offset
             .storeImmediate16(t0, value),            // t0 = value
-            .copyWordsIndirectDestination(t2, t0, 2) // *t2 = t0
+            .copyWordsIndirectDestination(t1, t0, 2) // *t1 = t0
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()

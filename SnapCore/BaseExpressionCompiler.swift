@@ -81,9 +81,9 @@ public class BaseExpressionCompiler: NSObject {
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
         let src = temporaryStack.pop()
         let dst = temporaryAllocator.allocate(size: type.sizeof)
-        temporaryStack.push(dst)
-        src.consume()
         instructions += [.copyWordsIndirectSource(dst.address, src.address, type.sizeof)]
+        src.consume()
+        temporaryStack.push(dst)
         return instructions
     }
     
@@ -311,8 +311,8 @@ public class BaseExpressionCompiler: NSObject {
         // Extract the array base address from the slice structure.
         let baseAddress = temporaryAllocator.allocate()
         temporaryStack.push(baseAddress)
-        sliceAddress.consume()
         instructions += [.copyWordsIndirectSource(baseAddress.address, sliceAddress.address, 2)]
+        sliceAddress.consume()
         
         instructions += try computeAddressOfArrayElement(expr, elementType)
         
@@ -341,9 +341,9 @@ public class BaseExpressionCompiler: NSObject {
         // Extract the count from the slice structure too.
         let tempTwo = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempTwo.address, 2)]
-        tempTwo.consume()
         let tempArrayCountAddress = temporaryAllocator.allocate()
         instructions += [.add16(tempArrayCountAddress.address, tempSliceAddress.address, tempTwo.address)]
+        tempTwo.consume()
         let tempArrayCount = temporaryAllocator.allocate()
         instructions += [.copyWordsIndirectSource(tempArrayCount.address, tempArrayCountAddress.address, 2)]
         tempArrayCountAddress.consume()
@@ -362,10 +362,7 @@ public class BaseExpressionCompiler: NSObject {
         
         // Subtract one so we can avoid a limit which might wrap around the
         // bottom of the stack from 0xffff to 0x0000.
-        let tempOne = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempOne.address, 1)]
-        tempOne.consume()
-        instructions += [.sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
+        instructions += [.subi16(tempArrayLimit.address, tempArrayLimit.address, 1)]
         
         // If (limit-1) < (access address) then the access is unacceptable.
         let tempIsUnacceptable = temporaryAllocator.allocate()

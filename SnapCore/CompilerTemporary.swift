@@ -7,7 +7,11 @@
 //
 
 public class CompilerTemporary: NSObject {
-    public let address: Int
+    public let unsafeAddress: Int
+    public var address: Int {
+        assert(refCount > 0)
+        return unsafeAddress
+    }
     public let size: Int
     public private(set) var refCount = 1
     weak var allocator: CompilerTemporariesAllocator!
@@ -15,7 +19,7 @@ public class CompilerTemporary: NSObject {
     public init(address: Int, size: Int, allocator: CompilerTemporariesAllocator) {
         assert(address >= 0)
         assert(size >= 0)
-        self.address = address
+        self.unsafeAddress = address
         self.size = size
         self.allocator = allocator
     }
@@ -29,7 +33,7 @@ public class CompilerTemporary: NSObject {
     }
     
     public override var debugDescription: String {
-        let addressString = String(format: "0x%04x", address)
+        let addressString = String(format: "0x%04x", unsafeAddress)
         return "<\(type(of: self)): address=\(addressString), size=\(size), refCount=\(refCount)>"
     }
 }

@@ -43,9 +43,9 @@ public class CompilerTemporariesAllocator: NSObject {
     
     public func free(_ temporary: CompilerTemporary) {
         assert(temporary.refCount == 0)
-        indexSet.insert(integersIn: temporary.address ..< (temporary.address+temporary.size))
+        indexSet.insert(integersIn: temporary.unsafeAddress ..< (temporary.unsafeAddress+temporary.size))
         liveTemporaries.removeAll(where: {
-            indexSet.contains(integersIn: $0.address ..< ($0.address+$0.size))
+            indexSet.contains(integersIn: $0.unsafeAddress ..< ($0.unsafeAddress+$0.size))
         })
     }
 }

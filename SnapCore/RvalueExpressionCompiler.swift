@@ -792,13 +792,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 instructions += try compile(expression: rexpr)
                 let tempRightExpr = temporaryStack.pop()
                 
-                let tempRhsSize = temporaryAllocator.allocate()
                 instructions += [
                     // stackPointer -= rhsSize
-                    .storeImmediate16(tempRhsSize.address, rhsSize),
-                    .tac_sub16(kStackPointerAddress, kStackPointerAddress, tempRhsSize.address),
+                    .subi16(kStackPointerAddress, kStackPointerAddress, rhsSize),
                 ]
-                tempRhsSize.consume()
                 
                 instructions += [
                     // Copy the rhs result to the stack.

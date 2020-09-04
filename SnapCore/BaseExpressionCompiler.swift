@@ -104,19 +104,15 @@ public class BaseExpressionCompiler: NSObject {
             ]
         }
         
-        let temp_offset = temporaryAllocator.allocate()
         let temp_result = temporaryAllocator.allocate()
         
         if offset >= 0 {
-            instructions += [.storeImmediate16(temp_offset.address, offset)]
-            instructions += [.tac_sub16(temp_result.address, temp_framePointer.address, temp_offset.address)]
+            instructions += [.subi16(temp_result.address, temp_framePointer.address, offset)]
         } else {
-            instructions += [.storeImmediate16(temp_offset.address, -offset)]
-            instructions += [.tac_add16(temp_result.address, temp_framePointer.address, temp_offset.address)]
+            instructions += [.addi16(temp_result.address, temp_framePointer.address, -offset)]
         }
         
         temporaryStack.push(temp_result)
-        temp_offset.consume()
         temp_framePointer.consume()
         
         return instructions
@@ -192,7 +188,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
         
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
+        instructions += [.tac_mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)] // TODO: a MULI16 instruction would be useful here.
         tempArrayCount.consume()
         tempArrayElementSize.consume()
         
@@ -203,10 +199,7 @@ public class BaseExpressionCompiler: NSObject {
         
         // Subtract one so we can avoid a limit which might wrap around the
         // bottom of the stack from 0xffff to 0x0000.
-        let tempOne = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempOne.address, 1)]
-        instructions += [.tac_sub16(tempArrayLimit.address, tempArrayLimit.address, tempOne.address)]
-        tempOne.consume()
+        instructions += [.subi16(tempArrayLimit.address, tempArrayLimit.address, 1)]
         
         // If (limit-1) < (access address) then the access is unacceptable.
         let tempIsUnacceptable = temporaryAllocator.allocate()
@@ -243,12 +236,9 @@ public class BaseExpressionCompiler: NSObject {
         
         // Copy the string onto the stack.
         let tempDstAddress = temporaryAllocator.allocate()
-        let tempOffset = temporaryAllocator.allocate()
         let tempCharacter = temporaryAllocator.allocate()
         instructions += [
-            .storeImmediate16(tempOffset.address, kSliceSize),
-            .tac_add16(tempDstAddress.address, kStackPointerAddress, tempOffset.address),
-            .storeImmediate16(tempOffset.address, 1)
+            .addi16(tempDstAddress.address, kStackPointerAddress, kSliceSize)
         ]
         for i in 0..<n {
             instructions += [
@@ -257,7 +247,7 @@ public class BaseExpressionCompiler: NSObject {
             ]
             if i != n-1 {
                 instructions += [
-                    .tac_add16(tempDstAddress.address, tempDstAddress.address, tempOffset.address)
+                    .addi16(tempDstAddress.address, tempDstAddress.address, 1)
                 ]
             }
         }
@@ -269,18 +259,15 @@ public class BaseExpressionCompiler: NSObject {
         assert(kSliceBaseAddressOffset == 0)
         assert(kSliceBaseAddressSize == 2)
         instructions += [
-            .storeImmediate16(tempOffset.address, kSliceSize),
-            .tac_add16(tempArrayBaseAddress.address, kStackPointerAddress, tempOffset.address),
+            .addi16(tempArrayBaseAddress.address, kStackPointerAddress, kSliceSize),
             .copyWordsIndirectDestination(kStackPointerAddress, tempArrayBaseAddress.address, kSliceBaseAddressSize),
-                
-            .storeImmediate16(tempOffset.address, kSliceCountOffset),
-            .tac_add16(tempDstAddress.address, kStackPointerAddress, tempOffset.address),
+            
+            .addi16(tempDstAddress.address, kStackPointerAddress, kSliceCountOffset),
             .storeImmediate16(tempCount.address, n),
             .copyWordsIndirectDestination(tempDstAddress.address, tempCount.address, kSliceCountSize),
         ]
         tempCount.consume()
         tempArrayBaseAddress.consume()
-        tempOffset.consume()
         tempDstAddress.consume()
         
         // Jump to the panic routine.

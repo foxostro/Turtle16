@@ -147,8 +147,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .pop16: try pop16()
         case .subi16(let c, let a, let b): try subi16(c, a, b)
         case .addi16(let c, let a, let b): try addi16(c, a, b)
-        case .load(let address): try load(from: address)
-        case .load16(let address): try load16(from: address)
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
         case .label(let name): try label(name)
@@ -337,29 +335,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popInMemoryStackIntoRegisterB()
         try assembler.mov(.A, .B)
         try popInMemoryStackIntoRegisterB()
-    }
-    
-    public func load(from address: Int) throws {
-        try decrementStackPointer()
-        
-        // Load the value from RAM to A.
-        try setUV(address)
-        try assembler.mov(.A, .M)
-        
-        try loadStackPointerIntoUVandXY()
-        
-        // Write A (the value we loaded) to the new top of the stack.
-        try assembler.mov(.M, .A)
-    }
-    
-    public func load16(from address: Int) throws {
-        try setUV(address+1)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        try setUV(address+0)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
     }
     
     public func storeImmediate(_ address: Int, _ value: Int) throws {

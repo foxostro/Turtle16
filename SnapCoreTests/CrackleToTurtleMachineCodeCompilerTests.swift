@@ -325,50 +325,6 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.framePointer, 0x0000)
     }
     
-    func testLoadIndirectN_1() {
-        let ir: [CrackleInstruction] = [
-            .push16(0x0010),
-            .loadIndirectN(1)
-        ]
-        let executor = CrackleExecutor()
-        executor.configure = {computer in
-            computer.dataRAM.store(value: 0x01, to: 0x0010)
-        }
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack(at: 0), 0x01)
-    }
-    
-    func testLoadIndirectN_2() {
-        let ir: [CrackleInstruction] = [
-            .push16(0x0010),
-            .loadIndirectN(2)
-        ]
-        let executor = CrackleExecutor()
-        executor.configure = {computer in
-            computer.dataRAM.store16(value: 0xabcd, to: 0x0010)
-        }
-        let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.stack16(at: 0), 0xabcd)
-    }
-    
-    func testLoadIndirectN_3() {
-        let ir: [CrackleInstruction] = [
-            .push16(0x0010),
-            .loadIndirectN(3)
-        ]
-        let executor = CrackleExecutor()
-        executor.configure = {computer in
-            computer.dataRAM.store(value: 0x01, to: 0x0010)
-            computer.dataRAM.store(value: 0x02, to: 0x0011)
-            computer.dataRAM.store(value: 0x03, to: 0x0012)
-        }
-        let computer = try! executor.execute(ir: ir)
-        let address = computer.stackPointer
-        XCTAssertEqual(computer.dataRAM.load(from: address + 0), 0x01)
-        XCTAssertEqual(computer.dataRAM.load(from: address + 1), 0x02)
-        XCTAssertEqual(computer.dataRAM.load(from: address + 2), 0x03)
-    }
-    
     func testTAC_Add() {
         let a = 0x0104
         let b = 0x0108

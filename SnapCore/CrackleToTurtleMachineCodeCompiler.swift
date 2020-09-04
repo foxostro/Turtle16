@@ -151,7 +151,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .load16(let address): try load16(from: address)
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
-        case .loadIndirectN(let count): try loadIndirectN(count)
         case .label(let name): try label(name)
         case .jmp(let label): try jmp(label)
         case .jalr(let label): try jalr(label)
@@ -380,110 +379,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
             throw CompilerError(sourceAnchor: currentSourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }
         labelTable[name] = assembler.programCounter
-    }
-    
-    public func loadIndirectN(_ count: Int) throws {
-        try pop16()
-        
-        // Stash the source address in scratch memory
-        let sourceAddress = allocateScratchMemory(2)
-        try setUV(sourceAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(sourceAddress+1)
-        try assembler.mov(.M, .B)
-        
-        // Stash the stack pointer in scratch memory
-        try setUV(kStackPointerAddressHi)
-        try assembler.mov(.A, .M)
-        let stashedStackPointerAddress = allocateScratchMemory(2)
-        try setUV(stashedStackPointerAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(kStackPointerAddressLo)
-        try assembler.mov(.A, .M)
-        try setUV(stashedStackPointerAddress+1)
-        try assembler.mov(.M, .A)
-        
-        // Stash the count in scratch memory.
-        let stashedCountAddress = allocateScratchMemory(2)
-        try setUV(stashedCountAddress+0)
-        try assembler.li(.M, (count>>8) & 0xff)
-        try setUV(stashedCountAddress+1)
-        try assembler.li(.M, count & 0xff)
-        
-        // Perform a 16-bit subtraction to subtract the count from SP.
-        try setUV(stashedStackPointerAddress+1)
-        try assembler.mov(.A, .M)
-        try setUV(stashedCountAddress+1)
-        try assembler.mov(.B, .M)
-        try assembler.sub(.NONE)
-        try assembler.sub(.M)
-        
-        try setUV(stashedStackPointerAddress+0)
-        try assembler.mov(.A, .M)
-        try setUV(stashedCountAddress+0)
-        try assembler.mov(.B, .M)
-        try assembler.sbc(.NONE)
-        try assembler.sbc(.M)
-        
-        // Store the updated stack pointer back to memory.
-        try setUV(stashedCountAddress+0)
-        try assembler.mov(.A, .M)
-        try setUV(kStackPointerAddressHi)
-        try assembler.mov(.M, .A)
-        
-        try setUV(stashedCountAddress+1)
-        try assembler.mov(.A, .M)
-        try setUV(kStackPointerAddressLo)
-        try assembler.mov(.M, .A)
-        
-        // Copy bytes from the source address to the destination address on the stack.
-        for i in 0..<count {
-            // Load a byte from the source address into A.
-            try setUV(sourceAddress+0)
-            try assembler.mov(.X, .M)
-            try setUV(sourceAddress+1)
-            try assembler.mov(.Y, .M)
-            try assembler.mov(.U, .X)
-            try assembler.mov(.V, .Y)
-            try assembler.mov(.A, .M)
-            
-            // Store A to the destination address
-            try setUV(stashedCountAddress+0)
-            try assembler.mov(.X, .M)
-            try setUV(stashedCountAddress+1)
-            try assembler.mov(.Y, .M)
-            try assembler.mov(.U, .X)
-            try assembler.mov(.V, .Y)
-            try assembler.mov(.M, .A)
-            
-            if i < count - 1 {
-                // Increment and write back the source address
-                try setUV(sourceAddress+0)
-                try assembler.mov(.X, .M)
-                try setUV(sourceAddress+1)
-                try assembler.mov(.Y, .M)
-                try assembler.mov(.U, .X)
-                try assembler.mov(.V, .Y)
-                assembler.inxy()
-                try setUV(sourceAddress+0)
-                try assembler.mov(.M, .X)
-                try setUV(sourceAddress+1)
-                try assembler.mov(.M, .Y)
-                
-                // Increment and write back the destination address
-                try setUV(stashedCountAddress+0)
-                try assembler.mov(.X, .M)
-                try setUV(stashedCountAddress+1)
-                try assembler.mov(.Y, .M)
-                try assembler.mov(.U, .X)
-                try assembler.mov(.V, .Y)
-                assembler.inxy()
-                try setUV(stashedCountAddress+0)
-                try assembler.mov(.M, .X)
-                try setUV(stashedCountAddress+1)
-                try assembler.mov(.M, .Y)
-            }
-        }
     }
     
     public func jmp(_ label: String) throws {

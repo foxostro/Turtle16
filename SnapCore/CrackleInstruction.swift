@@ -20,7 +20,6 @@ public enum CrackleInstruction: Equatable {
     case load16(Int) // load a 16-bit value from the specified address, push to the stack in two words
     case storeImmediate(Int, Int)
     case storeImmediate16(Int, Int)
-    case loadIndirectN(Int) // Pop a sixteen-bit address from the stack. Load the N words in memory at that address and push them to the stack as a unit.
     case label(String) // declares a label
     case jmp(String) // unconditional jump, no change to the stack
     case jalr(String) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register.
@@ -90,8 +89,6 @@ public enum CrackleInstruction: Equatable {
             return String(format: "STORE-IMMEDIATE 0x%04x, 0x%02x", address, value)
         case .storeImmediate16(let address, let value):
             return String(format: "STORE-IMMEDIATE16 0x%04x, 0x%04x", address, value)
-        case .loadIndirectN(let count):
-            return "LOAD-INDIRECTN \(count)"
         case .label(let name):
             return "\(name):"
         case .jmp(let label):

@@ -23,7 +23,6 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.load16(0xffff).description, "LOAD16 0xffff")
         XCTAssertEqual(CrackleInstruction.storeImmediate(0xaaaa, 0xbb).description, "STORE-IMMEDIATE 0xaaaa, 0xbb")
         XCTAssertEqual(CrackleInstruction.storeImmediate16(0xaaaa, 0xbbbb).description, "STORE-IMMEDIATE16 0xaaaa, 0xbbbb")
-        XCTAssertEqual(CrackleInstruction.loadIndirectN(42).description, "LOAD-INDIRECTN 42")
         XCTAssertEqual(CrackleInstruction.label(L0).description, ".L0:")
         XCTAssertEqual(CrackleInstruction.jmp(L0).description, "JMP .L0")
         XCTAssertEqual(CrackleInstruction.jalr(L0).description, "JALR .L0")

@@ -122,6 +122,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "func\\b") {
                 TokenFunc(sourceAnchor: $0)
             },
+            Rule(pattern: "struct\\b") {
+                TokenStruct(sourceAnchor: $0)
+            },
             Rule(pattern: "u8\\b") {
                 TokenType(sourceAnchor: $0, type: .u8)
             },

@@ -1516,4 +1516,54 @@ for var i = 0; i < 10; i = i + 1 {
                                       member: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 11), identifier: "baz"))
         XCTAssertEqual(ast.children.first, secnd)
     }
+    
+    func testMalformedStructMissingIdentifier() {
+        let parser = parse("struct")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(6, 6))
+        XCTAssertEqual(parser.errors.first?.message, "expected identifier in struct declaration")
+    }
+    
+    func testMalformedStructCannotUseKeywordAsidentifier() {
+        let parser = parse("struct false {}")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(7, 12))
+        XCTAssertEqual(parser.errors.first?.message, "expected identifier in struct declaration")
+    }
+    
+    func testMalformedStructMissingOpeningLeftCurly() {
+        let parser = parse("struct foo")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(10, 10))
+        XCTAssertEqual(parser.errors.first?.message, "expected `{' in struct")
+    }
+    
+    func testMalformedStructMissingClosingRightCurly() {
+        let parser = parse("struct foo{")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 11))
+        XCTAssertEqual(parser.errors.first?.message, "expected `}' in struct")
+    }
+    
+    func testWellFormedEmptyStructDeclaration() {
+        let parser = parse("struct foo {}")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 13), identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"))
+        XCTAssertEqual(ast.children.first, expected)
+    }
 }
+    

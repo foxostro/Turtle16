@@ -56,6 +56,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenReturn.self) {
             result = try consumeReturn(token as! TokenReturn)
         }
+        else if let token = accept(TokenStruct.self) {
+            result = try consumeStruct(token as! TokenStruct)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -650,5 +653,16 @@ public class SnapParser: Parser {
         } else {
             return [Return(sourceAnchor: token.sourceAnchor, expression: nil)]
         }
+    }
+    
+    private func consumeStruct(_ token: TokenStruct) throws -> [AbstractSyntaxTreeNode] {
+        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in struct declaration"))
+        try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in struct"))
+        let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in struct"))
+        try expectEndOfStatement()
+        let sourceAnchor = token.sourceAnchor?.union(closingBrace.sourceAnchor!)
+        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        return [StructDeclaration(sourceAnchor: sourceAnchor,
+                                  identifier: identifier)]
     }
 }

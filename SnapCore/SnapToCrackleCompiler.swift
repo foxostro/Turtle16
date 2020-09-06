@@ -130,50 +130,67 @@ public class SnapToCrackleCompiler: NSObject {
         guard symbols.existsAndCannotBeShadowed(identifier: varDecl.identifier.identifier) == false else {
             throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
                                 format: "%@ redefines existing symbol: `%@'",
-                                varDecl.isMutable ? "variable" : "constant",
+                                varDecl.isMutable ? "variable" : "immutable variable",
                                 varDecl.identifier.identifier)
         }
         
-        // The type of the initial value expression may be used to infer the
-        // symbol type in cases where the explicit type is not specified.
-        let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: varDecl.expression)
-        
-        // An explicit array type does not specify the number of array elements.
-        // If the explicit type is an array type then we must examine the
-        // expression result type to determine the array length.
-        let symbolType: SymbolType
-        switch (expressionResultType, varDecl.explicitType) {
-        case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
-            symbolType = .array(count: count, elementType: elementType)
-        default:
-            if let explicitType = varDecl.explicitType {
-                symbolType = explicitType
-            } else {
-                // Some expression types cannot be made concrete.
-                // Convert these appropriate convertible types.
-                switch expressionResultType {
-                case .constInt(let a):
-                    symbolType = a > 255 ? .u16 : .u8
-                case .constBool:
-                    symbolType = .bool
-                default:
-                    symbolType = expressionResultType
+        if let varDeclExpr = varDecl.expression {
+            // The type of the initial value expression may be used to infer the
+            // symbol type in cases where the explicit type is not specified.
+            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: varDeclExpr)
+            
+            // An explicit array type does not specify the number of array elements.
+            // If the explicit type is an array type then we must examine the
+            // expression result type to determine the array length.
+            let symbolType: SymbolType
+            switch (expressionResultType, varDecl.explicitType) {
+            case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
+                symbolType = .array(count: count, elementType: elementType)
+            default:
+                if let explicitType = varDecl.explicitType {
+                    symbolType = explicitType
+                } else {
+                    // Some expression types cannot be made concrete.
+                    // Convert these appropriate convertible types.
+                    switch expressionResultType {
+                    case .constInt(let a):
+                        symbolType = a > 255 ? .u16 : .u8
+                    case .constBool:
+                        symbolType = .bool
+                    default:
+                        symbolType = expressionResultType
+                    }
                 }
             }
+            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
+            symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
+            
+            // If the symbol is on the stack then allocate storage for it now.
+            if symbol.storage == .stackStorage {
+                emit([
+                    .subi16(kStackPointerAddress, kStackPointerAddress, symbol.type.sizeof)
+                ])
+            }
+            
+            try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
+                                                                 lexpr: varDecl.identifier,
+                                                                 rexpr: varDeclExpr))
+        } else if let explicitType = varDecl.explicitType {
+            let symbol = try makeSymbolWithExplicitType(explicitType: explicitType, storage: varDecl.storage, isMutable: varDecl.isMutable)
+            symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
+            
+            // If the symbol is on the stack then allocate storage for it now.
+            if symbol.storage == .stackStorage {
+                emit([
+                    .subi16(kStackPointerAddress, kStackPointerAddress, symbol.type.sizeof)
+                ])
+            }
+        } else {
+            throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
+                                format: "unable to deduce type of %@ `%@'",
+                                varDecl.isMutable ? "variable" : "immutable variable",
+                                varDecl.identifier.identifier)
         }
-        let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
-        symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
-        
-        // If the symbol is on the stack then allocate storage for it now.
-        if symbol.storage == .stackStorage {
-            emit([
-                .subi16(kStackPointerAddress, kStackPointerAddress, symbol.type.sizeof)
-            ])
-        }
-        
-        try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
-                                                             lexpr: varDecl.identifier,
-                                                             rexpr: varDecl.expression))
     }
     
     private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {

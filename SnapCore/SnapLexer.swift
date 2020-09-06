@@ -71,7 +71,7 @@ public class SnapLexer: Lexer {
             Rule(pattern: "%") {
                 TokenOperator(sourceAnchor: $0, op: .modulus)
             },
-            Rule(pattern: "as") {
+            Rule(pattern: "as\\b") {
                 TokenAs(sourceAnchor: $0)
             },
             Rule(pattern: "\\(") {
@@ -95,50 +95,53 @@ public class SnapLexer: Lexer {
             Rule(pattern: "_") {
                 TokenUnderscore(sourceAnchor: $0)
             },
-            Rule(pattern: "let") {
+            Rule(pattern: "let\\b") {
                 TokenLet(sourceAnchor: $0)
             },
-            Rule(pattern: "return") {
+            Rule(pattern: "return\\b") {
                 TokenReturn(sourceAnchor: $0)
             },
-            Rule(pattern: "var") {
+            Rule(pattern: "var\\b") {
                 TokenVar(sourceAnchor: $0)
             },
-            Rule(pattern: "if") {
+            Rule(pattern: "if\\b") {
                 TokenIf(sourceAnchor: $0)
             },
-            Rule(pattern: "else") {
+            Rule(pattern: "else\\b") {
                 TokenElse(sourceAnchor: $0)
             },
-            Rule(pattern: "while") {
+            Rule(pattern: "while\\b") {
                 TokenWhile(sourceAnchor: $0)
             },
-            Rule(pattern: "for") {
+            Rule(pattern: "for\\b") {
                 TokenFor(sourceAnchor: $0)
             },
-            Rule(pattern: "static") {
+            Rule(pattern: "static\\b") {
                 TokenStatic(sourceAnchor: $0)
             },
-            Rule(pattern: "func") {
+            Rule(pattern: "func\\b") {
                 TokenFunc(sourceAnchor: $0)
             },
-            Rule(pattern: "u8") {
+            Rule(pattern: "u8\\b") {
                 TokenType(sourceAnchor: $0, type: .u8)
             },
-            Rule(pattern: "u16") {
+            Rule(pattern: "u16\\b") {
                 TokenType(sourceAnchor: $0, type: .u16)
             },
-            Rule(pattern: "bool") {
+            Rule(pattern: "bool\\b") {
                 TokenType(sourceAnchor: $0, type: .bool)
             },
-            Rule(pattern: "void") {
+            Rule(pattern: "void\\b") {
                 TokenType(sourceAnchor: $0, type: .void)
             },
-            Rule(pattern: "true") {
+            Rule(pattern: "true\\b") {
                 TokenBoolean(sourceAnchor: $0, literal: true)
             },
-            Rule(pattern: "false") {
+            Rule(pattern: "false\\b") {
                 TokenBoolean(sourceAnchor: $0, literal: false)
+            },
+            Rule(pattern: "undefined\\b") {
+                TokenUndefined(sourceAnchor: $0)
             },
             Rule(pattern: "\".*\"") {[weak self] in 
                 TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))

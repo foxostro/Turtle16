@@ -85,7 +85,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "constant redefines existing symbol: `foo'")
+        XCTAssertEqual(compiler.errors.first?.message, "immutable variable redefines existing symbol: `foo'")
     }
     
     func testCompileConstantDeclaration_NotCompileTimeConstant() {
@@ -517,6 +517,37 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+4), 2)
+    }
+    
+    func testCompileVarDeclaration_FailToDeduceTypeOfUndefinedValue() {
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
+                               explicitType: nil,
+                               expression: nil,
+                               storage: .stackStorage,
+                               isMutable: false)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "unable to deduce type of immutable variable `foo'")
+    }
+    
+    func testCompileVarDeclaration_ArrayOfUndefinedValue() {
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
+                               explicitType: .array(count: 100, elementType: .u16),
+                               expression: nil,
+                               storage: .stackStorage,
+                               isMutable: false)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
     }
     
     func testCompileSimplestExpressionStatement() {

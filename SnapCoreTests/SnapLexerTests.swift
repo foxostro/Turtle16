@@ -398,11 +398,18 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
     }
     
-    func testTokenizeBool() {
+    func testTokenizeBool_1() {
         let tokenizer = SnapLexer(withString: "bool")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), type: .bool),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
+    func testTokenizeBool_2() {
+        let tokenizer = SnapLexer(withString: "boolasdf")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 8)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(8, 8))])
     }
     
     func testTokenizeVoid() {
@@ -421,6 +428,13 @@ class SnapLexerTests: XCTestCase {
     
     func testTokenizeAs_2() {
         let tokenizer = SnapLexer(withString: "bass")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
+    func testTokenizeAs_3() {
+        let tokenizer = SnapLexer(withString: "asdf")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
@@ -484,5 +498,19 @@ class SnapLexerTests: XCTestCase {
                                           TokenDot(sourceAnchor: tokenizer.lineMapper.anchor(3, 4)),
                                           TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(4, 7)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))])
+    }
+    
+    func testTokenizeUndefined_1() {
+        let tokenizer = SnapLexer(withString: "undefined")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenUndefined(sourceAnchor: tokenizer.lineMapper.anchor(0, 9)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))])
+    }
+    
+    func testTokenizeUndefined_2() {
+        let tokenizer = SnapLexer(withString: "undefined1")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 10)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))])
     }
 }

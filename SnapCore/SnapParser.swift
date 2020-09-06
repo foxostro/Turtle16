@@ -133,7 +133,15 @@ public class SnapParser: Parser {
                                 equal.lexeme)
         }
         
-        let expression = try consumeExpression()
+        let expression: Expression?
+        let exprSourceAnchor: SourceAnchor
+        if let token = accept(TokenUndefined.self) {
+            expression = nil
+            exprSourceAnchor = token.sourceAnchor!
+        } else {
+            expression = try consumeExpression()
+            exprSourceAnchor = expression!.sourceAnchor!
+        }
         
         if let arr = expression as? Expression.LiteralArray {
             if arr.elements.count == 0 && explicitType == nil {
@@ -143,7 +151,7 @@ public class SnapParser: Parser {
         }
         
         let sourceAnchor = letOrVarToken.sourceAnchor?
-            .union(expression.sourceAnchor)
+            .union(exprSourceAnchor)
             .union(storageSpecifier?.sourceAnchor)
         return [VarDeclaration(sourceAnchor: sourceAnchor,
                                identifier: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),

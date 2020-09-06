@@ -317,6 +317,23 @@ let foo: []u8 = bar
         XCTAssertEqual(expected, actual)
     }
     
+    func testWellFormedLetDeclaration_VariableOfUndefinedValue() {
+        let parser = parse("""
+let foo: [1]u8 = undefined
+""")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
+                                      explicitType: .array(count: 1, elementType: .u8),
+                                      expression: nil,
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
     func testMalformedVariableDeclaration_BareVar() {
         let parser = parse("var")
         XCTAssertTrue(parser.hasError)

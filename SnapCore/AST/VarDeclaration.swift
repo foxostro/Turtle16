@@ -12,13 +12,13 @@ import TurtleCore
 public class VarDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let explicitType: SymbolType?
-    public let expression: Expression
+    public let expression: Expression?
     public let storage: SymbolStorage
     public let isMutable: Bool
     
     public convenience init(identifier: Expression.Identifier,
                             explicitType: SymbolType?,
-                            expression: Expression,
+                            expression: Expression?,
                             storage: SymbolStorage,
                             isMutable: Bool) {
         self.init(sourceAnchor: nil,
@@ -32,7 +32,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
                          explicitType: SymbolType?,
-                         expression: Expression,
+                         expression: Expression?,
                          storage: SymbolStorage,
                          isMutable: Bool) {
         self.identifier = identifier
@@ -93,6 +93,6 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                       explicitType?.description ?? "nil",
                       String(describing: storage),
                       isMutable ? "true" : "false",
-                      expression.makeIndentedDescription(depth: depth + 1))
+                      expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
     }
 }

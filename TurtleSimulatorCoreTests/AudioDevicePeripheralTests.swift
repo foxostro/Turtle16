@@ -11,10 +11,14 @@ import TurtleSimulatorCore
 
 class AudioDevicePeripheralTests: XCTestCase {
     class MockToneGenerator : ToneGenerator {
-        var frequency: Double = 0.0
-        var amplitude1: Double = 0.0
-        var amplitude2: Double = 0.0
-        var directDrive: Double = 0.0
+        var directDrive = 0.0
+        var triangleWaveFrequency = 0.0
+        var triangleWaveAmplitude = 0.0
+        var pulseWaveFrequency = 0.0
+        var pulseWaveModulation = 0.0
+        var pulseWaveAmplitude = 0.0
+        var noiseAmplitude = 0.0
+        var masterGain = 0.0
     }
     
     let mockToneGenerator = MockToneGenerator()
@@ -24,89 +28,62 @@ class AudioDevicePeripheralTests: XCTestCase {
         XCTAssertEqual(peripheral.name, "Audio Device")
     }
     
-    func testStoreSetsFrequency() {
+    func testStoreSetsTriangleWaveFrequency() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.store(42, peripheral.kFrequencyRegisterAddr)
-        XCTAssertEqual(peripheral.frequencyRegister, 42)
+        peripheral.store(42, peripheral.kTriangleWaveFrequencyRegisterAddr)
+        XCTAssertEqual(peripheral.triangleWaveFrequencyRegister, 42)
     }
     
-    func testStoreSetsAmplitude1() {
+    func testStoreSetsTriangleWaveAmplitude() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.store(42, peripheral.kAmplitude1RegisterAddr)
-        XCTAssertEqual(peripheral.amplitude1Register, 42)
+        peripheral.store(42, peripheral.kTriangleWaveAmplitudeRegisterAddr)
+        XCTAssertEqual(peripheral.triangleWaveAmplitudeRegister, 42)
     }
     
-    func testStoreSetsAmplitude2() {
+    func testStoreSetsPulseWaveFrequency() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.store(42, peripheral.kAmplitude2RegisterAddr)
-        XCTAssertEqual(peripheral.amplitude2Register, 42)
+        peripheral.store(42, peripheral.kTriangleWaveFrequencyRegisterAddr)
+        XCTAssertEqual(peripheral.triangleWaveFrequencyRegister, 42)
+    }
+    
+    func testStoreSetsPulseWaveAmplitude() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        peripheral.store(42, peripheral.kPulseWaveAmplitudeRegisterAddr)
+        XCTAssertEqual(peripheral.pulseWaveAmplitudeRegister, 42)
+    }
+    
+    func testStoreSetsPulseWaveModulation() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        peripheral.store(42, peripheral.kPulseWaveModulationRegisterAddr)
+        XCTAssertEqual(peripheral.pulseWaveModulationRegister, 42)
+    }
+    
+    func testStoreSetsNoiseAmplitude() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        peripheral.store(42, peripheral.kNoiseAmplitudeRegisterAddr)
+        XCTAssertEqual(peripheral.noiseAmplitudeRegister, 42)
+    }
+    
+    func testStoreSetsMasterGain() {
+        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
+        peripheral.store(42, peripheral.kMasterGainRegisterAddr)
+        XCTAssertEqual(peripheral.masterGainRegister, 42)
     }
     
     func testStoreToSomeOtherAddressDoesNothing() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.store(42, 5)
-        XCTAssertEqual(peripheral.frequencyRegister, 0)
-        XCTAssertEqual(peripheral.amplitude1Register, 0)
-        XCTAssertEqual(peripheral.amplitude2Register, 0)
+        peripheral.store(42, 0x100)
+        XCTAssertEqual(peripheral.triangleWaveFrequencyRegister, 0)
+        XCTAssertEqual(peripheral.triangleWaveAmplitudeRegister, 0)
+        XCTAssertEqual(peripheral.pulseWaveFrequencyRegister, 0)
+        XCTAssertEqual(peripheral.pulseWaveAmplitudeRegister, 0)
+        XCTAssertEqual(peripheral.noiseAmplitudeRegister, 0)
+        XCTAssertEqual(peripheral.masterGainRegister, 0)
     }
     
     func testLoadProducesZeroNotFrequency() {
         let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.frequencyRegister = 42
-        XCTAssertEqual(peripheral.load(peripheral.kFrequencyRegisterAddr), 0)
-    }
-    
-    func testLoadProducesZeroNotGain() {
-        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        peripheral.amplitude1Register = 42
-        XCTAssertEqual(peripheral.load(peripheral.kAmplitude1RegisterAddr), 0)
-    }
-    
-    func testMappingBetweenFrequenyRegisterAndFrequency() {
-        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        
-        let expectedMapping: [UInt8 : Double] = [
-            0 : 138.0,
-            15 : 147.0,
-            31 : 183.0,
-            63 : 316.0,
-            127 : 692.0,
-            255 : 1585.0
-        ]
-        
-        for (value, frequency) in expectedMapping {
-            peripheral.frequencyRegister = value
-            XCTAssertEqual(mockToneGenerator.frequency, frequency)
-        }
-    }
-    
-    func testMappingBetweenGainRegisterAndAmplitude1() {
-        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        
-        let expectedMapping: [UInt8 : Double] = [
-            0 : 0.0,
-            51 : 0.2,
-            255 : 1.0
-        ]
-        
-        for (value, amplitude) in expectedMapping {
-            peripheral.amplitude1Register = value
-            XCTAssertEqual(mockToneGenerator.amplitude1, amplitude)
-        }
-    }
-    
-    func testMappingBetweenGainRegisterAndAmplitude2() {
-        let peripheral = AudioDevicePeripheral(toneGenerator: mockToneGenerator)
-        
-        let expectedMapping: [UInt8 : Double] = [
-            0 : 0.0,
-            51 : 0.2,
-            255 : 1.0
-        ]
-        
-        for (value, amplitude) in expectedMapping {
-            peripheral.amplitude2Register = value
-            XCTAssertEqual(mockToneGenerator.amplitude2, amplitude)
-        }
+        peripheral.triangleWaveFrequencyRegister = 42
+        XCTAssertEqual(peripheral.load(peripheral.kTriangleWaveFrequencyRegisterAddr), 0)
     }
 }

@@ -1,11 +1,21 @@
 let kAudioDevice = 6
-let kFrequencyRegister = 0
-let kGainRegister = 1
+let kDirectDrive = 0x00
+let kTriangleWaveFrequency = 0x01
+let kPulseWaveModulation = 0x02
+let kPulseWaveFrequency = 0x03
+let kTriangleWaveAmplitude = 0x04
+let kPulseWaveAmplitude = 0x05
+let kNoiseAmplitude = 0x06
+let kMasterGain = 0x07
 
 LI A, 0
 LI D, kAudioDevice
 LI U, 0
 LI V, 0
+
+# Set master gain to 100%.
+LI Y, kMasterGain
+LI P, 0xff
 
 LI U, 0
 LI V, 3
@@ -23,9 +33,9 @@ ADD A
 MOV M, A
 
 LI X, 0
-LI Y, kFrequencyRegister
+LI Y, kTriangleWaveFrequency
 MOV P, A
-LI Y, kGainRegister
+LI Y, kTriangleWaveAmplitude
 LI P, 0x80
 
 LXY delay

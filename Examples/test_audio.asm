@@ -1,6 +1,12 @@
 let kAudioDevice = 6
-let kFrequencyRegister = 0
-let kGainRegister = 1
+let kDirectDrive = 0x00
+let kTriangleWaveFrequency = 0x01
+let kPulseWaveModulation = 0x02
+let kPulseWaveFrequency = 0x03
+let kTriangleWaveAmplitude = 0x04
+let kPulseWaveAmplitude = 0x05
+let kNoiseAmplitude = 0x06
+let kMasterGain = 0x07
 
 LI A, 1
 LI B, 2
@@ -12,9 +18,11 @@ LI Y, 7
 
 LI D, kAudioDevice
 LI X, 0
-LI Y, kFrequencyRegister
+LI Y, kTriangleWaveFrequency
+LI P, 153 # Corresponds to CV=3V which is A3.
+LI Y, kTriangleWaveAmplitude
 LI P, 0x80
-LI Y, kGainRegister
+LI Y, kMasterGain
 LI P, 0x80
 
 LXY delay
@@ -25,22 +33,11 @@ NOP
 # Go silent again and halt the computer.
 LI D, kAudioDevice
 LI X, 0
-LI Y, kFrequencyRegister
-LI P, 0
-LI Y, kGainRegister
+LI Y, kMasterGain
 LI P, 0
 
 LI A, 0xff
 HLT
-
-
-
-test_func:
-MOV X, G
-MOV Y, H
-JMP
-NOP
-NOP
 
 
 
@@ -97,7 +94,7 @@ MOV A, M
 LI B, 1
 ADD _
 ADD A
-LI B, 1
+LI B, 10
 CMP
 CMP
 LXY delay_0

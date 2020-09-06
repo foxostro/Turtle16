@@ -7,62 +7,91 @@
 //
 
 public protocol ToneGenerator {
-    var frequency: Double { get set }
-    var amplitude1: Double { get set }
-    var amplitude2: Double { get set }
     var directDrive: Double { get set }
+    var triangleWaveFrequency: Double { get set }
+    var triangleWaveAmplitude: Double { get set }
+    var pulseWaveFrequency: Double { get set }
+    var pulseWaveModulation: Double { get set }
+    var pulseWaveAmplitude: Double { get set }
+    var noiseAmplitude: Double { get set }
+    var masterGain: Double { get set }
 }
 
 public class AudioDevicePeripheral: ComputerPeripheral {
-    public let kFrequencyRegisterAddr = 0x00
-    public let kAmplitude1RegisterAddr = 0x01
-    public let kAmplitude2RegisterAddr = 0x02
-    public let kDirectDriveRegisterAddr = 0x03
+    public let kDirectDriveRegisterAddr = 0x00
+    public let kTriangleWaveFrequencyRegisterAddr = 0x01
+    public let kPulseWaveModulationRegisterAddr = 0x02
+    public let kPulseWaveFrequencyRegisterAddr = 0x03
+    public let kTriangleWaveAmplitudeRegisterAddr = 0x04
+    public let kPulseWaveAmplitudeRegisterAddr = 0x05
+    public let kNoiseAmplitudeRegisterAddr = 0x06
+    public let kMasterGainRegisterAddr = 0x07
     public var toneGenerator: ToneGenerator?
-    
-    public var frequencyRegister: UInt8 = 0 {
-        didSet {
-            let mapping: [Range<Int> : (Double,Double)] = [
-                0..<15 : (138.0, 147.0),
-                15..<31 : (147.0, 183.0),
-                31..<63 : (183.0, 316.0),
-                63..<127 : (316.0, 692.0),
-                127..<255 : (692.0, 1585.0),
-                255..<256 : (1585.0, 1585.0)
-            ]
-            
-            for (rangeValue, rangeFrequency) in mapping {
-                let value = Int(frequencyRegister)
-                if rangeValue ~= value {
-                    let proportion = Double(value - rangeValue.lowerBound) / Double(rangeValue.upperBound - rangeValue.lowerBound)
-                    let frequency = rangeFrequency.0 + proportion * (rangeFrequency.1 - rangeFrequency.0)
-                    toneGenerator?.frequency = frequency
-                    break
-                }
-            }
-        }
-    }
-    
-    public var amplitude1Register: UInt8 = 0 {
-        didSet {
-            toneGenerator?.amplitude1 = Double(amplitude1Register) / 255.0
-        }
-    }
-    
-    public var amplitude2Register: UInt8 = 0 {
-        didSet {
-            toneGenerator?.amplitude2 = Double(amplitude2Register) / 255.0
-        }
-    }
     
     public var directDriveRegister: UInt8 = 0 {
         didSet {
-            toneGenerator?.directDrive = Double(directDriveRegister) / 255.0
+            toneGenerator?.directDrive = Double(directDriveRegister) / Double(UInt8.max)
         }
     }
     
-    func lerp(_ x: Double, _ x0: Double, _ x1: Double) -> Double {
-        return x0 + (x * (x1 - x0))
+    public var triangleWaveFrequencyRegister: UInt8 = 0 {
+        didSet {
+            let cv = Double(triangleWaveFrequencyRegister) / Double(UInt8.max) * 5.0
+            let frequency = calcFrequency(cv: cv)
+            print("frequency: \(frequency)")
+            toneGenerator?.triangleWaveFrequency = frequency
+        }
+    }
+    
+    private func calcFrequency(cv: Double) -> Double {
+        // I just plugged the CV/gate table in Wikipedia for CV vs Frequency
+        // into a curve fitting web app online and got this.
+        // <https://en.wikipedia.org/wiki/CV/gate#CV>
+        let frequency = 502954100.0 + (60.3568 - 502954100) / (1 + pow(cv / 280.6998, 3.314591))
+        return frequency
+    }
+    
+    public var pulseWaveModulationRegister: UInt8 = 0 {
+        didSet {
+            let unitInterval = Double(pulseWaveModulationRegister) / Double(UInt8.max)
+            toneGenerator?.pulseWaveModulation = unitInterval
+        }
+    }
+    
+    public var pulseWaveFrequencyRegister: UInt8 = 0 {
+        didSet {
+            let cv = Double(pulseWaveFrequencyRegister) / Double(UInt8.max) * 5.0
+            let frequency = calcFrequency(cv: cv)
+            toneGenerator?.pulseWaveFrequency = frequency
+        }
+    }
+    
+    public var triangleWaveAmplitudeRegister: UInt8 = 0 {
+        didSet {
+            let unitInterval = Double(triangleWaveFrequencyRegister) / Double(UInt8.max)
+            toneGenerator?.triangleWaveAmplitude = unitInterval
+        }
+    }
+    
+    public var pulseWaveAmplitudeRegister: UInt8 = 0 {
+        didSet {
+            let unitInterval = Double(pulseWaveAmplitudeRegister) / Double(UInt8.max)
+            toneGenerator?.pulseWaveAmplitude = unitInterval
+        }
+    }
+    
+    public var noiseAmplitudeRegister: UInt8 = 0 {
+        didSet {
+            let unitInterval = Double(noiseAmplitudeRegister) / Double(UInt8.max)
+            toneGenerator?.noiseAmplitude = unitInterval
+        }
+    }
+    
+    public var masterGainRegister: UInt8 = 0 {
+        didSet {
+            let unitInterval = Double(masterGainRegister) / Double(UInt8.max)
+            toneGenerator?.masterGain = unitInterval
+        }
     }
     
     public init(toneGenerator: ToneGenerator?) {
@@ -71,20 +100,16 @@ public class AudioDevicePeripheral: ComputerPeripheral {
     }
     
     public func store(_ value: UInt8, _ address: Int) -> Void {
-        if address == kFrequencyRegisterAddr {
-            frequencyRegister = value
-        }
-            
-        if address == kAmplitude1RegisterAddr {
-            amplitude1Register = value
-        }
-            
-        if address == kAmplitude2RegisterAddr {
-            amplitude2Register = value
-        }
-            
-        if address == kDirectDriveRegisterAddr {
-            directDriveRegister = value
+        switch address {
+        case kDirectDriveRegisterAddr:           directDriveRegister = value
+        case kTriangleWaveFrequencyRegisterAddr: triangleWaveFrequencyRegister = value
+        case kPulseWaveModulationRegisterAddr:   pulseWaveModulationRegister = value
+        case kPulseWaveFrequencyRegisterAddr:    pulseWaveFrequencyRegister = value
+        case kTriangleWaveAmplitudeRegisterAddr: triangleWaveAmplitudeRegister = value
+        case kPulseWaveAmplitudeRegisterAddr:    pulseWaveAmplitudeRegister = value
+        case kNoiseAmplitudeRegisterAddr:        noiseAmplitudeRegister = value
+        case kMasterGainRegisterAddr:            masterGainRegister = value
+        default: break // nothing to do
         }
     }
     

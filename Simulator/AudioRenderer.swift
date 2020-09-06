@@ -1,8 +1,8 @@
 //
-//  Oscillator.swift
-//  ToneGeneratorTest
+//  AudioRenderer.swift
+//  Simulator
 //
-//  Created by Andrew Fox on 5/13/20.
+//  Created by Andrew Fox on 9/5/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
@@ -21,47 +21,17 @@ private func callback(
     let count = Int(audioBuffer.mDataByteSize) / MemoryLayout<Float>.size
     let start = audioBuffer.mData!.bindMemory(to: Float.self, capacity: count)
     let samples = UnsafeMutableBufferPointer<Float>(start: start, count: count)
-    let opaqueContext: UnsafeMutablePointer<Oscillator> = inRefCon.assumingMemoryBound(to: Oscillator.self)
-    let context: Oscillator = Unmanaged<Oscillator>.fromOpaque(opaqueContext).takeUnretainedValue()
+    let opaqueContext: UnsafeMutablePointer<AudioRenderer> = inRefCon.assumingMemoryBound(to: AudioRenderer.self)
+    let context: AudioRenderer = Unmanaged<AudioRenderer>.fromOpaque(opaqueContext).takeUnretainedValue()
     context.render(inNumberFrames, samples)
     return noErr;
 }
 
-final class Oscillator {
+class AudioRenderer {
+    public let sampleRate = 48000.0
+    public let lock = NSLock()
     var audioComponent: AudioComponentInstance!
-    let sampleRate = 8000.0
-    var theta = 0.0
-    let lock = NSLock()
     var isRunning = false
-    var _frequency = 0.0
-    public var frequency: Double {
-        get {
-            lock.lock()
-            defer { lock.unlock() }
-            return _frequency
-        }
-        set (value) {
-            lock.lock()
-            defer { lock.unlock() }
-            _frequency = value
-        }
-    }
-    public typealias TransferFunction = (Double) -> Double
-    var _transferFunction: TransferFunction = { theta in
-        return sin(theta)
-    }
-    public var transferFunction: TransferFunction {
-        get {
-            lock.lock()
-            defer { lock.unlock() }
-            return _transferFunction
-        }
-        set (value) {
-            lock.lock()
-            defer { lock.unlock() }
-            _transferFunction = value
-        }
-    }
     
     deinit {
         if audioComponent != nil {
@@ -91,19 +61,7 @@ final class Oscillator {
     }
     
     func render(_ inNumberFrames: UInt32, _ samples: UnsafeMutableBufferPointer<Float>) {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        let theta_increment = 2.0 * .pi * _frequency / sampleRate
-        
-        for frame in 0..<inNumberFrames {
-            samples[Int(frame)] = Float(_transferFunction(theta))
-            
-            theta += theta_increment
-            if (theta > 2.0 * .pi) {
-                theta -= 2.0 * .pi
-            }
-        }
+        // override in a subclass
     }
     
     private func createAudioComponent() {

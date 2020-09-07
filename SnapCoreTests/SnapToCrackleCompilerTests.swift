@@ -550,6 +550,21 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
     }
     
+    func testCompileVarDeclaration_EmptyStructOfUndefinedValue() {
+        let ast = TopLevel(children: [
+            Block(children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
+                               explicitType: .structType(name: "bar"),
+                               expression: nil,
+                               storage: .stackStorage,
+                               isMutable: false)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+    }
+    
     func testCompileSimplestExpressionStatement() {
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
@@ -1611,5 +1626,20 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 3)
+    }
+        
+    func testCompileEmptyStructAddsToTypeTable() {
+        let ast = TopLevel(children: [
+            StructDeclaration(identifier: Expression.Identifier("foo"))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
+        XCTAssertEqual(symbolType, .structType(name: "foo"))
     }
 }

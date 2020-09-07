@@ -76,6 +76,8 @@ public class SnapToCrackleCompiler: NSObject {
         switch genericNode {
         case let node as FunctionDeclaration:
             performDeclPass(func: node)
+        case let node as StructDeclaration:
+            performDeclPass(struct: node)
         case let node as Block:
             performDeclPass(block: node)
         default:
@@ -95,6 +97,12 @@ public class SnapToCrackleCompiler: NSObject {
         let typ: SymbolType = .function(name: name, mangledName: mangledName, functionType: funDecl.functionType)
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
+    }
+    
+    private func performDeclPass(struct structDecl: StructDeclaration) {
+        let name = structDecl.identifier.identifier
+        let typ: SymbolType = .structType(name: name)
+        symbols.bind(identifier: name, symbolType: typ)
     }
     
     private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {

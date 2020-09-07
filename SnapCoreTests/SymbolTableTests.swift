@@ -30,7 +30,7 @@ class SymbolTableTests: XCTestCase {
         }
     }
     
-    func testSuccessfullyResolveAnIdentifierByToken() {
+    func testSuccessfullyResolveSymbolByIdentifier() {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
@@ -146,5 +146,37 @@ class SymbolTableTests: XCTestCase {
         let resolution = try! symbols.resolveWithScopeDepth(identifier: "foo")
         XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
         XCTAssertEqual(resolution.1, 1)
+    }
+    
+    func testFailToResolveType() {
+        let symbols = SymbolTable()
+        XCTAssertThrowsError(try symbols.resolveType(identifier: "foo")) {
+            let error = $0 as? CompilerError
+            XCTAssertNotNil(error)
+            XCTAssertEqual(error?.message, "use of undeclared type `foo'")
+        }
+    }
+    
+    func testSuccessfullyResolveTypeByIdentifier() {
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["foo" : .structType(name: "foo")])
+        let symbolType = try! symbols.resolveType(identifier: "foo")
+        switch symbolType {
+        case .structType(let name):
+            XCTAssertEqual(name, "foo")
+        default:
+            XCTFail()
+        }
+    }
+
+    func testBindStructType() {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbolType: .structType(name: "foo"))
+        let symbolType = try! symbols.resolveType(identifier: "foo")
+        switch symbolType {
+        case .structType(let name):
+            XCTAssertEqual(name, "foo")
+        default:
+            XCTFail()
+        }
     }
 }

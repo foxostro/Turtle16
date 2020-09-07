@@ -10,12 +10,40 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
+//    case metatype(SymbolType)
     case constInt(Int), constBool(Bool)
     case u16, u8, bool, void
-    case function(name: String, mangledName: String, functionType: FunctionType)
+    case function(FunctionType)
     case array(count: Int?, elementType: SymbolType)
     case dynamicArray(elementType: SymbolType)
     case structType(name: String)
+    
+//    public var isMetatype: Bool {
+//        switch self {
+//        case .metatype:
+//            return true
+//        default:
+//            return false
+//        }
+//    }
+//
+//    public func unwrapMetatype() -> SymbolType {
+//        switch self {
+//        case .metatype(let typ):
+//            return typ
+//        default:
+//            abort()
+//        }
+//    }
+    
+    public func unwrapFunctionType() -> FunctionType {
+        switch self {
+        case .function(let typ):
+            return typ
+        default:
+            abort()
+        }
+    }
     
     public var isBooleanType: Bool {
         switch self {
@@ -37,6 +65,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var sizeof: Int {
         switch self {
+//        case .metatype, .constInt, .constBool, .void, .function:
+//            return 0
         case .constInt, .constBool, .void, .function:
             return 0
         case .u8, .bool:
@@ -52,8 +82,30 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public var arrayCount: Int? {
+        switch self {
+        case .array(count: let count, elementType: _):
+            return count
+        default:
+            abort()
+        }
+    }
+    
+    public var arrayElementType: SymbolType {
+        switch self {
+        case .array(count: _, elementType: let elementType):
+            return elementType
+        case .dynamicArray(elementType: let elementType):
+            return elementType
+        default:
+            abort()
+        }
+    }
+    
     public var description: String {
         switch self {
+//        case .metatype(let typ):
+//            return "metatype(\(typ))"
         case .constInt:
             return "const int"
         case .constBool:
@@ -74,7 +126,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             }
         case .dynamicArray(elementType: let elementType):
             return "[]\(elementType)"
-        case .function(name: _, mangledName: _, functionType: let functionType):
+        case .function(let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
             return result
@@ -198,6 +250,13 @@ public class SymbolTable: NSObject {
     public func exists(identifier: String) -> Bool {
         if nil == symbolTable[identifier] {
             return parent?.exists(identifier: identifier) ?? false
+        }
+        return true
+    }
+    
+    public func existsAsType(identifier: String) -> Bool {
+        if nil == typeTable[identifier] {
+            return parent?.existsAsType(identifier: identifier) ?? false
         }
         return true
     }

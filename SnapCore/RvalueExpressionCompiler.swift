@@ -25,8 +25,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "peekMemory"
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let typ: SymbolType = .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)]))
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -34,8 +33,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "pokeMemory"
-        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let typ: SymbolType = .function(FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)]))
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -43,8 +41,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "peekPeripheral"
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let typ: SymbolType = .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -52,8 +49,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "pokePeripheral"
-        let functionType = FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let typ: SymbolType = .function(FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -61,8 +57,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
         let name = "hlt"
-        let functionType = FunctionType(returnType: .void, arguments: [])
-        let typ: SymbolType = .function(name: name, mangledName: name, functionType: functionType)
+        let typ: SymbolType = .function(FunctionType(returnType: .void, arguments: []))
         let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -70,11 +65,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
+                         mapMangledFunctionName: MangledFunctionNameMap = MangledFunctionNameMap(),
                          temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
                          temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         super.init(symbols: symbols,
                    labelMaker: labelMaker,
+                   mapMangledFunctionName: mapMangledFunctionName,
                    temporaryStack: temporaryStack,
                    temporaryAllocator: temporaryAllocator)
     }
@@ -750,11 +747,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                                   expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
                                                              identifier: identifier,
                                                              expr: Expression.LiteralInt(sourceAnchor: identifier.sourceAnchor, value: i)),
-                                  targetType: b)
+                                  targetType: Expression.PrimitiveType(b))
                 })
+                let arrayType = Expression.ArrayType(count: Expression.LiteralInt(elements.count),
+                                                     elementType: Expression.PrimitiveType(b))
                 let synthesized = Expression.LiteralArray(sourceAnchor: identifier.sourceAnchor,
-                                                          explicitType: b,
-                                                          explicitCount: elements.count,
+                                                          arrayType: arrayType,
                                                           elements: elements)
                 instructions += try compile(expression: synthesized)
             default:
@@ -824,15 +822,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let identifier = (node.callee as! Expression.Identifier).identifier
         let symbol = try symbols.resolve(sourceAnchor: node.sourceAnchor, identifier: identifier)
         switch symbol.type {
-        case .function(name: _, mangledName: let mangledName, functionType: let typ):
+        case .function(let typ):
             var instructions: [CrackleInstruction] = []
-            switch mangledName {
+            switch identifier {
             case "peekMemory":      instructions += try compileFunctionPeekMemory(typ, node)
             case "pokeMemory":      instructions += try compileFunctionPokeMemory(typ, node)
             case "peekPeripheral":  instructions += try compileFunctionPeekPeripheral(typ, node)
             case "pokePeripheral":  instructions += try compileFunctionPokePeripheral(typ, node)
             case "hlt":             instructions += [.hlt]
-            default:                instructions += try compileFunctionUserDefined(typ, node, mangledName)
+            default:                instructions += try compileFunctionUserDefined(typ, node)
             }
             return instructions
         default:
@@ -899,7 +897,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call, _ mangledName: String) throws -> [CrackleInstruction] {
+    private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        let identifier = (node.callee as! Expression.Identifier).identifier
+        let symbol = try symbols.resolve(sourceAnchor: node.sourceAnchor, identifier: identifier)
+        let mangledName = mapMangledFunctionName.lookup(uid: symbol.offset)
+        
         var instructions: [CrackleInstruction] = []
         var tempReturnValue: CompilerTemporary!
         
@@ -1006,21 +1008,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(as expr: Expression.As) throws -> [CrackleInstruction] {
-        let instructions = try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: expr.targetType)
+        let targetType = try typeChecker.check(expression: expr.targetType)
+        let instructions = try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: targetType)
         return instructions
     }
     
     private func compile(literalArray expr: Expression.LiteralArray) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         let resultType = try typeChecker.check(expression: expr)
+        let arrayElementType = resultType.arrayElementType
         let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
         var offset = 0
         for el in expr.elements {
             instructions += try compile(expression: el)
             let tempElement = temporaryStack.pop()
-            instructions += [.copyWords(tempResult.address + offset, tempElement.address, expr.explicitType.sizeof)]
+            instructions += [.copyWords(tempResult.address + offset, tempElement.address, arrayElementType.sizeof)]
             tempElement.consume()
-            offset += expr.explicitType.sizeof
+            offset += arrayElementType.sizeof
         }
         temporaryStack.push(tempResult)
         return instructions

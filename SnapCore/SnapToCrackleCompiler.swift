@@ -31,6 +31,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     private var symbols: SymbolTable
     private let labelMaker = LabelMaker()
+    private let mapMangledFunctionName = MangledFunctionNameMap()
     private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
@@ -65,38 +66,46 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func compile(topLevel: TopLevel) throws {
         for node in topLevel.children {
-            performDeclPass(genericNode: node)
+            try performDeclPass(genericNode: node)
         }
         for node in topLevel.children {
             try compile(genericNode: node)
         }
     }
     
-    private func performDeclPass(genericNode: AbstractSyntaxTreeNode) {
+    private func performDeclPass(genericNode: AbstractSyntaxTreeNode) throws {
         switch genericNode {
         case let node as FunctionDeclaration:
-            performDeclPass(func: node)
+            try performDeclPass(func: node)
         case let node as StructDeclaration:
             performDeclPass(struct: node)
         case let node as Block:
-            performDeclPass(block: node)
+            try performDeclPass(block: node)
         default:
             break
         }
     }
     
-    private func performDeclPass(block: Block) {
+    private func performDeclPass(block: Block) throws {
         for node in block.children {
-            performDeclPass(genericNode: node)
+            try performDeclPass(genericNode: node)
         }
     }
     
-    private func performDeclPass(func funDecl: FunctionDeclaration) {
+    private func performDeclPass(func funDecl: FunctionDeclaration) throws {
+        // Labels must be unique. Mangle the function name to ensure the
+        // function's label is unique.
+        let uid = mapMangledFunctionName.nextUID(mangledName: makeMangledFunctionName(funDecl))
+        
+        let functionType = try evaluateFunctionTypeExpression(funDecl.functionType)
         let name = funDecl.identifier.identifier
-        let mangledName = makeMangledFunctionName(funDecl)
-        let typ: SymbolType = .function(name: name, mangledName: mangledName, functionType: funDecl.functionType)
-        let symbol = Symbol(type: typ, offset: 0x0000, isMutable: false, storage: .staticStorage)
+        let typ: SymbolType = .function(functionType)
+        let symbol = Symbol(type: typ, offset: uid, isMutable: false, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
+    }
+    
+    private func evaluateFunctionTypeExpression(_ expr: Expression) throws -> FunctionType {
+        return try TypeContextTypeChecker(symbols: symbols).check(expression: expr).unwrapFunctionType()
     }
     
     private func performDeclPass(struct structDecl: StructDeclaration) {
@@ -142,6 +151,15 @@ public class SnapToCrackleCompiler: NSObject {
                                 varDecl.identifier.identifier)
         }
         
+        // If the variable declaration provided an explicit type expression then
+        // the type checker can determine what type it evaluates to.
+        let explicitType: SymbolType?
+        if let explicitTypeExpr = varDecl.explicitType {
+            explicitType = try TypeContextTypeChecker(symbols: symbols).check(expression: explicitTypeExpr)
+        } else {
+            explicitType = nil
+        }
+        
         if let varDeclExpr = varDecl.expression {
             // The type of the initial value expression may be used to infer the
             // symbol type in cases where the explicit type is not specified.
@@ -151,11 +169,11 @@ public class SnapToCrackleCompiler: NSObject {
             // If the explicit type is an array type then we must examine the
             // expression result type to determine the array length.
             let symbolType: SymbolType
-            switch (expressionResultType, varDecl.explicitType) {
+            switch (expressionResultType, explicitType) {
             case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
                 symbolType = .array(count: count, elementType: elementType)
             default:
-                if let explicitType = varDecl.explicitType {
+                if let explicitType = explicitType {
                     symbolType = explicitType
                 } else {
                     // Some expression types cannot be made concrete.
@@ -183,7 +201,7 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
                                                                  lexpr: varDecl.identifier,
                                                                  rexpr: varDeclExpr))
-        } else if let explicitType = varDecl.explicitType {
+        } else if let explicitType = explicitType {
             let symbol = try makeSymbolWithExplicitType(explicitType: explicitType, storage: varDecl.storage, isMutable: varDecl.isMutable)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
@@ -229,7 +247,9 @@ public class SnapToCrackleCompiler: NSObject {
     
     @discardableResult private func compile(expression: Expression) throws -> RvalueExpressionCompiler {
         currentSourceAnchor = expression.sourceAnchor
-        let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
+        let exprCompiler = RvalueExpressionCompiler(symbols: symbols,
+                                                    labelMaker: labelMaker,
+                                                    mapMangledFunctionName: mapMangledFunctionName)
         let ir = try exprCompiler.compile(expression: expression)
         emit(ir)
         return exprCompiler
@@ -301,7 +321,7 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(block: Block) throws {
         currentSourceAnchor = block.sourceAnchor
         pushScopeForBlock()
-        performDeclPass(block: block)
+        try performDeclPass(block: block)
         for child in block.children {
             try compile(genericNode: child)
         }
@@ -365,14 +385,15 @@ public class SnapToCrackleCompiler: NSObject {
             .enter
         ])
         
+        let functionType = try evaluateFunctionTypeExpression(node.functionType)
         pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.identifier,
-                                  enclosingFunctionType: node.functionType)
-        bindFunctionArguments(node.functionType)
-        performDeclPass(block: node.body)
+                                  enclosingFunctionType: functionType)
+        bindFunctionArguments(functionType)
+        try performDeclPass(block: node.body)
         for child in node.body.children {
             try compile(genericNode: child)
         }
-        if shouldSynthesizeTerminalReturnStatement(func: node) {
+        if try shouldSynthesizeTerminalReturnStatement(func: node) {
             try compile(return: Return(sourceAnchor: node.sourceAnchor, expression: nil))
         }
         popScopeForStackFrame()
@@ -422,6 +443,7 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {
+        let functionType = try evaluateFunctionTypeExpression(node.functionType)
         let tracer = StatementTracer(symbols: symbols)
         let traces = try tracer.trace(ast: node.body)
         for trace in traces {
@@ -430,23 +452,25 @@ public class SnapToCrackleCompiler: NSObject {
                 case .Return:
                     break
                 default:
-                    if node.functionType.returnType != .void {
+                    if functionType.returnType != .void {
                         throw makeErrorForMissingReturn(node)
                     }
                 }
-            } else if node.functionType.returnType != .void {
+            } else if functionType.returnType != .void {
                 throw makeErrorForMissingReturn(node)
             }
         }
     }
     
     private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
+        let functionType = try! evaluateFunctionTypeExpression(node.functionType)
         return CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                             message: "missing return in a function expected to return `\(node.functionType.returnType)'")
+                             message: "missing return in a function expected to return `\(functionType.returnType)'")
     }
     
-    private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) -> Bool {
-        guard node.functionType.returnType == .void else {
+    private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) throws -> Bool {
+        let functionType = try evaluateFunctionTypeExpression(node.functionType)
+        guard functionType.returnType == .void else {
             return false
         }
         let tracer = StatementTracer(symbols: symbols)

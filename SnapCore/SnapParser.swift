@@ -164,45 +164,48 @@ public class SnapParser: Parser {
                                isMutable: isMutable)]
     }
     
-    fileprivate func consumeTypeAnnotation() throws -> SymbolType? {
+    fileprivate func consumeTypeAnnotation() throws -> Expression? {
         guard nil != accept(TokenColon.self) else {
             return nil
         }
         return try consumeType()
     }
     
-    fileprivate func consumeType() throws -> SymbolType {
+    fileprivate func consumeType() throws -> Expression {
         if let _ = peek() as? TokenSquareBracketLeft {
             return try consumeArrayType()
+        } else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
+            return Expression.Identifier(sourceAnchor: identifier.sourceAnchor,
+                                         identifier: identifier.lexeme)
         } else {
             return try consumePrimitiveType()
         }
     }
     
-    fileprivate func consumeArrayType() throws -> SymbolType {
+    fileprivate func consumeArrayType() throws -> Expression {
         try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in array type"))
-        let count: Int?
         if nil != accept(TokenSquareBracketRight.self) {
             let elementType = try consumeType()
-            return .dynamicArray(elementType: elementType)
+            return Expression.DynamicArrayType(elementType)
         }
         else {
+            let count: Expression?
             if nil != accept(TokenUnderscore.self) {
                 count = nil
             } else {
-                count = (try expect(type: TokenNumber.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected integer literal for the array count")) as! TokenNumber).literal
+                count = try consumeExpression()
             }
             try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]' in array type"))
             let elementType = try consumeType()
-            return .array(count: count, elementType: elementType)
+            return Expression.ArrayType(count: count, elementType: elementType)
         }
     }
     
-    fileprivate func consumePrimitiveType() throws -> SymbolType {
+    fileprivate func consumePrimitiveType() throws -> Expression {
         let typeName = peek()?.sourceAnchor?.text ?? "unknown"
         let tokenType = try expect(type: TokenType.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "use of undeclared type `\(typeName)'")) as! TokenType
         let explicitType = tokenType.representedType
-        return explicitType
+        return Expression.PrimitiveType(explicitType)
     }
     
     private func consumeIf(_ ifToken: TokenIf) throws -> [AbstractSyntaxTreeNode] {
@@ -357,11 +360,10 @@ public class SnapParser: Parser {
     }
     
     private func consumeFunc(_ token: TokenFunc) throws -> [AbstractSyntaxTreeNode] {
-        let returnType: SymbolType
         let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: token.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
         try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
         
-        var arguments: [FunctionType.Argument] = []
+        var arguments: [Expression.FunctionType.Argument] = []
         
         if type(of: peek()!) != TokenParenRight.self {
             repeat {
@@ -373,25 +375,26 @@ public class SnapParser: Parser {
                     throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
                 }
                 let name = tokenIdentifier.lexeme
-                arguments.append(FunctionType.Argument(name: name, type: type))
+                arguments.append(Expression.FunctionType.Argument(name: name, type: type))
             } while nil != accept(TokenComma.self)
         }
         
         try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in argument list of function declaration"))
         
+        let returnType: Expression
         if nil == accept(TokenArrow.self) {
-            returnType = .void
+            returnType = Expression.PrimitiveType(.void)
         } else {
             returnType = try consumeType()
         }
+        
         let leftError = "expected `{' in body of function declaration"
         let rightError = "expected `}' after function body"
         let body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first as! Block
         let sourceAnchor = token.sourceAnchor?.union(previous?.sourceAnchor)
         return [FunctionDeclaration(sourceAnchor: sourceAnchor,
                                     identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
-                                    functionType: FunctionType(returnType: returnType,
-                                                               arguments: arguments),
+                                    functionType: Expression.FunctionType(returnType: returnType, arguments: arguments),
                                     body: body)]
     }
     
@@ -594,16 +597,6 @@ public class SnapParser: Parser {
         }
         else if let squareBracketLeft = peek() as? TokenSquareBracketLeft {
             let typ = try consumeArrayType()
-            let explicitCount: Int?
-            let explicitType: SymbolType
-            switch typ {
-            case .array(count: let n, elementType: let a):
-                explicitCount = n
-                explicitType = a
-            default:
-                abort()
-            }
-            
             try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in array literal"))
             var elements: [Expression] = []
             if nil == (peek() as? TokenCurlyRight) {
@@ -617,18 +610,17 @@ public class SnapParser: Parser {
             
             let sourceAnchor = squareBracketLeft.sourceAnchor?.union(previous?.sourceAnchor)
             return Expression.LiteralArray(sourceAnchor: sourceAnchor,
-                                           explicitType: explicitType,
-                                           explicitCount: explicitCount,
+                                           arrayType: typ,
                                            elements: elements)
         }
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
+            let typ = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
             let sourceAnchor = literalString.sourceAnchor
             let elements = literalString.literal.utf8.map({
                 Expression.LiteralInt(sourceAnchor: sourceAnchor, value: Int($0))
             })
             return Expression.LiteralArray(sourceAnchor: sourceAnchor,
-                                           explicitType: .u8,
-                                           explicitCount: nil,
+                                           arrayType: typ,
                                            elements: elements)
         }
         else if let token = peek() {

@@ -53,6 +53,14 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(literalArray: expr)
         case let expr as Expression.Get:
             return try check(get: expr)
+        case let expr as Expression.PrimitiveType:
+            return try check(primitiveType: expr)
+        case let expr as Expression.ArrayType:
+            return try check(arrayType: expr)
+        case let expr as Expression.DynamicArrayType:
+            return try check(dynamicArrayType: expr)
+        case let expr as Expression.FunctionType:
+            return try check(functionType: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -414,14 +422,15 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
-        return try resolve(expr).type
+        return try symbols.resolve(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier).type
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
         let callee = call.callee as! Expression.Identifier
+        let name = callee.identifier
         let symbol = try resolve(callee)
         switch symbol.type {
-        case .function(name: let name, mangledName: _, functionType: let typ):
+        case .function(let typ):
             if call.arguments.count != typ.arguments.count {
                 let message = "incorrect number of arguments in call to `\(name)'"
                 throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
@@ -443,7 +452,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(as expr: Expression.As) throws -> SymbolType {
-        let ltype = expr.targetType
+        let ltype = try check(expression: expr.targetType)
         let rtype = try check(expression: expr.expr)
         return try checkTypesAreConvertibleInExplicitCast(ltype: ltype,
                                                           rtype: rtype,
@@ -473,25 +482,20 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {
-        switch expr.explicitType {
-        case .array(count: let count, elementType: _):
-            if count == nil {
-                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "inferred array count is invalid here")
-            }
-        default:
-            break
-        }
+        var arrayLiteralType = try check(expression: expr.arrayType)
+        let arrayCount = arrayLiteralType.arrayCount
+        let arrayElementType = arrayLiteralType.arrayElementType
         
-        let arrayLiteralType: SymbolType = .array(count: expr.elements.count, elementType: expr.explicitType)
-        
-        if let explicitCount = expr.explicitCount {
+        if let explicitCount = arrayCount {
             if expr.elements.count != explicitCount {
                 throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "expected \(explicitCount) elements in `\(arrayLiteralType)' array literal")
             }
         }
         
+        arrayLiteralType = .array(count: expr.elements.count, elementType: arrayElementType)
+        
         for element in expr.elements {
-            let ltype = expr.explicitType
+            let ltype = arrayElementType
             let rtype = try check(expression: element)
             try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                      rtype: rtype,
@@ -518,6 +522,42 @@ public class RvalueExpressionTypeChecker: NSObject {
             break
         }
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(member)'")
+    }
+    
+    public func check(primitiveType expr: Expression.PrimitiveType) throws -> SymbolType {
+        return expr.typ
+    }
+    
+    public func check(arrayType expr: Expression.ArrayType) throws -> SymbolType {
+        let count: Int?
+        if let exprCount = expr.count {
+            let typeOfCountExpr = try check(expression: exprCount)
+            switch typeOfCountExpr {
+            case .constInt(let a):
+                count = a
+            default:
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot convert value of type `\(typeOfCountExpr)' to expected type `const int'")
+            }
+        } else {
+            count = nil
+        }
+        let elementType = try check(expression: expr.elementType)
+        return .array(count: count, elementType: elementType)
+    }
+    
+    public func check(dynamicArrayType expr: Expression.DynamicArrayType) throws -> SymbolType {
+        let elementType = try check(expression: expr.elementType)
+        return .dynamicArray(elementType: elementType)
+    }
+    
+    public func check(functionType expr: Expression.FunctionType) throws -> SymbolType {
+        let returnType = try check(expression: expr.returnType)
+        var arguments: [FunctionType.Argument] = []
+        for arg in expr.arguments {
+            let typ = try check(expression: arg.argumentType)
+            arguments.append(FunctionType.Argument(name: arg.name, type: typ))
+        }
+        return .function(FunctionType(returnType: returnType, arguments: arguments))
     }
     
     func unsupportedError(expression: Expression) -> Error {

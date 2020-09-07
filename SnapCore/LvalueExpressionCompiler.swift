@@ -16,11 +16,13 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
+                         mapMangledFunctionName: MangledFunctionNameMap = MangledFunctionNameMap(),
                          temporaryStack: CompilerTemporariesStack =     CompilerTemporariesStack(),
                          temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         super.init(symbols: symbols,
                    labelMaker: labelMaker,
+                   mapMangledFunctionName: mapMangledFunctionName,
                    temporaryStack: temporaryStack,
                    temporaryAllocator: temporaryAllocator)
     }

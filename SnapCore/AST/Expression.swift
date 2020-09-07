@@ -344,13 +344,13 @@ public class Expression: AbstractSyntaxTreeNode {
     
     public class As: Expression {
         public let expr: Expression
-        public let targetType: SymbolType
+        public let targetType: Expression
         
-        public convenience init(expr: Expression, targetType: SymbolType) {
+        public convenience init(expr: Expression, targetType: Expression) {
             self.init(sourceAnchor: nil, expr: expr, targetType: targetType)
         }
         
-        public init(sourceAnchor: SourceAnchor?, expr: Expression, targetType: SymbolType) {
+        public init(sourceAnchor: SourceAnchor?, expr: Expression, targetType: Expression) {
             self.expr = expr
             self.targetType = targetType
             super.init(sourceAnchor: sourceAnchor)
@@ -370,7 +370,7 @@ public class Expression: AbstractSyntaxTreeNode {
             return String(format: "%@<%@ convertingTo=%@ expr=%@>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          targetType.description,
+                          targetType.makeIndentedDescription(depth: depth),
                           expr.makeIndentedDescription(depth: depth))
         }
     }
@@ -409,25 +409,20 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public class LiteralArray: Expression {
-        public let explicitType: SymbolType
-        public let explicitCount: Int?
+        public let arrayType: Expression
         public let elements: [Expression]
         
-        public convenience init(explicitType: SymbolType,
-                                explicitCount: Int? = nil,
+        public convenience init(arrayType: Expression,
                                 elements: [Expression] = []) {
             self.init(sourceAnchor: nil,
-                      explicitType: explicitType,
-                      explicitCount: explicitCount,
+                      arrayType: arrayType,
                       elements: elements)
         }
         
         public init(sourceAnchor: SourceAnchor?,
-                    explicitType: SymbolType,
-                    explicitCount: Int?,
+                    arrayType: Expression,
                     elements: [Expression] = []) {
-            self.explicitType = explicitType
-            self.explicitCount = explicitCount
+            self.arrayType = arrayType
             self.elements = elements
             super.init(sourceAnchor: sourceAnchor)
         }
@@ -437,8 +432,7 @@ public class Expression: AbstractSyntaxTreeNode {
             guard type(of: rhs!) == type(of: self) else { return false }
             guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? LiteralArray else { return false }
-            guard explicitType == rhs.explicitType else { return false }
-            guard explicitCount == rhs.explicitCount else { return false }
+            guard arrayType == rhs.arrayType else { return false }
             guard elements == rhs.elements else {
                 return false
             }
@@ -447,19 +441,17 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(explicitType)
-            hasher.combine(explicitCount)
+            hasher.combine(arrayType)
             hasher.combine(elements)
             hasher.combine(super.hash)
             return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ explicitType=%@, explicitCount=%@, elements=[\n%@\n]>",
+            return String(format: "%@<%@ arrayType=%@, elements=[\n%@\n]>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          explicitType.description,
-                          explicitCount?.description ?? "nil",
+                          arrayType.makeIndentedDescription(depth: depth),
                           elements.compactMap({$0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace:  true)}).joined(separator: ",\n"))
         }
     }
@@ -502,6 +494,199 @@ public class Expression: AbstractSyntaxTreeNode {
                           String(describing: type(of: self)),
                           expr.makeIndentedDescription(depth: depth+1),
                           member.makeIndentedDescription(depth: depth+1))
+        }
+    }
+    
+    public class PrimitiveType: Expression {
+        public let typ: SymbolType
+        
+        public convenience init(_ typ: SymbolType) {
+            self.init(sourceAnchor: nil, typ: typ)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, typ: SymbolType) {
+            self.typ = typ
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? PrimitiveType else { return false }
+            guard typ == rhs.typ else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(typ)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ typ=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          typ.description)
+        }
+    }
+    
+    public class DynamicArrayType: Expression {
+        public let elementType: Expression
+        
+        public convenience init(_ elementType: Expression) {
+            self.init(sourceAnchor: nil, elementType: elementType)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, elementType: Expression) {
+            self.elementType = elementType
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? DynamicArrayType else { return false }
+            guard elementType == rhs.elementType else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(elementType)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ elementType=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          elementType.description)
+        }
+    }
+    
+    public class ArrayType: Expression {
+        public let count: Expression?
+        public let elementType: Expression
+        
+        public convenience init(count: Expression?, elementType: Expression) {
+            self.init(sourceAnchor: nil, count: count, elementType: elementType)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, count: Expression?, elementType: Expression) {
+            self.count = count
+            self.elementType = elementType
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? ArrayType else { return false }
+            guard count == rhs.count else { return false }
+            guard elementType == rhs.elementType else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(count)
+            hasher.combine(elementType)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ count=%@, elementType=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          count?.description ?? "nil",
+                          elementType.description)
+        }
+    }
+
+    public class FunctionType: Expression {
+        public class Argument: NSObject {
+            public let name: String
+            public let argumentType: Expression
+            
+            public init(name: String, type: Expression) {
+                self.name = name
+                self.argumentType = type
+            }
+            
+            public static func ==(lhs: Argument, rhs: Argument) -> Bool {
+                return lhs.isEqual(rhs)
+            }
+            
+            public override func isEqual(_ rhs: Any?) -> Bool {
+                guard rhs != nil else { return false }
+                guard type(of: rhs!) == type(of: self) else { return false }
+                guard let rhs = rhs as? Argument else { return false }
+                guard name == rhs.name else { return false }
+                guard argumentType == rhs.argumentType else { return false }
+                return true
+            }
+            
+            public override var hash: Int {
+                var hasher = Hasher()
+                hasher.combine(name)
+                hasher.combine(argumentType)
+                return hasher.finalize()
+            }
+        }
+        
+        public let returnType: Expression
+        public let arguments: [Argument]
+        
+        public convenience init(returnType: Expression, arguments: [Argument]) {
+            self.init(sourceAnchor: nil,
+                      returnType: returnType,
+                      arguments: arguments)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, returnType: Expression, arguments: [Argument]) {
+            self.returnType = returnType
+            self.arguments = arguments
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ returnType=%@, arguments=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          returnType.makeIndentedDescription(depth: depth+1),
+                          makeArgumentsDescription())
+        }
+        
+        public func makeArgumentsDescription() -> String {
+            let result = arguments.map({"\($0.name) : \($0.argumentType)"}).joined(separator: ", ")
+            return result
+        }
+        
+        public static func ==(lhs: FunctionType, rhs: FunctionType) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? FunctionType else { return false }
+            guard returnType == rhs.returnType else { return false }
+            guard arguments == rhs.arguments else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(returnType)
+            hasher.combine(arguments)
+            return hasher.finalize()
         }
     }
 }

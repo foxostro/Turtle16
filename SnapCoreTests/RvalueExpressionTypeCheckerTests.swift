@@ -2190,10 +2190,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [ExprUtils.makeBool(value: false)])
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: functionType), offset: 0x0000, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000, isMutable: false)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2203,8 +2202,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testFailBecauseFunctionCallUsesIncorrectNumberOfParameters() {
-        let functionType = FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: functionType), offset: 0x0000, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000, isMutable: false)])
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2270,7 +2268,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBoolasVoid() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
-                                 targetType: .void)
+                                 targetType: Expression.PrimitiveType(.void))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2281,7 +2279,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBoolasU16() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
-                                 targetType: .u16)
+                                 targetType: Expression.PrimitiveType(.u16))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2292,7 +2290,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBoolasU8() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
-                                 targetType: .u8)
+                                 targetType: Expression.PrimitiveType(.u8))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2303,7 +2301,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBoolasBool() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
-                                 targetType: .bool)
+                                 targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2312,7 +2310,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU8asVoid() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
-                                 targetType: .void)
+                                 targetType: Expression.PrimitiveType(.void))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2323,7 +2321,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU8asU16() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
-                                 targetType: .u16)
+                                 targetType: Expression.PrimitiveType(.u16))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2332,7 +2330,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU8asU8() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
-                                 targetType: .u8)
+                                 targetType: Expression.PrimitiveType(.u8))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2341,7 +2339,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU8asBool() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
-                                 targetType: .bool)
+                                 targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2352,7 +2350,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU16asVoid() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
-                                 targetType: .void)
+                                 targetType: Expression.PrimitiveType(.void))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2363,7 +2361,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU16asU16() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
-                                 targetType: .u16)
+                                 targetType: Expression.PrimitiveType(.u16))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2372,7 +2370,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU16asU8() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
-                                 targetType: .u8)
+                                 targetType: Expression.PrimitiveType(.u8))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2381,7 +2379,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU16asBool() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
-                                 targetType: .bool)
+                                 targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2391,10 +2389,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testCannotConvertArrayLiteralsOfDifferentLengths() {
-        let expr = Expression.As(expr: Expression.LiteralArray(explicitType: .u8,
-                                                               explicitCount: 1,
+        let expr = Expression.As(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                                                elements: [ExprUtils.makeU8(value: 1)]),
-                                 targetType: .array(count: 10, elementType: .u16))
+                                 targetType: Expression.ArrayType(count: Expression.LiteralInt(10), elementType: Expression.PrimitiveType(.u16)))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2404,10 +2401,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testArrayOfU8AsArrayOfU16() {
-        let expr = Expression.As(expr: Expression.LiteralArray(explicitType: .u8,
-                                                               explicitCount: 1,
+        let expr = Expression.As(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                                                elements: [ExprUtils.makeU8(value: 1)]),
-                                 targetType: .array(count: 1, elementType: .u16))
+                                 targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16)))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2416,7 +2412,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantAsU16() {
         let expr = Expression.As(expr: Expression.LiteralInt(0),
-                                 targetType: .u16)
+                                 targetType: Expression.PrimitiveType(.u16))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2425,7 +2421,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantAsU8() {
         let expr = Expression.As(expr: Expression.LiteralInt(0),
-                                 targetType: .u8)
+                                 targetType: Expression.PrimitiveType(.u8))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2434,7 +2430,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantAsU8_Overflows() {
         let expr = Expression.As(expr: Expression.LiteralInt(256),
-                                 targetType: .u8)
+                                 targetType: Expression.PrimitiveType(.u8))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2445,7 +2441,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantAsU16_Overflows() {
         let expr = Expression.As(expr: Expression.LiteralInt(65536),
-                                 targetType: .u16)
+                                 targetType: Expression.PrimitiveType(.u16))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2456,7 +2452,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantAsU8_Overflows_Negative() {
         let expr = Expression.As(expr: Expression.LiteralInt(-1),
-                                 targetType: .u8)
+                                 targetType: Expression.PrimitiveType(.u8))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2467,7 +2463,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantAsU16_Overflows_Negative() {
         let expr = Expression.As(expr: Expression.LiteralInt(-1),
-                                 targetType: .u16)
+                                 targetType: Expression.PrimitiveType(.u16))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2478,7 +2474,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantasBool() {
         let expr = Expression.As(expr: Expression.LiteralInt(0),
-                                 targetType: .bool)
+                                 targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2489,7 +2485,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBooleanConstantasBool() {
         let expr = Expression.As(expr: Expression.LiteralBool(false),
-                                 targetType: .bool)
+                                 targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2563,8 +2559,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testEmptyArray() {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
-        let arr = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: 0,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u8)),
                                           elements: [])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 0, elementType: .u8))
@@ -2574,8 +2569,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = ExprUtils.makeU8(value: 0)
-        let arr = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: 1,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                           elements: [val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 1, elementType: .u8))
@@ -2585,8 +2579,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = ExprUtils.makeU16(value: 1000)
-        let arr = Expression.LiteralArray(explicitType: .u16,
-                                          explicitCount: 1,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16)),
                                           elements: [val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 1, elementType: .u16))
@@ -2596,36 +2589,18 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = Expression.LiteralBool(false)
-        let arr = Expression.LiteralArray(explicitType: .bool,
-                                          explicitCount: 1,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.bool)),
                                           elements: [val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 1, elementType: .bool))
     }
     
-    func testSingletonArrayOfArray_WithInvalidInferredArrayCount() {
-        let typeChecker = RvalueExpressionTypeChecker()
-        let val = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: nil,
-                                          elements: [])
-        let arr = Expression.LiteralArray(explicitType: .array(count: nil, elementType: .u8),
-                                          explicitCount: nil,
-                                          elements: [val])
-        XCTAssertThrowsError(try typeChecker.check(expression: arr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "inferred array count is invalid here")
-        }
-    }
-    
     func testSingletonArrayOfArray() {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
-        let val = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: 0,
+        let val = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u8)),
                                           elements: [])
-        let arr = Expression.LiteralArray(explicitType: .array(count: 0, elementType: .u8),
-                                          explicitCount: 1,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u8))),
                                           elements: [val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 1, elementType: .array(count: 0, elementType: .u8)))
@@ -2635,8 +2610,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = ExprUtils.makeU8(value: 0)
-        let arr = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: 2,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u8)),
                                           elements: [val, val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 2, elementType: .u8))
@@ -2646,8 +2620,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = ExprUtils.makeU16(value: 1000)
-        let arr = Expression.LiteralArray(explicitType: .u16,
-                                          explicitCount: 2,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u16)),
                                           elements: [val, val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 2, elementType: .u16))
@@ -2657,8 +2630,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = Expression.LiteralBool(false)
-        let arr = Expression.LiteralArray(explicitType: .bool,
-                                          explicitCount: 2,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.bool)),
                                           elements: [val, val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 2, elementType: .bool))
@@ -2667,19 +2639,16 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testArrayOfArray() {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
-        let val = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: 0,
+        let val = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u8)),
                                           elements: [])
-        let arr = Expression.LiteralArray(explicitType: .array(count: 0, elementType: .u8),
-                                          explicitCount: 2,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u8))),
                                           elements: [val, val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
         XCTAssertEqual(result, .array(count: 2, elementType: .array(count: 0, elementType: .u8)))
     }
     
     func testArrayLiteralHasNonConvertibleType() {
-        let expr = Expression.LiteralArray(explicitType: .bool,
-                                           explicitCount: 2,
+        let expr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.bool)),
                                            elements: [Expression.LiteralInt(0),
                                                       Expression.LiteralBool(false)])
         let typeChecker = RvalueExpressionTypeChecker()
@@ -2693,8 +2662,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testInferTypeOfArrayOfIntegerConstantsWhichFitIntoU8() {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
-        let arr = Expression.LiteralArray(explicitType: .u8,
-                                          explicitCount: nil,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                           elements: [Expression.LiteralInt(0),
                                                      Expression.LiteralInt(1),
                                                      Expression.LiteralInt(2)])
@@ -2705,8 +2673,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testInferTypeOfArrayOfIntegerConstantsWhichFitIntoU16() {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
-        let arr = Expression.LiteralArray(explicitType: .u16,
-                                          explicitCount: nil,
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)),
                                           elements: [Expression.LiteralInt(0),
                                                      Expression.LiteralInt(0),
                                                      Expression.LiteralInt(1000)])
@@ -2715,8 +2682,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testInferTypeOfArrayOfHeterogeneousArithmeticTypesWhichFitIntoU8() {
-        let expr = Expression.LiteralArray(explicitType: .u8,
-                                           explicitCount: 3,
+        let expr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(3), elementType: Expression.PrimitiveType(.u8)),
                                            elements: [ExprUtils.makeU8(value: 0),
                                                       ExprUtils.makeU8(value: 0),
                                                       ExprUtils.makeU8(value: 0)])
@@ -2728,7 +2694,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testCannotAssignFunctionToArray() {
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(name: "foo", mangledName: "foo", functionType: FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)])),
+            "foo" : Symbol(type: .function(FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)])),
                            offset: 0x0010,
                            isMutable: false),
             "bar" : Symbol(type: .array(count: nil, elementType: .u16),
@@ -2745,8 +2711,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAccessInvalidMemberOfLiteralArray() {
-        let expr = Expression.Get(expr: Expression.LiteralArray(explicitType: .u8,
-                                                                explicitCount: nil,
+        let expr = Expression.Get(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                                 elements: [ExprUtils.makeU8(value: 0),
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
@@ -2760,8 +2725,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGetLengthOfLiteralArray() {
-        let expr = Expression.Get(expr: Expression.LiteralArray(explicitType: .u8,
-                                                                explicitCount: nil,
+        let expr = Expression.Get(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                                 elements: [ExprUtils.makeU8(value: 0),
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
@@ -2782,5 +2746,55 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
+    }
+    
+    func testTypeOfPrimitiveTypeExpression() {
+        let expr = Expression.PrimitiveType(.u8)
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testTypeOfArrayTypeExpression() {
+        let expr = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .array(count: nil, elementType: .u8))
+    }
+    
+    func testCountOfArrayTypeIsConstIntExpression() {
+        let expr = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .array(count: 1, elementType: .u8))
+    }
+    
+    func testCountOfArrayTypeIsConstIntExpressionAndWeCanDoMathThere() {
+        let expr = Expression.ArrayType(count: Expression.Binary(op: .plus, left: Expression.LiteralInt(1), right: Expression.LiteralInt(1)), elementType: Expression.PrimitiveType(.u8))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .array(count: 2, elementType: .u8))
+    }
+    
+    func testArrayCountMustHaveTypeOfConstInt() {
+        let expr = Expression.ArrayType(count: ExprUtils.makeU8(value: 1), elementType: Expression.PrimitiveType(.u8))
+       let typeChecker = RvalueExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to expected type `const int'")
+        }
+    }
+    
+    func testTypeOfDynamicArrayTypeExpression() {
+        let expr = Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .dynamicArray(elementType: .u8))
     }
 }

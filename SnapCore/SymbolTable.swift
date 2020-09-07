@@ -15,6 +15,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case function(name: String, mangledName: String, functionType: FunctionType)
     case array(count: Int?, elementType: SymbolType)
     case dynamicArray(elementType: SymbolType)
+    case structType(name: String)
     
     public var isBooleanType: Bool {
         switch self {
@@ -46,6 +47,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return (count ?? 0) * elementType.sizeof
         case .dynamicArray(elementType: _):
             return 4
+        case .structType:
+            return 0 // TODO: FIXME
         }
     }
     
@@ -75,6 +78,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
             return result
+        case .structType(let name):
+            return "\(name)"
         }
     }
 }
@@ -169,6 +174,7 @@ public struct Symbol: Equatable {
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
     private var symbolTable: [String:Symbol]
+    private var typeTable: [String:SymbolType]
     public let parent: SymbolTable?
     public var storagePointer: Int
     public var enclosingFunctionType: FunctionType? = nil
@@ -179,9 +185,10 @@ public class SymbolTable: NSObject {
         self.init(parent: nil, dict: dict)
     }
     
-    public init(parent p: SymbolTable?, dict: [String:Symbol] = [:]) {
+    public init(parent p: SymbolTable?, dict: [String:Symbol] = [:], typeDict: [String:SymbolType] = [:]) {
         parent = p
         symbolTable = dict
+        typeTable = typeDict
         storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
         enclosingFunctionName = p?.enclosingFunctionName
@@ -204,6 +211,10 @@ public class SymbolTable: NSObject {
     
     public func bind(identifier: String, symbol: Symbol) {
         symbolTable[identifier] = symbol
+    }
+    
+    public func bind(identifier: String, symbolType: SymbolType) {
+        typeTable[identifier] = symbolType
     }
     
     public func resolve(identifier: String) throws -> Symbol {
@@ -260,5 +271,24 @@ public class SymbolTable: NSObject {
         } else {
             return []
         }
+    }
+    
+    public func resolveType(identifier: String) throws -> SymbolType {
+        return try resolveType(sourceAnchor: nil, identifier: identifier)
+    }
+    
+    public func resolveType(sourceAnchor: SourceAnchor?, identifier: String) throws -> SymbolType {
+        guard let resolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
+            throw CompilerError(sourceAnchor: sourceAnchor,
+                                message: "use of undeclared type `\(identifier)'")
+        }
+        return resolution.0
+    }
+    
+    private func maybeResolveTypeWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (SymbolType, Int)? {
+        if let symbolType = typeTable[identifier] {
+            return (symbolType, stackFrameIndex)
+        }
+        return parent?.maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
     }
 }

@@ -12,17 +12,17 @@ import TurtleCompilerToolbox
 public class ExprUtils: NSObject {
     public static func makeU8(value: Int) -> Expression {
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: .u8)
+                             targetType: Expression.PrimitiveType(.u8))
     }
     
     public static func makeU16(value: Int) -> Expression {
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: .u16)
+                             targetType: Expression.PrimitiveType(.u16))
     }
     
     public static func makeBool(value: Bool) -> Expression {
         return Expression.As(expr: Expression.LiteralBool(value),
-                             targetType: .bool)
+                             targetType: Expression.PrimitiveType(.bool))
     }
     
     public static func makeAdd(left: Expression, right: Expression) -> Expression {

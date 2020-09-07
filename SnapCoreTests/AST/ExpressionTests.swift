@@ -176,27 +176,27 @@ class ExpressionTests: XCTestCase {
     func testAsEquality() {
         // Different expr
         XCTAssertNotEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                        targetType: .u8),
+                                        targetType: Expression.PrimitiveType(.u8)),
                           Expression.As(expr: Expression.Identifier("bar"),
-                                        targetType: .u8))
+                                        targetType: Expression.PrimitiveType(.u8)))
         
         // Different target type
         XCTAssertNotEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                        targetType: .u16),
+                                        targetType: Expression.PrimitiveType(.u16)),
                           Expression.As(expr: Expression.Identifier("foo"),
-                                        targetType: .u8))
+                                        targetType: Expression.PrimitiveType(.u8)))
         
         // Same
         XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: .u8),
+                                     targetType: Expression.PrimitiveType(.u8)),
                        Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: .u8))
+                                     targetType: Expression.PrimitiveType(.u8)))
         
         // Hash
         XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: .u8).hash,
+                                     targetType: Expression.PrimitiveType(.u8)).hash,
                        Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: .u8).hash)
+                                     targetType: Expression.PrimitiveType(.u8)).hash)
     }
     
     func testSubscriptEquality() {
@@ -227,43 +227,33 @@ class ExpressionTests: XCTestCase {
     
     func testLiteralArrayEquality() {
         // Different explicit lengths
-        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u8,
-                                                  explicitCount: 1,
+        XCTAssertNotEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                                   elements: [Expression.LiteralInt(0)]),
-                          Expression.LiteralArray(explicitType: .u8,
-                                                  explicitCount: 2,
+                          Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u8)),
                                                   elements: [Expression.LiteralInt(0)]))
         
         // Different explicit types
-        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u16,
-                                                  explicitCount: nil,
+        XCTAssertNotEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)),
                                                   elements: [Expression.LiteralInt(0)]),
-                          Expression.LiteralArray(explicitType: .u8,
-                                                  explicitCount: nil,
+                          Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                   elements: [Expression.LiteralInt(0)]))
         
         // Different element expressions
-        XCTAssertNotEqual(Expression.LiteralArray(explicitType: .u8,
-                                                  explicitCount: nil,
+        XCTAssertNotEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                   elements: [Expression.LiteralInt(0)]),
-                          Expression.LiteralArray(explicitType: .u8,
-                                                  explicitCount: nil,
+                          Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                   elements: [Expression.LiteralBool(false)]))
         
         // Same
-        XCTAssertEqual(Expression.LiteralArray(explicitType: .u8,
-                                               explicitCount: nil,
+        XCTAssertEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                elements: [Expression.LiteralInt(0)]),
-                       Expression.LiteralArray(explicitType: .u8,
-                                               explicitCount: nil,
+                       Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                elements: [Expression.LiteralInt(0)]))
         
         // Same hashes
-        XCTAssertEqual(Expression.LiteralArray(explicitType: .u8,
-                                               explicitCount: 1,
+        XCTAssertEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                                elements: [Expression.LiteralInt(0)]).hash,
-                       Expression.LiteralArray(explicitType: .u8,
-                                               explicitCount: 1,
+                       Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                                elements: [Expression.LiteralInt(0)]).hash)
     }
     
@@ -291,5 +281,19 @@ class ExpressionTests: XCTestCase {
                                       member: Expression.Identifier("foo")).hashValue,
                        Expression.Get(expr: Expression.Identifier("foo"),
                                       member: Expression.Identifier("foo")).hashValue)
+    }
+    
+    func testPrimitiveTypeEquality() {
+        // Different underlying types
+        XCTAssertNotEqual(Expression.PrimitiveType(.u8),
+                          Expression.PrimitiveType(.bool))
+        
+        // Same
+        XCTAssertEqual(Expression.PrimitiveType(.u8),
+                       Expression.PrimitiveType(.u8))
+        
+        // Same hashes
+        XCTAssertEqual(Expression.PrimitiveType(.u8).hash,
+                       Expression.PrimitiveType(.u8).hash)
     }
 }

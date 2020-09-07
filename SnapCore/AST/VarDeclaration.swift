@@ -11,13 +11,13 @@ import TurtleCore
 
 public class VarDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
-    public let explicitType: SymbolType?
+    public let explicitType: Expression?
     public let expression: Expression?
     public let storage: SymbolStorage
     public let isMutable: Bool
     
     public convenience init(identifier: Expression.Identifier,
-                            explicitType: SymbolType?,
+                            explicitType: Expression?,
                             expression: Expression?,
                             storage: SymbolStorage,
                             isMutable: Bool) {
@@ -31,7 +31,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
-                         explicitType: SymbolType?,
+                         explicitType: Expression?,
                          expression: Expression?,
                          storage: SymbolStorage,
                          isMutable: Bool) {

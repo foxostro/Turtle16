@@ -11,11 +11,11 @@ import TurtleCore
 
 public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
-    public let functionType: FunctionType
+    public let functionType: Expression
     public let body: Block
     
     public convenience init(identifier: Expression.Identifier,
-                            functionType: FunctionType,
+                            functionType: Expression,
                             body: Block) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
@@ -25,7 +25,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
-                         functionType: FunctionType,
+                         functionType: Expression,
                          body: Block) {
         self.identifier = identifier
         self.functionType = functionType
@@ -58,7 +58,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       identifier.makeIndentedDescription(depth: depth + 1),
-                      functionType.description,
+                      functionType.makeIndentedDescription(depth: depth + 1),
                       body.makeIndentedDescription(depth: depth + 1))
     }
 }

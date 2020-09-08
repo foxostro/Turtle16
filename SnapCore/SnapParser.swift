@@ -652,12 +652,11 @@ public class SnapParser: Parser {
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         
         try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in struct"))
-        try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
         
         var members: [StructDeclaration.Member] = []
-        if nil != accept(TokenNewline.self) {
-            repeat {
-                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected member name followed by `:'")) as! TokenIdentifier
+        repeat {
+            while nil != accept(TokenNewline.self) {}
+            if let tokenIdentifier = accept(TokenIdentifier.self) {
                 if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
                     throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "member requires an explicit type")
                 }
@@ -666,12 +665,13 @@ public class SnapParser: Parser {
                 }
                 let name = tokenIdentifier.lexeme
                 members.append(StructDeclaration.Member(name: name, type: typeExpr))
-            } while nil != accept(TokenComma.self)
-            try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
-        }
+            }
+        } while(nil != accept(TokenComma.self))
         
+        while nil != accept(TokenNewline.self) {}
         let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in struct"))
         try expectEndOfStatement()
+        
         let sourceAnchor = token.sourceAnchor?.union(closingBrace.sourceAnchor!)
         return [StructDeclaration(sourceAnchor: sourceAnchor,
                                   identifier: identifier,

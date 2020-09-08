@@ -1655,4 +1655,23 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
         XCTAssertEqual(symbolType, .structType(StructType(name: "foo", members: [])))
     }
+        
+    func testCompileStructAddsToTypeTable() {
+        let ast = TopLevel(children: [
+            StructDeclaration(identifier: Expression.Identifier("foo"), members: [
+                StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
+        XCTAssertEqual(symbolType, .structType(StructType(name: "foo", members: [
+            StructType.Member(name: "bar", type: .u8)
+        ])))
+    }
 }

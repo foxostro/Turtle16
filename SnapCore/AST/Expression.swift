@@ -657,7 +657,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ returnType=%@, arguments=%@>",
+            return String(format: "%@<%@ returnType=%@, arguments={%@}>",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           returnType.makeIndentedDescription(depth: depth+1),
@@ -665,7 +665,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public func makeArgumentsDescription() -> String {
-            let result = arguments.map({"\($0.name) : \($0.argumentType)"}).joined(separator: ", ")
+            let result = arguments.map({"\($0.name): \($0.argumentType)"}).joined(separator: ", ")
             return result
         }
         

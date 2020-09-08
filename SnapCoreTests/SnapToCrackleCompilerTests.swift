@@ -556,7 +556,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileVarDeclaration_EmptyStructOfUndefinedValue() {
         let ast = TopLevel(children: [
             Block(children: [
-                StructDeclaration(identifier: Expression.Identifier("bar")),
+                StructDeclaration(identifier: Expression.Identifier("bar"),
+                                  members: []),
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: Expression.Identifier("bar"),
                                expression: nil,
@@ -1642,7 +1643,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         
     func testCompileEmptyStructAddsToTypeTable() {
         let ast = TopLevel(children: [
-            StructDeclaration(identifier: Expression.Identifier("foo"))
+            StructDeclaration(identifier: Expression.Identifier("foo"), members: [])
         ])
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
@@ -1652,6 +1653,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
             return
         }
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
-        XCTAssertEqual(symbolType, .structType(name: "foo"))
+        XCTAssertEqual(symbolType, .structType(StructType(name: "foo", members: [])))
     }
 }

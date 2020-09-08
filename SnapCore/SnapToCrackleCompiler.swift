@@ -78,7 +78,7 @@ public class SnapToCrackleCompiler: NSObject {
         case let node as FunctionDeclaration:
             try performDeclPass(func: node)
         case let node as StructDeclaration:
-            performDeclPass(struct: node)
+            try performDeclPass(struct: node)
         case let node as Block:
             try performDeclPass(block: node)
         default:
@@ -108,9 +108,14 @@ public class SnapToCrackleCompiler: NSObject {
         return try TypeContextTypeChecker(symbols: symbols).check(expression: expr).unwrapFunctionType()
     }
     
-    private func performDeclPass(struct structDecl: StructDeclaration) {
+    private func performDeclPass(struct structDecl: StructDeclaration) throws {
         let name = structDecl.identifier.identifier
-        let typ: SymbolType = .structType(name: name)
+        var fullyQualifiedMembers: [StructType.Member] = []
+        for memberDeclaration in structDecl.members {
+            fullyQualifiedMembers.append(StructType.Member(name: memberDeclaration.name, type: try TypeContextTypeChecker(symbols: symbols).check(expression: memberDeclaration.memberType)))
+        }
+        let fullyQualifiedStructType = StructType(name: name, members: fullyQualifiedMembers)
+        let typ: SymbolType = .structType(fullyQualifiedStructType)
         symbols.bind(identifier: name, symbolType: typ)
     }
     

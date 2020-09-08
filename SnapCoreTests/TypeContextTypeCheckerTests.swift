@@ -14,10 +14,10 @@ class TypeContextTypeCheckerTests: XCTestCase {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(parent: nil,
                                   dict: [:],
-                                  typeDict: ["foo" : .structType(name: "foo")])
+                                  typeDict: ["foo" : .structType(StructType(name: "foo", members: []))])
         let typeChecker = TypeContextTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .structType(name: "foo"))
+        XCTAssertEqual(result, .structType(StructType(name: "foo", members: [])))
     }
 }

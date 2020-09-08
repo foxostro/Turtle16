@@ -158,11 +158,11 @@ class SymbolTableTests: XCTestCase {
     }
     
     func testSuccessfullyResolveTypeByIdentifier() {
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["foo" : .structType(name: "foo")])
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["foo" : .structType(StructType(name: "foo", members: []))])
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
-        case .structType(let name):
-            XCTAssertEqual(name, "foo")
+        case .structType(let typ):
+            XCTAssertEqual(typ.name, "foo")
         default:
             XCTFail()
         }
@@ -170,11 +170,11 @@ class SymbolTableTests: XCTestCase {
 
     func testBindStructType() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbolType: .structType(name: "foo"))
+        symbols.bind(identifier: "foo", symbolType: .structType(StructType(name: "foo", members: [])))
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
-        case .structType(let name):
-            XCTAssertEqual(name, "foo")
+        case .structType(let typ):
+            XCTAssertEqual(typ.name, "foo")
         default:
             XCTFail()
         }

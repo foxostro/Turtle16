@@ -507,21 +507,25 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(get expr: Expression.Get) throws -> SymbolType {
-        let member = expr.member.identifier
+        let name = expr.member.identifier
         let resultType = try check(expression: expr.expr)
         switch resultType {
         case .array:
-            if member == "count" {
+            if name == "count" {
                 return .u16
             }
         case .dynamicArray:
-            if member == "count" {
+            if name == "count" {
                 return .u16
+            }
+        case .structType(let typ):
+            if let member = typ.members.filter({ $0.name == name }).first {
+                return member.memberType
             }
         default:
             break
         }
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(member)'")
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
     }
     
     public func check(primitiveType expr: Expression.PrimitiveType) throws -> SymbolType {

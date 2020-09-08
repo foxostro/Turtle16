@@ -1062,27 +1062,35 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public func compile(get expr: Expression.Get) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let tempCount = temporaryAllocator.allocate()
-        
         instructions += try compile(expression: expr.expr)
         let tempExprResult = temporaryStack.pop()
         
-        let member = expr.member.identifier
+        let name = expr.member.identifier
         let resultType = try typeChecker.check(expression: expr.expr)
-        
-        assert(member == "count") // other members are unimplemented right now
         
         switch resultType {
         case .array(count: let count, elementType: _):
+            assert(name == "count")
+            let tempCount = temporaryAllocator.allocate()
             instructions += [.storeImmediate16(tempCount.address, count!)]
+            tempExprResult.consume()
+            temporaryStack.push(tempCount)
         case .dynamicArray:
+            assert(name == "count")
+            let tempCount = temporaryAllocator.allocate()
             instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, kSliceCountSize)]
+            tempExprResult.consume()
+            temporaryStack.push(tempCount)
+        case .structType(let typ):
+            let member = typ.members.filter({ $0.name == name }).first!
+            let size = member.memberType.sizeof
+            let tempResult = temporaryAllocator.allocate(size: size)
+            instructions += [.copyWords(tempResult.address, tempExprResult.address, size)]
+            tempExprResult.consume()
+            temporaryStack.push(tempResult)
         default:
             assert(false) // unreachable
         }
-        
-        tempExprResult.consume()
-        temporaryStack.push(tempCount)
         
         return instructions
     }

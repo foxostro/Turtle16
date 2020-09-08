@@ -2797,4 +2797,19 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .dynamicArray(elementType: .u8))
     }
+    
+    func testGetValueOfStructMemberLoadsTheValue() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("bar"))
+        let typ = StructType(name: "foo", members: [
+            StructType.Member(name: "bar", type: .u16)
+        ])
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: 0, isMutable: false)
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
 }

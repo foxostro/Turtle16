@@ -1581,5 +1581,37 @@ struct foo {
                                          ])
         XCTAssertEqual(ast.children.first, expected)
     }
+    
+    func testWellFormedStructDeclarationWithSeveralMembers() {
+        let parser = parse("""
+struct foo {
+    bar: u8,
+    baz: u16,
+    qux: bool
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 55),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
+                                         members: [
+                                            StructDeclaration.Member(name: "bar",
+                                                                     type: Expression.PrimitiveType(.u8)),
+                                            StructDeclaration.Member(name: "baz",
+                                                                     type: Expression.PrimitiveType(.u16)),
+                                            StructDeclaration.Member(name: "qux",
+                                                                     type: Expression.PrimitiveType(.bool)),
+                                         ])
+        XCTAssertEqual(ast.children.first, expected)
+    }
 }
     

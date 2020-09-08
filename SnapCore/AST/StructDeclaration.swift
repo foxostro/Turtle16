@@ -81,7 +81,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=%@, members=%@>",
+        return String(format: "%@<%@: identifier=%@, members={%@}>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       identifier.makeIndentedDescription(depth: depth + 1),
@@ -89,7 +89,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public func makeMembersDescription() -> String {
-        let result = members.map({"\t\($0.name) : \($0.memberType)"}).joined(separator: ",\n")
+        let result = members.map({"\($0.name): \($0.memberType)"}).joined(separator: ", ")
         return result
     }
 }

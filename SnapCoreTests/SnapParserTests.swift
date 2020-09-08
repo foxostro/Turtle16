@@ -1527,7 +1527,7 @@ for var i = 0; i < 10; i = i + 1 {
     }
     
     func testMalformedStructMissingClosingRightCurly() {
-        let parser = parse("struct foo{")
+        let parser = parse("struct foo{\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 11))
@@ -1535,7 +1535,10 @@ for var i = 0; i < 10; i = i + 1 {
     }
     
     func testWellFormedEmptyStructDeclaration() {
-        let parser = parse("struct foo {}")
+        let parser = parse("""
+struct foo {
+}
+""")
         XCTAssertFalse(parser.hasError)
         guard !parser.hasError else {
             let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
@@ -1547,7 +1550,35 @@ for var i = 0; i < 10; i = i + 1 {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 13), identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"))
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 14),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
+                                         members: [])
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testWellFormedStructDeclarationWithOneMember() {
+        let parser = parse("""
+struct foo {
+    bar: u8
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
+                                         members: [
+                                            StructDeclaration.Member(name: "bar",
+                                                                     type: Expression.PrimitiveType(.u8))
+                                         ])
         XCTAssertEqual(ast.children.first, expected)
     }
 }

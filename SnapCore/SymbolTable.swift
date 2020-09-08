@@ -10,31 +10,12 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
-//    case metatype(SymbolType)
     case constInt(Int), constBool(Bool)
     case u16, u8, bool, void
     case function(FunctionType)
     case array(count: Int?, elementType: SymbolType)
     case dynamicArray(elementType: SymbolType)
-    case structType(name: String)
-    
-//    public var isMetatype: Bool {
-//        switch self {
-//        case .metatype:
-//            return true
-//        default:
-//            return false
-//        }
-//    }
-//
-//    public func unwrapMetatype() -> SymbolType {
-//        switch self {
-//        case .metatype(let typ):
-//            return typ
-//        default:
-//            abort()
-//        }
-//    }
+    case structType(StructType)
     
     public func unwrapFunctionType() -> FunctionType {
         switch self {
@@ -65,8 +46,6 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var sizeof: Int {
         switch self {
-//        case .metatype, .constInt, .constBool, .void, .function:
-//            return 0
         case .constInt, .constBool, .void, .function:
             return 0
         case .u8, .bool:
@@ -77,8 +56,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return (count ?? 0) * elementType.sizeof
         case .dynamicArray(elementType: _):
             return 4
-        case .structType:
-            return 0 // TODO: FIXME
+        case .structType(let typ):
+            return typ.sizeof
         }
     }
     
@@ -104,8 +83,6 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var description: String {
         switch self {
-//        case .metatype(let typ):
-//            return "metatype(\(typ))"
         case .constInt:
             return "const int"
         case .constBool:
@@ -130,8 +107,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
             return result
-        case .structType(let name):
-            return "\(name)"
+        case .structType(let typ):
+            return "\(typ.name)"
         }
     }
 }
@@ -205,6 +182,87 @@ public class FunctionType: NSObject {
         var hasher = Hasher()
         hasher.combine(returnType)
         hasher.combine(arguments)
+        return hasher.finalize()
+    }
+}
+
+public class StructType: NSObject {
+    public class Member: NSObject {
+        public let name: String
+        public let memberType: SymbolType
+        
+        public init(name: String, type: SymbolType) {
+            self.name = name
+            self.memberType = type
+        }
+        
+        public static func ==(lhs: Member, rhs: Member) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard let rhs = rhs as? Member else { return false }
+            guard name == rhs.name else { return false }
+            guard memberType == rhs.memberType else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(name)
+            hasher.combine(memberType)
+            return hasher.finalize()
+        }
+        
+        public override var description: String {
+            return "\(name): \(memberType)"
+        }
+    }
+    
+    public let name: String
+    public let members: [Member]
+    
+    public init(name: String, members: [Member]) {
+        self.name = name
+        self.members = members
+    }
+    
+    public override var description: String {
+        return "struct \(name) {\n\(makeMembersDescription())\n}"
+    }
+    
+    public func makeMembersDescription() -> String {
+        let result = members.map({"\t\($0.description)"}).joined(separator: ",\n")
+        return result
+    }
+    
+    public var sizeof: Int {
+        var accum = 0
+        for member in members {
+            accum += member.memberType.sizeof
+        }
+        return accum
+    }
+    
+    public static func ==(lhs: StructType, rhs: StructType) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? StructType else { return false }
+        guard name == rhs.name else { return false }
+        guard members == rhs.members else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(name)
+        hasher.combine(members)
         return hasher.finalize()
     }
 }

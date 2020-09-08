@@ -2801,9 +2801,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfStructMemberLoadsTheValue() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bar"))
-        let typ = StructType(name: "foo", members: [
-            StructType.Member(name: "bar", type: .u16)
-        ])
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: 0, isMutable: false)
         ])

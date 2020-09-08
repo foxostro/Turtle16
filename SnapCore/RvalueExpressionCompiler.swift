@@ -1082,10 +1082,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             tempExprResult.consume()
             temporaryStack.push(tempCount)
         case .structType(let typ):
-            let member = typ.members.filter({ $0.name == name }).first!
-            let size = member.memberType.sizeof
+            let symbol = try typ.symbols.resolve(identifier: name)
+            let size = symbol.type.sizeof
+            let offset = symbol.offset
             let tempResult = temporaryAllocator.allocate(size: size)
-            instructions += [.copyWords(tempResult.address, tempExprResult.address, size)]
+            instructions += [.copyWords(tempResult.address, tempExprResult.address + offset, size)]
             tempExprResult.consume()
             temporaryStack.push(tempResult)
         default:

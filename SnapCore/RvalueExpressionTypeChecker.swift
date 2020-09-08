@@ -519,8 +519,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                 return .u16
             }
         case .structType(let typ):
-            if let member = typ.members.filter({ $0.name == name }).first {
-                return member.memberType
+            if let symbol = typ.symbols.maybeResolve(identifier: name) {
+                return symbol.type
             }
         default:
             break

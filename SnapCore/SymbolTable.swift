@@ -187,61 +187,35 @@ public class FunctionType: NSObject {
 }
 
 public class StructType: NSObject {
-    public class Member: NSObject {
-        public let name: String
-        public let memberType: SymbolType
-        
-        public init(name: String, type: SymbolType) {
-            self.name = name
-            self.memberType = type
-        }
-        
-        public static func ==(lhs: Member, rhs: Member) -> Bool {
-            return lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
-            guard let rhs = rhs as? Member else { return false }
-            guard name == rhs.name else { return false }
-            guard memberType == rhs.memberType else { return false }
-            return true
-        }
-        
-        public override var hash: Int {
-            var hasher = Hasher()
-            hasher.combine(name)
-            hasher.combine(memberType)
-            return hasher.finalize()
-        }
-        
-        public override var description: String {
-            return "\(name): \(memberType)"
-        }
-    }
-    
     public let name: String
-    public let members: [Member]
+    public let symbols: SymbolTable
     
-    public init(name: String, members: [Member]) {
+    public init(name: String, symbols: SymbolTable) {
         self.name = name
-        self.members = members
+        self.symbols = symbols
     }
     
     public override var description: String {
-        return "struct \(name) {\n\(makeMembersDescription())\n}"
+        return """
+struct \(name) {
+    \(makeMembersDescription())
+}
+"""
     }
     
     public func makeMembersDescription() -> String {
-        let result = members.map({"\t\($0.description)"}).joined(separator: ",\n")
+        var members: [String] = []
+        for (name, symbol) in symbols.symbolTable {
+            members.append("\(name): \(symbol.type)")
+        }
+        let result = members.map({"\t\($0)"}).joined(separator: ",\n")
         return result
     }
     
     public var sizeof: Int {
         var accum = 0
-        for member in members {
-            accum += member.memberType.sizeof
+        for (_, symbol) in symbols.symbolTable {
+            accum += symbol.type.sizeof
         }
         return accum
     }
@@ -251,18 +225,28 @@ public class StructType: NSObject {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? StructType else { return false }
-        guard name == rhs.name else { return false }
-        guard members == rhs.members else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? StructType else {
+            return false
+        }
+        guard name == rhs.name else {
+            return false
+        }
+        guard symbols == rhs.symbols else {
+            return false
+        }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(name)
-        hasher.combine(members)
+        hasher.combine(symbols)
         return hasher.finalize()
     }
 }
@@ -283,7 +267,7 @@ public struct Symbol: Equatable {
 
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
-    private var symbolTable: [String:Symbol]
+    public private(set) var symbolTable: [String:Symbol]
     private var typeTable: [String:SymbolType]
     public let parent: SymbolTable?
     public var storagePointer: Int
@@ -336,6 +320,11 @@ public class SymbolTable: NSObject {
     
     public func resolve(identifier: String) throws -> Symbol {
         return try resolve(sourceAnchor: nil, identifier: identifier)
+    }
+    
+    public func maybeResolve(identifier: String) -> Symbol? {
+        let maybeResolution: (Symbol, Int)? = maybeResolveWithScopeDepth(sourceAnchor: nil, identifier: identifier)
+        return maybeResolution?.0
     }
     
     public func resolve(sourceAnchor: SourceAnchor?, identifier: String) throws -> Symbol {
@@ -407,5 +396,24 @@ public class SymbolTable: NSObject {
             return (symbolType, stackFrameIndex)
         }
         return parent?.maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? SymbolTable else {
+            return false
+        }
+        guard symbolTable == rhs.symbolTable else {
+            return false
+        }
+        guard typeTable == rhs.typeTable else {
+            return false
+        }
+        return true
     }
 }

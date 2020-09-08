@@ -110,13 +110,17 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func performDeclPass(struct structDecl: StructDeclaration) throws {
         let name = structDecl.identifier.identifier
-        var fullyQualifiedMembers: [StructType.Member] = []
+        let members = SymbolTable()
         for memberDeclaration in structDecl.members {
-            fullyQualifiedMembers.append(StructType.Member(name: memberDeclaration.name, type: try TypeContextTypeChecker(symbols: symbols).check(expression: memberDeclaration.memberType)))
+            let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
+            let symbol = Symbol(type: memberType,
+                                offset: members.storagePointer,
+                                isMutable: true)
+            members.bind(identifier: memberDeclaration.name, symbol: symbol)
+            members.storagePointer += memberType.sizeof
         }
-        let fullyQualifiedStructType = StructType(name: name, members: fullyQualifiedMembers)
-        let typ: SymbolType = .structType(fullyQualifiedStructType)
-        symbols.bind(identifier: name, symbolType: typ)
+        let fullyQualifiedStructType = StructType(name: name, symbols: members)
+        symbols.bind(identifier: name, symbolType: .structType(fullyQualifiedStructType))
     }
     
     private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {

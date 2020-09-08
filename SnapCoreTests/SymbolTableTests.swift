@@ -158,7 +158,7 @@ class SymbolTableTests: XCTestCase {
     }
     
     func testSuccessfullyResolveTypeByIdentifier() {
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["foo" : .structType(StructType(name: "foo", members: []))])
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["foo" : .structType(StructType(name: "foo", symbols: SymbolTable()))])
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):
@@ -170,7 +170,7 @@ class SymbolTableTests: XCTestCase {
 
     func testBindStructType() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbolType: .structType(StructType(name: "foo", members: [])))
+        symbols.bind(identifier: "foo", symbolType: .structType(StructType(name: "foo", symbols: SymbolTable())))
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):

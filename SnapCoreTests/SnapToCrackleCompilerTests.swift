@@ -1653,7 +1653,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             return
         }
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
-        XCTAssertEqual(symbolType, .structType(StructType(name: "foo", members: [])))
+        XCTAssertEqual(symbolType, .structType(StructType(name: "foo", symbols: SymbolTable())))
     }
         
     func testCompileStructAddsToTypeTable() {
@@ -1670,8 +1670,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
             return
         }
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
-        XCTAssertEqual(symbolType, .structType(StructType(name: "foo", members: [
-            StructType.Member(name: "bar", type: .u8)
-        ])))
+        XCTAssertEqual(symbolType, .structType(StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true)
+        ]))))
     }
 }

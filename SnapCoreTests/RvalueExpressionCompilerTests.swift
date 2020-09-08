@@ -3630,9 +3630,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let value: UInt16 = 0xabcd
         let offset = 0x0100
-        let typ = StructType(name: "foo", members: [
-            StructType.Member(name: "bar", type: .u16)
-        ])
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: false)
+        ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: false)
         ])
@@ -3647,26 +3647,26 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), value)
     }
     
-//    func testGetValueFromStructAtNonzeroOffset() {
-//        let expr = Expression.Get(expr: Expression.Identifier("foo"),
-//                                  member: Expression.Identifier("baz"))
-//        let offset = 0x0100
-//        let typ = StructType(name: "foo", members: [
-//            StructType.Member(name: "bar", type: .u8),
-//            StructType.Member(name: "baz", type: .u16)
-//        ])
-//        let symbols = SymbolTable([
-//            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: false)
-//        ])
-//        let compiler = makeCompiler(symbols: symbols)
-//        let ir = mustCompile(compiler: compiler, expression: expr)
-//        let tempResult = compiler.temporaryStack.peek()
-//        let executor = CrackleExecutor()
-//        executor.configure = { computer in
-//            computer.dataRAM.store(value: 0xab, to: offset+0)
-//            computer.dataRAM.store16(value: 0xcdef, to: offset+1)
-//        }
-//        let computer = try! executor.execute(ir: ir)
-//        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xcdef)
-//    }
+    func testGetValueFromStructAtNonzeroOffset() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("baz"))
+        let offset = 0x0100
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: false),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: false)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0xab, to: offset+0)
+            computer.dataRAM.store16(value: 0xcdef, to: offset+1)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xcdef)
+    }
 }

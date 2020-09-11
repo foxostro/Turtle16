@@ -67,4 +67,72 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "expression is not assignable: `foo' is immutable")
         }
     }
+    
+    func testCannotAssignToTheArrayCountProperty() {
+        let expr = Expression.Get(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
+                                                                elements: [ExprUtils.makeU8(value: 0),
+                                                                           ExprUtils.makeU8(value: 1),
+                                                                           ExprUtils.makeU8(value: 2)]),
+                                  member: Expression.Identifier("count"))
+        
+        let typeChecker = LvalueExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "expression is not assignable")
+        }
+    }
+    
+    func testGetLvalueOfNonexistentMemberOfStruct() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("asdf"))
+        let offset = 0x0100
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `foo' has no member `asdf'")
+        }
+    }
+    
+    func testGetLvalueOfFirstMemberOfStruct() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("bar"))
+        let offset = 0x0100
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testGetLvalueOfSecondMemberOfStruct() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("baz"))
+        let offset = 0x0100
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
 }

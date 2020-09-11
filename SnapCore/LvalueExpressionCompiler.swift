@@ -11,6 +11,7 @@ import TurtleCompilerToolbox
 // Compiles an expression in an lvalue context. This results in code which
 // pushes a destination address to the stack. (or else a type error)
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
+    let kSizeOfAddress = 2
     let typeChecker: LvalueExpressionTypeChecker
     public var shouldAllowAssignmentToImmutableVariables = false
     
@@ -35,6 +36,8 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(identifier: identifier)
         case let expr as Expression.Subscript:
             return try compile(subscript: expr)
+        case let expr as Expression.Get:
+            return try compile(get: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -52,11 +55,35 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         
         switch symbol.storage {
         case .staticStorage:
-            let dst = temporaryAllocator.maybeAllocate(size: 2)!
+            let dst = temporaryAllocator.maybeAllocate(size: kSizeOfAddress)!
             temporaryStack.push(dst)
             instructions += [.storeImmediate16(dst.address, symbol.offset)]
         case .stackStorage:
             instructions += computeAddressOfLocalVariable(symbol, depth)
+        }
+        
+        return instructions
+    }
+    
+    private func compile(get expr: Expression.Get) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        instructions += try compile(expression: expr.expr)
+        
+        // We'll leave this temporary on the stack and modify it in place.
+        let tempResult = temporaryStack.peek()
+        
+        let name = expr.member.identifier
+        let resultType = try typeChecker.check(expression: expr.expr)
+        
+        switch resultType {
+        case .structType(let typ):
+            let symbol = try typ.symbols.resolve(identifier: name)
+            instructions += [
+                .addi16(tempResult.address, tempResult.address, symbol.offset)
+            ]
+        default:
+            throw unsupportedError(expression: expr.expr)
         }
         
         return instructions

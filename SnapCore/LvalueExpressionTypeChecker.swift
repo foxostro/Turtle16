@@ -26,6 +26,8 @@ public class LvalueExpressionTypeChecker: NSObject {
             return try check(identifier: identifier)
         case let expr as Expression.Subscript:
             return try check(subscript: expr)
+        case let expr as Expression.Get:
+            return try check(get: expr)
         default:
             throw makeNotAssignableError(expression: expression)
         }
@@ -43,6 +45,28 @@ public class LvalueExpressionTypeChecker: NSObject {
                                 message: "expression is not assignable: `\(expr.identifier.identifier)' is immutable")
         }
         return try rvalueContext().check(subscript: expr)
+    }
+    
+    public func check(get expr: Expression.Get) throws -> SymbolType {
+        let name = expr.member.identifier
+        let resultType = try check(expression: expr.expr)
+        switch resultType {
+        case .array:
+            if name == "count" {
+                throw makeNotAssignableError(expression: expr.expr)
+            }
+        case .dynamicArray:
+            if name == "count" {
+                throw makeNotAssignableError(expression: expr.expr)
+            }
+        case .structType(let typ):
+            if let symbol = typ.symbols.maybeResolve(identifier: name) {
+                return symbol.type
+            }
+        default:
+            break
+        }
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
     }
     
     func makeNotAssignableError(expression: Expression) -> Error {

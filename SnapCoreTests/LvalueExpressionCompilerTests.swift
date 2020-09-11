@@ -143,4 +143,41 @@ class LvalueExpressionCompilerTests: XCTestCase {
         
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
+    
+    func testGetLvalueFromMemberOfStruct_1() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("bar"))
+        let offset = 0x0100
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+        ])
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        let dst = compiler.temporaryStack.pop()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: dst.address), UInt16(offset+0))
+    }
+    
+    func testGetLvalueFromMemberOfStruct_2() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("baz"))
+        let offset = 0x0100
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+        ])
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        let dst = compiler.temporaryStack.pop()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: dst.address), UInt16(offset+1))
+    }
 }

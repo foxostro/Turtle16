@@ -2812,4 +2812,21 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
     }
+    
+    func testGetValueOfNonexistentStructMember() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("asdf"))
+        let typ = StructType(name: "foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .structType(typ), offset: 0, isMutable: false)
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `foo' has no member `asdf'")
+        }
+    }
 }

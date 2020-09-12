@@ -160,4 +160,70 @@ class ParserTests: XCTestCase {
         let error = parser.unexpectedEndOfInputError()
         XCTAssertEqual(error.message, "unexpected end of input")
     }
+    
+    func testAcceptWillTakeNewlinesWhenThatIsSpecified() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenEOF()])
+        XCTAssertEqual(parser.accept(TokenNewline.self), TokenNewline())
+    }
+    
+    func testAcceptWillOtherwiseIgnoreNewlines_1() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenComma(),
+                                     TokenEOF()])
+        XCTAssertEqual(parser.accept(TokenComma.self), TokenComma())
+    }
+    
+    func testAcceptWillOtherwiseIgnoreNewlines_2() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenComma(),
+                                     TokenEOF()])
+        XCTAssertEqual(parser.accept([TokenComma.self, TokenSemicolon.self]), TokenComma())
+    }
+    
+    func testAcceptWillOtherwiseIgnoreNewlines_3() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenOperator(op: .plus),
+                                     TokenEOF()])
+        XCTAssertEqual(parser.accept(operator: .plus), TokenOperator(op: .plus))
+    }
+    
+    func testAcceptWillOtherwiseIgnoreNewlines_4() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenOperator(op: .plus),
+                                     TokenEOF()])
+        XCTAssertEqual(parser.accept(operators: [.plus, .minus]), TokenOperator(op: .plus))
+    }
+    
+    func testAcceptWillNotConsumeNewlinesWhenItFailsToMatch_1() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenSemicolon(),
+                                     TokenEOF()])
+        XCTAssertNil(parser.accept(TokenComma.self))
+        XCTAssertEqual(parser.peek(), TokenNewline())
+    }
+    
+    func testAcceptWillNotConsumeNewlinesWhenItFailsToMatch_2() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenSemicolon(),
+                                     TokenEOF()])
+        XCTAssertNil(parser.accept([TokenComma.self]))
+        XCTAssertEqual(parser.peek(), TokenNewline())
+    }
+    
+    func testAcceptWillNotConsumeNewlinesWhenItFailsToMatch_3() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenOperator(op: .plus),
+                                     TokenEOF()])
+        XCTAssertNil(parser.accept(operator: .multiply))
+        XCTAssertEqual(parser.peek(), TokenNewline())
+    }
+    
+    func testAcceptWillNotConsumeNewlinesWhenItFailsToMatch_4() {
+        let parser = Parser(tokens: [TokenNewline(),
+                                     TokenOperator(op: .plus),
+                                     TokenEOF()])
+        XCTAssertNil(parser.accept(operators: [.multiply]))
+        XCTAssertEqual(parser.peek(), TokenNewline())
+    }
 }

@@ -73,9 +73,20 @@ open class Parser: NSObject {
     }
     
     public func accept(_ typeInQuestion: AnyClass) -> Token? {
-        if let token = peek() {
+        return accept(typeInQuestion: typeInQuestion,
+                      shouldIgnoreNewlines: typeInQuestion != TokenNewline.self)
+    }
+    
+    private func accept(typeInQuestion: AnyClass, shouldIgnoreNewlines: Bool) -> Token? {
+        var stepsToAdvance = 0
+        while shouldIgnoreNewlines && (nil != (peek(stepsToAdvance) as? TokenNewline)) {
+            stepsToAdvance += 1
+        }
+        if let token = peek(stepsToAdvance) {
             if typeInQuestion == type(of: token) {
-                advance()
+                for _ in 0...stepsToAdvance {
+                    advance()
+                }
                 return token
             }
         }
@@ -83,13 +94,15 @@ open class Parser: NSObject {
     }
     
     public func accept(_ anyOfTheseTypes: [AnyClass]) -> Token? {
-        if let token = peek() {
-            let tokenType = type(of: token)
-            for type in anyOfTheseTypes {
-                if tokenType == type {
-                    advance()
-                    return token
-                }
+        var shouldIgnoreNewlines = true
+        for typ in anyOfTheseTypes {
+            if typ == TokenNewline.self {
+                shouldIgnoreNewlines = false
+            }
+        }
+        for typ in anyOfTheseTypes {
+            if let token = accept(typeInQuestion: typ, shouldIgnoreNewlines: shouldIgnoreNewlines) {
+                return token
             }
         }
         return nil
@@ -100,9 +113,15 @@ open class Parser: NSObject {
     }
     
     public func accept(operators ops: [TokenOperator.Operator]) -> TokenOperator? {
-        if let token = peek() as? TokenOperator {
+        var stepsToAdvance = 0
+        while nil != (peek(stepsToAdvance) as? TokenNewline) {
+            stepsToAdvance += 1
+        }
+        if let token = peek(stepsToAdvance) as? TokenOperator {
             if ops.contains(token.op) {
-                advance()
+                for _ in 0...stepsToAdvance {
+                    advance()
+                }
                 return token
             }
         }

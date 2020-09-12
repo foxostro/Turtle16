@@ -26,6 +26,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func unwrapStructType() -> StructType {
+        switch self {
+        case .structType(let typ):
+            return typ
+        default:
+            abort()
+        }
+    }
+    
     public var isBooleanType: Bool {
         switch self {
         case .bool, .constBool:
@@ -132,11 +141,21 @@ public class FunctionType: NSObject {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
-            guard let rhs = rhs as? Argument else { return false }
-            guard name == rhs.name else { return false }
-            guard argumentType == rhs.argumentType else { return false }
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard let rhs = rhs as? Argument else {
+                return false
+            }
+            guard name == rhs.name else {
+                return false
+            }
+            guard argumentType == rhs.argumentType else {
+                return false
+            }
             return true
         }
         

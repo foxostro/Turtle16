@@ -582,6 +582,9 @@ public class SnapParser: Parser {
             return Expression.LiteralBool(sourceAnchor: booleanToken.sourceAnchor,
                                              value: booleanToken.literal)
         }
+        else if let _ = peek(0) as? TokenIdentifier, let _ = peek(1) as? TokenCurlyLeft {
+            return try consumeStructInitializer()
+        }
         else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                          identifier: identifierToken.lexeme)
@@ -624,6 +627,40 @@ public class SnapParser: Parser {
         } else {
             throw unexpectedEndOfInputError()
         }
+    }
+    
+    private func consumeStructInitializer() throws -> Expression {
+        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(message: "expected identifier"))
+        try expect(type: TokenCurlyLeft.self, error: CompilerError(message: "expected `{'"))
+        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        var arguments: [Expression.StructInitializer.Argument] = []
+        
+        if nil == accept(TokenCurlyRight.self) {
+            repeat {
+                try expect(type: TokenDot.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected `.'"))
+                
+                let argumentIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected identifier"))
+                
+                try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected `='"))
+                
+                if nil != accept(TokenCurlyRight.self) {
+                    throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "malformed argument to struct initializer: expected expression")
+                }
+                
+                let argumentExpression = try consumeExpression()
+                
+                let argument = Expression.StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
+                
+                arguments.append(argument)
+            } while nil != accept(TokenComma.self)
+            
+            let sourceAnchor = identifierToken.sourceAnchor?.union(peek()?.sourceAnchor)
+            try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: sourceAnchor, message: "expected `}' in struct initializer expression"))
+        }
+        
+        return Expression.StructInitializer(sourceAnchor: identifierToken.sourceAnchor?.union(previous?.sourceAnchor),
+                                            identifier: identifier,
+                                            arguments: arguments)
     }
     
     private func useOfUnresolvedIdentifierError(_ instruction: Token) -> Error {

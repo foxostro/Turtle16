@@ -61,6 +61,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(dynamicArrayType: expr)
         case let expr as Expression.FunctionType:
             return try check(functionType: expr)
+        case let expr as Expression.StructInitializer:
+            return try check(structInitializer: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -562,6 +564,30 @@ public class RvalueExpressionTypeChecker: NSObject {
             arguments.append(FunctionType.Argument(name: arg.name, type: typ))
         }
         return .function(FunctionType(returnType: returnType, arguments: arguments))
+    }
+    
+    public func check(structInitializer expr: Expression.StructInitializer) throws -> SymbolType {
+        let result = try symbols.resolveType(identifier: expr.identifier.identifier)
+        let typ = result.unwrapStructType()
+        var membersAlreadyInitialized: [String] = []
+        for arg in expr.arguments {
+            guard typ.symbols.exists(identifier: arg.name) else {
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(expr.identifier.identifier)' has no member `\(arg.name)'")
+            }
+            if membersAlreadyInitialized.contains(arg.name) {
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "initialization of member `\(arg.name)' can only occur one time")
+            }
+            let rtype = try rvalueContext().check(expression: arg.expr)
+            let member = try! typ.symbols.resolve(identifier: arg.name)
+            let ltype = member.type
+            let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in initialization of `\(arg.name)'"
+            _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                         rtype: rtype,
+                                                         sourceAnchor: arg.expr.sourceAnchor,
+                                                         messageWhenNotConvertible: message)
+            membersAlreadyInitialized.append(arg.name)
+        }
+        return result
     }
     
     func unsupportedError(expression: Expression) -> Error {

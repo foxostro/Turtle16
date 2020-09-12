@@ -104,6 +104,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(subscript: expr)
         case let expr as Expression.Get:
             return try compile(get: expr)
+        case let expr as Expression.StructInitializer:
+            return try compile(structInitializer: expr)
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error about an unsupported expression before
@@ -696,7 +698,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         let rtype = try typeChecker.check(expression: rexpr)
         switch (rtype, ltype) {
-        case (.bool, .bool), (.u8, .u8), (.u16, .u16):
+        case (.bool, .bool),
+             (.u8, .u8),
+             (.u16, .u16),
+             (.structType, .structType):
             instructions += try compile(expression: rexpr)
         case (.constInt(let a), .u8):
             assert(a >= 0 && a < 256)
@@ -1093,6 +1098,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             assert(false) // unreachable
         }
         
+        return instructions
+    }
+    
+    public func compile(structInitializer expr: Expression.StructInitializer) throws -> [CrackleInstruction] {
+        let resultType = try typeChecker.check(expression: expr)
+        let typ = resultType.unwrapStructType()
+        var instructions: [CrackleInstruction] = []
+        let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
+        for i in 0..<expr.arguments.count {
+            let arg = expr.arguments[i]
+            let member = try! typ.symbols.resolve(identifier: arg.name)
+            instructions += try! compileAndConvertExpressionForExplicitCast(rexpr: arg.expr, ltype: member.type)
+            let tempArg = temporaryStack.pop()
+            instructions += [.copyWords(tempResult.address + member.offset, tempArg.address, member.type.sizeof)]
+            tempArg.consume()
+        }
+        temporaryStack.push(tempResult)
         return instructions
     }
 }

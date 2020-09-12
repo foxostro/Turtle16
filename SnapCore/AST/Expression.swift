@@ -14,7 +14,7 @@ public class Expression: AbstractSyntaxTreeNode {
         guard rhs != nil else {
             return false
         }
-        guard type(of: rhs!) == type(of: self) else {
+        guard rhs is Expression else {
             return false
         }
         guard super.isEqual(rhs) else {
@@ -243,13 +243,24 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
-            guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Binary else { return false }
-            guard op == rhs.op else { return false }
-            guard left == rhs.left else { return false }
-            guard right == rhs.right else { return false }
+            guard rhs != nil else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? Binary else {
+                return false
+            }
+            guard op == rhs.op else {
+                return false
+            }
+            guard left == rhs.left else {
+                return false
+            }
+            guard right == rhs.right else {
+                return false
+            }
             return true
         }
         
@@ -674,17 +685,137 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
-            guard let rhs = rhs as? FunctionType else { return false }
-            guard returnType == rhs.returnType else { return false }
-            guard arguments == rhs.arguments else { return false }
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? FunctionType else {
+                return false
+            }
+            guard returnType == rhs.returnType else {
+                return false
+            }
+            guard arguments == rhs.arguments else {
+                return false
+            }
             return true
         }
         
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(returnType)
+            hasher.combine(arguments)
+            return hasher.finalize()
+        }
+    }
+
+    public class StructInitializer: Expression {
+        public class Argument: NSObject {
+            public let name: String
+            public let expr: Expression
+            
+            public init(name: String, expr: Expression) {
+                self.name = name
+                self.expr = expr
+            }
+            
+            public static func ==(lhs: Argument, rhs: Argument) -> Bool {
+                return lhs.isEqual(rhs)
+            }
+            
+            public override func isEqual(_ rhs: Any?) -> Bool {
+                guard rhs != nil else {
+                    return false
+                }
+                guard type(of: rhs!) == type(of: self) else {
+                    return false
+                }
+                guard let rhs = rhs as? Argument else {
+                    return false
+                }
+                guard name == rhs.name else {
+                    return false
+                }
+                guard expr == rhs.expr else {
+                    return false
+                }
+                return true
+            }
+            
+            public override var hash: Int {
+                var hasher = Hasher()
+                hasher.combine(name)
+                hasher.combine(expr)
+                return hasher.finalize()
+            }
+            
+            public override var description: String {
+                return ".\(name) = \(expr)"
+            }
+        }
+        
+        public let identifier: Identifier
+        public let arguments: [Argument]
+        
+        public convenience init(identifier: Identifier, arguments: [Argument]) {
+            self.init(sourceAnchor: nil,
+                      identifier: identifier,
+                      arguments: arguments)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, identifier: Identifier, arguments: [Argument]) {
+            self.identifier = identifier
+            self.arguments = arguments
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ identifier=%@, arguments={%@}>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          identifier.makeIndentedDescription(depth: depth),
+                          makeArgumentsDescription())
+        }
+        
+        public func makeArgumentsDescription() -> String {
+            let result = arguments.map({"\($0.name): \($0.expr)"}).joined(separator: ", ")
+            return result
+        }
+        
+        public static func ==(lhs: StructInitializer, rhs: StructInitializer) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? StructInitializer else {
+                return false
+            }
+            guard identifier == rhs.identifier else {
+                return false
+            }
+            guard arguments == rhs.arguments else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(identifier)
             hasher.combine(arguments)
             return hasher.finalize()
         }

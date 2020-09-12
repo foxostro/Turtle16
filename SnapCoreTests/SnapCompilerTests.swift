@@ -984,4 +984,19 @@ let foo = arr[10]
 """)
         XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 1")
     }
+    
+    func test_EndToEndIntegration_ReadAndWriteToStructMember() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var result: u8 = 0
+struct Foo {
+    bar: u8
+}
+var foo: Foo = undefined
+foo.bar = 42
+result = foo.bar
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
 }

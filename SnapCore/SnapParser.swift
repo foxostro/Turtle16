@@ -670,7 +670,6 @@ public class SnapParser: Parser {
         
         while nil != accept(TokenNewline.self) {}
         let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in struct"))
-        try expectEndOfStatement()
         
         let sourceAnchor = token.sourceAnchor?.union(closingBrace.sourceAnchor!)
         return [StructDeclaration(sourceAnchor: sourceAnchor,

@@ -545,9 +545,7 @@ public class SnapParser: Parser {
                 var arguments: [Expression] = []
                 if nil == accept(TokenParenRight.self) as? TokenParenRight {
                     repeat {
-                        while nil != accept(TokenNewline.self) {}
                         arguments.append(try consumeExpression())
-                        while nil != accept(TokenNewline.self) {}
                     } while nil != accept(TokenComma.self)
                     try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)'"))
                 }
@@ -601,9 +599,7 @@ public class SnapParser: Parser {
             var elements: [Expression] = []
             if nil == (peek() as? TokenCurlyRight) {
                 repeat {
-                    while nil != accept(TokenNewline.self) {}
                     elements.append(try consumeExpression())
-                    while nil != accept(TokenNewline.self) {}
                 } while nil != accept(TokenComma.self)
             }
             try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in array literal"))
@@ -655,7 +651,6 @@ public class SnapParser: Parser {
         
         var members: [StructDeclaration.Member] = []
         repeat {
-            while nil != accept(TokenNewline.self) {}
             if let tokenIdentifier = accept(TokenIdentifier.self) {
                 if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
                     throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "member requires an explicit type")
@@ -668,7 +663,6 @@ public class SnapParser: Parser {
             }
         } while(nil != accept(TokenComma.self))
         
-        while nil != accept(TokenNewline.self) {}
         let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in struct"))
         
         let sourceAnchor = token.sourceAnchor?.union(closingBrace.sourceAnchor!)

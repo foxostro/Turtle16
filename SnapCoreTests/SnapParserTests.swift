@@ -1530,7 +1530,7 @@ for var i = 0; i < 10; i = i + 1 {
         let parser = parse("struct foo{\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 11))
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 12))
         XCTAssertEqual(parser.errors.first?.message, "expected `}' in struct")
     }
     
@@ -1602,6 +1602,34 @@ struct foo {
         }
         XCTAssertEqual(ast.children.count, 1)
         let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 55),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
+                                         members: [
+                                            StructDeclaration.Member(name: "bar",
+                                                                     type: Expression.PrimitiveType(.u8)),
+                                            StructDeclaration.Member(name: "baz",
+                                                                     type: Expression.PrimitiveType(.u16)),
+                                            StructDeclaration.Member(name: "qux",
+                                                                     type: Expression.PrimitiveType(.bool)),
+                                         ])
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testWellFormedStructDeclarationWithSeveralMembers_DifferentWhitespace() {
+        let parser = parse("""
+struct foo { bar: u8, baz: u16, qux: bool }
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 43),
                                          identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
                                          members: [
                                             StructDeclaration.Member(name: "bar",

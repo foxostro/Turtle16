@@ -999,4 +999,29 @@ result = foo.bar
         
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
+    
+    func test_EndToEndIntegration_StructInitialization() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo {
+    bar: u8
+}
+let foo = Foo { .bar = 42 }
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
+    
+    func test_EndToEndIntegration_AssignStructInitializerToStructInstance() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo {
+    bar: u8
+}
+var foo: Foo = undefined
+foo = Foo { .bar = 42 }
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
 }

@@ -1641,5 +1641,150 @@ struct foo { bar: u8, baz: u16, qux: bool }
                                          ])
         XCTAssertEqual(ast.children.first, expected)
     }
+    
+    func testMalformedStructInitializerExpression_MissingRightBrace() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo {
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(5, 5))
+        XCTAssertEqual(parser.errors.first?.message, "malformed argument to struct initializer: expected `.'")
+    }
+    
+    func testWellFormedStructInitializerExpression_WithNoArguments() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo {}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 6),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "Foo"),
+                                         arguments: [])
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testMalformedStructInitializerExpression_ArgumentNameMissingDot() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo { foo }
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(6, 9))
+        XCTAssertEqual(parser.errors.first?.message, "malformed argument to struct initializer: expected `.'")
+    }
+    
+    func testMalformedStructInitializerExpression_ArgumentMissingIdentifier() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo { . }
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(8, 9))
+        XCTAssertEqual(parser.errors.first?.message, "malformed argument to struct initializer: expected identifier")
+    }
+    
+    func testMalformedStructInitializerExpression_ArgumentMissingEqual() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo { .foo }
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 12))
+        XCTAssertEqual(parser.errors.first?.message, "malformed argument to struct initializer: expected `='")
+    }
+    
+    func testMalformedStructInitializerExpression_ArgumentMissingExpression() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo { .foo = }
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(13, 14))
+        XCTAssertEqual(parser.errors.first?.message, "malformed argument to struct initializer: expected expression")
+    }
+    
+    func testWellFormedStructInitializerExpression_WithOneArgument() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo { .bar = 1 + 1 }
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 20),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "Foo"),
+                                         arguments: [
+                                            Argument(name: "bar", expr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(13, 18), op: .plus, left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(13, 14), value: 1), right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1))),
+                                         ])
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testWellFormedStructInitializerExpression_WithMultipleArguments() {
+        typealias StructInitializer = Expression.StructInitializer
+        typealias Argument = Expression.StructInitializer.Argument
+        
+        let parser = parse("""
+Foo { .bar = 1 +
+             1,
+      .baz = 2, .qux = false }
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 63),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "Foo"),
+                                         arguments: [
+                                            Argument(name: "bar", expr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(13, 31), op: .plus, left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(13, 14), value: 1), right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(30, 31), value: 1))),
+                                            Argument(name: "baz", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(46, 47), value: 2)),
+                                            Argument(name: "qux", expr: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(56, 61), value: false)),
+                                         ])
+        XCTAssertEqual(ast.children.first, expected)
+    }
 }
     

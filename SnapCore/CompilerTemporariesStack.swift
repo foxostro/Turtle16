@@ -20,4 +20,8 @@ public class CompilerTemporariesStack: NSObject {
     public func pop() -> CompilerTemporary {
         return stack.popLast()!
     }
+    
+    public var isEmpty: Bool {
+        return stack.isEmpty
+    }
 }

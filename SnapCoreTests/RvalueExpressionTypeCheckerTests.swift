@@ -2829,4 +2829,99 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "value of type `foo' has no member `asdf'")
         }
     }
+    
+    func testStructInitializerExpression_FailsWhenStructNameIsUnknown() {
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
+        let typeChecker = RvalueExpressionTypeChecker()
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "use of undeclared type `Foo'")
+        }
+    }
+    
+    func testStructInitializerExpression_Empty() {
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
+        let typ: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable()))
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : typ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertEqual(try typeChecker.check(expression: expr), typ)
+    }
+    
+    func testStructInitializerExpression_IncorrectMemberName() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Arg(name: "asdf", expr: Expression.LiteralInt(0))
+        ])
+        let typ = StructType(name: "foo", symbols: SymbolTable())
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `Foo' has no member `asdf'")
+        }
+    }
+    
+    func testStructInitializerExpression_ArgumentTypeIsIncorrect() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Arg(name: "bar", expr: Expression.LiteralBool(false))
+        ])
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `const bool' to expected argument type `u16' in initialization of `bar'")
+        }
+    }
+    
+    func testStructInitializerExpression_ExpectsAndReceivesTwoValidArguments() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Arg(name: "bar", expr: Expression.LiteralInt(0)),
+            Arg(name: "baz", expr: Expression.LiteralInt(0))
+        ])
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertEqual(try typeChecker.check(expression: expr), .structType(typ))
+    }
+    
+    func testStructInitializerExpression_MembersMayNotBeSpecifiedMoreThanOneTime() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Arg(name: "bar", expr: Expression.LiteralInt(0)),
+            Arg(name: "bar", expr: Expression.LiteralInt(0))
+        ])
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "initialization of member `bar' can only occur one time")
+        }
+    }
+
+    func testStructInitializerExpression_TheresNothingWrongWithOmittingMembers() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 2, isMutable: true)
+        ]))
+        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertEqual(try typeChecker.check(expression: expr), .structType(typ))
+    }
 }

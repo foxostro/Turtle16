@@ -653,6 +653,31 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             default:
                 instructions += try compileGenericAssignment(assignment, lvalue)
             }
+
+        case (.structType(let a), .structType(let typ)):
+            assert(a == typ)
+            switch assignment.rexpr {
+            case let initializer as Expression.StructInitializer:
+                // For each member, evaluate the expression and copy the result
+                // into the struct at the designated offset.
+                for i in 0..<initializer.arguments.count {
+                    let arg = initializer.arguments[i]
+                    let member = try! typ.symbols.resolve(identifier: arg.name)
+                    instructions += try compileAndConvertExpression(rexpr: arg.expr, ltype: member.type, isExplicitCast: false)
+                    let tempArg = temporaryStack.pop()
+                    let memberLvalue = temporaryAllocator.allocate(size: member.type.sizeof)
+                    instructions += [
+                        .addi16(memberLvalue.address, lvalue.address, member.offset)
+                    ]
+                    instructions += [
+                        .copyWordsIndirectDestination(memberLvalue.address, tempArg.address, member.type.sizeof)
+                    ]
+                    memberLvalue.consume()
+                    tempArg.consume()
+                }
+            default:
+                instructions += try compileGenericAssignment(assignment, lvalue)
+            }
         default:
             instructions += try compileGenericAssignment(assignment, lvalue)
         }

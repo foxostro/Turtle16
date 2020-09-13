@@ -2797,6 +2797,30 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: address + 8), 5000)
     }
     
+    func testCompileAssignment_StructInitializerAssignedToStructIdentifier() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Arg(name: "bar", expr: Expression.LiteralInt(0xabab)),
+            Arg(name: "baz", expr: Expression.LiteralInt(0xcdcd)),
+            Arg(name: "qux", expr: Expression.LiteralInt(0xefef))
+        ]))
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 2, isMutable: true),
+            "qux" : Symbol(type: .u16, offset: 4, isMutable: true)
+        ]))
+        let symbols = SymbolTable(parent: nil,
+                                  dict: ["foo" : Symbol(type: .structType(typ), offset: 0x0010, isMutable: true, storage: .stackStorage)],
+                                  typeDict: ["Foo" : .structType(typ)])
+        let ir = mustCompile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        let address = 0xfff0
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 0xabab)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 0xcdcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 0xefef)
+    }
+    
     func testCannotAssignToAnImmutableValue_Word() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
         let offset = 0x0100

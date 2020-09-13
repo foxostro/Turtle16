@@ -38,7 +38,6 @@ public class AudioDevicePeripheral: ComputerPeripheral {
         didSet {
             let cv = Double(triangleWaveFrequencyRegister) / Double(UInt8.max) * 5.0
             let frequency = calcFrequency(cv: cv)
-            print("frequency: \(frequency)")
             toneGenerator?.triangleWaveFrequency = frequency
         }
     }
@@ -68,7 +67,7 @@ public class AudioDevicePeripheral: ComputerPeripheral {
     
     public var triangleWaveAmplitudeRegister: UInt8 = 0 {
         didSet {
-            let unitInterval = Double(triangleWaveFrequencyRegister) / Double(UInt8.max)
+            let unitInterval = Double(triangleWaveAmplitudeRegister) / Double(UInt8.max)
             toneGenerator?.triangleWaveAmplitude = unitInterval
         }
     }

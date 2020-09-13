@@ -88,6 +88,16 @@
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6F9201EC2471DAC7009E1410"
+               BuildableName = "SnapCoreTests.xctest"
+               BlueprintName = "SnapCoreTests"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -8,6 +8,7 @@
 
 import Cocoa
 import TurtleSimulatorCore
+import SnapCore
 import TurtleAssemblerCore
 import TurtleCore
 import TurtleCompilerToolbox
@@ -236,41 +237,65 @@ class ViewController: NSViewController {
     
     @IBAction func loadProgram(sender: Any?) {
         let panel = NSOpenPanel()
-        panel.allowedFileTypes = ["program"]
+        panel.allowedFileTypes = ["program", "asm", "snap"]
         panel.allowsOtherFileTypes = false
-        panel.begin { (response: NSApplication.ModalResponse) in
+        panel.begin { [weak self] (response: NSApplication.ModalResponse) in
             if (response == NSApplication.ModalResponse.OK) {
                 if let url = panel.url {
-                    self.executor.loadProgram(from: url, errorBlock: {
-                        NSAlert(error: $0).runModal()
-                    })
+                    self?.loadProgramFromFile(url)
                 }
             }
         }
     }
     
-    @IBAction func loadProgramFromSource(sender: Any?) {
-        let panel = NSOpenPanel()
-        panel.allowedFileTypes = ["asm"]
-        panel.allowsOtherFileTypes = false
-        panel.begin { (response: NSApplication.ModalResponse) in
-            if (response == NSApplication.ModalResponse.OK) {
-                if let url = panel.url {
-                    do {
-                        let programText = try String(contentsOf: url, encoding: .utf8)
-                        let frontEnd = AssemblerFrontEnd()
-                        frontEnd.compile(programText)
-                        if frontEnd.hasError {
-                            let error = CompilerError.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
-                            self.alert(withMessage: error.message)
-                        } else {
-                            self.executor.provideInstructions(frontEnd.instructions)
-                        }
-                    } catch {
-                        self.alert(withMessage: String(describing: error))
-                    }
-                }
+    fileprivate func loadProgramFromFile(_ url: URL) {
+        switch url.pathExtension {
+        case "program":
+            loadBinaryProgramFromFile(url)
+        case "asm":
+            loadAssemblyProgramFromFile(url)
+        case "snap":
+            loadSnapProgramFromFile(url)
+        default:
+            alert(withMessage: "unknown file format: \(url.pathExtension)")
+        }
+    }
+    
+    fileprivate func loadBinaryProgramFromFile(_ url: URL) {
+        executor.loadProgram(from: url, errorBlock: {
+            NSAlert(error: $0).runModal()
+        })
+    }
+    
+    fileprivate func loadAssemblyProgramFromFile(_ url: URL) {
+        do {
+            let programText = try String(contentsOf: url, encoding: .utf8)
+            let frontEnd = AssemblerFrontEnd()
+            frontEnd.compile(programText)
+            if frontEnd.hasError {
+                let error = CompilerError.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
+                alert(withMessage: error.message)
+            } else {
+                executor.provideInstructions(frontEnd.instructions)
             }
+        } catch {
+            alert(withMessage: String(describing: error))
+        }
+    }
+    
+    fileprivate func loadSnapProgramFromFile(_ url: URL) {
+        do {
+            let programText = try String(contentsOf: url, encoding: .utf8)
+            let frontEnd = SnapCompiler()
+            frontEnd.compile(programText)
+            if frontEnd.hasError {
+                let error = CompilerError.makeOmnibusError(fileName: url.lastPathComponent, errors: frontEnd.errors)
+                alert(withMessage: error.message)
+            } else {
+                executor.provideInstructions(frontEnd.instructions)
+            }
+        } catch {
+            alert(withMessage: String(describing: error))
         }
     }
     

@@ -87,6 +87,7 @@
 		6F639EBB24712482007B05F1 /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F6956FB24F965B3006D66FC /* UInt8Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6956FA24F965B3006D66FC /* UInt8Extension.swift */; };
 		6F6DD22524809731004B1703 /* VarDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD22424809731004B1703 /* VarDeclaration.swift */; };
+		6F72FBEA250EB05900130501 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7F356924D2323F00BA8E37 /* stdlib.snap */; };
 		6F7F357224D492DA00BA8E37 /* ParameterRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F357124D492DA00BA8E37 /* ParameterRegister.swift */; };
@@ -444,6 +445,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
+		};
+		6F72FBE8250EB05300130501 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
 		};
 		6F9201CD2471D82C009E1410 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -944,6 +952,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F72FBEA250EB05900130501 /* SnapCore.framework in Frameworks */,
 				6FB0D3AE24711F87003B5D5C /* TurtleAssemblerCore.framework in Frameworks */,
 				6F1718302471C56600AE60C2 /* TurtleCompilerToolbox.framework in Frameworks */,
 				6FB0D3B224711F8B003B5D5C /* TurtleSimulatorCore.framework in Frameworks */,
@@ -1747,6 +1756,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F72FBE9250EB05300130501 /* PBXTargetDependency */,
 				6FB0D39224711AAC003B5D5C /* PBXTargetDependency */,
 				6FB0D3A024711B69003B5D5C /* PBXTargetDependency */,
 			);
@@ -2423,6 +2433,11 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F639EBC24712482007B05F1 /* PBXContainerItemProxy */;
+		};
+		6F72FBE9250EB05300130501 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6F72FBE8250EB05300130501 /* PBXContainerItemProxy */;
 		};
 		6F9201CE2471D82C009E1410 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

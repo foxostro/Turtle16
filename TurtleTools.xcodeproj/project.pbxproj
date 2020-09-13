@@ -1785,7 +1785,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1170;
 				ORGANIZATIONNAME = "Andrew Fox";
 				TargetAttributes = {
 					6F17181A2471C56600AE60C2 = {
@@ -2511,7 +2511,7 @@
 		6F1718322471C56600AE60C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2539,7 +2539,7 @@
 		6F1718332471C56600AE60C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2605,6 +2605,7 @@
 		6F9201DD2471DA22009E1410 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2617,6 +2618,7 @@
 		6F9201DE2471DA22009E1410 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2725,6 +2727,7 @@
 		6FA90CE723FE67C800E9AF1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2736,6 +2739,7 @@
 		6FA90CE823FE67C800E9AF1D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;

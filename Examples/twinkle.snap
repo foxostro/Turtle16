@@ -1,0 +1,116 @@
+let kAudioDevice = 6
+let kDirectDrive = 0x00
+let kTriangleWaveFrequency = 0x01
+let kPulseWaveModulation = 0x02
+let kPulseWaveFrequency = 0x03
+let kTriangleWaveAmplitude = 0x04
+let kPulseWaveAmplitude = 0x05
+let kNoiseAmplitude = 0x06
+let kMasterGain = 0x07
+
+func playNote(control: u8, sustainTime: u8) {
+	let attackMax = 224
+	let attackStep = 32
+	let decayStep = 32
+	let sustainLevel = 192
+	let releaseStep = 32
+
+	pokePeripheral(control, kTriangleWaveFrequency, kAudioDevice)
+
+	for var gain: u16 = 0; gain < attackMax; gain = (gain + attackStep) {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+	}
+
+	for var gain: u16 = attackMax; gain > sustainLevel; gain = (gain - decayStep) {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+	}
+
+	for var i: u16 = 0; i < sustainTime; i = i + 1 {
+		// do nothing
+	}
+
+	for var gain: u16 = sustainLevel; gain > 0; gain = (gain - releaseStep) {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+	}
+
+	pokePeripheral(0, kTriangleWaveAmplitude, kAudioDevice)
+}
+
+
+pokePeripheral(0x80, kMasterGain, kAudioDevice)
+
+# 153 corresponds to CV=3V which is A3.
+# 204 corresponds to CV=4V which is A4.
+# There are twelve semitones in the scale, which each correspond to 1/12V increments.
+let noteA3 = 153
+let noteB3 = 162
+let noteC4 = 166
+let noteD4 = 174
+let noteE4 = 183
+let noteF4 = 191
+let noteG4 = 195
+let noteA4 = 204
+let noteB4 = 208
+
+# Twinkle Twinkle Little Star
+# C C G G A A G
+# Twinkle, twinkle, little star
+playNote(noteC4, 8)
+playNote(noteC4, 8)
+playNote(noteG4, 8)
+playNote(noteG4, 8)
+playNote(noteA4, 8)
+playNote(noteA4, 8)
+playNote(noteG4, 24)
+
+# F F E E D D C
+# How I wonder what you are
+playNote(noteF4, 8)
+playNote(noteF4, 8)
+playNote(noteE4, 8)
+playNote(noteE4, 8)
+playNote(noteD4, 8)
+playNote(noteD4, 8)
+playNote(noteC4, 24)
+
+# G G F F E E D
+# Up above the world so high
+playNote(noteG4, 8)
+playNote(noteG4, 8)
+playNote(noteF4, 8)
+playNote(noteF4, 8)
+playNote(noteE4, 8)
+playNote(noteE4, 8)
+playNote(noteD4, 24)
+
+# G G F F E E D
+# Like a diamond in the sky
+playNote(noteG4, 8)
+playNote(noteG4, 8)
+playNote(noteF4, 8)
+playNote(noteF4, 8)
+playNote(noteE4, 8)
+playNote(noteE4, 8)
+playNote(noteD4, 24)
+
+# C C G G A A G
+# Twinkle, twinkle little star
+playNote(noteC4, 8)
+playNote(noteC4, 8)
+playNote(noteG4, 8)
+playNote(noteG4, 8)
+playNote(noteA4, 8)
+playNote(noteA4, 8)
+playNote(noteG4, 24)
+
+# F F E E D D C
+# How I wonder what you are
+playNote(noteF4, 8)
+playNote(noteF4, 8)
+playNote(noteE4, 8)
+playNote(noteE4, 8)
+playNote(noteD4, 8)
+playNote(noteD4, 8)
+playNote(noteC4, 24)
+
+pokePeripheral(0, kMasterGain, kAudioDevice)

@@ -281,7 +281,7 @@ NOP
         executor.reset()
         executor.runOrStop()
         
-        waitOrFailTest(semaphore: semaphore, timeout: 0.1)
+        waitOrFailTest(semaphore: semaphore, timeout: 1)
         
         XCTAssertEqual(serialOutput, """
 ready.

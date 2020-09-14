@@ -154,7 +154,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testFailToCompileInvalidPrefixUnaryOperator() {
-        let expr = Expression.Unary(op: .multiply,
+        let expr = Expression.Unary(op: .star,
                                     expression: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1802,7 +1802,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_IntegerConstant_Multiply_IntegerConstant_Small() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: Expression.LiteralInt(8),
                                      right: Expression.LiteralInt(2))
         let expected: [CrackleInstruction] = [
@@ -1816,7 +1816,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_IntegerConstant_Multiply_IntegerConstant_Big() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: Expression.LiteralInt(100),
                                      right: Expression.LiteralInt(100))
         let expected: [CrackleInstruction] = [
@@ -1830,7 +1830,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_IntegerConstant_Multiply_U16() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: Expression.LiteralInt(256),
                                      right: ExprUtils.makeU16(value: 256))
         let expected: [CrackleInstruction] = [
@@ -1846,7 +1846,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_IntegerConstant_Multiply_U8() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: Expression.LiteralInt(255),
                                      right: ExprUtils.makeU8(value: 1))
         let expected: [CrackleInstruction] = [
@@ -1862,7 +1862,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_IntegerConstant() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU16(value: 256),
                                      right: Expression.LiteralInt(256))
         let expected: [CrackleInstruction] = [
@@ -1878,7 +1878,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_U16() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU16(value: 256),
                                      right: ExprUtils.makeU16(value: 256))
         let expected: [CrackleInstruction] = [
@@ -1894,7 +1894,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_U8() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeU8(value: 1))
         let expected: [CrackleInstruction] = [
@@ -1911,7 +1911,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U16_Multiply_Bool() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU16(value: 1000),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
@@ -1922,7 +1922,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_IntegerConstant() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: Expression.LiteralInt(255))
         let expected: [CrackleInstruction] = [
@@ -1938,7 +1938,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_U16() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeU16(value: 1000))
         let expected: [CrackleInstruction] = [
@@ -1955,7 +1955,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_U8() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU8(value: 2),
                                      right: ExprUtils.makeU8(value: 3))
         let expected: [CrackleInstruction] = [
@@ -1971,7 +1971,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_U8_Multiply_Bool() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU8(value: 1),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
@@ -1982,7 +1982,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Multiply_U16() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
@@ -1993,7 +1993,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Multiply_U8() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
@@ -2004,7 +2004,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBinary_Bool_Multiply_Bool() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeBool(value: false),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
@@ -3166,7 +3166,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testMoreComplicatedConstantExpressionIsAlsoEvaluatedAtCompileTime() {
-        let expr = Expression.Binary(op: .multiply,
+        let expr = Expression.Binary(op: .star,
                                      left: Expression.Binary(op: .plus,
                                                              left: Expression.LiteralInt(1000),
                                                              right: Expression.LiteralInt(1)),
@@ -3794,5 +3794,55 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 0)
+    }
+    
+    func testCannotTakeAddressOfLiteralInt() {
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.LiteralInt(0))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot take the address of an operand of type `const int'")
+        }
+    }
+    
+    func testCannotTakeAddressOfLiteralBool() {
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.LiteralBool(false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot take the address of an operand of type `const bool'")
+        }
+    }
+    
+    func testAddressOfIdentifierForU8Symbol() {
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .u8, offset: 0xabcd, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xabcd)
+    }
+    
+    func testDereferencePointerToU8() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("pointee"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: false),
+            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0102, to: 0x0100)
+            computer.dataRAM.store(value: 0x2a, to: 0x0102)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0x2a)
     }
 }

@@ -36,7 +36,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             .storeImmediate16(t0, 0x0100)
         ]
         let compiler = LvalueExpressionCompiler(symbols: symbols)
-        compiler.shouldAllowAssignmentToImmutableVariables = true
+        compiler.shouldIgnoreMutabilityRules = true
         let actual = try! compiler.compile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
@@ -179,5 +179,42 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: dst.address), UInt16(offset+1))
+    }
+    
+    func testLvalueOfPointerToU8() {
+        let expr = Expression.Identifier("foo")
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: true),
+            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: false)
+        ])
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0102, to: 0x0100)
+            computer.dataRAM.store(value: 0x2a, to: 0x0102)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0x0100)
+    }
+    
+    func testDereferencePointerToU8() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("pointee"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: true),
+            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: true)
+        ])
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0102, to: 0x0100)
+            computer.dataRAM.store(value: 0x2a, to: 0x0102)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0x0102)
     }
 }

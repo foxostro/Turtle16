@@ -10,7 +10,7 @@ import TurtleCore
 
 public class TokenOperator : Token {
     public enum Operator {
-        case eq, ne, lt, gt, le, ge, plus, minus, multiply, divide, modulus
+        case eq, ne, lt, gt, le, ge, plus, minus, star, divide, modulus, ampersand
         
         public var description: String {
             switch self {
@@ -22,9 +22,10 @@ public class TokenOperator : Token {
             case .ge: return ">="
             case .plus: return "+"
             case .minus: return "-"
-            case .multiply: return "*"
+            case .star: return "*"
             case .divide: return "/"
             case .modulus: return "%"
+            case .ampersand: return "&"
             }
         }
     }

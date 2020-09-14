@@ -63,13 +63,16 @@ public class SnapLexer: Lexer {
                 TokenOperator(sourceAnchor: $0, op: .minus)
             },
             Rule(pattern: "\\*") {
-                TokenOperator(sourceAnchor: $0, op: .multiply)
+                TokenOperator(sourceAnchor: $0, op: .star)
             },
             Rule(pattern: "/") {
                 TokenOperator(sourceAnchor: $0, op: .divide)
             },
             Rule(pattern: "%") {
                 TokenOperator(sourceAnchor: $0, op: .modulus)
+            },
+            Rule(pattern: "&") {
+                TokenOperator(sourceAnchor: $0, op: .ampersand)
             },
             Rule(pattern: "as\\b") {
                 TokenAs(sourceAnchor: $0)

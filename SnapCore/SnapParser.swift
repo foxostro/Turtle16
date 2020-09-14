@@ -172,7 +172,9 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumeType() throws -> Expression {
-        if let _ = peek() as? TokenSquareBracketLeft {
+        if let star = accept(operator: .star) {
+            return try consumePointerType(star)
+        } else if let _ = peek() as? TokenSquareBracketLeft {
             return try consumeArrayType()
         } else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Expression.Identifier(sourceAnchor: identifier.sourceAnchor,
@@ -180,6 +182,12 @@ public class SnapParser: Parser {
         } else {
             return try consumePrimitiveType()
         }
+    }
+    
+    fileprivate func consumePointerType(_ star: Token) throws -> Expression {
+        let typ = try consumeType()
+        let sourceAnchor = star.sourceAnchor?.union(typ.sourceAnchor)
+        return Expression.PointerType(sourceAnchor: sourceAnchor, typ: typ)
     }
     
     fileprivate func consumeArrayType() throws -> Expression {
@@ -487,7 +495,7 @@ public class SnapParser: Parser {
     
     private func consumeMultiplication() throws -> Expression {
         var expression = try consumeCast()
-        while let tokenOperator = accept(operators: [.multiply, .divide, .modulus]) {
+        while let tokenOperator = accept(operators: [.star, .divide, .modulus]) {
             let right = try consumeCast()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
             expression = Expression.Binary(sourceAnchor: sourceAnchor,
@@ -512,7 +520,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeUnary() throws -> Expression {
-        if let token = accept(operator: .minus) {
+        if let token = accept(operators: [.minus, .ampersand]) {
             let right = try consumeUnary()
             let sourceAnchor = token.sourceAnchor?.union(right.sourceAnchor)
             return Expression.Unary(sourceAnchor: sourceAnchor,

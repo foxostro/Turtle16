@@ -13,7 +13,7 @@ import TurtleCompilerToolbox
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
     let kSizeOfAddress = 2
     let typeChecker: LvalueExpressionTypeChecker
-    public var shouldAllowAssignmentToImmutableVariables = false
+    public var shouldIgnoreMutabilityRules = false
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
@@ -49,7 +49,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
-        guard symbol.isMutable || shouldAllowAssignmentToImmutableVariables else {
+        guard symbol.isMutable || shouldIgnoreMutabilityRules else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to immutable variable `\(expr.identifier)'")
         }
         
@@ -70,18 +70,26 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         
         instructions += try compile(expression: expr.expr)
         
-        // We'll leave this temporary on the stack and modify it in place.
-        let tempResult = temporaryStack.peek()
-        
         let name = expr.member.identifier
         let resultType = try typeChecker.check(expression: expr.expr)
         
         switch resultType {
         case .structType(let typ):
+            // We'll leave this temporary on the stack and modify it in place.
+            let tempResult = temporaryStack.peek()
             let symbol = try typ.symbols.resolve(identifier: name)
             instructions += [
                 .addi16(tempResult.address, tempResult.address, symbol.offset)
             ]
+        case .pointer:
+            assert(name == "pointee")
+            let tempPointeeAddress = temporaryAllocator.allocate(size: 2)
+            let tempPointerValue = temporaryStack.pop()
+            instructions += [
+                .copyWordsIndirectSource(tempPointeeAddress.address, tempPointerValue.address, 2)
+            ]
+            tempPointerValue.consume()
+            temporaryStack.push(tempPointeeAddress)
         default:
             throw unsupportedError(expression: expr.expr)
         }

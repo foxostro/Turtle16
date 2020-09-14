@@ -215,7 +215,7 @@ class ParserTests: XCTestCase {
         let parser = Parser(tokens: [TokenNewline(),
                                      TokenOperator(op: .plus),
                                      TokenEOF()])
-        XCTAssertNil(parser.accept(operator: .multiply))
+        XCTAssertNil(parser.accept(operator: .star))
         XCTAssertEqual(parser.peek(), TokenNewline())
     }
     
@@ -223,7 +223,7 @@ class ParserTests: XCTestCase {
         let parser = Parser(tokens: [TokenNewline(),
                                      TokenOperator(op: .plus),
                                      TokenEOF()])
-        XCTAssertNil(parser.accept(operators: [.multiply]))
+        XCTAssertNil(parser.accept(operators: [.star]))
         XCTAssertEqual(parser.peek(), TokenNewline())
     }
 }

@@ -38,7 +38,7 @@ public class ExprUtils: NSObject {
     }
     
     public static func makeMul(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .multiply,
+        return Expression.Binary(op: .star,
                                  left: left,
                                  right: right)
     }

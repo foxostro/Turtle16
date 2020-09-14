@@ -1024,4 +1024,17 @@ foo = Foo { .bar = 42 }
         
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
+    
+    // FIXME: Pointers introduce a hole in the mutability rules. It's possible to change the value of an immutable if modifying through a pointer.
+    func test_EndToEndIntegration_PointersIntroduceAHoleInMutabilityRules() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+let foo: u16 = 0xabcd
+var bar: *u16 = &foo
+bar.pointee = 0xbeef
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 0xbeef)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 2), UInt16(kStaticStorageStartAddress + 0))
+    }
 }

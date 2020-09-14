@@ -141,33 +141,40 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let childExpr = try compile(expression: unary.child)
         let childType = try typeChecker.check(expression: unary.child)
         
-        let a = temporaryAllocator.allocate()
-        let c = temporaryAllocator.allocate()
-        let b = temporaryStack.pop()
-        temporaryStack.push(c)
+        var instructions: [CrackleInstruction] = []
         
-        var result: [CrackleInstruction] = []
-        switch (childType, unary.op) {
-        case (.u16, .minus):
-            result += childExpr
-            result += [.storeImmediate16(a.address, 0)]
-            result += [.sub16(c.address, a.address, b.address)]
-        case (.u8, .minus):
-            result += childExpr
-            result += [.storeImmediate(a.address, 0)]
-            result += [.sub(c.address, a.address, b.address)]
-        default:
-            // This is basically unreachable since the type checker will
-            // typically throw an error about an invalid unary operator before
-            // we get to this point.
-            assert(false)
-            throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "`\(unary.op)' is not a prefix unary operator")
+        if unary.op == .ampersand {
+            let context = lvalueContext()
+            context.shouldIgnoreMutabilityRules = true // We want to take the address, not modify anything.
+            instructions += try context.compile(expression: unary.child)
+        } else {
+            let a = temporaryAllocator.allocate()
+            let c = temporaryAllocator.allocate()
+            let b = temporaryStack.pop()
+            temporaryStack.push(c)
+            
+            switch (childType, unary.op) {
+            case (.u16, .minus):
+                instructions += childExpr
+                instructions += [.storeImmediate16(a.address, 0)]
+                instructions += [.sub16(c.address, a.address, b.address)]
+            case (.u8, .minus):
+                instructions += childExpr
+                instructions += [.storeImmediate(a.address, 0)]
+                instructions += [.sub(c.address, a.address, b.address)]
+            default:
+                // This is basically unreachable since the type checker will
+                // typically throw an error about an invalid unary operator before
+                // we get to this point.
+                assert(false)
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "`\(unary.op)' is not a prefix unary operator")
+            }
+            
+            a.consume()
+            b.consume()
         }
         
-        a.consume()
-        b.consume()
-        
-        return result
+        return instructions
     }
     
     private func compile(binary: Expression.Binary) throws -> [CrackleInstruction] {
@@ -475,9 +482,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             } else {
                 return [.storeImmediate(dst.address, value)]
             }
-        case (.multiply, .u8, .u8),
-             (.multiply, .u8, .constInt),
-             (.multiply, .constInt, .u8):
+        case (.star, .u8, .u8),
+             (.star, .u8, .constInt),
+             (.star, .constInt, .u8):
             let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u8)
             let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u8)
             let c = temporaryAllocator.allocate()
@@ -488,11 +495,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             a.consume()
             b.consume()
             return instructions
-        case (.multiply, .u8, .u16),
-             (.multiply, .u16, .u8),
-             (.multiply, .u16, .u16),
-             (.multiply, .u16, .constInt),
-             (.multiply, .constInt, .u16):
+        case (.star, .u8, .u16),
+             (.star, .u16, .u8),
+             (.star, .u16, .u16),
+             (.star, .u16, .constInt),
+             (.star, .constInt, .u16):
             let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .u16)
             let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .u16)
             let c = temporaryAllocator.allocate()
@@ -503,7 +510,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             a.consume()
             b.consume()
             return instructions
-        case (.multiply, .constInt(let a), .constInt(let b)):
+        case (.star, .constInt(let a), .constInt(let b)):
             let dst = temporaryAllocator.allocate()
             temporaryStack.push(dst)
             let value = a * b
@@ -612,7 +619,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         // Calculate the lvalue, the destination in memory for the assignment.
         let ctx = lvalueContext()
-        ctx.shouldAllowAssignmentToImmutableVariables = assignment is Expression.InitialAssignment
+        ctx.shouldIgnoreMutabilityRules = assignment is Expression.InitialAssignment
         let lvalue_proc = try ctx.compile(expression: assignment.lexpr)
         instructions += lvalue_proc
         let lvalue = temporaryStack.pop()
@@ -840,6 +847,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 temporaryStack.push(tempArraySlice)
             }
         case (.dynamicArray(elementType: let a), .dynamicArray(elementType: let b)):
+            assert(a == b)
+            instructions += try compile(expression: rexpr)
+        case (.pointer(let a), .pointer(let b)):
             assert(a == b)
             instructions += try compile(expression: rexpr)
         default:
@@ -1119,6 +1129,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.copyWords(tempResult.address, tempExprResult.address + offset, size)]
             tempExprResult.consume()
             temporaryStack.push(tempResult)
+        case .pointer(let typ):
+            assert(name == "pointee")
+            let tempPointee = temporaryAllocator.allocate()
+            instructions += [.copyWordsIndirectSource(tempPointee.address, tempExprResult.address, typ.sizeof)]
+            tempExprResult.consume()
+            temporaryStack.push(tempPointee)
         default:
             assert(false) // unreachable
         }

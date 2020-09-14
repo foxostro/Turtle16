@@ -714,6 +714,55 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
 
+    public class PointerType: Expression {
+        public let typ: Expression
+        
+        public convenience init(_ typ: Expression) {
+            self.init(sourceAnchor: nil, typ: typ)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, typ: Expression) {
+            self.typ = typ
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ typ=%@}>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          typ.makeIndentedDescription(depth: depth))
+        }
+        
+        public static func ==(lhs: PointerType, rhs: PointerType) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? PointerType else {
+                return false
+            }
+            guard typ == rhs.typ else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(typ)
+            return hasher.finalize()
+        }
+    }
+
     public class StructInitializer: Expression {
         public class Argument: NSObject {
             public let name: String

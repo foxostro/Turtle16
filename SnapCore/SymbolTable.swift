@@ -16,6 +16,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case array(count: Int?, elementType: SymbolType)
     case dynamicArray(elementType: SymbolType)
     case structType(StructType)
+    case pointer(SymbolType)
     
     public func unwrapFunctionType() -> FunctionType {
         switch self {
@@ -67,6 +68,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return 4
         case .structType(let typ):
             return typ.sizeof
+        case .pointer:
+            return 2
         }
     }
     
@@ -118,6 +121,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return result
         case .structType(let typ):
             return "\(typ.name)"
+        case .pointer(let pointee):
+            return "*\(pointee)"
         }
     }
 }

@@ -252,6 +252,14 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
     }
     
+    func testTokenizeUnaryAmpersand() {
+        let tokenizer = SnapLexer(withString: "&foo")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .ampersand),
+                                          TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
     func testTokenizeAdditionSymbol() {
         let tokenizer = SnapLexer(withString: "+")
         tokenizer.scanTokens()
@@ -262,7 +270,7 @@ class SnapLexerTests: XCTestCase {
     func testTokenizeMultiplicationSymbol() {
         let tokenizer = SnapLexer(withString: "*")
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .multiply),
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .star),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
     }
     

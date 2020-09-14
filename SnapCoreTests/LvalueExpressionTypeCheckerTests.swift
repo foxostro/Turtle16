@@ -135,4 +135,29 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
     }
+    
+    func testLvalueOfPointerToU8() {
+        let expr = Expression.Identifier("foo")
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: true),
+            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .pointer(.u8))
+    }
+    
+    func testDereferencePointerToU8() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("pointee"))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: true),
+            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
 }

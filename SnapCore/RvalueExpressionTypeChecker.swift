@@ -61,6 +61,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(dynamicArrayType: expr)
         case let expr as Expression.FunctionType:
             return try check(functionType: expr)
+        case let expr as Expression.PointerType:
+            return try check(pointerType: expr)
         case let expr as Expression.StructInitializer:
             return try check(structInitializer: expr)
         default:
@@ -82,6 +84,11 @@ public class RvalueExpressionTypeChecker: NSObject {
             default:
                 throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
             }
+        case .ampersand:
+            let context = lvalueContext()
+            context.messageWhenLvalueGenericallyCannotBeTaken = "cannot take the address of an operand of type `\(expressionType)'"
+            let expressionType = try context.check(expression: unary.child)
+            return .pointer(expressionType)
         default:
             let operatorString: String
             if let lexeme = unary.sourceAnchor?.text {
@@ -103,9 +110,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .ge: return ">="
         case .plus: return "+"
         case .minus: return "-"
-        case .multiply: return "*"
+        case .star: return "*"
         case .divide: return "/"
         case .modulus: return "%"
+        case .ampersand: return "&"
         }
     }
     
@@ -273,23 +281,23 @@ public class RvalueExpressionTypeChecker: NSObject {
             return .u16
         case (.minus, .constInt(let a), .constInt(let b)):
             return .constInt(a - b)
-        case (.multiply, .u8, .u8):
+        case (.star, .u8, .u8):
             return .u8
-        case (.multiply, .u8, .u16):
+        case (.star, .u8, .u16):
             return .u16
-        case (.multiply, .u8, .constInt):
+        case (.star, .u8, .constInt):
             return .u8
-        case (.multiply, .u16, .u8):
+        case (.star, .u16, .u8):
             return .u16
-        case (.multiply, .u16, .u16):
+        case (.star, .u16, .u16):
             return .u16
-        case (.multiply, .u16, .constInt):
+        case (.star, .u16, .constInt):
             return .u16
-        case (.multiply, .constInt, .u8):
+        case (.star, .constInt, .u8):
             return .u8
-        case (.multiply, .constInt, .u16):
+        case (.star, .constInt, .u16):
             return .u16
-        case (.multiply, .constInt(let a), .constInt(let b)):
+        case (.star, .constInt(let a), .constInt(let b)):
             return .constInt(a * b)
         case (.divide, .u8, .u8):
             return .u8
@@ -524,6 +532,10 @@ public class RvalueExpressionTypeChecker: NSObject {
             if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
             }
+        case .pointer(let typ):
+            if name == "pointee" {
+                return typ
+            }
         default:
             break
         }
@@ -564,6 +576,11 @@ public class RvalueExpressionTypeChecker: NSObject {
             arguments.append(FunctionType.Argument(name: arg.name, type: typ))
         }
         return .function(FunctionType(returnType: returnType, arguments: arguments))
+    }
+    
+    public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {
+        let typ = try check(expression: expr.typ)
+        return .pointer(typ)
     }
     
     public func check(structInitializer expr: Expression.StructInitializer) throws -> SymbolType {

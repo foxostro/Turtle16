@@ -1674,4 +1674,49 @@ class SnapToCrackleCompilerTests: XCTestCase {
             "bar" : Symbol(type: .u8, offset: 0, isMutable: true)
         ]))))
     }
+    
+    func testCompileConstantDeclaration_PointerToU8_UndefinedValueAtInitialization() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: Expression.PointerType(Expression.PrimitiveType(.u8)),
+                           expression: nil,
+                           storage: .stackStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        // The value of the pointer is undefined. Don't test it.
+        // It's enough to check that the expression compiles.
+    }
+    
+    func testCompileConstantDeclaration_PointerToU8_GivenAddressOfAnotherVariable() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: Expression.LiteralInt(42),
+                           storage: .stackStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: Expression.Identifier("bar"),
+                           explicitType: Expression.PointerType(Expression.PrimitiveType(.u8)),
+                           expression: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")),
+                           storage: .stackStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+1), UInt16(kStaticStorageStartAddress))
+    }
 }

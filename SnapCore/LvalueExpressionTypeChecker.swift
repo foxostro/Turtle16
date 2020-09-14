@@ -11,6 +11,7 @@ import TurtleCompilerToolbox
 // Evaluates the expression type in an lvalue context.
 public class LvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
+    public var messageWhenLvalueGenericallyCannotBeTaken = "expression is not assignable"
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
@@ -63,6 +64,10 @@ public class LvalueExpressionTypeChecker: NSObject {
             if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
             }
+        case .pointer(let typ):
+            if name == "pointee" {
+                return typ
+            }
         default:
             break
         }
@@ -71,6 +76,6 @@ public class LvalueExpressionTypeChecker: NSObject {
     
     func makeNotAssignableError(expression: Expression) -> Error {
         return CompilerError(sourceAnchor: expression.sourceAnchor,
-                             message: "expression is not assignable")
+                             message: messageWhenLvalueGenericallyCannotBeTaken)
     }
 }

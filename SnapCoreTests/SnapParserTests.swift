@@ -486,6 +486,19 @@ let foo: [1]u8 = undefined
         XCTAssertEqual(expected, ast.children.first)
     }
     
+    func testExpressionStatement_Unary_Ampersand() {
+        let parser = parse("&foo")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = Expression.Unary(sourceAnchor: parser.lineMapper.anchor(0, 4),
+                                        op: .ampersand,
+                                        expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(1, 4), identifier: "foo"))
+        XCTAssertEqual(expected, ast.children.first)
+    }
+    
     func testExpressionStatement_Unary_OperandTypeMismatch() {
         let parser = parse("-,")
         XCTAssertTrue(parser.hasError)
@@ -501,7 +514,7 @@ let foo: [1]u8 = undefined
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 8),
-                                         op: .multiply,
+                                         op: .star,
                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Unary(sourceAnchor: parser.lineMapper.anchor(4, 8),
                                                                  op: .minus,
@@ -568,7 +581,7 @@ let foo: [1]u8 = undefined
                                          op: .plus,
                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 9),
-                                                                  op: .multiply,
+                                                                  op: .star,
                                                                   left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
                                                                   right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
         XCTAssertEqual(expected, ast.children.first)
@@ -585,7 +598,7 @@ let foo: [1]u8 = undefined
                                          op: .minus,
                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                          right: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 9),
-                                                                  op: .multiply,
+                                                                  op: .star,
                                                                   left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2),
                                                                   right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 4)))
         XCTAssertEqual(expected, ast.children.first)
@@ -613,7 +626,7 @@ let foo: [1]u8 = undefined
         XCTAssertEqual(ast?.children.count, 1)
         
         let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 7),
-                                         op: .multiply,
+                                         op: .star,
                                          left: Expression.Group(sourceAnchor: parser.lineMapper.anchor(0, 5), expression:
                                             Expression.Binary(sourceAnchor: parser.lineMapper.anchor(1, 4),
                                                               op: .minus,
@@ -1786,5 +1799,40 @@ Foo { .bar = 1 +
                                          ])
         XCTAssertEqual(ast.children.first, expected)
     }
-}
     
+    func testMalformedPointerExpressionType_MissingPointeeType() {
+        let parser = parse("""
+let foo: * = undefined
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        // There's no special error mesage for this case. Just ensure it works.
+    }
+    
+    func testWellformedPointerExpressionType() {
+        let parser = parse("""
+let foo: *wat = undefined
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo")
+        let wat = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(10, 13), identifier: "wat")
+        let expectedType = Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 13), typ: wat)
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                                      identifier: foo,
+                                      explicitType: expectedType,
+                                      expression: nil,
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        XCTAssertEqual(ast.children.first, expected)
+    }
+}

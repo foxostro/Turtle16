@@ -67,6 +67,15 @@ public class LvalueExpressionTypeChecker: NSObject {
         case .pointer(let typ):
             if name == "pointee" {
                 return typ
+            } else {
+                switch typ {
+                case .structType(let b):
+                    if let symbol = b.symbols.maybeResolve(identifier: name) {
+                        return symbol.type
+                    }
+                default:
+                    break
+                }
             }
         default:
             break

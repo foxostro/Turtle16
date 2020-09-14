@@ -217,4 +217,45 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0x0102)
     }
+    
+    func testGetLvalueOfNonexistentMemberOfStructThroughPointer() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("asdf"))
+        let offset = 0x0100
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset, isMutable: true)
+        ])
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.compile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `*Foo' has no member `asdf'")
+        }
+    }
+    
+    func testGetLvalueOfFirstMemberOfStructThroughPointer() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("bar"))
+        let offset = 0x0100
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset, isMutable: true)
+        ])
+        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let ir = try! compiler.compile(expression: expr)
+        let dst = compiler.temporaryStack.pop()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x1000, to: offset)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: dst.address), 0x1000)
+    }
 }

@@ -81,15 +81,33 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [
                 .addi16(tempResult.address, tempResult.address, symbol.offset)
             ]
-        case .pointer:
-            assert(name == "pointee")
-            let tempPointeeAddress = temporaryAllocator.allocate(size: 2)
-            let tempPointerValue = temporaryStack.pop()
-            instructions += [
-                .copyWordsIndirectSource(tempPointeeAddress.address, tempPointerValue.address, 2)
-            ]
-            tempPointerValue.consume()
-            temporaryStack.push(tempPointeeAddress)
+        case .pointer(let typ):
+            if name == "pointee" {
+                let tempPointeeAddress = temporaryAllocator.allocate(size: 2)
+                let tempPointerValue = temporaryStack.pop()
+                instructions += [
+                    .copyWordsIndirectSource(tempPointeeAddress.address, tempPointerValue.address, 2)
+                ]
+                tempPointerValue.consume()
+                temporaryStack.push(tempPointeeAddress)
+            } else {
+                switch typ {
+                case .structType(let b):
+                    // We'll leave this temporary on the stack and modify it in place.
+                    let tempPointeeAddress = temporaryAllocator.allocate(size: 2)
+                    let tempPointerValue = temporaryStack.pop()
+                    let symbol = try b.symbols.resolve(identifier: name)
+                    instructions += [
+                        .copyWordsIndirectSource(tempPointeeAddress.address, tempPointerValue.address, 2),
+                        .addi16(tempPointeeAddress.address, tempPointeeAddress.address, symbol.offset)
+                    ]
+                    tempPointerValue.consume()
+                    temporaryStack.push(tempPointeeAddress)
+                default:
+                    assert(false) // unreachable
+                    throw unsupportedError(expression: expr.expr)
+                }
+            }
         default:
             throw unsupportedError(expression: expr.expr)
         }

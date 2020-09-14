@@ -3845,4 +3845,44 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0x2a)
     }
+    
+    func testGetValueOfStructMemberThroughPointerLoadsTheValue() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("bb"))
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "aa" : Symbol(type: .u16, offset: 0, isMutable: true),
+            "bb" : Symbol(type: .u16, offset: 2, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0x0100, isMutable: false),
+            "bar" : Symbol(type: .structType(typ), offset: 0x0102, isMutable: false)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0x0102, to: 0x0100)
+            computer.dataRAM.store16(value: 0xcafe, to: 0x0102)
+            computer.dataRAM.store16(value: 0xbeef, to: 0x0104)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xbeef)
+    }
+    
+    func testGetValueOfNonexistentStructMemberThroughPointer() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("asdf"))
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0, isMutable: false)
+        ])
+        XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `*Foo' has no member `asdf'")
+        }
+    }
 }

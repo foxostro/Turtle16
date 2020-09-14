@@ -1122,6 +1122,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             tempExprResult.consume()
             temporaryStack.push(tempCount)
         case .structType(let typ):
+            // FIXME: This copies the struct value to a new temporary and then extracts the desired field. We should instead access the underlying symbol and read the field itself, only.
             let symbol = try typ.symbols.resolve(identifier: name)
             let size = symbol.type.sizeof
             let offset = symbol.offset
@@ -1130,11 +1131,27 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             tempExprResult.consume()
             temporaryStack.push(tempResult)
         case .pointer(let typ):
-            assert(name == "pointee")
-            let tempPointee = temporaryAllocator.allocate()
-            instructions += [.copyWordsIndirectSource(tempPointee.address, tempExprResult.address, typ.sizeof)]
-            tempExprResult.consume()
-            temporaryStack.push(tempPointee)
+            if name == "pointee" {
+                let tempPointee = temporaryAllocator.allocate()
+                instructions += [.copyWordsIndirectSource(tempPointee.address, tempExprResult.address, typ.sizeof)]
+                tempExprResult.consume()
+                temporaryStack.push(tempPointee)
+            } else {
+                switch typ {
+                case .structType(let b):
+                    let symbol = try b.symbols.resolve(identifier: name)
+                    let size = symbol.type.sizeof
+                    let tempResult = temporaryAllocator.allocate(size: size)
+                    instructions += [
+                        .addi16(tempExprResult.address, tempExprResult.address, symbol.offset),
+                        .copyWordsIndirectSource(tempResult.address, tempExprResult.address, size)
+                    ]
+                    tempExprResult.consume()
+                    temporaryStack.push(tempResult)
+                default:
+                    assert(false) // unreachable
+                }
+            }
         default:
             assert(false) // unreachable
         }

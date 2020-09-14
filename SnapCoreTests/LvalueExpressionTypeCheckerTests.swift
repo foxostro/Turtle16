@@ -160,4 +160,40 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
     }
+    
+    func testGetLvalueOfNonexistentMemberOfStructThroughPointer() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("asdf"))
+        let offset = 0x0100
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `*Foo' has no member `asdf'")
+        }
+    }
+    
+    func testGetLvalueOfFirstMemberOfStructThroughPointer() {
+        let expr = Expression.Get(expr: Expression.Identifier("foo"),
+                                  member: Expression.Identifier("bar"))
+        let offset = 0x0100
+        let typ = StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
+            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+        ]))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset, isMutable: true)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
 }

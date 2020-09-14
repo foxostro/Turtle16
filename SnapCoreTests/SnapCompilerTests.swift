@@ -1037,4 +1037,44 @@ bar.pointee = 0xbeef
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 0xbeef)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 2), UInt16(kStaticStorageStartAddress + 0))
     }
+    
+    func test_EndToEndIntegration_ReadStructMembersThroughPointer() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo { x: u8, y: u8, z: u8 }
+var r: u8 = 0
+var foo = Foo { .x = 1, .y = 2, .z = 3 }
+var bar = &foo
+r = bar.x
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 1)
+    }
+    
+    func test_EndToEndIntegration_WriteStructMembersThroughPointer() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo { x: u8, y: u8, z: u8 }
+var foo = Foo { .x = 1, .y = 2, .z = 3 }
+var bar = &foo
+bar.x = 2
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 2)
+    }
+    
+    func test_EndToEndIntegration_PassPointerToStructAsFunctionParameter() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo { x: u8, y: u8, z: u8 }
+var r: u8 = 0
+var bar = Foo { .x = 1, .y = 2, .z = 3 }
+func doTheThing(foo: *Foo) -> u8 {
+    return foo.x + foo.y + foo.z
+}
+r = doTheThing(&bar)
+""")
+        
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 6)
+    }
 }

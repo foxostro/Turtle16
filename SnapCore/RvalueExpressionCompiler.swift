@@ -1100,37 +1100,47 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     public func compile(get expr: Expression.Get) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        
-        instructions += try compile(expression: expr.expr)
-        let tempExprResult = temporaryStack.pop()
-        
         let name = expr.member.identifier
         let resultType = try typeChecker.check(expression: expr.expr)
+        
+        var instructions: [CrackleInstruction] = []
         
         switch resultType {
         case .array(count: let count, elementType: _):
             assert(name == "count")
+            instructions += try compile(expression: expr.expr)
+            let tempExprResult = temporaryStack.pop()
             let tempCount = temporaryAllocator.allocate()
             instructions += [.storeImmediate16(tempCount.address, count!)]
             tempExprResult.consume()
             temporaryStack.push(tempCount)
         case .dynamicArray:
             assert(name == "count")
+            instructions += try compile(expression: expr.expr)
+            let tempExprResult = temporaryStack.pop()
             let tempCount = temporaryAllocator.allocate()
             instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, kSliceCountSize)]
             tempExprResult.consume()
             temporaryStack.push(tempCount)
         case .structType(let typ):
-            // FIXME: This copies the struct value to a new temporary and then extracts the desired field. We should instead access the underlying symbol and read the field itself, only.
+            // Get the lvalue of the struct
+            let context = lvalueContext()
+            context.shouldIgnoreMutabilityRules = true
+            instructions += try context.compile(expression: expr.expr)
+            
+            // Read the field in-place
+            let tempStructAddress = temporaryStack.pop()
             let symbol = try typ.symbols.resolve(identifier: name)
-            let size = symbol.type.sizeof
-            let offset = symbol.offset
-            let tempResult = temporaryAllocator.allocate(size: size)
-            instructions += [.copyWords(tempResult.address, tempExprResult.address + offset, size)]
-            tempExprResult.consume()
-            temporaryStack.push(tempResult)
+            let tempStructMember = temporaryAllocator.allocate(size: symbol.type.sizeof)
+            instructions += [
+                .addi16(tempStructAddress.address, tempStructAddress.address, symbol.offset),
+                .copyWordsIndirectSource(tempStructMember.address, tempStructAddress.address, symbol.type.sizeof)
+            ]
+            tempStructAddress.consume()
+            temporaryStack.push(tempStructMember)
         case .pointer(let typ):
+            instructions += try compile(expression: expr.expr)
+            let tempExprResult = temporaryStack.pop()
             if name == "pointee" {
                 let tempPointee = temporaryAllocator.allocate()
                 instructions += [.copyWordsIndirectSource(tempPointee.address, tempExprResult.address, typ.sizeof)]

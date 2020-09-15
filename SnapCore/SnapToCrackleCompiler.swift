@@ -160,19 +160,6 @@ public class SnapToCrackleCompiler: NSObject {
                                 varDecl.identifier.identifier)
         }
         
-        // Do not permit a mutating pointer to be constructed from an immutable object.
-        if varDecl.isMutable {
-            if let unary = varDecl.expression as? Expression.Unary {
-                if let identifier = unary.child as? Expression.Identifier {
-                    let symbol = try symbols.resolve(identifier: identifier.identifier)
-                    if !symbol.isMutable {
-                        throw CompilerError(sourceAnchor: identifier.sourceAnchor,
-                                            message: "cannot make a mutating pointer from immutable object `\(identifier.identifier)'")
-                    }
-                }
-            }
-        }
-        
         // If the variable declaration provided an explicit type expression then
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType?
@@ -447,7 +434,7 @@ public class SnapToCrackleCompiler: NSObject {
             let argument = typ.arguments[i]
             let symbol = Symbol(type: argument.argumentType,
                                 offset: -offset,
-                                isMutable: argument.isMutable,
+                                isMutable: false,
                                 storage: .stackStorage)
             symbols.bind(identifier: argument.name, symbol: symbol)
             offset += argument.argumentType.sizeof

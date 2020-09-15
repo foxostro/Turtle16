@@ -97,6 +97,14 @@
                BlueprintName = "SnapCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SnapCompilerTests/test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_1()">
+               </Test>
+               <Test
+                  Identifier = "SnapCompilerTests/test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_2()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

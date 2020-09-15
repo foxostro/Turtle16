@@ -1379,18 +1379,6 @@ for var i = 0; i < 10; i = i + 1 {
         XCTAssertEqual(parser.syntaxTree, expected)
     }
     
-    func testParseFunctionDefinition_MutableArgument() {
-        let parser = parse("func foo(var bar: u8) {}")
-        XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 24), children: [
-            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
-                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8), isMutable: true)]),
-                                body: Block(sourceAnchor: parser.lineMapper.anchor(22, 24), children: []))
-        ])
-        XCTAssertEqual(parser.syntaxTree, expected)
-    }
-    
     func testParseReturn() {
         let parser = parse("return 1")
         XCTAssertFalse(parser.hasError)

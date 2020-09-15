@@ -1009,8 +1009,24 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
-            let type = typ.arguments[i].argumentType
-            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
+            let arg = typ.arguments[i]
+            let type = arg.argumentType
+            let argExpr = node.arguments[i]
+            
+            // Do not permit a mutating pointer to be constructed from an immutable object.
+            if arg.isMutable {
+                if let unary = argExpr as? Expression.Unary {
+                    if let identifier = unary.child as? Expression.Identifier {
+                        let symbol = try symbols.resolve(identifier: identifier.identifier)
+                        if !symbol.isMutable {
+                            throw CompilerError(sourceAnchor: identifier.sourceAnchor,
+                                                message: "cannot make a mutating pointer from immutable object `\(identifier.identifier)'")
+                        }
+                    }
+                }
+            }
+            
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: argExpr, ltype: type)
             let tempArgumentValue = temporaryStack.pop()
             instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
             tempArgumentValue.consume()

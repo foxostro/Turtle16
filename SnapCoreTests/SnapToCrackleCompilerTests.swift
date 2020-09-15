@@ -1315,6 +1315,30 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
+    func testCompileFunctionWithParameters_MutableParameter() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8), isMutable: true)]),
+                                body: Block(children: [
+                                    Expression.Assignment(lexpr: Expression.Identifier("bar"), rexpr: Expression.Binary(op: .plus, left: Expression.Identifier("bar"), right: Expression.LiteralInt(1))),
+                                    Return(Expression.Identifier("bar"))
+                                ])),
+            VarDeclaration(identifier: Expression.Identifier("a"),
+                           explicitType: nil,
+                           expression: Expression.Call(callee: Expression.Identifier("foo"),
+                                                       arguments: [ExprUtils.makeU8(value: 0xaa)]),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
+    }
+    
     func testCompileNestedFunction() {
         // This AST is equivalent to the following code:
         //    func foo() -> u8 {

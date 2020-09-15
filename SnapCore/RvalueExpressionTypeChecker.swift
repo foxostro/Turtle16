@@ -582,7 +582,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         var arguments: [FunctionType.Argument] = []
         for arg in expr.arguments {
             let typ = try check(expression: arg.argumentType)
-            arguments.append(FunctionType.Argument(name: arg.name, type: typ))
+            arguments.append(FunctionType.Argument(name: arg.name, type: typ, isMutable: arg.isMutable))
         }
         return .function(FunctionType(returnType: returnType, arguments: arguments))
     }

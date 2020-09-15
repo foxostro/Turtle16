@@ -1065,25 +1065,38 @@ r = doTheThing(&bar)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 6)
     }
     
-    func test_EndToEndIntegration_PointerToImmutableObjectCannotMutateThatObject() {
+    func test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_1() {
         let compiler = SnapCompiler()
         let program = """
 let foo: u16 = 0xabcd
 var bar: *u16 = &foo
-bar.pointee = 0xbeef
 """
         compiler.compile(program: program, base: 0)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "expression is not assignable")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from immutable object `foo'")
+    }
+    
+    func test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_2() {
+        let compiler = SnapCompiler()
+        let program = """
+struct Foo { x: u8, y: u8, z: u8 }
+let bar = Foo { .x = 1, .y = 2, .z = 3 }
+func doTheThing(var foo: *Foo) {
+    foo.x = foo.y * foo.z
+}
+doTheThing(&bar)
+"""
+        compiler.compile(program: program, base: 0)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from immutable object `bar'")
     }
     
     func test_EndToEndIntegration_ImmutablePointerCanMutateAMutablePointee() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 struct Foo { x: u8, y: u8, z: u8 }
-var r: u8 = 0
 var bar = Foo { .x = 1, .y = 2, .z = 3 }
-func doTheThing(foo: *Foo) {
+func doTheThing(var foo: *Foo) {
     foo.x = foo.y * foo.z
 }
 doTheThing(&bar)

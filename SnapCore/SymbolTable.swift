@@ -135,10 +135,12 @@ public class FunctionType: NSObject {
     public class Argument: NSObject {
         public let name: String
         public let argumentType: SymbolType
+        public let isMutable: Bool
         
-        public init(name: String, type: SymbolType) {
+        public init(name: String, type: SymbolType, isMutable: Bool = false) {
             self.name = name
             self.argumentType = type
+            self.isMutable = isMutable
         }
         
         public static func ==(lhs: Argument, rhs: Argument) -> Bool {
@@ -161,6 +163,9 @@ public class FunctionType: NSObject {
             guard argumentType == rhs.argumentType else {
                 return false
             }
+            guard isMutable == rhs.isMutable else {
+                return false
+            }
             return true
         }
         
@@ -168,6 +173,7 @@ public class FunctionType: NSObject {
             var hasher = Hasher()
             hasher.combine(name)
             hasher.combine(argumentType)
+            hasher.combine(isMutable)
             return hasher.finalize()
         }
     }

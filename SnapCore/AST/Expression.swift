@@ -625,10 +625,12 @@ public class Expression: AbstractSyntaxTreeNode {
         public class Argument: NSObject {
             public let name: String
             public let argumentType: Expression
+            public let isMutable: Bool
             
-            public init(name: String, type: Expression) {
+            public init(name: String, type: Expression, isMutable: Bool = false) {
                 self.name = name
                 self.argumentType = type
+                self.isMutable = isMutable
             }
             
             public static func ==(lhs: Argument, rhs: Argument) -> Bool {
@@ -641,6 +643,7 @@ public class Expression: AbstractSyntaxTreeNode {
                 guard let rhs = rhs as? Argument else { return false }
                 guard name == rhs.name else { return false }
                 guard argumentType == rhs.argumentType else { return false }
+                guard isMutable == rhs.isMutable else { return false }
                 return true
             }
             
@@ -648,6 +651,7 @@ public class Expression: AbstractSyntaxTreeNode {
                 var hasher = Hasher()
                 hasher.combine(name)
                 hasher.combine(argumentType)
+                hasher.combine(isMutable)
                 return hasher.finalize()
             }
         }
@@ -676,7 +680,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public func makeArgumentsDescription() -> String {
-            let result = arguments.map({"\($0.name): \($0.argumentType)"}).joined(separator: ", ")
+            let result = arguments.map({"\($0.isMutable ? "var " : "")\($0.name): \($0.argumentType)"}).joined(separator: ", ")
             return result
         }
         

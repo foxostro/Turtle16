@@ -1132,4 +1132,39 @@ doTheThing(&foo).x = 42
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 42)
     }
+    
+    func test_EndToEndIntegration_GetArrayCountThroughAPointer() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u16 = 0
+let arr = [_]u8{ 1, 2, 3, 4 }
+let ptr = &arr
+r = ptr.count
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 4)
+    }
+    
+    func test_EndToEndIntegration_GetDynamicArrayCountThroughAPointer() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u16 = 0
+let arr = [_]u8{ 1, 2, 3, 4 }
+let dyn: []u8 = arr
+let ptr = &dyn
+r = ptr.count
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 4)
+    }
+    
+    func test_EndToEndIntegration_GetPointeeOfAPointerThroughAPointer() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u16 = 0
+let foo: u16 = 0xcafe
+let bar = &foo
+let baz = &bar
+r = baz.pointee.pointee
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 0xcafe)
+    }
 }

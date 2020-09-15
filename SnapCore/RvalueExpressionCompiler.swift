@@ -1138,6 +1138,20 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 temporaryStack.push(tempPointee)
             } else {
                 switch typ {
+                case .array(count: let count, elementType: _):
+                    assert(name == "count")
+                    let tempCount = temporaryAllocator.allocate()
+                    instructions += [.storeImmediate16(tempCount.address, count!)]
+                    tempExprResult.consume()
+                    temporaryStack.push(tempCount)
+                case .dynamicArray:
+                    assert(name == "count")
+                    let tempCount = temporaryAllocator.allocate()
+                    instructions += [
+                        .copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, kSliceCountSize)
+                    ]
+                    tempExprResult.consume()
+                    temporaryStack.push(tempCount)
                 case .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
                     let size = symbol.type.sizeof

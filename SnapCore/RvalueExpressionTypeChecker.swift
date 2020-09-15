@@ -520,11 +520,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         let name = expr.member.identifier
         let resultType = try check(expression: expr.expr)
         switch resultType {
-        case .array:
-            if name == "count" {
-                return .u16
-            }
-        case .dynamicArray:
+        case .array, .dynamicArray:
             if name == "count" {
                 return .u16
             }
@@ -537,6 +533,10 @@ public class RvalueExpressionTypeChecker: NSObject {
                 return typ
             } else {
                 switch typ {
+                case .array, .dynamicArray:
+                    if name == "count" {
+                        return .u16
+                    }
                 case .structType(let b):
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
                         return symbol.type

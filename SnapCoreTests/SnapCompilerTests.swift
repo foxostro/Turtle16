@@ -1025,19 +1025,6 @@ foo = Foo { .bar = 42 }
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
-    // FIXME: Pointers introduce a hole in the mutability rules. It's possible to change the value of an immutable if modifying through a pointer.
-    func test_EndToEndIntegration_PointersIntroduceAHoleInMutabilityRules() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
-let foo: u16 = 0xabcd
-var bar: *u16 = &foo
-bar.pointee = 0xbeef
-""")
-        
-        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 0xbeef)
-        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 2), UInt16(kStaticStorageStartAddress + 0))
-    }
-    
     func test_EndToEndIntegration_ReadStructMembersThroughPointer() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
@@ -1075,6 +1062,32 @@ func doTheThing(foo: *Foo) -> u8 {
 r = doTheThing(&bar)
 """)
         
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 6)
+    }
+    
+    func test_EndToEndIntegration_PointerToImmutableObjectCannotMutateThatObject() {
+        let compiler = SnapCompiler()
+        let program = """
+let foo: u16 = 0xabcd
+var bar: *u16 = &foo
+bar.pointee = 0xbeef
+"""
+        compiler.compile(program: program, base: 0)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "expression is not assignable")
+    }
+    
+    func test_EndToEndIntegration_ImmutablePointerCanMutateAMutablePointee() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo { x: u8, y: u8, z: u8 }
+var r: u8 = 0
+var bar = Foo { .x = 1, .y = 2, .z = 3 }
+func doTheThing(foo: *Foo) {
+    foo.x = foo.y * foo.z
+}
+doTheThing(&bar)
+""")
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 6)
     }
 }

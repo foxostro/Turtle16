@@ -375,7 +375,6 @@ public class SnapParser: Parser {
         
         if type(of: peek()!) != TokenParenRight.self {
             repeat {
-                let isArgumentMutable: Bool = (nil != accept(TokenVar.self))
                 let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected parameter name followed by `:'")) as! TokenIdentifier
                 if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
                     throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "parameter requires an explicit type")
@@ -384,7 +383,7 @@ public class SnapParser: Parser {
                     throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
                 }
                 let name = tokenIdentifier.lexeme
-                arguments.append(Expression.FunctionType.Argument(name: name, type: type, isMutable: isArgumentMutable))
+                arguments.append(Expression.FunctionType.Argument(name: name, type: type))
             } while nil != accept(TokenComma.self)
         }
         

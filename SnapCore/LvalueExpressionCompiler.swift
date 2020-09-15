@@ -68,13 +68,13 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
     private func compile(get expr: Expression.Get) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        instructions += try compile(expression: expr.expr)
-        
         let name = expr.member.identifier
-        let resultType = try typeChecker.check(expression: expr.expr)
+        let resultType = try rvalueContext().typeChecker.check(expression: expr.expr)
         
         switch resultType {
         case .structType(let typ):
+            instructions += try compile(expression: expr.expr)
+            
             // We'll leave this temporary on the stack and modify it in place.
             let tempResult = temporaryStack.peek()
             let symbol = try typ.symbols.resolve(identifier: name)
@@ -82,27 +82,20 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
                 .addi16(tempResult.address, tempResult.address, symbol.offset)
             ]
         case .pointer(let typ):
+            instructions += try rvalueContext().compile(expression: expr.expr)
             if name == "pointee" {
-                let tempPointeeAddress = temporaryAllocator.allocate(size: 2)
-                let tempPointerValue = temporaryStack.pop()
-                instructions += [
-                    .copyWordsIndirectSource(tempPointeeAddress.address, tempPointerValue.address, 2)
-                ]
-                tempPointerValue.consume()
-                temporaryStack.push(tempPointeeAddress)
+                // Do nothing. The pointer value is already on the top of the
+                // compiler temporaries stack, and that's what we want when
+                // evaluating `pointee' in an lvalue context.
             } else {
                 switch typ {
                 case .structType(let b):
                     // We'll leave this temporary on the stack and modify it in place.
-                    let tempPointeeAddress = temporaryAllocator.allocate(size: 2)
-                    let tempPointerValue = temporaryStack.pop()
+                    let tempResult = temporaryStack.peek()
                     let symbol = try b.symbols.resolve(identifier: name)
                     instructions += [
-                        .copyWordsIndirectSource(tempPointeeAddress.address, tempPointerValue.address, 2),
-                        .addi16(tempPointeeAddress.address, tempPointeeAddress.address, symbol.offset)
+                        .addi16(tempResult.address, tempResult.address, symbol.offset)
                     ]
-                    tempPointerValue.consume()
-                    temporaryStack.push(tempPointeeAddress)
                 default:
                     assert(false) // unreachable
                     throw unsupportedError(expression: expr.expr)

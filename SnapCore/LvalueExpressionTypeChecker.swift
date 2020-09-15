@@ -50,7 +50,7 @@ public class LvalueExpressionTypeChecker: NSObject {
     
     public func check(get expr: Expression.Get) throws -> SymbolType {
         let name = expr.member.identifier
-        let resultType = try check(expression: expr.expr)
+        let resultType = try rvalueContext().check(expression: expr.expr)
         switch resultType {
         case .array:
             if name == "count" {

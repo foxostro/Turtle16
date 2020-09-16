@@ -13,7 +13,7 @@ import TurtleCompilerToolbox
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
     let kSizeOfAddress = 2
     let typeChecker: LvalueExpressionTypeChecker
-    public var shouldIgnoreMutabilityRules = false
+    public var shouldIgnoreMutabilityRules = false // TODO: Checks for constness/mutability should not be done here. This class is concerned only with getting the lvalue.
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),

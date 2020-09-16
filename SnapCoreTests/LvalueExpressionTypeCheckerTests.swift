@@ -38,14 +38,10 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         return result
     }
     
-    func testExpressionIsNotAssignable_ConstInt() {
+    func testExpressionHasNoLvalue_ConstInt() {
         let expr = Expression.LiteralInt(0)
         let typeChecker = LvalueExpressionTypeChecker()
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "expression is not assignable")
-        }
+        XCTAssertNil(try typeChecker.check(expression: expr))
     }
     
     func testArraySubscriptYieldsMutableReferenceToArrayElement() {
@@ -57,18 +53,19 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u8)
     }
     
-    func testElementsOfConstantArraysCannotBeModified() {
-        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .constU8), offset: 0x0010)])
+    func testWeCanTakeTheLvalueOfAConstantArray() {
+        // It's legal to take the lvalue of a constant array. It's illegal to
+        // then assign to that address. However, the lvalue expression type
+        // checker doesn't concern itself with that policy.
+        let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 2, elementType: .constU16), offset: 0x0010)])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "expression is not assignable: `foo' is a constant")
-        }
+        var lvalue: SymbolType? = nil
+        XCTAssertNoThrow(lvalue = try typeChecker.check(expression: expr))
+        XCTAssertEqual(lvalue, .constU16)
     }
     
-    func testCannotAssignToTheArrayCountProperty() {
+    func testCannotTakeTheLvalueOfTheArrayCountProperty() {
         let expr = Expression.Get(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                                 elements: [ExprUtils.makeU8(value: 0),
                                                                            ExprUtils.makeU8(value: 1),
@@ -76,11 +73,9 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("count"))
         
         let typeChecker = LvalueExpressionTypeChecker()
-        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "expression is not assignable")
-        }
+        var lvalue: SymbolType? = nil
+        XCTAssertNoThrow(lvalue = try typeChecker.check(expression: expr))
+        XCTAssertNil(lvalue)
     }
     
     func testGetLvalueOfNonexistentMemberOfStruct() {

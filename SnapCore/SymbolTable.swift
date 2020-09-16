@@ -18,6 +18,19 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case structType(StructType)
     case pointer(SymbolType)
     
+    public func max() -> Int {
+        switch self {
+        case .constInt(let a):
+            return a
+        case .u8:
+            return 255
+        case .u16:
+            return 65536
+        default:
+            abort()
+        }
+    }
+    
     public func unwrapFunctionType() -> FunctionType {
         switch self {
         case .function(let typ):

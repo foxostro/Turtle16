@@ -72,7 +72,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let resultType = try rvalueContext().typeChecker.check(expression: expr.expr)
         
         switch resultType {
-        case .structType(let typ):
+        case .constStructType(let typ), .structType(let typ):
             instructions += try compile(expression: expr.expr)
             
             // We'll leave this temporary on the stack and modify it in place.
@@ -81,7 +81,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [
                 .addi16(tempResult.address, tempResult.address, symbol.offset)
             ]
-        case .pointer(let typ):
+        case .constPointer(let typ), .pointer(let typ):
             instructions += try rvalueContext().compile(expression: expr.expr)
             if name == "pointee" {
                 // Do nothing. The pointer value is already on the top of the

@@ -436,7 +436,7 @@ public class SnapToCrackleCompiler: NSObject {
         
         for i in (0..<typ.arguments.count).reversed() {
             let argument = typ.arguments[i]
-            let symbol = Symbol(type: argument.argumentType,
+            let symbol = Symbol(type: argument.argumentType.correspondingConstType,
                                 offset: -offset,
                                 isMutable: false,
                                 storage: .stackStorage)

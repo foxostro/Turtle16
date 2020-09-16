@@ -188,9 +188,9 @@ public class SnapToCrackleCompiler: NSObject {
                     // Some expression types cannot be made concrete.
                     // Convert these appropriate convertible types.
                     switch expressionResultType {
-                    case .constInt(let a):
+                    case .compTimeInt(let a):
                         symbolType = a > 255 ? .u16 : .u8
-                    case .constBool:
+                    case .compTimeBool:
                         symbolType = .bool
                     default:
                         symbolType = expressionResultType

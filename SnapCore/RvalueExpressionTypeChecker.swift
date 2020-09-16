@@ -30,9 +30,9 @@ public class RvalueExpressionTypeChecker: NSObject {
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
         case let expr as Expression.LiteralInt:
-            return .constInt(expr.value)
+            return .compTimeInt(expr.value)
         case let expr as Expression.LiteralBool:
-            return .constBool(expr.value)
+            return .compTimeBool(expr.value)
         case let expr as Expression.Group:
             return try check(expression: expr.expression)
         case let expr as Expression.Unary:
@@ -75,8 +75,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch unary.op {
         case .minus:
             switch expressionType {
-            case .constInt(let value):
-                return .constInt(-value)
+            case .compTimeInt(let value):
+                return .compTimeInt(-value)
             case .u16:
                 return .u16
             case .u8:
@@ -125,216 +125,216 @@ public class RvalueExpressionTypeChecker: NSObject {
             return .bool
         case (.eq, .u8, .u16):
             return .bool
-        case (.eq, .u8, .constInt):
+        case (.eq, .u8, .compTimeInt):
             return .bool
         case (.eq, .u16, .u8):
             return .bool
         case (.eq, .u16, .u16):
             return .bool
-        case (.eq, .u16, .constInt):
+        case (.eq, .u16, .compTimeInt):
             return .bool
-        case (.eq, .constInt, .u8):
+        case (.eq, .compTimeInt, .u8):
             return .bool
-        case (.eq, .constInt, .u16):
+        case (.eq, .compTimeInt, .u16):
             return .bool
-        case (.eq, .constInt(let a), .constInt(let b)):
-            return .constBool(a == b)
+        case (.eq, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeBool(a == b)
         case (.eq, .bool, .bool):
             return .bool
-        case (.eq, .bool, .constBool):
+        case (.eq, .bool, .compTimeBool):
             return .bool
-        case (.eq, .constBool, .bool):
+        case (.eq, .compTimeBool, .bool):
             return .bool
-        case (.eq, .constBool(let a), .constBool(let b)):
-            return .constBool(a == b)
+        case (.eq, .compTimeBool(let a), .compTimeBool(let b)):
+            return .compTimeBool(a == b)
         case (.ne, .u8, .u8):
             return .bool
         case (.ne, .u8, .u16):
             return .bool
-        case (.ne, .u8, .constInt):
+        case (.ne, .u8, .compTimeInt):
             return .bool
         case (.ne, .u16, .u8):
             return .bool
         case (.ne, .u16, .u16):
             return .bool
-        case (.ne, .u16, .constInt):
+        case (.ne, .u16, .compTimeInt):
             return .bool
-        case (.ne, .constInt, .u8):
+        case (.ne, .compTimeInt, .u8):
             return .bool
-        case (.ne, .constInt, .u16):
+        case (.ne, .compTimeInt, .u16):
             return .bool
-        case (.ne, .constInt(let a), .constInt(let b)):
-            return .constBool(a != b)
+        case (.ne, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeBool(a != b)
         case (.ne, .bool, .bool):
             return .bool
-        case (.ne, .bool, .constBool):
+        case (.ne, .bool, .compTimeBool):
             return .bool
-        case (.ne, .constBool, .bool):
+        case (.ne, .compTimeBool, .bool):
             return .bool
-        case (.ne, .constBool(let a), .constBool(let b)):
-            return .constBool(a != b)
+        case (.ne, .compTimeBool(let a), .compTimeBool(let b)):
+            return .compTimeBool(a != b)
         case (.lt, .u8, .u8):
             return .bool
         case (.lt, .u8, .u16):
             return .bool
-        case (.lt, .u8, .constInt):
+        case (.lt, .u8, .compTimeInt):
             return .bool
         case (.lt, .u16, .u8):
             return .bool
         case (.lt, .u16, .u16):
             return .bool
-        case (.lt, .u16, .constInt):
+        case (.lt, .u16, .compTimeInt):
             return .bool
-        case (.lt, .constInt, .u8):
+        case (.lt, .compTimeInt, .u8):
             return .bool
-        case (.lt, .constInt, .u16):
+        case (.lt, .compTimeInt, .u16):
             return .bool
-        case (.lt, .constInt(let a), .constInt(let b)):
-            return .constBool(a < b)
+        case (.lt, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeBool(a < b)
         case (.gt, .u8, .u8):
             return .bool
         case (.gt, .u8, .u16):
             return .bool
-        case (.gt, .u8, .constInt):
+        case (.gt, .u8, .compTimeInt):
             return .bool
         case (.gt, .u16, .u8):
             return .bool
         case (.gt, .u16, .u16):
             return .bool
-        case (.gt, .u16, .constInt):
+        case (.gt, .u16, .compTimeInt):
             return .bool
-        case (.gt, .constInt, .u8):
+        case (.gt, .compTimeInt, .u8):
             return .bool
-        case (.gt, .constInt, .u16):
+        case (.gt, .compTimeInt, .u16):
             return .bool
-        case (.gt, .constInt(let a), .constInt(let b)):
-            return .constBool(a > b)
+        case (.gt, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeBool(a > b)
         case (.le, .u8, .u8):
             return .bool
         case (.le, .u8, .u16):
             return .bool
-        case (.le, .u8, .constInt):
+        case (.le, .u8, .compTimeInt):
             return .bool
         case (.le, .u16, .u8):
             return .bool
         case (.le, .u16, .u16):
             return .bool
-        case (.le, .u16, .constInt):
+        case (.le, .u16, .compTimeInt):
             return .bool
-        case (.le, .constInt, .u8):
+        case (.le, .compTimeInt, .u8):
             return .bool
-        case (.le, .constInt, .u16):
+        case (.le, .compTimeInt, .u16):
             return .bool
-        case (.le, .constInt(let a), .constInt(let b)):
-            return .constBool(a <= b)
+        case (.le, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeBool(a <= b)
         case (.ge, .u8, .u8):
             return .bool
         case (.ge, .u8, .u16):
             return .bool
-        case (.ge, .u8, .constInt):
+        case (.ge, .u8, .compTimeInt):
             return .bool
         case (.ge, .u16, .u8):
             return .bool
         case (.ge, .u16, .u16):
             return .bool
-        case (.ge, .u16, .constInt):
+        case (.ge, .u16, .compTimeInt):
             return .bool
-        case (.ge, .constInt, .u8):
+        case (.ge, .compTimeInt, .u8):
             return .bool
-        case (.ge, .constInt, .u16):
+        case (.ge, .compTimeInt, .u16):
             return .bool
-        case (.ge, .constInt(let a), .constInt(let b)):
-            return .constBool(a >= b)
+        case (.ge, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeBool(a >= b)
         case (.plus, .u8, .u8):
             return .u8
         case (.plus, .u8, .u16):
             return .u16
-        case (.plus, .u8, .constInt):
+        case (.plus, .u8, .compTimeInt):
             return .u8
         case (.plus, .u16, .u8):
             return .u16
         case (.plus, .u16, .u16):
             return .u16
-        case (.plus, .u16, .constInt):
+        case (.plus, .u16, .compTimeInt):
             return .u16
-        case (.plus, .constInt, .u8):
+        case (.plus, .compTimeInt, .u8):
             return .u8
-        case (.plus, .constInt, .u16):
+        case (.plus, .compTimeInt, .u16):
             return .u16
-        case (.plus, .constInt(let a), .constInt(let b)):
-            return .constInt(a + b)
+        case (.plus, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeInt(a + b)
         case (.minus, .u8, .u8):
             return .u8
         case (.minus, .u8, .u16):
             return .u16
-        case (.minus, .u8, .constInt):
+        case (.minus, .u8, .compTimeInt):
             return .u8
         case (.minus, .u16, .u8):
             return .u16
         case (.minus, .u16, .u16):
             return .u16
-        case (.minus, .u16, .constInt):
+        case (.minus, .u16, .compTimeInt):
             return .u16
-        case (.minus, .constInt, .u8):
+        case (.minus, .compTimeInt, .u8):
             return .u8
-        case (.minus, .constInt, .u16):
+        case (.minus, .compTimeInt, .u16):
             return .u16
-        case (.minus, .constInt(let a), .constInt(let b)):
-            return .constInt(a - b)
+        case (.minus, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeInt(a - b)
         case (.star, .u8, .u8):
             return .u8
         case (.star, .u8, .u16):
             return .u16
-        case (.star, .u8, .constInt):
+        case (.star, .u8, .compTimeInt):
             return .u8
         case (.star, .u16, .u8):
             return .u16
         case (.star, .u16, .u16):
             return .u16
-        case (.star, .u16, .constInt):
+        case (.star, .u16, .compTimeInt):
             return .u16
-        case (.star, .constInt, .u8):
+        case (.star, .compTimeInt, .u8):
             return .u8
-        case (.star, .constInt, .u16):
+        case (.star, .compTimeInt, .u16):
             return .u16
-        case (.star, .constInt(let a), .constInt(let b)):
-            return .constInt(a * b)
+        case (.star, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeInt(a * b)
         case (.divide, .u8, .u8):
             return .u8
         case (.divide, .u8, .u16):
             return .u16
-        case (.divide, .u8, .constInt):
+        case (.divide, .u8, .compTimeInt):
             return .u8
         case (.divide, .u16, .u8):
             return .u16
         case (.divide, .u16, .u16):
             return .u16
-        case (.divide, .u16, .constInt):
+        case (.divide, .u16, .compTimeInt):
             return .u16
-        case (.divide, .constInt, .u8):
+        case (.divide, .compTimeInt, .u8):
             return .u8
-        case (.divide, .constInt, .u16):
+        case (.divide, .compTimeInt, .u16):
             return .u16
-        case (.divide, .constInt(let a), .constInt(let b)):
-            return .constInt(a / b)
+        case (.divide, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeInt(a / b)
         case (.modulus, .u8, .u8):
             return .u8
         case (.modulus, .u8, .u16):
             return .u16
-        case (.modulus, .u8, .constInt):
+        case (.modulus, .u8, .compTimeInt):
             return .u8
         case (.modulus, .u16, .u8):
             return .u16
         case (.modulus, .u16, .u16):
             return .u16
-        case (.modulus, .u16, .constInt):
+        case (.modulus, .u16, .compTimeInt):
             return .u16
-        case (.modulus, .constInt, .u8):
+        case (.modulus, .compTimeInt, .u8):
             return .u8
-        case (.modulus, .constInt, .u16):
+        case (.modulus, .compTimeInt, .u16):
             return .u16
-        case (.modulus, .constInt(let a), .constInt(let b)):
-            return .constInt(a % b)
+        case (.modulus, .compTimeInt(let a), .compTimeInt(let b)):
+            return .compTimeInt(a % b)
         default:
             throw invalidBinaryExpr(binary, left, right)
         }
@@ -395,17 +395,17 @@ public class RvalueExpressionTypeChecker: NSObject {
             return ltype
         }
         switch (rtype, ltype) {
-        case (.constInt(let a), .u8):
+        case (.compTimeInt(let a), .u8):
             guard a >= 0 && a < 256 else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u8'")
             }
             return ltype // The conversion is acceptable.
-        case (.constInt(let a), .u16):
+        case (.compTimeInt(let a), .u16):
             guard a >= 0 && a < 65536 else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u16'")
             }
             return ltype // The conversion is acceptable.
-        case (.u8, .u16), (.constBool, .bool):
+        case (.u8, .u16), (.compTimeBool, .bool):
             return ltype // The conversion is acceptable.
         case (.u16, .u8):
             if !isExplicitCast {
@@ -560,7 +560,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         if let exprCount = expr.count {
             let typeOfCountExpr = try check(expression: exprCount)
             switch typeOfCountExpr {
-            case .constInt(let a):
+            case .compTimeInt(let a):
                 count = a
             default:
                 throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot convert value of type `\(typeOfCountExpr)' to expected type `const int'")

@@ -10,7 +10,7 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
-    case constInt(Int), constBool(Bool)
+    case compTimeInt(Int), compTimeBool(Bool)
     case u16, u8, bool, void
     case function(FunctionType)
     case array(count: Int?, elementType: SymbolType)
@@ -20,7 +20,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public func max() -> Int {
         switch self {
-        case .constInt(let a):
+        case .compTimeInt(let a):
             return a
         case .u8:
             return 255
@@ -51,7 +51,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isBooleanType: Bool {
         switch self {
-        case .bool, .constBool:
+        case .bool, .compTimeBool:
             return true
         default:
             return false
@@ -60,7 +60,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isArithmeticType: Bool {
         switch self {
-        case .u8, .u16, .constInt:
+        case .u8, .u16, .compTimeInt:
             return true
         default:
             return false
@@ -69,7 +69,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var sizeof: Int {
         switch self {
-        case .constInt, .constBool, .void, .function:
+        case .compTimeInt, .compTimeBool, .void, .function:
             return 0
         case .u8, .bool:
             return 1
@@ -108,9 +108,9 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .constInt:
+        case .compTimeInt:
             return "const int"
-        case .constBool:
+        case .compTimeBool:
             return "const bool"
         case .void:
             return "void"

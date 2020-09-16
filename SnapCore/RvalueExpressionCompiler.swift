@@ -203,7 +203,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             throw unsupportedError(expression: binary)
         }
         
-        if case .constBool = leftType, case .constBool = rightType {
+        if case .compTimeBool = leftType, case .compTimeBool = rightType {
             return try compileConstantBooleanBinaryExpression(binary, leftType, rightType)
         }
         
@@ -236,7 +236,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compileConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> [CrackleInstruction] {
-        guard case .constBool(let a) = leftType, case .constBool(let b) = rightType else {
+        guard case .compTimeBool(let a) = leftType, case .compTimeBool(let b) = rightType else {
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
             assert(false)
@@ -271,7 +271,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             throw unsupportedError(expression: binary)
         }
 
-        if case .constInt = leftType, case .constInt = rightType {
+        if case .compTimeInt = leftType, case .compTimeInt = rightType {
             return try compileConstantArithmeticBinaryExpression(binary, leftType, rightType)
         }
         
@@ -349,7 +349,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compileConstantArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> [CrackleInstruction] {
-        guard case .constInt(let a) = leftType, case .constInt(let b) = rightType else {
+        guard case .compTimeInt(let a) = leftType, case .compTimeInt(let b) = rightType else {
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
             assert(false)
@@ -554,17 +554,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.u16, .u16),
              (.structType, .structType):
             instructions += try compile(expression: rexpr)
-        case (.constInt(let a), .u8):
+        case (.compTimeInt(let a), .u8):
             assert(a >= 0 && a < 256)
             let dst = temporaryAllocator.allocate()
             temporaryStack.push(dst)
             instructions += [.storeImmediate(dst.address, a)]
-        case (.constInt(let a), .u16):
+        case (.compTimeInt(let a), .u16):
             assert(a >= 0 && a < 65536)
             let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate16(dst.address, a)]
             temporaryStack.push(dst)
-        case (.constBool(let a), .bool):
+        case (.compTimeBool(let a), .bool):
             let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate(dst.address, a ? 1 : 0)]
             temporaryStack.push(dst)

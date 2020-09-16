@@ -177,7 +177,7 @@ public class SnapToCrackleCompiler: NSObject {
             // An explicit array type does not specify the number of array elements.
             // If the explicit type is an array type then we must examine the
             // expression result type to determine the array length.
-            let symbolType: SymbolType
+            var symbolType: SymbolType
             switch (expressionResultType, explicitType) {
             case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
                 symbolType = .array(count: count, elementType: elementType)
@@ -197,6 +197,9 @@ public class SnapToCrackleCompiler: NSObject {
                     }
                 }
             }
+            if false == varDecl.isMutable {
+                symbolType = symbolType.correspondingConstType
+            }
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
@@ -211,7 +214,8 @@ public class SnapToCrackleCompiler: NSObject {
                                                                  lexpr: varDecl.identifier,
                                                                  rexpr: varDeclExpr))
         } else if let explicitType = explicitType {
-            let symbol = try makeSymbolWithExplicitType(explicitType: explicitType, storage: varDecl.storage, isMutable: varDecl.isMutable)
+            let symbolType = varDecl.isMutable ? explicitType : explicitType.correspondingConstType
+            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.

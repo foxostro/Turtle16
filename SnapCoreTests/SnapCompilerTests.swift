@@ -524,7 +524,7 @@ let foo: bool = 0xffff
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "0xffff")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `bool'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `u16' to type `bool'")
     }
     
     func test_EndToEndIntegration_CastU16DownToU8() {
@@ -624,7 +624,7 @@ let arr: [_]u8 = 1
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `const int' to type `[_]u8'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `u8' to type `[_]u8'")
     }
             
     func test_EndToEndIntegration_FailToAssignFunctionToArray() {
@@ -652,7 +652,7 @@ let bar = 1 + foo
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1 + foo")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
-        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `const int' and `[3]u8'")
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `[3]u8'")
     }
     
     func test_EndToEndIntegration_ArrayOfIntegerConstantsConvertedToArrayOfU16OnInitialAssignment() {

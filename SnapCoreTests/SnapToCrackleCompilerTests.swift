@@ -138,7 +138,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .constBool, offset: addressFoo, isMutable: false))
     }
     
     func testCompileConstantDeclaration_ArrayWithStaticStorage_ImplicitType() {

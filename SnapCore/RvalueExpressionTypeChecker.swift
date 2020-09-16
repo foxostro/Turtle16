@@ -86,7 +86,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
         case .ampersand:
             let context = lvalueContext()
-            context.messageWhenLvalueGenericallyCannotBeTaken = "cannot take the address of an operand of type `\(expressionType)'"
+            context.messageWhenLvalueGenericallyCannotBeTaken = "lvalue required as operand of unary operator `\(unary.op.description)'"
             let expressionType = try context.check(expression: unary.child)
             return .pointer(expressionType)
         default:
@@ -154,7 +154,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch binary.op {
         case .eq, .ne:
-            return .bool
+            return .constBool
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }
@@ -200,7 +200,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch binary.op {
         case .eq, .ne, .lt, .gt, .le, .ge:
-            return .bool
+            return .constBool
         case .plus, .minus, .star, .divide, .modulus:
             return typeForArithmetic
         default:
@@ -307,7 +307,13 @@ public class RvalueExpressionTypeChecker: NSObject {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u16'")
             }
             return ltype // The conversion is acceptable.
-        case (.u8, .u16), (.compTimeBool, .bool):
+        case (.u8, .u16),
+             (.compTimeBool, .bool),
+             (.compTimeBool, .constBool),
+             (.constBool, .constBool),
+             (.constBool, .bool),
+             (.bool, .constBool),
+             (.bool, .bool):
             return ltype // The conversion is acceptable.
         case (.u16, .u8):
             if !isExplicitCast {
@@ -349,14 +355,14 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             for i in 0..<typ.arguments.count {
                 let rtype = try rvalueContext().check(expression: call.arguments[i])
-                let ltype = typ.arguments[i].argumentType
+                let ltype = typ.arguments[i].argumentType.correspondingConstType
                 let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
                 _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                              rtype: rtype,
                                                              sourceAnchor: call.arguments[i].sourceAnchor,
                                                              messageWhenNotConvertible: message)
             }
-            return typ.returnType
+            return typ.returnType.correspondingConstType
         default:
             let message = "cannot call value of non-function type `\(symbol.type)'"
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
@@ -364,7 +370,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(as expr: Expression.As) throws -> SymbolType {
-        let ltype = try check(expression: expr.targetType)
+        let ltype = try check(expression: expr.targetType).correspondingConstType
         let rtype = try check(expression: expr.expr)
         return try checkTypesAreConvertibleInExplicitCast(ltype: ltype,
                                                           rtype: rtype,

@@ -85,7 +85,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "immutable variable redefines existing symbol: `foo'")
+        XCTAssertEqual(compiler.errors.first?.message, "constant redefines existing symbol: `foo'")
     }
     
     func testCompileConstantDeclaration_NotCompileTimeConstant() {
@@ -535,7 +535,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "unable to deduce type of immutable variable `foo'")
+        XCTAssertEqual(compiler.errors.first?.message, "unable to deduce type of constant `foo'")
     }
     
     func testCompileVarDeclaration_ArrayOfUndefinedValue() {

@@ -1065,8 +1065,8 @@ r = doTheThing(&bar)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 6)
     }
     
-    // FIXME: This test has been disabled. The problem is that there is no elegant and solid way to propagate mutability/immutability of a value without introducing a concept of constness into the type system itself.
-    func DISABLED_test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_1() {
+    // FIXME: This test has been disabled. The problem is that there is no elegant and solid way to propagate mutability of a value without introducing a concept of constness into the type system itself.
+    func DISABLED_test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_1() {
         let compiler = SnapCompiler()
         let program = """
 let foo: u16 = 0xabcd
@@ -1074,11 +1074,11 @@ var bar: *u16 = &foo
 """
         compiler.compile(program: program, base: 0)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from immutable object `foo'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from constant `foo'")
     }
     
-    // FIXME: This test has been disabled. The problem is that there is no elegant and solid way to propagate mutability/immutability of a value without introducing a concept of constness into the type system itself.
-    func DISABLED_test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_2() {
+    // FIXME: This test has been disabled. The problem is that there is no elegant and solid way to propagate mutability of a value without introducing a concept of constness into the type system itself.
+    func DISABLED_test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_2() {
         let compiler = SnapCompiler()
         let program = """
 struct Foo { x: u8, y: u8, z: u8 }
@@ -1090,7 +1090,7 @@ doTheThing(&bar)
 """
         compiler.compile(program: program, base: 0)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from immutable object `bar'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from constant `bar'")
     }
     
     func test_EndToEndIntegration_MutateThePointeeThroughAPointer() {

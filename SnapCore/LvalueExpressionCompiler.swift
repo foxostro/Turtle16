@@ -50,7 +50,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         guard symbol.isMutable || shouldIgnoreMutabilityRules else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to immutable variable `\(expr.identifier)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to constant `\(expr.identifier)'")
         }
         
         switch symbol.storage {

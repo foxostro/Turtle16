@@ -63,7 +63,7 @@ class SymbolTableTests: XCTestCase {
         }
     }
 
-    func testBindWord_Static_Immutable() {
+    func testBindWord_Static_Constant() {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: false))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
@@ -89,7 +89,7 @@ class SymbolTableTests: XCTestCase {
         }
     }
 
-    func testBindBoolean_Static_Immutable() {
+    func testBindBoolean_Static_Constant() {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")

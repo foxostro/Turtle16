@@ -77,7 +77,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.sourceAnchor?.text, "foo")
-        XCTAssertEqual(parser.errors.first?.message, "immutable variables must be assigned a value")
+        XCTAssertEqual(parser.errors.first?.message, "constants must be assigned a value")
     }
     
     func testMalformedLetDeclaration_MissingValue() {
@@ -408,7 +408,7 @@ let foo: [1]u8 = undefined
         XCTAssertEqual(expected, actual)
     }
     
-    func testWellFormedStaticVariableDeclaration_Immutable() {
+    func testWellFormedStaticVariableDeclaration_Constant() {
         let parser = parse("static let foo = 1")
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!

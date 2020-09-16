@@ -2096,7 +2096,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U16_Overflows() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right:  Expression.LiteralInt(0x10000))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
@@ -2107,7 +2107,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U8_Overflows() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right:  Expression.LiteralInt(0x100))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
@@ -2118,7 +2118,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U16() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right:  Expression.LiteralInt(0xabcd))
         var result: SymbolType? = nil
@@ -2127,7 +2127,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U8() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right:  ExprUtils.makeU8(value: 0xab))
         var result: SymbolType? = nil
@@ -2136,7 +2136,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_U16_to_U16() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right:  ExprUtils.makeU16(value: 0xabcd))
         var result: SymbolType? = nil
@@ -2145,7 +2145,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_U8_to_U8() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right:  ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
@@ -2154,7 +2154,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_Bool_to_Bool() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
@@ -2164,8 +2164,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
         let symbols = SymbolTable([
-            "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0010, isMutable: true),
-            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
+            "src" : Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0010),
+            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "dst", right:  Expression.Identifier("src"))
@@ -2175,7 +2175,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_U16() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier("foo")
         var result: SymbolType? = nil
@@ -2184,7 +2184,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_U8() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier("foo")
         var result: SymbolType? = nil
@@ -2193,7 +2193,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_Boolean() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier("foo")
         var result: SymbolType? = nil
@@ -2204,7 +2204,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [ExprUtils.makeBool(value: false)])
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2214,7 +2214,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testFailBecauseFunctionCallUsesIncorrectNumberOfParameters() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000)])
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2227,7 +2227,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertLargeIntegerConstantToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(65536))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2238,7 +2238,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertLargeIntegerConstantToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(256))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2249,7 +2249,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertU16ToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: 0xabcd))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2260,7 +2260,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertBoolToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: false))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2271,7 +2271,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -2518,7 +2518,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: 0x0010)])
         let zero = Expression.LiteralInt(0)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2531,7 +2531,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testArraySubscriptFailsWithNonarithmeticIndex() {
         let ident = "foo"
-        let symbols = SymbolTable([ident : Symbol(type: .array(count: 3, elementType: .bool), offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable([ident : Symbol(type: .array(count: 3, elementType: .bool), offset: 0x0010)])
         let index = ExprUtils.makeBool(value: false)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: index)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2560,7 +2560,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     private func checkArraySubscriptAccessesArrayElement(elementType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable([ident : Symbol(type: .array(count: 3, elementType: elementType), offset: 0x0010, isMutable: false)])
+        let symbols = SymbolTable([ident : Symbol(type: .array(count: 3, elementType: elementType), offset: 0x0010)])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(0))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -2707,11 +2707,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testCannotAssignFunctionToArray() {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .function(FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)])),
-                           offset: 0x0010,
-                           isMutable: false),
+                           offset: 0x0010),
             "bar" : Symbol(type: .array(count: nil, elementType: .u16),
-                           offset: 0x0012,
-                           isMutable: false)
+                           offset: 0x0012)
         ])
         let expr = ExprUtils.makeAssignment(name: "bar", right: Expression.Identifier("foo"))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2752,7 +2750,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("count"))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010, isMutable: false)
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -2814,10 +2812,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bar"))
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .structType(typ), offset: 0, isMutable: false)
+            "foo" : Symbol(type: .structType(typ), offset: 0)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -2829,10 +2827,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("asdf"))
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .structType(typ), offset: 0, isMutable: false)
+            "foo" : Symbol(type: .structType(typ), offset: 0)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
@@ -2881,7 +2879,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralBool(false))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2899,8 +2897,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "baz", expr: Expression.LiteralInt(0))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true),
-            "baz" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0),
+            "baz" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2914,7 +2912,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralInt(0))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2929,8 +2927,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         typealias Arg = Expression.StructInitializer.Argument
         let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true),
-            "baz" : Symbol(type: .u16, offset: 2, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0),
+            "baz" : Symbol(type: .u16, offset: 2)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2976,7 +2974,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testAddressOfIdentifierForU8Symbol() {
         let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .u8, offset: 0xabcd, isMutable: false)
+            "foo" : Symbol(type: .u8, offset: 0xabcd)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -2988,7 +2986,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("pointee"))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.u8), offset: 0, isMutable: false)
+            "foo" : Symbol(type: .pointer(.u8), offset: 0)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -3000,10 +2998,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bar"))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0, isMutable: false)
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -3015,10 +3013,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("asdf"))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0, isMutable: false)
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {

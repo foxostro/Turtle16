@@ -65,7 +65,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .constU8, offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .constU8, offset: addressFoo))
     }
     
     func testCompileConstantDeclaration_CompileTimeConstant_RedefinesExistingSymbol() {
@@ -116,7 +116,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "bar"))
-        XCTAssertEqual(symbol, Symbol(type: .constU8, offset: addressBar, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .constU8, offset: addressBar))
     }
     
     func testCompileConstantDeclaration_TypeIsInferredFromTheExpression() {
@@ -138,7 +138,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .constBool, offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .constBool, offset: addressFoo))
     }
     
     func testCompileConstantDeclaration_ArrayWithStaticStorage_ImplicitType() {
@@ -171,7 +171,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .array(count: 3, elementType: .constU8), offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .array(count: 3, elementType: .constU8), offset: addressFoo))
     }
     
     func testCompileConstantDeclaration_ArrayWithStaticStorage_ExplicitType() {
@@ -204,7 +204,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .array(count: 3, elementType: .constU8), offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .array(count: 3, elementType: .constU8), offset: addressFoo))
     }
     
     func testCompileConstantDeclaration_CannotAssignFunctionToArray() {
@@ -254,7 +254,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(sourceAnchor: nil, identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .constDynamicArray(elementType: .u8), offset: addressFoo, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .constDynamicArray(elementType: .u8), offset: addressFoo))
         
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -296,7 +296,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo, isMutable: true))
+        XCTAssertEqual(symbol, Symbol(type: .u8, offset: addressFoo))
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
             .storeImmediate(t1, 1),
@@ -326,12 +326,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
         var symbolFoo: Symbol? = nil
         XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo, isMutable: true))
+        XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo))
         
         let addressBar = SnapToCrackleCompiler.kStaticStorageStartAddress+2
         var symbolBar: Symbol? = nil
         XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(identifier: "bar"))
-        XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar, isMutable: true))
+        XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar))
         
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
@@ -494,7 +494,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
-        XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo, isMutable: true))
+        XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo))
     }
     
     func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {
@@ -1671,7 +1671,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
         XCTAssertEqual(symbolType, .structType(StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u8, offset: 0)
         ]))))
     }
     

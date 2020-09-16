@@ -39,13 +39,12 @@ public class LvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let symbol = try symbols.resolve(sourceAnchor: expr.identifier.sourceAnchor,
-                                         identifier: expr.identifier.identifier)
-        if !symbol.isMutable {
+        let typ = try rvalueContext().check(subscript: expr)
+        guard !typ.isConst else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor,
                                 message: "expression is not assignable: `\(expr.identifier.identifier)' is a constant")
         }
-        return try rvalueContext().check(subscript: expr)
+        return typ
     }
     
     public func check(get expr: Expression.Get) throws -> SymbolType {

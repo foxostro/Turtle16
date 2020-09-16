@@ -1065,8 +1065,7 @@ r = doTheThing(&bar)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 6)
     }
     
-    // FIXME: This test has been disabled. The problem is that there is no elegant and solid way to propagate mutability of a value without introducing a concept of constness into the type system itself.
-    func DISABLED_test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_1() {
+    func test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_1() {
         let compiler = SnapCompiler()
         let program = """
 let foo: u16 = 0xabcd
@@ -1074,23 +1073,22 @@ var bar: *u16 = &foo
 """
         compiler.compile(program: program, base: 0)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from constant `foo'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `*const u16' to type `*u16'")
     }
     
-    // FIXME: This test has been disabled. The problem is that there is no elegant and solid way to propagate mutability of a value without introducing a concept of constness into the type system itself.
-    func DISABLED_test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_2() {
+    func test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_2() {
         let compiler = SnapCompiler()
         let program = """
 struct Foo { x: u8, y: u8, z: u8 }
 let bar = Foo { .x = 1, .y = 2, .z = 3 }
-func doTheThing(var foo: *Foo) {
+func doTheThing(foo: *Foo) {
     foo.x = foo.y * foo.z
 }
 doTheThing(&bar)
 """
         compiler.compile(program: program, base: 0)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot make a mutating pointer from constant `bar'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `*const Foo' to expected argument type `*Foo' in call to `doTheThing'")
     }
     
     func test_EndToEndIntegration_MutateThePointeeThroughAPointer() {

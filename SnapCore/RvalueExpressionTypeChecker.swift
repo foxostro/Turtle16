@@ -89,10 +89,10 @@ public class RvalueExpressionTypeChecker: NSObject {
                 throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
             }
         case .ampersand:
-            let context = lvalueContext()
-            context.messageWhenLvalueGenericallyCannotBeTaken = "lvalue required as operand of unary operator `\(unary.op.description)'"
-            let expressionType = try context.check(expression: unary.child)
-            return .pointer(expressionType)
+            guard let lvalueType = try lvalueContext().check(expression: unary.child) else {
+                throw CompilerError(sourceAnchor: unary.child.sourceAnchor, message: "lvalue required as operand of unary operator `\(unary.op.description)'")
+            }
+            return .pointer(lvalueType)
         default:
             let operatorString: String
             if let lexeme = unary.sourceAnchor?.text {
@@ -255,7 +255,10 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(assignment: Expression.Assignment) throws -> SymbolType {
-        let ltype = try lvalueContext().check(expression: assignment.lexpr)
+        guard let ltype = try lvalueContext().check(expression: assignment.lexpr) else {
+            throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
+                                message: "lvalue required in assignment")
+        }
         let rtype = try rvalueContext().check(expression: assignment.rexpr)
         return try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                         rtype: rtype,
@@ -440,7 +443,7 @@ public class RvalueExpressionTypeChecker: NSObject {
              .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.expr)
-            if !argumentType.isArithmeticType {
+            guard argumentType.isArithmeticType else {
                 throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
             }
             return elementType

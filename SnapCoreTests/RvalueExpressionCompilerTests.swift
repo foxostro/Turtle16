@@ -2850,7 +2850,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "expression is not assignable")
+            XCTAssertEqual(compilerError?.message, "lvalue required in assignment")
         }
     }
     

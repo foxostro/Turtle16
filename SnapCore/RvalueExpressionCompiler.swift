@@ -516,7 +516,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func compileGenericAssignment(_ assignment: Expression.Assignment, _ lvalue: CompilerTemporary) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
+        guard let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr) else {
+            throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
+                                message: "lvalue required in assignment")
+        }
         
         // Calculate the rvalue, the value that is being assigned.
         // To handle automatic conversion and promotion, the value of this

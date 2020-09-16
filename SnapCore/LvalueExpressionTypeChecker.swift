@@ -11,7 +11,6 @@ import TurtleCompilerToolbox
 // Evaluates the expression type in an lvalue context.
 public class LvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
-    public var messageWhenLvalueGenericallyCannotBeTaken = "expression is not assignable"
     
     public init(symbols: SymbolTable = SymbolTable()) {
         self.symbols = symbols
@@ -21,7 +20,7 @@ public class LvalueExpressionTypeChecker: NSObject {
         return RvalueExpressionTypeChecker(symbols: symbols)
     }
     
-    @discardableResult public func check(expression: Expression) throws -> SymbolType {
+    @discardableResult public func check(expression: Expression) throws -> SymbolType? {
         switch expression {
         case let identifier as Expression.Identifier:
             return try check(identifier: identifier)
@@ -30,34 +29,29 @@ public class LvalueExpressionTypeChecker: NSObject {
         case let expr as Expression.Get:
             return try check(get: expr)
         default:
-            throw makeNotAssignableError(expression: expression)
+            return nil
         }
     }
         
-    public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
+    public func check(identifier expr: Expression.Identifier) throws -> SymbolType? {
         return try rvalueContext().check(identifier: expr)
     }
     
-    public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let typ = try rvalueContext().check(subscript: expr)
-        guard !typ.isConst else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor,
-                                message: "expression is not assignable: `\(expr.identifier.identifier)' is a constant")
-        }
-        return typ
+    public func check(subscript expr: Expression.Subscript) throws -> SymbolType? {
+        return try rvalueContext().check(subscript: expr)
     }
     
-    public func check(get expr: Expression.Get) throws -> SymbolType {
+    public func check(get expr: Expression.Get) throws -> SymbolType? {
         let name = expr.member.identifier
         let resultType = try rvalueContext().check(expression: expr.expr)
         switch resultType {
         case .array:
             if name == "count" {
-                throw makeNotAssignableError(expression: expr.expr)
+                return nil
             }
         case .constDynamicArray, .dynamicArray:
             if name == "count" {
-                throw makeNotAssignableError(expression: expr.expr)
+                return nil
             }
         case .constStructType(let typ), .structType(let typ):
             if let symbol = typ.symbols.maybeResolve(identifier: name) {
@@ -80,10 +74,5 @@ public class LvalueExpressionTypeChecker: NSObject {
             break
         }
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
-    }
-    
-    func makeNotAssignableError(expression: Expression) -> Error {
-        return CompilerError(sourceAnchor: expression.sourceAnchor,
-                             message: messageWhenLvalueGenericallyCannotBeTaken)
     }
 }

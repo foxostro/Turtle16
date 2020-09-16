@@ -10,13 +10,43 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
-    case compTimeInt(Int), compTimeBool(Bool)
-    case u16, u8, bool, void
+    case void
     case function(FunctionType)
+    case compTimeInt(Int)
+    case compTimeBool(Bool)
+    case constBool, bool
+    case u8
+    case u16
     case array(count: Int?, elementType: SymbolType)
     case dynamicArray(elementType: SymbolType)
-    case structType(StructType)
     case pointer(SymbolType)
+    case structType(StructType)
+    
+    public var isConst: Bool {
+        switch self {
+        case .void, .function:
+            return true
+        case .compTimeBool, .constBool, .compTimeInt:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public var correspondingConstType: SymbolType {
+        switch self {
+        case .bool:
+            return .constBool
+//        case .u8:
+//        case .u16:
+//        case .array(count: Int?, elementType: SymbolType):
+//        case .dynamicArray(elementType: SymbolType):
+//        case .structType(StructType):
+//        case .pointer(SymbolType):
+        default:
+            return self
+        }
+    }
     
     public func max() -> Int {
         switch self {
@@ -51,7 +81,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isBooleanType: Bool {
         switch self {
-        case .bool, .compTimeBool:
+        case .bool, .constBool, .compTimeBool:
             return true
         default:
             return false
@@ -71,18 +101,16 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .compTimeInt, .compTimeBool, .void, .function:
             return 0
-        case .u8, .bool:
+        case .u8, .bool, .constBool:
             return 1
-        case .u16:
+        case .u16, .pointer:
             return 2
-        case .array(count: let count, elementType: let elementType):
-            return (count ?? 0) * elementType.sizeof
         case .dynamicArray(elementType: _):
             return 4
+        case .array(count: let count, elementType: let elementType):
+            return (count ?? 0) * elementType.sizeof
         case .structType(let typ):
             return typ.sizeof
-        case .pointer:
-            return 2
         }
     }
     
@@ -108,18 +136,16 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .compTimeInt:
-            return "const int"
-        case .compTimeBool:
-            return "const bool"
         case .void:
             return "void"
+        case .compTimeBool, .constBool, .bool:
+            return "bool"
+        case .compTimeInt(let a):
+            return a > 255 ? "u16" : "u8"
         case .u16:
             return "u16"
         case .u8:
             return "u8"
-        case .bool:
-            return "bool"
         case .array(count: let count, elementType: let elementType):
             if let count = count {
                 return "[\(count)]\(elementType)"
@@ -135,7 +161,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .structType(let typ):
             return "\(typ.name)"
         case .pointer(let pointee):
-            return "*\(pointee)"
+            let constTag = pointee.isConst ? "const " : ""
+            return "*\(constTag)\(pointee)"
         }
     }
 }

@@ -98,7 +98,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Eq_U8() {
@@ -107,7 +107,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Eq_Bool() {
@@ -117,7 +117,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -128,7 +128,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const int' and `const bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -138,7 +138,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Eq_U16() {
@@ -147,7 +147,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Eq_U8() {
@@ -156,7 +156,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Eq_Bool() {
@@ -177,7 +177,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `const bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -187,7 +187,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Eq_U16() {
@@ -196,7 +196,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Eq_U8() {
@@ -205,7 +205,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Eq_Bool() {
@@ -226,7 +226,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `const bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -236,7 +236,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_BooleanConstant_Eq_BooleanConstant() {
@@ -255,7 +255,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -266,7 +266,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const bool' and `u16'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -277,7 +277,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `const bool' and `u8'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -287,7 +287,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_Bool_Eq_BooleanConstant() {
@@ -296,7 +296,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralBool(false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_Bool_Eq_IntegerConstant() {
@@ -306,7 +306,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -347,7 +347,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Ne_U8() {
@@ -356,7 +356,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Ne_Bool() {
@@ -366,7 +366,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -377,7 +377,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const int' and `const bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -387,7 +387,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Ne_U16() {
@@ -396,7 +396,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Ne_U8() {
@@ -405,7 +405,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Ne_Bool() {
@@ -426,7 +426,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `const bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -436,7 +436,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Ne_U16() {
@@ -445,7 +445,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Ne_U8() {
@@ -454,7 +454,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Ne_Bool() {
@@ -475,7 +475,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `const bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -486,7 +486,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -518,7 +518,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_Bool_Ne_BooleanConstant() {
@@ -527,7 +527,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralBool(false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_BooleanConstant_Ne_IntegerConstant() {
@@ -537,7 +537,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -548,7 +548,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const bool' and `u16'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -559,7 +559,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `const bool' and `u8'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -569,7 +569,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_BooleanConstant_Ne_BooleanConstant() {
@@ -596,7 +596,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Lt_U8() {
@@ -605,7 +605,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Lt_Bool() {
@@ -615,7 +615,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -625,7 +625,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Lt_U16() {
@@ -634,7 +634,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Lt_U8() {
@@ -643,7 +643,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Lt_Bool() {
@@ -663,7 +663,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Lt_U16() {
@@ -672,7 +672,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Lt_U8() {
@@ -681,7 +681,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Lt_Bool() {
@@ -735,7 +735,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `<' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -754,7 +754,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Gt_U8() {
@@ -763,7 +763,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Gt_Bool() {
@@ -773,7 +773,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -783,7 +783,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Gt_U16() {
@@ -792,7 +792,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Gt_U8() {
@@ -801,7 +801,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Gt_Bool() {
@@ -821,7 +821,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Gt_U16() {
@@ -830,7 +830,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Gt_U8() {
@@ -839,7 +839,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Gt_Bool() {
@@ -893,7 +893,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `>' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -912,7 +912,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Le_U8() {
@@ -921,7 +921,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Le_Bool() {
@@ -931,7 +931,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -941,7 +941,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Le_U16() {
@@ -950,7 +950,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Le_U8() {
@@ -959,7 +959,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Le_Bool() {
@@ -979,7 +979,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Le_U16() {
@@ -988,7 +988,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Le_U8() {
@@ -1051,7 +1051,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `<=' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -1070,7 +1070,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Ge_U8() {
@@ -1079,7 +1079,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_IntegerConstant_Ge_Bool() {
@@ -1089,7 +1089,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -1099,7 +1099,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Ge_U16() {
@@ -1108,7 +1108,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Ge_U8() {
@@ -1117,7 +1117,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U16_Ge_Bool() {
@@ -1137,7 +1137,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Ge_U16() {
@@ -1146,7 +1146,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Ge_U8() {
@@ -1155,7 +1155,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testBinary_U8_Ge_Bool() {
@@ -1209,7 +1209,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `>=' cannot be applied to operands of types `bool' and `u8'")
         }
     }
     
@@ -1263,7 +1263,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `u16' and `bool'")
         }
     }
     
@@ -1359,7 +1359,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `+' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -1437,7 +1437,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `u16' and `bool'")
         }
     }
    
@@ -1533,7 +1533,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `-' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -1611,7 +1611,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -1707,7 +1707,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `*' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -1785,7 +1785,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -1881,7 +1881,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `/' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -1959,7 +1959,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `const int' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `u8' and `bool'")
         }
     }
     
@@ -2055,7 +2055,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `bool' and `const int'")
+            XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to operands of types `bool' and `u16'")
         }
     }
     
@@ -2317,7 +2317,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testU8asVoid() {
@@ -2491,7 +2491,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `const int' to type `bool'")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `bool'")
         }
     }
     
@@ -2501,7 +2501,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .constBool)
     }
     
     func testSubscriptOfZeroWithU8() {
@@ -2667,7 +2667,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `const int' to type `bool' in `[2]bool' array literal")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `bool' in `[2]bool' array literal")
         }
     }
     
@@ -2888,7 +2888,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `const bool' to expected argument type `u16' in initialization of `bar'")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to expected argument type `u16' in initialization of `bar'")
         }
     }
     
@@ -2959,7 +2959,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot take the address of an operand of type `const int'")
+            XCTAssertEqual(compilerError?.message, "lvalue required as operand of unary operator `&'")
         }
     }
     
@@ -2969,7 +2969,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot take the address of an operand of type `const bool'")
+            XCTAssertEqual(compilerError?.message, "lvalue required as operand of unary operator `&'")
         }
     }
     

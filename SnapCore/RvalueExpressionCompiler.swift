@@ -549,7 +549,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         let rtype = try typeChecker.check(expression: rexpr)
         switch (rtype, ltype) {
-        case (.bool, .bool),
+        case (.constBool, .constBool),
+             (.constBool, .bool),
+             (.bool, .constBool),
+             (.bool, .bool),
              (.u8, .u8),
              (.u16, .u16),
              (.structType, .structType):
@@ -564,7 +567,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate16(dst.address, a)]
             temporaryStack.push(dst)
-        case (.compTimeBool(let a), .bool):
+        case (.compTimeBool(let a), .bool),
+             (.compTimeBool(let a), .constBool):
             let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate(dst.address, a ? 1 : 0)]
             temporaryStack.push(dst)

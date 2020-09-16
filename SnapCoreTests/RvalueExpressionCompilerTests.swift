@@ -2827,7 +2827,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo'")
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo' of type `const u8'")
         }
     }
     
@@ -2838,7 +2838,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo'")
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo' of type `const bool'")
         }
     }
     

@@ -13,7 +13,6 @@ import TurtleCompilerToolbox
 public class LvalueExpressionCompiler: BaseExpressionCompiler {
     let kSizeOfAddress = 2
     let typeChecker: LvalueExpressionTypeChecker
-    public var shouldIgnoreMutabilityRules = false // TODO: Checks for constness/mutability should not be done here. This class is concerned only with getting the lvalue.
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
@@ -49,9 +48,6 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
-        guard !symbol.type.isConst || shouldIgnoreMutabilityRules else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to constant `\(expr.identifier)'")
-        }
         
         switch symbol.storage {
         case .staticStorage:

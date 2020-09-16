@@ -259,6 +259,18 @@ public class RvalueExpressionTypeChecker: NSObject {
             throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
                                 message: "lvalue required in assignment")
         }
+        
+        guard !ltype.isConst || (assignment is Expression.InitialAssignment) else {
+            switch assignment.lexpr {
+            case let identifier as Expression.Identifier:
+                throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
+                                    message: "cannot assign to constant `\(identifier.identifier)' of type `\(ltype)'")
+            default:
+                throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
+                                    message: "cannot assign to expression of type `\(ltype)'")
+            }
+        }
+        
         let rtype = try rvalueContext().check(expression: assignment.rexpr)
         return try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                         rtype: rtype,

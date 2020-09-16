@@ -144,9 +144,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         
         if unary.op == .ampersand {
-            let context = lvalueContext()
-            context.shouldIgnoreMutabilityRules = true // We want to take the address, not modify anything.
-            instructions += try context.compile(expression: unary.child)
+            instructions += try lvalueContext().compile(expression: unary.child)
         } else {
             let a = temporaryAllocator.allocate()
             let c = temporaryAllocator.allocate()
@@ -436,10 +434,16 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
         var instructions: [CrackleInstruction] = []
         
+        guard ltype != nil else {
+            abort()
+        }
+        
+        guard false==ltype!.isConst || (assignment is Expression.InitialAssignment) else {
+            abort()
+        }
+        
         // Calculate the lvalue, the destination in memory for the assignment.
-        let ctx = lvalueContext()
-        ctx.shouldIgnoreMutabilityRules = assignment is Expression.InitialAssignment
-        let lvalue_proc = try ctx.compile(expression: assignment.lexpr)
+        let lvalue_proc = try lvalueContext().compile(expression: assignment.lexpr)
         instructions += lvalue_proc
         let lvalue = temporaryStack.pop()
         
@@ -994,10 +998,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             tempExprResult.consume()
             temporaryStack.push(tempCount)
         case .constStructType(let typ), .structType(let typ):
-            // Get the lvalue of the struct
-            let context = lvalueContext()
-            context.shouldIgnoreMutabilityRules = true
-            instructions += try context.compile(expression: expr.expr)
+            instructions += try lvalueContext().compile(expression: expr.expr)
             
             // Read the field in-place
             let tempStructAddress = temporaryStack.pop()

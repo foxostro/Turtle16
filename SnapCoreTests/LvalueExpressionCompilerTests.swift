@@ -19,31 +19,6 @@ class LvalueExpressionCompilerTests: XCTestCase {
         return ir
     }
     
-    func testCannotAssignToAConstant() {
-        let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .constU8, offset: 0x0100)])
-        XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo'")
-        }
-    }
-    
-    func testCannotAssignToAConstantExceptOnInitialAssignment() {
-        let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .constU8, offset: 0x0100)])
-        let expected: [CrackleInstruction] = [
-            .storeImmediate16(t0, 0x0100)
-        ]
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
-        compiler.shouldIgnoreMutabilityRules = true
-        let actual = try! compiler.compile(expression: expr)
-        let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(computer.dataRAM.load16(from: t0), 0x0100)
-    }
-    
     func testAssignToMutableVariable() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100)])

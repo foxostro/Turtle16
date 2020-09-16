@@ -57,14 +57,14 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u8)
     }
     
-    func testElementsOfImmutableArraysCannotBeModified() {
+    func testElementsOfConstantArraysCannotBeModified() {
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010, isMutable: false)])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "expression is not assignable: `foo' is immutable")
+            XCTAssertEqual(compilerError?.message, "expression is not assignable: `foo' is a constant")
         }
     }
     

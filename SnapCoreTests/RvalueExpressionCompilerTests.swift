@@ -2609,8 +2609,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileInitialAssignment_Bool_Static() {
-        // An initial assignment is allowed to disregard rules about
-        // immutability because it sets the initial value in the first place.
+        // An initial assignment is allowed to disregard rules about assignment
+        // to constants because it sets the initial value in the first place.
         let offset = 0x0100
         let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"), rexpr: Expression.LiteralBool(true))
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
@@ -2821,25 +2821,25 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: address + 4), 0xefef)
     }
     
-    func testCannotAssignToAnImmutableValue_Word() {
+    func testCannotAssignToAConstantValue_Word() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: offset, isMutable: false)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo'")
         }
     }
     
-    func testCannotAssignToAnImmutableValue_Boolean() {
+    func testCannotAssignToAConstantValue_Boolean() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: true))
         let offset = 0x0100
         let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset, isMutable: false)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo'")
         }
     }
     

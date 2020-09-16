@@ -43,7 +43,7 @@ public class LvalueExpressionTypeChecker: NSObject {
                                          identifier: expr.identifier.identifier)
         if !symbol.isMutable {
             throw CompilerError(sourceAnchor: expr.sourceAnchor,
-                                message: "expression is not assignable: `\(expr.identifier.identifier)' is immutable")
+                                message: "expression is not assignable: `\(expr.identifier.identifier)' is a constant")
         }
         return try rvalueContext().check(subscript: expr)
     }

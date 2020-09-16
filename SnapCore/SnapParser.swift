@@ -86,7 +86,7 @@ public class SnapParser: Parser {
                             storageSpecifier: Token? = nil) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = false
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in let declaration"
-        let errorMessageWhenNoInitialValue = "immutable variables must be assigned a value"
+        let errorMessageWhenNoInitialValue = "constants must be assigned a value"
         let errorFormatWhenNoInitialValueAfterEqual = "expected value after `%@'"
         return try consumeVar(letToken,
                               errorMessageWhenMissingIdentifier,

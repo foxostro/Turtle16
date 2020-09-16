@@ -156,7 +156,7 @@ public class SnapToCrackleCompiler: NSObject {
         guard symbols.existsAndCannotBeShadowed(identifier: varDecl.identifier.identifier) == false else {
             throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
                                 format: "%@ redefines existing symbol: `%@'",
-                                varDecl.isMutable ? "variable" : "immutable variable",
+                                varDecl.isMutable ? "variable" : "constant",
                                 varDecl.identifier.identifier)
         }
         
@@ -223,7 +223,7 @@ public class SnapToCrackleCompiler: NSObject {
         } else {
             throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
                                 format: "unable to deduce type of %@ `%@'",
-                                varDecl.isMutable ? "variable" : "immutable variable",
+                                varDecl.isMutable ? "variable" : "constant",
                                 varDecl.identifier.identifier)
         }
     }

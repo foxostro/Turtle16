@@ -19,17 +19,17 @@ class LvalueExpressionCompilerTests: XCTestCase {
         return ir
     }
     
-    func testCannotAssignToAnImmutableVariable() {
+    func testCannotAssignToAConstant() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: false)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to immutable variable `foo'")
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo'")
         }
     }
     
-    func testCannotAssignToAnImmutableVariableExceptOnInitialAssignment() {
+    func testCannotAssignToAConstantExceptOnInitialAssignment() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: false)])
         let expected: [CrackleInstruction] = [

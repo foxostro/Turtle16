@@ -77,8 +77,12 @@ public class RvalueExpressionTypeChecker: NSObject {
             switch expressionType {
             case .compTimeInt(let value):
                 return .compTimeInt(-value)
+            case .constU16:
+                return .constU16
             case .u16:
                 return .u16
+            case .constU8:
+                return .constU8
             case .u8:
                 return .u8
             default:
@@ -154,7 +158,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch binary.op {
         case .eq, .ne:
-            return .constBool
+            return .bool
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }
@@ -200,7 +204,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch binary.op {
         case .eq, .ne, .lt, .gt, .le, .ge:
-            return .constBool
+            return .bool
         case .plus, .minus, .star, .divide, .modulus:
             return typeForArithmetic
         default:
@@ -297,25 +301,39 @@ public class RvalueExpressionTypeChecker: NSObject {
             return ltype
         }
         switch (rtype, ltype) {
-        case (.compTimeInt(let a), .u8):
+        case (.compTimeInt(let a), .u8), (.compTimeInt(let a), .constU8):
             guard a >= 0 && a < 256 else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u8'")
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'")
             }
             return ltype // The conversion is acceptable.
-        case (.compTimeInt(let a), .u16):
+        case (.compTimeInt(let a), .u16), (.compTimeInt(let a), .constU16):
             guard a >= 0 && a < 65536 else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `u16'")
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'")
             }
             return ltype // The conversion is acceptable.
-        case (.u8, .u16),
-             (.compTimeBool, .bool),
+        case (.constU8, .constU8),
+             (.constU8, .u8),
+             (.u8, .constU8),
+             (.u8, .u8),
+             (.constU16, .constU16),
+             (.constU16, .u16),
+             (.u16, .constU16),
+             (.u16, .u16),
+             (.constU8, .constU16),
+             (.constU8, .u16),
+             (.u8, .constU16),
+             (.u8, .u16),
              (.compTimeBool, .constBool),
+             (.compTimeBool, .bool),
              (.constBool, .constBool),
              (.constBool, .bool),
              (.bool, .constBool),
              (.bool, .bool):
             return ltype // The conversion is acceptable.
-        case (.u16, .u8):
+        case (.constU16, .constU8),
+             (.constU16, .u8),
+             (.u16, .constU8),
+             (.u16, .u8):
             if !isExplicitCast {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
@@ -329,8 +347,39 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                            messageWhenNotConvertible: messageWhenNotConvertible,
                                                            isExplicitCast: isExplicitCast)
             return .array(count: n, elementType: elementType)
-        case (.array(let n, let a), .dynamicArray(elementType: let b)):
-            guard n != nil && a == b else {
+        case (.array(let n, let a), .constDynamicArray(elementType: let b)),
+             (.array(let n, let a), .dynamicArray(elementType: let b)):
+            guard n != nil else {
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
+            }
+            _ = try checkTypesAreConvertible(ltype: b,
+                                             rtype: a,
+                                             sourceAnchor: sourceAnchor,
+                                             messageWhenNotConvertible: messageWhenNotConvertible,
+                                             isExplicitCast: isExplicitCast)
+            return ltype
+        case (.constDynamicArray(let a), .constDynamicArray(let b)),
+             (.constDynamicArray(let a), .dynamicArray(let b)),
+             (.dynamicArray(let a), .constDynamicArray(let b)),
+             (.dynamicArray(let a), .dynamicArray(let b)):
+            let elementType = try checkTypesAreConvertible(ltype: b, rtype: a,
+                                                           sourceAnchor: sourceAnchor,
+                                                           messageWhenNotConvertible: messageWhenNotConvertible,
+                                                           isExplicitCast: isExplicitCast)
+            return .dynamicArray(elementType: elementType)
+        case (.constStructType(let a), .constStructType(let b)),
+             (.constStructType(let a), .structType(let b)),
+             (.structType(let a), .constStructType(let b)),
+             (.structType(let a), .structType(let b)):
+            guard a == b else {
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
+            }
+            return ltype
+        case (.constPointer(let a), .constPointer(let b)),
+             (.constPointer(let a), .pointer(let b)),
+             (.pointer(let a), .constPointer(let b)),
+             (.pointer(let a), .pointer(let b)):
+            guard a == b else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return ltype
@@ -355,14 +404,14 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             for i in 0..<typ.arguments.count {
                 let rtype = try rvalueContext().check(expression: call.arguments[i])
-                let ltype = typ.arguments[i].argumentType.correspondingConstType
+                let ltype = typ.arguments[i].argumentType
                 let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
                 _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                              rtype: rtype,
                                                              sourceAnchor: call.arguments[i].sourceAnchor,
                                                              messageWhenNotConvertible: message)
             }
-            return typ.returnType.correspondingConstType
+            return typ.returnType
         default:
             let message = "cannot call value of non-function type `\(symbol.type)'"
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
@@ -370,7 +419,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(as expr: Expression.As) throws -> SymbolType {
-        let ltype = try check(expression: expr.targetType).correspondingConstType
+        let ltype = try check(expression: expr.targetType)
         let rtype = try check(expression: expr.expr)
         return try checkTypesAreConvertibleInExplicitCast(ltype: ltype,
                                                           rtype: rtype,
@@ -388,6 +437,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         let symbol = try resolve(expr.identifier)
         switch symbol.type {
         case .array(count: _, elementType: let elementType),
+             .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.expr)
             if !argumentType.isArithmeticType {
@@ -428,22 +478,30 @@ public class RvalueExpressionTypeChecker: NSObject {
         let name = expr.member.identifier
         let resultType = try check(expression: expr.expr)
         switch resultType {
-        case .array, .dynamicArray:
+        case .array, .constDynamicArray, .dynamicArray:
             if name == "count" {
                 return .u16
+            }
+        case .constStructType(let typ):
+            if let symbol = typ.symbols.maybeResolve(identifier: name) {
+                return symbol.type.correspondingConstType
             }
         case .structType(let typ):
             if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
             }
-        case .pointer(let typ):
+        case .constPointer(let typ), .pointer(let typ):
             if name == "pointee" {
                 return typ
             } else {
                 switch typ {
-                case .array, .dynamicArray:
+                case .array, .constDynamicArray, .dynamicArray:
                     if name == "count" {
                         return .u16
+                    }
+                case .constStructType(let b):
+                    if let symbol = b.symbols.maybeResolve(identifier: name) {
+                        return symbol.type.correspondingConstType
                     }
                 case .structType(let b):
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
@@ -471,7 +529,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             case .compTimeInt(let a):
                 count = a
             default:
-                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot convert value of type `\(typeOfCountExpr)' to expected type `const int'")
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "array count must be a compile time constant, got `\(typeOfCountExpr)' instead")
             }
         } else {
             count = nil

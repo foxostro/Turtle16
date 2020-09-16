@@ -56,20 +56,20 @@ public class LvalueExpressionTypeChecker: NSObject {
             if name == "count" {
                 throw makeNotAssignableError(expression: expr.expr)
             }
-        case .dynamicArray:
+        case .constDynamicArray, .dynamicArray:
             if name == "count" {
                 throw makeNotAssignableError(expression: expr.expr)
             }
-        case .structType(let typ):
+        case .constStructType(let typ), .structType(let typ):
             if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
             }
-        case .pointer(let typ):
+        case .constPointer(let typ), .pointer(let typ):
             if name == "pointee" {
                 return typ
             } else {
                 switch typ {
-                case .structType(let b):
+                case .constStructType(let b), .structType(let b):
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
                         return symbol.type
                     }

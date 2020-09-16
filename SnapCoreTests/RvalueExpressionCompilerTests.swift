@@ -251,7 +251,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u16' and `boolean constant false'")
         }
     }
     
@@ -333,7 +333,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `u8' and `boolean constant false'")
         }
     }
     
@@ -424,7 +424,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `bool' and `u8'")
+            XCTAssertEqual(compilerError?.message, "binary operator `==' cannot be applied to operands of types `boolean constant false' and `u8'")
         }
     }
     
@@ -516,7 +516,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u16' and `boolean constant false'")
         }
     }
     
@@ -582,7 +582,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `bool'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `u8' and `boolean constant false'")
         }
     }
     
@@ -673,7 +673,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `bool' and `u8'")
+            XCTAssertEqual(compilerError?.message, "binary operator `!=' cannot be applied to operands of types `boolean constant false' and `u8'")
         }
     }
     
@@ -3161,7 +3161,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8' to type `bool' in `[2]bool' array literal")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `integer constant 0' to type `bool' in `[2]bool' array literal")
         }
     }
     
@@ -3738,7 +3738,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `bool' to expected argument type `u16' in initialization of `bar'")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `boolean constant false' to expected argument type `u16' in initialization of `bar'")
         }
     }
 

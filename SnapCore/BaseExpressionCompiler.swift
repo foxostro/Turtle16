@@ -146,7 +146,8 @@ public class BaseExpressionCompiler: NSObject {
         switch symbol.type {
         case .array(count: _, elementType: let elementType):
             instructions += try arraySubscript(symbol, depth, expr, elementType)
-        case .dynamicArray(elementType: let elementType):
+        case .constDynamicArray(elementType: let elementType),
+             .dynamicArray(elementType: let elementType):
             instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
         default:
             abort()
@@ -297,9 +298,9 @@ public class BaseExpressionCompiler: NSObject {
     private func determineArrayElementType(_ type: SymbolType) -> SymbolType {
         let result: SymbolType
         switch type {
-        case .array(count: _, let elementType):
-            result = elementType
-        case .dynamicArray(elementType: let elementType):
+        case .array(count: _, let elementType),
+             .constDynamicArray(elementType: let elementType),
+             .dynamicArray(elementType: let elementType):
             result = elementType
         default:
             abort()

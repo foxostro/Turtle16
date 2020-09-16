@@ -553,33 +553,43 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
              (.constBool, .bool),
              (.bool, .constBool),
              (.bool, .bool),
+             (.constU8, .constU8),
+             (.constU8, .u8),
+             (.u8, .constU8),
              (.u8, .u8),
-             (.u16, .u16),
-             (.structType, .structType):
-            instructions += try compile(expression: rexpr)
-        case (.compTimeInt(let a), .u8):
+             (.constU16, .constU16),
+             (.constU16, .u16),
+             (.u16, .constU16),
+             (.u16, .u16):
+             instructions += try compile(expression: rexpr)
+        case (.compTimeInt(let a), .u8), (.compTimeInt(let a), .constU8):
             assert(a >= 0 && a < 256)
             let dst = temporaryAllocator.allocate()
             temporaryStack.push(dst)
             instructions += [.storeImmediate(dst.address, a)]
-        case (.compTimeInt(let a), .u16):
+        case (.compTimeInt(let a), .u16), (.compTimeInt(let a), .constU16):
             assert(a >= 0 && a < 65536)
             let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate16(dst.address, a)]
             temporaryStack.push(dst)
-        case (.compTimeBool(let a), .bool),
-             (.compTimeBool(let a), .constBool):
+        case (.compTimeBool(let a), .bool), (.compTimeBool(let a), .constBool):
             let dst = temporaryAllocator.allocate()
             instructions += [.storeImmediate(dst.address, a ? 1 : 0)]
             temporaryStack.push(dst)
-        case (.u8, .u16):
+        case (.constU8, .constU16),
+             (.constU8, .u16),
+             (.u8, .constU16),
+             (.u8, .u16):
             instructions += try compile(expression: rexpr)
             let dst = temporaryAllocator.allocate()
             let src = temporaryStack.pop()
             instructions += [.copyWordZeroExtend(dst.address, src.address)]
             temporaryStack.push(dst)
             src.consume()
-        case (.u16, .u8):
+        case (.constU16, .constU8),
+             (.constU16, .u8),
+             (.u16, .constU8),
+             (.u16, .u8):
             assert(isExplicitCast)
             instructions += try compile(expression: rexpr)
             let dst = temporaryAllocator.allocate()
@@ -616,13 +626,20 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                                                           elements: elements)
                 instructions += try compile(expression: synthesized)
             default:
-                assert(a == b)
+                // When we convert an array, we can change the element type from
+                // the mutable type to the corresponding const type.
+                guard a == b || a == b.correspondingConstType || a.correspondingConstType == b else {
+                    assert(false) // unreachable
+                    abort()
+                }
                 instructions += try compile(expression: rexpr)
             }
-        case (.array(let n, let a), .dynamicArray(elementType: let b)):
-            assert(n != nil)
-            let n = n!
-            assert(a == b)
+        case (.array(let n?, let a), .constDynamicArray(let b)),
+             (.array(let n?, let a), .dynamicArray(let b)):
+            guard a == b || a == b.correspondingConstType || a.correspondingConstType == b else {
+                assert(false) // unreachable
+                abort()
+            }
             switch rexpr {
             case let identifier as Expression.Identifier:
                 // Create a new temporary for the array slice which represents
@@ -669,14 +686,42 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 ]
                 temporaryStack.push(tempArraySlice)
             }
-        case (.dynamicArray(elementType: let a), .dynamicArray(elementType: let b)):
-            assert(a == b)
+        case (.constDynamicArray(let a), .constDynamicArray(let b)),
+             (.constDynamicArray(let a), .dynamicArray(let b)),
+             (.dynamicArray(let a), .constDynamicArray(let b)),
+             (.dynamicArray(let a), .dynamicArray(let b)):
+            // When we convert a dynamic array, we can change the element type
+            // from the mutable type to the corresponding const type.
+            guard a == b || a.correspondingConstType == b else {
+                assert(false) // unreachable
+                abort()
+            }
             instructions += try compile(expression: rexpr)
-        case (.pointer(let a), .pointer(let b)):
-            assert(a == b)
+        case (.constStructType(let a), .constStructType(let b)),
+             (.constStructType(let a), .structType(let b)),
+             (.structType(let a), .constStructType(let b)),
+             (.structType(let a), .structType(let b)):
+            // When we convert a struct type, the underlying struct layouts
+            // must be identical.
+            guard a == b else {
+                assert(false) // unreachable
+                abort()
+            }
+            instructions += try compile(expression: rexpr)
+        case (.constPointer(let a), .constPointer(let b)),
+             (.constPointer(let a), .pointer(let b)),
+             (.pointer(let a), .constPointer(let b)),
+             (.pointer(let a), .pointer(let b)):
+            // When we convert a pointer, we can change the pointee type
+            // from the mutable type to the corresponding const type.
+            guard a == b || a.correspondingConstType == b else {
+                assert(false) // unreachable
+                abort()
+            }
             instructions += try compile(expression: rexpr)
         default:
             assert(false) // unreachable
+            abort()
         }
         return instructions
     }
@@ -937,7 +982,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.storeImmediate16(tempCount.address, count!)]
             tempExprResult.consume()
             temporaryStack.push(tempCount)
-        case .dynamicArray:
+        case .constDynamicArray, .dynamicArray:
             assert(name == "count")
             instructions += try compile(expression: expr.expr)
             let tempExprResult = temporaryStack.pop()
@@ -945,7 +990,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.copyWords(tempCount.address, tempExprResult.address + kSliceCountOffset, kSliceCountSize)]
             tempExprResult.consume()
             temporaryStack.push(tempCount)
-        case .structType(let typ):
+        case .constStructType(let typ), .structType(let typ):
             // Get the lvalue of the struct
             let context = lvalueContext()
             context.shouldIgnoreMutabilityRules = true
@@ -961,7 +1006,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             ]
             tempStructAddress.consume()
             temporaryStack.push(tempStructMember)
-        case .pointer(let typ):
+        case .constPointer(let typ), .pointer(let typ):
             instructions += try compile(expression: expr.expr)
             let tempExprResult = temporaryStack.pop()
             if name == "pointee" {
@@ -977,7 +1022,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     instructions += [.storeImmediate16(tempCount.address, count!)]
                     tempExprResult.consume()
                     temporaryStack.push(tempCount)
-                case .dynamicArray:
+                case .constDynamicArray, .dynamicArray:
                     assert(name == "count")
                     let tempCount = temporaryAllocator.allocate()
                     instructions += [
@@ -985,7 +1030,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     ]
                     tempExprResult.consume()
                     temporaryStack.push(tempCount)
-                case .structType(let b):
+                case .constStructType(let b), .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
                     let size = symbol.type.sizeof
                     let tempResult = temporaryAllocator.allocate(size: size)
@@ -997,10 +1042,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     temporaryStack.push(tempResult)
                 default:
                     assert(false) // unreachable
+                    abort()
                 }
             }
         default:
             assert(false) // unreachable
+            abort()
         }
         
         return instructions

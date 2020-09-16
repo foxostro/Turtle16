@@ -12,21 +12,21 @@ import TurtleCore
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case void
     case function(FunctionType)
-    case compTimeInt(Int)
     case compTimeBool(Bool)
     case constBool, bool
-    case u8
-    case u16
+    case compTimeInt(Int)
+    case constU8, u8
+    case constU16, u16
     case array(count: Int?, elementType: SymbolType)
-    case dynamicArray(elementType: SymbolType)
-    case pointer(SymbolType)
-    case structType(StructType)
+    case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
+    case constPointer(SymbolType), pointer(SymbolType)
+    case constStructType(StructType), structType(StructType)
     
     public var isConst: Bool {
         switch self {
         case .void, .function:
             return true
-        case .compTimeBool, .constBool, .compTimeInt:
+        case .compTimeBool, .constBool, .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType:
             return true
         default:
             return false
@@ -37,12 +37,18 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .bool:
             return .constBool
-//        case .u8:
-//        case .u16:
-//        case .array(count: Int?, elementType: SymbolType):
-//        case .dynamicArray(elementType: SymbolType):
-//        case .structType(StructType):
-//        case .pointer(SymbolType):
+        case .u8:
+            return .constU8
+        case .u16:
+            return .constU16
+        case .array(count: let n, elementType: let typ):
+            return .array(count: n, elementType: typ.correspondingConstType)
+        case .dynamicArray(elementType: let typ):
+            return .constDynamicArray(elementType: typ)
+        case .structType(let typ):
+            return .constStructType(typ)
+        case .pointer(let typ):
+            return .constPointer(typ)
         default:
             return self
         }
@@ -52,9 +58,9 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .compTimeInt(let a):
             return a
-        case .u8:
+        case .constU8, .u8:
             return 255
-        case .u16:
+        case .constU16, .u16:
             return 65536
         default:
             abort()
@@ -72,7 +78,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public func unwrapStructType() -> StructType {
         switch self {
-        case .structType(let typ):
+        case .constStructType(let typ), .structType(let typ):
             return typ
         default:
             abort()
@@ -90,7 +96,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isArithmeticType: Bool {
         switch self {
-        case .u8, .u16, .compTimeInt:
+        case .compTimeInt, .constU8, .u8, .constU16, .u16:
             return true
         default:
             return false
@@ -101,15 +107,17 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .compTimeInt, .compTimeBool, .void, .function:
             return 0
-        case .u8, .bool, .constBool:
+        case .constU8, .u8, .bool, .constBool:
             return 1
-        case .u16, .pointer:
+        case .constU16, .u16:
             return 2
-        case .dynamicArray(elementType: _):
+        case .constPointer, .pointer:
+            return 2
+        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _):
             return 4
         case .array(count: let count, elementType: let elementType):
             return (count ?? 0) * elementType.sizeof
-        case .structType(let typ):
+        case .constStructType(let typ), .structType(let typ):
             return typ.sizeof
         }
     }
@@ -127,7 +135,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .array(count: _, elementType: let elementType):
             return elementType
-        case .dynamicArray(elementType: let elementType):
+        case .constDynamicArray(elementType: let elementType), .dynamicArray(elementType: let elementType):
             return elementType
         default:
             abort()
@@ -138,12 +146,20 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .void:
             return "void"
-        case .compTimeBool, .constBool, .bool:
+        case .compTimeBool(let a):
+            return "boolean constant \(a)"
+        case .constBool:
+            return "const bool"
+        case .bool:
             return "bool"
         case .compTimeInt(let a):
-            return a > 255 ? "u16" : "u8"
+            return "integer constant \(a)"
+        case .constU16:
+            return "const u16"
         case .u16:
             return "u16"
+        case .constU8:
+            return "const u8"
         case .u8:
             return "u8"
         case .array(count: let count, elementType: let elementType):
@@ -152,17 +168,22 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             } else {
                 return "[_]\(elementType)"
             }
+        case .constDynamicArray(elementType: let elementType):
+            return "const []\(elementType)"
         case .dynamicArray(elementType: let elementType):
             return "[]\(elementType)"
         case .function(let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
             let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
             return result
+        case .constStructType(let typ):
+            return "const \(typ.name)"
         case .structType(let typ):
             return "\(typ.name)"
+        case .constPointer(let pointee):
+            return "const *\(pointee.description)"
         case .pointer(let pointee):
-            let constTag = pointee.isConst ? "const " : ""
-            return "*\(constTag)\(pointee)"
+            return "*\(pointee.description)"
         }
     }
 }

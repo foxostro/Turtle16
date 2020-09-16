@@ -100,7 +100,7 @@ public class SnapToCrackleCompiler: NSObject {
         let functionType = try evaluateFunctionTypeExpression(funDecl.functionType)
         let name = funDecl.identifier.identifier
         let typ: SymbolType = .function(functionType)
-        let symbol = Symbol(type: typ, offset: uid, isMutable: false, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: uid, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
     }
     
@@ -113,9 +113,7 @@ public class SnapToCrackleCompiler: NSObject {
         let members = SymbolTable()
         for memberDeclaration in structDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
-            let symbol = Symbol(type: memberType,
-                                offset: members.storagePointer,
-                                isMutable: true)
+            let symbol = Symbol(type: memberType, offset: members.storagePointer)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             members.storagePointer += memberType.sizeof
         }
@@ -197,10 +195,10 @@ public class SnapToCrackleCompiler: NSObject {
                     }
                 }
             }
-            if false == varDecl.isMutable {
+            if !varDecl.isMutable {
                 symbolType = symbolType.correspondingConstType
             }
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
+            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.
@@ -215,7 +213,7 @@ public class SnapToCrackleCompiler: NSObject {
                                                                  rexpr: varDeclExpr))
         } else if let explicitType = explicitType {
             let symbolType = varDecl.isMutable ? explicitType : explicitType.correspondingConstType
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, isMutable: varDecl.isMutable)
+            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.
@@ -232,10 +230,10 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, isMutable: Bool) throws -> Symbol {
+    private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage) throws -> Symbol {
         let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
-        let symbol = Symbol(type: explicitType, offset: offset, isMutable: isMutable, storage: storage)
+        let symbol = Symbol(type: explicitType, offset: offset, storage: storage)
         return symbol
     }
     
@@ -438,7 +436,6 @@ public class SnapToCrackleCompiler: NSObject {
             let argument = typ.arguments[i]
             let symbol = Symbol(type: argument.argumentType.correspondingConstType,
                                 offset: -offset,
-                                isMutable: false,
                                 storage: .stackStorage)
             symbols.bind(identifier: argument.name, symbol: symbol)
             offset += argument.argumentType.sizeof
@@ -448,9 +445,8 @@ public class SnapToCrackleCompiler: NSObject {
         // This must be located just before the function arguments.
         let kReturnValueIdentifier = "__returnValue"
         symbols.bind(identifier: kReturnValueIdentifier,
-                     symbol: Symbol(type: typ.returnType,
+                     symbol: Symbol(type: typ.returnType, // TODO: This is probably not going to behave as expected if we mark the function return type as "const".
                                     offset: -offset,
-                                    isMutable: true,
                                     storage: .stackStorage))
         offset += typ.returnType.sizeof
     }

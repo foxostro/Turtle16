@@ -339,13 +339,11 @@ struct \(name) {
 public struct Symbol: Equatable {
     public let type: SymbolType
     public let offset: Int
-    public let isMutable: Bool
     public let storage: SymbolStorage
     
-    public init(type: SymbolType, offset: Int, isMutable: Bool, storage: SymbolStorage = .staticStorage) {
+    public init(type: SymbolType, offset: Int, storage: SymbolStorage = .staticStorage) {
         self.type = type
         self.offset = offset
-        self.isMutable = isMutable
         self.storage = storage
     }
 }

@@ -12,8 +12,8 @@ import TurtleCompilerToolbox
 
 class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {
-        XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10, isMutable: true),
-                          Symbol(type: .bool, offset: 0x10, isMutable: true))
+        XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10),
+                          Symbol(type: .bool, offset: 0x10))
     }
     
     func testUseOfUnresolvedIdentifier() {
@@ -32,119 +32,94 @@ class SymbolTableTests: XCTestCase {
     
     func testSuccessfullyResolveSymbolByIdentifier() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        switch symbol.type {
-        case .u8:
-            XCTAssertEqual(symbol.offset, 0x10)
-            XCTAssertEqual(symbol.isMutable, true)
-        default:
-            XCTFail()
-        }
+        XCTAssertEqual(symbol.type, .u8)
+        XCTAssertEqual(symbol.offset, 0x10)
     }
     
     func testExists() {
         let symbols = SymbolTable()
         XCTAssertFalse(symbols.exists(identifier: "foo"))
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
 
     func testBindWord_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: true))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        switch symbol.type {
-        case .u8:
-            XCTAssertEqual(symbol.offset, 0x10)
-            XCTAssertTrue(symbol.isMutable)
-        default:
-            XCTFail()
-        }
+        XCTAssertEqual(symbol.type, .u8)
+        XCTAssertEqual(symbol.offset, 0x10)
     }
 
     func testBindWord_Static_Constant() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10, isMutable: false))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .constU8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        switch symbol.type {
-        case .u8:
-            XCTAssertEqual(symbol.offset, 0x10)
-            XCTAssertFalse(symbol.isMutable)
-        default:
-            XCTFail()
-        }
+        XCTAssertEqual(symbol.type, .constU8)
+        XCTAssertEqual(symbol.offset, 0x10)
     }
 
     func testBindBoolean_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: true))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        switch symbol.type {
-        case .bool:
-            XCTAssertEqual(symbol.offset, 0x10)
-            XCTAssertTrue(symbol.isMutable)
-        default:
-            XCTFail()
-        }
+        XCTAssertEqual(symbol.type, .bool)
+        XCTAssertEqual(symbol.offset, 0x10)
     }
 
     func testBindBoolean_Static_Constant() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        switch symbol.type {
-        case .bool:
-            XCTAssertEqual(symbol.offset, 0x10)
-            XCTAssertFalse(symbol.isMutable)
-        default:
-            XCTFail()
-        }
+        XCTAssertEqual(symbol.type, .constBool)
+        XCTAssertEqual(symbol.offset, 0x10)
     }
     
     func testExistsInParentScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent, dict: [:])
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
     func testSymbolCanBeShadowedInLocalScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent, dict: [:])
         XCTAssertFalse(symbols.existsAndCannotBeShadowed(identifier: "foo"))
     }
     
     func testSymbolCannotBeShadowedInLocalScope() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         XCTAssertTrue(symbols.existsAndCannotBeShadowed(identifier: "foo"))
     }
     
     func testResolveSymbolInParentScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent, dict: [:])
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol, Symbol(type: .bool, offset: 0x10, isMutable: false))
+        XCTAssertEqual(symbol, Symbol(type: .constBool, offset: 0x10))
     }
     
     func testResolveSymbolWithStackFrameDepth() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent, dict: [:])
         let resolution = try! symbols.resolveWithStackFrameDepth(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
+        XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 0)
     }
     
     func testResolveSymbolWithScopeDepth() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10, isMutable: false))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent, dict: [:])
         let resolution = try! symbols.resolveWithScopeDepth(identifier: "foo")
-        XCTAssertEqual(resolution.0, Symbol(type: .bool, offset: 0x10, isMutable: false))
+        XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 1)
     }
     

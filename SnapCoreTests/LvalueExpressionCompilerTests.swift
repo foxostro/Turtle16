@@ -21,7 +21,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testCannotAssignToAConstant() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .constU8, offset: 0x0100)])
         XCTAssertThrowsError(try compile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -31,7 +31,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testCannotAssignToAConstantExceptOnInitialAssignment() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: false)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .constU8, offset: 0x0100)])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x0100)
         ]
@@ -46,7 +46,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testAssignToMutableVariable() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: 0x0100)])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, 0x0100)
         ]
@@ -60,7 +60,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignmentThroughArraySubscript() {
         let expr = Expression.Subscript(identifier: Expression.Identifier("foo"),
                                         expr: Expression.LiteralInt(1))
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 2, elementType: .bool), offset: 0x0100, isMutable: true)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 2, elementType: .bool), offset: 0x0100)])
         
         // We don't really care about the exact sequence of instructions which
         // computes this address so long as it is computed. Look at the compiler
@@ -87,8 +87,8 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let expected = UInt16(addressOfData + 2*SymbolType.u16.sizeof)
         
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer, isMutable: true),
-            "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData, isMutable: true)
+            "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer),
+            "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData)
         ])
         
         // We don't really care about the exact sequence of instructions which
@@ -112,7 +112,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testOutOfBoundsLvalueArrayAccessCausesPanic_StaticArray() {
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0100, isMutable: true)
+            "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0100)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
         var ir: [CrackleInstruction] = []
@@ -128,7 +128,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     
     func testOutOfBoundsLvalueArrayAccessCausesPanic_DynamicArray() {
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0100, isMutable: true)
+            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0100)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         var ir: [CrackleInstruction] = []
@@ -149,10 +149,10 @@ class LvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, isMutable: true)
+            "bar" : Symbol(type: .u16, offset: 0)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+            "foo" : Symbol(type: .structType(typ), offset: offset)
         ])
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)
@@ -167,11 +167,11 @@ class LvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("baz"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
-            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+            "bar" : Symbol(type: .u8, offset: 0),
+            "baz" : Symbol(type: .u16, offset: 1)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .structType(typ), offset: offset, isMutable: true)
+            "foo" : Symbol(type: .structType(typ), offset: offset)
         ])
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)
@@ -184,8 +184,8 @@ class LvalueExpressionCompilerTests: XCTestCase {
     func testLvalueOfPointerToU8() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: true),
-            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: false)
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100),
+            "bar" : Symbol(type: .constU8, offset: 0x0102)
         ])
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)
@@ -203,8 +203,8 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("pointee"))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100, isMutable: true),
-            "bar" : Symbol(type: .u8, offset: 0x0102, isMutable: true)
+            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100),
+            "bar" : Symbol(type: .u8, offset: 0x0102)
         ])
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)
@@ -223,11 +223,11 @@ class LvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("asdf"))
         let offset = 0x0100
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
-            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+            "bar" : Symbol(type: .u8, offset: 0),
+            "baz" : Symbol(type: .u16, offset: 1)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset, isMutable: true)
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset)
         ])
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.compile(expression: expr)) {
@@ -242,11 +242,11 @@ class LvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let offset = 0x0100
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0, isMutable: true),
-            "baz" : Symbol(type: .u16, offset: 1, isMutable: true)
+            "bar" : Symbol(type: .u8, offset: 0),
+            "baz" : Symbol(type: .u16, offset: 1)
         ]))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset, isMutable: true)
+            "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset)
         ])
         let compiler = LvalueExpressionCompiler(symbols: symbols)
         let ir = try! compiler.compile(expression: expr)

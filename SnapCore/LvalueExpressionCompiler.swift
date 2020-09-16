@@ -49,7 +49,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
-        guard symbol.isMutable || shouldIgnoreMutabilityRules else {
+        guard !symbol.type.isConst || shouldIgnoreMutabilityRules else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot assign to constant `\(expr.identifier)'")
         }
         

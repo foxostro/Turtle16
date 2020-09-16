@@ -1233,10 +1233,22 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .u16)
     }
     
-    func testBinary_IntegerConstant_Plus_U8() {
+    func testBinary_IntegerConstant_Plus_U8_YieldingU16() {
+        // Adding an integer constant to u8 may yield a u16 value if we can
+        // determine at compile time that the value will be greater than 255.
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .plus,
                                      left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_Plus_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .plus,
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -1301,7 +1313,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
-                                     right: Expression.LiteralInt(1000))
+                                     right: Expression.LiteralInt(100))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
@@ -1311,7 +1323,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .plus,
                                      left: ExprUtils.makeU8(value: 1),
-                                     right: ExprUtils.makeU16(value: 1000))
+                                     right: ExprUtils.makeU16(value: 100))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
@@ -1410,7 +1422,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Minus_U8() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .minus,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -1584,7 +1596,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Multiply_U8() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .star,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -1594,7 +1606,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Multiply_Bool() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .star,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1649,7 +1661,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU8(value: 1),
-                                     right: Expression.LiteralInt(1000))
+                                     right: Expression.LiteralInt(100))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
@@ -1659,7 +1671,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .star,
                                      left: ExprUtils.makeU8(value: 1),
-                                     right: ExprUtils.makeU16(value: 1000))
+                                     right: ExprUtils.makeU16(value: 100))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
@@ -1758,7 +1770,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Divide_U8() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .divide,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -1768,7 +1780,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Divide_Bool() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .divide,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1932,7 +1944,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Modulus_U8() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .modulus,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -1942,7 +1954,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBinary_IntegerConstant_Modulus_Bool() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .modulus,
-                                     left: Expression.LiteralInt(1000),
+                                     left: Expression.LiteralInt(100),
                                      right: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -1997,7 +2009,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = Expression.Binary(op: .modulus,
                                      left: ExprUtils.makeU8(value: 1),
-                                     right: Expression.LiteralInt(1000))
+                                     right: Expression.LiteralInt(100))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)

@@ -117,226 +117,128 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
     }
     
-    public func check(binary: Expression.Binary) throws -> SymbolType {
-        let right = try check(expression: binary.right)
-        let left = try check(expression: binary.left)
-        switch (binary.op, left, right) {
-        case (.eq, .u8, .u8):
+    private func check(binary: Expression.Binary) throws -> SymbolType {
+        let rightType = try check(expression: binary.right)
+        let leftType = try check(expression: binary.left)
+        
+        if leftType.isArithmeticType && rightType.isArithmeticType {
+            return try checkArithmeticBinaryExpression(binary, leftType, rightType)
+        }
+        
+        if leftType.isBooleanType && rightType.isBooleanType {
+            return try checkBooleanBinaryExpression(binary, leftType, rightType)
+        }
+        
+        throw invalidBinaryExpr(binary, leftType, rightType)
+    }
+    
+    private func checkBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+        guard leftType.isBooleanType && rightType.isBooleanType else {
+            assert(false)
+            abort()
+        }
+        
+        if case .compTimeBool = leftType, case .compTimeBool = rightType {
+            return try checkConstantBooleanBinaryExpression(binary, leftType, rightType)
+        }
+        
+        _ = try checkTypesAreConvertibleInAssignment(ltype: .bool,
+                                                     rtype: leftType,
+                                                     sourceAnchor: binary.left.sourceAnchor,
+                                                     messageWhenNotConvertible: "cannot convert value of type `\(leftType)' to type `bool'")
+        
+        _ = try checkTypesAreConvertibleInAssignment(ltype: .bool,
+                                                     rtype: rightType,
+                                                     sourceAnchor: binary.right.sourceAnchor,
+                                                     messageWhenNotConvertible: "cannot convert value of type `\(rightType)' to type `bool'")
+        
+        switch binary.op {
+        case .eq, .ne:
             return .bool
-        case (.eq, .u8, .u16):
-            return .bool
-        case (.eq, .u8, .compTimeInt):
-            return .bool
-        case (.eq, .u16, .u8):
-            return .bool
-        case (.eq, .u16, .u16):
-            return .bool
-        case (.eq, .u16, .compTimeInt):
-            return .bool
-        case (.eq, .compTimeInt, .u8):
-            return .bool
-        case (.eq, .compTimeInt, .u16):
-            return .bool
-        case (.eq, .compTimeInt(let a), .compTimeInt(let b)):
+        default:
+            throw invalidBinaryExpr(binary, leftType, rightType)
+        }
+    }
+    
+    private func checkConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+        guard case .compTimeBool(let a) = leftType, case .compTimeBool(let b) = rightType else {
+            assert(false)
+            abort()
+        }
+        
+        switch binary.op {
+        case .eq:
             return .compTimeBool(a == b)
-        case (.eq, .bool, .bool):
+        case .ne:
+            return .compTimeBool(a != b)
+        default:
+            throw invalidBinaryExpr(binary, leftType, rightType)
+        }
+    }
+    
+    private func checkArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+        guard leftType.isArithmeticType && rightType.isArithmeticType else {
+            assert(false)
+            abort()
+        }
+
+        if case .compTimeInt = leftType, case .compTimeInt = rightType {
+            return try checkConstantArithmeticBinaryExpression(binary, leftType, rightType)
+        }
+        
+        let typeForArithmetic: SymbolType = (max(leftType.max(), rightType.max()) > 255) ? .u16 : .u8
+        
+        _ = try checkTypesAreConvertibleInAssignment(ltype: typeForArithmetic,
+                                                     rtype: leftType,
+                                                     sourceAnchor: binary.left.sourceAnchor,
+                                                     messageWhenNotConvertible: "cannot convert value of type `\(leftType)' to type `\(typeForArithmetic)'")
+        
+        _ = try checkTypesAreConvertibleInAssignment(ltype: typeForArithmetic,
+                                                     rtype: rightType,
+                                                     sourceAnchor: binary.right.sourceAnchor,
+                                                     messageWhenNotConvertible: "cannot convert value of type `\(rightType)' to type `\(typeForArithmetic)'")
+        
+        switch binary.op {
+        case .eq, .ne, .lt, .gt, .le, .ge:
             return .bool
-        case (.eq, .bool, .compTimeBool):
-            return .bool
-        case (.eq, .compTimeBool, .bool):
-            return .bool
-        case (.eq, .compTimeBool(let a), .compTimeBool(let b)):
+        case .plus, .minus, .star, .divide, .modulus:
+            return typeForArithmetic
+        default:
+            throw invalidBinaryExpr(binary, leftType, rightType)
+        }
+    }
+    
+    private func checkConstantArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+        guard case .compTimeInt(let a) = leftType, case .compTimeInt(let b) = rightType else {
+            assert(false)
+            abort()
+        }
+        
+        switch binary.op {
+        case .eq:
             return .compTimeBool(a == b)
-        case (.ne, .u8, .u8):
-            return .bool
-        case (.ne, .u8, .u16):
-            return .bool
-        case (.ne, .u8, .compTimeInt):
-            return .bool
-        case (.ne, .u16, .u8):
-            return .bool
-        case (.ne, .u16, .u16):
-            return .bool
-        case (.ne, .u16, .compTimeInt):
-            return .bool
-        case (.ne, .compTimeInt, .u8):
-            return .bool
-        case (.ne, .compTimeInt, .u16):
-            return .bool
-        case (.ne, .compTimeInt(let a), .compTimeInt(let b)):
+        case .ne:
             return .compTimeBool(a != b)
-        case (.ne, .bool, .bool):
-            return .bool
-        case (.ne, .bool, .compTimeBool):
-            return .bool
-        case (.ne, .compTimeBool, .bool):
-            return .bool
-        case (.ne, .compTimeBool(let a), .compTimeBool(let b)):
-            return .compTimeBool(a != b)
-        case (.lt, .u8, .u8):
-            return .bool
-        case (.lt, .u8, .u16):
-            return .bool
-        case (.lt, .u8, .compTimeInt):
-            return .bool
-        case (.lt, .u16, .u8):
-            return .bool
-        case (.lt, .u16, .u16):
-            return .bool
-        case (.lt, .u16, .compTimeInt):
-            return .bool
-        case (.lt, .compTimeInt, .u8):
-            return .bool
-        case (.lt, .compTimeInt, .u16):
-            return .bool
-        case (.lt, .compTimeInt(let a), .compTimeInt(let b)):
+        case .lt:
             return .compTimeBool(a < b)
-        case (.gt, .u8, .u8):
-            return .bool
-        case (.gt, .u8, .u16):
-            return .bool
-        case (.gt, .u8, .compTimeInt):
-            return .bool
-        case (.gt, .u16, .u8):
-            return .bool
-        case (.gt, .u16, .u16):
-            return .bool
-        case (.gt, .u16, .compTimeInt):
-            return .bool
-        case (.gt, .compTimeInt, .u8):
-            return .bool
-        case (.gt, .compTimeInt, .u16):
-            return .bool
-        case (.gt, .compTimeInt(let a), .compTimeInt(let b)):
+        case .gt:
             return .compTimeBool(a > b)
-        case (.le, .u8, .u8):
-            return .bool
-        case (.le, .u8, .u16):
-            return .bool
-        case (.le, .u8, .compTimeInt):
-            return .bool
-        case (.le, .u16, .u8):
-            return .bool
-        case (.le, .u16, .u16):
-            return .bool
-        case (.le, .u16, .compTimeInt):
-            return .bool
-        case (.le, .compTimeInt, .u8):
-            return .bool
-        case (.le, .compTimeInt, .u16):
-            return .bool
-        case (.le, .compTimeInt(let a), .compTimeInt(let b)):
+        case .le:
             return .compTimeBool(a <= b)
-        case (.ge, .u8, .u8):
-            return .bool
-        case (.ge, .u8, .u16):
-            return .bool
-        case (.ge, .u8, .compTimeInt):
-            return .bool
-        case (.ge, .u16, .u8):
-            return .bool
-        case (.ge, .u16, .u16):
-            return .bool
-        case (.ge, .u16, .compTimeInt):
-            return .bool
-        case (.ge, .compTimeInt, .u8):
-            return .bool
-        case (.ge, .compTimeInt, .u16):
-            return .bool
-        case (.ge, .compTimeInt(let a), .compTimeInt(let b)):
+        case .ge:
             return .compTimeBool(a >= b)
-        case (.plus, .u8, .u8):
-            return .u8
-        case (.plus, .u8, .u16):
-            return .u16
-        case (.plus, .u8, .compTimeInt):
-            return .u8
-        case (.plus, .u16, .u8):
-            return .u16
-        case (.plus, .u16, .u16):
-            return .u16
-        case (.plus, .u16, .compTimeInt):
-            return .u16
-        case (.plus, .compTimeInt, .u8):
-            return .u8
-        case (.plus, .compTimeInt, .u16):
-            return .u16
-        case (.plus, .compTimeInt(let a), .compTimeInt(let b)):
+        case .plus:
             return .compTimeInt(a + b)
-        case (.minus, .u8, .u8):
-            return .u8
-        case (.minus, .u8, .u16):
-            return .u16
-        case (.minus, .u8, .compTimeInt):
-            return .u8
-        case (.minus, .u16, .u8):
-            return .u16
-        case (.minus, .u16, .u16):
-            return .u16
-        case (.minus, .u16, .compTimeInt):
-            return .u16
-        case (.minus, .compTimeInt, .u8):
-            return .u8
-        case (.minus, .compTimeInt, .u16):
-            return .u16
-        case (.minus, .compTimeInt(let a), .compTimeInt(let b)):
+        case .minus:
             return .compTimeInt(a - b)
-        case (.star, .u8, .u8):
-            return .u8
-        case (.star, .u8, .u16):
-            return .u16
-        case (.star, .u8, .compTimeInt):
-            return .u8
-        case (.star, .u16, .u8):
-            return .u16
-        case (.star, .u16, .u16):
-            return .u16
-        case (.star, .u16, .compTimeInt):
-            return .u16
-        case (.star, .compTimeInt, .u8):
-            return .u8
-        case (.star, .compTimeInt, .u16):
-            return .u16
-        case (.star, .compTimeInt(let a), .compTimeInt(let b)):
+        case .star:
             return .compTimeInt(a * b)
-        case (.divide, .u8, .u8):
-            return .u8
-        case (.divide, .u8, .u16):
-            return .u16
-        case (.divide, .u8, .compTimeInt):
-            return .u8
-        case (.divide, .u16, .u8):
-            return .u16
-        case (.divide, .u16, .u16):
-            return .u16
-        case (.divide, .u16, .compTimeInt):
-            return .u16
-        case (.divide, .compTimeInt, .u8):
-            return .u8
-        case (.divide, .compTimeInt, .u16):
-            return .u16
-        case (.divide, .compTimeInt(let a), .compTimeInt(let b)):
+        case .divide:
             return .compTimeInt(a / b)
-        case (.modulus, .u8, .u8):
-            return .u8
-        case (.modulus, .u8, .u16):
-            return .u16
-        case (.modulus, .u8, .compTimeInt):
-            return .u8
-        case (.modulus, .u16, .u8):
-            return .u16
-        case (.modulus, .u16, .u16):
-            return .u16
-        case (.modulus, .u16, .compTimeInt):
-            return .u16
-        case (.modulus, .compTimeInt, .u8):
-            return .u8
-        case (.modulus, .compTimeInt, .u16):
-            return .u16
-        case (.modulus, .compTimeInt(let a), .compTimeInt(let b)):
+        case .modulus:
             return .compTimeInt(a % b)
         default:
-            throw invalidBinaryExpr(binary, left, right)
+            throw invalidBinaryExpr(binary, leftType, rightType)
         }
     }
     

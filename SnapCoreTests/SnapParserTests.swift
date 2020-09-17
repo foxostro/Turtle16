@@ -1862,4 +1862,46 @@ let foo: *const wat = undefined
                                       isMutable: false)
         XCTAssertEqual(ast.children.first, expected)
     }
+        
+    func test_Bug_ParseCannotDistinguishBetweenStructInitializerAndBodyOfForLoop() {
+        let parser = parse("""
+for var i = 0; i < 10; i = 1 + i {
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        
+        XCTAssertEqual(ast.children, [
+            Block(sourceAnchor: parser.lineMapper.anchor(0, 36),
+                  children: [
+                    ForLoop(sourceAnchor: parser.lineMapper.anchor(0, 36),
+                            initializerClause: VarDeclaration(sourceAnchor: parser.lineMapper.anchor(4, 13),
+                                                              identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 9), identifier: "i"),
+                                                              explicitType: nil,
+                                                              expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(12, 13), value: 0),
+                                                              storage: .stackStorage,
+                                                              isMutable: true),
+                            conditionClause: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(15, 21),
+                                                               op: .lt,
+                                                               left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 16), identifier: "i"),
+                                                               right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 21), value: 10)),
+                            incrementClause: Expression.Assignment(sourceAnchor: parser.lineMapper.anchor(23, 32),
+                                                                   lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(23, 24), identifier: "i"),
+                                                                   rexpr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(27, 32),
+                                                                                            op: .plus,
+                                                                                            left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(27, 28), value: 1),
+                                                                                            right: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(31, 32), identifier: "i"))),
+                            body: Block(sourceAnchor: parser.lineMapper.anchor(33, 36),
+                                        children: []))
+            ])
+        ])
+    }
 }

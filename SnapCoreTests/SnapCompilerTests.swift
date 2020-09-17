@@ -1165,4 +1165,18 @@ r = baz.pointee.pointee
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress + 0), 0xcafe)
     }
+    
+    func test_EndToEndIntegration_FunctionParameterIsPointerToConstType() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+struct Foo { x: u8, y: u8, z: u8 }
+var r = 0
+var foo = Foo { .x = 1, .y = 2, .z = 3 }
+func doTheThing(foo: *const Foo) -> *const Foo {
+    return foo
+}
+r = doTheThing(&foo).x
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 1)
+    }
 }

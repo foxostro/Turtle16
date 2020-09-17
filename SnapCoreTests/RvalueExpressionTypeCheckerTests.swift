@@ -2951,6 +2951,14 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .pointer(.pointer(.u8)))
     }
     
+    func testTypeExpressionWithConstType_u8() {
+        let expr = Expression.ConstType(Expression.PrimitiveType(.u8))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .constU8)
+    }
+    
     func testCannotTakeAddressOfLiteralInt() {
         let expr = Expression.Unary(op: .ampersand, expression: Expression.LiteralInt(0))
         let typeChecker = RvalueExpressionTypeChecker()

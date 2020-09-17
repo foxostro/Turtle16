@@ -63,6 +63,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(functionType: expr)
         case let expr as Expression.PointerType:
             return try check(pointerType: expr)
+        case let expr as Expression.ConstType:
+            return try check(constType: expr)
         case let expr as Expression.StructInitializer:
             return try check(structInitializer: expr)
         default:
@@ -377,11 +379,10 @@ public class RvalueExpressionTypeChecker: NSObject {
              (.constDynamicArray(let a), .dynamicArray(let b)),
              (.dynamicArray(let a), .constDynamicArray(let b)),
              (.dynamicArray(let a), .dynamicArray(let b)):
-            let elementType = try checkTypesAreConvertible(ltype: b, rtype: a,
-                                                           sourceAnchor: sourceAnchor,
-                                                           messageWhenNotConvertible: messageWhenNotConvertible,
-                                                           isExplicitCast: isExplicitCast)
-            return .dynamicArray(elementType: elementType)
+            guard a == b || a == b.correspondingConstType || a.correspondingConstType == b else {
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
+            }
+            return .dynamicArray(elementType: b)
         case (.constStructType(let a), .constStructType(let b)),
              (.constStructType(let a), .structType(let b)),
              (.structType(let a), .constStructType(let b)),
@@ -394,7 +395,7 @@ public class RvalueExpressionTypeChecker: NSObject {
              (.constPointer(let a), .pointer(let b)),
              (.pointer(let a), .constPointer(let b)),
              (.pointer(let a), .pointer(let b)):
-            guard a == b else {
+            guard a == b || a == b.correspondingConstType || a.correspondingConstType == b else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return ltype
@@ -571,6 +572,11 @@ public class RvalueExpressionTypeChecker: NSObject {
     public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {
         let typ = try check(expression: expr.typ)
         return .pointer(typ)
+    }
+    
+    public func check(constType expr: Expression.ConstType) throws -> SymbolType {
+        let typ = try check(expression: expr.typ)
+        return typ.correspondingConstType
     }
     
     public func check(structInitializer expr: Expression.StructInitializer) throws -> SymbolType {

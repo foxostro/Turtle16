@@ -535,4 +535,11 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenStruct(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))])
     }
+    
+    func testTokenizeConst() {
+        let tokenizer = SnapLexer(withString: "const")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenConst(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))])
+    }
 }

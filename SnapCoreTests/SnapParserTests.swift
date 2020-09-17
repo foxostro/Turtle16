@@ -1835,4 +1835,31 @@ let foo: *wat = undefined
                                       isMutable: false)
         XCTAssertEqual(ast.children.first, expected)
     }
+    
+    func testWellformedPointerExpressionType_PointerToConst() {
+        let parser = parse("""
+let foo: *const wat = undefined
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo")
+        let wat = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "wat")
+        let expectedType = Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 19), typ: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(10, 19), typ: wat))
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 31),
+                                      identifier: foo,
+                                      explicitType: expectedType,
+                                      expression: nil,
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        XCTAssertEqual(ast.children.first, expected)
+    }
 }

@@ -110,7 +110,8 @@ class SnapBenchmarkDriver: NSObject {
         var instructions: [Instruction]! = nil
         let programText = getFibonacciProgram()
         var elapsedTime: TimeInterval = 0
-        let n = 100
+        let n = 1000
+        stdout.write(String(format: "Compiling the benchmark program %d times now...\n", n))
         for _ in 0..<n {
             let compiler = SnapCompiler()
             elapsedTime += self.measure {

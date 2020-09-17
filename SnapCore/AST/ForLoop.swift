@@ -41,6 +41,7 @@ public class ForLoop: AbstractSyntaxTreeNode {
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? ForLoop else { return false }
         guard initializerClause == rhs.initializerClause else { return false }
         guard conditionClause == rhs.conditionClause else { return false }

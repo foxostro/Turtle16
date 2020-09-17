@@ -17,7 +17,14 @@ open class Lexer: NSObject {
     public let lineMapper: SourceLineRangeMapper
     public private(set) var tokens: [Token] = []
     
-    public typealias Rule = (pattern: String, emit: (SourceAnchor) -> Token?)
+    public class Rule : NSObject {
+        public let regex: NSRegularExpression?
+        public let emit: (SourceAnchor) -> Token?
+        public init(pattern: String, emit: @escaping (SourceAnchor) -> Token?) {
+            self.regex = try? NSRegularExpression(pattern: "^\(pattern)", options: [])
+            self.emit = emit
+        }
+    }
     public var rules: [Rule] = []
     
     public private(set) var errors: [CompilerError] = []
@@ -66,7 +73,11 @@ open class Lexer: NSObject {
     }
     
     public func match(pattern: String) -> SourceAnchor? {
-        guard let regex = try? NSRegularExpression(pattern: "^\(pattern)", options: []) else {
+        return match(rule: Rule(pattern: pattern, emit: {_ in return nil}))
+    }
+    
+    public func match(rule: Rule) -> SourceAnchor? {
+        guard let regex = rule.regex else {
             return nil
         }
         guard let match = regex.firstMatch(in: string, options: [], range: NSRange(position..., in: string)) else {
@@ -109,7 +120,7 @@ open class Lexer: NSObject {
     
     public func scanToken() throws {
         for rule in rules {
-            if let anchor = match(pattern: rule.pattern) {
+            if let anchor = match(rule: rule) {
                 if let token = rule.emit(anchor) {
                     tokens.append(token)
                 }

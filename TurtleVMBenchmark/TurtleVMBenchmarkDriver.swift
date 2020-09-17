@@ -100,8 +100,7 @@ class TurtleVMBenchmarkDriver: NSObject {
         let programText = try getFibonacciProgram()
         frontEnd.compile(programText)
         if frontEnd.hasError {
-            let error = frontEnd.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
-            throw error
+            throw CompilerError.makeOmnibusError(fileName: nil, errors: frontEnd.errors)
         }
         return frontEnd.instructions
     }

@@ -107,16 +107,23 @@ class SnapBenchmarkDriver: NSObject {
     }
     
     func generateFibonacciProgram() throws -> [Instruction] {
+        var instructions: [Instruction]! = nil
         let programText = getFibonacciProgram()
-        let compiler = SnapCompiler()
-        let elapsedTime = self.measure {
-            compiler.compile(program: programText, base: 0)
+        var elapsedTime: TimeInterval = 0
+        let n = 100
+        for _ in 0..<n {
+            let compiler = SnapCompiler()
+            elapsedTime += self.measure {
+                compiler.compile(program: programText, base: 0)
+            }
+            if compiler.hasError {
+                throw CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
+            }
+            instructions = compiler.instructions
         }
-        if compiler.hasError {
-            throw CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
-        }
-        stdout.write(String(format: "Compile took %g seconds\n", elapsedTime))
-        return compiler.instructions
+        elapsedTime = elapsedTime / Double(n)
+        stdout.write(String(format: "Compile took an average of %g seconds\n", elapsedTime))
+        return instructions
     }
 
     func getFibonacciProgram() -> String {

@@ -28,3 +28,4 @@ public class TokenAs : Token {}
 public class TokenDot : Token {}
 public class TokenUndefined : Token {}
 public class TokenStruct : Token {}
+public class TokenConst : Token {}

@@ -172,6 +172,16 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumeType() throws -> Expression {
+        if let constToken = accept(TokenConst.self) {
+            let expr = try consumeTypeWithoutRegardForConst()
+            let sourceAnchor = constToken.sourceAnchor?.union(expr.sourceAnchor)
+            return Expression.ConstType(sourceAnchor: sourceAnchor, typ: expr)
+        } else {
+            return try consumeTypeWithoutRegardForConst()
+        }
+    }
+    
+    fileprivate func consumeTypeWithoutRegardForConst() throws -> Expression {
         if let star = accept(operator: .star) {
             return try consumePointerType(star)
         } else if let _ = peek() as? TokenSquareBracketLeft {

@@ -379,7 +379,7 @@ public class RvalueExpressionTypeChecker: NSObject {
              (.constDynamicArray(let a), .dynamicArray(let b)),
              (.dynamicArray(let a), .constDynamicArray(let b)),
              (.dynamicArray(let a), .dynamicArray(let b)):
-            guard a == b || a == b.correspondingConstType || a.correspondingConstType == b else {
+            guard a == b || a.correspondingConstType == b else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return .dynamicArray(elementType: b)
@@ -395,7 +395,7 @@ public class RvalueExpressionTypeChecker: NSObject {
              (.constPointer(let a), .pointer(let b)),
              (.pointer(let a), .constPointer(let b)),
              (.pointer(let a), .pointer(let b)):
-            guard a == b || a == b.correspondingConstType || a.correspondingConstType == b else {
+            guard a == b || a.correspondingConstType == b else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return ltype

@@ -350,7 +350,15 @@ public class SnapParser: Parser {
         try expect(type: TokenSemicolon.self, error: CompilerError(sourceAnchor: forToken.sourceAnchor, message: "expected `;'"))
         let conditionClause = try consumeExpression()
         try expect(type: TokenSemicolon.self, error: CompilerError(sourceAnchor: forToken.sourceAnchor, message: "expected `;'"))
+        
+        // Do not allow a struct initializer expression in the increment clause
+        // of a for-loop. This introduces a contextual element to the grammar,
+        // which is undesirable. However, I can't think of any other way to
+        // prevent the struct initializer syntax from conflicting with that of
+        // the body of the for-loop, except maybe to change the grammar.
+        isStructInitializerExpressionAllowed.append(false)
         let incrementClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
+        isStructInitializerExpressionAllowed.removeLast()
         
         let body: AbstractSyntaxTreeNode
         if nil != (peek() as? TokenCurlyLeft) {
@@ -591,6 +599,8 @@ public class SnapParser: Parser {
         return expr
     }
     
+    private var isStructInitializerExpressionAllowed: [Bool] = [true]
+    
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
             return Expression.LiteralInt(sourceAnchor: numberToken.sourceAnchor,
@@ -600,7 +610,7 @@ public class SnapParser: Parser {
             return Expression.LiteralBool(sourceAnchor: booleanToken.sourceAnchor,
                                              value: booleanToken.literal)
         }
-        else if let _ = peek(0) as? TokenIdentifier, let _ = peek(1) as? TokenCurlyLeft {
+        else if isStructInitializerExpressionAllowed.last!==true, let _ = peek(0) as? TokenIdentifier, let _ = peek(1) as? TokenCurlyLeft {
             return try consumeStructInitializer()
         }
         else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {

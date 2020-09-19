@@ -30,6 +30,7 @@ open class AbstractSyntaxTreeNode : NSObject {
             return false
         }
         guard sourceAnchor == rhs.sourceAnchor else {
+            print("sourceAnchor: \(String(describing: sourceAnchor))")
             return false
         }
         return true

@@ -1639,6 +1639,39 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(9))
     }
     
+    func testCompileForInLoop_String() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: nil,
+                           storage: .stackStorage,
+                           isMutable: true),
+            ForIn(identifier: Expression.Identifier("i"),
+                  sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)), elements: [
+                    Expression.LiteralInt(Int("h".utf8.first!)),
+                    Expression.LiteralInt(Int("e".utf8.first!)),
+                    Expression.LiteralInt(Int("l".utf8.first!)),
+                    Expression.LiteralInt(Int("l".utf8.first!)),
+                    Expression.LiteralInt(Int("o".utf8.first!))
+                  ]),
+                  body: Block(children: [
+                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                          rexpr: Expression.Identifier("i"))
+                ]))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), UInt8("o".utf8.first!))
+    }
+    
     func testCompileConstantDeclaration_PointerToU8_GivenAddressOfAnotherVariable() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),

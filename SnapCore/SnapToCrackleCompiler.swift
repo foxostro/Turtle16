@@ -320,6 +320,8 @@ public class SnapToCrackleCompiler: NSObject {
                 throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "for-in loop requires iterable sequence")
             }
             try compileForInRange(stmt)
+        case .array:
+            try compileForInArray(stmt)
         default:
             throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "for-in loop requires iterable sequence")
         }
@@ -349,6 +351,43 @@ public class SnapToCrackleCompiler: NSObject {
                   body: Block(children: [
                     stmt.body,
                     Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Binary(op: .plus, left: stmt.identifier, right: Expression.LiteralInt(1)))
+                  ]))
+        ])
+        
+        try compile(block: ast)
+    }
+    
+    private func compileForInArray(_ stmt: ForIn) throws {
+        let sequence = Expression.Identifier("__sequence")
+        let index = Expression.Identifier("__index")
+        let limit = Expression.Identifier("__limit")
+        
+        let ast = Block(children: [
+            VarDeclaration(identifier: sequence,
+                           explicitType: nil,
+                           expression: stmt.sequenceExpr,
+                           storage: .stackStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: index,
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: limit,
+                           explicitType: nil,
+                           expression: Expression.Get(expr: sequence, member: Expression.Identifier("count")),
+                           storage: .stackStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: stmt.identifier,
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: nil,
+                           storage: .stackStorage,
+                           isMutable: true),
+            While(condition: Expression.Binary(op: .ne, left: index, right: limit),
+                  body: Block(children: [
+                    Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Subscript(identifier: sequence, expr: index)),
+                    stmt.body,
+                    Expression.Assignment(lexpr: index, rexpr: Expression.Binary(op: .plus, left: index, right: Expression.LiteralInt(1))),
                   ]))
         ])
         

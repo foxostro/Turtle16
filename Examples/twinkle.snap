@@ -17,20 +17,24 @@ func playNote(control: u8, sustainTime: u8) {
 
 	pokePeripheral(control, kTriangleWaveFrequency, kAudioDevice)
 
-	for var gain: u16 = 0; gain < attackMax; gain = (gain + attackStep) {
+	var gain: u16 = 0
+	while gain < attackMax {
 		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain + attackStep
 	}
 
-	for var gain: u16 = attackMax; gain > sustainLevel; gain = (gain - decayStep) {
+	gain = attackMax
+	while gain > sustainLevel {
 		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain - decayStep
 	}
 
-	for var i: u16 = 0; i < sustainTime; i = i + 1 {
-		// do nothing
-	}
+	for i in 0..sustainTime {} // delay loop. do nothing.
 
-	for var gain: u16 = sustainLevel; gain > 0; gain = (gain - releaseStep) {
+	gain = sustainLevel
+	while gain > 0 {
 		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain - releaseStep
 	}
 
 	pokePeripheral(0, kTriangleWaveAmplitude, kAudioDevice)
@@ -52,65 +56,68 @@ let noteG4 = 195
 let noteA4 = 204
 let noteB4 = 208
 
+let noteLength = 2
+let longNoteLength = 16
+
 # Twinkle Twinkle Little Star
 # C C G G A A G
 # Twinkle, twinkle, little star
-playNote(noteC4, 8)
-playNote(noteC4, 8)
-playNote(noteG4, 8)
-playNote(noteG4, 8)
-playNote(noteA4, 8)
-playNote(noteA4, 8)
-playNote(noteG4, 24)
+playNote(noteC4, noteLength)
+playNote(noteC4, noteLength)
+playNote(noteG4, noteLength)
+playNote(noteG4, noteLength)
+playNote(noteA4, noteLength)
+playNote(noteA4, noteLength)
+playNote(noteG4, longNoteLength)
 
 # F F E E D D C
 # How I wonder what you are
-playNote(noteF4, 8)
-playNote(noteF4, 8)
-playNote(noteE4, 8)
-playNote(noteE4, 8)
-playNote(noteD4, 8)
-playNote(noteD4, 8)
-playNote(noteC4, 24)
+playNote(noteF4, noteLength)
+playNote(noteF4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteD4, noteLength)
+playNote(noteD4, noteLength)
+playNote(noteC4, longNoteLength)
 
 # G G F F E E D
 # Up above the world so high
-playNote(noteG4, 8)
-playNote(noteG4, 8)
-playNote(noteF4, 8)
-playNote(noteF4, 8)
-playNote(noteE4, 8)
-playNote(noteE4, 8)
-playNote(noteD4, 24)
+playNote(noteG4, noteLength)
+playNote(noteG4, noteLength)
+playNote(noteF4, noteLength)
+playNote(noteF4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteD4, longNoteLength)
 
 # G G F F E E D
 # Like a diamond in the sky
-playNote(noteG4, 8)
-playNote(noteG4, 8)
-playNote(noteF4, 8)
-playNote(noteF4, 8)
-playNote(noteE4, 8)
-playNote(noteE4, 8)
-playNote(noteD4, 24)
+playNote(noteG4, noteLength)
+playNote(noteG4, noteLength)
+playNote(noteF4, noteLength)
+playNote(noteF4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteD4, longNoteLength)
 
 # C C G G A A G
 # Twinkle, twinkle little star
-playNote(noteC4, 8)
-playNote(noteC4, 8)
-playNote(noteG4, 8)
-playNote(noteG4, 8)
-playNote(noteA4, 8)
-playNote(noteA4, 8)
-playNote(noteG4, 24)
+playNote(noteC4, noteLength)
+playNote(noteC4, noteLength)
+playNote(noteG4, noteLength)
+playNote(noteG4, noteLength)
+playNote(noteA4, noteLength)
+playNote(noteA4, noteLength)
+playNote(noteG4, longNoteLength)
 
 # F F E E D D C
 # How I wonder what you are
-playNote(noteF4, 8)
-playNote(noteF4, 8)
-playNote(noteE4, 8)
-playNote(noteE4, 8)
-playNote(noteD4, 8)
-playNote(noteD4, 8)
-playNote(noteC4, 24)
+playNote(noteF4, noteLength)
+playNote(noteF4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteE4, noteLength)
+playNote(noteD4, noteLength)
+playNote(noteD4, noteLength)
+playNote(noteC4, longNoteLength)
 
 pokePeripheral(0, kMasterGain, kAudioDevice)

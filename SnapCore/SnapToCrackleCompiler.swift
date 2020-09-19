@@ -137,8 +137,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(if: node)
         case let node as While:
             try compile(while: node)
-        case let node as ForLoop:
-            try compile(forLoop: node)
         case let node as Block:
             try compile(block: node)
         case let node as Return:
@@ -305,24 +303,6 @@ public class SnapToCrackleCompiler: NSObject {
             .jz(labelTail, tempConditionResult.address)
         ])
         try compile(genericNode: stmt.body)
-        emit([
-            .jmp(labelHead),
-            .label(labelTail)
-        ])
-    }
-    
-    private func compile(forLoop stmt: ForLoop) throws {
-        currentSourceAnchor = stmt.sourceAnchor
-        let labelHead = labelMaker.next()
-        let labelTail = labelMaker.next()
-        try compile(genericNode: stmt.initializerClause)
-        emit([.label(labelHead)])
-        let tempConditionResult = try compile(expression: stmt.conditionClause).temporaryStack.pop()
-        emit([
-            .jz(labelTail, tempConditionResult.address)
-        ])
-        try compile(genericNode: stmt.body)
-        try compile(genericNode: stmt.incrementClause)
         emit([
             .jmp(labelHead),
             .label(labelTail)

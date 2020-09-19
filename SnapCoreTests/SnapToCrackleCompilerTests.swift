@@ -811,71 +811,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
     }
     
-    func testCompileForLoopStatement() {
-        let ast = TopLevel(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(0),
-                           storage: .staticStorage,
-                           isMutable: true),
-            ForLoop(initializerClause: VarDeclaration(identifier: Expression.Identifier("i"),
-                                                      explicitType: nil,
-                                                      expression: Expression.LiteralInt(0),
-                                                      storage: .staticStorage,
-                                                      isMutable: true),
-                    conditionClause: ExprUtils.makeComparisonLt(left: Expression.Identifier("i"),
-                                                                right: Expression.LiteralInt(10)),
-                    incrementClause: ExprUtils.makeAssignment(name: "i", right: ExprUtils.makeAdd(left: Expression.Identifier("i"), right: Expression.LiteralInt(1))),
-                    body: ExprUtils.makeAssignment(name: "foo", right: Expression.Identifier("i")))
-        ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
-        XCTAssertFalse(compiler.hasError)
-        let L0 = ".L0"
-        let L1 = ".L1"
-        let addressOfFoo: Int = kStaticStorageStartAddress+0
-        let addressOfI: Int = kStaticStorageStartAddress+1
-        let expected: [CrackleInstruction] = [
-            // foo = 0
-            .storeImmediate16(t0, addressOfFoo),
-            .storeImmediate(t1, 0),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            // i = 0
-            .storeImmediate16(t0, addressOfI),
-            .storeImmediate(t1, 0),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            .label(".L0"),
-            
-            // Jump if the condition `i < 10' fails.
-            .storeImmediate(t0, 10),
-            .copyWords(t1, addressOfI, 1),
-            .lt(t2, t1, t0),
-            .jz(L1, t2),
-            
-            // foo = i
-            .storeImmediate16(t0, addressOfFoo),
-            .copyWords(t1, addressOfI, 1),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            // i = i + 1
-            .storeImmediate16(t0, addressOfI),
-            .storeImmediate(t1, 1),
-            .copyWords(t2, addressOfI, 1),
-            .add(t3, t2, t1),
-            .copyWordsIndirectDestination(t0, t3, 1),
-            
-            // Loop
-            .jmp(L0),
-            .label(L1)
-        ]
-        for i in 0..<expected.count {
-            assert(compiler.instructions[i] == expected[i])
-        }
-        XCTAssertEqual(compiler.instructions, expected)
-    }
-    
     func testCompilationFailsBecauseLocalVarDoesntSurviveLocalScope() {
         let ast = TopLevel(children: [
             Block(children: [
@@ -1041,26 +976,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                 body: Block(children: [
                                     While(condition: tr,
                                           body: Return(tr)),
-                                    Return(one)
-                                ]))
-        ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
-    }
-    
-    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideFor() {
-        let tr = ExprUtils.makeBool(value: true)
-        let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                body: Block(children: [
-                                    ForLoop(initializerClause: AbstractSyntaxTreeNode(),
-                                            conditionClause: tr,
-                                            incrementClause: AbstractSyntaxTreeNode(),
-                                            body: Return(tr)),
                                     Return(one)
                                 ]))
         ])

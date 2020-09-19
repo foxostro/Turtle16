@@ -350,6 +350,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
     }
     
+    func testTokenizeForRange() {
+        let tokenizer = SnapLexer(withString: "forRange")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenForRange(sourceAnchor: tokenizer.lineMapper.anchor(0, 8)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(8, 8))])
+    }
+    
     func testTokenizeSingleCharacterIdentifier() {
         let tokenizer = SnapLexer(withString: "a")
         tokenizer.scanTokens()

@@ -122,6 +122,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "for\\b") {
                 TokenFor(sourceAnchor: $0)
             },
+            Rule(pattern: "forRange\\b") {
+                TokenForRange(sourceAnchor: $0)
+            },
             Rule(pattern: "static\\b") {
                 TokenStatic(sourceAnchor: $0)
             },

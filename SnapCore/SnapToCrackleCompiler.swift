@@ -317,13 +317,13 @@ public class SnapToCrackleCompiler: NSObject {
         switch sequenceType {
         case .constStructType(let typ), .structType(let typ):
             guard typ.name == "Range" else {
-                throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "for-in loop requires iterable sequence")
+                throw CompilerError(sourceAnchor: stmt.sequenceExpr.sourceAnchor, message: "for-in loop requires iterable sequence")
             }
             try compileForInRange(stmt)
-        case .array:
+        case .array, .constDynamicArray, .dynamicArray:
             try compileForInArray(stmt)
         default:
-            throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "for-in loop requires iterable sequence")
+            throw CompilerError(sourceAnchor: stmt.sequenceExpr.sourceAnchor, message: "for-in loop requires iterable sequence")
         }
     }
     
@@ -336,7 +336,7 @@ public class SnapToCrackleCompiler: NSObject {
                            explicitType: nil,
                            expression: stmt.sequenceExpr,
                            storage: .stackStorage,
-                           isMutable: false),
+                           isMutable: true),
             VarDeclaration(identifier: limit,
                            explicitType: nil,
                            expression: Expression.Get(expr: sequence, member: Expression.Identifier("limit")),

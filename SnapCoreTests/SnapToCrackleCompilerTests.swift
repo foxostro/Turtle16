@@ -1705,6 +1705,49 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x5000))
     }
     
+    func testCompileForInLoop_DynamicArray() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: Expression.PrimitiveType(.u16),
+                           expression: nil,
+                           storage: .stackStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: Expression.Identifier("arr"),
+                           explicitType: nil,
+                           expression: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
+                            Expression.LiteralInt(0x0001),
+                            Expression.LiteralInt(0x0002),
+                            Expression.LiteralInt(0x0003),
+                            Expression.LiteralInt(0x0004),
+                            Expression.LiteralInt(0x0005)
+                           ]),
+                           storage: .stackStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: Expression.Identifier("slice"),
+                           explicitType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16)),
+                           expression: Expression.Identifier("arr"),
+                           storage: .stackStorage,
+                           isMutable: true),
+            ForIn(identifier: Expression.Identifier("i"),
+                  sequenceExpr: Expression.Identifier("slice"),
+                  body: Block(children: [
+                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                          rexpr: Expression.Identifier("i"))
+                ]))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x0005))
+    }
+    
     func testCompileConstantDeclaration_PointerToU8_GivenAddressOfAnotherVariable() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),

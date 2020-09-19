@@ -116,6 +116,34 @@ for i in [_]u16{0x1000, 0x2000, 0x3000, 0x4000, 0x5000} {
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x5000))
     }
     
+    func test_EndToEndIntegration_ForIn_DynamicArray_1() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        let computer = try! executor.execute(program: """
+var a: u16 = 0xffff
+let arr = [_]u16{0x1000, 0x2000, 0x3000, 0x4000, 0x5000}
+let slice: []u16 = arr
+for i in slice {
+    a = i
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x5000))
+    }
+    
+    // TODO: This test fails. The problem seems to be binding the dynamic array to a temporary literal array. Is the failure expected, or is there a problem here?
+    func DISABLED_test_EndToEndIntegration_ForIn_DynamicArray_2() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        let computer = try! executor.execute(program: """
+var a: u16 = 0xffff
+let slice: []u16 = [_]u16{0x1000, 0x2000, 0x3000, 0x4000, 0x5000}
+for i in slice {
+    a = i
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x5000))
+    }
+    
     func test_EndToEndIntegration_Fibonacci() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """

@@ -104,6 +104,18 @@ for i in "hello" {
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), UInt8("o".utf8.first!))
     }
     
+    func test_EndToEndIntegration_ForIn_ArrayOfU16() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        let computer = try! executor.execute(program: """
+var a: u16 = 0xffff
+for i in [_]u16{0x1000, 0x2000, 0x3000, 0x4000, 0x5000} {
+    a = i
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x5000))
+    }
+    
     func test_EndToEndIntegration_Fibonacci() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """

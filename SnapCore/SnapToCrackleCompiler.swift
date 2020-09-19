@@ -137,6 +137,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(if: node)
         case let node as While:
             try compile(while: node)
+        case let node as ForIn:
+            try compile(forIn: node)
         case let node as Block:
             try compile(block: node)
         case let node as Return:
@@ -307,6 +309,50 @@ public class SnapToCrackleCompiler: NSObject {
             .jmp(labelHead),
             .label(labelTail)
         ])
+    }
+    
+    private func compile(forIn stmt: ForIn) throws {
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let sequenceType = try typeChecker.check(expression: stmt.sequenceExpr)
+        switch sequenceType {
+        case .constStructType(let typ), .structType(let typ):
+            guard typ.name == "Range" else {
+                throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "for-in loop requires iterable sequence")
+            }
+            try compileForInRange(stmt)
+        default:
+            throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "for-in loop requires iterable sequence")
+        }
+    }
+    
+    private func compileForInRange(_ stmt: ForIn) throws {
+        let sequence = Expression.Identifier("__sequence")
+        let limit = Expression.Identifier("__limit")
+        
+        let ast = Block(children: [
+            VarDeclaration(identifier: sequence,
+                           explicitType: nil,
+                           expression: stmt.sequenceExpr,
+                           storage: .stackStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: limit,
+                           explicitType: nil,
+                           expression: Expression.Get(expr: sequence, member: Expression.Identifier("limit")),
+                           storage: .stackStorage,
+                           isMutable: false),
+            VarDeclaration(identifier: stmt.identifier,
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            While(condition: Expression.Binary(op: .ne, left: stmt.identifier, right: limit),
+                  body: Block(children: [
+                    stmt.body,
+                    Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Binary(op: .plus, left: stmt.identifier, right: Expression.LiteralInt(1)))
+                  ]))
+        ])
+        
+        try compile(block: ast)
     }
     
     private func compile(block: Block) throws {

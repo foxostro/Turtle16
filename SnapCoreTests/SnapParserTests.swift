@@ -1885,33 +1885,20 @@ for i in 0..10 {
 """)
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Block(sourceAnchor: parser.lineMapper.anchor(0, 34),
-                  children: [
-                    VarDeclaration(sourceAnchor: parser.lineMapper.anchor(4, 5),
-                                   identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"),
+            ForIn(sourceAnchor: parser.lineMapper.anchor(0, 34),
+                  identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"),
+                  sequenceExpr: Expression.StructInitializer(sourceAnchor: parser.lineMapper.anchor(9, 14), identifier: Expression.Identifier("Range"), arguments: [
+                    Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 0)),
+                    Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(12, 14), value: 10))
+                  ]),
+                  body: Block(sourceAnchor: parser.lineMapper.anchor(15, 34), children: [
+                    VarDeclaration(sourceAnchor: parser.lineMapper.anchor(21, 32),
+                                   identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(25, 28), identifier: "foo"),
                                    explicitType: nil,
-                                   expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(9, 10), value: 0),
+                                   expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"),
                                    storage: .stackStorage,
-                                   isMutable: true),
-                    VarDeclaration(identifier: Expression.Identifier("__limit"),
-                                   explicitType: nil,
-                                   expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(12, 14), value: 10),
-                                   storage: .stackStorage,
-                                   isMutable: false),
-                    While(sourceAnchor: parser.lineMapper.anchor(0, 34),
-                          condition: Expression.Binary(op: .ne, left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"), right: Expression.Identifier("__limit")),
-                          body: Block(sourceAnchor: parser.lineMapper.anchor(15, 34), children: [
-                            Block(sourceAnchor: parser.lineMapper.anchor(15, 34), children: [
-                                VarDeclaration(sourceAnchor: parser.lineMapper.anchor(21, 32),
-                                               identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(25, 28), identifier: "foo"),
-                                               explicitType: nil,
-                                               expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"),
-                                               storage: .stackStorage,
-                                               isMutable: true)
-                            ]),
-                            Expression.Assignment(lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"), rexpr: Expression.Binary(op: .plus, left: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"), right: Expression.LiteralInt(1)))
-                          ]))
-                ])
+                                   isMutable: true)
+                ]))
         ])
     }
 }

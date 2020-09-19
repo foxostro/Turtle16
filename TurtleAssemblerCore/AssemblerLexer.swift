@@ -86,15 +86,15 @@ public class AssemblerLexer: Lexer {
             },
             Rule(pattern: "\\$[0-9a-fA-F]+\\b") {
                 let scanner = Scanner(string: String($0.text.dropFirst()))
-                var number: UInt32 = 0
-                let result = scanner.scanHexInt32(&number)
+                var number: UInt64 = 0
+                let result = scanner.scanHexInt64(&number)
                 assert(result)
                 return TokenNumber(sourceAnchor: $0, literal: Int(number))
             },
             Rule(pattern: "0[xX][0-9a-fA-F]+\\b") {
                 let scanner = Scanner(string: String($0.text))
-                var number: UInt32 = 0
-                let result = scanner.scanHexInt32(&number)
+                var number: UInt64 = 0
+                let result = scanner.scanHexInt64(&number)
                 assert(result)
                 return TokenNumber(sourceAnchor: $0, literal: Int(number))
             },

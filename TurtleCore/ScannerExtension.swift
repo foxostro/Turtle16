@@ -8,11 +8,13 @@
 
 public extension Scanner {
     func scanBinaryInt(_ result: inout Int) -> Bool {
-        var string: NSString? = ""
-        scanString("0b", into: nil)
-        guard scanCharacters(from: CharacterSet.init(charactersIn: "01"), into: &string) else { return false }
+        _ = scanString("0b")
+        let binaryDigits: CharacterSet = CharacterSet.init(charactersIn: "01")
+        guard let string = scanCharacters(from: binaryDigits) else {
+            return false
+        }
         var accum = 0
-        for digit in string! as String {
+        for digit in string {
             let (partialValue, overflow) = accum.addingReportingOverflow(accum)
             if overflow {
                 accum = Int.max

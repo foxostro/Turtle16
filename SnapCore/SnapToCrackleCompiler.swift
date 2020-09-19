@@ -379,7 +379,7 @@ public class SnapToCrackleCompiler: NSObject {
                            storage: .stackStorage,
                            isMutable: false),
             VarDeclaration(identifier: stmt.identifier,
-                           explicitType: Expression.PrimitiveType(.u8),
+                           explicitType: Expression.PrimitiveType(try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType),
                            expression: nil,
                            storage: .stackStorage,
                            isMutable: true),

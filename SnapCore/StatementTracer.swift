@@ -38,8 +38,6 @@ public class StatementTracer: NSObject {
             return try trace(currentTrace: currentTrace, if: node)
         case let node as While:
             return try trace(currentTrace: currentTrace, while: node)
-        case let node as ForLoop:
-            return try trace(currentTrace: currentTrace, forLoop: node)
         case let node as Return:
             return try trace(currentTrace: currentTrace, return: node)
         default:
@@ -87,17 +85,6 @@ public class StatementTracer: NSObject {
     }
     
     private func trace(currentTrace: Trace, while node: While) throws -> [Trace] {
-        switch currentTrace.last {
-        case .Return:
-            return [currentTrace]
-        default:
-            let bodyTraces = try trace(currentTrace: currentTrace + [.LoopBody], genericNode: node.body)
-            let skippedTraces = [currentTrace + [.LoopSkipped]]
-            return bodyTraces + skippedTraces
-        }
-    }
-    
-    private func trace(currentTrace: Trace, forLoop node: ForLoop) throws -> [Trace] {
         switch currentTrace.last {
         case .Return:
             return [currentTrace]

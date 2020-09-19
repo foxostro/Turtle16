@@ -41,10 +41,7 @@ public class SnapParser: Parser {
             result = try consumeWhile(token as! TokenWhile)
         }
         else if let token = accept(TokenFor.self) {
-            result = try consumeForLoop(token as! TokenFor)
-        }
-        else if let token = accept(TokenForRange.self) {
-            result = try consumeForRange(token as! TokenForRange)
+            result = try consumeForRange(token as! TokenFor)
         }
         else if let leftBrace = accept(TokenCurlyLeft.self) {
             result = try consumeBlock(leftBrace as! TokenCurlyLeft)
@@ -238,7 +235,7 @@ public class SnapParser: Parser {
             let s = ifToken.sourceAnchor?.text ?? "if"
             throw CompilerError(sourceAnchor: ifToken.sourceAnchor, message: "expected condition after `\(s)'")
         }
-        let condition = try consumeExpression()
+        let condition = try consumeExpression(allowsStructInitializer: false)
         
         let thenBranch: AbstractSyntaxTreeNode
         if nil != (peek() as? TokenCurlyLeft) {
@@ -331,7 +328,7 @@ public class SnapParser: Parser {
         if nil != accept(TokenCurlyLeft.self) {
             throw CompilerError(sourceAnchor: whileToken.sourceAnchor, message: "expected condition after `\(whileToken.lexeme)'")
         }
-        let condition = try consumeExpression()
+        let condition = try consumeExpression(allowsStructInitializer: false)
         
         let body: AbstractSyntaxTreeNode
         if nil != (peek() as? TokenCurlyLeft) {
@@ -348,47 +345,7 @@ public class SnapParser: Parser {
         return [While(sourceAnchor: sourceAnchor, condition: condition, body: body)]
     }
     
-    private func consumeForLoop(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
-        let initializerClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
-        try expect(type: TokenSemicolon.self, error: CompilerError(sourceAnchor: forToken.sourceAnchor, message: "expected `;'"))
-        let conditionClause = try consumeExpression()
-        try expect(type: TokenSemicolon.self, error: CompilerError(sourceAnchor: forToken.sourceAnchor, message: "expected `;'"))
-        
-        // Do not allow a struct initializer expression in the increment clause
-        // of a for-loop. This introduces a contextual element to the grammar,
-        // which is undesirable. However, I can't think of any other way to
-        // prevent the struct initializer syntax from conflicting with that of
-        // the body of the for-loop, except maybe to change the grammar.
-        isStructInitializerExpressionAllowed.append(false)
-        let incrementClause = try consumeStatement(shouldExpectEndOfStatement: false).first!
-        isStructInitializerExpressionAllowed.removeLast()
-        
-        let body: AbstractSyntaxTreeNode
-        if nil != (peek() as? TokenCurlyLeft) {
-            let leftError = "expected `{' after `\(forToken.lexeme)' increment clause"
-            let rightError = "expected `}' after `\(forToken.lexeme)' body"
-            body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
-        } else {
-            let newline = try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
-            let sourceAnchor = forToken.sourceAnchor?.union(newline.sourceAnchor)
-            body = Block(sourceAnchor: sourceAnchor, children: try consumeStatement())
-        }
-        
-        let sourceAnchor = forToken.sourceAnchor?.union(previous?.sourceAnchor)
-        
-        return [
-            Block(sourceAnchor: sourceAnchor,
-                  children: [
-                    ForLoop(sourceAnchor: sourceAnchor,
-                            initializerClause: initializerClause,
-                            conditionClause: conditionClause,
-                            incrementClause: incrementClause,
-                            body: body)
-                ])
-        ]
-    }
-    
-    private func consumeForRange(_ forToken: TokenForRange) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeForRange(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in for loop"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         _ = try expect(type: TokenIn.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected the `in' keyword following identifier in for loop"))
@@ -521,8 +478,13 @@ public class SnapParser: Parser {
         return CompilerError(sourceAnchor: token.sourceAnchor, message: "expected to find the end of the statement: `\(token.lexeme)'")
     }
     
-    private func consumeExpression() throws -> Expression {
-        return try consumeComparison()
+    private var isStructInitializerExpressionAllowed: [Bool] = [true]
+    
+    private func consumeExpression(allowsStructInitializer: Bool = true) throws -> Expression {
+        isStructInitializerExpressionAllowed.append(allowsStructInitializer)
+        let expr = try consumeComparison()
+        isStructInitializerExpressionAllowed.removeLast()
+        return expr
     }
     
     private func consumeComparison() throws -> Expression {
@@ -654,9 +616,7 @@ public class SnapParser: Parser {
     private func consumeRange() throws -> Expression {
         let beginExpr = try consumePrimary()
         if nil != accept(TokenDoubleDot.self) {
-            isStructInitializerExpressionAllowed.append(false)
             let limitExpr = try consumePrimary()
-            isStructInitializerExpressionAllowed.removeLast()
             let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
             typealias Arg = Expression.StructInitializer.Argument
             return Expression.StructInitializer(sourceAnchor: sourceAnchor,
@@ -668,8 +628,6 @@ public class SnapParser: Parser {
         }
         return beginExpr
     }
-    
-    private var isStructInitializerExpressionAllowed: [Bool] = [true]
     
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {

@@ -5,8 +5,7 @@ func panic(message: []u8) {
 }
 
 func puts(s: []u8) {
-    let n = s.count
-    for var i = 0; i < n; i = i + 1 {
+    for i in 0..(s.count) {
         putc(s[i])
     }
 }

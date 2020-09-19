@@ -63,7 +63,7 @@ let a = 42
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var a = 255
-for var i = 0; i < 10; i = i + 1 {
+for i in 0..10 {
     a = i
 }
 """)
@@ -74,7 +74,7 @@ for var i = 0; i < 10; i = i + 1 {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var a = 255
-for var i = 0; i < 10; i = i + 1
+for i in 0..10
     a = i
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 9)
@@ -86,7 +86,7 @@ for var i = 0; i < 10; i = i + 1
 var a = 1
 var b = 1
 var fib = 0
-for var i = 0; i < 10; i = i + 1 {
+for i in 0..10 {
     fib = b + a
     a = b
     b = fib
@@ -101,7 +101,7 @@ for var i = 0; i < 10; i = i + 1 {
         let computer = try! executor.execute(program: """
 var a = 1
 var b = 1
-for var i = 0; i < 10; i = i + 1 {
+for i in 0..10 {
     static var fib = b + a
     a = b
     b = fib
@@ -130,7 +130,7 @@ a = 3
     func testLocalVariablesDoNotSurviveTheLocalScope_ForLoop() {
         let compiler = SnapCompiler()
         compiler.compile("""
-for var i = 0; i < 10; i = i + 1 {
+for i in 0..10 {
     var a = i
 }
 i = 3
@@ -810,7 +810,7 @@ let bar: u16 = foo()
         let computer = try! executor.execute(program: """
 func sum() -> u8 {
     var accum = 0
-    for var i = 0; i < 3; i = i + 1 {
+    for i in 0..3 {
         accum = accum + 1
     }
     return accum
@@ -838,7 +838,7 @@ let foo = sum([3]u16{1, 2, 3})
         let computer = try! executor.execute(program: """
 func sum(a: [3]u16) -> u16 {
     var accum: u16 = 0
-    for var i = 0; i < 3; i = i + 1 {
+    for i in 0..3 {
         accum = accum + a[i]
     }
     return accum
@@ -892,7 +892,7 @@ let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
         let computer = try! executor.execute(program: """
 func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
     var result = [_]u8{0, 0, 0}
-    for var i = 0; i < 3; i = i + 1 {
+    for i in 0..3 {
         result[i] = (a[i] + b[i]) * c
     }
     return result
@@ -910,7 +910,7 @@ let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
         let computer = try! executor.execute(program: """
 func sum(a: [3]u16, b: [3]u16, c: u16) -> [3]u16 {
     var result = [_]u16{0, 0, 0}
-    for var i = 0; i < 3; i = i + 1 {
+    for i in 0..3 {
         result[i] = (a[i] + b[i]) * c
     }
     return result
@@ -926,7 +926,7 @@ let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 func foo() -> u16 {
-    for var i = 0; i < 3; i = i + 1 {
+    for i in 0..3 {
     }
     let a = 42
     return a
@@ -1178,16 +1178,5 @@ func doTheThing(foo: *const Foo) -> *const Foo {
 r = doTheThing(&foo).x
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 1)
-    }
-    
-    func test_EndToEndIntegration_ForRangeLoop() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
-var r = 0
-forRange i in 0..10 {
-    r = i
-}
-""")
-        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 9)
     }
 }

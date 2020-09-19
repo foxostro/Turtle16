@@ -87,20 +87,4 @@ class StatementTracerTests: XCTestCase {
         XCTAssertEqual(traces[0], [.LoopBody, .Return])
         XCTAssertEqual(traces[1], [.LoopSkipped])
     }
-    
-    func testTraceReturnStatementsThroughForLoop() {
-        let tracer = StatementTracer()
-        let tr = Expression.LiteralBool(true)
-        let one = Expression.LiteralInt(1)
-        let traces = try! tracer.trace(ast: Block(children: [
-            ForLoop(sourceAnchor: nil,
-                    initializerClause: AbstractSyntaxTreeNode(),
-                    conditionClause: tr,
-                    incrementClause: AbstractSyntaxTreeNode(),
-                    body: Return(one))
-        ]))
-        XCTAssertEqual(traces.count, 2)
-        XCTAssertEqual(traces[0], [.LoopBody, .Return])
-        XCTAssertEqual(traces[1], [.LoopSkipped])
-    }
 }

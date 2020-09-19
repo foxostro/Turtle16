@@ -23,7 +23,6 @@ public class TokenReturn: Token {}
 public class TokenVar: Token {}
 public class TokenWhile : Token {}
 public class TokenFor : Token {}
-public class TokenForRange : Token {}
 public class TokenIn : Token {}
 public class TokenStatic : Token {}
 public class TokenAs : Token {}

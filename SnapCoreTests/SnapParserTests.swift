@@ -1904,4 +1904,56 @@ for var i = 0; i < 10; i = 1 + i {
             ])
         ])
     }
+    
+    func testWellFormedRangeExpression() {
+        // The parser has special syntax to generate a value of the builtin
+        // Range type. Under the hood, Range is just another struct type and
+        // the syntax evaluates to a struct-initializer expression.
+        let parser = parse("0..1")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        typealias Arg = Expression.StructInitializer.Argument
+        XCTAssertEqual(ast.children, [
+            Expression.StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 4),
+                                         identifier: Expression.Identifier("Range"),
+                                         arguments: [
+                                            Arg(name: "begin", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 0)),
+                                            Arg(name: "limit", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1))
+                                         ])
+        ])
+    }
+    
+    func test_ARangeExpressionCannotHaveStructInitializerInTheLimitExpression() {
+        typealias Arg = Expression.StructInitializer.Argument
+        
+        let parser = parse("0 .. Foo\n{ }")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        
+        XCTAssertEqual(ast.children, [
+            Expression.StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                                         identifier: Expression.Identifier("Range"),
+                                         arguments: [
+                                            Arg(name: "begin", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 0)),
+                                            Arg(name: "limit", expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"))
+                                         ]),
+            Block(sourceAnchor: parser.lineMapper.anchor(9, 12), children: [])
+        ])
+    }
 }

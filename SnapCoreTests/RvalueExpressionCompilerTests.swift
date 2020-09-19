@@ -3884,4 +3884,23 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "value of type `*Foo' has no member `asdf'")
         }
     }
+    
+    func testCompileAssignment_Range() {
+        typealias Arg = Expression.StructInitializer.Argument
+        let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Arg(name: "begin", expr: Expression.LiteralInt(1)),
+            Arg(name: "limit", expr: Expression.LiteralInt(10))
+        ]))
+        let rangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable([
+            "begin" : Symbol(type: .u16, offset: 0),
+            "limit" : Symbol(type: .u16, offset: 2)
+        ])))
+        let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .stackStorage)])
+        let ir = mustCompile(expression: expr, symbols: symbols)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        let address = 0xfff0
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1)
+        XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 10)
+    }
 }

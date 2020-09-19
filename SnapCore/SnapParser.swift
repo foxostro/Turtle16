@@ -565,7 +565,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeCall() throws -> Expression {
-        var expr = try consumePrimary()
+        var expr = try consumeRange()
         while true {
             if nil != accept(TokenParenLeft.self) as? TokenParenLeft {
                 var arguments: [Expression] = []
@@ -597,6 +597,24 @@ public class SnapParser: Parser {
             }
         }
         return expr
+    }
+    
+    private func consumeRange() throws -> Expression {
+        let beginExpr = try consumePrimary()
+        if nil != accept(TokenDoubleDot.self) {
+            isStructInitializerExpressionAllowed.append(false)
+            let limitExpr = try consumePrimary()
+            isStructInitializerExpressionAllowed.removeLast()
+            let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
+            typealias Arg = Expression.StructInitializer.Argument
+            return Expression.StructInitializer(sourceAnchor: sourceAnchor,
+                                                identifier: Expression.Identifier("Range"),
+                                                arguments: [
+                                                    Arg(name: "begin", expr: beginExpr),
+                                                    Arg(name: "limit", expr: limitExpr)
+                                                ])
+        }
+        return beginExpr
     }
     
     private var isStructInitializerExpressionAllowed: [Bool] = [true]

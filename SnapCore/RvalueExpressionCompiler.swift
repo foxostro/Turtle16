@@ -16,11 +16,22 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public let typeChecker: RvalueExpressionTypeChecker
     
     public static func bindCompilerIntrinsicFunctions(symbols: SymbolTable) -> SymbolTable {
-        return bindCompilerInstrinsicHlt(symbols:
-            bindCompilerInstrinsicPokePeripheral(symbols:
-                bindCompilerInstrinsicPeekPeripheral(symbols:
-                    bindCompilerInstrinsicPokeMemory(symbols:
-                        bindCompilerInstrinsicPeekMemory(symbols: symbols)))))
+        return bindCompilerIntrinsicRangeType(symbols:
+            bindCompilerInstrinsicHlt(symbols:
+                bindCompilerInstrinsicPokePeripheral(symbols:
+                    bindCompilerInstrinsicPeekPeripheral(symbols:
+                        bindCompilerInstrinsicPokeMemory(symbols:
+                            bindCompilerInstrinsicPeekMemory(symbols: symbols))))))
+    }
+    
+    private static func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {
+        let name = "Range"
+        let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable([
+            "begin" : Symbol(type: .u16, offset: 0),
+            "limit" : Symbol(type: .u16, offset: 2)
+        ])))
+        symbols.bind(identifier: name, symbolType: typ)
+        return symbols
     }
     
     private static func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {

@@ -1901,4 +1901,156 @@ for i in 0..10 {
                 ]))
         ])
     }
+    
+    func testMalformedImplDeclarationWithoutIdentifier() {
+        let parser = parse("impl")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(4, 4))
+        XCTAssertEqual(parser.errors.first?.message, "expected identifier in impl declaration")
+    }
+    
+    func testMalformedImplDeclarationWithoutBracesAfterIdentifier() {
+        let parser = parse("impl Foo")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(8, 8))
+        XCTAssertEqual(parser.errors.first?.message, "expected `{' in impl declaration")
+    }
+    
+    func testWellformedImplDeclaration_Empty() {
+        let parser = parse("""
+impl Foo {
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Impl(sourceAnchor: parser.lineMapper.anchor(0, 12),
+                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
+                 children: [])
+        ])
+    }
+    
+    func testMalformedImplDeclaration_MissingClosingBrace() {
+        let parser = parse("""
+impl Foo {
+
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(11, 11))
+        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
+    }
+    
+    func testMalformedImplDeclaration_CannotContainIf() {
+        let parser = parse("""
+impl Foo {
+    if
+}
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(15, 17))
+        XCTAssertEqual(parser.errors.first?.message, "`if' is not permitted in impl declaration")
+    }
+    
+    func testMalformedImplDeclaration_CannotContainBlock() {
+        let parser = parse("""
+impl Foo {
+    {}
+}
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(15, 16))
+        XCTAssertEqual(parser.errors.first?.message, "block is not permitted in impl declaration")
+    }
+    
+    func testMalformedImplDeclaration_CannotContainImpl() {
+        let parser = parse("""
+impl Foo {
+    impl
+}
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(15, 19))
+        XCTAssertEqual(parser.errors.first?.message, "impl declarations may not contain other impl declarations")
+    }
+    
+    func testMalformedImplDeclaration_CannotContainExpression() {
+        let parser = parse("""
+impl Foo {
+    1+2
+}
+""")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(15, 18))
+        XCTAssertEqual(parser.errors.first?.message, "expression statement is not permitted in impl declaration")
+    }
+    
+    func testWellformedImplStatement_WithOneFunction() {
+        let parser = parse("""
+impl Foo {
+    func doSomething() {
+    }
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Impl(sourceAnchor: parser.lineMapper.anchor(0, 43),
+                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
+                 children: [
+                    FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 41),
+                                        identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 31), identifier: "doSomething"),
+                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        body: Block(sourceAnchor: parser.lineMapper.anchor(34, 41), children: []))
+                 ])
+        ])
+    }
+    
+    func testWellformedImplStatement_WithTwoFunctions() {
+        let parser = parse("""
+impl Foo {
+    func doSomething1() {
+    }
+
+
+    func doSomething2() {
+    }
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Impl(sourceAnchor: parser.lineMapper.anchor(0, 78),
+                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
+                 children: [
+                    FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 42),
+                                        identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 32), identifier: "doSomething1"),
+                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        body: Block(sourceAnchor: parser.lineMapper.anchor(35, 42), children: [])),
+                    FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(49, 76),
+                                        identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(54, 66), identifier: "doSomething2"),
+                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        body: Block(sourceAnchor: parser.lineMapper.anchor(69, 76), children: []))
+                 ])
+        ])
+    }
+    
+    func testWellformedMethodCall() {
+        let parser = parse("""
+Foo.doSomething1()
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Expression.Call(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                            callee: Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 16),
+                                                   expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                                                               identifier: "Foo"),
+                                                   member: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 16),
+                                                                                 identifier: "doSomething1")),
+                            arguments: [])
+        ])
+    }
 }

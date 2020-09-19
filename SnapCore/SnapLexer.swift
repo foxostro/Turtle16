@@ -137,6 +137,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "const\\b") {
                 TokenConst(sourceAnchor: $0)
             },
+            Rule(pattern: "impl\\b") {
+                TokenImpl(sourceAnchor: $0)
+            },
             Rule(pattern: "u8\\b") {
                 TokenType(sourceAnchor: $0, type: .u8)
             },

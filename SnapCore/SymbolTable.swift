@@ -352,7 +352,7 @@ public struct Symbol: Equatable {
 public class SymbolTable: NSObject {
     public private(set) var symbolTable: [String:Symbol]
     private var typeTable: [String:SymbolType]
-    public let parent: SymbolTable?
+    public var parent: SymbolTable?
     public var storagePointer: Int
     public var enclosingFunctionType: FunctionType? = nil
     public var enclosingFunctionName: String? = nil

@@ -59,6 +59,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenStruct.self) {
             result = try consumeStruct(token as! TokenStruct)
         }
+        else if let token = accept(TokenImpl.self) {
+            result = try consumeImpl(token as! TokenImpl)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -657,7 +660,11 @@ public class SnapParser: Parser {
                                            elements: elements)
         }
         else if let token = peek() {
-            throw operandTypeMismatchError(token)
+            if token is TokenEOF {
+                throw unexpectedEndOfInputError()
+            } else {
+                throw operandTypeMismatchError(token)
+            }
         } else {
             throw unexpectedEndOfInputError()
         }
@@ -740,5 +747,38 @@ public class SnapParser: Parser {
         return [StructDeclaration(sourceAnchor: sourceAnchor,
                                   identifier: identifier,
                                   members: members)]
+    }
+    
+    private func consumeImpl(_ tokenImpl: TokenImpl) throws -> [AbstractSyntaxTreeNode] {
+        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in impl declaration"))
+        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in impl declaration"))
+        try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected newline"))
+        
+        var children: [FunctionDeclaration] = []
+        while (true) {
+            if let token = accept([TokenStatic.self, TokenLet.self, TokenVar.self, TokenIf.self, TokenWhile.self, TokenFor.self, TokenReturn.self, TokenStruct.self]) {
+                throw CompilerError(sourceAnchor: token.sourceAnchor, message: "`\(token.lexeme)' is not permitted in impl declaration")
+            }
+            else if let token = accept(TokenCurlyLeft.self) {
+                throw CompilerError(sourceAnchor: token.sourceAnchor, message: "block is not permitted in impl declaration")
+            }
+            else if let token = accept(TokenImpl.self) {
+                throw CompilerError(sourceAnchor: token.sourceAnchor, message: "impl declarations may not contain other impl declarations")
+            }
+            else if let token = accept(TokenFunc.self) {
+                let child = try consumeFunc(token as! TokenFunc)
+                children += child.compactMap({$0 as? FunctionDeclaration})
+            }
+            else if nil != accept(TokenCurlyRight.self) {
+                let sourceAnchor = tokenImpl.sourceAnchor?.union(previous?.sourceAnchor)
+                return [Impl(sourceAnchor: sourceAnchor, identifier: identifier, children: children)]
+            }
+            else {
+                let expr = try consumeExpression()
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "expression statement is not permitted in impl declaration")
+            }
+            try expectEndOfStatement()
+        }
     }
 }

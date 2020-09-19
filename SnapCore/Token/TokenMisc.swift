@@ -31,3 +31,4 @@ public class TokenDot : Token {}
 public class TokenUndefined : Token {}
 public class TokenStruct : Token {}
 public class TokenConst : Token {}
+public class TokenImpl : Token {}

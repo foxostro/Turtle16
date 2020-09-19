@@ -20,6 +20,9 @@ public class SnapLexer: Lexer {
                 self!.advanceToNewline()
                 return nil
             },
+            Rule(pattern: "\\.\\.") {
+                TokenDoubleDot(sourceAnchor: $0)
+            },
             Rule(pattern: "\\.") {
                 TokenDot(sourceAnchor: $0)
             },

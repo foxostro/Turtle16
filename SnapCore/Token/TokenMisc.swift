@@ -25,6 +25,7 @@ public class TokenWhile : Token {}
 public class TokenFor : Token {}
 public class TokenStatic : Token {}
 public class TokenAs : Token {}
+public class TokenDoubleDot : Token {}
 public class TokenDot : Token {}
 public class TokenUndefined : Token {}
 public class TokenStruct : Token {}

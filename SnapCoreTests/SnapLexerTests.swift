@@ -499,6 +499,15 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))])
     }
     
+    func testTokenizeDoubleDot() {
+        let tokenizer = SnapLexer(withString: "0..1")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), literal: 0),
+                                          TokenDoubleDot(sourceAnchor: tokenizer.lineMapper.anchor(1, 3)),
+                                          TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(3, 4), literal: 1),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
     func testTokenizeDot() {
         let tokenizer = SnapLexer(withString: "foo.bar")
         tokenizer.scanTokens()

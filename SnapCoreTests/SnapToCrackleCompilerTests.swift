@@ -1773,4 +1773,75 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+1), UInt16(kStaticStorageStartAddress))
     }
+    
+    func testCompileImplDeclaration_UseOfUndeclaredType() {
+        let ast = TopLevel(children: [
+            Impl(identifier: Expression.Identifier("Foo"), children: [])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
+    }
+    
+    func testCompileImplDeclaration_FooIsNotAStructType() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("Foo"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: nil,
+                           storage: .stackStorage,
+                           isMutable: false),
+            Impl(identifier: Expression.Identifier("Foo"), children: [])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
+    }
+    
+    func testCompileImplDeclaration_RedefinesExistingStructMember() {
+        let ast = TopLevel(children: [
+            StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
+                StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
+            ]),
+            Impl(identifier: Expression.Identifier("Foo"),
+                 children: [
+                    FunctionDeclaration(identifier: Expression.Identifier("bar"),
+                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        body: Block(children: []))
+                 ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "function redefines existing symbol: `bar'")
+    }
+    
+    func testCompileImplDeclaration() {
+        let ast = TopLevel(children: [
+            StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
+                StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
+            ]),
+            Impl(identifier: Expression.Identifier("Foo"),
+                 children: [
+                    FunctionDeclaration(identifier: Expression.Identifier("baz"),
+                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        body: Block(children: []))
+                 ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let expected = SymbolType.structType(StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .u8, offset: 0),
+            "baz" : Symbol(type: .function(FunctionType(returnType: .void, arguments: [])), offset: 0)
+        ])))
+        let actual = try! compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(expected, actual)
+        XCTAssertNotNil(compiler.mapMangledFunctionName.lookup(mangledName: "Foo_baz"))
+    }
 }

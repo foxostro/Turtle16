@@ -31,7 +31,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     private var symbols: SymbolTable
     private let labelMaker = LabelMaker()
-    private let mapMangledFunctionName = MangledFunctionNameMap()
+    public let mapMangledFunctionName = MangledFunctionNameMap()
     private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
@@ -93,12 +93,18 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func performDeclPass(func funDecl: FunctionDeclaration) throws {
+        let name = funDecl.identifier.identifier
+        
+        guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
+            throw CompilerError(sourceAnchor: funDecl.identifier.sourceAnchor,
+                                message: "function redefines existing symbol: `\(name)'")
+        }
+        
         // Labels must be unique. Mangle the function name to ensure the
         // function's label is unique.
         let uid = mapMangledFunctionName.nextUID(mangledName: makeMangledFunctionName(funDecl))
         
         let functionType = try evaluateFunctionTypeExpression(funDecl.functionType)
-        let name = funDecl.identifier.identifier
         let typ: SymbolType = .function(functionType)
         let symbol = Symbol(type: typ, offset: uid, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
@@ -111,6 +117,7 @@ public class SnapToCrackleCompiler: NSObject {
     private func performDeclPass(struct structDecl: StructDeclaration) throws {
         let name = structDecl.identifier.identifier
         let members = SymbolTable()
+        members.enclosingFunctionName = name
         for memberDeclaration in structDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
             let symbol = Symbol(type: memberType, offset: members.storagePointer)
@@ -145,6 +152,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(return: node)
         case let node as FunctionDeclaration:
             try compile(func: node)
+        case let node as Impl:
+            try compile(impl: node)
         default:
             break
         }
@@ -477,6 +486,28 @@ public class SnapToCrackleCompiler: NSObject {
         emit([
             .label(labelTail),
         ])
+    }
+    
+    private func compile(impl: Impl) throws {
+        let typ = try symbols.resolveType(identifier: impl.identifier.identifier).unwrapStructType()
+        
+        // For the moment, make the struct symbol table the local scope.
+        typ.symbols.parent = symbols
+        symbols = typ.symbols
+        
+        for child in impl.children {
+            try performDeclPass(func: child)
+        }
+        
+        for child in impl.children {
+            try compile(func: child)
+        }
+        
+        // Pop scopes and restore the struct symbol table.
+        let storagePointer = symbols.storagePointer
+        symbols = symbols.parent!
+        symbols.storagePointer = storagePointer
+        typ.symbols.parent = nil
     }
     
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,

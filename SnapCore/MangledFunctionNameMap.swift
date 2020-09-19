@@ -22,4 +22,8 @@ public class MangledFunctionNameMap: NSObject {
     public func lookup(uid: Int) -> String {
         return mapFunctionUIDToMangledName[uid]!
     }
+    
+    public func lookup(mangledName: String) -> Int? {
+        return mapFunctionMangledNameToUID[mangledName]
+    }
 }

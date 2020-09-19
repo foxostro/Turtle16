@@ -59,7 +59,7 @@ let a = 42
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
-    func test_EndToEndIntegration_ForLoop() {
+    func test_EndToEndIntegration_ForIn_Range_1() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var a = 255
@@ -70,7 +70,19 @@ for i in 0..10 {
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 9)
     }
     
-    func test_EndToEndIntegration_ForLoop_SingleStatement() {
+    func test_EndToEndIntegration_ForIn_Range_2() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var a = 255
+let range = 0..10
+for i in range {
+    a = i
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 9)
+    }
+    
+    func test_EndToEndIntegration_ForIn_Range_SingleStatement() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 var a = 255

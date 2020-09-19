@@ -1179,4 +1179,15 @@ r = doTheThing(&foo).x
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 1)
     }
+    
+    func test_EndToEndIntegration_ForRangeLoop() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r = 0
+forRange i in 0..10 {
+    r = i
+}
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 9)
+    }
 }

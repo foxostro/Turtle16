@@ -43,6 +43,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenFor.self) {
             result = try consumeForLoop(token as! TokenFor)
         }
+        else if let token = accept(TokenForRange.self) {
+            result = try consumeForRange(token as! TokenForRange)
+        }
         else if let leftBrace = accept(TokenCurlyLeft.self) {
             result = try consumeBlock(leftBrace as! TokenCurlyLeft)
         }
@@ -381,6 +384,55 @@ public class SnapParser: Parser {
                             conditionClause: conditionClause,
                             incrementClause: incrementClause,
                             body: body)
+                ])
+        ]
+    }
+    
+    private func consumeForRange(_ forToken: TokenForRange) throws -> [AbstractSyntaxTreeNode] {
+        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in for loop"))
+        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        _ = try expect(type: TokenIn.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected the `in' keyword following identifier in for loop"))
+        guard let range = try consumeRange() as? Expression.StructInitializer else {
+            throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected range in for loop")
+        }
+        let kRangeBeginArg = 0
+        let kRangeLimitArg = 1
+        let beginExpr = range.arguments[kRangeBeginArg].expr
+        let limitExpr = range.arguments[kRangeLimitArg].expr
+        
+        let body: AbstractSyntaxTreeNode
+        if nil != (peek() as? TokenCurlyLeft) {
+            let leftError = "expected `{' after `\(forToken.lexeme)' range in for loop"
+            let rightError = "expected `}' after `\(forToken.lexeme)' body of for loop"
+            body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
+        } else {
+            let newline = try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
+            let sourceAnchor = forToken.sourceAnchor?.union(newline.sourceAnchor)
+            body = Block(sourceAnchor: sourceAnchor, children: try consumeStatement())
+        }
+        
+        let sourceAnchor = forToken.sourceAnchor?.union(previous?.sourceAnchor)
+        
+        return [
+            Block(sourceAnchor: sourceAnchor,
+                  children: [
+                    VarDeclaration(sourceAnchor: identifier.sourceAnchor,
+                                   identifier: identifier,
+                                   explicitType: nil,
+                                   expression: beginExpr,
+                                   storage: .stackStorage,
+                                   isMutable: true),
+                    VarDeclaration(identifier: Expression.Identifier("__limit"),
+                                   explicitType: nil,
+                                   expression: limitExpr,
+                                   storage: .stackStorage,
+                                   isMutable: false),
+                    While(sourceAnchor: sourceAnchor,
+                          condition: Expression.Binary(op: .ne, left: identifier, right: Expression.Identifier("__limit")),
+                          body: Block(sourceAnchor: body.sourceAnchor, children: [
+                            body,
+                            Expression.Assignment(lexpr: identifier, rexpr: Expression.Binary(op: .plus, left: identifier, right: Expression.LiteralInt(1)))
+                          ]))
                 ])
         ]
     }

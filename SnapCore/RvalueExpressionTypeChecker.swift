@@ -410,10 +410,25 @@ public class RvalueExpressionTypeChecker: NSObject {
         
     public func check(call: Expression.Call) throws -> SymbolType {
         let calleeType = try check(expression: call.callee)
-        guard case .function(_) = calleeType else {
+        guard case .function(let typ) = calleeType else {
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
         }
-        let typ = calleeType.unwrapFunctionType()
+        
+        if let get = call.callee as? Expression.Get {
+            if let identifier = get.expr as? Expression.Identifier {
+                if !symbols.existsAsType(identifier: identifier.identifier) {
+                    let objectType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: identifier)
+                    let argName0 = typ.arguments[0].name
+                    let argType0 = typ.arguments[0].argumentType
+                    let isTypeAppropriateForSelfPointer = argType0 == .pointer(objectType) || argType0 == .constPointer(objectType)
+                    let isFirstParameterTheSelfPointer = argName0=="self" && isTypeAppropriateForSelfPointer
+                    if isFirstParameterTheSelfPointer {
+                        return try checkStructMemberFunctionCall(call, identifier)
+                    }
+                }
+            }
+        }
+        
         if call.arguments.count != typ.arguments.count {
             let message = "incorrect number of arguments in call to `\(typ.name!)'"
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
@@ -427,6 +442,44 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                          sourceAnchor: call.arguments[i].sourceAnchor,
                                                          messageWhenNotConvertible: message)
         }
+        return typ.returnType
+    }
+    
+    // TODO: checkStructMemberFunctionCall() is similar to a normal function call and perhaps some of these two can be consolidated by extracting some helper methods.
+    public func checkStructMemberFunctionCall(_ call: Expression.Call, _ objectIdentifier: Expression.Identifier) throws -> SymbolType {
+        let calleeType = try check(expression: call.callee)
+        guard case .function(_) = calleeType else {
+            throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
+        }
+        
+        let typ = calleeType.unwrapFunctionType()
+        
+        if call.arguments.count != typ.arguments.count-1 {
+            let message = "incorrect number of arguments in call to `\(typ.name!)'"
+            throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
+        }
+        
+        // Insert the object into the first argument in a UFCS call.
+        let selfPointer = Expression.Unary(sourceAnchor: objectIdentifier.sourceAnchor, op: .ampersand, expression: objectIdentifier)
+        let rtype0 = try rvalueContext().check(expression: selfPointer)
+        let ltype0 = typ.arguments[0].argumentType
+        let message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to `\(typ.name!)'"
+        _ = try checkTypesAreConvertibleInAssignment(ltype: ltype0,
+                                                     rtype: rtype0,
+                                                     sourceAnchor: objectIdentifier.sourceAnchor,
+                                                     messageWhenNotConvertible: message0)
+        
+        // The remaining arguments come from the parameter list as usual.
+        for i in 0..<call.arguments.count {
+            let rtype = try rvalueContext().check(expression: call.arguments[i])
+            let ltype = typ.arguments[i+1].argumentType
+            let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(typ.name!)'"
+            _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                         rtype: rtype,
+                                                         sourceAnchor: call.arguments[i].sourceAnchor,
+                                                         messageWhenNotConvertible: message)
+        }
+        
         return typ.returnType
     }
         

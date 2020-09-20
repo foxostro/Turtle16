@@ -750,6 +750,22 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             assert(false) // unreachable
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "cannot call value of non-function type `\(functionType)'")
         }
+        
+        if let get = node.callee as? Expression.Get {
+            if let identifier = get.expr as? Expression.Identifier {
+                if !symbols.existsAsType(identifier: identifier.identifier) {
+                    let objectType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: identifier)
+                    let argName0 = typ.arguments[0].name
+                    let argType0 = typ.arguments[0].argumentType
+                    let isTypeAppropriateForSelfPointer = argType0 == .pointer(objectType) || argType0 == .constPointer(objectType)
+                    let isFirstParameterTheSelfPointer = argName0=="self" && isTypeAppropriateForSelfPointer
+                    if isFirstParameterTheSelfPointer {
+                        return try compileStructMemberFunctionCall(typ, node, identifier)
+                    }
+                }
+            }
+        }
+        
         var instructions: [CrackleInstruction] = []
         switch typ.name {
         case "peekMemory":      instructions += try compileFunctionPeekMemory(typ, node)
@@ -905,6 +921,68 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         } else {
             return []
         }
+    }
+    
+    // TODO: compileStructMemberFunctionCall() is similar to a normal function call and perhaps some of these two can be consolidated by extracting some helper methods.
+    private func compileStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ objectIdentifier: Expression.Identifier) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        var tempReturnValue: CompilerTemporary!
+        
+        // Save all live temporaries to preserve their values across the call.
+        // We cannot know which temporaries will be invalidated by code in
+        // the function body.
+        let temporariesToPreserve = temporaryAllocator.liveTemporaries
+        for temporary in temporariesToPreserve {
+            instructions += pushTemporary(temporary)
+        }
+        
+        if typ.returnType.sizeof > 0 {
+            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+        }
+        
+        instructions += try pushToAllocateFunctionReturnValue(typ)
+        instructions += try pushFunctionArgumentsForUFCS(typ, node, objectIdentifier)
+        instructions += [.jalr(typ.mangledName!)]
+        instructions += popFunctionArguments(typ)
+                
+        // If there is a return value then it can be found at the top of the
+        // stack. Copy it to the temporary we allocated for it, above.
+        if typ.returnType.sizeof > 0 {
+            instructions += [
+                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
+                .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
+            ]
+            temporaryStack.push(tempReturnValue)
+        }
+        
+        // Restore live temporaries after the function call returns.
+        for temporary in temporariesToPreserve.reversed() {
+            instructions += popTemporary(temporary)
+        }
+        
+        return instructions
+    }
+    
+    private func pushFunctionArgumentsForUFCS(_ typ: FunctionType, _ node: Expression.Call, _ objectIdentifier: Expression.Identifier) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        // For the first argument, push a pointer to the object itself. (self)
+        let type0 = typ.arguments[0].argumentType
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: Expression.Unary(op: .ampersand, expression: objectIdentifier), ltype: type0)
+        let tempArgumentValue0 = temporaryStack.pop()
+        instructions += pushTemporary(temporary: tempArgumentValue0, explicitSize: type0.sizeof)
+        tempArgumentValue0.consume()
+        
+        // The rest of the function arguments come from the parameters list as usual.
+        for i in 0..<node.arguments.count {
+            let type = typ.arguments[i+1].argumentType
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
+            let tempArgumentValue = temporaryStack.pop()
+            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
+            tempArgumentValue.consume()
+        }
+        
+        return instructions
     }
     
     // The function put the return value on the stack. Move that value

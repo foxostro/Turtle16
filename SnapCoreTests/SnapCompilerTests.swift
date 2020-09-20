@@ -1259,4 +1259,44 @@ r = Foo.bar()
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
+    
+    func test_EndToEndIntegration_CallAStructMemberFunction_2() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u8 = 0
+struct Foo {
+    aa: u8
+}
+impl Foo {
+    func bar(self: *const Foo, offset: u8) -> u8 {
+        return self.aa + offset
+    }
+}
+let foo = Foo {
+    .aa = 41
+}
+r = foo.bar(1)
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
+    
+    func test_EndToEndIntegration_CallAStructMemberFunction_3() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u8 = 0
+struct Foo {
+    aa: u8
+}
+impl Foo {
+    func bar(offset: u8) -> u8 {
+        return offset
+    }
+}
+let foo = Foo {
+    .aa = 41
+}
+r = foo.bar(42)
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
 }

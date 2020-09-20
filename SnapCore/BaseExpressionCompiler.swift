@@ -12,7 +12,6 @@ import TurtleCore
 public class BaseExpressionCompiler: NSObject {
     public let symbols: SymbolTable
     public let labelMaker: LabelMaker
-    public let mapMangledFunctionName: MangledFunctionNameMap
     public let temporaryStack: CompilerTemporariesStack
     public let temporaryAllocator: CompilerTemporariesAllocator
     
@@ -28,12 +27,10 @@ public class BaseExpressionCompiler: NSObject {
     
     public init(symbols: SymbolTable,
                 labelMaker: LabelMaker,
-                mapMangledFunctionName: MangledFunctionNameMap,
                 temporaryStack: CompilerTemporariesStack,
                 temporaryAllocator: CompilerTemporariesAllocator) {
         self.symbols = symbols
         self.labelMaker = labelMaker
-        self.mapMangledFunctionName = mapMangledFunctionName
         self.temporaryStack = temporaryStack
         self.temporaryAllocator = temporaryAllocator
     }
@@ -45,7 +42,6 @@ public class BaseExpressionCompiler: NSObject {
     public func rvalueContext() -> RvalueExpressionCompiler {
         return RvalueExpressionCompiler(symbols: symbols,
                                         labelMaker: labelMaker,
-                                        mapMangledFunctionName: mapMangledFunctionName,
                                         temporaryStack: temporaryStack,
                                         temporaryAllocator: temporaryAllocator)
     }
@@ -53,7 +49,6 @@ public class BaseExpressionCompiler: NSObject {
     public func lvalueContext() -> LvalueExpressionCompiler {
         return LvalueExpressionCompiler(symbols: symbols,
                                         labelMaker: labelMaker,
-                                        mapMangledFunctionName: mapMangledFunctionName,
                                         temporaryStack: temporaryStack,
                                         temporaryAllocator: temporaryAllocator)
     }

@@ -233,16 +233,38 @@ public class FunctionType: NSObject {
         }
     }
     
+    public let name: String?
+    public let mangledName: String?
     public let returnType: SymbolType
     public let arguments: [Argument]
     
-    public init(returnType: SymbolType, arguments: [Argument]) {
+    public convenience init(returnType: SymbolType, arguments: [Argument]) {
+        self.init(name: nil,
+                  mangledName: nil,
+                  returnType: returnType,
+                  arguments: arguments)
+    }
+    
+    public convenience init(name: String, returnType: SymbolType, arguments: [Argument]) {
+        self.init(name: name,
+                  mangledName: name,
+                  returnType: returnType,
+                  arguments: arguments)
+    }
+    
+    public init(name: String?, mangledName: String?, returnType: SymbolType, arguments: [Argument]) {
+        self.name = name
+        self.mangledName = mangledName
         self.returnType = returnType
         self.arguments = arguments
     }
     
     public override var description: String {
-        return "(\(makeArgumentsDescription())) -> \(returnType)"
+        if let name = name {
+            return "\(name) :: (\(makeArgumentsDescription())) -> \(returnType)"
+        } else {
+            return "(\(makeArgumentsDescription())) -> \(returnType)"
+        }
     }
     
     public func makeArgumentsDescription() -> String {
@@ -255,16 +277,34 @@ public class FunctionType: NSObject {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? FunctionType else { return false }
-        guard returnType == rhs.returnType else { return false }
-        guard arguments == rhs.arguments else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? FunctionType else {
+            return false
+        }
+        guard name == rhs.name else {
+            return false
+        }
+        guard mangledName == rhs.mangledName else {
+            return false
+        }
+        guard returnType == rhs.returnType else {
+            return false
+        }
+        guard arguments == rhs.arguments else {
+            return false
+        }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
+        hasher.combine(name)
+        hasher.combine(mangledName)
         hasher.combine(returnType)
         hasher.combine(arguments)
         return hasher.finalize()
@@ -416,6 +456,16 @@ public class SymbolTable: NSObject {
                                 message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution.0
+    }
+    
+    public func resolveTypeOfIdentifier(sourceAnchor: SourceAnchor?, identifier: String) throws -> SymbolType {
+        if let resolution = maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
+            return resolution.0.type
+        }
+        if let resolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
+            return resolution.0
+        }
+        throw CompilerError(sourceAnchor: sourceAnchor, message: "use of unresolved identifier: `\(identifier)'")
     }
     
     public func resolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) throws -> (Symbol, Int) {

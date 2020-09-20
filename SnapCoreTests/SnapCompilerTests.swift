@@ -1243,4 +1243,20 @@ r = doTheThing(&foo).x
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress + 0), 1)
     }
+    
+    func test_EndToEndIntegration_CallAStructMemberFunction_1() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u8 = 0
+struct Foo {
+}
+impl Foo {
+    func bar() -> u8 {
+        return 42
+    }
+}
+r = Foo.bar()
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
 }

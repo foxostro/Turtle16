@@ -208,7 +208,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileConstantDeclaration_CannotAssignFunctionToArray() {
-        let functionType = Expression.FunctionType(returnType: Expression.PrimitiveType(.bool), arguments: [
+        let functionType = Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.bool), arguments: [
             Expression.FunctionType.Argument(name: "a", type: Expression.PrimitiveType(.u8)),
             Expression.FunctionType.Argument(name: "b", type: Expression.PrimitiveType(.u16))
         ])
@@ -369,7 +369,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let three = Expression.LiteralInt(3)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
@@ -410,7 +410,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let three = Expression.LiteralInt(3)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
@@ -831,7 +831,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionDeclaration_Simplest() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 body: Block())
         ])
         let compiler = SnapToCrackleCompiler()
@@ -858,7 +858,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true),
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 body: Block(children: [
                                     ExprUtils.makeAssignment(name: "a", right: Expression.LiteralInt(1))
                                 ])),
@@ -877,7 +877,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionIsMissingAReturnStatement() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block())
         ])
         let compiler = SnapToCrackleCompiler()
@@ -889,7 +889,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     Return(ExprUtils.makeBool(value: true))
                                 ]))
@@ -903,7 +903,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnVoid() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     Return(nil)
                                 ]))
@@ -917,7 +917,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     Return(Expression.LiteralBool(true)),
                                     Expression.LiteralBool(false)
@@ -934,7 +934,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let one = ExprUtils.makeU8(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     If(condition: tr,
                                        then: Return(tr),
@@ -953,7 +953,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let one = ExprUtils.makeU8(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     If(condition: tr,
                                        then: AbstractSyntaxTreeNode(),
@@ -972,7 +972,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let one = ExprUtils.makeU8(value: 1)
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     While(condition: tr,
                                           body: Return(tr)),
@@ -988,7 +988,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionWithReturnValueU8() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     Return(Expression.LiteralInt(0xaa))
                                 ])),
@@ -1011,7 +1011,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionWithReturnValueU16() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u16), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u16), arguments: []),
                                 body: Block(children: [
                                     Return(Expression.LiteralInt(0xabcd))
                                 ])),
@@ -1034,7 +1034,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionWithReturnValueU8PromotedToU16() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u16), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u16), arguments: []),
                                 body: Block(children: [
                                     Return(Expression.LiteralInt(0xaa))
                                 ])),
@@ -1057,7 +1057,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     If(sourceAnchor: nil,
                                        condition: Expression.LiteralBool(true),
@@ -1074,7 +1074,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseThereExistsAPathMissingAReturn_2() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block())
         ])
         let compiler = SnapToCrackleCompiler()
@@ -1086,7 +1086,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionCallUsesIncorrectParameterType() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "a", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "a", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     Return(ExprUtils.makeU8(value: 1))
                                 ])),
@@ -1106,7 +1106,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompilationFailsBecauseFunctionReturnsUndeclaredType() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.Identifier("wat"), arguments: [Expression.FunctionType.Argument(name: "a", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.Identifier("wat"), arguments: [Expression.FunctionType.Argument(name: "a", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     Return(ExprUtils.makeU8(value: 1))
                                 ]))
@@ -1130,7 +1130,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testUnexpectedNonVoidReturnValueInVoidFunction() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 body: Block(children: [
                                     Return(ExprUtils.makeU8(value: 1))
                                 ]))
@@ -1145,7 +1145,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testItIsCompletelyValidToHaveMeaninglessReturnStatementAtBottomOfVoidFunction() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 body: Block(children: [
                                     Return()
                                 ]))
@@ -1158,7 +1158,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionWithParameters_1() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     Return(Expression.Identifier("bar"))
                                 ])),
@@ -1182,7 +1182,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionWithParameters_2() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     VarDeclaration(identifier: Expression.Identifier("baz"),
                                                    explicitType: nil,
@@ -1210,7 +1210,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testCompileFunctionWithParameters_3_ConvertIntegerConstantsToMatchingConcreteTypes() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.FunctionType.Argument(name: "bar", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     Return(Expression.Identifier("bar"))
                                 ])),
@@ -1261,7 +1261,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         //    0xfff1 --  "
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
@@ -1269,7 +1269,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                                        functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                                         body: Block(children: [
                                                             Return(Expression.Identifier("a"))
                                                         ])),
@@ -1295,7 +1295,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testFunctionNamesAreNotUnique() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
@@ -1303,7 +1303,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                    storage: .stackStorage,
                                                    isMutable: false),
                                     FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                                        functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                                         body: Block(children: [
                                                             Return(Expression.Identifier("a"))
                                                         ])),
@@ -1311,7 +1311,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                            arguments: []))
                                 ])),
             FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                 body: Block(children: [
                                     Return(Expression.LiteralInt(0xbb))
                                 ])),
@@ -1334,7 +1334,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func testMutuallyRecursiveFunctions() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("isEven"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.bool), arguments: [Expression.FunctionType.Argument(name: "n", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "isEven", returnType: Expression.PrimitiveType(.bool), arguments: [Expression.FunctionType.Argument(name: "n", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     If(condition: ExprUtils.makeComparisonEq(left: Expression.Identifier("n"),
                                                                              right: Expression.LiteralInt(0)),
@@ -1347,7 +1347,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                        ]))
                                 ])),
             FunctionDeclaration(identifier: Expression.Identifier("isOdd"),
-                                functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.bool), arguments: [Expression.FunctionType.Argument(name: "n", type: Expression.PrimitiveType(.u8))]),
+                                functionType: Expression.FunctionType(name: "isOdd", returnType: Expression.PrimitiveType(.bool), arguments: [Expression.FunctionType.Argument(name: "n", type: Expression.PrimitiveType(.u8))]),
                                 body: Block(children: [
                                     If(condition: ExprUtils.makeComparisonEq(left: Expression.Identifier("n"),
                                                                              right: Expression.LiteralInt(0)),
@@ -1807,7 +1807,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             Impl(identifier: Expression.Identifier("Foo"),
                  children: [
                     FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         body: Block(children: []))
                  ])
         ])
@@ -1825,7 +1825,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             Impl(identifier: Expression.Identifier("Foo"),
                  children: [
                     FunctionDeclaration(identifier: Expression.Identifier("baz"),
-                                        functionType: Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        functionType: Expression.FunctionType(name: "baz", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         body: Block(children: []))
                  ])
         ])
@@ -1836,12 +1836,47 @@ class SnapToCrackleCompilerTests: XCTestCase {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             return
         }
+        
         let expected = SymbolType.structType(StructType(name: "Foo", symbols: SymbolTable([
             "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .function(FunctionType(returnType: .void, arguments: [])), offset: 0)
+            "baz" : Symbol(type: .function(FunctionType(name: "baz", mangledName: "Foo_baz", returnType: .void, arguments: [])), offset: 0)
         ])))
         let actual = try! compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
-        XCTAssertNotNil(compiler.mapMangledFunctionName.lookup(mangledName: "Foo_baz"))
+        
+        let expectedMangledName = "Foo_baz"
+        let actualMangledName = try! actual.unwrapStructType().symbols.resolve(identifier: "baz").type.unwrapFunctionType().mangledName
+        XCTAssertEqual(expectedMangledName, actualMangledName)
+    }
+    
+    func testCompileCallStructMemberFunction() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: Expression.LiteralInt(0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            StructDeclaration(identifier: Expression.Identifier("Foo"), members: []),
+            Impl(identifier: Expression.Identifier("Foo"),
+                 children: [
+                    FunctionDeclaration(identifier: Expression.Identifier("baz"),
+                                        functionType: Expression.FunctionType(name: "baz", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        body: Block(children: [
+                                            Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(42))
+                                        ]))
+                 ]),
+            Expression.Call(callee: Expression.Get(expr: Expression.Identifier("Foo"), member: Expression.Identifier("baz")), arguments: [])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
 }

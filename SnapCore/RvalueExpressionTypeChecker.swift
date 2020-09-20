@@ -405,33 +405,29 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
-        return try symbols.resolve(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier).type
+        return try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
-        let callee = call.callee as! Expression.Identifier
-        let name = callee.identifier
-        let symbol = try resolve(callee)
-        switch symbol.type {
-        case .function(let typ):
-            if call.arguments.count != typ.arguments.count {
-                let message = "incorrect number of arguments in call to `\(name)'"
-                throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
-            }
-            for i in 0..<typ.arguments.count {
-                let rtype = try rvalueContext().check(expression: call.arguments[i])
-                let ltype = typ.arguments[i].argumentType
-                let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
-                _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
-                                                             rtype: rtype,
-                                                             sourceAnchor: call.arguments[i].sourceAnchor,
-                                                             messageWhenNotConvertible: message)
-            }
-            return typ.returnType
-        default:
-            let message = "cannot call value of non-function type `\(symbol.type)'"
+        let calleeType = try check(expression: call.callee)
+        guard case .function(_) = calleeType else {
+            throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
+        }
+        let typ = calleeType.unwrapFunctionType()
+        if call.arguments.count != typ.arguments.count {
+            let message = "incorrect number of arguments in call to `\(typ.name!)'"
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
         }
+        for i in 0..<typ.arguments.count {
+            let rtype = try rvalueContext().check(expression: call.arguments[i])
+            let ltype = typ.arguments[i].argumentType
+            let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(typ.name!)'"
+            _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
+                                                         rtype: rtype,
+                                                         sourceAnchor: call.arguments[i].sourceAnchor,
+                                                         messageWhenNotConvertible: message)
+        }
+        return typ.returnType
     }
         
     public func check(as expr: Expression.As) throws -> SymbolType {
@@ -443,14 +439,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                           messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)'")
     }
     
-    public func resolve(_ expr: Expression.Identifier) throws -> Symbol {
-        let symbol = try symbols.resolve(sourceAnchor: expr.sourceAnchor,
-                                         identifier: expr.identifier)
-        return symbol
-    }
-    
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let symbol = try resolve(expr.identifier)
+        let symbol = try symbols.resolve(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier.identifier)
         switch symbol.type {
         case .array(count: _, elementType: let elementType),
              .constDynamicArray(elementType: let elementType),
@@ -566,7 +556,13 @@ public class RvalueExpressionTypeChecker: NSObject {
             let typ = try check(expression: arg.argumentType)
             arguments.append(FunctionType.Argument(name: arg.name, type: typ))
         }
-        return .function(FunctionType(returnType: returnType, arguments: arguments))
+        
+        let mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [expr.name])).map{$0 as! String}.joined(separator: "_")
+        
+        return .function(FunctionType(name: expr.name,
+                                      mangledName: mangledName,
+                                      returnType: returnType,
+                                      arguments: arguments))
     }
     
     public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {

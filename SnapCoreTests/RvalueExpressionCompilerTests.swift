@@ -3582,10 +3582,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCallVoidFunctionWithNoArgs() {
         let expr = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(returnType: .void, arguments: [])), offset: 0)
+            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
-        _ = compiler.mapMangledFunctionName.nextUID(mangledName: "foo")
         let actual = mustCompile(compiler: compiler, expression: expr)
         let executor = CrackleExecutor()
         injectFunctionFooWhichWritesToMemoryAsSideEffect(executor)
@@ -3608,10 +3607,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let right = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
         let expr = Expression.Binary(op: .plus, left: left, right: right)
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(returnType: .u16, arguments: [])), offset: 0)
+            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u16, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
-        _ = compiler.mapMangledFunctionName.nextUID(mangledName: "foo")
         let actual = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
@@ -3625,10 +3623,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let right = ExprUtils.makeU16(value: 42)
         let expr = Expression.Binary(op: .plus, left: left, right: right)
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(returnType: .u16, arguments: [])), offset: 0)
+            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u16, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
-        _ = compiler.mapMangledFunctionName.nextUID(mangledName: "foo")
         let actual = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()

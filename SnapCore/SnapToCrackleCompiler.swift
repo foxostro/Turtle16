@@ -31,7 +31,6 @@ public class SnapToCrackleCompiler: NSObject {
     
     private var symbols: SymbolTable
     private let labelMaker = LabelMaker()
-    public let mapMangledFunctionName = MangledFunctionNameMap()
     private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
@@ -100,13 +99,9 @@ public class SnapToCrackleCompiler: NSObject {
                                 message: "function redefines existing symbol: `\(name)'")
         }
         
-        // Labels must be unique. Mangle the function name to ensure the
-        // function's label is unique.
-        let uid = mapMangledFunctionName.nextUID(mangledName: makeMangledFunctionName(funDecl))
-        
         let functionType = try evaluateFunctionTypeExpression(funDecl.functionType)
         let typ: SymbolType = .function(functionType)
-        let symbol = Symbol(type: typ, offset: uid, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
     }
     
@@ -126,11 +121,6 @@ public class SnapToCrackleCompiler: NSObject {
         }
         let fullyQualifiedStructType = StructType(name: name, symbols: members)
         symbols.bind(identifier: name, symbolType: .structType(fullyQualifiedStructType))
-    }
-    
-    private func makeMangledFunctionName(_ node: FunctionDeclaration) -> String {
-        let name = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [node.identifier.identifier])).map{$0 as! String}.joined(separator: "_")
-        return name
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
@@ -267,9 +257,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     @discardableResult private func compile(expression: Expression) throws -> RvalueExpressionCompiler {
         currentSourceAnchor = expression.sourceAnchor
-        let exprCompiler = RvalueExpressionCompiler(symbols: symbols,
-                                                    labelMaker: labelMaker,
-                                                    mapMangledFunctionName: mapMangledFunctionName)
+        let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
         let ir = try exprCompiler.compile(expression: expression)
         emit(ir)
         return exprCompiler
@@ -460,7 +448,9 @@ public class SnapToCrackleCompiler: NSObject {
         
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         
-        let mangledName = makeMangledFunctionName(node)
+        let functionType = try evaluateFunctionTypeExpression(node.functionType)
+        
+        let mangledName = functionType.mangledName!
         let labelHead = mangledName
         let labelTail = "__\(mangledName)_tail"
         emit([
@@ -469,8 +459,7 @@ public class SnapToCrackleCompiler: NSObject {
             .pushReturnAddress,
             .enter
         ])
-        
-        let functionType = try evaluateFunctionTypeExpression(node.functionType)
+
         pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.identifier,
                                   enclosingFunctionType: functionType)
         bindFunctionArguments(functionType)

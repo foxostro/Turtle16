@@ -36,7 +36,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "peekMemory"
-        let typ: SymbolType = .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -44,7 +44,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "pokeMemory"
-        let typ: SymbolType = .function(FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -52,7 +52,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "peekPeripheral"
-        let typ: SymbolType = .function(FunctionType(returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -60,7 +60,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "pokePeripheral"
-        let typ: SymbolType = .function(FunctionType(returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -68,7 +68,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
         let name = "hlt"
-        let typ: SymbolType = .function(FunctionType(returnType: .void, arguments: []))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -76,13 +76,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
-                         mapMangledFunctionName: MangledFunctionNameMap = MangledFunctionNameMap(),
                          temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
                          temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         super.init(symbols: symbols,
                    labelMaker: labelMaker,
-                   mapMangledFunctionName: mapMangledFunctionName,
                    temporaryStack: temporaryStack,
                    temporaryAllocator: temporaryAllocator)
     }
@@ -745,27 +743,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(call node: Expression.Call) throws -> [CrackleInstruction] {
-        let identifier = (node.callee as! Expression.Identifier).identifier
-        let symbol = try symbols.resolve(sourceAnchor: node.sourceAnchor, identifier: identifier)
-        switch symbol.type {
-        case .function(let typ):
-            var instructions: [CrackleInstruction] = []
-            switch identifier {
-            case "peekMemory":      instructions += try compileFunctionPeekMemory(typ, node)
-            case "pokeMemory":      instructions += try compileFunctionPokeMemory(typ, node)
-            case "peekPeripheral":  instructions += try compileFunctionPeekPeripheral(typ, node)
-            case "pokePeripheral":  instructions += try compileFunctionPokePeripheral(typ, node)
-            case "hlt":             instructions += [.hlt]
-            default:                instructions += try compileFunctionUserDefined(typ, node)
-            }
-            return instructions
-        default:
+        let functionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node.callee)
+        guard case .function(let typ) = functionType else {
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
-            assert(false)
-            let message = "cannot call value of non-function type `\(String(describing: symbol.type))'"
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: message)
+            assert(false) // unreachable
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "cannot call value of non-function type `\(functionType)'")
         }
+        var instructions: [CrackleInstruction] = []
+        switch typ.name {
+        case "peekMemory":      instructions += try compileFunctionPeekMemory(typ, node)
+        case "pokeMemory":      instructions += try compileFunctionPokeMemory(typ, node)
+        case "peekPeripheral":  instructions += try compileFunctionPeekPeripheral(typ, node)
+        case "pokePeripheral":  instructions += try compileFunctionPokePeripheral(typ, node)
+        case "hlt":             instructions += [.hlt]
+        default:                instructions += try compileFunctionUserDefined(typ, node)
+        }
+        return instructions
     }
     
     private func compileFunctionPeekMemory(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
@@ -824,10 +818,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
-        let identifier = (node.callee as! Expression.Identifier).identifier
-        let symbol = try symbols.resolve(sourceAnchor: node.sourceAnchor, identifier: identifier)
-        let mangledName = mapMangledFunctionName.lookup(uid: symbol.offset)
-        
         var instructions: [CrackleInstruction] = []
         var tempReturnValue: CompilerTemporary!
         
@@ -845,7 +835,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         instructions += try pushToAllocateFunctionReturnValue(typ)
         instructions += try pushFunctionArguments(typ, node)
-        instructions += [.jalr(mangledName)]
+        instructions += [.jalr(typ.mangledName!)]
         instructions += popFunctionArguments(typ)
                 
         // If there is a return value then it can be found at the top of the

@@ -1879,4 +1879,18 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
+    
+    func testStructCannotContainItselfRecursively() {
+        let ast = TopLevel(children: [
+            Block(children: [
+                StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
+                    StructDeclaration.Member(name: "bar", type: Expression.Identifier("Foo"))
+                ])
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "a struct cannot contain itself recursively")
+    }
 }

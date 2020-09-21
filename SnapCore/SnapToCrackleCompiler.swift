@@ -119,6 +119,9 @@ public class SnapToCrackleCompiler: NSObject {
         members.enclosingFunctionName = name
         for memberDeclaration in structDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
+            if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
+                throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
+            }
             let symbol = Symbol(type: memberType, offset: members.storagePointer)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             members.storagePointer += memberType.sizeof

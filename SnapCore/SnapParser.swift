@@ -261,9 +261,8 @@ public class SnapParser: Parser {
                 let rightError = "expected `}' after `\(elseToken.lexeme)' branch"
                 elseBranch = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
             } else {
-                let newline = try self.expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: self.peek()?.sourceAnchor, message: "expected newline"))
                 let children = try self.consumeStatement()
-                let sourceAnchor = children.map({$0.sourceAnchor}).reduce(newline.sourceAnchor, {$0?.union($1)})
+                let sourceAnchor = children.map({$0.sourceAnchor}).reduce(children.first?.sourceAnchor, {$0?.union($1)})
                 elseBranch = Block(sourceAnchor: sourceAnchor, children: children)
             }
         }

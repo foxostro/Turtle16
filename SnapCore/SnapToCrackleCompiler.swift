@@ -111,7 +111,11 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func performDeclPass(struct structDecl: StructDeclaration) throws {
         let name = structDecl.identifier.identifier
-        let members = SymbolTable()
+        
+        let members = SymbolTable(parent: symbols)
+        let fullyQualifiedStructType = StructType(name: name, symbols: members)
+        symbols.bind(identifier: name, symbolType: .structType(fullyQualifiedStructType))
+        
         members.enclosingFunctionName = name
         for memberDeclaration in structDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
@@ -119,8 +123,7 @@ public class SnapToCrackleCompiler: NSObject {
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             members.storagePointer += memberType.sizeof
         }
-        let fullyQualifiedStructType = StructType(name: name, symbols: members)
-        symbols.bind(identifier: name, symbolType: .structType(fullyQualifiedStructType))
+        members.parent = nil
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {

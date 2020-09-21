@@ -1299,4 +1299,49 @@ r = foo.bar(42)
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
+    
+    func test_EndToEndIntegration_LinkedList() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u8 = 0
+struct LinkedList {
+    next: *const LinkedList, // TODO: we need something like an optional type so we can terminate the list
+    isTail: bool,
+    key: u8,
+    value: u8
+}
+let c = LinkedList {
+    // intentionally leave `next' undefined here
+    .isTail = true,
+    .key = 2,
+    .value = 42
+}
+let b = LinkedList {
+    .next = &c,
+    .isTail = false,
+    .key = 1,
+    .value = 0
+}
+let a = LinkedList {
+    .next = &b,
+    .isTail = false,
+    .key = 0,
+    .value = 0
+}
+impl LinkedList {
+    func lookup(self: *const LinkedList, key: u8) -> u8 {
+        if self.key == key {
+            return self.value
+        } else if self.isTail {
+            // TODO: sum types would help here too
+            return 0xff // return sentinel value indicating "not found" result
+        } else {
+            return LinkedList.lookup(self.next, key)
+        }
+    }
+}
+r = a.lookup(2)
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
 }

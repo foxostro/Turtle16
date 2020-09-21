@@ -21,10 +21,6 @@ public class SnapParser: Parser {
             result = []
             shouldExpectEndOfStatement = false
         }
-        else if nil != accept(TokenNewline.self) {
-            result = []
-            shouldExpectEndOfStatement = false
-        }
         else if let token = accept(TokenStatic.self) {
             result = try consumeStatic(token as! TokenStatic)
         }
@@ -262,6 +258,9 @@ public class SnapParser: Parser {
                 elseBranch = try self.consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first!
             } else {
                 let children = try self.consumeStatement()
+                if children.isEmpty {
+                    throw self.unexpectedEndOfInputError()
+                }
                 let sourceAnchor = children.map({$0.sourceAnchor}).reduce(children.first?.sourceAnchor, {$0?.union($1)})
                 elseBranch = Block(sourceAnchor: sourceAnchor, children: children)
             }

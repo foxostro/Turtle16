@@ -829,7 +829,7 @@ if 1 {
 """)
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected newline")
+        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
         
     func testMalformedIfStatement_MissingOpeningBraceForElseBranch_2() {
@@ -841,7 +841,7 @@ else
 """)
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.message, "expected newline")
+        XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
         
     func testMalformedIfStatement_MissingStatementForElseBranch() {
@@ -948,7 +948,7 @@ else
                                storage: .stackStorage,
                                isMutable: false)
                ]),
-               else: Block(sourceAnchor: parser.lineMapper.anchor(25, 41), children: [
+               else: Block(sourceAnchor: parser.lineMapper.anchor(30, 41), children: [
                 VarDeclaration(sourceAnchor: parser.lineMapper.anchor(30, 41),
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(34, 37), identifier: "bar"),
                                explicitType: nil,

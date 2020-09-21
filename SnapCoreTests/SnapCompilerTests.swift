@@ -1336,7 +1336,7 @@ impl LinkedList {
             // TODO: sum types would help here too
             return 0xff // return sentinel value indicating "not found" result
         } else {
-            return LinkedList.lookup(self.next, key)
+            return self.next.lookup(key)
         }
     }
 }

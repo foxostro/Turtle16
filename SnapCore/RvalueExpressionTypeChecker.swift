@@ -414,16 +414,27 @@ public class RvalueExpressionTypeChecker: NSObject {
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
         }
         
-        if let get = call.callee as? Expression.Get {
-            if let identifier = get.expr as? Expression.Identifier {
-                if !symbols.existsAsType(identifier: identifier.identifier) {
-                    let objectType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: identifier)
-                    let argName0 = typ.arguments[0].name
+        if typ.arguments.count > 0 {
+            let argName0 = typ.arguments[0].name
+            if argName0=="self" {
+                let selfExpr: Expression?
+                switch call.callee {
+                case let expr as Expression.Get:
+                    selfExpr = expr.expr
+                case let expr as Expression.Identifier:
+                    selfExpr = expr
+                default:
+                    selfExpr = nil
+                }
+                if let selfExpr = selfExpr {
+                    let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
                     let argType0 = typ.arguments[0].argumentType
-                    let isTypeAppropriateForSelfPointer = argType0 == .pointer(objectType) || argType0 == .constPointer(objectType)
-                    let isFirstParameterTheSelfPointer = argName0=="self" && isTypeAppropriateForSelfPointer
-                    if isFirstParameterTheSelfPointer {
-                        return try checkStructMemberFunctionCall(call, identifier)
+                    if argType0 == selfType || argType0.correspondingConstType == selfType {
+                        return try checkStructMemberFunctionCall(call, selfExpr)
+                    }
+                    if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
+                        let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
+                        return try checkStructMemberFunctionCall(call, addressOf)
                     }
                 }
             }
@@ -446,7 +457,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     // TODO: checkStructMemberFunctionCall() is similar to a normal function call and perhaps some of these two can be consolidated by extracting some helper methods.
-    public func checkStructMemberFunctionCall(_ call: Expression.Call, _ objectIdentifier: Expression.Identifier) throws -> SymbolType {
+    public func checkStructMemberFunctionCall(_ call: Expression.Call, _ selfExpr: Expression) throws -> SymbolType {
         let calleeType = try check(expression: call.callee)
         guard case .function(_) = calleeType else {
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
@@ -460,13 +471,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         // Insert the object into the first argument in a UFCS call.
-        let selfPointer = Expression.Unary(sourceAnchor: objectIdentifier.sourceAnchor, op: .ampersand, expression: objectIdentifier)
-        let rtype0 = try rvalueContext().check(expression: selfPointer)
+        let rtype0 = try rvalueContext().check(expression: selfExpr)
         let ltype0 = typ.arguments[0].argumentType
         let message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to `\(typ.name!)'"
         _ = try checkTypesAreConvertibleInAssignment(ltype: ltype0,
                                                      rtype: rtype0,
-                                                     sourceAnchor: objectIdentifier.sourceAnchor,
+                                                     sourceAnchor: selfExpr.sourceAnchor,
                                                      messageWhenNotConvertible: message0)
         
         // The remaining arguments come from the parameter list as usual.

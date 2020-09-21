@@ -751,16 +751,27 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "cannot call value of non-function type `\(functionType)'")
         }
         
-        if let get = node.callee as? Expression.Get {
-            if let identifier = get.expr as? Expression.Identifier {
-                if !symbols.existsAsType(identifier: identifier.identifier) {
-                    let objectType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: identifier)
-                    let argName0 = typ.arguments[0].name
+        if typ.arguments.count > 0 {
+            let argName0 = typ.arguments[0].name
+            if argName0=="self" {
+                let selfExpr: Expression?
+                switch node.callee {
+                case let expr as Expression.Get:
+                    selfExpr = expr.expr
+                case let expr as Expression.Identifier:
+                    selfExpr = expr
+                default:
+                    selfExpr = nil
+                }
+                if let selfExpr = selfExpr {
+                    let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
                     let argType0 = typ.arguments[0].argumentType
-                    let isTypeAppropriateForSelfPointer = argType0 == .pointer(objectType) || argType0 == .constPointer(objectType)
-                    let isFirstParameterTheSelfPointer = argName0=="self" && isTypeAppropriateForSelfPointer
-                    if isFirstParameterTheSelfPointer {
-                        return try compileStructMemberFunctionCall(typ, node, identifier)
+                    if argType0 == selfType || argType0.correspondingConstType == selfType {
+                        return try compileStructMemberFunctionCall(typ, node, selfExpr)
+                    }
+                    if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
+                        let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
+                        return try compileStructMemberFunctionCall(typ, node, addressOf)
                     }
                 }
             }
@@ -924,7 +935,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     // TODO: compileStructMemberFunctionCall() is similar to a normal function call and perhaps some of these two can be consolidated by extracting some helper methods.
-    private func compileStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ objectIdentifier: Expression.Identifier) throws -> [CrackleInstruction] {
+    private func compileStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         var tempReturnValue: CompilerTemporary!
         
@@ -941,7 +952,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
         
         instructions += try pushToAllocateFunctionReturnValue(typ)
-        instructions += try pushFunctionArgumentsForUFCS(typ, node, objectIdentifier)
+        instructions += try pushFunctionArgumentsForUFCS(typ, node, selfExpr)
         instructions += [.jalr(typ.mangledName!)]
         instructions += popFunctionArguments(typ)
                 
@@ -963,12 +974,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func pushFunctionArgumentsForUFCS(_ typ: FunctionType, _ node: Expression.Call, _ objectIdentifier: Expression.Identifier) throws -> [CrackleInstruction] {
+    private func pushFunctionArgumentsForUFCS(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
         // For the first argument, push a pointer to the object itself. (self)
         let type0 = typ.arguments[0].argumentType
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: Expression.Unary(op: .ampersand, expression: objectIdentifier), ltype: type0)
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: selfExpr, ltype: type0)
         let tempArgumentValue0 = temporaryStack.pop()
         instructions += pushTemporary(temporary: tempArgumentValue0, explicitSize: type0.sizeof)
         tempArgumentValue0.consume()

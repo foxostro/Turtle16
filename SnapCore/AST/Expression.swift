@@ -351,6 +351,14 @@ public class Expression: AbstractSyntaxTreeNode {
             guard arguments == rhs.arguments else { return false }
             return true
         }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ callee=%@ arguments={%@}>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          callee.makeIndentedDescription(depth: depth),
+                          arguments.map({$0.description}).joined(separator: ", "))
+        }
     }
     
     public class As: Expression {

@@ -1301,14 +1301,14 @@ r = foo.bar(42)
     }
     
     func test_EndToEndIntegration_LinkedList() {
-        // TODO: adding `typealias' to the language would help here, as would some sugar for optionals syntax
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
 struct None {}
 let none = None {}
-var r: union { u8, const None } = none
+typealias MaybeU8 = union { u8, None }
+var r: MaybeU8 = none
 struct LinkedList {
-    next: union { *const LinkedList, const None },
+    next: union { *const LinkedList, None },
     key: u8,
     value: u8
 }
@@ -1328,11 +1328,11 @@ let a = LinkedList {
     .value = 0
 }
 impl LinkedList {
-    func lookup(self: *const LinkedList, key: u8) -> union { u8, const None } {
+    func lookup(self: *const LinkedList, key: u8) -> MaybeU8 {
         if self.key == key {
             return self.value
         }
-        else if self.next is *const LinkedList {
+        else if self.next is *const LinkedList { // TODO: match statement to replace this if-statement here
             let next = self.next as *const LinkedList
             return next.lookup(key)
         }
@@ -1345,6 +1345,4 @@ r = a.lookup(2)
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x002a)
     }
-    
-    // TODO: need to add runtime checks to trigger a panic() if the `as' expression is invalid when unpacking a union.
 }

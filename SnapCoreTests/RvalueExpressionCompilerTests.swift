@@ -34,7 +34,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func makeCompiler(symbols: SymbolTable = SymbolTable()) -> RvalueExpressionCompiler {
-        let symbols2 = RvalueExpressionCompiler.bindCompilerIntrinsicFunctions(symbols: symbols)
+        let symbols2 = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: symbols)
         let compiler = RvalueExpressionCompiler(symbols: symbols2)
         return compiler
     }

@@ -1303,8 +1303,6 @@ r = foo.bar(42)
     func test_EndToEndIntegration_LinkedList() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-struct None {}
-let none = None {}
 typealias MaybeU8 = union { u8, None }
 var r: MaybeU8 = none
 struct LinkedList {

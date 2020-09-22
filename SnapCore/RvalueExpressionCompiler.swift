@@ -15,13 +15,23 @@ import TurtleCompilerToolbox
 public class RvalueExpressionCompiler: BaseExpressionCompiler {
     public let typeChecker: RvalueExpressionTypeChecker
     
-    public static func bindCompilerIntrinsicFunctions(symbols: SymbolTable) -> SymbolTable {
-        return bindCompilerIntrinsicRangeType(symbols:
-            bindCompilerInstrinsicHlt(symbols:
-                bindCompilerInstrinsicPokePeripheral(symbols:
-                    bindCompilerInstrinsicPeekPeripheral(symbols:
-                        bindCompilerInstrinsicPokeMemory(symbols:
-                            bindCompilerInstrinsicPeekMemory(symbols: symbols))))))
+    public static func bindCompilerIntrinsics(symbols: SymbolTable) -> SymbolTable {
+        var result: SymbolTable
+        result = bindCompilerInstrinsicPeekMemory(symbols: symbols)
+        result = bindCompilerInstrinsicPokeMemory(symbols: result)
+        result = bindCompilerInstrinsicPeekPeripheral(symbols: result)
+        result = bindCompilerInstrinsicPokePeripheral(symbols: result)
+        result = bindCompilerInstrinsicHlt(symbols: result)
+        result = bindCompilerIntrinsicRangeType(symbols: result)
+        result = bindCompilerIntrinsicNoneType(symbols: result)
+        return result
+    }
+    
+    private static func bindCompilerIntrinsicNoneType(symbols: SymbolTable) -> SymbolTable {
+        let none = "None"
+        let noneType: SymbolType = .structType(StructType(name: none, symbols: SymbolTable()))
+        symbols.bind(identifier: none, symbolType: noneType)
+        return symbols
     }
     
     private static func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {

@@ -35,7 +35,12 @@ public class SnapToCrackleCompiler: NSObject {
     private var currentSourceAnchor: SourceAnchor? = nil
     
     public override init() {
-        symbols = RvalueExpressionCompiler.bindCompilerIntrinsicFunctions(symbols: globalSymbols)
+        symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
+        
+        let noneType = try! symbols.resolveType(identifier: "None")
+        assert(noneType.sizeof == 0)
+        symbols.bind(identifier: "none", symbol: Symbol(type: noneType, offset: staticStoragePointer, storage: .staticStorage))
+        
         super.init()
     }
     

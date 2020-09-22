@@ -80,6 +80,8 @@ public class SnapToCrackleCompiler: NSObject {
             try performDeclPass(struct: node)
         case let node as Block:
             try performDeclPass(block: node)
+        case let node as Typealias:
+            try performDeclPass(typealias: node)
         default:
             break
         }
@@ -127,6 +129,16 @@ public class SnapToCrackleCompiler: NSObject {
             members.storagePointer += memberType.sizeof
         }
         members.parent = nil
+    }
+    
+    private func performDeclPass(typealias expr: Typealias) throws {
+        guard false == symbols.existsAsType(identifier: expr.lexpr.identifier) else {
+            throw CompilerError(sourceAnchor: expr.lexpr.sourceAnchor,
+                                message: "typealias redefines existing type: `\(expr.lexpr.identifier)'")
+        }
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let symbolType = try typeChecker.check(expression: expr.rexpr)
+        symbols.bind(identifier: expr.lexpr.identifier, symbolType: symbolType)
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {

@@ -104,6 +104,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "_") {
                 TokenUnderscore(sourceAnchor: $0)
             },
+            Rule(pattern: "typealias\\b") {
+                TokenTypealias(sourceAnchor: $0)
+            },
             Rule(pattern: "let\\b") {
                 TokenLet(sourceAnchor: $0)
             },

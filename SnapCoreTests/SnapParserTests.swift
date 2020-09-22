@@ -2115,4 +2115,14 @@ Foo.doSomething1()
                           testType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(7, 9), typ: .u8))
         ])
     }
+    
+    func testWellformedTypealiasStatement() {
+        let parser = parse("typealias Foo = Bar")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Typealias(sourceAnchor: parser.lineMapper.anchor(0, 19),
+                      lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(10, 13), identifier: "Foo"),
+                      rexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "Bar"))
+        ])
+    }
 }

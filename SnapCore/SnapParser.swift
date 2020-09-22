@@ -58,6 +58,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenImpl.self) {
             result = try consumeImpl(token as! TokenImpl)
         }
+        else if let token = accept(TokenTypealias.self) {
+            result = try consumeTypealias(token as! TokenTypealias)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -810,5 +813,15 @@ public class SnapParser: Parser {
             }
             try expectEndOfStatement()
         }
+    }
+    
+    private func consumeTypealias(_ tokenTypealias: TokenTypealias) throws -> [AbstractSyntaxTreeNode] {
+        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in typealias declaration"))
+        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `=' in typealias declaration"))
+        let expr = try consumeType()
+        return [Typealias(sourceAnchor: tokenTypealias.sourceAnchor?.union(expr.sourceAnchor),
+                          lexpr: identifier,
+                          rexpr: expr)]
     }
 }

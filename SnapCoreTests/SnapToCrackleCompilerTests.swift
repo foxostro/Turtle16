@@ -1893,4 +1893,25 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "a struct cannot contain itself recursively")
     }
+    
+    func testCompileTypealias() {
+        let ast = TopLevel(children: [
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        let result = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testCompileTypealiasRedefinesExistingType() {
+        let ast = TopLevel(children: [
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8)),
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "typealias redefines existing type: `Foo'")
+    }
 }

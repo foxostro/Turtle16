@@ -34,3 +34,4 @@ public class TokenStruct : Token {}
 public class TokenUnion : Token {}
 public class TokenConst : Token {}
 public class TokenImpl : Token {}
+public class TokenTypealias : Token {}

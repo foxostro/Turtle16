@@ -3900,4 +3900,122 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 10)
     }
+    
+    func testCompileFailsWhenCastingUnionTypeToNonMemberType() {
+        let union = Expression.UnionType([
+            Expression.PrimitiveType(.u8),
+            Expression.PrimitiveType(.u16)
+        ])
+        let expr = Expression.As(expr: union, targetType: Expression.PrimitiveType(.bool))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `union { u8, u16 }' to type `bool'")
+        }
+    }
+
+    func testSuccessfullyCastUnionTypeToMemberType() {
+        let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage)])
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.isVerboseLogging = true
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0, to: offset+0)  // type tag
+            computer.dataRAM.store(value: 42, to: offset+1) // storage[0]
+            computer.dataRAM.store(value: 0, to: offset+2)  // storage[1]
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
+    }
+    
+    func testTestPrimitiveTypeIsExpression_Succeeds() {
+        let expr = Expression.Is(expr: ExprUtils.makeU8(value: 0), testType: Expression.PrimitiveType(.u8))
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 1)
+    }
+    
+    func testTestPrimitiveTypeIsExpression_False() {
+        let expr = Expression.Is(expr: ExprUtils.makeU8(value: 0), testType: Expression.PrimitiveType(.bool))
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0)
+    }
+    
+    func testTestUnionVariantTypeAgainstNonMemberType() {
+        let union = Expression.Identifier("foo")
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage)])
+        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0)
+    }
+    
+    func testTestUnionVariantTypeAgainstKnownMemberType_Tag0() {
+        let union = Expression.Identifier("foo")
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage)])
+        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0, to: offset+0)  // type tag
+            computer.dataRAM.store(value: 42, to: offset+1) // storage
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 1)
+    }
+    
+    func testTestUnionVariantTypeAgainstKnownMemberType_Tag1() {
+        let union = Expression.Identifier("foo")
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage)])
+        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 1, to: offset+0)  // type tag
+            computer.dataRAM.store(value: 42, to: offset+1) // storage
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 1)
+    }
+    
+    func testCanAssignToUnionGivenTypeWhichConvertsToMatchingUnionMember() {
+        let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"), rexpr: ExprUtils.makeU8(value: 42))
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u16])), offset: offset, storage: .staticStorage)])
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 0xff, to: offset+0) // type tag
+            computer.dataRAM.store(value: 0xff, to: offset+1) // storage[0]
+            computer.dataRAM.store(value: 0xff, to: offset+2) // storage[1]
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: offset+0), 0)
+        XCTAssertEqual(computer.dataRAM.load16(from: offset+1), 0x002a)
+    }
+    
+    // TODO: does an assignment expression return a value? I'm not sure that this would work. Need to test: let bar = (foo = 1)
 }

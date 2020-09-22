@@ -77,6 +77,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "&") {
                 TokenOperator(sourceAnchor: $0, op: .ampersand)
             },
+            Rule(pattern: "\\|") {
+                TokenOperator(sourceAnchor: $0, op: .pipe)
+            },
             Rule(pattern: "as\\b") {
                 TokenAs(sourceAnchor: $0)
             },
@@ -134,11 +137,17 @@ public class SnapLexer: Lexer {
             Rule(pattern: "struct\\b") {
                 TokenStruct(sourceAnchor: $0)
             },
+            Rule(pattern: "union\\b") {
+                TokenUnion(sourceAnchor: $0)
+            },
             Rule(pattern: "const\\b") {
                 TokenConst(sourceAnchor: $0)
             },
             Rule(pattern: "impl\\b") {
                 TokenImpl(sourceAnchor: $0)
+            },
+            Rule(pattern: "is\\b") {
+                TokenIs(sourceAnchor: $0)
             },
             Rule(pattern: "u8\\b") {
                 TokenType(sourceAnchor: $0, type: .u8)

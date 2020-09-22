@@ -3033,4 +3033,119 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "value of type `*Foo' has no member `asdf'")
         }
     }
+    
+    func testResolveUnionTypeExpression() {
+        let expr = Expression.UnionType([
+            Expression.PrimitiveType(.u8),
+            Expression.PrimitiveType(.u16),
+            Expression.PrimitiveType(.bool),
+            Expression.ArrayType(count: Expression.LiteralInt(5), elementType: Expression.PrimitiveType(.u8))
+        ])
+        let expected: SymbolType = .unionType(UnionType([
+            .u8, .u16, .bool, .array(count: 5, elementType: .u8)
+        ]))
+        let typeChecker = TypeContextTypeChecker()
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(actual?.sizeof, 6)
+    }
+    
+    func testResolveConstUnionTypeExpression() {
+        let expr = Expression.ConstType(Expression.UnionType([
+            Expression.PrimitiveType(.u8),
+            Expression.PrimitiveType(.u16),
+            Expression.PrimitiveType(.bool),
+            Expression.ArrayType(count: Expression.LiteralInt(5), elementType: Expression.PrimitiveType(.u8))
+        ]))
+        let expected: SymbolType = .unionType(UnionType([
+            .constU8,
+            .constU16,
+            .constBool,
+            .array(count: 5, elementType: .constU8)
+        ]))
+        let typeChecker = TypeContextTypeChecker()
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(actual?.sizeof, 6)
+    }
+    
+    func testCompileFailsWhenCastingUnionTypeToNonMemberType() {
+        let union = Expression.Identifier("foo")
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
+        let expr = Expression.As(expr: union, targetType: Expression.PrimitiveType(.bool))
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `union { u8, u16 }' to type `bool'")
+        }
+    }
+    
+    func testSuccessfullyCastUnionTypeToMemberType() {
+        let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
+        let expected: SymbolType = .u8
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testTestPrimitiveTypeIsExpression_Succeeds() {
+        let expr = Expression.Is(expr: ExprUtils.makeU8(value: 0),
+                                 testType: Expression.PrimitiveType(.u8))
+        let expected: SymbolType = .compTimeBool(true)
+        let typeChecker = RvalueExpressionTypeChecker()
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testTestPrimitiveTypeIsExpression_False() {
+        let expr = Expression.Is(expr: ExprUtils.makeU8(value: 0),
+                                 testType: Expression.PrimitiveType(.bool))
+        let expected: SymbolType = .compTimeBool(false)
+        let typeChecker = RvalueExpressionTypeChecker()
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testTestUnionVariantTypeAgainstNonMemberType() {
+        let union = Expression.Identifier("foo")
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
+        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
+        let expected: SymbolType = .compTimeBool(false)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testTestUnionVariantTypeAgainstKnownMemberType() {
+        let union = Expression.Identifier("foo")
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .stackStorage)])
+        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
+        let expected: SymbolType = .bool
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var actual: SymbolType? = nil
+        XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testCanAssignToUnionGivenTypeWhichConvertsToMatchingUnionMember() {
+        let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                         rexpr: ExprUtils.makeU8(value: 1))
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u16])), offset: 0x0010)])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .unionType(UnionType([.u16])))
+    }
 }

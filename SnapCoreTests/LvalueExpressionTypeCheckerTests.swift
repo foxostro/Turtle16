@@ -191,4 +191,13 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
     }
+    
+    func testGetLvalueOfUnion() {
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u16])), offset: 0x0010)])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.Identifier("foo")
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .unionType(UnionType([.u16])))
+    }
 }

@@ -47,6 +47,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(call: call)
         case let expr as Expression.As:
             return try check(as: expr)
+        case let expr as Expression.Is:
+            return try check(is: expr)
         case let expr as Expression.Subscript:
             return try check(subscript: expr)
         case let expr as Expression.LiteralArray:
@@ -67,6 +69,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(constType: expr)
         case let expr as Expression.StructInitializer:
             return try check(structInitializer: expr)
+        case let expr as Expression.UnionType:
+            return try check(unionType: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -120,6 +124,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .divide: return "/"
         case .modulus: return "%"
         case .ampersand: return "&"
+        case .pipe: return "|"
         }
     }
     
@@ -311,12 +316,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         // concrete integer types.
         //
         // Small integer types will be automatically promoted to larger types.
-        //
-        // Otherwise, the type of the expression must be identical to the type
-        // of the symbol.
+        
+        // If the types match exactly then the conversion is acceptable.
         if rtype == ltype {
             return ltype
         }
+        
         switch (rtype, ltype) {
         case (.compTimeInt(let a), .u8), (.compTimeInt(let a), .constU8):
             guard a >= 0 && a < 256 else {
@@ -399,6 +404,34 @@ public class RvalueExpressionTypeChecker: NSObject {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
             }
             return ltype
+        case (.unionType(let typ), _):
+            if !isExplicitCast {
+                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
+            }
+            for member in typ.members {
+                // TODO: don't use exceptions for flow control here. Need a checkTypesAreConvertible thing which returns a boolean value.
+                let result = try? checkTypesAreConvertible(ltype: ltype,
+                                                           rtype: member,
+                                                           sourceAnchor: sourceAnchor,
+                                                           messageWhenNotConvertible: messageWhenNotConvertible,
+                                                           isExplicitCast: isExplicitCast)
+                if let result = result {
+                    return result
+                }
+            }
+            throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
+        case (_, .unionType(let typ)):
+            for member in typ.members {
+                // TODO: don't use exceptions for flow control here. Need a checkTypesAreConvertible thing which returns a boolean value.
+                if let _ = try? checkTypesAreConvertible(ltype: member,
+                                                         rtype: rtype,
+                                                         sourceAnchor: sourceAnchor,
+                                                         messageWhenNotConvertible: messageWhenNotConvertible,
+                                                         isExplicitCast: isExplicitCast) {
+                    return ltype
+                }
+            }
+            throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
         default:
             throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
         }
@@ -500,6 +533,21 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                           rtype: rtype,
                                                           sourceAnchor: expr.sourceAnchor,
                                                           messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)'")
+    }
+    
+    public func check(is expr: Expression.Is) throws -> SymbolType {
+        let ltype = try check(expression: expr.expr)
+        let rtype = try check(expression: expr.testType)
+        switch ltype {
+        case .unionType(let typ):
+            if typ.members.contains(rtype) || typ.members.contains(rtype.correspondingConstType) {
+                return .bool
+            } else {
+                return .compTimeBool(false)
+            }
+        default:
+            return .compTimeBool(ltype == rtype)
+        }
     }
     
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
@@ -660,6 +708,11 @@ public class RvalueExpressionTypeChecker: NSObject {
             membersAlreadyInitialized.append(arg.name)
         }
         return result
+    }
+    
+    public func check(unionType expr: Expression.UnionType) throws -> SymbolType {
+        let members = try expr.members.map({try check(expression: $0)})
+        return .unionType(UnionType(members))
     }
     
     func unsupportedError(expression: Expression) -> Error {

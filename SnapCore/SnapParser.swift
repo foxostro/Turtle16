@@ -167,10 +167,33 @@ public class SnapParser: Parser {
         guard nil != accept(TokenColon.self) else {
             return nil
         }
-        return try consumeType()
+        return try consumeUnionType()
     }
     
     fileprivate func consumeType() throws -> Expression {
+        return try consumeUnionType()
+    }
+    
+    fileprivate func consumeUnionType() throws -> Expression {
+        if let unionToken = accept(TokenUnion.self) {
+            try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected `{'"))
+            
+            var members: [Expression] = []
+            repeat {
+                let expr = try consumeConstType()
+                members.append(expr)
+            } while nil != accept(TokenComma.self)
+            
+            let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected `}'"))
+            
+            let sourceAnchor = unionToken.sourceAnchor?.union(closingBrace.sourceAnchor)
+            return Expression.UnionType(sourceAnchor: sourceAnchor, members: members)
+        } else {
+            return try consumeConstType()
+        }
+    }
+    
+    fileprivate func consumeConstType() throws -> Expression {
         if let constToken = accept(TokenConst.self) {
             let expr = try consumeTypeWithoutRegardForConst()
             let sourceAnchor = constToken.sourceAnchor?.union(expr.sourceAnchor)
@@ -222,7 +245,7 @@ public class SnapParser: Parser {
         let typeName = peek()?.sourceAnchor?.text ?? "unknown"
         let tokenType = try expect(type: TokenType.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "use of undeclared type `\(typeName)'")) as! TokenType
         let explicitType = tokenType.representedType
-        return Expression.PrimitiveType(explicitType)
+        return Expression.PrimitiveType(sourceAnchor: tokenType.sourceAnchor, typ: explicitType)
     }
     
     private func consumeIf(_ ifToken: TokenIf) throws -> [AbstractSyntaxTreeNode] {
@@ -553,8 +576,17 @@ public class SnapParser: Parser {
                                         identifier: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
                                         expr: expr)
         } else {
-            return try consumeCall()
+            return try consumeIs()
         }
+    }
+    
+    private func consumeIs() throws -> Expression {
+        let expr = try consumeCall()
+        if nil != accept(TokenIs.self) {
+            let testType = try consumeType()
+            return Expression.Is(sourceAnchor: expr.sourceAnchor?.union(testType.sourceAnchor), expr: expr, testType: testType)
+        }
+        return expr
     }
     
     private func consumeCall() throws -> Expression {

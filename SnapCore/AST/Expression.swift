@@ -394,6 +394,39 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class Is: Expression {
+        public let expr: Expression
+        public let testType: Expression
+        
+        public convenience init(expr: Expression, testType: Expression) {
+            self.init(sourceAnchor: nil, expr: expr, testType: testType)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, expr: Expression, testType: Expression) {
+            self.expr = expr
+            self.testType = testType
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? Is else { return false }
+            guard expr == rhs.expr else { return false }
+            guard testType == rhs.testType else { return false }
+            return true
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ testType=%@ expr=%@>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          testType.makeIndentedDescription(depth: depth),
+                          expr.makeIndentedDescription(depth: depth))
+        }
+    }
+    
     public class Subscript: Expression {
         public let identifier: Expression.Identifier
         public let expr: Expression
@@ -834,6 +867,55 @@ public class Expression: AbstractSyntaxTreeNode {
         public override var hash: Int {
             var hasher = Hasher()
             hasher.combine(typ)
+            return hasher.finalize()
+        }
+    }
+    
+    public class UnionType: Expression {
+        public let members: [Expression]
+        
+        public convenience init(_ members: [Expression]) {
+            self.init(sourceAnchor: nil, members: members)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, members: [Expression]) {
+            self.members = members
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@<%@ members={%@}>",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          members.map({"\($0.makeIndentedDescription(depth: depth))"}).joined(separator: ", "))
+        }
+        
+        public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? UnionType else {
+                return false
+            }
+            guard members == rhs.members else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(members)
             return hasher.finalize()
         }
     }

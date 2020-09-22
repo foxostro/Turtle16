@@ -140,9 +140,6 @@ public class SnapLexer: Lexer {
             Rule(pattern: "struct\\b") {
                 TokenStruct(sourceAnchor: $0)
             },
-            Rule(pattern: "union\\b") {
-                TokenUnion(sourceAnchor: $0)
-            },
             Rule(pattern: "const\\b") {
                 TokenConst(sourceAnchor: $0)
             },

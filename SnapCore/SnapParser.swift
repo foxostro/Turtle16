@@ -178,21 +178,16 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumeUnionType() throws -> Expression {
-        if let unionToken = accept(TokenUnion.self) {
-            try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected `{'"))
-            
-            var members: [Expression] = []
-            repeat {
-                let expr = try consumeConstType()
-                members.append(expr)
-            } while nil != accept(TokenComma.self)
-            
-            let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected `}'"))
-            
-            let sourceAnchor = unionToken.sourceAnchor?.union(closingBrace.sourceAnchor)
-            return Expression.UnionType(sourceAnchor: sourceAnchor, members: members)
+        var members: [Expression] = [try consumeConstType()]
+        while let _ = accept(operator: .pipe) {
+            let expr = try consumeConstType()
+            members.append(expr)
+        }
+        if members.count == 1 {
+            return members[0]
         } else {
-            return try consumeConstType()
+            let sourceAnchor = members.first?.sourceAnchor?.union(members.last?.sourceAnchor)
+            return Expression.UnionType(sourceAnchor: sourceAnchor, members: members)
         }
     }
     
@@ -220,7 +215,7 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumePointerType(_ star: Token) throws -> Expression {
-        let typ = try consumeType()
+        let typ = try consumeConstType()
         let sourceAnchor = star.sourceAnchor?.union(typ.sourceAnchor)
         return Expression.PointerType(sourceAnchor: sourceAnchor, typ: typ)
     }

@@ -107,6 +107,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(call: call)
         case let expr as Expression.As:
             return try compile(as: expr)
+        case let expr as Expression.Is:
+            return try compile(is: expr)
         case let expr as Expression.LiteralArray:
             return try compile(literalArray: expr)
         case let expr as Expression.Subscript:
@@ -564,6 +566,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         let rtype = try typeChecker.check(expression: rexpr)
+        
         switch (rtype, ltype) {
         case (.constBool, .constBool),
              (.constBool, .bool),
@@ -735,6 +738,47 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 abort()
             }
             instructions += try compile(expression: rexpr)
+        case (.unionType(let a), .unionType(let b)):
+            // When we convert a union type, the underlying layouts must be identical.
+            guard a == b else {
+                assert(false) // unreachable
+                abort()
+            }
+            instructions += try compile(expression: rexpr)
+        case (_, .unionType(let typ)):
+            // So which type are we converting to in the union? And the tag?
+            var targetType: SymbolType?
+            var typeTag: Int?
+            for i in 0..<typ.members.count {
+                let member = typ.members[i]
+                targetType = try? typeChecker.checkTypesAreConvertibleInAssignment(ltype: member, rtype: rtype, sourceAnchor: rexpr.sourceAnchor, messageWhenNotConvertible: "")
+                if targetType != nil {
+                    typeTag = i
+                    break
+                }
+            }
+            
+            // Convert the expression to the target type.
+            instructions += try compileAndConvertExpression(rexpr: rexpr, ltype: targetType!, isExplicitCast: false)
+            let src = temporaryStack.pop()
+            
+            // Allocate a temporary for the union structure.
+            // Write the converted value into the union structure.
+            let dst = temporaryAllocator.allocate(size: ltype.sizeof)
+            instructions += [.copyWords(dst.address+1, src.address, targetType!.sizeof)]
+            src.consume()
+            
+            // Write the type tag into the union structure too.
+            instructions += [.storeImmediate(dst.address+0, typeTag!)]
+            temporaryStack.push(dst)
+        case (.unionType, _):
+            assert(isExplicitCast)
+            instructions += try compile(expression: rexpr)
+            let dst = temporaryAllocator.allocate(size: ltype.sizeof)
+            let src = temporaryStack.pop()
+            instructions += [.copyWords(dst.address, src.address+1, ltype.sizeof)]
+            temporaryStack.push(dst)
+            src.consume()
         default:
             assert(false) // unreachable
             abort()
@@ -1016,6 +1060,57 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let targetType = try typeChecker.check(expression: expr.targetType)
         let instructions = try compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: targetType)
         return instructions
+    }
+    
+    private func compile(is expr: Expression.Is) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        let tempResult = temporaryAllocator.allocate()
+        let exprType = try typeChecker.check(expression: expr)
+        switch exprType {
+        case .compTimeBool(let val):
+            instructions += [.storeImmediate(tempResult.address, val ? 1 : 0)]
+        default:
+            switch try typeChecker.check(expression: expr.expr) {
+            case .unionType(let typ):
+                instructions += try compileUnionTypeIs(expr, tempResult, typ)
+            default:
+                assert(false) // unreachable
+                abort()
+            }
+        }
+        temporaryStack.push(tempResult)
+        return instructions
+    }
+    
+    private func compileUnionTypeIs(_ expr: Expression.Is, _ tempResult: CompilerTemporary, _ typ: UnionType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        // Take the test type and determine the corresponding type tag.
+        let testType = try typeChecker.check(expression: expr.testType)
+        let typeTag: Int! = determineUnionTypeTag(typ, testType)
+        instructions += [.storeImmediate(tempResult.address, typeTag)]
+        
+        // Compile the expression to get the value of the union.
+        instructions += try compile(expression: expr.expr)
+        let tempUnionValue = temporaryStack.pop()
+        
+        // Compare the union's type tag against the tag of the test type.
+        instructions += [.eq(tempResult.address, tempResult.address, tempUnionValue.address)]
+        tempUnionValue.consume()
+        
+        return instructions
+    }
+    
+    // Given a type and a related union, determine the corresponding type tag.
+    // Return nil if the type does not match the union after all.
+    private func determineUnionTypeTag(_ typ: UnionType, _ testType: SymbolType) -> Int? {
+        for i in 0..<typ.members.count {
+            let member = typ.members[i]
+            if testType == member || testType.correspondingConstType == member {
+                return i
+            }
+        }
+        return nil
     }
     
     private func compile(literalArray expr: Expression.LiteralArray) throws -> [CrackleInstruction] {

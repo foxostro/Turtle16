@@ -259,6 +259,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
     }
+        
+    func testTokenizePipe() {
+        let tokenizer = SnapLexer(withString: "|")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .pipe),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
+    }
     
     func testTokenizeAdditionSymbol() {
         let tokenizer = SnapLexer(withString: "+")
@@ -552,6 +559,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))])
     }
     
+    func testTokenizeUnion() {
+        let tokenizer = SnapLexer(withString: "union")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenUnion(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))])
+    }
+    
     func testTokenizeConst() {
         let tokenizer = SnapLexer(withString: "const")
         tokenizer.scanTokens()
@@ -564,5 +578,12 @@ class SnapLexerTests: XCTestCase {
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenImpl(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
+    func testTokenizeIs() {
+        let tokenizer = SnapLexer(withString: "is")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenIs(sourceAnchor: tokenizer.lineMapper.anchor(0, 2)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
     }
 }

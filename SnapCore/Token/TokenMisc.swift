@@ -26,9 +26,11 @@ public class TokenFor : Token {}
 public class TokenIn : Token {}
 public class TokenStatic : Token {}
 public class TokenAs : Token {}
+public class TokenIs : Token {}
 public class TokenDoubleDot : Token {}
 public class TokenDot : Token {}
 public class TokenUndefined : Token {}
 public class TokenStruct : Token {}
+public class TokenUnion : Token {}
 public class TokenConst : Token {}
 public class TokenImpl : Token {}

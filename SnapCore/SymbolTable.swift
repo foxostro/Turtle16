@@ -21,6 +21,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
     case constPointer(SymbolType), pointer(SymbolType)
     case constStructType(StructType), structType(StructType)
+    case unionType(UnionType)
     
     public var isConst: Bool {
         switch self {
@@ -49,6 +50,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return .constStructType(typ)
         case .pointer(let typ):
             return .constPointer(typ)
+        case .unionType(let typ):
+            return .unionType(typ.correspondingConstType)
         default:
             return self
         }
@@ -119,6 +122,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return (count ?? 0) * elementType.sizeof
         case .constStructType(let typ), .structType(let typ):
             return typ.sizeof
+        case .unionType(let typ):
+            return typ.sizeof
         }
     }
     
@@ -184,6 +189,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "const *\(pointee.description)"
         case .pointer(let pointee):
             return "*\(pointee.description)"
+        case .unionType(let typ):
+            return "\(typ.description)"
         }
     }
 }
@@ -323,7 +330,7 @@ public class StructType: NSObject {
     public override var description: String {
         return """
 struct \(name) {
-    \(makeMembersDescription())
+\(makeMembersDescription())
 }
 """
     }
@@ -373,6 +380,57 @@ struct \(name) {
         hasher.combine(name)
         hasher.combine(symbols)
         return hasher.finalize()
+    }
+}
+
+public class UnionType: NSObject {
+    let members: [SymbolType]
+    
+    public init(_ members: [SymbolType]) {
+        self.members = members
+    }
+    
+    public override var description: String {
+        let result = "union { " + members.map({"\($0)"}).joined(separator: ", ") + " }"
+        return result
+    }
+    
+    public var sizeof: Int {
+        let kTagSize = SymbolType.u8.sizeof
+        let kBufferSize = members.reduce(0) { (result, member) -> Int in
+            return max(result, member.sizeof)
+        }
+        return kTagSize + kBufferSize
+    }
+    
+    public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? UnionType else {
+            return false
+        }
+        guard members == rhs.members else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(members)
+        return hasher.finalize()
+    }
+    
+    public var correspondingConstType: UnionType {
+        return UnionType(members.map({$0.correspondingConstType}))
     }
 }
 

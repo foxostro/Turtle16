@@ -1303,10 +1303,10 @@ r = foo.bar(42)
     func test_EndToEndIntegration_LinkedList() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-typealias MaybeU8 = union { u8, None }
+typealias MaybeU8 = u8 | None
 var r: MaybeU8 = none
 struct LinkedList {
-    next: union { *const LinkedList, None },
+    next: *const LinkedList | None,
     key: u8,
     value: u8
 }
@@ -1330,7 +1330,7 @@ impl LinkedList {
         if self.key == key {
             return self.value
         }
-        else if self.next is *const LinkedList { // TODO: match statement to replace this if-statement here
+        else if self.next is *const LinkedList { // TODO: Add a match-statement to replace this if-statement.
             let next = self.next as *const LinkedList
             return next.lookup(key)
         }

@@ -391,7 +391,7 @@ public class UnionType: NSObject {
     }
     
     public override var description: String {
-        let result = "union { " + members.map({"\($0)"}).joined(separator: ", ") + " }"
+        let result = members.map({"\($0)"}).joined(separator: " | ")
         return result
     }
     

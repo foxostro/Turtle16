@@ -3910,7 +3910,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert value of type `union { u8, u16 }' to type `bool'")
+            XCTAssertEqual(compilerError?.message, "cannot convert value of type `u8 | u16' to type `bool'")
         }
     }
 

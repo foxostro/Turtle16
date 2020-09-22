@@ -2055,14 +2055,14 @@ Foo.doSomething1()
     }
     
     func testWellformedUnionTypeExpression_TwoTypes() {
-        let parser = parse("var foo: union { u8, bool } = undefined")
+        let parser = parse("var foo: u8 | bool = undefined")
         XCTAssertFalse(parser.hasError)
-        let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 27), members: [
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(17, 19), typ: .u8),
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(21, 25), typ: .bool)
+        let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 18), members: [
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool)
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
-            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 39),
+            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 30),
                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                            explicitType: unionType,
                            expression: nil,
@@ -2072,15 +2072,15 @@ Foo.doSomething1()
     }
     
     func testWellformedUnionTypeExpression_ThreeTypes() {
-        let parser = parse("var foo: union { u8, bool, Foo } = undefined")
+        let parser = parse("var foo: u8 | bool | Foo = undefined")
         XCTAssertFalse(parser.hasError)
-        let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 32), members: [
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(17, 19), typ: .u8),
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(21, 25), typ: .bool),
-            Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(27, 30), identifier: "Foo")
+        let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 24), members: [
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool),
+            Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(21, 24), identifier: "Foo")
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
-            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 44),
+            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 36),
                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                            explicitType: unionType,
                            expression: nil,
@@ -2090,14 +2090,14 @@ Foo.doSomething1()
     }
     
     func testWellformedUnionTypeExpression_WithPointerType() {
-        let parser = parse("var foo: union { *u8, None } = undefined")
+        let parser = parse("var foo: *u8 | None = undefined")
         XCTAssertFalse(parser.hasError)
-        let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 28), members: [
-            Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(17, 20), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(18, 20), typ: .u8)),
-            Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(22, 26), identifier: "None")
+        let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 19), members: [
+            Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 12), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(10, 12), typ: .u8)),
+            Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 19), identifier: "None")
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
-            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 40),
+            VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 31),
                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                            explicitType: unionType,
                            expression: nil,

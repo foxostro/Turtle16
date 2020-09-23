@@ -54,7 +54,7 @@ public class If: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: condition=%@, then=\n%@, else=%@>",
+        return String(format: "%@<%@: condition=%@, then=%@, else=%@>",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       condition.makeIndentedDescription(depth: depth + 1),

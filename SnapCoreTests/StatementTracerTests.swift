@@ -87,4 +87,36 @@ class StatementTracerTests: XCTestCase {
         XCTAssertEqual(traces[0], [.LoopBody, .Return])
         XCTAssertEqual(traces[1], [.LoopSkipped])
     }
+    
+    func testTraceReturnStatementsThroughMatchClause() {
+        let one = Expression.LiteralInt(1)
+        let two = Expression.LiteralInt(2)
+        let three = Expression.LiteralInt(3)
+        let ast = Block(children: [
+            Match(expr: Expression.Identifier("test"), clauses: [
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.u8),
+                             block: Block(children: [
+                                Return(one)
+                            ])),
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.bool),
+                             block: Block(children: [
+                                Return(two)
+                            ]))
+            ], elseClause: Block(children: [
+                Return(three)
+            ]))
+        ])
+        let symbols = SymbolTable([
+            "result" : Symbol(type: .u8, offset: 0, storage: .stackStorage),
+            "test" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 0, storage: .stackStorage),
+        ])
+        let tracer = StatementTracer(symbols: symbols)
+        let traces = try! tracer.trace(ast: ast)
+        XCTAssertEqual(traces.count, 3)
+        XCTAssertEqual(traces[0], [.Statement("VarDeclaration"), .IfThen, .Statement("VarDeclaration"), .Return])
+        XCTAssertEqual(traces[1], [.Statement("VarDeclaration"), .IfElse, .IfThen, .Statement("VarDeclaration"), .Return])
+        XCTAssertEqual(traces[2], [.Statement("VarDeclaration"), .IfElse, .IfElse, .Return])
+    }
 }

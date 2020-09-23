@@ -57,6 +57,29 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public var correspondingMutableType: SymbolType {
+        switch self {
+        case .constBool:
+            return .bool
+        case .constU8:
+            return .u8
+        case .constU16:
+            return .u16
+        case .array(count: let n, elementType: let typ):
+            return .array(count: n, elementType: typ.correspondingMutableType)
+        case .constDynamicArray(elementType: let typ):
+            return .dynamicArray(elementType: typ)
+        case .constStructType(let typ):
+            return .structType(typ)
+        case .constPointer(let typ):
+            return .pointer(typ)
+        case .unionType(let typ):
+            return .unionType(typ.correspondingMutableType)
+        default:
+            return self
+        }
+    }
+    
     public func max() -> Int {
         switch self {
         case .compTimeInt(let a):
@@ -431,6 +454,10 @@ public class UnionType: NSObject {
     
     public var correspondingConstType: UnionType {
         return UnionType(members.map({$0.correspondingConstType}))
+    }
+    
+    public var correspondingMutableType: UnionType {
+        return UnionType(members.map({$0.correspondingMutableType}))
     }
 }
 

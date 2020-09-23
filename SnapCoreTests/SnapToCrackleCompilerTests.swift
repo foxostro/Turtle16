@@ -1914,4 +1914,187 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "typealias redefines existing type: `Foo'")
     }
+    
+    func testCompileEmptyMatchStatement() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: Expression.LiteralInt(0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("foo"), clauses: [], elseClause: nil)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: u8")
+    }
+    
+    func testCompileMatchStatementWithOnlyElseClause() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: Expression.LiteralInt(0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("result"), clauses: [], elseClause: Block(children: [
+                Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(42))
+            ]))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
+    
+    func testCompileMatchStatementWithOneExtraneousClause() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("result"), clauses: [
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.u8),
+                             block: Block(children: [])),
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.bool),
+                             block: Block(children: []))
+            ], elseClause: nil)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "extraneous clause in match statement: bool")
+    }
+    
+    func testCompileMatchStatementWithTwoExtraneousClauses() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("result"), clauses: [
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.u8),
+                             block: Block(children: [])),
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.bool),
+                             block: Block(children: [])),
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.Identifier("None"),
+                             block: Block(children: []))
+            ], elseClause: nil)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "extraneous clauses in match statement: bool, None")
+    }
+    
+    func testCompileMatchStatementWithOnlyOneClause() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: Expression.Identifier("test"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: ExprUtils.makeU8(value: 42),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("test"), clauses: [
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.u8),
+                             block: Block(children: [
+                                Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.Identifier("foo"))
+                            ]))
+            ], elseClause: nil)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
+    }
+    
+    func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: Expression.Identifier("test"),
+                           explicitType: Expression.UnionType([Expression.PrimitiveType(.u8), Expression.PrimitiveType(.bool)]),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("test"), clauses: [
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.u8),
+                             block: Block(children: [
+                                Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
+                            ]))
+            ], elseClause: nil)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: bool")
+    }
+    
+    func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("result"),
+                           explicitType: Expression.PrimitiveType(.u8),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: Expression.Identifier("test"),
+                           explicitType: Expression.UnionType([Expression.PrimitiveType(.u8), Expression.PrimitiveType(.bool)]),
+                           expression: ExprUtils.makeU8(value: 0),
+                           storage: .stackStorage,
+                           isMutable: true),
+            Match(expr: Expression.Identifier("test"), clauses: [
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.u8),
+                             block: Block(children: [
+                                Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
+                            ])),
+                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
+                             valueType: Expression.PrimitiveType(.bool),
+                             block: Block(children: [
+                                Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(2))
+                            ]))
+            ], elseClause: nil)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
+    }
 }

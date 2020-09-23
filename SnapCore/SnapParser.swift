@@ -21,45 +21,48 @@ public class SnapParser: Parser {
             result = []
             shouldExpectEndOfStatement = false
         }
-        else if let token = accept(TokenStatic.self) {
-            result = try consumeStatic(token as! TokenStatic)
+        else if let token = accept(TokenStatic.self) as? TokenStatic {
+            result = try consumeStatic(token)
         }
-        else if let token = accept(TokenLet.self) {
-            result = try consumeLet(token as! TokenLet)
+        else if let token = accept(TokenLet.self) as? TokenLet {
+            result = try consumeLet(token)
         }
-        else if let token = accept(TokenVar.self) {
-            result = try consumeVar(token as! TokenVar)
+        else if let token = accept(TokenVar.self) as? TokenVar {
+            result = try consumeVar(token)
         }
-        else if let token = accept(TokenIf.self) {
-            result = try consumeIf(token as! TokenIf)
+        else if let token = accept(TokenIf.self) as? TokenIf {
+            result = try consumeIf(token)
         }
-        else if let token = accept(TokenWhile.self) {
-            result = try consumeWhile(token as! TokenWhile)
+        else if let token = accept(TokenWhile.self) as? TokenWhile {
+            result = try consumeWhile(token)
         }
-        else if let token = accept(TokenFor.self) {
-            result = try consumeForIn(token as! TokenFor)
+        else if let token = accept(TokenFor.self) as? TokenFor {
+            result = try consumeForIn(token)
         }
-        else if let leftBrace = accept(TokenCurlyLeft.self) {
-            result = try consumeBlock(leftBrace as! TokenCurlyLeft)
+        else if let leftBrace = accept(TokenCurlyLeft.self) as? TokenCurlyLeft {
+            result = try consumeBlock(leftBrace)
         }
         else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
             let sourceAnchor = peek(0)?.sourceAnchor?.union(peek(1)?.sourceAnchor)
             throw CompilerError(sourceAnchor: sourceAnchor, message: "labels are not supported")
         }
-        else if let token = accept(TokenFunc.self) {
-            result = try consumeFunc(token as! TokenFunc)
+        else if let token = accept(TokenFunc.self) as? TokenFunc {
+            result = try consumeFunc(token)
         }
-        else if let token = accept(TokenReturn.self) {
-            result = try consumeReturn(token as! TokenReturn)
+        else if let token = accept(TokenReturn.self) as? TokenReturn {
+            result = try consumeReturn(token)
         }
-        else if let token = accept(TokenStruct.self) {
-            result = try consumeStruct(token as! TokenStruct)
+        else if let token = accept(TokenStruct.self) as? TokenStruct {
+            result = try consumeStruct(token)
         }
-        else if let token = accept(TokenImpl.self) {
-            result = try consumeImpl(token as! TokenImpl)
+        else if let token = accept(TokenImpl.self) as? TokenImpl {
+            result = try consumeImpl(token)
         }
-        else if let token = accept(TokenTypealias.self) {
-            result = try consumeTypealias(token as! TokenTypealias)
+        else if let token = accept(TokenTypealias.self) as? TokenTypealias {
+            result = try consumeTypealias(token)
+        }
+        else if let token = accept(TokenMatch.self) as? TokenMatch {
+            result = try consumeMatch(token)
         }
         else {
             result = [try consumeExpression()]
@@ -818,5 +821,47 @@ public class SnapParser: Parser {
         return [Typealias(sourceAnchor: tokenTypealias.sourceAnchor?.union(expr.sourceAnchor),
                           lexpr: identifier,
                           rexpr: expr)]
+    }
+    
+    private func consumeMatch(_ tokenMatch: TokenMatch) throws -> [AbstractSyntaxTreeNode] {
+        let expr = try consumeExpression(allowsStructInitializer: false)
+        try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in match statement"))
+        var elseClause: Block? = nil
+        var clauses: [Match.Clause] = []
+        while let leftParen = accept(TokenParenLeft.self) {
+            let maybeIdentifier = try consumeExpression()
+            guard let valueIdentifier = maybeIdentifier as? Expression.Identifier else {
+                throw CompilerError(sourceAnchor: maybeIdentifier.sourceAnchor, message: "expected identifier in match statement clause")
+            }
+            let maybeType = try consumeTypeAnnotation()
+            guard let valueType = maybeType else {
+                throw CompilerError(sourceAnchor: maybeIdentifier.sourceAnchor, message: "expected type annotation in match statement clause")
+            }
+            try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in match statement clause"))
+            try expect(type: TokenArrow.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `->' in match statement clause"))
+            let leftBrace = try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in match statement clause")) as! TokenCurlyLeft
+            let blockStmts = try consumeBlock(leftBrace)
+            let block = blockStmts.first as! Block
+            clauses.append(Match.Clause(sourceAnchor: leftParen.sourceAnchor?.union(block.sourceAnchor),
+                                        valueIdentifier: valueIdentifier,
+                                        valueType: valueType,
+                                        block: block))
+            
+            // The list of clauses is comma-separated.
+            if nil == accept(TokenComma.self) {
+                break
+            }
+        }
+        if nil != accept(TokenElse.self) {
+            try expect(type: TokenArrow.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `->' in match statement else-clause"))
+            let leftBrace = try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in match statement else-clause")) as! TokenCurlyLeft
+            let blockStmts = try consumeBlock(leftBrace)
+            elseClause = blockStmts.first as? Block
+        }
+        try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in match statement"))
+        return [Match(sourceAnchor: tokenMatch.sourceAnchor?.union(previous?.sourceAnchor),
+                      expr: expr,
+                      clauses: clauses,
+                      elseClause: elseClause)]
     }
 }

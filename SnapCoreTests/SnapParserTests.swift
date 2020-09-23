@@ -2125,4 +2125,99 @@ Foo.doSomething1()
                       rexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "Bar"))
         ])
     }
+    
+    func testMatchStatement_Empty() {
+        let parser = parse("""
+match expr { }
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Match(sourceAnchor: parser.lineMapper.anchor(0, 14),
+                  expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 10), identifier: "expr"),
+                  clauses: [],
+                  elseClause: nil)
+        ])
+    }
+    
+    func testMatchStatement_OnlyElseClause() {
+        let parser = parse("""
+match expr {
+    else -> {}
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Match(sourceAnchor: parser.lineMapper.anchor(0, 29),
+                  expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 10), identifier: "expr"),
+                  clauses: [],
+                  elseClause: Block(sourceAnchor: parser.lineMapper.anchor(25, 27), children: []))
+        ])
+    }
+    
+    func testMatchStatement_OneClauseOnly() {
+        let parser = parse("""
+match expr {
+    (foo: u8) -> {}
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Match(sourceAnchor: parser.lineMapper.anchor(0, 34),
+                  expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 10), identifier: "expr"),
+                  clauses: [
+                    Match.Clause(sourceAnchor: parser.lineMapper.anchor(17, 32),
+                                 valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
+                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .u8),
+                                 block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: []))
+                  ],
+                  elseClause: nil)
+        ])
+    }
+    
+    func testMatchStatement_OneClauseAndElse() {
+        let parser = parse("""
+match expr {
+    (foo: u8) -> {},
+    else -> {}
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Match(sourceAnchor: parser.lineMapper.anchor(0, 50),
+                  expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 10), identifier: "expr"),
+                  clauses: [
+                    Match.Clause(sourceAnchor: parser.lineMapper.anchor(17, 32),
+                                 valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
+                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .u8),
+                                 block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: []))
+                  ],
+                  elseClause: Block(sourceAnchor: parser.lineMapper.anchor(46, 48), children: []))
+        ])
+    }
+    
+    func testMatchStatement_TwoClauses() {
+        let parser = parse("""
+match expr {
+    (foo: u8) -> {},
+    (foo: *bool) -> {},
+    else -> {}
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Match(sourceAnchor: parser.lineMapper.anchor(0, 74),
+                  expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 10), identifier: "expr"),
+                  clauses: [
+                    Match.Clause(sourceAnchor: parser.lineMapper.anchor(17, 32),
+                                 valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
+                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .u8),
+                                 block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: [])),
+                    Match.Clause(sourceAnchor: parser.lineMapper.anchor(38, 56),
+                                 valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(39, 42), identifier: "foo"),
+                                 valueType: Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(44, 49), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(45, 49), typ: .bool)),
+                                 block: Block(sourceAnchor: parser.lineMapper.anchor(54, 56), children: []))
+                  ],
+                  elseClause: Block(sourceAnchor: parser.lineMapper.anchor(70, 72), children: []))
+        ])
+    }
 }

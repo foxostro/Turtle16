@@ -38,6 +38,8 @@ public class StatementTracer: NSObject {
             return try trace(currentTrace: currentTrace, if: node)
         case let node as While:
             return try trace(currentTrace: currentTrace, while: node)
+        case let node as Match:
+            return try trace(currentTrace: currentTrace, match: node)
         case let node as Return:
             return try trace(currentTrace: currentTrace, return: node)
         default:
@@ -93,6 +95,11 @@ public class StatementTracer: NSObject {
             let skippedTraces = [currentTrace + [.LoopSkipped]]
             return bodyTraces + skippedTraces
         }
+    }
+    
+    private func trace(currentTrace: Trace, match node: Match) throws -> [Trace] {
+        let ast = try MatchCompiler().compile(match: node, symbols: symbols)
+        return try trace(currentTrace: currentTrace, genericNode: ast)
     }
     
     private func trace(currentTrace: Trace, stmt: AbstractSyntaxTreeNode) -> [Trace] {

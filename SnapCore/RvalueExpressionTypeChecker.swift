@@ -546,7 +546,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                 return .compTimeBool(false)
             }
         default:
-            return .compTimeBool(ltype == rtype)
+            return .compTimeBool(ltype == rtype || ltype.correspondingConstType == rtype || ltype == rtype.correspondingConstType)
         }
     }
     

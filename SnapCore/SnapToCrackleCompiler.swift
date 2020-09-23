@@ -167,6 +167,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(func: node)
         case let node as Impl:
             try compile(impl: node)
+        case let node as Match:
+            try compile(match: node)
         default:
             break
         }
@@ -469,8 +471,6 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(func node: FunctionDeclaration) throws {
         currentSourceAnchor = node.sourceAnchor
         
-        try expectFunctionReturnExpressionIsCorrectType(func: node)
-        
         let functionType = try evaluateFunctionTypeExpression(node.functionType)
         
         let mangledName = functionType.mangledName!
@@ -487,6 +487,7 @@ public class SnapToCrackleCompiler: NSObject {
                                   enclosingFunctionType: functionType)
         bindFunctionArguments(functionType)
         try performDeclPass(block: node.body)
+        try expectFunctionReturnExpressionIsCorrectType(func: node)
         for child in node.body.children {
             try compile(genericNode: child)
         }
@@ -520,6 +521,11 @@ public class SnapToCrackleCompiler: NSObject {
         symbols = symbols.parent!
         symbols.storagePointer = storagePointer
         typ.symbols.parent = nil
+    }
+    
+    private func compile(match: Match) throws {
+        let ast = try MatchCompiler().compile(match: match, symbols: symbols)
+        try compile(genericNode: ast)
     }
     
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,

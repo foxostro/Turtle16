@@ -1343,4 +1343,86 @@ r = a.lookup(2)
 """)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x002a)
     }
+    
+    func test_EndToEndIntegration_LinkedList_2() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var r: u8 | None = none
+struct LinkedList {
+    next: *const LinkedList | None,
+    key: u8,
+    value: u8
+}
+let c = LinkedList {
+    .next = none,
+    .key = 2,
+    .value = 42
+}
+let b = LinkedList {
+    .next = &c,
+    .key = 1,
+    .value = 0
+}
+let a = LinkedList {
+    .next = &b,
+    .key = 0,
+    .value = 0
+}
+impl LinkedList {
+    func lookup(self: *const LinkedList, key: u8) -> u8 | None {
+        if self.key == key {
+            return self.value
+        }
+        else match self.next {
+            (next: *const LinkedList) -> {
+                return next.lookup(key)
+            },
+            else -> {
+                return none
+            }
+        }
+    }
+}
+r = a.lookup(2)
+""")
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x002a)
+    }
+    
+    func test_EndToEndIntegration_Match_WithExtraneousClause() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+var r: u8 = 0
+var a: u8 = 0
+match a {
+    (foo: u8) -> {
+        a = 1
+    },
+    (foo: bool) -> {
+        a = 2
+    },
+    else -> {
+        a = 3
+    }
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo: bool")
+        XCTAssertEqual(compiler.errors.first?.message, "extraneous clause in match statement: bool")
+    }
+    
+    func test_EndToEndIntegration_Match_WithMissingClause() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+var r: u8 = 0
+var a: u8 | bool = 0
+match a {
+    (foo: u8) -> {
+        a = 1
+    }
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
+        XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: bool")
+    }
 }

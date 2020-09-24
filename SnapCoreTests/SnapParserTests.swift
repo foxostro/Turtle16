@@ -1344,8 +1344,8 @@ while 1 {}
     func testParseReturn() {
         let parser = parse("return 1")
         XCTAssertFalse(parser.hasError)
-        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 6), children: [
-            Return(sourceAnchor: parser.lineMapper.anchor(0, 6),
+        let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 8), children: [
+            Return(sourceAnchor: parser.lineMapper.anchor(0, 8),
                    expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 1))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)

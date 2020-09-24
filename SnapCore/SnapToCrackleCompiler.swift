@@ -456,7 +456,7 @@ public class SnapToCrackleCompiler: NSObject {
                                                                  sourceAnchor: node.sourceAnchor,
                                                                  messageWhenNotConvertible: "cannot convert return expression of type `\(returnExpressionType)' to return type `\(enclosingFunctionType.returnType)'")
             let lexpr = Expression.Identifier(sourceAnchor: node.sourceAnchor, identifier: kReturnValueIdentifier)
-            try compile(expression: Expression.Assignment(sourceAnchor: node.sourceAnchor, lexpr: lexpr, rexpr: expr))
+            try compile(expression: Expression.InitialAssignment(sourceAnchor: node.sourceAnchor, lexpr: lexpr, rexpr: expr))
         } else if .void != enclosingFunctionType.returnType {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "non-void function should return a value")
         }

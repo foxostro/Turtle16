@@ -285,6 +285,174 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                         messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'")
     }
     
+    public enum TypeConversionStatus {
+    case acceptable(SymbolType)
+    case unacceptable(CompilerError)
+    }
+    
+    public func convertBetweenTypes(ltype: SymbolType,
+                                    rtype: SymbolType,
+                                    sourceAnchor: SourceAnchor?,
+                                    messageWhenNotConvertible: String,
+                                    isExplicitCast: Bool) -> TypeConversionStatus {
+        // Integer constants will be automatically converted to appropriate
+        // concrete integer types.
+        //
+        // Small integer types will be automatically promoted to larger types.
+        
+        // If the types match exactly then the conversion is acceptable.
+        if rtype == ltype {
+            return .acceptable(ltype)
+        }
+        
+        switch (rtype, ltype) {
+        case (.compTimeInt(let a), .u8), (.compTimeInt(let a), .constU8):
+            guard a >= 0 && a < 256 else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'"))
+            }
+            return .acceptable(ltype) // The conversion is acceptable.
+        case (.compTimeInt(let a), .u16), (.compTimeInt(let a), .constU16):
+            guard a >= 0 && a < 65536 else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'"))
+            }
+            return .acceptable(ltype) // The conversion is acceptable.
+        case (.constU8, .constU8),
+             (.constU8, .u8),
+             (.u8, .constU8),
+             (.u8, .u8),
+             (.constU16, .constU16),
+             (.constU16, .u16),
+             (.u16, .constU16),
+             (.u16, .u16),
+             (.constU8, .constU16),
+             (.constU8, .u16),
+             (.u8, .constU16),
+             (.u8, .u16),
+             (.compTimeBool, .constBool),
+             (.compTimeBool, .bool),
+             (.constBool, .constBool),
+             (.constBool, .bool),
+             (.bool, .constBool),
+             (.bool, .bool):
+            return .acceptable(ltype) // The conversion is acceptable.
+        case (.constU16, .constU8),
+             (.constU16, .u8),
+             (.u16, .constU8),
+             (.u16, .u8):
+            if !isExplicitCast {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            return .acceptable(ltype)
+        case (.array(let n, let a), .array(let m, let b)):
+            guard n == m || m == nil else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            switch convertBetweenTypes(ltype: b,
+                                       rtype: a,
+                                       sourceAnchor: sourceAnchor,
+                                       messageWhenNotConvertible: messageWhenNotConvertible,
+                                       isExplicitCast: isExplicitCast) {
+            case .acceptable(let elementType):
+                return .acceptable(.array(count: n, elementType: elementType))
+            case .unacceptable(let err):
+                return .unacceptable(err)
+            }
+        case (.array(let n, let a), .constDynamicArray(elementType: let b)),
+             (.array(let n, let a), .dynamicArray(elementType: let b)):
+            guard n != nil else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            switch convertBetweenTypes(ltype: b,
+                                       rtype: a,
+                                       sourceAnchor:
+                                        sourceAnchor,
+                                       messageWhenNotConvertible: messageWhenNotConvertible,
+                                       isExplicitCast: isExplicitCast) {
+            case .acceptable:
+                return .acceptable(ltype)
+            case .unacceptable(let err):
+                return .unacceptable(err)
+            }
+        case (.constDynamicArray(let a), .constDynamicArray(let b)),
+             (.constDynamicArray(let a), .dynamicArray(let b)),
+             (.dynamicArray(let a), .constDynamicArray(let b)),
+             (.dynamicArray(let a), .dynamicArray(let b)):
+            guard a == b || a.correspondingConstType == b else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            return .acceptable(.dynamicArray(elementType: b))
+        case (.constStructType(let a), .constStructType(let b)),
+             (.constStructType(let a), .structType(let b)),
+             (.structType(let a), .constStructType(let b)),
+             (.structType(let a), .structType(let b)):
+            guard a == b else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            return .acceptable(ltype)
+        case (.constPointer(let a), .constPointer(let b)),
+             (.constPointer(let a), .pointer(let b)),
+             (.pointer(let a), .constPointer(let b)),
+             (.pointer(let a), .pointer(let b)):
+            guard a == b || a.correspondingConstType == b else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            return .acceptable(ltype)
+        case (.unionType(let typ), _):
+            if !isExplicitCast {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            for member in typ.members {
+                let status = convertBetweenTypes(ltype: ltype,
+                                                 rtype: member,
+                                                 sourceAnchor: sourceAnchor,
+                                                 messageWhenNotConvertible: messageWhenNotConvertible,
+                                                 isExplicitCast: isExplicitCast)
+                switch status {
+                case .acceptable(let symbolType):
+                    return .acceptable(symbolType)
+                case .unacceptable:
+                    break // just move on to the next one
+                }
+            }
+            return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        case (_, .unionType(let typ)):
+            for member in typ.members {
+                let status = convertBetweenTypes(ltype: member,
+                                                 rtype: rtype,
+                                                 sourceAnchor: sourceAnchor,
+                                                 messageWhenNotConvertible: messageWhenNotConvertible,
+                                                 isExplicitCast: isExplicitCast)
+                switch status {
+                case .acceptable(let symbolType):
+                    return .acceptable(symbolType)
+                default:
+                    break // just move on to the next one
+                }
+            }
+            return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        default:
+            return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        }
+    }
+    
+    private func checkTypesAreConvertible(ltype: SymbolType,
+                                          rtype: SymbolType,
+                                          sourceAnchor: SourceAnchor?,
+                                          messageWhenNotConvertible: String,
+                                          isExplicitCast: Bool) throws -> SymbolType {
+        let status = convertBetweenTypes(ltype: ltype,
+                                         rtype: rtype,
+                                         sourceAnchor: sourceAnchor,
+                                         messageWhenNotConvertible: messageWhenNotConvertible,
+                                         isExplicitCast: isExplicitCast)
+        switch status {
+        case .acceptable(let symbolType):
+            return symbolType
+        case .unacceptable(let err):
+            throw err
+        }
+    }
+    
     @discardableResult public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
                                                                         rtype: SymbolType,
                                                                         sourceAnchor: SourceAnchor?,
@@ -305,136 +473,6 @@ public class RvalueExpressionTypeChecker: NSObject {
                                             sourceAnchor: sourceAnchor,
                                             messageWhenNotConvertible: messageWhenNotConvertible,
                                             isExplicitCast: true)
-    }
-        
-    private func checkTypesAreConvertible(ltype: SymbolType,
-                                          rtype: SymbolType,
-                                          sourceAnchor: SourceAnchor?,
-                                          messageWhenNotConvertible: String,
-                                          isExplicitCast: Bool) throws -> SymbolType {
-        // Integer constants will be automatically converted to appropriate
-        // concrete integer types.
-        //
-        // Small integer types will be automatically promoted to larger types.
-        
-        // If the types match exactly then the conversion is acceptable.
-        if rtype == ltype {
-            return ltype
-        }
-        
-        switch (rtype, ltype) {
-        case (.compTimeInt(let a), .u8), (.compTimeInt(let a), .constU8):
-            guard a >= 0 && a < 256 else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'")
-            }
-            return ltype // The conversion is acceptable.
-        case (.compTimeInt(let a), .u16), (.compTimeInt(let a), .constU16):
-            guard a >= 0 && a < 65536 else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'")
-            }
-            return ltype // The conversion is acceptable.
-        case (.constU8, .constU8),
-             (.constU8, .u8),
-             (.u8, .constU8),
-             (.u8, .u8),
-             (.constU16, .constU16),
-             (.constU16, .u16),
-             (.u16, .constU16),
-             (.u16, .u16),
-             (.constU8, .constU16),
-             (.constU8, .u16),
-             (.u8, .constU16),
-             (.u8, .u16),
-             (.compTimeBool, .constBool),
-             (.compTimeBool, .bool),
-             (.constBool, .constBool),
-             (.constBool, .bool),
-             (.bool, .constBool),
-             (.bool, .bool):
-            return ltype // The conversion is acceptable.
-        case (.constU16, .constU8),
-             (.constU16, .u8),
-             (.u16, .constU8),
-             (.u16, .u8):
-            if !isExplicitCast {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            return ltype
-        case (.array(let n, let a), .array(let m, let b)):
-            guard n == m || m == nil else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            let elementType = try checkTypesAreConvertible(ltype: b, rtype: a,
-                                                           sourceAnchor: sourceAnchor,
-                                                           messageWhenNotConvertible: messageWhenNotConvertible,
-                                                           isExplicitCast: isExplicitCast)
-            return .array(count: n, elementType: elementType)
-        case (.array(let n, let a), .constDynamicArray(elementType: let b)),
-             (.array(let n, let a), .dynamicArray(elementType: let b)):
-            guard n != nil else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            _ = try checkTypesAreConvertible(ltype: b,
-                                             rtype: a,
-                                             sourceAnchor: sourceAnchor,
-                                             messageWhenNotConvertible: messageWhenNotConvertible,
-                                             isExplicitCast: isExplicitCast)
-            return ltype
-        case (.constDynamicArray(let a), .constDynamicArray(let b)),
-             (.constDynamicArray(let a), .dynamicArray(let b)),
-             (.dynamicArray(let a), .constDynamicArray(let b)),
-             (.dynamicArray(let a), .dynamicArray(let b)):
-            guard a == b || a.correspondingConstType == b else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            return .dynamicArray(elementType: b)
-        case (.constStructType(let a), .constStructType(let b)),
-             (.constStructType(let a), .structType(let b)),
-             (.structType(let a), .constStructType(let b)),
-             (.structType(let a), .structType(let b)):
-            guard a == b else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            return ltype
-        case (.constPointer(let a), .constPointer(let b)),
-             (.constPointer(let a), .pointer(let b)),
-             (.pointer(let a), .constPointer(let b)),
-             (.pointer(let a), .pointer(let b)):
-            guard a == b || a.correspondingConstType == b else {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            return ltype
-        case (.unionType(let typ), _):
-            if !isExplicitCast {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-            }
-            for member in typ.members {
-                // TODO: don't use exceptions for flow control here. Need a checkTypesAreConvertible thing which returns a boolean value.
-                let result = try? checkTypesAreConvertible(ltype: ltype,
-                                                           rtype: member,
-                                                           sourceAnchor: sourceAnchor,
-                                                           messageWhenNotConvertible: messageWhenNotConvertible,
-                                                           isExplicitCast: isExplicitCast)
-                if let result = result {
-                    return result
-                }
-            }
-            throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-        case (_, .unionType(let typ)):
-            for member in typ.members {
-                // TODO: don't use exceptions for flow control here. Need a checkTypesAreConvertible thing which returns a boolean value.
-                if let _ = try? checkTypesAreConvertible(ltype: member,
-                                                         rtype: rtype,
-                                                         sourceAnchor: sourceAnchor,
-                                                         messageWhenNotConvertible: messageWhenNotConvertible,
-                                                         isExplicitCast: isExplicitCast) {
-                    return ltype
-                }
-            }
-            throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-        default:
-            throw CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
-        }
     }
         
     public func check(identifier expr: Expression.Identifier) throws -> SymbolType {

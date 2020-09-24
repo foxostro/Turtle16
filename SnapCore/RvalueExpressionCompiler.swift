@@ -761,10 +761,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             var typeTag: Int?
             for i in 0..<typ.members.count {
                 let member = typ.members[i]
-                targetType = try? typeChecker.checkTypesAreConvertibleInAssignment(ltype: member, rtype: rtype, sourceAnchor: rexpr.sourceAnchor, messageWhenNotConvertible: "")
-                if targetType != nil {
+                let status = typeChecker.convertBetweenTypes(ltype: member,
+                                                             rtype: rtype,
+                                                             sourceAnchor: rexpr.sourceAnchor,
+                                                             messageWhenNotConvertible: "",
+                                                             isExplicitCast: false)
+                switch status {
+                case .acceptable(let typ):
+                    targetType = typ
                     typeTag = i
-                    break
+                case .unacceptable:
+                    break // just move on to the next one
                 }
             }
             

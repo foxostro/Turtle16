@@ -1303,50 +1303,6 @@ r = foo.bar(42)
     func test_EndToEndIntegration_LinkedList() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-typealias MaybeU8 = u8 | None
-var r: MaybeU8 = none
-struct LinkedList {
-    next: *const LinkedList | None,
-    key: u8,
-    value: u8
-}
-let c = LinkedList {
-    .next = none,
-    .key = 2,
-    .value = 42
-}
-let b = LinkedList {
-    .next = &c,
-    .key = 1,
-    .value = 0
-}
-let a = LinkedList {
-    .next = &b,
-    .key = 0,
-    .value = 0
-}
-impl LinkedList {
-    func lookup(self: *const LinkedList, key: u8) -> MaybeU8 {
-        if self.key == key {
-            return self.value
-        }
-        else if self.next is *const LinkedList { // TODO: Add a match-statement to replace this if-statement.
-            let next = self.next as *const LinkedList
-            return next.lookup(key)
-        }
-        else {
-            return none
-        }
-    }
-}
-r = a.lookup(2)
-""")
-        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x002a)
-    }
-    
-    func test_EndToEndIntegration_LinkedList_2() {
-        let executor = SnapExecutor()
-        let computer = try! executor.execute(program: """
 var r: u8 | None = none
 struct LinkedList {
     next: *const LinkedList | None,
@@ -1424,5 +1380,16 @@ match a {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
         XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: bool")
+    }
+    
+    func testFunctionReturnsConstValue() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+func foo() -> const u8 {
+    return 42
+}
+let r = foo()
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
 }

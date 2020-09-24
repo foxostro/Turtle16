@@ -746,7 +746,9 @@ public class SnapParser: Parser {
     
     private func consumeReturn(_ token: TokenReturn) throws -> [AbstractSyntaxTreeNode] {
         if nil == acceptEndOfStatement() {
-            return [Return(sourceAnchor: token.sourceAnchor, expression: try consumeExpression())]
+            let expr = try consumeExpression()
+            let sourceAnchor = token.sourceAnchor?.union(expr.sourceAnchor)
+            return [Return(sourceAnchor: sourceAnchor, expression: expr)]
         } else {
             return [Return(sourceAnchor: token.sourceAnchor, expression: nil)]
         }

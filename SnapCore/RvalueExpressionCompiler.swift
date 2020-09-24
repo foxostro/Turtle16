@@ -893,159 +893,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    private func pushFunctionArgumentsToCompilerTemporariesStack(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
-        // Push function arguments to the compiler temporaries stack
-        // with appropriate type conversions.
-        var instructions: [CrackleInstruction] = []
-        for i in 0..<typ.arguments.count {
-            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i].argumentType)
-        }
-        return instructions
-    }
-    
-    private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        var tempReturnValue: CompilerTemporary!
-        
-        // Save all live temporaries to preserve their values across the call.
-        // We cannot know which temporaries will be invalidated by code in
-        // the function body.
-        let temporariesToPreserve = temporaryAllocator.liveTemporaries
-        for temporary in temporariesToPreserve {
-            instructions += pushTemporary(temporary)
-        }
-        
-        if typ.returnType.sizeof > 0 {
-            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
-        }
-        
-        instructions += try pushToAllocateFunctionReturnValue(typ)
-        instructions += try pushFunctionArguments(typ, node)
-        instructions += [.jalr(typ.mangledName!)]
-        instructions += popFunctionArguments(typ)
-                
-        // If there is a return value then it can be found at the top of the
-        // stack. Copy it to the temporary we allocated for it, above.
-        if typ.returnType.sizeof > 0 {
-            instructions += [
-                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
-                .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
-            ]
-            temporaryStack.push(tempReturnValue)
-        }
-        
-        // Restore live temporaries after the function call returns.
-        for temporary in temporariesToPreserve.reversed() {
-            instructions += popTemporary(temporary)
-        }
-        
-        return instructions
-    }
-    
-    private func pushTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
-        return pushTemporary(temporary: temporary, explicitSize: temporary.size)
-    }
-    
-    private func pushTemporary(temporary: CompilerTemporary, explicitSize: Int) -> [CrackleInstruction] {
-        let instructions: [CrackleInstruction] = [
-            .subi16(kStackPointerAddress, kStackPointerAddress, explicitSize),
-            .copyWordsIndirectDestination(kStackPointerAddress, temporary.address, explicitSize)
-        ]
-        return instructions
-    }
-    
-    private func popTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
-        let instructions: [CrackleInstruction] = [
-            .copyWordsIndirectSource(temporary.address, kStackPointerAddress, temporary.size),
-            .addi16(kStackPointerAddress, kStackPointerAddress, temporary.size)
-        ]
-        return instructions
-    }
-    
-    private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
-        return [.subi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)]
-    }
-    
     private func pushFunctionArguments(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
         // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
             let type = typ.arguments[i].argumentType
-            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
-            let tempArgumentValue = temporaryStack.pop()
-            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
-            tempArgumentValue.consume()
-        }
-        
-        return instructions
-    }
-    
-    private func popFunctionArguments(_ typ: FunctionType) -> [CrackleInstruction] {
-        var totalSize = 0
-        for arg in typ.arguments {
-            totalSize += arg.argumentType.sizeof
-        }
-        if totalSize > 0 {
-            return [.addi16(kStackPointerAddress, kStackPointerAddress, totalSize)]
-        } else {
-            return []
-        }
-    }
-    
-    // TODO: compileStructMemberFunctionCall() is similar to a normal function call and perhaps some of these two can be consolidated by extracting some helper methods.
-    private func compileStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        var tempReturnValue: CompilerTemporary!
-        
-        // Save all live temporaries to preserve their values across the call.
-        // We cannot know which temporaries will be invalidated by code in
-        // the function body.
-        let temporariesToPreserve = temporaryAllocator.liveTemporaries
-        for temporary in temporariesToPreserve {
-            instructions += pushTemporary(temporary)
-        }
-        
-        if typ.returnType.sizeof > 0 {
-            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
-        }
-        
-        instructions += try pushToAllocateFunctionReturnValue(typ)
-        instructions += try pushFunctionArgumentsForUFCS(typ, node, selfExpr)
-        instructions += [.jalr(typ.mangledName!)]
-        instructions += popFunctionArguments(typ)
-                
-        // If there is a return value then it can be found at the top of the
-        // stack. Copy it to the temporary we allocated for it, above.
-        if typ.returnType.sizeof > 0 {
-            instructions += [
-                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
-                .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
-            ]
-            temporaryStack.push(tempReturnValue)
-        }
-        
-        // Restore live temporaries after the function call returns.
-        for temporary in temporariesToPreserve.reversed() {
-            instructions += popTemporary(temporary)
-        }
-        
-        return instructions
-    }
-    
-    private func pushFunctionArgumentsForUFCS(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        
-        // For the first argument, push a pointer to the object itself. (self)
-        let type0 = typ.arguments[0].argumentType
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: selfExpr, ltype: type0)
-        let tempArgumentValue0 = temporaryStack.pop()
-        instructions += pushTemporary(temporary: tempArgumentValue0, explicitSize: type0.sizeof)
-        tempArgumentValue0.consume()
-        
-        // The rest of the function arguments come from the parameters list as usual.
-        for i in 0..<node.arguments.count {
-            let type = typ.arguments[i+1].argumentType
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
             instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
@@ -1068,6 +921,144 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             .addi16(kStackPointerAddress, kStackPointerAddress, size)
         ]
         temporaryStack.push(tempReturnValue)
+        return instructions
+    }
+    
+    private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        return try compileGenericUserDefinedFunctionCall(typ, node) { () -> [CrackleInstruction] in
+            return try pushFunctionArguments(typ, node)
+        }
+    }
+    
+    private func compileStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
+        return try compileGenericUserDefinedFunctionCall(typ, node) { () -> [CrackleInstruction] in
+            return try pushFunctionArgumentsForStructMemberFunctionCall(typ, node, selfExpr)
+        }
+    }
+    
+    private func pushFunctionArgumentsForStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        // For the first argument, push a pointer to the object itself. (self)
+        let type0 = typ.arguments[0].argumentType
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: selfExpr, ltype: type0)
+        let tempArgumentValue0 = temporaryStack.pop()
+        instructions += pushTemporary(temporary: tempArgumentValue0, explicitSize: type0.sizeof)
+        tempArgumentValue0.consume()
+        
+        // The rest of the function arguments come from the parameters list as usual.
+        for i in 0..<node.arguments.count {
+            let type = typ.arguments[i+1].argumentType
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
+            let tempArgumentValue = temporaryStack.pop()
+            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
+            tempArgumentValue.consume()
+        }
+        
+        return instructions
+    }
+    
+    private func compileGenericUserDefinedFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ functionArgumentsPusher: () throws -> [CrackleInstruction]) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        let temporariesToPreserve = temporaryAllocator.liveTemporaries
+        instructions += saveCompilerTemporariesForFunctionCall(temporariesToPreserve)
+        let tempReturnValue: CompilerTemporary? = allocateTemporaryForFunctionCallReturn(typ)
+        instructions += try pushToAllocateFunctionReturnValue(typ)
+        instructions += try functionArgumentsPusher()
+        instructions += [.jalr(typ.mangledName!)]
+        instructions += popFunctionArguments(typ)
+        instructions += copyReturnValueForFunctionCall(typ, tempReturnValue)
+        instructions += restoreCompilerTemporariesForFunctionCall(temporariesToPreserve)
+        return instructions
+    }
+    
+    // Save all live temporaries to preserve their values across the call.
+    // We cannot know which temporaries will be invalidated by code in
+    // the function body.
+    private func saveCompilerTemporariesForFunctionCall(_ temporariesToPreserve: [CompilerTemporary]) -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        for temporary in temporariesToPreserve {
+            instructions += pushTemporary(temporary)
+        }
+        return instructions
+    }
+    
+    private func pushTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
+        return pushTemporary(temporary: temporary, explicitSize: temporary.size)
+    }
+    
+    private func pushTemporary(temporary: CompilerTemporary, explicitSize: Int) -> [CrackleInstruction] {
+        let instructions: [CrackleInstruction] = [
+            .subi16(kStackPointerAddress, kStackPointerAddress, explicitSize),
+            .copyWordsIndirectDestination(kStackPointerAddress, temporary.address, explicitSize)
+        ]
+        return instructions
+    }
+    
+    private func allocateTemporaryForFunctionCallReturn(_ typ: FunctionType) -> CompilerTemporary? {
+        let tempReturnValue: CompilerTemporary?
+        if typ.returnType.sizeof > 0 {
+            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+        } else {
+            tempReturnValue = nil
+        }
+        return tempReturnValue
+    }
+    
+    private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
+        return [.subi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)]
+    }
+    
+    private func pushFunctionArgumentsToCompilerTemporariesStack(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
+        // Push function arguments to the compiler temporaries stack
+        // with appropriate type conversions.
+        var instructions: [CrackleInstruction] = []
+        for i in 0..<typ.arguments.count {
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i].argumentType)
+        }
+        return instructions
+    }
+    
+    private func popFunctionArguments(_ typ: FunctionType) -> [CrackleInstruction] {
+        var totalSize = 0
+        for arg in typ.arguments {
+            totalSize += arg.argumentType.sizeof
+        }
+        if totalSize > 0 {
+            return [.addi16(kStackPointerAddress, kStackPointerAddress, totalSize)]
+        } else {
+            return []
+        }
+    }
+    
+    // If there is a return value then it can be found at the top of the
+    // stack. Copy it to the temporary we allocated for it, above.
+    private func copyReturnValueForFunctionCall(_ typ: FunctionType, _ tempReturnValue: CompilerTemporary?) -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        if typ.returnType.sizeof > 0, let tempReturnValue = tempReturnValue {
+            instructions += [
+                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
+                .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
+            ]
+            temporaryStack.push(tempReturnValue)
+        }
+        return instructions
+    }
+    
+    // Restore live temporaries after the function call returns.
+    private func restoreCompilerTemporariesForFunctionCall(_ temporariesToPreserve: [CompilerTemporary]) -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        for temporary in temporariesToPreserve.reversed() {
+            instructions += popTemporary(temporary)
+        }
+        return instructions
+    }
+    
+    private func popTemporary(_ temporary: CompilerTemporary) -> [CrackleInstruction] {
+        let instructions: [CrackleInstruction] = [
+            .copyWordsIndirectSource(temporary.address, kStackPointerAddress, temporary.size),
+            .addi16(kStackPointerAddress, kStackPointerAddress, temporary.size)
+        ]
         return instructions
     }
     

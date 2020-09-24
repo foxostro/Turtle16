@@ -1392,4 +1392,14 @@ let r = foo()
 """)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
+    
+    func testAssignmentExpressionItselfHasAValue() {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+var foo: u8 = 0
+var bar: u8 = (foo = 42)
+""")
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 42)
+        XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 42)
+    }
 }

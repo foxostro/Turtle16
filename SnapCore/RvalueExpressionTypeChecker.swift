@@ -423,8 +423,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                  messageWhenNotConvertible: messageWhenNotConvertible,
                                                  isExplicitCast: isExplicitCast)
                 switch status {
-                case .acceptable(let symbolType):
-                    return .acceptable(symbolType)
+                case .acceptable:
+                    return .acceptable(ltype)
                 default:
                     break // just move on to the next one
                 }

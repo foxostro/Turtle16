@@ -551,7 +551,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // expression is converted now to the type of the destination variable.
         let rvalue_proc = try compileAndConvertExpressionForAssignment(rexpr: assignment.rexpr, ltype: ltype)
         instructions += rvalue_proc
-        let rvalue = temporaryStack.pop()
+        let rvalue = temporaryStack.peek()
         
         // Emit code to copy the rvalue to the address given by the lvalue.
         // The expression result is assumed to be small enough to fit into
@@ -559,8 +559,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // If it doesn't fit then an error would have been raised before
         // this point.
         instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
-        
-        rvalue.consume()
         
         return instructions
     }

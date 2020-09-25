@@ -125,7 +125,7 @@ public class SnapToCrackleCompiler: NSObject {
         
         let functionType = try evaluateFunctionTypeExpression(funDecl.functionType)
         let typ: SymbolType = .function(functionType)
-        let symbol = Symbol(type: typ, offset: 0, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0, storage: .staticStorage, visibility: funDecl.visibility)
         symbols.bind(identifier: name, symbol: symbol)
     }
     
@@ -138,7 +138,9 @@ public class SnapToCrackleCompiler: NSObject {
         
         let members = SymbolTable(parent: symbols)
         let fullyQualifiedStructType = StructType(name: name, symbols: members)
-        symbols.bind(identifier: name, symbolType: .structType(fullyQualifiedStructType))
+        symbols.bind(identifier: name,
+                     symbolType: .structType(fullyQualifiedStructType),
+                     visibility: structDecl.visibility)
         
         members.enclosingFunctionName = name
         for memberDeclaration in structDecl.members {
@@ -154,13 +156,15 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func performDeclPass(typealias node: Typealias) throws {
-        guard false == symbols.existsAsType(identifier: node.lexpr.identifier) else {
+        guard false == symbols.existsAsTypeAndCannotBeShadowed(identifier: node.lexpr.identifier) else {
             throw CompilerError(sourceAnchor: node.lexpr.sourceAnchor,
                                 message: "typealias redefines existing type: `\(node.lexpr.identifier)'")
         }
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let symbolType = try typeChecker.check(expression: node.rexpr)
-        symbols.bind(identifier: node.lexpr.identifier, symbolType: symbolType)
+        symbols.bind(identifier: node.lexpr.identifier,
+                     symbolType: symbolType,
+                     visibility: node.visibility)
     }
     
     private var modulesAlreadyImported = Set<String>()
@@ -221,9 +225,16 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func performDeclPass(module: Module) throws {
+        currentSourceAnchor = module.sourceAnchor
+        pushScopeForBlock()
         for node in module.children {
             try performDeclPass(genericNode: node)
         }
+        for child in module.children {
+            try compile(genericNode: child)
+        }
+        try exportModuleSymbols(module)
+        popScopeForBlock()
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
@@ -249,8 +260,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(impl: node)
         case let node as Match:
             try compile(match: node)
-        case let node as Module:
-            try compile(module: node)
         default:
             break
         }
@@ -304,7 +313,7 @@ public class SnapToCrackleCompiler: NSObject {
             if !varDecl.isMutable {
                 symbolType = symbolType.correspondingConstType
             }
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage)
+            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, visibility: varDecl.visibility)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.
@@ -319,7 +328,7 @@ public class SnapToCrackleCompiler: NSObject {
                                                                  rexpr: varDeclExpr))
         } else if let explicitType = explicitType {
             let symbolType = varDecl.isMutable ? explicitType : explicitType.correspondingConstType
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage)
+            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, visibility: varDecl.visibility)
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.
@@ -336,10 +345,10 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage) throws -> Symbol {
+    private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
         let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
-        let symbol = Symbol(type: explicitType, offset: offset, storage: storage)
+        let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)
         return symbol
     }
     
@@ -610,32 +619,25 @@ public class SnapToCrackleCompiler: NSObject {
         try compile(genericNode: ast)
     }
     
-    private func compile(module: Module) throws {
-        currentSourceAnchor = module.sourceAnchor
-        pushScopeForBlock()
-        try performDeclPass(module: module)
-        for child in module.children {
-            try compile(genericNode: child)
-        }
-        try exportModuleSymbols(module)
-        popScopeForBlock()
-    }
-    
+    // Copy symbols from the module to the parent scope.
     private func exportModuleSymbols(_ module: Module) throws {
-        // Copy symbols from the module to the parent scope.
-        let parent = symbols.parent!
+        guard let parent = symbols.parent else {
+            return
+        }
+        
         for (identifier, symbol) in symbols.symbolTable {
             if symbol.visibility == .publicVisibility {
                 guard parent.existsAndCannotBeShadowed(identifier: identifier) == false else {
-                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module \(module.name) redefines existing symbol: `\(identifier)'")
+                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module `\(module.name)' redefines existing symbol: `\(identifier)'")
                 }
                 parent.bind(identifier: identifier, symbol: symbol)
             }
         }
+        
         for (identifier, record) in symbols.typeTable {
             if record.visibility == .publicVisibility {
                 guard parent.existsAsType(identifier: identifier) == false else {
-                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module \(module.name) redefines existing type: `\(identifier)'")
+                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module `\(module.name)' redefines existing type: `\(identifier)'")
                 }
                 parent.bind(identifier: identifier,
                             symbolType: record.symbolType,

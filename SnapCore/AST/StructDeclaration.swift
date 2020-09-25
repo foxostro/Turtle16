@@ -46,19 +46,24 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     
     public let identifier: Expression.Identifier
     public let members: [Member]
+    public let visibility: SymbolVisibility
     
     public convenience init(identifier: Expression.Identifier,
-                            members: [Member]) {
+                            members: [Member],
+                            visibility: SymbolVisibility = .publicVisibility) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
-                  members: members)
+                  members: members,
+                  visibility: visibility)
     }
     
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
-                         members: [Member]) {
+                         members: [Member],
+                         visibility: SymbolVisibility = .publicVisibility) {
         self.identifier = identifier
         self.members = members
+        self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -69,6 +74,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         guard let rhs = rhs as? StructDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
         guard members == rhs.members else { return false }
+        guard visibility == rhs.visibility else { return false }
         return true
     }
     
@@ -76,16 +82,19 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(identifier)
         hasher.combine(members)
+        hasher.combine(visibility)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@members: %@",
+        return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@members: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
+                      makeIndent(depth: depth + 1),
+                      visibility.description,
                       makeIndent(depth: depth + 1),
                       makeMembersDescription(depth: depth + 1))
     }

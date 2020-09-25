@@ -13,23 +13,28 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let functionType: Expression
     public let body: Block
+    public let visibility: SymbolVisibility
     
     public convenience init(identifier: Expression.Identifier,
                             functionType: Expression,
-                            body: Block) {
+                            body: Block,
+                            visibility: SymbolVisibility = .publicVisibility) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
                   functionType: functionType,
-                  body: body)
+                  body: body,
+                  visibility: visibility)
     }
     
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
                          functionType: Expression,
-                         body: Block) {
+                         body: Block,
+                         visibility: SymbolVisibility = .publicVisibility) {
         self.identifier = identifier
         self.functionType = functionType
         self.body = body
+        self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -55,6 +60,9 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         guard body == rhs.body else {
             return false
         }
+        guard visibility == rhs.visibility else {
+            return false
+        }
         return true
     }
     
@@ -63,16 +71,19 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(identifier)
         hasher.combine(functionType)
         hasher.combine(body)
+        hasher.combine(visibility)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@functionType: %@\n%@body: %@",
+        return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@functionType: %@\n%@body: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
+                      makeIndent(depth: depth + 1),
+                      visibility.description,
                       makeIndent(depth: depth + 1),
                       functionType.makeIndentedDescription(depth: depth + 1),
                       makeIndent(depth: depth + 1),

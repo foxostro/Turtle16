@@ -34,6 +34,9 @@ public class SnapToCrackleCompiler: NSObject {
     private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
+    public static let kStandardLibraryModuleName = "stdlib"
+    public var isUsingStandardLibrary = false
+    
     public override init() {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
         
@@ -72,10 +75,17 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(topLevel: TopLevel) throws {
-        for node in topLevel.children {
+        var children: [AbstractSyntaxTreeNode] = []
+        if isUsingStandardLibrary {
+          children.append(Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName))
+        }
+        children += topLevel.children
+        
+        for node in children {
             try performDeclPass(genericNode: node)
         }
-        for node in topLevel.children {
+        
+        for node in children {
             try compile(genericNode: node)
         }
     }
@@ -90,6 +100,10 @@ public class SnapToCrackleCompiler: NSObject {
             try performDeclPass(block: node)
         case let node as Typealias:
             try performDeclPass(typealias: node)
+        case let node as Import:
+            try performDeclPass(import: node)
+        case let node as Module:
+            try performDeclPass(module: node)
         default:
             break
         }
@@ -139,14 +153,75 @@ public class SnapToCrackleCompiler: NSObject {
         members.parent = nil
     }
     
-    private func performDeclPass(typealias expr: Typealias) throws {
-        guard false == symbols.existsAsType(identifier: expr.lexpr.identifier) else {
-            throw CompilerError(sourceAnchor: expr.lexpr.sourceAnchor,
-                                message: "typealias redefines existing type: `\(expr.lexpr.identifier)'")
+    private func performDeclPass(typealias node: Typealias) throws {
+        guard false == symbols.existsAsType(identifier: node.lexpr.identifier) else {
+            throw CompilerError(sourceAnchor: node.lexpr.sourceAnchor,
+                                message: "typealias redefines existing type: `\(node.lexpr.identifier)'")
         }
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        let symbolType = try typeChecker.check(expression: expr.rexpr)
-        symbols.bind(identifier: expr.lexpr.identifier, symbolType: symbolType)
+        let symbolType = try typeChecker.check(expression: node.rexpr)
+        symbols.bind(identifier: node.lexpr.identifier, symbolType: symbolType)
+    }
+    
+    private var modulesAlreadyImported = Set<String>()
+    
+    private func performDeclPass(import node: Import) throws {
+        guard symbols.parent == nil else {
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
+        }
+        if !modulesAlreadyImported.contains(node.moduleName) {
+            let module = try importModule(node)
+            try compile(genericNode: module)
+            modulesAlreadyImported.insert(node.moduleName)
+        }
+    }
+    
+    private func importModule(_ node: Import) throws -> Module {
+        let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
+        let text = moduleData.0
+        let moduleFilename = moduleData.1
+        
+        // Lexer pass
+        let lexer = SnapLexer(withString: text)
+        lexer.scanTokens()
+        if lexer.hasError {
+            throw CompilerError.makeOmnibusError(fileName: moduleFilename, errors: lexer.errors)
+        }
+        
+        // Compile to an abstract syntax tree
+        let parser = SnapParser(tokens: lexer.tokens)
+        parser.parse()
+        if parser.hasError {
+            throw CompilerError.makeOmnibusError(fileName: moduleFilename, errors: parser.errors)
+        }
+        
+        guard let moduleTopLevel = parser.syntaxTree else {
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "failed to get the top level of the `\(node.moduleName)' module")
+        }
+        
+        let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor, children: moduleTopLevel.children)
+        return module
+    }
+    
+    private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, String) {
+        // First, try reading the module from bundle resources.
+        let bundle = Bundle(for: type(of: self))
+        if let fileName = bundle.path(forResource: moduleName, ofType: "snap") {
+            do {
+                let text = try String(contentsOfFile: fileName)
+                return (text, fileName)
+            } catch {
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to read module `\(moduleName)' from file `\(fileName)'")
+            }
+        }
+        
+        throw CompilerError(sourceAnchor: sourceAnchor, message: "no such module `\(moduleName)'")
+    }
+    
+    private func performDeclPass(module: Module) throws {
+        for node in module.children {
+            try performDeclPass(genericNode: node)
+        }
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
@@ -172,6 +247,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(impl: node)
         case let node as Match:
             try compile(match: node)
+        case let node as Module:
+            try compile(module: node)
         default:
             break
         }
@@ -529,6 +606,14 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(match: Match) throws {
         let ast = try MatchCompiler().compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
+    }
+    
+    private func compile(module: Module) throws {
+        currentSourceAnchor = module.sourceAnchor
+        try performDeclPass(genericNode: module)
+        for child in module.children {
+            try compile(genericNode: child)
+        }
     }
     
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,

@@ -1,15 +1,15 @@
 //
-//  Block.swift
+//  Module.swift
 //  SnapCore
 //
-//  Created by Andrew Fox on 6/6/20.
+//  Created by Andrew Fox on 9/24/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
 import TurtleCompilerToolbox
 import TurtleCore
 
-public class Block: AbstractSyntaxTreeNode {
+public class Module: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
     public convenience init(children: [AbstractSyntaxTreeNode] = []) {
@@ -25,7 +25,7 @@ public class Block: AbstractSyntaxTreeNode {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Block else { return false }
+        guard let rhs = rhs as? Module else { return false }
         guard children == rhs.children else { return false }
         return true
     }

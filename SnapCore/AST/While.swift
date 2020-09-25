@@ -42,10 +42,12 @@ public class While: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: condition=\n%@, body=\n%@>",
+        return String(format: "%@%@\n%@condition: %@\n%@body: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth + 1),
                       condition.makeIndentedDescription(depth: depth + 1),
+                      makeIndent(depth: depth + 1),
                       body.makeIndentedDescription(depth: depth + 1))
     }
 }

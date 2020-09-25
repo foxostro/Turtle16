@@ -16,7 +16,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: Expression.UnsupportedExpression(sourceAnchor: nil))) {
             var error: CompilerError? = nil
             XCTAssertNotNil(error = $0 as? CompilerError)
-            XCTAssertEqual(error?.message, "unsupported expression: <UnsupportedExpression>")
+            XCTAssertEqual(error?.message, "unsupported expression: UnsupportedExpression")
         }
     }
     

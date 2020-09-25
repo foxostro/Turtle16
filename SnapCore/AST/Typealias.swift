@@ -42,10 +42,12 @@ public class Typealias: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@ lexpr=%@, rexpr=%@>",
+        return String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth + 1),
                       lexpr.makeIndentedDescription(depth: depth),
+                      makeIndent(depth: depth + 1),
                       rexpr.makeIndentedDescription(depth: depth))
     }
 }

@@ -38,14 +38,20 @@ public class Block: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: children=[%@]>",
+        return String(format: "%@%@ (%d children)%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      children.count,
                       makeChildDescriptions(depth: depth + 1))
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {
-        let result = children.map({"\n" + $0.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)}).joined(separator: ",")
+        let result: String
+        if children.isEmpty {
+            result = ""
+        } else {
+            result = "\n" + children.map({$0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)}).joined(separator: "\n")
+        }
         return result
     }
 }

@@ -38,9 +38,10 @@ public class Return: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: expression=%@>",
+        return String(format: "%@%@\n%@expression: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth + 1),
                       expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
     }
 }

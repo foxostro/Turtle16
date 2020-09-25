@@ -65,9 +65,8 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: value=%d>",
+            return String(format: "%@%d",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
                           value)
         }
     }
@@ -101,9 +100,8 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: boolean=%@>",
+            return String(format: "%@%@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
                           value ? "true" : "false")
         }
     }
@@ -137,9 +135,8 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: identifier='%@'>",
+            return String(format: "%@%@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
                           identifier)
         }
     }
@@ -177,10 +174,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: op='%@', expression=\n%@>",
+            return String(format: "%@%@\n%@op: %@\n%@expr: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
                           String(describing: op),
+                          makeIndent(depth: depth+1),
                           child.makeIndentedDescription(depth: depth+1))
         }
     }
@@ -214,10 +213,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: expression=\n%@>",
+            return String(format: "%@%@\n%@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          expression.makeIndentedDescription(depth: depth+1))
+                          expression.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true))
         }
     }
     
@@ -274,9 +273,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: op='%@',\n%@left=%@,\n%@right=%@>",
+            return String(format: "%@%@\n%@op: %@\n%@left: %@\n%@right: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth + 1),
                           String(describing: op),
                           makeIndent(depth: depth + 1),
                           left.makeIndentedDescription(depth: depth + 1),
@@ -318,10 +318,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: lexpr=%@, rexpr=%@>",
+            return String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
                           lexpr.makeIndentedDescription(depth: depth + 1),
+                          makeIndent(depth: depth+1),
                           rexpr.makeIndentedDescription(depth: depth + 1))
         }
     }
@@ -353,11 +355,29 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ callee=%@ arguments={%@}>",
+            return String(format: "%@%@\n%@callee: %@\n%@arguments: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          callee.makeIndentedDescription(depth: depth),
-                          arguments.map({$0.description}).joined(separator: ", "))
+                          makeIndent(depth: depth + 1),
+                          callee.makeIndentedDescription(depth: depth + 1),
+                          makeIndent(depth: depth + 1),
+                          makeArgumentsDescription(depth: depth + 1))
+        }
+        
+        private func makeArgumentsDescription(depth: Int) -> String {
+            var result: String = ""
+            if arguments.isEmpty {
+                result = "none"
+            } else {
+                for i in 0..<arguments.count {
+                    let argument = arguments[i]
+                    result += "\n"
+                    result += makeIndent(depth: depth + 1)
+                    result += "\(i) -- "
+                    result += argument.makeIndentedDescription(depth: depth + 1)
+                }
+            }
+            return result
         }
     }
     
@@ -386,11 +406,13 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ convertingTo=%@ expr=%@>",
+            return String(format: "%@%@\n%@convertingTo: %@\n%@expr: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          targetType.makeIndentedDescription(depth: depth),
-                          expr.makeIndentedDescription(depth: depth))
+                          makeIndent(depth: depth+1),
+                          targetType.makeIndentedDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
+                          expr.makeIndentedDescription(depth: depth+1))
         }
     }
     
@@ -419,11 +441,13 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ testType=%@ expr=%@>",
+            return String(format: "%@%@\n%@comparingWith: %@\n%@expr: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          testType.makeIndentedDescription(depth: depth),
-                          expr.makeIndentedDescription(depth: depth))
+                          makeIndent(depth: depth+1),
+                          testType.makeIndentedDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
+                          expr.makeIndentedDescription(depth: depth+1))
         }
     }
     
@@ -452,10 +476,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ identifier=%@ argument=%@>",
+            return String(format: "%@%@\n%@identifier: %@\n%@argument: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
                           identifier.makeIndentedDescription(depth: depth),
+                          makeIndent(depth: depth+1),
                           expr.makeIndentedDescription(depth: depth))
         }
     }
@@ -500,11 +526,26 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ arrayType=%@, elements=[\n%@\n]>",
+            return String(format: "%@%@\n%@arrayType: %@\n%@elements: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          arrayType.makeIndentedDescription(depth: depth),
-                          elements.compactMap({$0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace:  true)}).joined(separator: ",\n"))
+                          makeIndent(depth: depth+1),
+                          arrayType.makeIndentedDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
+                          makeElementsDescription(depth: depth+1))
+        }
+        
+        private func makeElementsDescription(depth: Int) -> String {
+            var result: String = ""
+            if elements.isEmpty {
+                result = "none"
+            } else {
+                for element in elements {
+                    result += "\n"
+                    result += element.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)
+                }
+            }
+            return result
         }
     }
     
@@ -541,10 +582,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@: expr=%@, member=%@>",
+            return String(format: "%@%@\n%@expr: %@\n%@member: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
                           expr.makeIndentedDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
                           member.makeIndentedDescription(depth: depth+1))
         }
     }
@@ -578,9 +621,8 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ typ=%@>",
+            return String(format: "%@%@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
                           typ.description)
         }
     }
@@ -614,7 +656,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ elementType=%@>",
+            return String(format: "%@%@(%@)",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           elementType.description)
@@ -654,10 +696,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ count=%@, elementType=%@>",
+            return String(format: "%@%@\n%@count: %@\n%@elementType: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
                           count?.description ?? "nil",
+                          makeIndent(depth: depth+1),
                           elementType.description)
         }
     }
@@ -722,16 +766,28 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ name=%@, returnType=%@, arguments={%@}>",
+            return String(format: "%@%@\n%@name: %@\n%@returnType: %@\n%@arguments: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
                           name,
+                          makeIndent(depth: depth+1),
                           returnType.makeIndentedDescription(depth: depth+1),
-                          makeArgumentsDescription())
+                          makeIndent(depth: depth+1),
+                          makeArgumentsDescription(depth: depth+1))
         }
         
-        public func makeArgumentsDescription() -> String {
-            let result = arguments.map({"\($0.name): \($0.argumentType)"}).joined(separator: ", ")
+        private func makeArgumentsDescription(depth: Int) -> String {
+            var result: String = ""
+            if arguments.isEmpty {
+                result = "none"
+            } else {
+                for argument in arguments {
+                    result += "\n"
+                    result += makeIndent(depth: depth + 1)
+                    result += "\(argument.name): \(argument.argumentType)"
+                }
+            }
             return result
         }
         
@@ -786,10 +842,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ typ=%@}>",
+            return String(format: "%@%@(%@)",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          typ.makeIndentedDescription(depth: depth))
+                          typ.makeIndentedDescription(depth: depth+1))
         }
         
         public static func ==(lhs: PointerType, rhs: PointerType) -> Bool {
@@ -835,10 +891,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ typ=%@}>",
+            return String(format: "%@%@(%@)",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          typ.makeIndentedDescription(depth: depth))
+                          typ.makeIndentedDescription(depth: depth+1))
         }
         
         public static func ==(lhs: ConstType, rhs: ConstType) -> Bool {
@@ -884,10 +940,25 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ members={%@}>",
+            return String(format: "%@%@\n%@members: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          members.map({"\($0.makeIndentedDescription(depth: depth))"}).joined(separator: ", "))
+                          makeIndent(depth: depth + 1),
+                          makeMembersDescription(depth: depth + 1))
+        }
+        
+        private func makeMembersDescription(depth: Int) -> String {
+            var result: String = ""
+            if members.isEmpty {
+                result = "none"
+            } else {
+                for member in members {
+                    result += "\n"
+                    result += makeIndent(depth: depth + 1)
+                    result += member.makeIndentedDescription(depth: depth + 1)
+                }
+            }
+            return result
         }
         
         public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
@@ -981,15 +1052,29 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@<%@ identifier=%@, arguments={%@}>",
+            return String(format: "%@%@\n%@identifier: %@\n%@arguments: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
-                          identifier.makeIndentedDescription(depth: depth),
-                          makeArgumentsDescription())
+                          makeIndent(depth: depth + 1),
+                          identifier.makeIndentedDescription(depth: depth + 1),
+                          makeIndent(depth: depth + 1),
+                          makeArgumentsDescription(depth: depth + 1))
         }
         
-        public func makeArgumentsDescription() -> String {
-            let result = arguments.map({"\($0.name): \($0.expr)"}).joined(separator: ", ")
+        private func makeArgumentsDescription(depth: Int) -> String {
+            var result: String = ""
+            if arguments.isEmpty {
+                result = "none"
+            } else {
+                for i in 0..<arguments.count {
+                    let argument = arguments[i]
+                    result += "\n"
+                    result += makeIndent(depth: depth + 1)
+                    result += "\(i) -- "
+                    result += "\(argument.name): "
+                    result += argument.expr.makeIndentedDescription(depth: depth + 1)
+                }
+            }
             return result
         }
         

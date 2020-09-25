@@ -48,7 +48,7 @@ open class AbstractSyntaxTreeNode : NSObject {
     }
     
     open func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@>",
+        return String(format: "%@%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)))
     }

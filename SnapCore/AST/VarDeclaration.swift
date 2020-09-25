@@ -86,13 +86,18 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=%@, explicitType=%@, storage=%@, isMutable=%@, expression=%@>",
+        return String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@expression: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
-                      explicitType?.description ?? "nil",
+                      makeIndent(depth: depth + 1),
+                      explicitType?.makeIndentedDescription(depth: depth + 1) ?? "nil",
+                      makeIndent(depth: depth + 1),
                       String(describing: storage),
+                      makeIndent(depth: depth + 1),
                       isMutable ? "true" : "false",
+                      makeIndent(depth: depth + 1),
                       expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
     }
 }

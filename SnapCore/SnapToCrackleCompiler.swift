@@ -199,7 +199,9 @@ public class SnapToCrackleCompiler: NSObject {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "failed to get the top level of the `\(node.moduleName)' module")
         }
         
-        let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor, children: moduleTopLevel.children)
+        let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor,
+                            name: node.moduleName,
+                            children: moduleTopLevel.children)
         return module
     }
     
@@ -610,9 +612,35 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func compile(module: Module) throws {
         currentSourceAnchor = module.sourceAnchor
-        try performDeclPass(genericNode: module)
+        pushScopeForBlock()
+        try performDeclPass(module: module)
         for child in module.children {
             try compile(genericNode: child)
+        }
+        try exportModuleSymbols(module)
+        popScopeForBlock()
+    }
+    
+    private func exportModuleSymbols(_ module: Module) throws {
+        // Copy symbols from the module to the parent scope.
+        let parent = symbols.parent!
+        for (identifier, symbol) in symbols.symbolTable {
+            if symbol.visibility == .publicVisibility {
+                guard parent.existsAndCannotBeShadowed(identifier: identifier) == false else {
+                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module \(module.name) redefines existing symbol: `\(identifier)'")
+                }
+                parent.bind(identifier: identifier, symbol: symbol)
+            }
+        }
+        for (identifier, record) in symbols.typeTable {
+            if record.visibility == .publicVisibility {
+                guard parent.existsAsType(identifier: identifier) == false else {
+                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module \(module.name) redefines existing type: `\(identifier)'")
+                }
+                parent.bind(identifier: identifier,
+                            symbolType: record.symbolType,
+                            visibility: .privateVisibility)
+            }
         }
     }
     

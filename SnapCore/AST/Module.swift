@@ -10,13 +10,15 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public class Module: AbstractSyntaxTreeNode {
+    public let name: String
     public let children: [AbstractSyntaxTreeNode]
     
-    public convenience init(children: [AbstractSyntaxTreeNode] = []) {
-        self.init(sourceAnchor: nil, children: children)
+    public convenience init(name: String, children: [AbstractSyntaxTreeNode] = []) {
+        self.init(sourceAnchor: nil, name: name, children: children)
     }
     
-    public init(sourceAnchor: SourceAnchor?, children: [AbstractSyntaxTreeNode] = []) {
+    public init(sourceAnchor: SourceAnchor?, name: String, children: [AbstractSyntaxTreeNode] = []) {
+        self.name = name
         self.children = children
         super.init(sourceAnchor: sourceAnchor)
     }
@@ -26,19 +28,21 @@ public class Module: AbstractSyntaxTreeNode {
         guard type(of: rhs!) == type(of: self) else { return false }
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Module else { return false }
+        guard name == rhs.name else { return false }
         guard children == rhs.children else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
+        hasher.combine(name)
         hasher.combine(children)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@%@",
+        return String(format: "%@%@(\(name))%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       makeChildDescriptions(depth: depth + 1))

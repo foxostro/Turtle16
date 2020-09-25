@@ -15,18 +15,21 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     public let expression: Expression?
     public let storage: SymbolStorage
     public let isMutable: Bool
+    public let visibility: SymbolVisibility
     
     public convenience init(identifier: Expression.Identifier,
                             explicitType: Expression?,
                             expression: Expression?,
                             storage: SymbolStorage,
-                            isMutable: Bool) {
+                            isMutable: Bool,
+                            visibility: SymbolVisibility = .publicVisibility) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
                   explicitType: explicitType,
                   expression: expression,
                   storage: storage,
-                  isMutable: isMutable)
+                  isMutable: isMutable,
+                  visibility: visibility)
     }
     
     public required init(sourceAnchor: SourceAnchor?,
@@ -34,12 +37,14 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                          explicitType: Expression?,
                          expression: Expression?,
                          storage: SymbolStorage,
-                         isMutable: Bool) {
+                         isMutable: Bool,
+                         visibility: SymbolVisibility = .publicVisibility) {
         self.identifier = identifier
         self.explicitType = explicitType
         self.storage = storage
         self.isMutable = isMutable
         self.expression = expression
+        self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -71,6 +76,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         guard expression == rhs.expression else {
             return false
         }
+        guard visibility == rhs.visibility else {
+            return false
+        }
         return true
     }
     
@@ -81,12 +89,13 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(storage)
         hasher.combine(isMutable)
         hasher.combine(expression)
+        hasher.combine(visibility)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@expression: %@",
+        return String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@visibility: %@\n%@expression: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       makeIndent(depth: depth + 1),
@@ -97,6 +106,8 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                       String(describing: storage),
                       makeIndent(depth: depth + 1),
                       isMutable ? "true" : "false",
+                      makeIndent(depth: depth + 1),
+                      visibility.description,
                       makeIndent(depth: depth + 1),
                       expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
     }

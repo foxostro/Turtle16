@@ -464,6 +464,13 @@ public class UnionType: NSObject {
 public enum SymbolVisibility: Equatable {
     case publicVisibility
     case privateVisibility
+    
+    public var description: String {
+        switch self {
+        case .publicVisibility:  return "public"
+        case .privateVisibility: return "private"
+        }
+    }
 }
 
 public struct Symbol: Equatable {
@@ -520,6 +527,22 @@ public class SymbolTable: NSObject {
             return parent?.existsAsType(identifier: identifier) ?? false
         }
         return true
+    }
+    
+    public func existsAsTypeAndCannotBeShadowed(identifier: String) -> Bool {
+        guard let resolution = maybeResolveTypeWithScopeDepth(identifier: identifier) else {
+            return false
+        }
+        return resolution.1 == 0
+    }
+    
+    private func maybeResolveTypeWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (SymbolType, Int)? {
+        if let symbolType = typeTable[identifier] {
+            return (symbolType.symbolType, 0)
+        } else if let parentResolution = parent?.maybeResolveTypeWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
+            return (parentResolution.0, parentResolution.1 + 1)
+        }
+        return nil
     }
     
     public func existsAndCannotBeShadowed(identifier: String) -> Bool {

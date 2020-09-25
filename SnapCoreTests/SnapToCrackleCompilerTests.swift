@@ -2097,4 +2097,170 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
+    
+    func testModuleCannotRedefineExistingSymbol() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(1),
+                           storage: .staticStorage,
+                           isMutable: false),
+            Module(name: "MyModule", children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
+                               explicitType: nil,
+                               expression: Expression.LiteralInt(2),
+                               storage: .staticStorage,
+                               isMutable: false,
+                               visibility: .publicVisibility)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule' redefines existing symbol: `foo'")
+    }
+    
+    func testModuleDoesNotExportPrivateSymbols() {
+        let ast = TopLevel(children: [
+            Module(name: "MyModule", children: [
+                VarDeclaration(identifier: Expression.Identifier("foo"),
+                               explicitType: nil,
+                               expression: Expression.LiteralInt(2),
+                               storage: .staticStorage,
+                               isMutable: false,
+                               visibility: .privateVisibility)
+            ]),
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(42),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        
+        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
+    }
+    
+    func testModuleCannotRedefineExistingStructType() {
+        let ast = TopLevel(children: [
+            StructDeclaration(identifier: Expression.Identifier("Foo"), members: []),
+            Module(name: "MyModule", children: [
+                StructDeclaration(identifier: Expression.Identifier("Foo"),
+                                  members: [],
+                                  visibility: .publicVisibility)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule' redefines existing type: `Foo'")
+    }
+    
+    func testModuleDoesNotExportPrivateStructTypes() {
+        let ast = TopLevel(children: [
+            Module(name: "MyModule", children: [
+                StructDeclaration(identifier: Expression.Identifier("Foo"),
+                                  members: [],
+                                  visibility: .privateVisibility)
+            ]),
+            StructDeclaration(identifier: Expression.Identifier("Foo"),
+                              members: [
+                                StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u16))
+                              ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        
+        let Foo = try! compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(2, Foo.sizeof)
+    }
+    
+    func testModuleCannotRedefineExistingTypealias() {
+        let ast = TopLevel(children: [
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8)),
+            Module(name: "MyModule", children: [
+                Typealias(lexpr: Expression.Identifier("Foo"),
+                          rexpr: Expression.PrimitiveType(.u8),
+                          visibility: .publicVisibility)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule' redefines existing type: `Foo'")
+    }
+    
+    func testModuleDoesNotExportPrivateTypealias() {
+        let ast = TopLevel(children: [
+            Module(name: "MyModule", children: [
+                Typealias(lexpr: Expression.Identifier("Foo"),
+                          rexpr: Expression.PrimitiveType(.u8),
+                          visibility: .privateVisibility)
+            ]),
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u16))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        
+        let Foo = try! compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(2, Foo.sizeof)
+    }
+    
+    func testModuleCannotRedefineExistingFunction() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                body: Block(children: [])),
+            Module(name: "MyModule", children: [
+                FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                    functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                    body: Block(children: []),
+                                    visibility: .publicVisibility)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule' redefines existing symbol: `foo'")
+    }
+    
+    func testModuleDoesNotExportPrivateFunction() {
+        let ast = TopLevel(children: [
+            Module(name: "MyModule", children: [
+                FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                    functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                    body: Block(children: []),
+                                    visibility: .privateVisibility)
+            ])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        
+        XCTAssertNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
+    }
 }

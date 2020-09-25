@@ -135,11 +135,24 @@ public class Match: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: expr=%@, clauses=%@, elseClause=%@>",
+        return String(format: "%@%@\n%@expr: %@\n%@clauses: %@\n%@elseClause: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth + 1),
                       expr.makeIndentedDescription(depth: depth + 1),
-                      clauses.map({$0.description}).joined(separator: ", "),
+                      makeIndent(depth: depth + 1),
+                      makeClausesDescription(depth: depth + 1),
+                      makeIndent(depth: depth + 1),
                       elseClause==nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1))
+    }
+    
+    private func makeClausesDescription(depth: Int) -> String {
+        var result = ""
+        for clause in clauses {
+            result += "\n"
+            result += makeIndent(depth: depth + 1)
+            result += "\(clause)"
+        }
+        return result
     }
 }

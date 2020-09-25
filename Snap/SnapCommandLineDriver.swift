@@ -67,6 +67,7 @@ public class SnapCommandLineDriver: NSObject {
         
         if shouldDoASTDump {
             stdout.write(frontEnd.ast.description)
+            stdout.write("\n")
         }
         
         if shouldOutputAssembly {

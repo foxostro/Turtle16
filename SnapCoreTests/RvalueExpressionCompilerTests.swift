@@ -60,7 +60,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertThrowsError(try tryCompile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "unsupported expression: <UnsupportedExpression>")
+            XCTAssertEqual(compilerError?.message, "unsupported expression: UnsupportedExpression")
         }
     }
     

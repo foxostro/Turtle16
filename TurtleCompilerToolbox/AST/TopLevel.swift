@@ -47,15 +47,18 @@ public class TopLevel: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: children=[%@\n%@]>",
+        return String(format: "%@%@%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
-                      makeChildDescriptions(depth: depth),
-                      makeIndent(depth: depth))
+                      makeChildDescriptions(depth: depth))
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {
-        let result = children.map({"\n" + $0.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)}).joined(separator: ",")
+        var result = ""
+        for child in children {
+            result += "\n"
+            result += child.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)
+        }
         return result
     }
 }

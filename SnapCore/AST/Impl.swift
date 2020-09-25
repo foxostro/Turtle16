@@ -47,10 +47,20 @@ public class Impl: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@<%@: identifier=%@, children=\n%@>",
+        return String(format: "%@%@\n%@identifier: %@%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
-                      children.map({$0.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)}).joined(separator: "\n"))
+                      makeChildrenDescription(depth: depth + 1))
+    }
+    
+    private func makeChildrenDescription(depth: Int) -> String {
+        var result = ""
+        for i in 0..<children.count {
+            result += "\n"
+            result += children[i].makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
+        }
+        return result
     }
 }

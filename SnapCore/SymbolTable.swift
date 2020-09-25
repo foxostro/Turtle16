@@ -461,22 +461,33 @@ public class UnionType: NSObject {
     }
 }
 
+public enum SymbolVisibility: Equatable {
+    case publicVisibility
+    case privateVisibility
+}
+
 public struct Symbol: Equatable {
     public let type: SymbolType
     public let offset: Int
     public let storage: SymbolStorage
+    public let visibility: SymbolVisibility
     
-    public init(type: SymbolType, offset: Int, storage: SymbolStorage = .staticStorage) {
+    public init(type: SymbolType, offset: Int, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .publicVisibility) {
         self.type = type
         self.offset = offset
         self.storage = storage
+        self.visibility = visibility
     }
 }
 
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
+    public struct TypeRecord: Equatable {
+        let symbolType: SymbolType
+        let visibility: SymbolVisibility
+    }
     public private(set) var symbolTable: [String:Symbol]
-    private var typeTable: [String:SymbolType]
+    public private(set) var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     public var storagePointer: Int
     public var enclosingFunctionType: FunctionType? = nil
@@ -490,7 +501,7 @@ public class SymbolTable: NSObject {
     public init(parent p: SymbolTable?, dict: [String:Symbol] = [:], typeDict: [String:SymbolType] = [:]) {
         parent = p
         symbolTable = dict
-        typeTable = typeDict
+        typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .publicVisibility)})
         storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
         enclosingFunctionName = p?.enclosingFunctionName
@@ -522,8 +533,8 @@ public class SymbolTable: NSObject {
         symbolTable[identifier] = symbol
     }
     
-    public func bind(identifier: String, symbolType: SymbolType) {
-        typeTable[identifier] = symbolType
+    public func bind(identifier: String, symbolType: SymbolType, visibility: SymbolVisibility = .publicVisibility) {
+        typeTable[identifier] = TypeRecord(symbolType: symbolType, visibility: visibility)
     }
     
     public func resolve(identifier: String) throws -> Symbol {
@@ -610,8 +621,8 @@ public class SymbolTable: NSObject {
     }
     
     private func maybeResolveTypeWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (SymbolType, Int)? {
-        if let symbolType = typeTable[identifier] {
-            return (symbolType, stackFrameIndex)
+        if let symbolRecord = typeTable[identifier] {
+            return (symbolRecord.symbolType, stackFrameIndex)
         }
         return parent?.maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
     }

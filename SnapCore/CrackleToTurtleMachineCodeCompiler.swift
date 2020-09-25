@@ -147,6 +147,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .pop16: try pop16()
         case .subi16(let c, let a, let b): try subi16(c, a, b)
         case .addi16(let c, let a, let b): try addi16(c, a, b)
+        case .muli16(let c, let a, let b): try muli16(c, a, b)
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
         case .label(let name): try label(name)
@@ -298,6 +299,83 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try setUV(c+0)
         try assembler.adc(.NONE)
         try assembler.adc(.M)
+    }
+    
+    private func muli16(_ resultAddress: Int, _ multiplicandAddress: Int, _ imm: Int) throws {
+        // Copy the multiplier to a scratch location because we modify it in
+        // the loop.
+        let multiplierAddress = allocateScratchMemory(2)
+        try assembler.li(.A, (imm >> 8) & 0xff)
+        try setUV(multiplierAddress+0)
+        try assembler.mov(.M, .A)
+        try assembler.li(.A, imm & 0xff)
+        try setUV(multiplierAddress+1)
+        try assembler.mov(.M, .A)
+        
+        // Initialize the result to zero.
+        try setUV(resultAddress+0)
+        try assembler.li(.M, 0)
+        try setUV(resultAddress+1)
+        try assembler.li(.M, 0)
+        
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        let notDone = labelMaker.next()
+        
+        try label(loopHead)
+        
+        // If the multiplier is equal to zero then bail because we're done.
+        try setAddressToLabel(notDone)
+        try setUV(multiplierAddress+1)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try setUV(multiplierAddress+0)
+        try assembler.mov(.A, .M)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        try setAddressToLabel(loopTail)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
+        try label(notDone)
+        
+        // Add the multiplicand to the result.
+        try setUV(multiplicandAddress+1)
+        try assembler.mov(.B, .M)
+        try setUV(resultAddress+1)
+        try assembler.mov(.A, .M)
+        try assembler.add(.NONE)
+        try assembler.add(.M)
+        try setUV(multiplicandAddress+0)
+        try assembler.mov(.B, .M)
+        try setUV(resultAddress+0)
+        try assembler.mov(.A, .M)
+        try assembler.adc(.NONE)
+        try assembler.adc(.M)
+        
+        // Decrement the multiplier.
+        try setUV(multiplierAddress+1)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        try setUV(multiplierAddress+0)
+        try assembler.mov(.A, .M)
+        try assembler.dca(.NONE)
+        try assembler.dca(.M)
+        
+        // Jump back to the beginning of the loop
+        try jmp(loopHead)
+        try label(loopTail)
     }
     
     private func pushAToStack() throws {

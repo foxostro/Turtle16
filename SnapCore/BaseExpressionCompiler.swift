@@ -185,13 +185,9 @@ public class BaseExpressionCompiler: NSObject {
         let tempArrayCount = temporaryAllocator.allocate()
         instructions += [.storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type))]
         
-        let tempArrayElementSize = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
-        
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)] // TODO: a MULI16 instruction would be useful here.
+        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, determineArrayElementType(symbol.type).sizeof)]
         tempArrayCount.consume()
-        tempArrayElementSize.consume()
         
         let tempArrayLimit = temporaryAllocator.allocate()
         instructions += [.add16(tempArrayLimit.address, tempBaseAddress.address, tempArraySize.address)]

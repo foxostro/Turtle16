@@ -16,6 +16,7 @@ public enum CrackleInstruction: Equatable {
     case pop16 // pop a sixteen-bit value from the stack
     case subi16(Int, Int, Int) // (c, a, imm) -- computes c = a - imm
     case addi16(Int, Int, Int) // (c, a, imm) -- computes c = a + imm
+    case muli16(Int, Int, Int) // (c, a, imm) -- computes c = a * imm
     case storeImmediate(Int, Int)
     case storeImmediate16(Int, Int)
     case label(String) // declares a label
@@ -79,6 +80,8 @@ public enum CrackleInstruction: Equatable {
             return String(format: "SUBI16 0x%04x, 0x%04x, 0x%04x", c, a, imm)
         case .addi16(let c, let a, let imm):
             return String(format: "ADDI16 0x%04x, 0x%04x, 0x%04x", c, a, imm)
+        case .muli16(let c, let a, let imm):
+            return String(format: "MULI16 0x%04x, 0x%04x, 0x%04x", c, a, imm)
         case .storeImmediate(let address, let value):
             return String(format: "STORE-IMMEDIATE 0x%04x, 0x%02x", address, value)
         case .storeImmediate16(let address, let value):

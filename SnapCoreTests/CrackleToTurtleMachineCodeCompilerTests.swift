@@ -180,6 +180,20 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stackPointer, 0xfff8)
     }
     
+    func testMuli16() {
+        let c = 0x0010
+        let a = 0x0012
+        let b = 2
+        let ir: [CrackleInstruction] = [.muli16(c, a, b)]
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0, to: c)
+            computer.dataRAM.store16(value: 256, to: a)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 512)
+    }
+    
     func testStoreImmediate() {
         let address = 0x0010
         let value = 0xff

@@ -48,7 +48,8 @@ public class InterpretingVM: VirtualMachine {
         }
         
         if let logger = logger {
-            if let sourceAnchor = programDebugInfo?.mapProgramCounterToSource[Int(cpuState.pc.value)] ?? nil {
+            let pc = Int(cpuState.pc.value)
+            if let sourceAnchor = programDebugInfo?.lookupSourceAnchor(pc: pc) {
                 var message = "executing line"
                 if let lineNumberPrefix = sourceAnchor.lineNumberPrefix {
                     message += " \(lineNumberPrefix)\n"

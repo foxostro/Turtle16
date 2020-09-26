@@ -48,11 +48,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public private(set) var labelTable: [String:Int] = [:]
     public private(set) var instructions: [Instruction] = []
-    private var mapAssemblyInstructionToSource: [Int:SourceAnchor?] = [:]
-    public private(set) var mapProgramCounterToSource: [Int:SourceAnchor?] = [:]
-    private var mapAssemblyInstructionToCrackleInstruction: [Int:CrackleInstruction] = [:]
-    public private(set) var mapProgramCounterToCrackleInstruction: [Int:CrackleInstruction] = [:]
+    public var programDebugInfo: SnapDebugInfo? = nil
     private var currentSourceAnchor: SourceAnchor? = nil
+    private var currentSymbols: SymbolTable? = nil
     
     let labelMaker = LabelMaker(prefix: ".LL")
     
@@ -65,6 +63,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public func injectCode(_ ir: [CrackleInstruction]) throws {
         currentSourceAnchor = nil
+        currentSymbols = nil
         for instruction in ir {
             try compileSingleCrackleInstruction(instruction)
         }
@@ -81,13 +80,11 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.V, value & 0xff)
     }
     
-    public func compile(ir: [CrackleInstruction],
-                        mapCrackleInstructionToSource: [Int:SourceAnchor?] = [:],
-                        base: Int = 0x0000) throws {
+    public func compile(ir: [CrackleInstruction], base: Int = 0x0000) throws {
         patcherActions = []
         assembler.begin()
         try insertProgramPrologue()
-        try compileProgramBody(ir, mapCrackleInstructionToSource)
+        try compileProgramBody(ir)
         try insertProgramEpilogue()
         assembler.end()
         let resolver: (SourceAnchor?, String) throws -> Int = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
@@ -103,13 +100,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                               base: base)
         instructions = try patcher.patch()
         
-        for (instructionIndex, sourceAnchor) in mapAssemblyInstructionToSource {
-            mapProgramCounterToSource[instructionIndex+base] = sourceAnchor
-        }
-        
-        for (instructionIndex, crackleInstruction) in mapAssemblyInstructionToCrackleInstruction {
-            mapProgramCounterToCrackleInstruction[instructionIndex+base] = crackleInstruction
-        }
+        programDebugInfo?.generateMappingToProgramCounter(base: base)
     }
     
     // Inserts prologue code into the program, presumably at the beginning.
@@ -129,9 +120,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.M, kFramePointerInitialValueLo)
     }
     
-    private func compileProgramBody(_ ir: [CrackleInstruction], _ mapCrackleInstructionToSource: [Int : SourceAnchor?]) throws {
+    private func compileProgramBody(_ ir: [CrackleInstruction]) throws {
         for i in 0..<ir.count {
-            currentSourceAnchor = mapCrackleInstructionToSource[i] ?? nil
+            currentSourceAnchor = programDebugInfo?.lookupSourceAnchor(crackleInstructionIndex: i)
+            currentSymbols = programDebugInfo?.lookupSymbols(crackleInstructionIndex: i)
             let instruction = ir[i]
             try compileSingleCrackleInstruction(instruction)
         }
@@ -193,8 +185,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
             for i in instructionsBegin..<instructionsEnd {
-                mapAssemblyInstructionToSource[i] = currentSourceAnchor
-                mapAssemblyInstructionToCrackleInstruction[i] = instruction
+                programDebugInfo?.bind(assemblyInstructionIndex: i, crackleInstruction: instruction)
+                programDebugInfo?.bind(assemblyInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                programDebugInfo?.bind(assemblyInstructionIndex: i, symbols: currentSymbols)
             }
         }
     }

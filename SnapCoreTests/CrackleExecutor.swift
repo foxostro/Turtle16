@@ -45,7 +45,7 @@ class CrackleExecutor: NSObject {
             let instructions = compiler.instructions
             
             if isVerboseLogging {
-                let disassembly = makeDisassembly(base, instructions, compiler.mapProgramCounterToCrackleInstruction)
+                let disassembly = makeDisassembly(base, instructions, compiler.programDebugInfo)
                 print("Assembly:\n\(disassembly)\n")
             }
             
@@ -57,14 +57,14 @@ class CrackleExecutor: NSObject {
         return computer
     }
     
-    func makeDisassembly(_ base: Int, _ instructions: [Instruction], _ mapProgramCounterToCrackleInstruction: [Int:CrackleInstruction]) -> String {
+    func makeDisassembly(_ base: Int, _ instructions: [Instruction], _ programDebugInfo: SnapDebugInfo?) -> String {
         var previousCrackleInstruction: CrackleInstruction? = nil
         var disassembly: String = ""
         let formattedInstructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: instructions)
         for i in 0..<formattedInstructions.count {
             let instruction = formattedInstructions[i]
             let pc = base+i
-            if let crackleInstruction = mapProgramCounterToCrackleInstruction[pc] {
+            if let crackleInstruction = programDebugInfo?.lookupCrackleInstruction(pc: pc) {
                 if previousCrackleInstruction != crackleInstruction {
                     disassembly += "\n# \(crackleInstruction.description)\n"
                 }

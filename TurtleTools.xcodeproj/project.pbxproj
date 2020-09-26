@@ -12,6 +12,8 @@
 		6F0D519B2506D0B100AB1C7E /* TypeContextTypeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */; };
 		6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */; };
 		6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */; };
+		6F16BA00251E945C00A26850 /* SnapDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */; };
+		6F16BA10251E946100A26850 /* SnapDebugInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */; };
 		6F17182D2471C56600AE60C2 /* TurtleCompilerToolbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6F1718302471C56600AE60C2 /* TurtleCompilerToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; };
 		6F1718312471C56600AE60C2 /* TurtleCompilerToolbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -666,6 +668,8 @@
 		6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContextTypeChecker.swift; sourceTree = "<group>"; };
 		6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContextTypeCheckerTests.swift; sourceTree = "<group>"; };
 		6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionTests.swift; sourceTree = "<group>"; };
+		6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapDebugInfo.swift; sourceTree = "<group>"; };
+		6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapDebugInfoTests.swift; sourceTree = "<group>"; };
 		6F17181B2471C56600AE60C2 /* TurtleCompilerToolbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleCompilerToolbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F17181D2471C56600AE60C2 /* TurtleCompilerToolbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleCompilerToolbox.h; sourceTree = "<group>"; };
 		6F17181E2471C56600AE60C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1208,6 +1212,7 @@
 				6F924E79248B42D400F43741 /* RvalueExpressionTypeChecker.swift */,
 				6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */,
 				6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */,
+				6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */,
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
 				6FCB681D2472063900798905 /* SnapParser.swift */,
 				6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */,
@@ -1240,6 +1245,7 @@
 				6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */,
 				6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */,
 				6F238ADA248C94650040250D /* SnapExecutor.swift */,
+				6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
 				6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */,
@@ -2130,6 +2136,7 @@
 				6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */,
 				6FCB681A2472050900798905 /* SnapLexer.swift in Sources */,
 				6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */,
+				6F16BA00251E945C00A26850 /* SnapDebugInfo.swift in Sources */,
 				6F924E7A248B42D400F43741 /* RvalueExpressionTypeChecker.swift in Sources */,
 				6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */,
 				6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */,
@@ -2180,6 +2187,7 @@
 				6F18DD8D2484154F0014C585 /* SnapToCrackleCompilerTests.swift in Sources */,
 				6F924E7C248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
+				6F16BA10251E946100A26850 /* SnapDebugInfoTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */,
 				6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */,

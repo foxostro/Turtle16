@@ -26,7 +26,7 @@ public class SnapToCrackleCompiler: NSObject {
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [CrackleInstruction] = []
-    public private(set) var mapInstructionToSource: [Int:SourceAnchor?] = [:]
+    public var programDebugInfo: SnapDebugInfo? = nil
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
@@ -56,10 +56,13 @@ public class SnapToCrackleCompiler: NSObject {
     private func emit(_ ins: [CrackleInstruction]) {
         let instructionsBegin = instructions.count
         instructions += ins
-        let instructionsEnd = instructions.count
-        if instructionsBegin < instructionsEnd {
-            for i in instructionsBegin..<instructionsEnd {
-                mapInstructionToSource[i] = currentSourceAnchor
+        if let info = programDebugInfo {
+            let instructionsEnd = instructions.count
+            if instructionsBegin < instructionsEnd {
+                for i in instructionsBegin..<instructionsEnd {
+                    info.bind(crackleInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                    info.bind(crackleInstructionIndex: i, symbols: symbols)
+                }
             }
         }
     }

@@ -36,4 +36,63 @@ extension Computer {
         let framePointer = (framePointerHi << 8) + framePointerLo
         return framePointer
     }
+    
+    public func lookupSymbol(_ identifier: String) -> Symbol? {
+        guard let info = (programDebugInfo as? SnapDebugInfo) else {
+            return nil
+        }
+        let pc = Int(cpuState.pc.value)
+        return info.lookupSymbol(pc: pc, identifier: identifier)
+    }
+    
+    public func loadSymbolBool(_ identifier: String) -> Bool? {
+        guard let symbol = lookupSymbol(identifier) else {
+            return nil
+        }
+        assert(symbol.type == .bool || symbol.type == .constBool)
+        let value = dataRAM.load(from: symbol.offset)
+        return value == 0 ? false : true
+    }
+    
+    public func loadSymbolU8(_ identifier: String) -> UInt8? {
+        guard let symbol = lookupSymbol(identifier) else {
+            return nil
+        }
+        assert(symbol.type == .u8 || symbol.type == .constU8)
+        let value = dataRAM.load(from: symbol.offset)
+        return value
+    }
+    
+    public func loadSymbolU16(_ identifier: String) -> UInt16? {
+        guard let symbol = lookupSymbol(identifier) else {
+            return nil
+        }
+        assert(symbol.type == .u16 || symbol.type == .constU16)
+        let value = dataRAM.load16(from: symbol.offset)
+        return value
+    }
+    
+    public func loadSymbolArrayOfU8(_ count: Int, _ identifier: String) -> [UInt8]? {
+        guard let symbol = lookupSymbol(identifier) else {
+            return nil
+        }
+        assert(symbol.type == .array(count: count, elementType: .u8) || symbol.type == .array(count: count, elementType: .constU8))
+        var arr: [UInt8] = []
+        for i in 0..<count {
+            arr.append(dataRAM.load(from: symbol.offset + i*SymbolType.u8.sizeof))
+        }
+        return arr
+    }
+    
+    public func loadSymbolArrayOfU16(_ count: Int, _ identifier: String) -> [UInt16]? {
+        guard let symbol = lookupSymbol(identifier) else {
+            return nil
+        }
+        assert(symbol.type == .array(count: count, elementType: .u16) || symbol.type == .array(count: count, elementType: .constU16))
+        var arr: [UInt16] = []
+        for i in 0..<count {
+            arr.append(dataRAM.load16(from: symbol.offset + i*SymbolType.u16.sizeof))
+        }
+        return arr
+    }
 }

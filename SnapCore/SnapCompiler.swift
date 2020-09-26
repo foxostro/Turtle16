@@ -14,7 +14,7 @@ public class SnapCompiler: NSObject {
     public var ast: TopLevel! = nil
     public var ir: [CrackleInstruction] = []
     public var instructions: [Instruction] = []
-    public let programDebugInfo = ProgramDebugInfo()
+    public let programDebugInfo = SnapDebugInfo()
     
     public let kStandardLibrarySourceFileName = "stdlib"
     private var kStandardLibraryText: String!
@@ -72,6 +72,7 @@ public class SnapCompiler: NSObject {
         // Lexer pass
         let lexer = SnapLexer(withString: text)
         lexer.scanTokens()
+        programDebugInfo.lineMapper = lexer.lineMapper
         if lexer.hasError {
             errors = lexer.errors
             return
@@ -88,6 +89,7 @@ public class SnapCompiler: NSObject {
         
         // Compile the AST to IR code
         let snapToCrackleCompiler = SnapToCrackleCompiler()
+        snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
             errors = snapToCrackleCompiler.errors
@@ -98,8 +100,9 @@ public class SnapCompiler: NSObject {
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
         let irToMachineCode = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
+        irToMachineCode.programDebugInfo = programDebugInfo
         do {
-            try irToMachineCode.compile(ir: ir, mapCrackleInstructionToSource: snapToCrackleCompiler.mapInstructionToSource, base: base)
+            try irToMachineCode.compile(ir: ir, base: base)
         } catch let error as CompilerError {
             errors = [error]
             return
@@ -107,10 +110,6 @@ public class SnapCompiler: NSObject {
             abort()
         }
         instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: irToMachineCode.instructions)
-        
-        // Prepare program debugging information
-        programDebugInfo.lineMapper = lexer.lineMapper
-        programDebugInfo.mapProgramCounterToSource = irToMachineCode.mapProgramCounterToSource
     }
     
     private func makeAssembler() -> AssemblerBackEnd {

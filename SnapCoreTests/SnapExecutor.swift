@@ -17,7 +17,7 @@ class SnapExecutor: NSObject {
     public var isVerboseLogging = false
     public var shouldAlwaysPrintIR = false
     let microcodeGenerator: MicrocodeGenerator
-    let compiler = SnapCompiler()
+    public let compiler = SnapCompiler()
     var configure: (Computer)->Void = {_ in}
     
     override init() {

@@ -2153,6 +2153,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
+        executor.injectPanicStub = false
         let computer = try! executor.execute(ir: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
@@ -2318,17 +2319,32 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }
     
-//    func testCanInjectModuleSourceCodeForTestingPurposes() {
-//        let ast = TopLevel(children: [
-//            Import(moduleName: "MyModule")
-//        ])
-//        let compiler = SnapToCrackleCompiler()
-//        compiler.injectModule(name: "MyModule", sourceCode: """
-//public func foo() {
-//}
-//""")
-//        compiler.compile(ast: ast)
-//        XCTAssertFalse(compiler.hasError)
-//        XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
-//    }
+    func testCanInjectModuleSourceCodeForTestingPurposes() {
+        let ast = TopLevel(children: [
+            Import(moduleName: "MyModule")
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.injectModule(name: "MyModule", sourceCode: """
+public func foo() {
+}
+""")
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
+    }
+    
+    func testInjectedModulesAllUseTheStandardLibraryImplicitly() {
+        let ast = TopLevel(children: [
+            Import(moduleName: "MyModule")
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.injectModule(name: "MyModule", sourceCode: """
+public func foo() -> None {
+    return none
+}
+""")
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
+    }
 }

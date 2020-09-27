@@ -39,11 +39,6 @@ public class SnapToCrackleCompiler: NSObject {
     
     public override init() {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
-        
-        let noneType = try! symbols.resolveType(identifier: "None")
-        assert(noneType.sizeof == 0)
-        symbols.bind(identifier: "none", symbol: Symbol(type: noneType, offset: staticStoragePointer, storage: .staticStorage))
-        
         super.init()
     }
     
@@ -77,7 +72,8 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(topLevel: TopLevel) throws {
         var children: [AbstractSyntaxTreeNode] = []
         if isUsingStandardLibrary {
-          children.append(Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName))
+            let importStmt = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
+            children.insert(importStmt, at: 0)
         }
         children += topLevel.children
         
@@ -167,20 +163,21 @@ public class SnapToCrackleCompiler: NSObject {
                      visibility: node.visibility)
     }
     
-    private var modulesAlreadyImported = Set<String>()
+    private var moduleSymbols: [String : SymbolTable] = [:]
     
     private func performDeclPass(import node: Import) throws {
         guard symbols.parent == nil else {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
         }
-        if !modulesAlreadyImported.contains(node.moduleName) {
-            let module = try importModule(node)
-            try compile(genericNode: module)
-            modulesAlreadyImported.insert(node.moduleName)
+        
+        if nil == moduleSymbols[node.moduleName] {
+            try compileModuleForImport(import: node)
         }
+        
+        try exportPublicSymbolsFromModule(sourceAnchor: node.sourceAnchor, name: node.moduleName)
     }
     
-    private func importModule(_ node: Import) throws -> Module {
+    public func compileModuleForImport(import node: Import) throws {
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let text = moduleData.0
         let moduleFilename = moduleData.1
@@ -199,14 +196,47 @@ public class SnapToCrackleCompiler: NSObject {
             throw CompilerError.makeOmnibusError(fileName: moduleFilename, errors: parser.errors)
         }
         
-        guard let moduleTopLevel = parser.syntaxTree else {
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "failed to get the top level of the `\(node.moduleName)' module")
-        }
+        let moduleTopLevel = parser.syntaxTree!
         
         let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor,
                             name: node.moduleName,
                             children: moduleTopLevel.children)
-        return module
+        
+        try performDeclPass(genericNode: module)
+        try compile(genericNode: module)
+    }
+    
+    private func performDeclPass(module: Module) throws {
+        guard symbols.parent == nil else {
+            throw CompilerError(sourceAnchor: module.sourceAnchor, message: "declaration is only valid at file scope")
+        }
+        
+        currentSourceAnchor = module.sourceAnchor
+        
+        // Modules do not inherit symbols from the code which imports them.
+        // Create a new symbol table with no relationship to the existing one.
+        // Change the storage pointer so the new one doesn't overwrite existing
+        // symbols.
+        let oldModulesAlreadyImported = modulesAlreadyImported
+        let oldSymbols = symbols
+        symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable())
+        symbols.storagePointer = oldSymbols.storagePointer
+        
+        for node in module.children {
+            try performDeclPass(genericNode: node)
+        }
+        for child in module.children {
+            try compile(genericNode: child)
+        }
+        
+        // Stash away the symbol table of the module and restore the old symbol
+        // table chain. Make sure to continue allocating where the module left
+        // off.
+        moduleSymbols[module.name] = symbols
+        let storagePointer = symbols.storagePointer
+        symbols = oldSymbols
+        symbols.storagePointer = storagePointer
+        modulesAlreadyImported = oldModulesAlreadyImported
     }
     
     private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, String) {
@@ -224,17 +254,43 @@ public class SnapToCrackleCompiler: NSObject {
         throw CompilerError(sourceAnchor: sourceAnchor, message: "no such module `\(moduleName)'")
     }
     
-    private func performDeclPass(module: Module) throws {
-        currentSourceAnchor = module.sourceAnchor
-        pushScopeForBlock()
-        for node in module.children {
-            try performDeclPass(genericNode: node)
+    private var modulesAlreadyImported = Set<String>()
+    
+    // Copy symbols from the module to the parent scope.
+    private func exportPublicSymbolsFromModule(sourceAnchor: SourceAnchor?, name: String) throws {
+        guard false == modulesAlreadyImported.contains(name) else {
+            return
         }
-        for child in module.children {
-            try compile(genericNode: child)
+        
+        guard let src = moduleSymbols[name] else {
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to get symbols for module `\(name)'")
         }
-        try exportModuleSymbols(module)
-        popScopeForBlock()
+        
+        for (identifier, symbol) in src.symbolTable {
+            if symbol.visibility == .publicVisibility {
+                guard symbols.existsAndCannotBeShadowed(identifier: identifier) == false else {
+                    throw CompilerError(sourceAnchor: sourceAnchor, message: "import of module `\(name)' redefines existing symbol: `\(identifier)'")
+                }
+                symbols.bind(identifier: identifier,
+                             symbol: Symbol(type: symbol.type,
+                                            offset: symbol.offset,
+                                            storage: symbol.storage,
+                                            visibility: .privateVisibility))
+            }
+        }
+        
+        for (identifier, record) in src.typeTable {
+            if record.visibility == .publicVisibility {
+                guard symbols.existsAsType(identifier: identifier) == false else {
+                    throw CompilerError(sourceAnchor: sourceAnchor, message: "import of module `\(name)' redefines existing type: `\(identifier)'")
+                }
+                symbols.bind(identifier: identifier,
+                            symbolType: record.symbolType,
+                            visibility: .privateVisibility)
+            }
+        }
+        
+        modulesAlreadyImported.insert(name)
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
@@ -617,33 +673,6 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(match: Match) throws {
         let ast = try MatchCompiler().compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
-    }
-    
-    // Copy symbols from the module to the parent scope.
-    private func exportModuleSymbols(_ module: Module) throws {
-        guard let parent = symbols.parent else {
-            return
-        }
-        
-        for (identifier, symbol) in symbols.symbolTable {
-            if symbol.visibility == .publicVisibility {
-                guard parent.existsAndCannotBeShadowed(identifier: identifier) == false else {
-                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module `\(module.name)' redefines existing symbol: `\(identifier)'")
-                }
-                parent.bind(identifier: identifier, symbol: symbol)
-            }
-        }
-        
-        for (identifier, record) in symbols.typeTable {
-            if record.visibility == .publicVisibility {
-                guard parent.existsAsType(identifier: identifier) == false else {
-                    throw CompilerError(sourceAnchor: module.sourceAnchor, message: "import of module `\(module.name)' redefines existing type: `\(identifier)'")
-                }
-                parent.bind(identifier: identifier,
-                            symbolType: record.symbolType,
-                            visibility: .privateVisibility)
-            }
-        }
     }
     
     private func pushScopeForNewStackFrame(enclosingFunctionName: String,

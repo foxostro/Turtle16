@@ -23,15 +23,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         result = bindCompilerInstrinsicPokePeripheral(symbols: result)
         result = bindCompilerInstrinsicHlt(symbols: result)
         result = bindCompilerIntrinsicRangeType(symbols: result)
-        result = bindCompilerIntrinsicNoneType(symbols: result)
         return result
-    }
-    
-    private static func bindCompilerIntrinsicNoneType(symbols: SymbolTable) -> SymbolTable {
-        let none = "None"
-        let noneType: SymbolType = .structType(StructType(name: none, symbols: SymbolTable()))
-        symbols.bind(identifier: none, symbolType: noneType)
-        return symbols
     }
     
     private static func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {
@@ -40,14 +32,14 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             "begin" : Symbol(type: .u16, offset: 0),
             "limit" : Symbol(type: .u16, offset: 2)
         ])))
-        symbols.bind(identifier: name, symbolType: typ)
+        symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
         return symbols
     }
     
     private static func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "peekMemory"
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)]))
-        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
     }
@@ -55,7 +47,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private static func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "pokeMemory"
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)]))
-        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
     }
@@ -63,7 +55,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private static func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "peekPeripheral"
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
-        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
     }
@@ -71,7 +63,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private static func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "pokePeripheral"
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
-        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
     }
@@ -79,7 +71,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private static func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
         let name = "hlt"
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
-        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage)
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
     }

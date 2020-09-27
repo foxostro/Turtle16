@@ -1249,6 +1249,7 @@ r = foo.bar(42)
     
     func test_EndToEndIntegration_LinkedList() {
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
         let computer = try! executor.execute(program: """
 var r: u8 | None = none
 struct LinkedList {
@@ -1288,7 +1289,11 @@ impl LinkedList {
 }
 r = a.lookup(2)
 """)
-        XCTAssertEqual(computer.dataRAM.load16(from: computer.lookupSymbol("r")!.offset), 0x002a)
+        guard let symbol = computer.lookupSymbol("r") else {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(computer.dataRAM.load16(from: symbol.offset), 0x002a)
     }
     
     func test_EndToEndIntegration_Match_WithExtraneousClause() {

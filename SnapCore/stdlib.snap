@@ -1,3 +1,6 @@
+struct None {}
+let none = None {}
+
 func panic(message: []u8) {
     puts("PANIC: ")
     puts(message)

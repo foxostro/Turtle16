@@ -35,3 +35,5 @@ public class TokenConst : Token {}
 public class TokenImpl : Token {}
 public class TokenTypealias : Token {}
 public class TokenMatch : Token {}
+public class TokenPublic : Token {}
+public class TokenPrivate : Token {}

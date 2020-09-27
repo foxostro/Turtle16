@@ -2220,4 +2220,112 @@ match expr {
                   elseClause: Block(sourceAnchor: parser.lineMapper.anchor(70, 72), children: []))
         ])
     }
+    
+    func testWellFormedPublicVariableDeclaration() {
+        let parser = parse("public var foo = 1")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 14), identifier: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
+                                      storage: .stackStorage,
+                                      isMutable: true,
+                                      visibility: .publicVisibility)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedPrivateVariableDeclaration() {
+        let parser = parse("private var foo = 1")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 15), identifier: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 1),
+                                      storage: .stackStorage,
+                                      isMutable: true,
+                                      visibility: .privateVisibility)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedPublicStaticVariableDeclaration() {
+        let parser = parse("public static var foo = 1")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 1),
+                                      storage: .staticStorage,
+                                      isMutable: true,
+                                      visibility: .publicVisibility)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedPrivateStaticVariableDeclaration() {
+        let parser = parse("private static var foo = 1")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(19, 22), identifier: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(25, 26), value: 1),
+                                      storage: .staticStorage,
+                                      isMutable: true,
+                                      visibility: .privateVisibility)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedStaticPublicVariableDeclaration() {
+        let parser = parse("static public var foo = 1")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 1),
+                                      storage: .staticStorage,
+                                      isMutable: true,
+                                      visibility: .publicVisibility)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testWellFormedStaticPrivateVariableDeclaration() {
+        let parser = parse("static private var foo = 1")
+        XCTAssertFalse(parser.hasError)
+        let ast = parser.syntaxTree!
+        
+        XCTAssertEqual(ast.children.count, 1)
+        
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                                      identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(19, 22), identifier: "foo"),
+                                      explicitType: nil,
+                                      expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(25, 26), value: 1),
+                                      storage: .staticStorage,
+                                      isMutable: true,
+                                      visibility: .privateVisibility)
+        let actual = ast.children[0]
+        XCTAssertEqual(expected, actual)
+    }
 }

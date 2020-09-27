@@ -170,11 +170,19 @@ public class SnapToCrackleCompiler: NSObject {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
         }
         
-        if nil == moduleSymbols[node.moduleName] {
+        guard false == modulesBeingImported.contains(node.moduleName) else {
+            return
+        }
+        
+        modulesBeingImported.insert(node.moduleName)
+        
+        if nil == moduleSymbols[node.moduleName] && false == modulesAlreadyImported.contains(node.moduleName) {
             try compileModuleForImport(import: node)
         }
         
         try exportPublicSymbolsFromModule(sourceAnchor: node.sourceAnchor, name: node.moduleName)
+        
+        modulesBeingImported.remove(node.moduleName)
     }
     
     public func compileModuleForImport(import node: Import) throws {
@@ -222,10 +230,14 @@ public class SnapToCrackleCompiler: NSObject {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable())
         symbols.storagePointer = oldSymbols.storagePointer
         
-        for node in module.children {
+        // Make sure to import the standard library when building a module.
+        let importStdlib = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
+        let nodes: [AbstractSyntaxTreeNode] = [importStdlib] + module.children
+        
+        for node in nodes {
             try performDeclPass(genericNode: node)
         }
-        for child in module.children {
+        for child in nodes {
             try compile(genericNode: child)
         }
         
@@ -240,7 +252,12 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, String) {
-        // First, try reading the module from bundle resources.
+        // Try retrieving the module from the manually injected modules.
+        if let sourceCode = injectedModules[moduleName] {
+            return (sourceCode, moduleName)
+        }
+        
+        // Try retrieving the module from bundle resources.
         let bundle = Bundle(for: type(of: self))
         if let fileName = bundle.path(forResource: moduleName, ofType: "snap") {
             do {
@@ -254,7 +271,8 @@ public class SnapToCrackleCompiler: NSObject {
         throw CompilerError(sourceAnchor: sourceAnchor, message: "no such module `\(moduleName)'")
     }
     
-    private var modulesAlreadyImported = Set<String>()
+    private var modulesBeingImported: Set<String> = []
+    private var modulesAlreadyImported: Set<String> = []
     
     // Copy symbols from the module to the parent scope.
     private func exportPublicSymbolsFromModule(sourceAnchor: SourceAnchor?, name: String) throws {
@@ -706,7 +724,7 @@ public class SnapToCrackleCompiler: NSObject {
         // This must be located just before the function arguments.
         let kReturnValueIdentifier = "__returnValue"
         symbols.bind(identifier: kReturnValueIdentifier,
-                     symbol: Symbol(type: typ.returnType, // TODO: This is probably not going to behave as expected if we mark the function return type as "const".
+                     symbol: Symbol(type: typ.returnType,
                                     offset: -offset,
                                     storage: .stackStorage))
         offset += typ.returnType.sizeof
@@ -759,5 +777,11 @@ public class SnapToCrackleCompiler: NSObject {
             }
         }
         return !allTracesEndInReturnStatement
+    }
+    
+    private var injectedModules: [String : String] = [:]
+    
+    public func injectModule(name: String, sourceCode: String) {
+        injectedModules[name] = sourceCode
     }
 }

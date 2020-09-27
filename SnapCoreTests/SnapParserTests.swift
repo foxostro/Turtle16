@@ -2328,4 +2328,96 @@ match expr {
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
     }
+    
+    func testWellFormedPublicStructDeclaration() {
+        let parser = parse("""
+public struct foo {
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 21),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(14, 17), identifier: "foo"),
+                                         members: [],
+                                         visibility: .publicVisibility)
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testWellFormedPrivateStructDeclaration() {
+        let parser = parse("""
+private struct foo {
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 22),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 18), identifier: "foo"),
+                                         members: [],
+                                         visibility: .privateVisibility)
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testWellformedPublicTypealiasStatement() {
+        let parser = parse("public typealias Foo = Bar")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Typealias(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                      lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(17, 20), identifier: "Foo"),
+                      rexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(23, 26), identifier: "Bar"),
+                      visibility: .publicVisibility)
+        ])
+    }
+    
+    func testWellformedPrivateTypealiasStatement() {
+        let parser = parse("private typealias Foo = Bar")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Typealias(sourceAnchor: parser.lineMapper.anchor(0, 27),
+                      lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "Foo"),
+                      rexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(24, 27), identifier: "Bar"),
+                      visibility: .privateVisibility)
+        ])
+    }
+    
+    func testWellformedPublicFunctionDeclaration() {
+        let parser = parse("public func foo() {}")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 20), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 20),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 15), identifier: "foo"),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(18, 20), children: []),
+                                visibility: .publicVisibility)
+        ]))
+    }
+    
+    func testWellformedPrivateFunctionDeclaration() {
+        let parser = parse("private func foo() {}")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 21), children: [
+            FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 21),
+                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                body: Block(sourceAnchor: parser.lineMapper.anchor(19, 21), children: []),
+                                visibility: .privateVisibility)
+        ]))
+    }
 }

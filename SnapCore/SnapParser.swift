@@ -86,7 +86,7 @@ public class SnapParser: Parser {
         } else if nil != accept(TokenPrivate.self) {
             visibility = .privateVisibility
         } else {
-            visibility = .privateVisibility
+            visibility = .publicVisibility
         }
         
         if let token = accept(TokenLet.self) {
@@ -112,20 +112,43 @@ public class SnapParser: Parser {
     }
     
     public func consumeVisibilitySpecifier(_ visibilityToken: Token, _ visibility: SymbolVisibility) throws -> [AbstractSyntaxTreeNode] {
-        let staticToken = accept(TokenStatic.self) as? TokenStatic
-        let storage: SymbolStorage = (staticToken==nil) ? .stackStorage : .staticStorage
-        
-        if let token = accept(TokenLet.self) {
-            return try consumeLet(token as! TokenLet,
-                                  storage: storage,
+        if let _ = accept(TokenStatic.self) as? TokenStatic {
+            if let token = accept(TokenLet.self) as? TokenLet {
+                return try consumeLet(token,
+                                      storage: .staticStorage,
+                                      firstSpeciferToken: visibilityToken,
+                                      visibility: visibility)
+            } else {
+                let token = try expect(type: TokenVar.self, error: CompilerError(sourceAnchor: visibilityToken.sourceAnchor, message: "expected declaration")) as! TokenVar
+                return try consumeVar(token,
+                                      storage: .staticStorage,
+                                      firstSpeciferToken: visibilityToken,
+                                      visibility: visibility)
+            }
+        }
+        else if let token = accept(TokenLet.self) as? TokenLet {
+            return try consumeLet(token,
+                                  storage: .stackStorage,
                                   firstSpeciferToken: visibilityToken,
                                   visibility: visibility)
-        } else {
-            let token = try expect(type: TokenVar.self, error: CompilerError(sourceAnchor: visibilityToken.sourceAnchor, message: "expected declaration"))
-            return try consumeVar(token as! TokenVar,
-                                  storage: storage,
+        }
+        else if let token = accept(TokenVar.self) as? TokenVar {
+            return try consumeVar(token,
+                                  storage: .stackStorage,
                                   firstSpeciferToken: visibilityToken,
                                   visibility: visibility)
+        }
+        else if let _ = accept(TokenFunc.self) as? TokenFunc {
+            return try consumeFunc(visibilityToken, visibility)
+        }
+        else if let _ = accept(TokenStruct.self) as? TokenStruct {
+            return try consumeStruct(visibilityToken, visibility)
+        }
+        else if let _ = accept(TokenTypealias.self) as? TokenTypealias {
+            return try consumeTypealias(visibilityToken, visibility)
+        }
+        else {
+            throw CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "unexpected token following `\(visibilityToken.lexeme)' specifier")
         }
     }
     
@@ -446,8 +469,8 @@ public class SnapParser: Parser {
         ]
     }
     
-    private func consumeFunc(_ token: TokenFunc) throws -> [AbstractSyntaxTreeNode] {
-        let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: token.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
+    private func consumeFunc(_ firstToken: Token, _ visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
+        let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: firstToken.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
         try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
         
         var arguments: [Expression.FunctionType.Argument] = []
@@ -478,11 +501,12 @@ public class SnapParser: Parser {
         let leftError = "expected `{' in body of function declaration"
         let rightError = "expected `}' after function body"
         let body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first as! Block
-        let sourceAnchor = token.sourceAnchor?.union(previous?.sourceAnchor)
+        let sourceAnchor = firstToken.sourceAnchor?.union(previous?.sourceAnchor)
         return [FunctionDeclaration(sourceAnchor: sourceAnchor,
                                     identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
                                     functionType: Expression.FunctionType(name: tokenIdentifier.lexeme, returnType: returnType, arguments: arguments),
-                                    body: body)]
+                                    body: body,
+                                    visibility: visibility)]
     }
     
     private func acceptEndOfStatement() -> Token? {
@@ -803,7 +827,7 @@ public class SnapParser: Parser {
         }
     }
     
-    private func consumeStruct(_ token: TokenStruct) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeStruct(_ firstToken: Token, _ visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in struct declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         
@@ -825,10 +849,11 @@ public class SnapParser: Parser {
         
         let closingBrace = try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in struct"))
         
-        let sourceAnchor = token.sourceAnchor?.union(closingBrace.sourceAnchor!)
+        let sourceAnchor = firstToken.sourceAnchor?.union(closingBrace.sourceAnchor!)
         return [StructDeclaration(sourceAnchor: sourceAnchor,
                                   identifier: identifier,
-                                  members: members)]
+                                  members: members,
+                                  visibility: visibility)]
     }
     
     private func consumeImpl(_ tokenImpl: TokenImpl) throws -> [AbstractSyntaxTreeNode] {
@@ -864,14 +889,15 @@ public class SnapParser: Parser {
         }
     }
     
-    private func consumeTypealias(_ tokenTypealias: TokenTypealias) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeTypealias(_ firstToken: Token, _ visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in typealias declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `=' in typealias declaration"))
         let expr = try consumeType()
-        return [Typealias(sourceAnchor: tokenTypealias.sourceAnchor?.union(expr.sourceAnchor),
+        return [Typealias(sourceAnchor: firstToken.sourceAnchor?.union(expr.sourceAnchor),
                           lexpr: identifier,
-                          rexpr: expr)]
+                          rexpr: expr,
+                          visibility: visibility)]
     }
     
     private func consumeMatch(_ tokenMatch: TokenMatch) throws -> [AbstractSyntaxTreeNode] {

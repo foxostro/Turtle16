@@ -16,7 +16,7 @@ public class Typealias: AbstractSyntaxTreeNode {
     
     public convenience init(lexpr: Expression.Identifier,
                             rexpr: Expression,
-                            visibility: SymbolVisibility = .publicVisibility) {
+                            visibility: SymbolVisibility = .privateVisibility) {
         self.init(sourceAnchor: nil,
                   lexpr: lexpr,
                   rexpr: rexpr,
@@ -26,7 +26,7 @@ public class Typealias: AbstractSyntaxTreeNode {
     public init(sourceAnchor: SourceAnchor?,
                 lexpr: Expression.Identifier,
                 rexpr: Expression,
-                visibility: SymbolVisibility = .publicVisibility) {
+                visibility: SymbolVisibility = .privateVisibility) {
         self.lexpr = lexpr
         self.rexpr = rexpr
         self.visibility = visibility

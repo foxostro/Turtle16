@@ -479,7 +479,7 @@ public struct Symbol: Equatable {
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     
-    public init(type: SymbolType, offset: Int, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .publicVisibility) {
+    public init(type: SymbolType, offset: Int, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .privateVisibility) {
         self.type = type
         self.offset = offset
         self.storage = storage
@@ -508,7 +508,7 @@ public class SymbolTable: NSObject {
     public init(parent p: SymbolTable?, dict: [String:Symbol] = [:], typeDict: [String:SymbolType] = [:]) {
         parent = p
         symbolTable = dict
-        typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .publicVisibility)})
+        typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
         enclosingFunctionName = p?.enclosingFunctionName
@@ -556,7 +556,7 @@ public class SymbolTable: NSObject {
         symbolTable[identifier] = symbol
     }
     
-    public func bind(identifier: String, symbolType: SymbolType, visibility: SymbolVisibility = .publicVisibility) {
+    public func bind(identifier: String, symbolType: SymbolType, visibility: SymbolVisibility = .privateVisibility) {
         typeTable[identifier] = TypeRecord(symbolType: symbolType, visibility: visibility)
     }
     

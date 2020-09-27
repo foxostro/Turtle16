@@ -2317,4 +2317,18 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }
+    
+//    func testCanInjectModuleSourceCodeForTestingPurposes() {
+//        let ast = TopLevel(children: [
+//            Import(moduleName: "MyModule")
+//        ])
+//        let compiler = SnapToCrackleCompiler()
+//        compiler.injectModule(name: "MyModule", sourceCode: """
+//public func foo() {
+//}
+//""")
+//        compiler.compile(ast: ast)
+//        XCTAssertFalse(compiler.hasError)
+//        XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
+//    }
 }

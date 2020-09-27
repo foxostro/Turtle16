@@ -1,19 +1,19 @@
-struct None {}
-let none = None {}
+public struct None {}
+public let none = None {}
 
-func panic(message: []u8) {
+public func panic(message: []u8) {
     puts("PANIC: ")
     puts(message)
     hlt()
 }
 
-func puts(s: []u8) {
+public func puts(s: []u8) {
     for c in s {
         putc(c)
     }
 }
 
-func putc(c: u8) {
+public func putc(c: u8) {
     let kSerialDevice = 7
     let kDataPort = 1
     let kControlPort = 0

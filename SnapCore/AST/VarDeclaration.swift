@@ -22,7 +22,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                             expression: Expression?,
                             storage: SymbolStorage,
                             isMutable: Bool,
-                            visibility: SymbolVisibility = .publicVisibility) {
+                            visibility: SymbolVisibility = .privateVisibility) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
                   explicitType: explicitType,
@@ -38,7 +38,7 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                          expression: Expression?,
                          storage: SymbolStorage,
                          isMutable: Bool,
-                         visibility: SymbolVisibility = .publicVisibility) {
+                         visibility: SymbolVisibility = .privateVisibility) {
         self.identifier = identifier
         self.explicitType = explicitType
         self.storage = storage

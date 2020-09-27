@@ -18,7 +18,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public convenience init(identifier: Expression.Identifier,
                             functionType: Expression,
                             body: Block,
-                            visibility: SymbolVisibility = .publicVisibility) {
+                            visibility: SymbolVisibility = .privateVisibility) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
                   functionType: functionType,
@@ -30,7 +30,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                          identifier: Expression.Identifier,
                          functionType: Expression,
                          body: Block,
-                         visibility: SymbolVisibility = .publicVisibility) {
+                         visibility: SymbolVisibility = .privateVisibility) {
         self.identifier = identifier
         self.functionType = functionType
         self.body = body

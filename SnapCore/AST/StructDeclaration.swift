@@ -50,7 +50,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     
     public convenience init(identifier: Expression.Identifier,
                             members: [Member],
-                            visibility: SymbolVisibility = .publicVisibility) {
+                            visibility: SymbolVisibility = .privateVisibility) {
         self.init(sourceAnchor: nil,
                   identifier: identifier,
                   members: members,
@@ -60,7 +60,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     public required init(sourceAnchor: SourceAnchor?,
                          identifier: Expression.Identifier,
                          members: [Member],
-                         visibility: SymbolVisibility = .publicVisibility) {
+                         visibility: SymbolVisibility = .privateVisibility) {
         self.identifier = identifier
         self.members = members
         self.visibility = visibility

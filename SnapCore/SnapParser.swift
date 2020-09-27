@@ -86,7 +86,7 @@ public class SnapParser: Parser {
         } else if nil != accept(TokenPrivate.self) {
             visibility = .privateVisibility
         } else {
-            visibility = .publicVisibility
+            visibility = .privateVisibility
         }
         
         if let token = accept(TokenLet.self) {
@@ -155,7 +155,7 @@ public class SnapParser: Parser {
     private func consumeLet(_ letToken: TokenLet,
                             storage: SymbolStorage = .stackStorage,
                             firstSpeciferToken: Token? = nil,
-                            visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
+                            visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = false
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in let declaration"
         let errorMessageWhenNoInitialValue = "constants must be assigned a value"
@@ -173,7 +173,7 @@ public class SnapParser: Parser {
     private func consumeVar(_ varToken: TokenVar,
                             storage: SymbolStorage = .stackStorage,
                             firstSpeciferToken: Token? = nil,
-                            visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
+                            visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = true
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in variable declaration"
         let errorMessageWhenNoInitialValue = "variables must be assigned an initial value"
@@ -469,7 +469,7 @@ public class SnapParser: Parser {
         ]
     }
     
-    private func consumeFunc(_ firstToken: Token, _ visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeFunc(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: firstToken.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
         try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
         
@@ -827,7 +827,7 @@ public class SnapParser: Parser {
         }
     }
     
-    private func consumeStruct(_ firstToken: Token, _ visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeStruct(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in struct declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         
@@ -889,7 +889,7 @@ public class SnapParser: Parser {
         }
     }
     
-    private func consumeTypealias(_ firstToken: Token, _ visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
+    private func consumeTypealias(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in typealias declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `=' in typealias declaration"))

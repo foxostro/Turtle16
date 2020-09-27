@@ -152,6 +152,12 @@ public class SnapLexer: Lexer {
             Rule(pattern: "match\\b") {
                 TokenMatch(sourceAnchor: $0)
             },
+            Rule(pattern: "public\\b") {
+                TokenPublic(sourceAnchor: $0)
+            },
+            Rule(pattern: "private\\b") {
+                TokenPrivate(sourceAnchor: $0)
+            },
             Rule(pattern: "u8\\b") {
                 TokenType(sourceAnchor: $0, type: .u8)
             },

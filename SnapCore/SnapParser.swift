@@ -24,6 +24,12 @@ public class SnapParser: Parser {
         else if let token = accept(TokenStatic.self) as? TokenStatic {
             result = try consumeStatic(token)
         }
+        else if let token = accept(TokenPublic.self) as? TokenPublic {
+            result = try consumePublic(token)
+        }
+        else if let token = accept(TokenPrivate.self) as? TokenPrivate {
+            result = try consumePrivate(token)
+        }
         else if let token = accept(TokenLet.self) as? TokenLet {
             result = try consumeLet(token)
         }
@@ -74,21 +80,59 @@ public class SnapParser: Parser {
     }
     
     private func consumeStatic(_ staticToken: TokenStatic) throws -> [AbstractSyntaxTreeNode] {
+        let visibility: SymbolVisibility
+        if nil != accept(TokenPublic.self) {
+            visibility = .publicVisibility
+        } else if nil != accept(TokenPrivate.self) {
+            visibility = .privateVisibility
+        } else {
+            visibility = .privateVisibility
+        }
+        
         if let token = accept(TokenLet.self) {
             return try consumeLet(token as! TokenLet,
                                   storage: .staticStorage,
-                                  storageSpecifier: staticToken)
+                                  firstSpeciferToken: staticToken,
+                                  visibility: visibility)
         } else {
             let token = try expect(type: TokenVar.self, error: CompilerError(sourceAnchor: staticToken.sourceAnchor, message: "expected declaration"))
             return try consumeVar(token as! TokenVar,
                                   storage: .staticStorage,
-                                  storageSpecifier: staticToken)
+                                  firstSpeciferToken: staticToken,
+                                  visibility: visibility)
+        }
+    }
+    
+    private func consumePublic(_ publicToken: TokenPublic) throws -> [AbstractSyntaxTreeNode] {
+        return try consumeVisibilitySpecifier(publicToken, .publicVisibility)
+    }
+    
+    private func consumePrivate(_ privateToken: TokenPrivate) throws -> [AbstractSyntaxTreeNode] {
+        return try consumeVisibilitySpecifier(privateToken, .privateVisibility)
+    }
+    
+    public func consumeVisibilitySpecifier(_ visibilityToken: Token, _ visibility: SymbolVisibility) throws -> [AbstractSyntaxTreeNode] {
+        let staticToken = accept(TokenStatic.self) as? TokenStatic
+        let storage: SymbolStorage = (staticToken==nil) ? .stackStorage : .staticStorage
+        
+        if let token = accept(TokenLet.self) {
+            return try consumeLet(token as! TokenLet,
+                                  storage: storage,
+                                  firstSpeciferToken: visibilityToken,
+                                  visibility: visibility)
+        } else {
+            let token = try expect(type: TokenVar.self, error: CompilerError(sourceAnchor: visibilityToken.sourceAnchor, message: "expected declaration"))
+            return try consumeVar(token as! TokenVar,
+                                  storage: storage,
+                                  firstSpeciferToken: visibilityToken,
+                                  visibility: visibility)
         }
     }
     
     private func consumeLet(_ letToken: TokenLet,
                             storage: SymbolStorage = .stackStorage,
-                            storageSpecifier: Token? = nil) throws -> [AbstractSyntaxTreeNode] {
+                            firstSpeciferToken: Token? = nil,
+                            visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = false
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in let declaration"
         let errorMessageWhenNoInitialValue = "constants must be assigned a value"
@@ -99,12 +143,14 @@ public class SnapParser: Parser {
                               errorFormatWhenNoInitialValueAfterEqual,
                               storage,
                               isMutable,
-                              storageSpecifier)
+                              firstSpeciferToken,
+                              visibility)
     }
     
     private func consumeVar(_ varToken: TokenVar,
                             storage: SymbolStorage = .stackStorage,
-                            storageSpecifier: Token? = nil) throws -> [AbstractSyntaxTreeNode] {
+                            firstSpeciferToken: Token? = nil,
+                            visibility: SymbolVisibility = .publicVisibility) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = true
         let errorMessageWhenMissingIdentifier = "expected to find an identifier in variable declaration"
         let errorMessageWhenNoInitialValue = "variables must be assigned an initial value"
@@ -115,7 +161,8 @@ public class SnapParser: Parser {
                               errorFormatWhenNoInitialValueAfterEqual,
                               storage,
                               isMutable,
-                              storageSpecifier)
+                              firstSpeciferToken,
+                              visibility)
     }
     
     fileprivate func consumeVar(_ letOrVarToken: Token,
@@ -124,7 +171,8 @@ public class SnapParser: Parser {
                                 _ errorFormatWhenNoInitialValueAfterEqual: String,
                                 _ storage: SymbolStorage,
                                 _ isMutable: Bool,
-                                _ storageSpecifier: Token?) throws -> [AbstractSyntaxTreeNode] {
+                                _ firstSpeciferToken: Token?,
+                                _ visibility: SymbolVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifier = try expect(type: TokenIdentifier.self,
                                     error: CompilerError(sourceAnchor: letOrVarToken.sourceAnchor,
                                                          message: errorMessageWhenMissingIdentifier)) as! TokenIdentifier
@@ -160,13 +208,14 @@ public class SnapParser: Parser {
         
         let sourceAnchor = letOrVarToken.sourceAnchor?
             .union(exprSourceAnchor)
-            .union(storageSpecifier?.sourceAnchor)
+            .union(firstSpeciferToken?.sourceAnchor)
         return [VarDeclaration(sourceAnchor: sourceAnchor,
                                identifier: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
                                explicitType: explicitType,
                                expression: expression,
                                storage: storage,
-                               isMutable: isMutable)]
+                               isMutable: isMutable,
+                               visibility: visibility)]
     }
     
     fileprivate func consumeTypeAnnotation() throws -> Expression? {

@@ -4084,4 +4084,40 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(actualSliceBase, arrayBase + 4)
         XCTAssertEqual(actualSliceCount, 6)
     }
+    
+    func testSubscriptAnArrayWithARange_PanicWhenRangeBeginIsOutOfBounds() {
+        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let elementType = SymbolType.u16
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase)]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(50)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(51))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0xdead)
+    }
+    
+    func testSubscriptAnArrayWithARange_PanicWhenRangeLimitIsOutOfBounds() {
+        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let elementType = SymbolType.u16
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase)]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(50))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0xdead)
+    }
 }

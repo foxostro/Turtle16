@@ -166,14 +166,52 @@ public class BaseExpressionCompiler: NSObject {
         
         let tempSlice = temporaryAllocator.allocate(size: kSliceSize)
         
+        let kRangeBeginOffset = 0
+        let kRangeLimitOffset = SymbolType.u16.sizeof
+        
+        // Evaluate the range expression first.
         instructions += try compile(expression: expr.expr)
         let tempRangeStruct = temporaryStack.pop()
+        
+        let tempArrayCount = temporaryAllocator.allocate()
+        let tempIsUnacceptable = temporaryAllocator.allocate()
+        
+        // Check the range begin index to make sure it's in bounds, else panic.
+        let labelRangeBeginIsValid = labelMaker.next()
+        instructions += [
+            .storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type)),
+            .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeBeginOffset, tempArrayCount.address),
+            .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
+        ]
+        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += [
+            .label(labelRangeBeginIsValid)
+        ]
+        
+        // Check the range limit index to make sure it's in bounds, else panic.
+        let labelRangeLimitIsValid = labelMaker.next()
+        instructions += [
+            .storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type)),
+            .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
+            .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
+        ]
+        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += [
+            .label(labelRangeLimitIsValid)
+        ]
+        
+        tempIsUnacceptable.consume()
+        tempArrayCount.consume()
+        
+        // Compute the array slice count from the range value.
         instructions += [
             .sub16(tempSlice.address + kSliceCountOffset,
-                   tempRangeStruct.address + 2,
+                   tempRangeStruct.address + SymbolType.u16.sizeof,
                    tempRangeStruct.address + 0)
         ]
         
+        // Compute the base address of the array slice. This is an offset from
+        // the original array's base address.
         instructions += computeAddressOfSymbol(symbol, depth)
         let tempArrayBaseAddress = temporaryStack.pop()
         instructions += [
@@ -185,8 +223,10 @@ public class BaseExpressionCompiler: NSObject {
                    tempArrayBaseAddress.address)
         ]
         tempArrayBaseAddress.consume()
+        
         tempRangeStruct.consume()
         
+        // Leave the slice value on the stack on leaving this function.
         temporaryStack.push(tempSlice)
         
         return instructions

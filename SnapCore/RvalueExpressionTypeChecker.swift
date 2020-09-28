@@ -595,13 +595,34 @@ public class RvalueExpressionTypeChecker: NSObject {
              .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.expr)
-            guard argumentType.isArithmeticType else {
-                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
+            let typeError = CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
+            if case .structType(let typ) = argumentType {
+                if isRangeType(typ) {
+                    return .dynamicArray(elementType: elementType)
+                } else {
+                    throw typeError
+                }
             }
-            return elementType
+            if argumentType.isArithmeticType {
+                return elementType
+            }
+            throw typeError
         default:
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(symbol.type)' has no subscripts")
         }
+    }
+    
+    fileprivate func isRangeType(_ typ: StructType) -> Bool {
+        guard typ.name == "Range" else {
+            return false
+        }
+        guard typ.symbols.maybeResolve(identifier: "begin")?.type == .u16 else {
+            return false
+        }
+        guard typ.symbols.maybeResolve(identifier: "limit")?.type == .u16 else {
+            return false
+        }
+        return true
     }
     
     public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {

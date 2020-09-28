@@ -4017,5 +4017,71 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: offset+1), 0x002a)
     }
     
-    // TODO: does an assignment expression return a value? I'm not sure that this would work. Need to test: let bar = (foo = 1)
+    func testSubscriptAnArrayWithARange_1() {
+        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let n = 10
+        let elementType = SymbolType.u8
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase)]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(2))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            for i in 0..<n {
+                computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*elementType.sizeof)
+            }
+        }
+        let computer = try! executor.execute(ir: ir)
+        
+        let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
+        let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 2)
+        
+        XCTAssertEqual(actualSliceBase, arrayBase + 1)
+        XCTAssertEqual(actualSliceCount, 1)
+    }
+    
+    func testSubscriptAnArrayWithARange_2() {
+        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let n = 10
+        let elementType = SymbolType.u16
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase)]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(2)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(8))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        
+        // The expression is evaluated and the result is written to a temporary.
+        // The temporary is left at the top of the compiler's temporaries stack
+        // since nothing has consumed the value.
+        let tempResult = compiler.temporaryStack.peek()
+        
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            for i in 0..<n {
+                computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*elementType.sizeof)
+            }
+        }
+        let computer = try! executor.execute(ir: ir)
+        
+        let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
+        let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 2)
+        
+        XCTAssertEqual(actualSliceBase, arrayBase + 4)
+        XCTAssertEqual(actualSliceCount, 6)
+    }
 }

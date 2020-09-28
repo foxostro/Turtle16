@@ -140,13 +140,54 @@ public class BaseExpressionCompiler: NSObject {
         
         switch symbol.type {
         case .array(count: _, elementType: let elementType):
-            instructions += try arraySubscript(symbol, depth, expr, elementType)
+            let argumentExpr = expr.expr
+            let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
+            if argumentType.isArithmeticType {
+                instructions += try arraySubscript(symbol, depth, expr, elementType)
+            }
+            else if case .structType = argumentType {
+                instructions += try arraySlice(expr, symbol, depth, elementType)
+            }
+            else {
+                abort()
+            }
         case .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
             instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
         default:
             abort()
         }
+        
+        return instructions
+    }
+    
+    private func arraySlice(_ expr: Expression.Subscript, _ symbol: Symbol, _ depth: Int, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        let tempSlice = temporaryAllocator.allocate(size: kSliceSize)
+        
+        instructions += try compile(expression: expr.expr)
+        let tempRangeStruct = temporaryStack.pop()
+        instructions += [
+            .sub16(tempSlice.address + kSliceCountOffset,
+                   tempRangeStruct.address + 2,
+                   tempRangeStruct.address + 0)
+        ]
+        
+        instructions += computeAddressOfSymbol(symbol, depth)
+        let tempArrayBaseAddress = temporaryStack.pop()
+        instructions += [
+            .muli16(tempSlice.address + kSliceBaseAddressOffset,
+                    tempRangeStruct.address + 0,
+                    elementType.sizeof),
+            .add16(tempSlice.address + kSliceBaseAddressOffset,
+                   tempSlice.address + kSliceBaseAddressOffset,
+                   tempArrayBaseAddress.address)
+        ]
+        tempArrayBaseAddress.consume()
+        tempRangeStruct.consume()
+        
+        temporaryStack.push(tempSlice)
         
         return instructions
     }

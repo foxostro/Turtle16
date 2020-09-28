@@ -3148,4 +3148,17 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .unionType(UnionType([.u16])))
     }
+    
+    func testSubscriptAnArrayWithARange() {
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .array(count: 10, elementType: .u8), offset: 0x0010)]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(2))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .dynamicArray(elementType: .u8))
+    }
 }

@@ -1354,4 +1354,22 @@ var bar: u8 = (foo = 42)
         XCTAssertEqual(computer.loadSymbolU8("foo"), 42)
         XCTAssertEqual(computer.loadSymbolU8("bar"), 42)
     }
+    
+    func testArraySlice() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+let helloWorld = "Hello, World!"
+let helloComma = helloWorld[0..6]
+let hello = helloComma[0..(helloComma.count-1)]
+puts(hello)
+""")
+        XCTAssertEqual(serialOutput, "Hello")
+    }
 }

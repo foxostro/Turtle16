@@ -3161,4 +3161,19 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .dynamicArray(elementType: .u8))
     }
+    
+    func testSubscriptADynamicArrayWithARange_1() {
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: offset)
+        ]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(0))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .dynamicArray(elementType: .u16))
+    }
 }

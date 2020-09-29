@@ -31,8 +31,8 @@ class ComputerExecutorTests: XCTestCase {
         return computer
     }
     
-    private func makeLogger() -> Logger {
-        return isVerboseLogging ? ConsoleLogger() : NullLogger()
+    private func makeLogger() -> Logger? {
+        return isVerboseLogging ? ConsoleLogger() : nil
     }
     
     private func assembleSerialOutputTestProgram() -> [Instruction] {

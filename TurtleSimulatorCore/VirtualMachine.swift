@@ -58,7 +58,9 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     // This method duplicates the functionality of the hardware reset button.
     // The pipeline is flushed and the program counter is reset to zero.
     public func reset() {
-        logger?.append("\(String(describing: type(of: self))): reset")
+        if let logger = logger {
+            logger.append("\(String(describing: type(of: self))): reset")
+        }
         cpuState.bus = Register()
         cpuState.pc = ProgramCounter()
         cpuState.pc_if = ProgramCounter()
@@ -83,7 +85,9 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     // Runs the VM until the CPU is halted via the HLT instruction.
     public func runUntilHalted(maxSteps: Int = Int.max) throws {
         var stepCount = 0
-        logger?.append("\(String(describing: type(of: self))): runUntilHalted")
+        if let logger = logger {
+            logger.append("\(String(describing: type(of: self))): runUntilHalted")
+        }
         while .inactive == cpuState.controlWord.HLT {
             if stepCount >= maxSteps {
                 throw VirtualMachineError("Exceeded maximum number of step: stepCount=\(stepCount) ; maxSteps=\(maxSteps)")
@@ -95,7 +99,9 @@ public class VirtualMachine: NSObject, InterpreterDelegate {
     
     public func fetchInstruction(from pc: ProgramCounter) -> Instruction {
         let instruction = instructionMemory.load(from: pc.integerValue)
-        logger?.append("\(String(describing: type(of: self))): Fetched instruction from memory at \(pc) -> \(instruction)")
+        if let logger = logger {
+            logger.append("\(String(describing: type(of: self))): Fetched instruction from memory at \(pc) -> \(instruction)")
+        }
         return instruction
     }
     

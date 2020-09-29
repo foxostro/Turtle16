@@ -13,8 +13,8 @@ import TurtleCore
 class InterpretingVMTests: XCTestCase {
     let isVerboseLogging = false
     
-    private func makeLogger() -> Logger {
-        return isVerboseLogging ? ConsoleLogger() : NullLogger()
+    private func makeLogger() -> Logger? {
+        return isVerboseLogging ? ConsoleLogger() : nil
     }
     
     private func makeVM(program: String) -> InterpretingVM {

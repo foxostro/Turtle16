@@ -4120,4 +4120,90 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
+    
+    func testSubscriptADynamicArrayWithARange_1() {
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let elementType = SymbolType.u16
+        let begin = 1
+        let limit = 9
+        let arrayBaseAddress = 0x1000
+        let arrayCount = 10
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset)
+        ]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
+            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
+        }
+        let computer = try! executor.execute(ir: ir)
+        
+        let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
+        let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + SymbolType.u16.sizeof)
+        
+        XCTAssertEqual(actualSliceBase, arrayBaseAddress + SymbolType.u16.sizeof*begin)
+        XCTAssertEqual(actualSliceCount, limit - begin)
+    }
+    
+    func testSubscriptADynamicArrayWithARange_PanicWhenRangeBeginIsOutOfBounds() {
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let elementType = SymbolType.u16
+        let begin = 100
+        let limit = 109
+        let arrayBaseAddress = 0x1000
+        let arrayCount = 10
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset)
+        ]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
+            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
+        }
+        XCTAssertEqual(computer.stack16(at: 0), 0xdead)
+    }
+    
+    func testSubscriptADynamicArrayWithARange_PanicWhenRangeLimitIsOutOfBounds() {
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let elementType = SymbolType.u16
+        let begin = 0
+        let limit = 100
+        let arrayBaseAddress = 0x1000
+        let arrayCount = 10
+        
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset)
+        ]))
+        let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+            Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
+            Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))
+        ])
+        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
+            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
+        }
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.stack16(at: 0), 0xdead)
+    }
 }

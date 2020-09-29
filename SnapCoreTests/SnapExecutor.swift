@@ -69,7 +69,7 @@ class SnapExecutor: NSObject {
         return computer
     }
     
-    func makeLogger() -> Logger {
-        return isVerboseLogging ? ConsoleLogger() : NullLogger()
+    private func makeLogger() -> Logger? {
+        return isVerboseLogging ? ConsoleLogger() : nil
     }
 }

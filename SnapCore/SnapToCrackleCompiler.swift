@@ -566,7 +566,7 @@ public class SnapToCrackleCompiler: NSObject {
                            storage: .stackStorage,
                            isMutable: false),
             VarDeclaration(identifier: stmt.identifier,
-                           explicitType: Expression.PrimitiveType(try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType),
+                           explicitType: Expression.PrimitiveType(try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType.correspondingMutableType),
                            expression: nil,
                            storage: .stackStorage,
                            isMutable: true),

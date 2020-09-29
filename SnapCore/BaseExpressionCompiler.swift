@@ -153,7 +153,17 @@ public class BaseExpressionCompiler: NSObject {
             }
         case .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
-            instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
+            let argumentExpr = expr.expr
+            let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
+            if argumentType.isArithmeticType {
+                instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
+            }
+            else if case .structType = argumentType {
+                instructions += try dynamicArraySlice(expr, symbol, depth, elementType)
+            }
+            else {
+                abort()
+            }
         default:
             abort()
         }
@@ -191,7 +201,6 @@ public class BaseExpressionCompiler: NSObject {
         // Check the range limit index to make sure it's in bounds, else panic.
         let labelRangeLimitIsValid = labelMaker.next()
         instructions += [
-            .storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type)),
             .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
@@ -240,6 +249,88 @@ public class BaseExpressionCompiler: NSObject {
     // Compile an array element lookup in a dynamic array through the subscript operator.
     public func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         abort() // override in a subclass
+    }
+    
+    private func dynamicArraySlice(_ expr: Expression.Subscript, _ symbol: Symbol, _ depth: Int, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        // Get the address of the dynamic array symbol.
+        instructions += computeAddressOfSymbol(symbol, depth)
+        let tempDynamicArrayAddress = temporaryStack.pop()
+        
+        // Evaluate the range expression to get the range value.
+        let kRangeBeginOffset = 0
+        let kRangeLimitOffset = SymbolType.u16.sizeof
+        instructions += try compile(expression: expr.expr)
+        let tempRangeStruct = temporaryStack.pop()
+        
+        // Extract the array count from the dynamic array structure.
+        let tempArrayCount = temporaryAllocator.allocate()
+        instructions += [
+            .copyWords(tempArrayCount.address, tempDynamicArrayAddress.address, kSliceSize),
+            .addi16(tempArrayCount.address, tempArrayCount.address, kSliceCountOffset),
+            .copyWordsIndirectSource(tempArrayCount.address, tempArrayCount.address, kSliceSize)
+        ]
+            
+        // Check the range begin index to make sure it's in bounds, else panic.
+        let tempIsUnacceptable = temporaryAllocator.allocate()
+        let labelRangeBeginIsValid = labelMaker.next()
+        instructions += [
+            .ge16(tempIsUnacceptable.address,
+                  tempRangeStruct.address + kRangeBeginOffset,
+                  tempArrayCount.address),
+            .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
+        ]
+        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += [
+            .label(labelRangeBeginIsValid)
+        ]
+        
+        // Check the range limit index to make sure it's in bounds, else panic.
+        let labelRangeLimitIsValid = labelMaker.next()
+        instructions += [
+            .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
+            .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
+        ]
+        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += [
+            .label(labelRangeLimitIsValid)
+        ]
+        
+        tempIsUnacceptable.consume()
+        tempArrayCount.consume()
+        
+        let tempSlice = temporaryAllocator.allocate(size: kSliceSize)
+        
+        // Compute the array slice count from the range value.
+        instructions += [
+            .sub16(tempSlice.address + kSliceCountOffset,
+                   tempRangeStruct.address + kRangeLimitOffset,
+                   tempRangeStruct.address + kRangeBeginOffset)
+        ]
+        
+        // Compute the base address of the array slice.
+        let tempArrayBaseAddress = temporaryAllocator.allocate()
+        instructions += [
+            .copyWordsIndirectSource(tempArrayBaseAddress.address,
+                                     tempDynamicArrayAddress.address,
+                                     SymbolType.u16.sizeof),
+            .muli16(tempSlice.address + kSliceBaseAddressOffset,
+                    tempRangeStruct.address + kRangeBeginOffset,
+                    elementType.sizeof),
+            .add16(tempSlice.address + kSliceBaseAddressOffset,
+                   tempSlice.address + kSliceBaseAddressOffset,
+                   tempArrayBaseAddress.address)
+        ]
+        tempArrayBaseAddress.consume()
+        
+        tempRangeStruct.consume()
+        tempDynamicArrayAddress.consume()
+        
+        // Leave the slice value on the stack on leaving this function.
+        temporaryStack.push(tempSlice)
+        
+        return instructions
     }
     
     public func arraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {

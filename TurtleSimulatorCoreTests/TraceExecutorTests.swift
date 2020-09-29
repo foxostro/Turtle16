@@ -19,8 +19,8 @@ class TraceExecutorTests: XCTestCase {
         microcodeGenerator.generate()
     }
     
-    private func makeLogger() -> Logger {
-        return isVerboseLogging ? ConsoleLogger() : NullLogger()
+    private func makeLogger() -> Logger? {
+        return isVerboseLogging ? ConsoleLogger() : nil
     }
     
     func testRunEmptyTrace() {
@@ -28,10 +28,10 @@ class TraceExecutorTests: XCTestCase {
         let prevState = state.copy() as! CPUStateSnapshot
         let trace = Trace()
         let executor = TraceExecutor(trace: trace, cpuState: state)
-        let logger: Logger = makeLogger()
+        let logger = makeLogger()
         executor.logger = logger
         executor.run()
-        if state != prevState {
+        if state != prevState, let logger = logger {
             CPUStateSnapshot.logChanges(logger: logger, prevState: state, nextState: prevState)
         }
         XCTAssertEqual(state, prevState)

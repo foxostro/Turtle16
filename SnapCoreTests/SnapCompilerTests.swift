@@ -993,7 +993,7 @@ puts("Hello, World!")
 let arr = "Hello"
 let foo = arr[10]
 """)
-        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 1")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 2")
     }
     
     func test_EndToEndIntegration_ReadAndWriteToStructMember() {
@@ -1371,5 +1371,38 @@ let hello = helloComma[0..(helloComma.count-1)]
 puts(hello)
 """)
         XCTAssertEqual(serialOutput, "Hello")
+    }
+    
+    func testArraySlice_PanicDueToArrayBoundsException() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+let helloWorld = "Hello, World!"
+let helloComma = helloWorld[0..6]
+let hello = helloComma[0..1000]
+puts(hello)
+""")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `helloComma[0..1000]' on line 3")
+    }
+    
+    func testAssertionFailed() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+assert(1 == 2)
+""")
+        XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 1")
     }
 }

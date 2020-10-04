@@ -70,6 +70,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenMatch.self) as? TokenMatch {
             result = try consumeMatch(token)
         }
+        else if let token = accept(TokenAssert.self) as? TokenAssert {
+            result = try consumeAssert(token)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -940,5 +943,22 @@ public class SnapParser: Parser {
                       expr: expr,
                       clauses: clauses,
                       elseClause: elseClause)]
+    }
+    
+    private func consumeAssert(_ tokenAssert: TokenAssert) throws -> [AbstractSyntaxTreeNode] {
+        try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `(' in assert statement"))
+        if nil != accept(TokenParenRight.self) {
+            let sourceAnchor = tokenAssert.sourceAnchor?.union(previous?.sourceAnchor)
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "expected expression in assert statement")
+        }
+        let condition = try consumeExpression()
+        let rightParen = try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in assert statement"))
+        let conditionText = String(condition.sourceAnchor!.text)
+        let lineNumber = Int(condition.sourceAnchor!.lineNumbers!.startIndex) + 1
+        let message = "assertion failed: `\(conditionText)' on line \(lineNumber)"
+        let sourceAnchor = tokenAssert.sourceAnchor?.union(rightParen.sourceAnchor)
+        return [Assert(sourceAnchor: sourceAnchor,
+                       condition: condition,
+                       message: message)]
     }
 }

@@ -2420,4 +2420,22 @@ private struct foo {
                                 visibility: .privateVisibility)
         ]))
     }
+    
+    func testMalformedAssertStatementMissingExpression() {
+        let parser = parse("assert()")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 8))
+        XCTAssertEqual(parser.errors.first?.message, "expected expression in assert statement")
+    }
+    
+    func testWellformedAssertStatement() {
+        let parser = parse("assert(0 == 1)")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 14), children: [
+            Assert(sourceAnchor: parser.lineMapper.anchor(0, 14),
+                   condition: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(7, 13), op: .eq, left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 0), right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(12, 13), value: 1)),
+                   message: "assertion failed: `0 == 1' on line 1")
+        ]))
+    }
 }

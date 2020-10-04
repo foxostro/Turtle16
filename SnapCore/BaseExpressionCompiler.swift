@@ -394,7 +394,7 @@ public class BaseExpressionCompiler: NSObject {
         if let sourceAnchor = sourceAnchor {
             message += ": `\(sourceAnchor.text)'"
             if let lineNumbers = sourceAnchor.lineNumbers {
-                message += " on line \(lineNumbers.lowerBound)"
+                message += " on line \(lineNumbers.lowerBound + 1)"
             }
         }
         let arr: [Int] = message.utf8.map({Int($0)})

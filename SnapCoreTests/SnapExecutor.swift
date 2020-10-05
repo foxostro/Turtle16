@@ -16,6 +16,7 @@ class SnapExecutor: NSObject {
     public var isUsingStandardLibrary = false
     public var isVerboseLogging = false
     public var shouldAlwaysPrintIR = false
+    public var shouldRunTests = false
     let microcodeGenerator: MicrocodeGenerator
     public let compiler = SnapCompiler()
     var configure: (Computer)->Void = {_ in}
@@ -27,6 +28,7 @@ class SnapExecutor: NSObject {
     
     func execute(program: String) throws -> Computer {
         compiler.isUsingStandardLibrary = isUsingStandardLibrary
+        compiler.shouldRunTests = shouldRunTests
         compiler.compile(program: program, base: 0)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)

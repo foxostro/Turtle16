@@ -2434,4 +2434,64 @@ public func foo() -> None {
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 2)
     }
+    
+    func testProgramCallsMainFunctionIfOneExists() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(1),
+                           storage: .staticStorage,
+                           isMutable: true),
+            FunctionDeclaration(identifier: Expression.Identifier(SnapToCrackleCompiler.kMainFunctionName), functionType: Expression.FunctionType(name: SnapToCrackleCompiler.kMainFunctionName, returnType: Expression.PrimitiveType(.void), arguments: []), body: Block(children: [
+                Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                      rexpr: Expression.LiteralInt(42))
+            ]))
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        executor.injectPanicStub = false
+        let computer = try! executor.execute(ir: ir)
+        
+        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
+    }
+    
+    func testProgramTestModeCallsTestMainFunctionInstead() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(1),
+                           storage: .staticStorage,
+                           isMutable: true),
+            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.FunctionType.Argument(name: "s", type: Expression.DynamicArrayType(Expression.PrimitiveType(.u8)))]), body: Block(children: [])),
+            FunctionDeclaration(identifier: Expression.Identifier(SnapToCrackleCompiler.kTestMainFunctionName1), functionType: Expression.FunctionType(name: SnapToCrackleCompiler.kTestMainFunctionName1, returnType: Expression.PrimitiveType(.void), arguments: []), body: Block(children: [
+                Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                      rexpr: Expression.LiteralInt(42))
+            ]))
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.shouldRunTests = true
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        executor.injectPanicStub = false
+        let computer = try! executor.execute(ir: ir)
+        
+        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
+    }
 }

@@ -11,6 +11,7 @@ import TurtleCore
 
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
+    public var shouldRunTests = false
     public var ast: TopLevel! = nil
     public var ir: [CrackleInstruction] = []
     public var instructions: [Instruction] = []
@@ -51,6 +52,7 @@ public class SnapCompiler: NSObject {
         let snapToCrackleCompiler = SnapToCrackleCompiler()
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.isUsingStandardLibrary = isUsingStandardLibrary
+        snapToCrackleCompiler.shouldRunTests = shouldRunTests
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
             errors = snapToCrackleCompiler.errors

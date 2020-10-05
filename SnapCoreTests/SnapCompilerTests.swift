@@ -1405,4 +1405,21 @@ assert(1 == 2)
 """)
         XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 1")
     }
+    
+    func testRunTests_AllTestsPassed() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.shouldRunTests = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+func testMain() {
+}
+""")
+        XCTAssertEqual(serialOutput, "All Tests Passed.\n")
+    }
 }

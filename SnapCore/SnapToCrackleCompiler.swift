@@ -21,12 +21,17 @@ public class SnapToCrackleCompiler: NSObject {
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress = kTemporaryStorageStartAddress + kTemporaryStorageLength
     
+    public static let kMainFunctionName = "main"
+    public static let kTestMainFunctionName0 = "__testMain"
+    public static let kTestMainFunctionName1 = "testMain"
+    
     private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
     
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [CrackleInstruction] = []
     public var programDebugInfo: SnapDebugInfo? = nil
+    public var shouldRunTests: Bool = false
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
@@ -83,6 +88,14 @@ public class SnapToCrackleCompiler: NSObject {
         
         for node in children {
             try compile(genericNode: node)
+        }
+        
+        if shouldRunTests {
+            try compileTestRunner()
+        }
+        else if nil != globalSymbols.maybeResolve(identifier: SnapToCrackleCompiler.kMainFunctionName) {
+            let callMainFn = Expression.Call(callee: Expression.Identifier(SnapToCrackleCompiler.kMainFunctionName), arguments: [])
+            try compile(genericNode: callMainFn)
         }
     }
     
@@ -187,31 +200,32 @@ public class SnapToCrackleCompiler: NSObject {
     
     public func compileModuleForImport(import node: Import) throws {
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
-        let text = moduleData.0
-        let moduleFilename = moduleData.1
-        
+        let moduleTopLevel = try compileProgramText(filename: moduleData.1, text: moduleData.0)
+        let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor,
+                            name: node.moduleName,
+                            children: moduleTopLevel.children)
+        try performDeclPass(genericNode: module)
+        try compile(genericNode: module)
+    }
+    
+    public func compileProgramText(filename: String?, text: String) throws -> TopLevel {
         // Lexer pass
         let lexer = SnapLexer(withString: text)
         lexer.scanTokens()
         if lexer.hasError {
-            throw CompilerError.makeOmnibusError(fileName: moduleFilename, errors: lexer.errors)
+            throw CompilerError.makeOmnibusError(fileName: filename, errors: lexer.errors)
         }
         
         // Compile to an abstract syntax tree
         let parser = SnapParser(tokens: lexer.tokens)
         parser.parse()
         if parser.hasError {
-            throw CompilerError.makeOmnibusError(fileName: moduleFilename, errors: parser.errors)
+            throw CompilerError.makeOmnibusError(fileName: filename, errors: parser.errors)
         }
         
-        let moduleTopLevel = parser.syntaxTree!
+        let topLevel = parser.syntaxTree!
         
-        let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor,
-                            name: node.moduleName,
-                            children: moduleTopLevel.children)
-        
-        try performDeclPass(genericNode: module)
-        try compile(genericNode: module)
+        return topLevel
     }
     
     private func performDeclPass(module: Module) throws {
@@ -806,5 +820,13 @@ public class SnapToCrackleCompiler: NSObject {
     
     public func injectModule(name: String, sourceCode: String) {
         injectedModules[name] = sourceCode
+    }
+    
+    private func compileTestRunner() throws {
+        let ast = Block(children: try compileProgramText(filename: nil, text: """
+testMain()
+puts("All Tests Passed.\\n")
+""").children)
+        try compile(genericNode: ast)
     }
 }

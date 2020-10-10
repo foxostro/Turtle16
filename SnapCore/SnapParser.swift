@@ -757,14 +757,8 @@ public class SnapParser: Parser {
                                            elements: elements)
         }
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
-            let typ = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
-            let sourceAnchor = literalString.sourceAnchor
-            let elements = literalString.literal.utf8.map({
-                Expression.LiteralInt(sourceAnchor: sourceAnchor, value: Int($0))
-            })
-            return Expression.LiteralArray(sourceAnchor: sourceAnchor,
-                                           arrayType: typ,
-                                           elements: elements)
+            return Expression.LiteralString(sourceAnchor: literalString.sourceAnchor,
+                                            value: literalString.literal)
         }
         else if let token = peek() {
             if token is TokenEOF {

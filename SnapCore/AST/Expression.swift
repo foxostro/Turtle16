@@ -1111,4 +1111,39 @@ public class Expression: AbstractSyntaxTreeNode {
             return hasher.finalize()
         }
     }
+    
+    public class LiteralString: Expression {
+        public let value: String
+        
+        public convenience init(_ value: String) {
+            self.init(sourceAnchor: nil, value: value)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, value: String) {
+            self.value = value
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? LiteralString else { return false }
+            guard value == rhs.value else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(value)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@%@",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          value)
+        }
+    }
 }

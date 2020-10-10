@@ -3176,4 +3176,12 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .dynamicArray(elementType: .u16))
     }
+    
+    func testLiteralString() {
+        let expr = Expression.LiteralString("foo")
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .array(count: 3, elementType: .u8))
+    }
 }

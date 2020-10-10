@@ -71,6 +71,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(structInitializer: expr)
         case let expr as Expression.UnionType:
             return try check(unionType: expr)
+        case let expr as Expression.LiteralString:
+            return try check(literalString: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -772,6 +774,10 @@ public class RvalueExpressionTypeChecker: NSObject {
     public func check(unionType expr: Expression.UnionType) throws -> SymbolType {
         let members = try expr.members.map({try check(expression: $0)})
         return .unionType(UnionType(members))
+    }
+    
+    public func check(literalString expr: Expression.LiteralString) throws -> SymbolType {
+        return .array(count: expr.value.count, elementType: .u8)
     }
     
     func unsupportedError(expression: Expression) -> Error {

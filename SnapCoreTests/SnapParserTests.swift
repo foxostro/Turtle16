@@ -267,16 +267,12 @@ let foo = "Hello, World!"
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        let elements = "Hello, World!".utf8.map({
-            Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 25), value: Int($0))
-        })
-        let arr = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 25),
-                                          arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
-                                          elements: elements)
+        let str = Expression.LiteralString(sourceAnchor: parser.lineMapper.anchor(10, 25),
+                                          value: "Hello, World!")
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 25),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
-                                      expression: arr,
+                                      expression: str,
                                       storage: .stackStorage,
                                       isMutable: false)
         let actual = ast.children[0]

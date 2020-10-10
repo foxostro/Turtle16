@@ -2434,4 +2434,15 @@ private struct foo {
                    message: "assertion failed: `0 == 1' on line 1")
         ]))
     }
+    
+    func testWellformedTestDeclaration() {
+        let parser = parse("""
+test "foo" {
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 14), children: [
+            TestDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 14), name: "foo", body: Block(sourceAnchor: parser.lineMapper.anchor(11, 14), children: []))
+        ]))
+    }
 }

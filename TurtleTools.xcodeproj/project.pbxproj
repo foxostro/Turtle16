@@ -120,6 +120,7 @@
 		6FA6B5B224DE77F500695BFB /* SourceAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */; };
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
+		6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */; };
 		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D28D24710C26003B5D5C /* TurtleCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */; };
@@ -820,6 +821,7 @@
 		6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleVMBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurtleVMBenchmarkDriver.swift; sourceTree = "<group>"; };
+		6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDeclaration.swift; sourceTree = "<group>"; };
 		6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TurtleAssembler.entitlements; sourceTree = "<group>"; };
 		6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclaration.swift; sourceTree = "<group>"; };
 		6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationTests.swift; sourceTree = "<group>"; };
@@ -1119,6 +1121,7 @@
 				6F1800D2251D96F5005D9D36 /* Module.swift */,
 				6FCB6845247241ED00798905 /* Return.swift */,
 				6F870FEA2505913900FE2B25 /* StructDeclaration.swift */,
+				6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */,
 				6F2E5AFD251A591A00928DD1 /* Typealias.swift */,
 				6F6DD22424809731004B1703 /* VarDeclaration.swift */,
 				6F2940A8248306EC00C50ABA /* While.swift */,
@@ -2174,6 +2177,7 @@
 				6F238AD9248C6A560040250D /* Block.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6F25325C24CB799A00339332 /* LvalueExpressionCompiler.swift in Sources */,
+				6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

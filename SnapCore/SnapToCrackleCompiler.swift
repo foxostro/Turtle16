@@ -21,10 +21,6 @@ public class SnapToCrackleCompiler: NSObject {
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress = kTemporaryStorageStartAddress + kTemporaryStorageLength
     
-    public static let kMainFunctionName = "main"
-    public static let kTestMainFunctionName0 = "__testMain"
-    public static let kTestMainFunctionName1 = "testMain"
-    
     private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
     
     public private(set) var errors: [CompilerError] = []
@@ -39,8 +35,13 @@ public class SnapToCrackleCompiler: NSObject {
     private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
+    public static let kMainFunctionName = "main"
     public static let kStandardLibraryModuleName = "stdlib"
     public var isUsingStandardLibrary = false
+    
+    private var testNames = Set<String>()
+    private var testDeclarations: [TestDeclaration] = []
+    private var currentTest: TestDeclaration? = nil
     
     public override init() {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
@@ -113,6 +114,8 @@ public class SnapToCrackleCompiler: NSObject {
             try performDeclPass(import: node)
         case let node as Module:
             try performDeclPass(module: node)
+        case let node as TestDeclaration:
+            try performDeclPass(testDecl: node)
         default:
             break
         }
@@ -323,6 +326,19 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         modulesAlreadyImported.insert(name)
+    }
+    
+    private func performDeclPass(testDecl node: TestDeclaration) throws {
+        guard symbols.parent == nil else {
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
+        }
+        
+        guard testNames.contains(node.name) == false else {
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "test \"\(node.name)\" already exists")
+        }
+        
+        testNames.insert(node.name)
+        testDeclarations.append(node)
     }
     
     private func compile(genericNode: AbstractSyntaxTreeNode) throws {
@@ -713,7 +729,12 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func compile(assert node: Assert) throws {
         let s = node.sourceAnchor
-        let message = node.message
+        let message: String
+        if let currentTest = currentTest {
+            message = "\(node.message) in test \"\(currentTest.name)\""
+        } else {
+            message = node.message
+        }
         let elements = message.utf8.map {
             Expression.LiteralInt(sourceAnchor: s, value: Int($0))
         }
@@ -823,10 +844,13 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compileTestRunner() throws {
-        let ast = Block(children: try compileProgramText(filename: nil, text: """
-testMain()
-puts("All Tests Passed.\\n")
-""").children)
-        try compile(genericNode: ast)
+        for testDeclaration in testDeclarations {
+            currentTest = testDeclaration
+            try compile(block: testDeclaration.body)
+            currentTest = nil
+        }
+        try compile(block: Block(children: try compileProgramText(filename: nil, text: """
+puts("All Tests Passed.")
+""").children))
     }
 }

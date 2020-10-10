@@ -38,3 +38,4 @@ public class TokenMatch : Token {}
 public class TokenPublic : Token {}
 public class TokenPrivate : Token {}
 public class TokenAssert : Token {}
+public class TokenTest : Token {}

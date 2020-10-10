@@ -103,6 +103,7 @@ public class SnapCommandLineDriver: NSObject {
             self.stdout.write(delta)
         }
         try computer.runUntilHalted()
+        self.stdout.write("\n")
     }
     
     func writeToFile(ir: [CrackleInstruction]) throws {

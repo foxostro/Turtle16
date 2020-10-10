@@ -49,7 +49,7 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     func reportError(withMessage message: String) {
-        stderr.write("Error: " + message + "\n")
+        stderr.write("Error: " + message)
     }
     
     func tryRun() throws {

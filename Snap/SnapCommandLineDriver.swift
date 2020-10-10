@@ -30,6 +30,7 @@ public class SnapCommandLineDriver: NSObject {
     public var shouldOutputIR = false
     public var shouldOutputAssembly = false
     public var shouldDoASTDump = false
+    public var shouldRunTests = false
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -60,6 +61,8 @@ public class SnapCommandLineDriver: NSObject {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
         let frontEnd = SnapCompiler()
+        frontEnd.isUsingStandardLibrary = true
+        frontEnd.shouldRunTests = shouldRunTests
         frontEnd.compile(text)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
@@ -78,7 +81,28 @@ public class SnapCommandLineDriver: NSObject {
             try writeToFile(instructions: frontEnd.instructions)
         }
         
+        if shouldRunTests {
+            try runUnitTests(frontEnd)
+        }
+        
         status = 0
+    }
+    
+    fileprivate func runUnitTests(_ frontEnd: SnapCompiler) throws {
+        let computer = Computer()
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
+        computer.logger = nil
+        computer.programDebugInfo = frontEnd.programDebugInfo
+        computer.provideInstructions(frontEnd.instructions)
+        var previousSerialOutput = ""
+        computer.didUpdateSerialOutput = {
+            let delta = String($0.dropFirst(previousSerialOutput.count))
+            previousSerialOutput = $0
+            self.stdout.write(delta)
+        }
+        try computer.runUntilHalted()
     }
     
     func writeToFile(ir: [CrackleInstruction]) throws {
@@ -96,9 +120,11 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     func writeToFile(instructions: [Instruction]) throws {
-        let computer = Computer()
-        computer.provideInstructions(instructions)
-        try computer.saveProgram(to: outputFileName!)
+        if let outputFileName = outputFileName {
+            let computer = Computer()
+            computer.provideInstructions(instructions)
+            try computer.saveProgram(to: outputFileName)
+        }
     }
     
     public func parseArguments() throws {
@@ -145,14 +171,17 @@ public class SnapCommandLineDriver: NSObject {
                 
             case .astDump:
                 shouldDoASTDump = true
+                
+            case .test:
+                shouldRunTests = true
             }
         }
         
-        if inputFileName == nil {
+        if !shouldRunTests && inputFileName == nil {
             throw SnapCommandLineDriverError("expected input filename")
         }
         
-        if outputFileName == nil {
+        if !shouldRunTests && outputFileName == nil {
             let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent
             let ext: String
             if shouldOutputAssembly {
@@ -170,9 +199,11 @@ public class SnapCommandLineDriver: NSObject {
         return """
 OVERVIEW: compiler for the Snap programming language
 
-USAGE: \(arguments[0]) [options] file...
+USAGE:
+\(arguments[0]) [test] [options] file...
             
 OPTIONS:
+\ttest       Compile the program for testing and run immediately in a VM.
 \t-h         Display available options
 \t-o <file>  Specify the output filename
 \t-S         Output assembly code

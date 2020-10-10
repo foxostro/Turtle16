@@ -20,6 +20,7 @@ public class SnapCommandLineArgumentParser: NSObject {
         case S
         case ir
         case astDump
+        case test
     }
     public private(set) var options: [Option] = []
     
@@ -37,6 +38,10 @@ public class SnapCommandLineArgumentParser: NSObject {
     }
     
     private func parseOptions() throws {
+        if args.first == "test" {
+            try advance()
+            options.append(.test)
+        }
         while !args.isEmpty {
             let option = try peek()
             if !option.hasPrefix("-") {

@@ -161,6 +161,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "assert\\b") {
                 TokenAssert(sourceAnchor: $0)
             },
+            Rule(pattern: "test\\b") {
+                TokenTest(sourceAnchor: $0)
+            },
             Rule(pattern: "u8\\b") {
                 TokenType(sourceAnchor: $0, type: .u8)
             },

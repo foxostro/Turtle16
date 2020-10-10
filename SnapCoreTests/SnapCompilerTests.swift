@@ -1417,9 +1417,27 @@ assert(1 == 2)
             }
         }
         _ = try! executor.execute(program: """
-func testMain() {
+test "foo" {
 }
 """)
-        XCTAssertEqual(serialOutput, "All Tests Passed.\n")
+        XCTAssertEqual(serialOutput, "All Tests Passed.")
+    }
+    
+    func testRunTests_FailingAssertMentionsFailingTestByName() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.shouldRunTests = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+test "foo" {
+    assert(1 == 2)
+}
+""")
+        XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 2 in test \"foo\"")
     }
 }

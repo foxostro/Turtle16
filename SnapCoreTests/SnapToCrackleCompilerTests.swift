@@ -2464,7 +2464,7 @@ public func foo() -> None {
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
     }
     
-    func testProgramTestModeCallsTestMainFunctionInstead() {
+    func testTestDeclarationMustBeAtFileScope() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -2472,7 +2472,44 @@ public func foo() -> None {
                            storage: .staticStorage,
                            isMutable: true),
             FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.FunctionType.Argument(name: "s", type: Expression.DynamicArrayType(Expression.PrimitiveType(.u8)))]), body: Block(children: [])),
-            FunctionDeclaration(identifier: Expression.Identifier(SnapToCrackleCompiler.kTestMainFunctionName1), functionType: Expression.FunctionType(name: SnapToCrackleCompiler.kTestMainFunctionName1, returnType: Expression.PrimitiveType(.void), arguments: []), body: Block(children: [
+            TestDeclaration(name: "bar", body: Block(children: [
+                TestDeclaration(name: "baz", body: Block(children: [
+                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                          rexpr: Expression.LiteralInt(42))
+                ]))
+            ]))
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.shouldRunTests = true
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "declaration is only valid at file scope")
+    }
+    
+    func testTestDeclarationsMustHaveUniqueName() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.FunctionType.Argument(name: "s", type: Expression.DynamicArrayType(Expression.PrimitiveType(.u8)))]), body: Block(children: [])),
+            TestDeclaration(name: "bar", body: Block(children: [])),
+            TestDeclaration(name: "bar", body: Block(children: []))
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.shouldRunTests = true
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "test \"bar\" already exists")
+    }
+    
+    func testProgramTestModeInvokesTestCodeInsteadOfCallingMain() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(1),
+                           storage: .staticStorage,
+                           isMutable: true),
+            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.FunctionType.Argument(name: "s", type: Expression.DynamicArrayType(Expression.PrimitiveType(.u8)))]), body: Block(children: [])),
+            TestDeclaration(name: "bar", body: Block(children: [
                 Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                       rexpr: Expression.LiteralInt(42))
             ]))

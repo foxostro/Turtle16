@@ -73,6 +73,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenAssert.self) as? TokenAssert {
             result = try consumeAssert(token)
         }
+        else if let token = accept(TokenTest.self) as? TokenTest {
+            result = try consumeTest(token)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -954,5 +957,13 @@ public class SnapParser: Parser {
         return [Assert(sourceAnchor: sourceAnchor,
                        condition: condition,
                        message: message)]
+    }
+    
+    private func consumeTest(_ tokenTest: TokenTest) throws -> [AbstractSyntaxTreeNode] {
+        let name = try expect(type: TokenLiteralString.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected test name in test declaration")) as! TokenLiteralString
+        let leftBrace = try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in test declaration")) as! TokenCurlyLeft
+        let body = try consumeBlock(leftBrace).first as! Block
+        let sourceAnchor = tokenTest.sourceAnchor?.union(body.sourceAnchor)
+        return [TestDeclaration(sourceAnchor: sourceAnchor, name: name.literal, body: body)]
     }
 }

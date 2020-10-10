@@ -4206,4 +4206,16 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
+    
+    func testLiteralString() {
+        let expr = Expression.LiteralString("foo")
+        let compiler = makeCompiler()
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 0), "f".utf8.first)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), "o".utf8.first)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), "o".utf8.first)
+    }
 }

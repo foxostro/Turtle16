@@ -119,6 +119,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(get: expr)
         case let expr as Expression.StructInitializer:
             return try compile(structInitializer: expr)
+        case let expr as Expression.LiteralString:
+            return try compile(literalString: expr)
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error about an unsupported expression before
@@ -1255,5 +1257,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         }
         temporaryStack.push(tempResult)
         return instructions
+    }
+    
+    private func compile(literalString expr: Expression.LiteralString) throws -> [CrackleInstruction] {
+        let typ = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
+        let sourceAnchor = expr.sourceAnchor
+        let elements = expr.value.utf8.map({
+            Expression.LiteralInt(sourceAnchor: sourceAnchor, value: Int($0))
+        })
+        let arr = Expression.LiteralArray(sourceAnchor: sourceAnchor,
+                                          arrayType: typ,
+                                          elements: elements)
+        return try compile(literalArray: arr)
     }
 }

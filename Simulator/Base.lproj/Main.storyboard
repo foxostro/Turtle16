@@ -1445,24 +1445,35 @@
                                                             </scroller>
                                                         </scrollView>
                                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0cD-fj-cdb">
-                                                            <rect key="frame" x="0.0" y="501" width="521" height="21"/>
-                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="8yC-56-y2n">
+                                                            <rect key="frame" x="0.0" y="501" width="413" height="21"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="8yC-56-y2n">
                                                                 <font key="font" usesAppearanceFont="YES"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                             <connections>
                                                                 <action selector="provideSerialInputWithSender:" target="XfG-lQ-9wD" id="SWf-tr-0uh"/>
+                                                                <outlet property="delegate" destination="XfG-lQ-9wD" id="CNF-DT-a2B"/>
                                                             </connections>
                                                         </textField>
                                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ppk-6m-xQC">
-                                                            <rect key="frame" x="523" y="493" width="71" height="32"/>
+                                                            <rect key="frame" x="415" y="493" width="71" height="32"/>
                                                             <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PHc-6m-o4g">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="system"/>
                                                             </buttonCell>
                                                             <connections>
                                                                 <action selector="provideSerialInputWithSender:" target="XfG-lQ-9wD" id="4ou-TR-5Pl"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YPL-YR-jpB">
+                                                            <rect key="frame" x="486" y="503" width="104" height="18"/>
+                                                            <buttonCell key="cell" type="check" title="Line Oriented" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="5NB-dq-Zbf">
+                                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="changeSerialInputModeWithSender:" target="XfG-lQ-9wD" id="Kta-ZG-dX1"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>
@@ -1472,8 +1483,9 @@
                                                         <constraint firstItem="oCb-BJ-txQ" firstAttribute="leading" secondItem="kIz-pQ-pPv" secondAttribute="leading" id="CFN-1Z-PA7"/>
                                                         <constraint firstItem="0cD-fj-cdb" firstAttribute="leading" secondItem="kIz-pQ-pPv" secondAttribute="leading" id="DEi-k2-PH8"/>
                                                         <constraint firstAttribute="trailing" secondItem="oCb-BJ-txQ" secondAttribute="trailing" id="Vzl-Uh-jJV"/>
-                                                        <constraint firstAttribute="trailing" secondItem="Ppk-6m-xQC" secondAttribute="trailing" id="WUT-8e-WGv"/>
                                                         <constraint firstAttribute="bottom" secondItem="oCb-BJ-txQ" secondAttribute="bottom" id="czy-7I-7tJ"/>
+                                                        <constraint firstItem="YPL-YR-jpB" firstAttribute="leading" secondItem="Ppk-6m-xQC" secondAttribute="trailing" constant="8" symbolic="YES" id="erb-8V-jRK"/>
+                                                        <constraint firstAttribute="trailing" secondItem="YPL-YR-jpB" secondAttribute="trailing" id="kEF-0n-Wcs"/>
                                                         <constraint firstItem="Ppk-6m-xQC" firstAttribute="firstBaseline" secondItem="0cD-fj-cdb" secondAttribute="firstBaseline" id="sNU-W1-EwR"/>
                                                         <constraint firstItem="0cD-fj-cdb" firstAttribute="top" secondItem="kIz-pQ-pPv" secondAttribute="top" id="woU-ed-P5g"/>
                                                     </constraints>
@@ -1655,6 +1667,7 @@
                         <outlet property="eventLog" destination="u5j-2x-nqt" id="EpM-Br-Vx9"/>
                         <outlet property="if_id" destination="vSK-HH-WZE" id="y4D-58-PVS"/>
                         <outlet property="ipsLabel" destination="oH4-am-aYM" id="ImA-rx-6px"/>
+                        <outlet property="lineOrientedCheckbox" destination="YPL-YR-jpB" id="Mpn-3b-YpV"/>
                         <outlet property="pc_if" destination="k1n-Bh-mty" id="Ndx-jv-axH"/>
                         <outlet property="programCounter" destination="HZa-7m-8a9" id="sja-gN-iGT"/>
                         <outlet property="registerA" destination="UNs-X6-Nip" id="LJg-lN-KGj"/>
@@ -1676,7 +1689,7 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="UzL-l0-aAD"/>
             </objects>
-            <point key="canvasLocation" x="-20.5" y="1089"/>
+            <point key="canvasLocation" x="-21" y="1089"/>
         </scene>
     </scenes>
 </document>

@@ -12,6 +12,7 @@ import SnapCore
 import TurtleAssemblerCore
 import TurtleCore
 import TurtleCompilerToolbox
+import Carbon // for key codes
 
 class ViewController: NSViewController {
     @IBOutlet var registerA:NSTextField!
@@ -37,6 +38,7 @@ class ViewController: NSViewController {
     @IBOutlet var serialInput:NSTextField!
     @IBOutlet var serialOutput:NSTextView!
     @IBOutlet var ipsLabel:NSTextField!
+    @IBOutlet var lineOrientedCheckbox:NSButton!
     var logger:TextViewLogger!
     let executor = ComputerExecutor()
     let stopwatch = ComputerStopwatch()
@@ -50,6 +52,21 @@ class ViewController: NSViewController {
         logger = TextViewLogger(textView: eventLog)
         microcodeGenerator.generate()
         setupExecutor()
+        
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
+            return self.serialInputKeypress($0)
+        }
+    }
+    
+    func serialInputKeypress(_ event: NSEvent) -> NSEvent? {
+        if self.isLineOrientedSerialInput {
+            return event
+        } else {
+            if let characters = event.characters {
+                executor.provideSerialInput(bytes: Array(characters.utf8))
+            }
+            return nil
+        }
     }
     
     func setupInstructionsPerSecondLabel() {
@@ -303,6 +320,14 @@ class ViewController: NSViewController {
         let bytes = Array(serialInput.stringValue.appending("\n").utf8)
         executor.provideSerialInput(bytes: bytes)
         serialInput.stringValue = ""
+    }
+    
+    @IBAction func changeSerialInputMode(sender: Any?) {
+        serialInput.isEnabled = isLineOrientedSerialInput
+    }
+    
+    var isLineOrientedSerialInput: Bool {
+        return lineOrientedCheckbox.state == NSControl.StateValue.on
     }
     
     func disableEventLog() {

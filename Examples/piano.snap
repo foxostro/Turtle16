@@ -1,0 +1,173 @@
+let kAudioDevice = 6
+let kDirectDrive = 0x00
+let kTriangleWaveFrequency = 0x01
+let kPulseWaveModulation = 0x02
+let kPulseWaveFrequency = 0x03
+let kTriangleWaveAmplitude = 0x04
+let kPulseWaveAmplitude = 0x05
+let kNoiseAmplitude = 0x06
+let kMasterGain = 0x07
+
+# 153 corresponds to CV=3V which is A3.
+# 204 corresponds to CV=4V which is A4.
+# There are twelve semitones in the scale, which each correspond to 1/12V increments.
+let noteA3 = 153
+let noteB3 = 162
+let noteC4 = 166
+let noteD4 = 174
+let noteE4 = 183
+let noteF4 = 191
+let noteG4 = 195
+let noteA4 = 204
+let noteB4 = 208
+
+func playNote(control: u8, sustainTime: u8) {
+	let attackMax = 224
+	let attackStep = 32
+	let decayStep = 32
+	let sustainLevel = 192
+	let releaseStep = 32
+
+	pokePeripheral(control, kTriangleWaveFrequency, kAudioDevice)
+
+	var gain: u16 = 0
+	while gain < attackMax {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain + attackStep
+	}
+
+	gain = attackMax
+	while gain > sustainLevel {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain - decayStep
+	}
+
+	for i in 0..sustainTime {} // delay loop. do nothing.
+
+	gain = sustainLevel
+	while gain > 0 {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain - releaseStep
+	}
+
+	pokePeripheral(0, kTriangleWaveAmplitude, kAudioDevice)
+}
+
+func setMasterAudioGain(gain: u8) {
+	pokePeripheral(gain, kMasterGain, kAudioDevice)
+}
+
+
+
+
+
+
+
+let kSerialInterface = 7
+let kDataPort = 1
+let kControlPort = 0
+let kResetCommand = 0
+let kPutCommand = 1
+let kGetCommand = 2
+let kGetNumberOfBytesCommand = 3
+
+func serialInit() -> u8 {
+	pokePeripheral(kResetCommand, kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	let status = peekPeripheral(kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	return status
+}
+
+public func serialPuts(s: []const u8) {
+    for c in s {
+        serialPut(c)
+    }
+}
+
+func serialPut(character: u8) {
+	pokePeripheral(kPutCommand, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	serialDelay()
+	pokePeripheral(character, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	pokePeripheral(0, kControlPort, kSerialInterface)
+}
+
+func serialGet() -> u8 {
+	pokePeripheral(kGetCommand, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	let character = peekPeripheral(kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	return character
+}
+
+func serialCount() -> u8 {
+	pokePeripheral(kGetNumberOfBytesCommand, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	let count = peekPeripheral(kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	return count
+}
+
+func serialDelay() {
+	//  do nothing
+}
+
+
+
+
+
+func main() {
+	let noteLength = 2
+	setMasterAudioGain(0x80)
+	serialInit()
+	serialPuts("Piano\n")
+	while true {
+		while serialCount() == 0 {}
+		let character = serialGet()
+		if character == 'a' {
+			serialPuts("A3\n")
+			playNote(noteA3, noteLength)
+		}
+		else if character == 's' {
+			serialPuts("B3\n")
+			playNote(noteB3, noteLength)
+		}
+		else if character == 'd' {
+			serialPuts("C4\n")
+			playNote(noteC4, noteLength)
+		}
+		else if character == 'f' {
+			serialPuts("D4\n")
+			playNote(noteD4, noteLength)
+		}
+		else if character == 'g' {
+			serialPuts("E4\n")
+			playNote(noteE4, noteLength)
+		}
+		else if character == 'h' {
+			serialPuts("F4\n")
+			playNote(noteF4, noteLength)
+		}
+		else if character == 'j' {
+			serialPuts("G4\n")
+			playNote(noteG4, noteLength)
+		}
+		else if character == 'k' {
+			serialPuts("A4\n")
+			playNote(noteA4, noteLength)
+		}
+		else if character == 'l' {
+			serialPuts("B4\n")
+			playNote(noteB4, noteLength)
+		}
+	}
+}

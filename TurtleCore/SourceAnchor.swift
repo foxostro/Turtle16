@@ -10,6 +10,10 @@ public class SourceAnchor: NSObject {
     public let range: Range<String.Index>
     public let lineMapper: SourceLineRangeMapper
     
+    public var url: URL? {
+        return lineMapper.url
+    }
+    
     public override var debugDescription: String {
         var begin = 0
         var index = lineMapper.text.startIndex

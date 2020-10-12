@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 
 class SnapParserTests: XCTestCase {
     func parse(_ text: String) -> SnapParser {
-        let tokenizer = SnapLexer(withString: text)
+        let tokenizer = SnapLexer(text)
         tokenizer.scanTokens()
         let parser = SnapParser(tokens: tokenizer.tokens,
                                 lineMapper: tokenizer.lineMapper)
@@ -2443,6 +2443,16 @@ test "foo" {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 14), children: [
             TestDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 14), name: "foo", body: Block(sourceAnchor: parser.lineMapper.anchor(11, 14), children: []))
+        ]))
+    }
+    
+    func testWellformedImportStatement() {
+        let parser = parse("""
+import foo
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 10), children: [
+            Import(sourceAnchor: parser.lineMapper.anchor(0, 10), moduleName: "foo")
         ]))
     }
 }

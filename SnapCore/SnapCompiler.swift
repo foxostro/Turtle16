@@ -22,16 +22,28 @@ public class SnapCompiler: NSObject {
         return errors.count != 0
     }
     
-    public func compile(_ text: String) {
-        return compile(program: text, base: 0x0000)
+    private let moduleBookmarksManager = ModuleBookmarksManager()
+    
+    public override init() {
+        try? moduleBookmarksManager.restoreBookmarks()
     }
     
-    public func compile(program text: String, base: Int) {
+    private var injectedModules: [String : String] = [:]
+    
+    public func injectModule(name: String, sourceCode: String) {
+        injectedModules[name] = sourceCode
+    }
+    
+    public func compile(_ text: String, _ url: URL? = nil) {
+        return compile(program: text, base: 0x0000, url: url)
+    }
+    
+    public func compile(program text: String, base: Int, url: URL? = nil) {
         instructions = []
         errors = []
         
         // Lexer pass
-        let lexer = SnapLexer(withString: text)
+        let lexer = SnapLexer(text, url)
         lexer.scanTokens()
         programDebugInfo.lineMapper = lexer.lineMapper
         if lexer.hasError {
@@ -50,9 +62,13 @@ public class SnapCompiler: NSObject {
         
         // Compile the AST to IR code
         let snapToCrackleCompiler = SnapToCrackleCompiler()
+        for (name, sourceCode) in injectedModules {
+            snapToCrackleCompiler.injectModule(name: name, sourceCode: sourceCode)
+        }
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.isUsingStandardLibrary = isUsingStandardLibrary
         snapToCrackleCompiler.shouldRunTests = shouldRunTests
+        snapToCrackleCompiler.moduleBookmarksManager = moduleBookmarksManager
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
             errors = snapToCrackleCompiler.errors

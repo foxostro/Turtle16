@@ -12,7 +12,7 @@ import TurtleCompilerToolbox
 
 class AssemblerParserTests: XCTestCase {
     func parse(_ text: String) -> AssemblerParser {
-        let tokenizer = AssemblerLexer(withString: text)
+        let tokenizer = AssemblerLexer(text)
         tokenizer.scanTokens()
         let parser = AssemblerParser(tokens: tokenizer.tokens,
                                      lineMapper: tokenizer.lineMapper)

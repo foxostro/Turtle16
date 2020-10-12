@@ -25,7 +25,7 @@ public class AssemblerFrontEnd: NSObject {
         instructions = []
         errors = []
         
-        let lexer = AssemblerLexer(withString: text)
+        let lexer = AssemblerLexer(text)
         lexer.scanTokens()
         if lexer.hasError {
             errors = lexer.errors

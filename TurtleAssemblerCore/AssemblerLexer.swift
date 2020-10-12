@@ -10,8 +10,8 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public class AssemblerLexer: Lexer {
-    public required init(withString string: String) {
-        super.init(withString: string)
+    public required init(_ string: String, _ url: URL? = nil) {
+        super.init(string, url)
         self.rules = [
             Rule(pattern: "\n") {
                 TokenNewline(sourceAnchor: $0)

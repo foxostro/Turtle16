@@ -105,11 +105,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/andrewfox/src/TurtleTTL/TurtleTools/Examples/hello.snap"
+            argument = "test"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/andrewfox/Desktop/hello.program"
+            argument = "/Users/andrewfox/src/TurtleTTL/TurtleTools/Examples/piano.snap"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

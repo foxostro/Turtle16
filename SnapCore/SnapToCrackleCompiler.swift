@@ -43,6 +43,8 @@ public class SnapToCrackleCompiler: NSObject {
     private var testDeclarations: [TestDeclaration] = []
     private var currentTest: TestDeclaration? = nil
     
+    public var moduleBookmarksManager: ModuleBookmarksManager? = nil
+    
     public override init() {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
         super.init()
@@ -213,7 +215,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     public func compileProgramText(filename: String?, text: String) throws -> TopLevel {
         // Lexer pass
-        let lexer = SnapLexer(withString: text)
+        let lexer = SnapLexer(text)
         lexer.scanTokens()
         if lexer.hasError {
             throw CompilerError.makeOmnibusError(fileName: filename, errors: lexer.errors)
@@ -274,9 +276,17 @@ public class SnapToCrackleCompiler: NSObject {
             return (sourceCode, moduleName)
         }
         
-        // Try retrieving the module from bundle resources.
-        let bundle = Bundle(for: type(of: self))
-        if let fileName = bundle.path(forResource: moduleName, ofType: "snap") {
+        // Try retrieving the module from file.
+        if let sourceAnchor = sourceAnchor, let url = URL.init(string: moduleName.appending(".snap"), relativeTo: sourceAnchor.url?.deletingLastPathComponent()) {
+            try? moduleBookmarksManager?.grantAccess(url: sourceAnchor.url?.deletingLastPathComponent())
+            do {
+                let text = try String(contentsOf: url, encoding: String.Encoding.utf8)
+                return (text, url.lastPathComponent)
+            } catch {
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to read module `\(moduleName)' from file `\(url)'")
+            }
+        }
+        else if let fileName = Bundle(for: type(of: self)).path(forResource: moduleName, ofType: "snap") { // Try retrieving the module from bundle resources.
             do {
                 let text = try String(contentsOfFile: fileName)
                 return (text, fileName)

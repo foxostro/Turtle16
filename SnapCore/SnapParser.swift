@@ -76,6 +76,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenTest.self) as? TokenTest {
             result = try consumeTest(token)
         }
+        else if let token = accept(TokenImport.self) as? TokenImport {
+            result = try consumeImport(token)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -965,5 +968,11 @@ public class SnapParser: Parser {
         let body = try consumeBlock(leftBrace).first as! Block
         let sourceAnchor = tokenTest.sourceAnchor?.union(body.sourceAnchor)
         return [TestDeclaration(sourceAnchor: sourceAnchor, name: name.literal, body: body)]
+    }
+    
+    private func consumeImport(_ tokenImport: TokenImport) throws -> [AbstractSyntaxTreeNode] {
+        let name = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in import statement"))
+        let sourceAnchor = tokenImport.sourceAnchor?.union(name.sourceAnchor)
+        return [Import(sourceAnchor: sourceAnchor, moduleName: name.lexeme)]
     }
 }

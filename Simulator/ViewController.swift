@@ -305,7 +305,7 @@ class ViewController: NSViewController {
             let programText = try String(contentsOf: url, encoding: .utf8)
             let frontEnd = SnapCompiler()
             frontEnd.isUsingStandardLibrary = true
-            frontEnd.compile(programText)
+            frontEnd.compile(programText, url)
             if frontEnd.hasError {
                 let error = CompilerError.makeOmnibusError(fileName: url.lastPathComponent, errors: frontEnd.errors)
                 alert(withMessage: error.message)

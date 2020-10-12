@@ -10,8 +10,8 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public class SnapLexer: Lexer {
-    public required init(withString string: String) {
-        super.init(withString: string)
+    public required init(_ string: String, _ url: URL? = nil) {
+        super.init(string, url)
         self.rules = [
             Rule(pattern: "\n") {
                 return TokenNewline(sourceAnchor: $0)
@@ -184,6 +184,9 @@ public class SnapLexer: Lexer {
             },
             Rule(pattern: "undefined\\b") {
                 TokenUndefined(sourceAnchor: $0)
+            },
+            Rule(pattern: "import\\b") {
+                TokenImport(sourceAnchor: $0)
             },
             Rule(pattern: "\".*\"") {[weak self] in 
                 TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))

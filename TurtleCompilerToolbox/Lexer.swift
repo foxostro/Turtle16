@@ -32,10 +32,10 @@ open class Lexer: NSObject {
         return errors.count != 0
     }
     
-    public required init(withString string: String) {
+    public required init(_ string: String, _ url: URL? = nil) {
         self.string = string
         position = string.startIndex
-        lineMapper = SourceLineRangeMapper(text: string)
+        lineMapper = SourceLineRangeMapper(url: url, text: string)
     }
     
     public func peekRange(_ ahead: Int = 0) -> Range<String.Index>? {

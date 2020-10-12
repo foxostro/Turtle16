@@ -1440,4 +1440,16 @@ test "foo" {
 """)
         XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 2 in test \"foo\"")
     }
+    
+    func testImportModule() {
+        let executor = SnapExecutor()
+        executor.injectModule(name: "MyModule", sourceCode: """
+public func foo() {
+}
+""")
+        _ = try! executor.execute(program: """
+import MyModule
+foo()
+""")
+    }
 }

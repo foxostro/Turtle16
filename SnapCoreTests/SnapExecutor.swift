@@ -74,4 +74,8 @@ class SnapExecutor: NSObject {
     private func makeLogger() -> Logger? {
         return isVerboseLogging ? ConsoleLogger() : nil
     }
+    
+    public func injectModule(name: String, sourceCode: String) {
+        compiler.injectModule(name: name, sourceCode: sourceCode)
+    }
 }

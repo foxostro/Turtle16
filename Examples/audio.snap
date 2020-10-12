@@ -1,0 +1,58 @@
+public let kAudioDevice = 6
+public let kDirectDrive = 0x00
+public let kTriangleWaveFrequency = 0x01
+public let kPulseWaveModulation = 0x02
+public let kPulseWaveFrequency = 0x03
+public let kTriangleWaveAmplitude = 0x04
+public let kPulseWaveAmplitude = 0x05
+public let kNoiseAmplitude = 0x06
+public let kMasterGain = 0x07
+
+# 153 corresponds to CV=3V which is A3.
+# 204 corresponds to CV=4V which is A4.
+# There are twelve semitones in the scale, which each correspond to 1/12V increments.
+public let noteA3 = 153
+public let noteB3 = 162
+public let noteC4 = 166
+public let noteD4 = 174
+public let noteE4 = 183
+public let noteF4 = 191
+public let noteG4 = 195
+public let noteA4 = 204
+public let noteB4 = 208
+
+public func playNote(control: u8, sustainTime: u8) {
+	let attackMax = 224
+	let attackStep = 32
+	let decayStep = 32
+	let sustainLevel = 192
+	let releaseStep = 32
+
+	pokePeripheral(control, kTriangleWaveFrequency, kAudioDevice)
+
+	var gain: u16 = 0
+	while gain < attackMax {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain + attackStep
+	}
+
+	gain = attackMax
+	while gain > sustainLevel {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain - decayStep
+	}
+
+	for i in 0..sustainTime {} // delay loop. do nothing.
+
+	gain = sustainLevel
+	while gain > 0 {
+		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
+		gain = gain - releaseStep
+	}
+
+	pokePeripheral(0, kTriangleWaveAmplitude, kAudioDevice)
+}
+
+public func setMasterAudioGain(gain: u8) {
+	pokePeripheral(gain, kMasterGain, kAudioDevice)
+}

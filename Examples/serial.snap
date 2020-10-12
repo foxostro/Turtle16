@@ -1,0 +1,57 @@
+public let kSerialInterface = 7
+public let kDataPort = 1
+public let kControlPort = 0
+public let kResetCommand = 0
+public let kPutCommand = 1
+public let kGetCommand = 2
+public let kGetNumberOfBytesCommand = 3
+
+public func serialInit() -> u8 {
+	pokePeripheral(kResetCommand, kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	let status = peekPeripheral(kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	return status
+}
+
+public func serialPuts(s: []const u8) {
+    for c in s {
+        serialPut(c)
+    }
+}
+
+public func serialPut(character: u8) {
+	pokePeripheral(kPutCommand, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	serialDelay()
+	pokePeripheral(character, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	pokePeripheral(0, kControlPort, kSerialInterface)
+}
+
+public func serialGet() -> u8 {
+	pokePeripheral(kGetCommand, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	let character = peekPeripheral(kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	return character
+}
+
+public func serialCount() -> u8 {
+	pokePeripheral(kGetNumberOfBytesCommand, kDataPort, kSerialInterface)
+	pokePeripheral(1, kControlPort, kSerialInterface)
+	serialDelay()
+	let count = peekPeripheral(kDataPort, kSerialInterface)
+	pokePeripheral(0, kControlPort, kSerialInterface)
+	return count
+}
+
+func serialDelay() {
+	//  do nothing
+}

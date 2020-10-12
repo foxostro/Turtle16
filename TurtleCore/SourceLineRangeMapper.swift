@@ -7,10 +7,16 @@
 //
 
 public class SourceLineRangeMapper: NSObject {
+    public let url: URL?
     public let text: String
     let lineRanges: [Range<String.Index>]
     
-    public init(text: String) {
+    public convenience init(text: String) {
+        self.init(url: nil, text: text)
+    }
+    
+    public init(url: URL?, text: String) {
+        self.url = url
         self.text = text
         var lineRanges: [Range<String.Index>] = []
         var index = text.startIndex

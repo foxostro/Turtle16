@@ -63,7 +63,7 @@ public class SnapCommandLineDriver: NSObject {
         let frontEnd = SnapCompiler()
         frontEnd.isUsingStandardLibrary = true
         frontEnd.shouldRunTests = shouldRunTests
-        frontEnd.compile(text)
+        frontEnd.compile(text, inputFileName)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
         }

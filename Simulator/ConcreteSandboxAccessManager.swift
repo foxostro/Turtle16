@@ -1,5 +1,5 @@
 //
-//  ModuleBookmarksManager.swift
+//  ConcreteSandboxAccessManager.swift
 //  Simulator
 //
 //  Created by Andrew Fox on 10/11/20.
@@ -7,21 +7,45 @@
 //
 
 import Cocoa
+import SnapCore
 
-public class ModuleBookmarksManager: NSObject {
-    let kBookmarksKey = "com.foxostro.SnapCore.bookmarks"
+public class ConcreteSandboxAccessManager: NSObject, SandboxAccessManager {
+    let kBookmarksKey = "bookmarks"
     var bookmarks: [URL : Data] = [:]
     
-    public var bookmarksPath: URL! {
-        let appDataPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first
-        let path = appDataPath!.appending("bookmarks.dict")
-        return URL.init(fileURLWithPath: path)
+    deinit {
+        for (url, _) in bookmarks {
+            url.stopAccessingSecurityScopedResource()
+        }
     }
     
-    public func grantAccess(url: URL?) throws {
-        guard let url = url else {
-            return
+    public override init() {
+        do {
+            let maybeBookmarksData = UserDefaults.standard.object(forKey: kBookmarksKey) as? Data
+            if let bookmarksData = maybeBookmarksData {
+                bookmarks = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self, NSURL.self], from: bookmarksData) as! [URL: Data]
+                for bookmark in bookmarks {
+                    var isStale = false
+                    let url = try URL.init(resolvingBookmarkData: bookmark.value, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                    _ = url.startAccessingSecurityScopedResource()
+                }
+            }
+        } catch let error {
+            NSLog("failed to restore bookmarks: \(error)")
         }
+    }
+    
+    public func requestAccess(url: URL?) {
+        if let url = url {
+            do {
+                try tryRequestAccess(url: url)
+            } catch let error {
+                NSLog("failed to grant the requested access to url\n\turl: \(url)\n\terror: \(error)")
+            }
+        }
+    }
+    
+    func tryRequestAccess(url: URL) throws {
         if let data = bookmarks[url] {
             var isStale = false
             let decodedUrl = try URL.init(resolvingBookmarkData: data, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
@@ -46,29 +70,5 @@ public class ModuleBookmarksManager: NSObject {
                 UserDefaults.standard.setValue(bookmarksData, forKey: kBookmarksKey)
             }
         }
-    }
-
-    public func restoreBookmarks() throws {
-        freeBookmarks()
-        let maybeBookmarksData = UserDefaults.standard.object(forKey: kBookmarksKey) as? Data
-        if let bookmarksData = maybeBookmarksData {
-            bookmarks = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self, NSURL.self], from: bookmarksData) as! [URL: Data]
-            for bookmark in bookmarks {
-                var isStale = false
-                let url = try URL.init(resolvingBookmarkData: bookmark.value, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-                _ = url.startAccessingSecurityScopedResource()
-            }
-        }
-    }
-    
-    public func freeBookmarks() {
-        for (url, _) in bookmarks {
-            url.stopAccessingSecurityScopedResource()
-        }
-        bookmarks = [:]
-    }
-    
-    deinit {
-        freeBookmarks()
     }
 }

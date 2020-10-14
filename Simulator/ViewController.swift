@@ -304,6 +304,7 @@ class ViewController: NSViewController {
         do {
             let programText = try String(contentsOf: url, encoding: .utf8)
             let frontEnd = SnapCompiler()
+            frontEnd.sandboxAccessManager = ConcreteSandboxAccessManager()
             frontEnd.isUsingStandardLibrary = true
             frontEnd.compile(programText, url)
             if frontEnd.hasError {

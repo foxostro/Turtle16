@@ -9,6 +9,10 @@
 import TurtleCompilerToolbox
 import TurtleCore
 
+public protocol SandboxAccessManager {
+    func requestAccess(url: URL?)
+}
+
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
     public var shouldRunTests = false
@@ -16,16 +20,11 @@ public class SnapCompiler: NSObject {
     public var ir: [CrackleInstruction] = []
     public var instructions: [Instruction] = []
     public let programDebugInfo = SnapDebugInfo()
+    public var sandboxAccessManager: SandboxAccessManager? = nil
     
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
         return errors.count != 0
-    }
-    
-    private let moduleBookmarksManager = ModuleBookmarksManager()
-    
-    public override init() {
-        try? moduleBookmarksManager.restoreBookmarks()
     }
     
     private var injectedModules: [String : String] = [:]
@@ -68,7 +67,7 @@ public class SnapCompiler: NSObject {
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.isUsingStandardLibrary = isUsingStandardLibrary
         snapToCrackleCompiler.shouldRunTests = shouldRunTests
-        snapToCrackleCompiler.moduleBookmarksManager = moduleBookmarksManager
+        snapToCrackleCompiler.sandboxAccessManager = sandboxAccessManager
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
             errors = snapToCrackleCompiler.errors

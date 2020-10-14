@@ -43,7 +43,7 @@ public class SnapToCrackleCompiler: NSObject {
     private var testDeclarations: [TestDeclaration] = []
     private var currentTest: TestDeclaration? = nil
     
-    public var moduleBookmarksManager: ModuleBookmarksManager? = nil
+    public var sandboxAccessManager: SandboxAccessManager? = nil
     
     public override init() {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
@@ -278,7 +278,7 @@ public class SnapToCrackleCompiler: NSObject {
         
         // Try retrieving the module from file.
         if let sourceAnchor = sourceAnchor, let url = URL.init(string: moduleName.appending(".snap"), relativeTo: sourceAnchor.url?.deletingLastPathComponent()) {
-            try? moduleBookmarksManager?.grantAccess(url: sourceAnchor.url?.deletingLastPathComponent())
+            sandboxAccessManager?.requestAccess(url: sourceAnchor.url?.deletingLastPathComponent())
             do {
                 let text = try String(contentsOf: url, encoding: String.Encoding.utf8)
                 return (text, url.lastPathComponent)

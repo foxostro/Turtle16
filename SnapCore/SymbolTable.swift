@@ -305,7 +305,7 @@ public class FunctionType: NSObject {
     }
     
     public func makeArgumentsDescription() -> String {
-        let result = arguments.map({"\($0.name) : \($0.argumentType)"}).joined(separator: ", ")
+        let result = arguments.map({"\($0.name): \($0.argumentType)"}).joined(separator: ", ")
         return result
     }
     

@@ -698,7 +698,7 @@ let arr: [_]u16 = foo
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `func (u8, u16) -> bool' to type `[_]const u16'")
+        XCTAssertEqual(compiler.errors.first?.message, "inappropriate use of a function type (Try taking the function's address instead.)")
     }
     
     func test_EndToEndIntegration_CannotAddArrayToInteger() {
@@ -1500,7 +1500,7 @@ ptr("Hello, World!")
         }
         _ = try! executor.execute(program: """
 struct Serial {
-    puts: *func ([]const u8) -> void
+    puts: func (s: []const u8) -> void
 }
 let serial = Serial {
     .puts = &puts
@@ -1521,9 +1521,9 @@ serial.puts("Hello, World!")
         }
         _ = try! executor.execute(program: """
 struct Foo {
-    bar: func (*Foo, []const u8) -> void
+    bar: func (self: *const Foo, s: []const u8) -> void
 }
-func baz(self: *Foo, s: []const u8) -> void {
+func baz(self: *const Foo, s: []const u8) -> void {
     puts(s)
 }
 let foo = Foo {

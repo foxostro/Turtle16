@@ -205,7 +205,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     public func compileModuleForImport(import node: Import) throws {
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
-        let moduleTopLevel = try compileProgramText(filename: moduleData.1, text: moduleData.0)
+        let moduleTopLevel = try compileProgramText(url: moduleData.1, text: moduleData.0)
         let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor,
                             name: node.moduleName,
                             children: moduleTopLevel.children)
@@ -213,9 +213,11 @@ public class SnapToCrackleCompiler: NSObject {
         try compile(genericNode: module)
     }
     
-    public func compileProgramText(filename: String?, text: String) throws -> TopLevel {
+    public func compileProgramText(url: URL?, text: String) throws -> TopLevel {
+        let filename = url?.lastPathComponent
+        
         // Lexer pass
-        let lexer = SnapLexer(text)
+        let lexer = SnapLexer(text, url)
         lexer.scanTokens()
         if lexer.hasError {
             throw CompilerError.makeOmnibusError(fileName: filename, errors: lexer.errors)
@@ -270,10 +272,10 @@ public class SnapToCrackleCompiler: NSObject {
         modulesAlreadyImported = oldModulesAlreadyImported
     }
     
-    private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, String) {
+    private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, URL) {
         // Try retrieving the module from the manually injected modules.
         if let sourceCode = injectedModules[moduleName] {
-            return (sourceCode, moduleName)
+            return (sourceCode, URL.init(string: moduleName)!)
         }
         
         // Try retrieving the module from file.
@@ -281,17 +283,17 @@ public class SnapToCrackleCompiler: NSObject {
             sandboxAccessManager?.requestAccess(url: sourceAnchor.url?.deletingLastPathComponent())
             do {
                 let text = try String(contentsOf: url, encoding: String.Encoding.utf8)
-                return (text, url.lastPathComponent)
+                return (text, url)
             } catch {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to read module `\(moduleName)' from file `\(url)'")
             }
         }
-        else if let fileName = Bundle(for: type(of: self)).path(forResource: moduleName, ofType: "snap") { // Try retrieving the module from bundle resources.
+        else if let url = Bundle(for: type(of: self)).url(forResource: moduleName, withExtension: "snap") { // Try retrieving the module from bundle resources.
             do {
-                let text = try String(contentsOfFile: fileName)
-                return (text, fileName)
+                let text = try String(contentsOf: url)
+                return (text, url)
             } catch {
-                throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to read module `\(moduleName)' from file `\(fileName)'")
+                throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to read module `\(moduleName)' from file `\(url)'")
             }
         }
         
@@ -862,7 +864,7 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(block: testDeclaration.body)
             currentTest = nil
         }
-        try compile(block: Block(children: try compileProgramText(filename: nil, text: """
+        try compile(block: Block(children: try compileProgramText(url: nil, text: """
 puts("All Tests Passed.")
 """).children))
     }

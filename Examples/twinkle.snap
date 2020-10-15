@@ -9,32 +9,17 @@ let kNoiseAmplitude = 0x06
 let kMasterGain = 0x07
 
 func delay() {
-	for i in 0..255 {
-		// do nothing
-	}
-	for i in 0..255 {
-		// do nothing
-	}
-	for i in 0..255 {
-		// do nothing
-	}
-	for i in 0..255 {
-		// do nothing
-	}
-	for i in 0..255 {
-		// do nothing
-	}
-	for i in 0..255 {
+	for i in 0..50 {
 		// do nothing
 	}
 }
 
 func playNote(control: u8, sustainTime: u8) {
 	let attackMax = 224
-	let attackStep = 32
-	let decayStep = 32
+	let attackStep = 1
+	let decayStep = 1
 	let sustainLevel = 192
-	let releaseStep = 32
+	let releaseStep = 1
 
 	pokePeripheral(control, kTriangleWaveFrequency, kAudioDevice)
 
@@ -45,7 +30,6 @@ func playNote(control: u8, sustainTime: u8) {
 		delay()
 	}
 
-	gain = attackMax
 	while gain > sustainLevel {
 		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
 		gain = gain - decayStep
@@ -56,7 +40,6 @@ func playNote(control: u8, sustainTime: u8) {
 		delay()
 	}
 
-	gain = sustainLevel
 	while gain > 0 {
 		pokePeripheral(gain as u8, kTriangleWaveAmplitude, kAudioDevice)
 		gain = gain - releaseStep
@@ -68,6 +51,7 @@ func playNote(control: u8, sustainTime: u8) {
 
 
 pokePeripheral(0xff, kMasterGain, kAudioDevice)
+pokePeripheral(0, kTriangleWaveAmplitude, kAudioDevice)
 
 # 153 corresponds to CV=3V which is A3.
 # 204 corresponds to CV=4V which is A4.

@@ -2716,7 +2716,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign value of type `func (u8, u16) -> bool' to type `[_]u16'")
+            XCTAssertEqual(compilerError?.message, "inappropriate use of a function type (Try taking the function's address instead.)")
         }
     }
     
@@ -3195,7 +3195,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        let expected: SymbolType = .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: [])))
+        let expected: SymbolType = .pointer(.function(FunctionType(returnType: .void, arguments: [])))
         XCTAssertEqual(result, expected)
     }
     

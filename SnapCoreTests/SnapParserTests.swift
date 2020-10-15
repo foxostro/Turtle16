@@ -2455,4 +2455,31 @@ import foo
             Import(sourceAnchor: parser.lineMapper.anchor(0, 10), moduleName: "foo")
         ]))
     }
+    
+    func testWellformedFunctionPointerExpressionType() {
+        let parser = parse("""
+let foo: func (arg: u8) -> u8 = undefined
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo")
+        let fn = Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(9, 29), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(27, 29), typ: .u8), arguments: [Expression.FunctionType.Argument(name: "arg", type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8))])
+        let expectedType = Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 29), typ: fn)
+        let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 41),
+                                      identifier: foo,
+                                      explicitType: expectedType,
+                                      expression: nil,
+                                      storage: .stackStorage,
+                                      isMutable: false)
+        XCTAssertEqual(ast.children.first, expected)
+    }
 }

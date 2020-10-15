@@ -290,6 +290,8 @@ public class SnapParser: Parser {
             return try consumePointerType(star)
         } else if let _ = peek() as? TokenSquareBracketLeft {
             return try consumeArrayType()
+        } else if let _ = peek() as? TokenFunc {
+            return try consumeFunctionPointerType()
         } else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Expression.Identifier(sourceAnchor: identifier.sourceAnchor,
                                          identifier: identifier.lexeme)
@@ -323,9 +325,41 @@ public class SnapParser: Parser {
         }
     }
     
-    fileprivate func consumePrimitiveType() throws -> Expression {
-        let typeName = peek()?.sourceAnchor?.text ?? "unknown"
-        let tokenType = try expect(type: TokenType.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "use of undeclared type `\(typeName)'")) as! TokenType
+    private func consumeFunctionPointerType() throws -> Expression {
+        let funcKeywordToken = try expect(type: TokenFunc.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected the `func' keyword"))
+        try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `(' in argument list of function pointer type expression"))
+        
+        var arguments: [Expression.FunctionType.Argument] = []
+        
+        if type(of: peek()!) != TokenParenRight.self {
+            repeat {
+                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected parameter name followed by `:'")) as! TokenIdentifier
+                if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
+                    throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "parameter requires an explicit type")
+                }
+                guard let type = try consumeTypeAnnotation() else {
+                    throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
+                }
+                let name = tokenIdentifier.lexeme
+                arguments.append(Expression.FunctionType.Argument(name: name, type: type))
+            } while nil != accept(TokenComma.self)
+        }
+        
+        try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in argument list of function pointer type expression"))
+        
+        let returnType: Expression
+        if nil == accept(TokenArrow.self) {
+            returnType = Expression.PrimitiveType(.void)
+        } else {
+            returnType = try consumeType()
+        }
+        
+        let sourceAnchor = funcKeywordToken.sourceAnchor?.union(previous?.sourceAnchor)
+        return Expression.PointerType(sourceAnchor: sourceAnchor, typ: Expression.FunctionType(sourceAnchor: sourceAnchor, name: nil, returnType: returnType, arguments: arguments))
+    }
+    
+    private func consumePrimitiveType() throws -> Expression {
+        let tokenType = try expect(type: TokenType.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected a type")) as! TokenType
         let explicitType = tokenType.representedType
         return Expression.PrimitiveType(sourceAnchor: tokenType.sourceAnchor, typ: explicitType)
     }

@@ -13,8 +13,10 @@ LI D, kAudioDevice
 LI U, 0
 LI V, 0
 
-# Set master gain to 100%.
+# Set audio volume to 100%
 LI Y, kMasterGain
+LI P, 0xff
+LI Y, kTriangleWaveAmplitude
 LI P, 0xff
 
 LI U, 0
@@ -35,8 +37,6 @@ MOV M, A
 LI X, 0
 LI Y, kTriangleWaveFrequency
 MOV P, A
-LI Y, kTriangleWaveAmplitude
-LI P, 0x80
 
 LXY delay
 JALR
@@ -102,7 +102,7 @@ MOV A, M
 LI B, 1
 ADD _
 ADD A
-LI B, 1
+LI B, 255
 CMP
 CMP
 LXY delay_0

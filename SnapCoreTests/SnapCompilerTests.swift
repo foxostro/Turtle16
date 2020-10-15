@@ -1452,4 +1452,20 @@ import MyModule
 foo()
 """)
     }
+    
+    func testBasicFunctionPointerDemonstration() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+let ptr = &puts
+ptr("Hello, World!")
+""")
+        XCTAssertEqual(serialOutput, "Hello, World!")
+    }
 }

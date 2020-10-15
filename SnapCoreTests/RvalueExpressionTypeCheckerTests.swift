@@ -3184,4 +3184,32 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .array(count: 3, elementType: .u8))
     }
+    
+    func testAddressOfFunctionEvaluatesToFunctionPointerType() {
+        let name = "foo"
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier(name))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: name, symbol: symbol)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        let expected: SymbolType = .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: [])))
+        XCTAssertEqual(result, expected)
+    }
+    
+    func testCallFunctionThroughFunctionPointer() {
+        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
+        let addressOfBar = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
+            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        let expected: SymbolType = .void
+        XCTAssertEqual(result, expected)
+    }
 }

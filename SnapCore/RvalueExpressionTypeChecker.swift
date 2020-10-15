@@ -482,10 +482,15 @@ public class RvalueExpressionTypeChecker: NSObject {
         
     public func check(call: Expression.Call) throws -> SymbolType {
         let calleeType = try check(expression: call.callee)
-        guard case .function(let typ) = calleeType else {
+        switch calleeType {
+        case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
+            return try check(call: call, typ: typ)
+        default:
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
         }
-        
+    }
+    
+    private func check(call: Expression.Call, typ: FunctionType) throws -> SymbolType {
         if typ.arguments.count > 0 {
             let argName0 = typ.arguments[0].name
             if argName0=="self" {
@@ -516,6 +521,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             let message = "incorrect number of arguments in call to `\(typ.name!)'"
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
         }
+        
         for i in 0..<typ.arguments.count {
             let rtype = try rvalueContext().check(expression: call.arguments[i])
             let ltype = typ.arguments[i].argumentType
@@ -525,6 +531,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                          sourceAnchor: call.arguments[i].sourceAnchor,
                                                          messageWhenNotConvertible: message)
         }
+        
         return typ.returnType
     }
     

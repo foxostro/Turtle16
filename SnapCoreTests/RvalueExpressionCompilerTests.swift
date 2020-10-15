@@ -4218,4 +4218,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), "o".utf8.first)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), "o".utf8.first)
     }
+    
+    func testCannotTakeTheAddressOfAFunctionWithoutACorrespondingLabel() {
+        let name = "foo"
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier(name))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: name, symbol: symbol)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let executor = CrackleExecutor()
+        XCTAssertThrowsError(try executor.execute(ir: ir)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot resolve label `foo'")
+        }
+    }
+    
+    func testTakingTheAddressOfAFunctionYieldsTheAddressOfTheCorrespondingLabel() {
+        let name = "panic"
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier(name))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: name, symbol: symbol)
+        let compiler = makeCompiler(symbols: symbols)
+        let ir = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 16)
+    }
+    
+    func testCallFunctionThroughFunctionPointer() {
+        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
+        var addressOfFoo: UInt16 = 0
+        let addressOfBar = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
+            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let executor = CrackleExecutor()
+        executor.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
+            try! compiler.injectCode([
+                .label("foo"),
+                .storeImmediate(0xabcd, 42),
+                .leafRet
+            ])
+            addressOfFoo = UInt16(compiler.labelTable["foo"]!)
+        }
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: addressOfFoo, to: addressOfBar)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
+    }
 }

@@ -698,7 +698,7 @@ let arr: [_]u16 = foo
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]const u16'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `func (u8, u16) -> bool' to type `[_]const u16'")
     }
     
     func test_EndToEndIntegration_CannotAddArrayToInteger() {

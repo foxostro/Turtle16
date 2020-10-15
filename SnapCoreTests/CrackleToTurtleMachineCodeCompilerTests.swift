@@ -253,6 +253,21 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.stack(at: 0), 1)
     }
     
+    func testIndirectJalr() {
+        let instructions: [CrackleInstruction] = [
+            .push(1),
+            .indirectJalr(0x0100),
+            .push(42)
+        ]
+        
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 73, to: 0x0100)
+        }
+        let computer = try! executor.execute(ir: instructions)
+        XCTAssertEqual(computer.stack(at: 0), 1)
+    }
+    
     func testEnter() {
         let computer = try! execute(ir: [.enter])
         XCTAssertEqual(computer.stack16(at: 0), 0x0000)

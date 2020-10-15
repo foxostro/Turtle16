@@ -111,6 +111,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public var isFunctionType: Bool {
+        switch self {
+        case .function:
+            return true
+        default:
+            return false
+        }
+    }
+    
     public var isBooleanType: Bool {
         switch self {
         case .bool, .constBool, .compTimeBool:
@@ -201,9 +210,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .dynamicArray(elementType: let elementType):
             return "[]\(elementType)"
         case .function(let functionType):
-            let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
-            let result = "func (\(argumentTypeDescription)) -> \(functionType.returnType)"
-            return result
+            return functionType.description
         case .constStructType(let typ):
             return "const \(typ.name)"
         case .structType(let typ):
@@ -213,7 +220,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .pointer(let pointee):
             return "*\(pointee.description)"
         case .unionType(let typ):
-            return "\(typ.description)"
+            return typ.description
         }
     }
 }
@@ -291,9 +298,9 @@ public class FunctionType: NSObject {
     
     public override var description: String {
         if let name = name {
-            return "\(name) :: (\(makeArgumentsDescription())) -> \(returnType)"
+            return "\(name) :: func (\(makeArgumentsDescription())) -> \(returnType)"
         } else {
-            return "(\(makeArgumentsDescription())) -> \(returnType)"
+            return "func (\(makeArgumentsDescription())) -> \(returnType)"
         }
     }
     
@@ -338,6 +345,10 @@ public class FunctionType: NSObject {
         hasher.combine(returnType)
         hasher.combine(arguments)
         return hasher.finalize()
+    }
+    
+    public func eraseName() -> FunctionType {
+        return FunctionType(returnType: returnType, arguments: arguments)
     }
 }
 

@@ -102,7 +102,11 @@ public class RvalueExpressionTypeChecker: NSObject {
             guard let lvalueType = try lvalueContext().check(expression: unary.child) else {
                 throw CompilerError(sourceAnchor: unary.child.sourceAnchor, message: "lvalue required as operand of unary operator `\(unary.op.description)'")
             }
-            return .pointer(lvalueType)
+            if case .function(let typ) = lvalueType {
+                return .pointer(.function(typ.eraseName()))
+            } else {
+                return .pointer(lvalueType)
+            }
         default:
             let operatorString: String
             if let lexeme = unary.sourceAnchor?.text {
@@ -303,6 +307,11 @@ public class RvalueExpressionTypeChecker: NSObject {
         // concrete integer types.
         //
         // Small integer types will be automatically promoted to larger types.
+        
+        // Do not allow function types to be converted at all.
+        if ltype.isFunctionType || rtype.isFunctionType {
+            return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "inappropriate use of a function type (Try taking the function's address instead.)"))
+        }
         
         // If the types match exactly then the conversion is acceptable.
         if rtype == ltype {
@@ -518,14 +527,24 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         if call.arguments.count != typ.arguments.count {
-            let message = "incorrect number of arguments in call to `\(typ.name!)'"
+            let message: String
+            if let name = typ.name {
+                message = "incorrect number of arguments in call to `\(name)'"
+            } else {
+                message = "incorrect number of arguments in call to function of type `\(typ)'"
+            }
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
         }
         
         for i in 0..<typ.arguments.count {
             let rtype = try rvalueContext().check(expression: call.arguments[i])
             let ltype = typ.arguments[i].argumentType
-            let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(typ.name!)'"
+            let message: String
+            if let name = typ.name {
+                message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
+            } else {
+                message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to function of type `\(typ)'"
+            }
             _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                          rtype: rtype,
                                                          sourceAnchor: call.arguments[i].sourceAnchor,
@@ -552,7 +571,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         // Insert the object into the first argument in a UFCS call.
         let rtype0 = try rvalueContext().check(expression: selfExpr)
         let ltype0 = typ.arguments[0].argumentType
-        let message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to `\(typ.name!)'"
+        let message0: String
+        if let name = typ.name {
+            message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to `\(name)'"
+        } else {
+            message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to function of type `\(typ)'"
+        }
         _ = try checkTypesAreConvertibleInAssignment(ltype: ltype0,
                                                      rtype: rtype0,
                                                      sourceAnchor: selfExpr.sourceAnchor,
@@ -562,7 +586,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         for i in 0..<call.arguments.count {
             let rtype = try rvalueContext().check(expression: call.arguments[i])
             let ltype = typ.arguments[i+1].argumentType
-            let message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(typ.name!)'"
+            let message: String
+            if let name = typ.name {
+                message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
+            } else {
+                message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to function of type `\(typ)'"
+            }
             _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
                                                          rtype: rtype,
                                                          sourceAnchor: call.arguments[i].sourceAnchor,
@@ -735,7 +764,12 @@ public class RvalueExpressionTypeChecker: NSObject {
             arguments.append(FunctionType.Argument(name: arg.name, type: typ))
         }
         
-        let mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [expr.name])).map{$0 as! String}.joined(separator: "_")
+        let mangledName: String?
+        if let name = expr.name {
+            mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name])).map{$0 as! String}.joined(separator: "_")
+        } else {
+            mangledName = nil
+        }
         
         return .function(FunctionType(name: expr.name,
                                       mangledName: mangledName,

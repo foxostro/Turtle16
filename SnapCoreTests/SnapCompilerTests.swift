@@ -1468,4 +1468,69 @@ ptr("Hello, World!")
 """)
         XCTAssertEqual(serialOutput, "Hello, World!")
     }
+    
+    func testRebindAFunctionPointerAtRuntime() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+public func fakePuts(s: []const u8) {
+    puts("fake")
+}
+var ptr = &puts
+ptr = &fakePuts
+ptr("Hello, World!")
+""")
+        XCTAssertEqual(serialOutput, "fake")
+    }
+    
+    func testFunctionPointerStructMemberCanBeCalledLikeAFunctionMemberCanBeCalled_1() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+struct Serial {
+    puts: *func ([]const u8) -> void
+}
+let serial = Serial {
+    .puts = &puts
+}
+serial.puts("Hello, World!")
+""")
+        XCTAssertEqual(serialOutput, "Hello, World!")
+    }
+    
+    func testFunctionPointerStructMemberCanBeCalledLikeAFunctionMemberCanBeCalled_2() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+struct Foo {
+    bar: func (*Foo, []const u8) -> void
+}
+func baz(self: *Foo, s: []const u8) -> void {
+    puts(s)
+}
+let foo = Foo {
+    .bar = &baz
+}
+foo.bar("Hello, World!")
+""")
+        XCTAssertEqual(serialOutput, "Hello, World!")
+    }
 }

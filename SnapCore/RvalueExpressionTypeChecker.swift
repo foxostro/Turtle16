@@ -501,27 +501,24 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     private func check(call: Expression.Call, typ: FunctionType) throws -> SymbolType {
         if typ.arguments.count > 0 {
-            let argName0 = typ.arguments[0].name
-            if argName0=="self" {
-                let selfExpr: Expression?
-                switch call.callee {
-                case let expr as Expression.Get:
-                    selfExpr = expr.expr
-                case let expr as Expression.Identifier:
-                    selfExpr = expr
-                default:
-                    selfExpr = nil
+            let selfExpr: Expression?
+            switch call.callee {
+            case let expr as Expression.Get:
+                selfExpr = expr.expr
+            case let expr as Expression.Identifier:
+                selfExpr = expr
+            default:
+                selfExpr = nil
+            }
+            if let selfExpr = selfExpr {
+                let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
+                let argType0 = typ.arguments[0]
+                if argType0 == selfType || argType0.correspondingConstType == selfType {
+                    return try checkStructMemberFunctionCall(call, selfExpr)
                 }
-                if let selfExpr = selfExpr {
-                    let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
-                    let argType0 = typ.arguments[0].argumentType
-                    if argType0 == selfType || argType0.correspondingConstType == selfType {
-                        return try checkStructMemberFunctionCall(call, selfExpr)
-                    }
-                    if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
-                        let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
-                        return try checkStructMemberFunctionCall(call, addressOf)
-                    }
+                if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
+                    let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
+                    return try checkStructMemberFunctionCall(call, addressOf)
                 }
             }
         }
@@ -538,7 +535,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         for i in 0..<typ.arguments.count {
             let rtype = try rvalueContext().check(expression: call.arguments[i])
-            let ltype = typ.arguments[i].argumentType
+            let ltype = typ.arguments[i]
             let message: String
             if let name = typ.name {
                 message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
@@ -571,7 +568,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             
             // Insert the object into the first argument in a UFCS call.
             let rtype0 = try rvalueContext().check(expression: selfExpr)
-            let ltype0 = typ.arguments[0].argumentType
+            let ltype0 = typ.arguments[0]
             let message0: String
             if let name = typ.name {
                 message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to `\(name)'"
@@ -586,7 +583,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             // The remaining arguments come from the parameter list as usual.
             for i in 0..<call.arguments.count {
                 let rtype = try rvalueContext().check(expression: call.arguments[i])
-                let ltype = typ.arguments[i+1].argumentType
+                let ltype = typ.arguments[i+1]
                 let message: String
                 if let name = typ.name {
                     message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
@@ -762,10 +759,10 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     public func check(functionType expr: Expression.FunctionType) throws -> SymbolType {
         let returnType = try check(expression: expr.returnType)
-        var arguments: [FunctionType.Argument] = []
+        var arguments: [SymbolType] = []
         for arg in expr.arguments {
-            let typ = try check(expression: arg.argumentType)
-            arguments.append(FunctionType.Argument(name: arg.name, type: typ))
+            let typ = try check(expression: arg)
+            arguments.append(typ)
         }
         
         let mangledName: String?

@@ -696,7 +696,7 @@ public class SnapToCrackleCompiler: NSObject {
 
         pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.identifier,
                                   enclosingFunctionType: functionType)
-        bindFunctionArguments(functionType)
+        bindFunctionArguments(functionType: functionType, argumentNames: node.argumentNames)
         try performDeclPass(block: node.body)
         try expectFunctionReturnExpressionIsCorrectType(func: node)
         for child in node.body.children {
@@ -776,28 +776,29 @@ public class SnapToCrackleCompiler: NSObject {
         symbols = symbols.parent!
     }
     
-    private func bindFunctionArguments(_ typ: FunctionType) {
+    private func bindFunctionArguments(functionType: FunctionType, argumentNames: [String]) {
         let kReturnAddressSize = 2
         let kFramePointerSize = 2
         var offset = kReturnAddressSize + kFramePointerSize
         
-        for i in (0..<typ.arguments.count).reversed() {
-            let argument = typ.arguments[i]
-            let symbol = Symbol(type: argument.argumentType.correspondingConstType,
+        for i in (0..<functionType.arguments.count).reversed() {
+            let argumentType = functionType.arguments[i]
+            let argumentName = argumentNames[i]
+            let symbol = Symbol(type: argumentType.correspondingConstType,
                                 offset: -offset,
                                 storage: .stackStorage)
-            symbols.bind(identifier: argument.name, symbol: symbol)
-            offset += argument.argumentType.sizeof
+            symbols.bind(identifier: argumentName, symbol: symbol)
+            offset += argumentType.sizeof
         }
         
         // Bind a special symbol to contain the function return value.
         // This must be located just before the function arguments.
         let kReturnValueIdentifier = "__returnValue"
         symbols.bind(identifier: kReturnValueIdentifier,
-                     symbol: Symbol(type: typ.returnType,
+                     symbol: Symbol(type: functionType.returnType,
                                     offset: -offset,
                                     storage: .stackStorage))
-        offset += typ.returnType.sizeof
+        offset += functionType.returnType.sizeof
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {

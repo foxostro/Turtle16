@@ -1500,7 +1500,7 @@ ptr("Hello, World!")
         }
         _ = try! executor.execute(program: """
 struct Serial {
-    puts: func (s: []const u8) -> void
+    puts: func ([]const u8) -> void
 }
 let serial = Serial {
     .puts = &puts
@@ -1521,7 +1521,7 @@ serial.puts("Hello, World!")
         }
         _ = try! executor.execute(program: """
 struct Foo {
-    bar: func (self: *const Foo, s: []const u8) -> void
+    bar: func (*const Foo, []const u8) -> void
 }
 func baz(self: *const Foo, s: []const u8) -> void {
     puts(s)

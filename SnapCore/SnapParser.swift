@@ -329,19 +329,12 @@ public class SnapParser: Parser {
         let funcKeywordToken = try expect(type: TokenFunc.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected the `func' keyword"))
         try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `(' in argument list of function pointer type expression"))
         
-        var arguments: [Expression.FunctionType.Argument] = []
+        var arguments: [Expression] = []
         
         if type(of: peek()!) != TokenParenRight.self {
             repeat {
-                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected parameter name followed by `:'")) as! TokenIdentifier
-                if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
-                    throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "parameter requires an explicit type")
-                }
-                guard let type = try consumeTypeAnnotation() else {
-                    throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
-                }
-                let name = tokenIdentifier.lexeme
-                arguments.append(Expression.FunctionType.Argument(name: name, type: type))
+                let argumentType = try consumeType()
+                arguments.append(argumentType)
             } while nil != accept(TokenComma.self)
         }
         
@@ -516,7 +509,8 @@ public class SnapParser: Parser {
         let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: firstToken.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
         try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
         
-        var arguments: [Expression.FunctionType.Argument] = []
+        var argumentNames: [String] = []
+        var argumentTypes: [Expression] = []
         
         if type(of: peek()!) != TokenParenRight.self {
             repeat {
@@ -528,7 +522,8 @@ public class SnapParser: Parser {
                     throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
                 }
                 let name = tokenIdentifier.lexeme
-                arguments.append(Expression.FunctionType.Argument(name: name, type: type))
+                argumentNames.append(name)
+                argumentTypes.append(type)
             } while nil != accept(TokenComma.self)
         }
         
@@ -547,7 +542,8 @@ public class SnapParser: Parser {
         let sourceAnchor = firstToken.sourceAnchor?.union(previous?.sourceAnchor)
         return [FunctionDeclaration(sourceAnchor: sourceAnchor,
                                     identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
-                                    functionType: Expression.FunctionType(name: tokenIdentifier.lexeme, returnType: returnType, arguments: arguments),
+                                    functionType: Expression.FunctionType(name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes),
+                                    argumentNames: argumentNames,
                                     body: body,
                                     visibility: visibility)]
     }

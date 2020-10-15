@@ -145,6 +145,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .label(let name): try label(name)
         case .jmp(let label): try jmp(label)
         case .jalr(let label): try jalr(label)
+        case .indirectJalr(let address): try indirectJalr(address)
         case .enter: try enter()
         case .leave: try leave()
         case .pushReturnAddress: try pushReturnAddress()
@@ -437,6 +438,16 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public func jalr(_ label: String) throws {
         try setAddressToLabel(label)
+        assembler.jalr()
+        assembler.nop()
+        assembler.nop()
+    }
+    
+    public func indirectJalr(_ address: Int) throws {
+        try setUV(address)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
         assembler.jalr()
         assembler.nop()
         assembler.nop()

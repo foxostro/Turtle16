@@ -707,65 +707,25 @@ public class Expression: AbstractSyntaxTreeNode {
     }
 
     public class FunctionType: Expression {
-        public class Argument: NSObject {
-            public let name: String
-            public let argumentType: Expression
-            
-            public init(name: String, type: Expression) {
-                self.name = name
-                self.argumentType = type
-            }
-            
-            public static func ==(lhs: Argument, rhs: Argument) -> Bool {
-                return lhs.isEqual(rhs)
-            }
-            
-            public override func isEqual(_ rhs: Any?) -> Bool {
-                guard rhs != nil else {
-                    return false
-                }
-                guard type(of: rhs!) == type(of: self) else {
-                    return false
-                }
-                guard let rhs = rhs as? Argument else {
-                    return false
-                }
-                guard name == rhs.name else {
-                    return false
-                }
-                guard argumentType == rhs.argumentType else {
-                    return false
-                }
-                return true
-            }
-            
-            public override var hash: Int {
-                var hasher = Hasher()
-                hasher.combine(name)
-                hasher.combine(argumentType)
-                return hasher.finalize()
-            }
-        }
-        
         public let name: String?
         public let returnType: Expression
-        public let arguments: [Argument]
+        public let arguments: [Expression]
         
-        public convenience init(returnType: Expression, arguments: [Argument]) {
+        public convenience init(returnType: Expression, arguments: [Expression]) {
             self.init(sourceAnchor: nil,
                       name: nil,
                       returnType: returnType,
                       arguments: arguments)
         }
         
-        public convenience init(name: String?, returnType: Expression, arguments: [Argument]) {
+        public convenience init(name: String?, returnType: Expression, arguments: [Expression]) {
             self.init(sourceAnchor: nil,
                       name: name,
                       returnType: returnType,
                       arguments: arguments)
         }
         
-        public init(sourceAnchor: SourceAnchor?, name: String?, returnType: Expression, arguments: [Argument]) {
+        public init(sourceAnchor: SourceAnchor?, name: String?, returnType: Expression, arguments: [Expression]) {
             self.name = name
             self.returnType = returnType
             self.arguments = arguments
@@ -789,10 +749,12 @@ public class Expression: AbstractSyntaxTreeNode {
             if arguments.isEmpty {
                 result = "none"
             } else {
-                for argument in arguments {
+                for i in 0..<arguments.count {
+                    let argument = arguments[i]
                     result += "\n"
                     result += makeIndent(depth: depth + 1)
-                    result += "\(argument.name): \(argument.argumentType)"
+                    result += "\(i) -- "
+                    result += argument.makeIndentedDescription(depth: depth + 1)
                 }
             }
             return result

@@ -230,66 +230,26 @@ public enum SymbolStorage: Equatable {
 }
 
 public class FunctionType: NSObject {
-    public class Argument: NSObject {
-        public let name: String
-        public let argumentType: SymbolType
-        
-        public init(name: String, type: SymbolType) {
-            self.name = name
-            self.argumentType = type
-        }
-        
-        public static func ==(lhs: Argument, rhs: Argument) -> Bool {
-            return lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard let rhs = rhs as? Argument else {
-                return false
-            }
-            guard name == rhs.name else {
-                return false
-            }
-            guard argumentType == rhs.argumentType else {
-                return false
-            }
-            return true
-        }
-        
-        public override var hash: Int {
-            var hasher = Hasher()
-            hasher.combine(name)
-            hasher.combine(argumentType)
-            return hasher.finalize()
-        }
-    }
-    
     public let name: String?
     public let mangledName: String?
     public let returnType: SymbolType
-    public let arguments: [Argument]
+    public let arguments: [SymbolType]
     
-    public convenience init(returnType: SymbolType, arguments: [Argument]) {
+    public convenience init(returnType: SymbolType, arguments: [SymbolType]) {
         self.init(name: nil,
                   mangledName: nil,
                   returnType: returnType,
                   arguments: arguments)
     }
     
-    public convenience init(name: String, returnType: SymbolType, arguments: [Argument]) {
+    public convenience init(name: String, returnType: SymbolType, arguments: [SymbolType]) {
         self.init(name: name,
                   mangledName: name,
                   returnType: returnType,
                   arguments: arguments)
     }
     
-    public init(name: String?, mangledName: String?, returnType: SymbolType, arguments: [Argument]) {
+    public init(name: String?, mangledName: String?, returnType: SymbolType, arguments: [SymbolType]) {
         self.name = name
         self.mangledName = mangledName
         self.returnType = returnType
@@ -305,7 +265,7 @@ public class FunctionType: NSObject {
     }
     
     public func makeArgumentsDescription() -> String {
-        let result = arguments.map({"\($0.name): \($0.argumentType)"}).joined(separator: ", ")
+        let result = arguments.map({$0.description}).joined(separator: ", ")
         return result
     }
     

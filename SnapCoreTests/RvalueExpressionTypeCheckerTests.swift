@@ -2204,7 +2204,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [ExprUtils.makeBool(value: false)])
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u8, arguments: [.u8])), offset: 0x0000)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2214,7 +2214,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testFailBecauseFunctionCallUsesIncorrectNumberOfParameters() {
-        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u8, arguments: [FunctionType.Argument(name: "a", type: .u8)])), offset: 0x0000)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u8, arguments: [.u8])), offset: 0x0000)])
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -2706,7 +2706,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testCannotAssignFunctionToArray() {
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(returnType: .bool, arguments: [FunctionType.Argument(name: "a", type: .u8), FunctionType.Argument(name: "b", type: .u16)])),
+            "foo" : Symbol(type: .function(FunctionType(returnType: .bool, arguments: [.u8, .u16])),
                            offset: 0x0010),
             "bar" : Symbol(type: .array(count: nil, elementType: .u16),
                            offset: 0x0012)

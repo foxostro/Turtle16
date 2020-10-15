@@ -38,7 +38,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPeekMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "peekMemory"
-        let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [.u16]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -46,7 +46,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPokeMemory(symbols: SymbolTable) -> SymbolTable {
         let name = "pokeMemory"
-        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [.u8, .u16]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -54,7 +54,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPeekPeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "peekPeripheral"
-        let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .u8, arguments: [.u16, .u8]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -62,7 +62,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private static func bindCompilerInstrinsicPokePeripheral(symbols: SymbolTable) -> SymbolTable {
         let name = "pokePeripheral"
-        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [FunctionType.Argument(name: "value", type: .u8), FunctionType.Argument(name: "address", type: .u16), FunctionType.Argument(name: "device", type: .u8)]))
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [.u8, .u16, .u8]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols
@@ -816,27 +816,24 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private func compile(call node: Expression.Call, typ: FunctionType) throws -> [CrackleInstruction] {
         if typ.arguments.count > 0 {
-            let argName0 = typ.arguments[0].name
-            if argName0=="self" {
-                let selfExpr: Expression?
-                switch node.callee {
-                case let expr as Expression.Get:
-                    selfExpr = expr.expr
-                case let expr as Expression.Identifier:
-                    selfExpr = expr
-                default:
-                    selfExpr = nil
+            let selfExpr: Expression?
+            switch node.callee {
+            case let expr as Expression.Get:
+                selfExpr = expr.expr
+            case let expr as Expression.Identifier:
+                selfExpr = expr
+            default:
+                selfExpr = nil
+            }
+            if let selfExpr = selfExpr {
+                let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
+                let argType0 = typ.arguments[0]
+                if argType0 == selfType || argType0.correspondingConstType == selfType {
+                    return try compileStructMemberFunctionCall(typ, node, selfExpr)
                 }
-                if let selfExpr = selfExpr {
-                    let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
-                    let argType0 = typ.arguments[0].argumentType
-                    if argType0 == selfType || argType0.correspondingConstType == selfType {
-                        return try compileStructMemberFunctionCall(typ, node, selfExpr)
-                    }
-                    if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
-                        let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
-                        return try compileStructMemberFunctionCall(typ, node, addressOf)
-                    }
+                if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
+                    let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
+                    return try compileStructMemberFunctionCall(typ, node, addressOf)
                 }
             }
         }
@@ -903,7 +900,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         // Push function arguments to the stack with appropriate type conversions.
         for i in 0..<typ.arguments.count {
-            let type = typ.arguments[i].argumentType
+            let type = typ.arguments[i]
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
             instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
@@ -945,7 +942,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         
         // For the first argument, push a pointer to the object itself. (self)
-        let type0 = typ.arguments[0].argumentType
+        let type0 = typ.arguments[0]
         instructions += try compileAndConvertExpressionForAssignment(rexpr: selfExpr, ltype: type0)
         let tempArgumentValue0 = temporaryStack.pop()
         instructions += pushTemporary(temporary: tempArgumentValue0, explicitSize: type0.sizeof)
@@ -953,7 +950,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         // The rest of the function arguments come from the parameters list as usual.
         for i in 0..<node.arguments.count {
-            let type = typ.arguments[i+1].argumentType
+            let type = typ.arguments[i+1]
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
             instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
@@ -1045,7 +1042,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // with appropriate type conversions.
         var instructions: [CrackleInstruction] = []
         for i in 0..<typ.arguments.count {
-            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i].argumentType)
+            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i])
         }
         return instructions
     }
@@ -1053,7 +1050,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func popFunctionArguments(_ typ: FunctionType) -> [CrackleInstruction] {
         var totalSize = 0
         for arg in typ.arguments {
-            totalSize += arg.argumentType.sizeof
+            totalSize += arg.sizeof
         }
         if totalSize > 0 {
             return [.addi16(kStackPointerAddress, kStackPointerAddress, totalSize)]

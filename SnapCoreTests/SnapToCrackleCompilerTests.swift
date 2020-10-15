@@ -229,7 +229,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `func (u8, u16) -> bool' to type `[_]u16'")
     }
     
     func testCompileConstantDeclaration_AssignStringLiteralToDynamicArray() {

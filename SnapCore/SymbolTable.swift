@@ -202,7 +202,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "[]\(elementType)"
         case .function(let functionType):
             let argumentTypeDescription = functionType.arguments.compactMap({"\($0.argumentType)"}).joined(separator: ", ")
-            let result = "(\(argumentTypeDescription)) -> \(functionType.returnType)"
+            let result = "func (\(argumentTypeDescription)) -> \(functionType.returnType)"
             return result
         case .constStructType(let typ):
             return "const \(typ.name)"

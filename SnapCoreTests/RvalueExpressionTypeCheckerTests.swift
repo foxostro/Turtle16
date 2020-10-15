@@ -2716,7 +2716,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign value of type `(u8, u16) -> bool' to type `[_]u16'")
+            XCTAssertEqual(compilerError?.message, "cannot assign value of type `func (u8, u16) -> bool' to type `[_]u16'")
         }
     }
     

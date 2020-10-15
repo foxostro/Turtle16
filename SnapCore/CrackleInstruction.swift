@@ -66,6 +66,8 @@ public enum CrackleInstruction: Equatable {
     
     case copyWordsIndirectDestinationIndirectSource(Int, Int, Int) // (dstPtr, srcPtr, N) -- copies N words starting at the source address to the destination address. The destination address is located in memory at the address given by `dstPtr'. The source address is located in memory at the address given by `srcPtr'.
     
+    case copyLabel(Int, String) // (dst, label) -- copies the two-byte address of the given label to the destination
+    
     public var description: String {
         switch self {
         case .push(let value):
@@ -164,6 +166,8 @@ public enum CrackleInstruction: Equatable {
             return String(format: "COPY-ID 0x%04x, 0x%04x, %d", dstPtr, src, numberOfWords)
         case .copyWordsIndirectDestinationIndirectSource(let dstPtr, let src, let numberOfWords):
             return String(format: "COPY-IDIS 0x%04x, 0x%04x, %d", dstPtr, src, numberOfWords)
+        case .copyLabel(let dst, let label):
+            return String(format: "COPY-LABEL 0x%04x, %@", dst, label)
         }
     }
     

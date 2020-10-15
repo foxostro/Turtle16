@@ -426,7 +426,9 @@ public class SnapToCrackleCompiler: NSObject {
                     }
                 }
             }
-            if !varDecl.isMutable {
+            if varDecl.isMutable {
+                symbolType = symbolType.correspondingMutableType
+            } else {
                 symbolType = symbolType.correspondingConstType
             }
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, visibility: varDecl.visibility)
@@ -574,7 +576,7 @@ public class SnapToCrackleCompiler: NSObject {
                            storage: .stackStorage,
                            isMutable: false),
             VarDeclaration(identifier: stmt.identifier,
-                           explicitType: nil,
+                           explicitType: Expression.TypeOf(limit),
                            expression: Expression.LiteralInt(0),
                            storage: .stackStorage,
                            isMutable: true),

@@ -62,34 +62,34 @@ let a = 42
     func test_EndToEndIntegration_ForIn_Range_1() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var a = 255
+var a: u16 = 255
 for i in 0..10 {
     a = i
 }
 """)
-        XCTAssertEqual(computer.loadSymbolU8("a"), 9)
+        XCTAssertEqual(computer.loadSymbolU16("a"), 9)
     }
     
     func test_EndToEndIntegration_ForIn_Range_2() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var a = 255
+var a: u16 = 255
 let range = 0..10
 for i in range {
     a = i
 }
 """)
-        XCTAssertEqual(computer.loadSymbolU8("a"), 9)
+        XCTAssertEqual(computer.loadSymbolU16("a"), 9)
     }
     
     func test_EndToEndIntegration_ForIn_Range_SingleStatement() {
         let executor = SnapExecutor()
         let computer = try! executor.execute(program: """
-var a = 255
+var a: u16 = 255
 for i in 0..10
     a = i
 """)
-        XCTAssertEqual(computer.loadSymbolU8("a"), 9)
+        XCTAssertEqual(computer.loadSymbolU16("a"), 9)
     }
     
     func test_EndToEndIntegration_ForIn_String() {

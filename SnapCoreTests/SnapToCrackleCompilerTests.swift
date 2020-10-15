@@ -1639,6 +1639,36 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(9))
     }
     
+    func testCompileForInLoop_Range_LargerThanEightBits() {
+        let ast = TopLevel(children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: Expression.PrimitiveType(.u16),
+                           expression: nil,
+                           storage: .stackStorage,
+                           isMutable: true),
+            ForIn(identifier: Expression.Identifier("i"),
+                  sequenceExpr: Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
+                    Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
+                    Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(300))
+                  ]),
+                  body: Block(children: [
+                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                          rexpr: Expression.Identifier("i"))
+                ]))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(299))
+    }
+    
     func testCompileForInLoop_String() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),

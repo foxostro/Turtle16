@@ -1146,4 +1146,53 @@ public class Expression: AbstractSyntaxTreeNode {
                           value)
         }
     }
+    
+    public class TypeOf: Expression {
+        public let expr: Expression
+        
+        public convenience init(_ expr: Expression) {
+            self.init(sourceAnchor: nil, expr: expr)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, expr: Expression) {
+            self.expr = expr
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@%@(%@)",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          expr.makeIndentedDescription(depth: depth + 1))
+        }
+        
+        public static func ==(lhs: TypeOf, rhs: TypeOf) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? TypeOf else {
+                return false
+            }
+            guard expr == rhs.expr else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(expr)
+            return hasher.finalize()
+        }
+    }
 }

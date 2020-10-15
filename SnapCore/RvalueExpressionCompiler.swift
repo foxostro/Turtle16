@@ -740,12 +740,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 abort()
             }
             instructions += try compile(expression: rexpr)
-        case (.unionType(let a), .unionType(let b)):
-            // When we convert a union type, the underlying layouts must be identical.
-            guard a == b else {
-                assert(false) // unreachable
-                abort()
-            }
+        case (.unionType, .unionType):
             instructions += try compile(expression: rexpr)
         case (_, .unionType(let typ)):
             // So which type are we converting to in the union? And the tag?

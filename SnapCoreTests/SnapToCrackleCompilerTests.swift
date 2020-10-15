@@ -2586,4 +2586,14 @@ public func foo() -> None {
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfFoo), 15)
     }
+    
+    func testCompileTypealiasToFunctionPointer() {
+        let ast = TopLevel(children: [
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [])))
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        let result = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(result, .pointer(.function(FunctionType(returnType: .u8, arguments: []))))
+    }
 }

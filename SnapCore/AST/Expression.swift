@@ -747,18 +747,25 @@ public class Expression: AbstractSyntaxTreeNode {
             }
         }
         
-        public let name: String
+        public let name: String?
         public let returnType: Expression
         public let arguments: [Argument]
         
-        public convenience init(name: String, returnType: Expression, arguments: [Argument]) {
+        public convenience init(returnType: Expression, arguments: [Argument]) {
+            self.init(sourceAnchor: nil,
+                      name: nil,
+                      returnType: returnType,
+                      arguments: arguments)
+        }
+        
+        public convenience init(name: String?, returnType: Expression, arguments: [Argument]) {
             self.init(sourceAnchor: nil,
                       name: name,
                       returnType: returnType,
                       arguments: arguments)
         }
         
-        public init(sourceAnchor: SourceAnchor?, name: String, returnType: Expression, arguments: [Argument]) {
+        public init(sourceAnchor: SourceAnchor?, name: String?, returnType: Expression, arguments: [Argument]) {
             self.name = name
             self.returnType = returnType
             self.arguments = arguments
@@ -770,7 +777,7 @@ public class Expression: AbstractSyntaxTreeNode {
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           makeIndent(depth: depth+1),
-                          name,
+                          name ?? "none",
                           makeIndent(depth: depth+1),
                           returnType.makeIndentedDescription(depth: depth+1),
                           makeIndent(depth: depth+1),

@@ -970,10 +970,36 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let tempReturnValue: CompilerTemporary? = allocateTemporaryForFunctionCallReturn(typ)
         instructions += try pushToAllocateFunctionReturnValue(typ)
         instructions += try functionArgumentsPusher()
-        instructions += [.jalr(typ.mangledName!)]
+        instructions += try compileBranchToCallee(node)
         instructions += popFunctionArguments(typ)
         instructions += copyReturnValueForFunctionCall(typ, tempReturnValue)
         instructions += restoreCompilerTemporariesForFunctionCall(temporariesToPreserve)
+        return instructions
+    }
+    
+    private func compileBranchToCallee(_ node: Expression.Call) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        let calleeType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node.callee)
+        switch calleeType {
+        case .function(let typ):
+            // If the callee is an identifier which resolves to a function then
+            // we can get the label from the function's type record.
+            instructions += [.jalr(typ.mangledName!)]
+        case .pointer(.function), .constPointer(.function):
+            // If the callee is a pointer then we need to evaluate the callee
+            // expression to determine the value of the pointer and then branch
+            // to that address.
+            instructions += try compile(expression: node.callee)
+            let tempPointerValue = temporaryStack.pop()
+            instructions += [
+                .indirectJalr(tempPointerValue.address)
+            ]
+        default:
+            // This is basically unreachable since the type checker will
+            // typically throw an error before we get to this point.
+            assert(false) // unreachable
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
+        }
         return instructions
     }
     

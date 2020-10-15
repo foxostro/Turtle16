@@ -181,6 +181,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .copyWordsIndirectSource(let dst, let srcPtr, let count): try copyWordsIndirectSource(dst, srcPtr, count)
         case .copyWordsIndirectDestination(let dstPtr, let src, let count): try copyWordsIndirectDestination(dstPtr, src, count)
         case .copyWordsIndirectDestinationIndirectSource(let dstPtr, let srcPtr, let count): try copyWordsIndirectDestinationIndirectSource(dstPtr, srcPtr, count)
+        case .copyLabel(let dst, let label): try copyLabel(dst, label)
         }
         let instructionsEnd = assembler.instructions.count
         if instructionsBegin < instructionsEnd {
@@ -1419,5 +1420,20 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                 try assembler.mov(.M, .X)
             }
         }
+    }
+    
+    private func copyLabel(_ dst: Int, _ label: String) throws {
+        try setUV(dst)
+        patcherActions.append((index: assembler.programCounter,
+                               sourceAnchor: currentSourceAnchor,
+                               symbol: label,
+                               shift: 8))
+        try assembler.li(.M, 0xff)
+        assembler.inuv()
+        patcherActions.append((index: assembler.programCounter,
+                               sourceAnchor: currentSourceAnchor,
+                               symbol: label,
+                               shift: 0))
+        try assembler.li(.M, 0xff)
     }
 }

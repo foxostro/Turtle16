@@ -1448,4 +1448,29 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(computer.dataRAM.load(from: a), 0xbb)
     }
+    
+    func testCopyLabel_FailsBecauseLabelIsUndefined() {
+        let instructions: [CrackleInstruction] = [
+            .copyLabel(0x0100, "foo")
+        ]
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        let compiler = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
+        XCTAssertThrowsError(try compiler.compile(ir: instructions, base: 0)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot resolve label `foo'")
+        }
+    }
+    
+    func testCopyLabel_Success() {
+        let a = 0x0100
+        let computer = try! execute(ir: [
+            .copyLabel(a, "foo"),
+            .label("foo")
+        ])
+        let expectedAddress: UInt16 = 15 // This is a tad fragile since the label address depends on the prologue.
+        XCTAssertEqual(computer.dataRAM.load16(from: a), expectedAddress)
+    }
 }

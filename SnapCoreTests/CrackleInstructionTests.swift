@@ -60,6 +60,7 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.copyWordsIndirectSource(0xa, 0xb, 0xc).description, "COPY-IS 0x000a, 0x000b, 12")
         XCTAssertEqual(CrackleInstruction.copyWordsIndirectDestination(0xa, 0xb, 0xc).description, "COPY-ID 0x000a, 0x000b, 12")
         XCTAssertEqual(CrackleInstruction.copyWordsIndirectDestinationIndirectSource(0xa, 0xb, 0xc).description, "COPY-IDIS 0x000a, 0x000b, 12")
+        XCTAssertEqual(CrackleInstruction.copyLabel(0xa, "label").description, "COPY-LABEL 0x000a, label")
     }
     
     func testMakeListing_Empty() {

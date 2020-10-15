@@ -2561,4 +2561,29 @@ public func foo() -> None {
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
     }
+    
+    func testDeclareAFunctionPointerVariable() {
+        let ast = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("myfunc"), functionType: Expression.FunctionType(name: "myfunc", returnType: .PrimitiveType(.void), arguments: []), body: Block()),
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.Unary(op: .ampersand, expression: Expression.Identifier("myfunc")),
+                           storage: .stackStorage,
+                           isMutable: true)
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        executor.isVerboseLogging = true
+        let computer = try! executor.execute(ir: ir)
+        
+        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        XCTAssertEqual(computer.dataRAM.load16(from: addressOfFoo), 15)
+    }
 }

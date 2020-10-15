@@ -159,7 +159,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         
         if unary.op == .ampersand {
-            instructions += try lvalueContext().compile(expression: unary.child)
+            switch childType {
+            case .function(let typ):
+                let label = typ.mangledName ?? typ.name!
+                let a = temporaryAllocator.allocate()
+                instructions += [
+                    .copyLabel(a.address, label)
+                ]
+                temporaryStack.push(a)
+            default:
+                instructions += try lvalueContext().compile(expression: unary.child)
+            }
         } else {
             let a = temporaryAllocator.allocate()
             let c = temporaryAllocator.allocate()
@@ -791,14 +801,20 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(call node: Expression.Call) throws -> [CrackleInstruction] {
-        let functionType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node.callee)
-        guard case .function(let typ) = functionType else {
+        let calleeType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: node.callee)
+        
+        switch calleeType {
+        case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
+            return try compile(call: node, typ: typ)
+        default:
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
             assert(false) // unreachable
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "cannot call value of non-function type `\(functionType)'")
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
         }
-        
+    }
+    
+    private func compile(call node: Expression.Call, typ: FunctionType) throws -> [CrackleInstruction] {
         if typ.arguments.count > 0 {
             let argName0 = typ.arguments[0].name
             if argName0=="self" {

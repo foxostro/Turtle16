@@ -3155,7 +3155,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(2))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
@@ -3170,7 +3170,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(0))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))

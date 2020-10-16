@@ -4027,7 +4027,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(2))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
@@ -4061,7 +4061,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(2)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(8))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
@@ -4094,7 +4094,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(50)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(51))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
@@ -4112,7 +4112,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(50))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
@@ -4135,7 +4135,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
@@ -4167,7 +4167,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
@@ -4194,7 +4194,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))
         ])
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"), expr: range)
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         

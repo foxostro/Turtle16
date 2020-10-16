@@ -134,13 +134,13 @@ public class BaseExpressionCompiler: NSObject {
     public func compile(subscript expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.identifier.sourceAnchor, identifier: expr.identifier.identifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: expr.subscriptable.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         
         switch symbol.type {
         case .array(count: _, elementType: let elementType):
-            let argumentExpr = expr.expr
+            let argumentExpr = expr.argument
             let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
             if argumentType.isArithmeticType {
                 instructions += try arraySubscript(symbol, depth, expr, elementType)
@@ -153,7 +153,7 @@ public class BaseExpressionCompiler: NSObject {
             }
         case .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
-            let argumentExpr = expr.expr
+            let argumentExpr = expr.argument
             let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
             if argumentType.isArithmeticType {
                 instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
@@ -180,7 +180,7 @@ public class BaseExpressionCompiler: NSObject {
         let kRangeLimitOffset = SymbolType.u16.sizeof
         
         // Evaluate the range expression first.
-        instructions += try compile(expression: expr.expr)
+        instructions += try compile(expression: expr.argument)
         let tempRangeStruct = temporaryStack.pop()
         
         let tempArrayCount = temporaryAllocator.allocate()
@@ -261,7 +261,7 @@ public class BaseExpressionCompiler: NSObject {
         // Evaluate the range expression to get the range value.
         let kRangeBeginOffset = 0
         let kRangeLimitOffset = SymbolType.u16.sizeof
-        instructions += try compile(expression: expr.expr)
+        instructions += try compile(expression: expr.argument)
         let tempRangeStruct = temporaryStack.pop()
         
         // Extract the array count from the dynamic array structure.
@@ -566,7 +566,7 @@ public class BaseExpressionCompiler: NSObject {
         
         // Compute the array subscript index.
         // This must be converted to u16 so we can do math with the address.
-        instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.expr, ltype: .u16)
+        instructions += try rvalueContext().compileAndConvertExpressionForExplicitCast(rexpr: expr.argument, ltype: .u16)
         let subscriptIndex = temporaryStack.pop()
         
         let elementSize = temporaryAllocator.allocate()

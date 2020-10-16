@@ -452,16 +452,16 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public class Subscript: Expression {
-        public let identifier: Expression.Identifier
-        public let expr: Expression
+        public let subscriptable: Expression.Identifier
+        public let argument: Expression
         
-        public convenience init(identifier: Expression.Identifier, expr: Expression) {
-            self.init(sourceAnchor: nil, identifier: identifier, expr: expr)
+        public convenience init(subscriptable: Expression.Identifier, argument: Expression) {
+            self.init(sourceAnchor: nil, subscriptable: subscriptable, argument: argument)
         }
         
-        public init(sourceAnchor: SourceAnchor?, identifier: Expression.Identifier, expr: Expression) {
-            self.identifier = identifier
-            self.expr = expr
+        public init(sourceAnchor: SourceAnchor?, subscriptable: Expression.Identifier, argument: Expression) {
+            self.subscriptable = subscriptable
+            self.argument = argument
             super.init(sourceAnchor: sourceAnchor)
         }
         
@@ -470,19 +470,19 @@ public class Expression: AbstractSyntaxTreeNode {
             guard type(of: rhs!) == type(of: self) else { return false }
             guard super.isEqual(rhs) else { return false }
             guard let rhs = rhs as? Subscript else { return false }
-            guard identifier == rhs.identifier else { return false }
-            guard expr == rhs.expr else { return false }
+            guard subscriptable == rhs.subscriptable else { return false }
+            guard argument == rhs.argument else { return false }
             return true
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@identifier: %@\n%@argument: %@",
+            return String(format: "%@%@\n%@subscriptable: %@\n%@argument: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           makeIndent(depth: depth+1),
-                          identifier.makeIndentedDescription(depth: depth),
+                          subscriptable.makeIndentedDescription(depth: depth),
                           makeIndent(depth: depth+1),
-                          expr.makeIndentedDescription(depth: depth))
+                          argument.makeIndentedDescription(depth: depth))
         }
     }
     

@@ -620,7 +620,7 @@ public class SnapToCrackleCompiler: NSObject {
                            isMutable: true),
             While(condition: Expression.Binary(op: .ne, left: index, right: limit),
                   body: Block(children: [
-                    Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Subscript(identifier: sequence, expr: index)),
+                    Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Subscript(subscriptable: sequence, argument: index)),
                     stmt.body,
                     Expression.Assignment(lexpr: index, rexpr: Expression.Binary(op: .plus, left: index, right: Expression.LiteralInt(1))),
                   ]))

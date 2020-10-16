@@ -1409,11 +1409,11 @@ while 1 {}
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 8), children: [
             Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(0, 8),
-                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
-                                 expr: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 7),
-                                                         op: .plus,
-                                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
-                                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 2)))
+                                 subscriptable: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                 argument: Expression.Binary(sourceAnchor: parser.lineMapper.anchor(4, 7),
+                                                             op: .plus,
+                                                             left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
+                                                             right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 2)))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }
@@ -1423,10 +1423,10 @@ while 1 {}
         XCTAssertFalse(parser.hasError)
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 11), children: [
             Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(0, 11),
-                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
-                                 expr: Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(4, 10),
-                                                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                                            expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 0)))
+                                 subscriptable: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                 argument: Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(4, 10),
+                                                                subscriptable: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
+                                                                argument: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 0)))
         ])
         XCTAssertEqual(parser.syntaxTree, expected)
     }

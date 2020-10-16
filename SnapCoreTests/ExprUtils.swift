@@ -100,7 +100,6 @@ public class ExprUtils: NSObject {
     }
     
     public static func makeSubscript(identifier: String, expr: Expression) -> Expression {
-        return Expression.Subscript(identifier: Expression.Identifier(identifier),
-                                    expr: expr)
+        return Expression.Subscript(subscriptable: Expression.Identifier(identifier), argument: expr)
     }
 }

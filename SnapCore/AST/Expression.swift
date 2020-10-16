@@ -452,14 +452,14 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public class Subscript: Expression {
-        public let subscriptable: Expression.Identifier
+        public let subscriptable: Expression
         public let argument: Expression
         
-        public convenience init(subscriptable: Expression.Identifier, argument: Expression) {
+        public convenience init(subscriptable: Expression, argument: Expression) {
             self.init(sourceAnchor: nil, subscriptable: subscriptable, argument: argument)
         }
         
-        public init(sourceAnchor: SourceAnchor?, subscriptable: Expression.Identifier, argument: Expression) {
+        public init(sourceAnchor: SourceAnchor?, subscriptable: Expression, argument: Expression) {
             self.subscriptable = subscriptable
             self.argument = argument
             super.init(sourceAnchor: sourceAnchor)

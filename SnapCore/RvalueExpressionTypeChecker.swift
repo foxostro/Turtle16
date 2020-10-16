@@ -627,7 +627,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let symbol = try symbols.resolve(sourceAnchor: expr.sourceAnchor, identifier: expr.subscriptable.identifier)
+        let symbol = try symbols.resolve(sourceAnchor: expr.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
         switch symbol.type {
         case .array(count: _, elementType: let elementType),
              .constDynamicArray(elementType: let elementType),

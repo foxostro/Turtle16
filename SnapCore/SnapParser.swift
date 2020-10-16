@@ -679,17 +679,15 @@ public class SnapParser: Parser {
     }
     
     private func consumeSubscript() throws -> Expression {
-        if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenSquareBracketLeft) {
-            let identifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier")) as! TokenIdentifier
-            let leftBracket = try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: identifier.sourceAnchor, message: "expected `['")) as! TokenSquareBracketLeft
+        let expr = try consumeIs()
+        
+        if nil != accept(TokenSquareBracketLeft.self) {
             let argument = try consumeExpression()
-            let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: leftBracket.sourceAnchor, message: "expected `]'")) as! TokenSquareBracketRight
-            let sourceAnchor = identifier.sourceAnchor?.union(rightBracket.sourceAnchor)
-            return Expression.Subscript(sourceAnchor: sourceAnchor,
-                                        subscriptable: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
-                                        argument: argument)
+            let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]'")) as! TokenSquareBracketRight
+            let sourceAnchor = expr.sourceAnchor?.union(rightBracket.sourceAnchor)
+            return Expression.Subscript(sourceAnchor: sourceAnchor, subscriptable: expr, argument: argument)
         } else {
-            return try consumeIs()
+            return expr
         }
     }
     

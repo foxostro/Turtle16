@@ -646,8 +646,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 let elements = stride(from: 0, through: n-1, by: 1).map({i in
                     Expression.As(sourceAnchor: identifier.sourceAnchor,
                                   expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
-                                                             identifier: identifier,
-                                                             expr: Expression.LiteralInt(sourceAnchor: identifier.sourceAnchor, value: i)),
+                                                             subscriptable: identifier,
+                                                             argument: Expression.LiteralInt(sourceAnchor: identifier.sourceAnchor, value: i)),
                                   targetType: Expression.PrimitiveType(b))
                 })
                 let arrayType = Expression.ArrayType(count: Expression.LiteralInt(elements.count),

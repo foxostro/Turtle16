@@ -33,8 +33,8 @@ class LvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileAssignmentThroughArraySubscript() {
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                        expr: Expression.LiteralInt(1))
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                        argument: Expression.LiteralInt(1))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 2, elementType: .bool), offset: 0x0100)])
         
         // We don't really care about the exact sequence of instructions which
@@ -56,8 +56,8 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let addressOfCount = 0x0102
         let addressOfData = 0x0104
         
-        let expr = Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                        expr: Expression.LiteralInt(2))
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                        argument: Expression.LiteralInt(2))
         
         let expected = UInt16(addressOfData + 2*SymbolType.u16.sizeof)
         

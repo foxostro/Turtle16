@@ -201,28 +201,28 @@ class ExpressionTests: XCTestCase {
     
     func testSubscriptEquality() {
         // Different identifier
-        XCTAssertNotEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                               expr: Expression.LiteralInt(0)),
-                          Expression.Subscript(identifier: Expression.Identifier("bar"),
-                                               expr: Expression.LiteralInt(0)))
+        XCTAssertNotEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                               argument: Expression.LiteralInt(0)),
+                          Expression.Subscript(subscriptable: Expression.Identifier("bar"),
+                                               argument: Expression.LiteralInt(0)))
         
         // Different expression
-        XCTAssertNotEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                               expr: Expression.LiteralInt(0)),
-                          Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                               expr: Expression.LiteralInt(1)))
+        XCTAssertNotEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                               argument: Expression.LiteralInt(0)),
+                          Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                               argument: Expression.LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                            expr: Expression.LiteralInt(0)),
-                       Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                            expr: Expression.LiteralInt(0)))
+        XCTAssertEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                            argument: Expression.LiteralInt(0)),
+                       Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                            argument: Expression.LiteralInt(0)))
         
         // Hash
-        XCTAssertEqual(Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                            expr: Expression.LiteralInt(0)).hash,
-                       Expression.Subscript(identifier: Expression.Identifier("foo"),
-                                            expr: Expression.LiteralInt(0)).hash)
+        XCTAssertEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                            argument: Expression.LiteralInt(0)).hash,
+                       Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                            argument: Expression.LiteralInt(0)).hash)
     }
     
     func testLiteralArrayEquality() {

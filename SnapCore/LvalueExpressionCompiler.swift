@@ -70,11 +70,13 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += try compile(expression: expr.expr)
             
             // We'll leave this temporary on the stack and modify it in place.
-            let tempResult = temporaryStack.peek()
             let symbol = try typ.symbols.resolve(identifier: name)
-            instructions += [
-                .addi16(tempResult.address, tempResult.address, symbol.offset)
-            ]
+            if symbol.offset != 0 {
+                let tempResult = temporaryStack.peek()
+                instructions += [
+                    .addi16(tempResult.address, tempResult.address, symbol.offset)
+                ]
+            }
         case .constPointer(let typ), .pointer(let typ):
             instructions += try rvalueContext().compile(expression: expr.expr)
             if name == "pointee" {
@@ -85,11 +87,13 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
                 switch typ {
                 case .structType(let b):
                     // We'll leave this temporary on the stack and modify it in place.
-                    let tempResult = temporaryStack.peek()
                     let symbol = try b.symbols.resolve(identifier: name)
-                    instructions += [
-                        .addi16(tempResult.address, tempResult.address, symbol.offset)
-                    ]
+                    if symbol.offset != 0 {
+                        let tempResult = temporaryStack.peek()
+                        instructions += [
+                            .addi16(tempResult.address, tempResult.address, symbol.offset)
+                        ]
+                    }
                 default:
                     assert(false) // unreachable
                     throw unsupportedError(expression: expr.expr)
@@ -102,8 +106,8 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         return instructions
     }
     
-    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
-        return try arraySubscriptLvalue(symbol, depth, expr, elementType)
+    public override func arraySubscript(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
+        return try arraySubscriptLvalue(expr)
     }
     
     public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {

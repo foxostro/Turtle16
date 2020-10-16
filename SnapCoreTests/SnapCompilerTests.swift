@@ -1551,7 +1551,7 @@ var foo = Foo {
         XCTAssertNotNil(arr)
     }
     
-    func DISABLED_testSubscriptStructMemberThatIsAnArray() {
+    func testSubscriptStructMemberThatIsAnArray() {
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
         var computer: Computer? = nil

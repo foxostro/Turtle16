@@ -627,13 +627,13 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
-        let symbol = try symbols.resolve(sourceAnchor: expr.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
-        switch symbol.type {
+        let subscriptableType = try check(expression: expr.subscriptable)
+        switch subscriptableType {
         case .array(count: _, elementType: let elementType),
              .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.argument)
-            let typeError = CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(symbol.type)' with an argument of type `\(argumentType)'")
+            let typeError = CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(subscriptableType)' with an argument of type `\(argumentType)'")
             if case .structType(let typ) = argumentType {
                 if isRangeType(typ) {
                     return .dynamicArray(elementType: elementType)
@@ -646,7 +646,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             throw typeError
         default:
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(symbol.type)' has no subscripts")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(subscriptableType)' has no subscripts")
         }
     }
     

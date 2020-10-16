@@ -1165,10 +1165,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     // Compile an array element lookup through the subscript operator.
-    public override func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    public override func arraySubscript(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        instructions += try arraySubscriptLvalue(symbol, depth, expr, elementType)
+        
+        instructions += try arraySubscriptLvalue(expr)
+        
+        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
+        let elementType = symbolType.arrayElementType
         instructions += try loadFromLvalueIntoTemporary(elementType)
+        
         return instructions
     }
     

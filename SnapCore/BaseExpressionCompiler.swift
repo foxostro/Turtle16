@@ -134,18 +134,20 @@ public class BaseExpressionCompiler: NSObject {
     public func compile(subscript expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
-        let symbol = resolution.0
-        let depth = symbols.stackFrameIndex - resolution.1
+        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
         
-        switch symbol.type {
+        switch symbolType {
         case .array(count: _, elementType: let elementType):
             let argumentExpr = expr.argument
             let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
             if argumentType.isArithmeticType {
-                instructions += try arraySubscript(symbol, depth, expr, elementType)
+                instructions += try arraySubscript(expr)
             }
             else if case .structType = argumentType {
+                let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
+                let symbol = resolution.0
+                let depth = symbols.stackFrameIndex - resolution.1
+                
                 instructions += try arraySlice(expr, symbol, depth, elementType)
             }
             else {
@@ -153,6 +155,10 @@ public class BaseExpressionCompiler: NSObject {
             }
         case .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
+            let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
+            let symbol = resolution.0
+            let depth = symbols.stackFrameIndex - resolution.1
+            
             let argumentExpr = expr.argument
             let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
             if argumentType.isArithmeticType {
@@ -242,7 +248,7 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     // Compile an array element lookup through the subscript operator.
-    public func arraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    public func arraySubscript(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         abort() // override in a subclass
     }
     
@@ -333,11 +339,15 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    public func arraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    public func arraySubscriptLvalue(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        instructions += computeAddressOfSymbol(symbol, depth)
+        
+        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
+        let elementType = symbolType.arrayElementType
+        
+        instructions += try lvalueContext().compile(expression: expr.subscriptable)
         instructions += try computeAddressOfArrayElement(expr, elementType)
-        instructions += arrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        instructions += try arrayBoundsCheck(expr)
         return instructions
     }
     
@@ -345,20 +355,22 @@ public class BaseExpressionCompiler: NSObject {
     // is within the specified fixed array. If so then leave the address on the
     // stack as it was before this check. Else, panic with an appropriate
     // error message.
-    private func arrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
+    private func arrayBoundsCheck(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         let label = labelMaker.next()
         var instructions: [CrackleInstruction] = []
         
+        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
+        
         let tempAccessAddress = temporaryStack.peek()
         
-        instructions += computeAddressOfSymbol(symbol, depth)
+        instructions += try lvalueContext().compile(expression: expr.subscriptable)
         let tempBaseAddress = temporaryStack.pop()
         
         let tempArrayCount = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempArrayCount.address, symbol.type.arrayCount!)]
+        instructions += [.storeImmediate16(tempArrayCount.address, symbolType.arrayCount!)]
         
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, symbol.type.arrayElementType.sizeof)]
+        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, symbolType.arrayElementType.sizeof)]
         tempArrayCount.consume()
         
         let tempArrayLimit = temporaryAllocator.allocate()
@@ -382,7 +394,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
-        instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
+        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [.label(label)]
         
         return instructions

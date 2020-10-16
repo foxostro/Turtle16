@@ -4276,4 +4276,62 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
     }
+    
+    func testGetArrayFromStructAndSubscriptIt() {
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
+        let zero = Expression.LiteralInt(0)
+        let getExpr = Expression.Get(expr: foo, member: bar)
+        let expr = Expression.Subscript(subscriptable: getExpr, argument: zero)
+        
+        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0)
+        ])))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: Foo, offset: addressOfFoo)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store(value: 42, to: addressOfFoo)
+        }
+        let computer = try! executor.execute(ir: actual)
+        
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
+    }
+    
+    func DISABLED_testGetDynamicArrayFromStructAndSubscriptIt() {
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
+        let zero = Expression.LiteralInt(0)
+        let getExpr = Expression.Get(expr: foo, member: bar)
+        let expr = Expression.Subscript(subscriptable: getExpr, argument: zero)
+        
+        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0)
+        ])))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: Foo, offset: addressOfFoo)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            let arrayBaseAddress = 0x1000
+            computer.dataRAM.store(value: 42, to: arrayBaseAddress)
+            
+            let kSliceBaseAddressOffset = 0
+            let kSliceCountOffset = 2
+            computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: addressOfFoo + kSliceBaseAddressOffset)
+            computer.dataRAM.store16(value: 1, to: addressOfFoo + kSliceCountOffset)
+        }
+        let computer = try! executor.execute(ir: actual)
+        
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
+    }
 }

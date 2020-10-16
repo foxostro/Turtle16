@@ -456,7 +456,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     public func compile(assignment: Expression.Assignment) throws -> [CrackleInstruction] {
-        let ltype = try LvalueExpressionTypeChecker(symbols: symbols).check(expression: assignment.lexpr)
+        let ltype = try lvalueContext().typeChecker.check(expression: assignment.lexpr)
         var instructions: [CrackleInstruction] = []
         
         guard ltype != nil else {
@@ -1191,10 +1191,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     // Compile an array element lookup in a dynamic array through the subscript operator.
-    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    public override func dynamicArraySubscript(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        instructions += try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
+        
+        instructions += try dynamicArraySubscriptLvalue(expr)
+        
+        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
+        let elementType = symbolType.arrayElementType
         instructions += try loadFromLvalueIntoTemporary(elementType)
+        
         return instructions
     }
     

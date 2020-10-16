@@ -138,8 +138,7 @@ public class BaseExpressionCompiler: NSObject {
         
         switch symbolType {
         case .array(count: _, elementType: let elementType):
-            let argumentExpr = expr.argument
-            let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
+            let argumentType = try rvalueContext().typeChecker.check(expression: expr.argument)
             if argumentType.isArithmeticType {
                 instructions += try arraySubscript(expr)
             }
@@ -155,16 +154,15 @@ public class BaseExpressionCompiler: NSObject {
             }
         case .constDynamicArray(elementType: let elementType),
              .dynamicArray(elementType: let elementType):
-            let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
-            let symbol = resolution.0
-            let depth = symbols.stackFrameIndex - resolution.1
-            
-            let argumentExpr = expr.argument
-            let argumentType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: argumentExpr)
+            let argumentType = try rvalueContext().typeChecker.check(expression: expr.argument)
             if argumentType.isArithmeticType {
-                instructions += try dynamicArraySubscript(symbol, depth, expr, elementType)
+                instructions += try dynamicArraySubscript(expr)
             }
             else if case .structType = argumentType {
+                let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
+                let symbol = resolution.0
+                let depth = symbols.stackFrameIndex - resolution.1
+                
                 instructions += try dynamicArraySlice(expr, symbol, depth, elementType)
             }
             else {
@@ -253,7 +251,7 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     // Compile an array element lookup in a dynamic array through the subscript operator.
-    public func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    public func dynamicArraySubscript(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         abort() // override in a subclass
     }
     
@@ -342,10 +340,13 @@ public class BaseExpressionCompiler: NSObject {
     public func arraySubscriptLvalue(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
+        let context = lvalueContext()
+        guard let symbolType = try context.typeChecker.check(expression: expr.subscriptable) else {
+            throw CompilerError(sourceAnchor: expr.subscriptable.sourceAnchor, message: "lvalue required in array subscript")
+        }
         let elementType = symbolType.arrayElementType
         
-        instructions += try lvalueContext().compile(expression: expr.subscriptable)
+        instructions += try context.compile(expression: expr.subscriptable)
         instructions += try computeAddressOfArrayElement(expr, elementType)
         instructions += try arrayBoundsCheck(expr)
         return instructions
@@ -359,11 +360,14 @@ public class BaseExpressionCompiler: NSObject {
         let label = labelMaker.next()
         var instructions: [CrackleInstruction] = []
         
-        let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
+        let context = lvalueContext()
+        guard let symbolType = try context.typeChecker.check(expression: expr.subscriptable) else {
+            throw CompilerError(sourceAnchor: expr.subscriptable.sourceAnchor, message: "lvalue required in array subscript")
+        }
         
         let tempAccessAddress = temporaryStack.peek()
         
-        instructions += try lvalueContext().compile(expression: expr.subscriptable)
+        instructions += try context.compile(expression: expr.subscriptable)
         let tempBaseAddress = temporaryStack.pop()
         
         let tempArrayCount = temporaryAllocator.allocate()
@@ -459,10 +463,17 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    public func dynamicArraySubscriptLvalue(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        instructions += computeAddressOfSymbol(symbol, depth)
+        let context = lvalueContext()
+            
+        guard let symbolType = try context.typeChecker.check(expression: expr.subscriptable) else {
+            throw CompilerError(sourceAnchor: expr.subscriptable.sourceAnchor, message: "lvalue required in dynamic array subscript")
+        }
+        let elementType = symbolType.arrayElementType
+        
+        instructions += try context.compile(expression: expr.subscriptable)
         let sliceAddress = temporaryStack.pop()
         
         // Extract the array base address from the slice structure.
@@ -472,8 +483,7 @@ public class BaseExpressionCompiler: NSObject {
         sliceAddress.consume()
         
         instructions += try computeAddressOfArrayElement(expr, elementType)
-        
-        instructions += dynamicArrayBoundsCheck(expr.sourceAnchor, symbol, depth)
+        instructions += try dynamicArrayBoundsCheck(expr)
         
         return instructions
     }
@@ -482,13 +492,17 @@ public class BaseExpressionCompiler: NSObject {
     // is within the specified dynamic array. If so then leave the address on
     // the stack as it was before this check. Else, panic with an appropriate
     // error message.
-    private func dynamicArrayBoundsCheck(_ sourceAnchor: SourceAnchor?, _ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
+    private func dynamicArrayBoundsCheck(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         let label = labelMaker.next()
         var instructions: [CrackleInstruction] = []
         
-        let tempAccessAddress = temporaryStack.pop()
+        let context = lvalueContext()
+        guard let symbolType = try context.typeChecker.check(expression: expr.subscriptable) else {
+            throw CompilerError(sourceAnchor: expr.subscriptable.sourceAnchor, message: "lvalue required in dynamic array subscript")
+        }
+        let tempAccessAddress = temporaryStack.peek()
         
-        instructions += computeAddressOfSymbol(symbol, depth)
+        instructions += try lvalueContext().compile(expression: expr.subscriptable)
         let tempSliceAddress = temporaryStack.pop()
         
         // Extract the array base address from the slice structure.
@@ -506,7 +520,7 @@ public class BaseExpressionCompiler: NSObject {
         tempArrayCountAddress.consume()
         
         let tempArrayElementSize = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempArrayElementSize.address, symbol.type.arrayElementType.sizeof)]
+        instructions += [.storeImmediate16(tempArrayElementSize.address, symbolType.arrayElementType.sizeof)]
         let tempArraySize = temporaryAllocator.allocate()
         instructions += [.mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
         tempArrayElementSize.consume()
@@ -531,7 +545,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
-        instructions += panicOutOfBoundsError(sourceAnchor: sourceAnchor)
+        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [.label(label)]
         
         // Specifically do not consume tempAccessAddress as we need to leave

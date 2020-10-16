@@ -4303,7 +4303,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
     }
     
-    func DISABLED_testGetDynamicArrayFromStructAndSubscriptIt() {
+    func testGetDynamicArrayFromStructAndSubscriptIt() {
         let foo = Expression.Identifier("foo")
         let bar = Expression.Identifier("bar")
         let zero = Expression.LiteralInt(0)

@@ -110,7 +110,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         return try arraySubscriptLvalue(expr)
     }
     
-    public override func dynamicArraySubscript(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
-        return try dynamicArraySubscriptLvalue(symbol, depth, expr, elementType)
+    public override func dynamicArraySubscript(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
+        return try dynamicArraySubscriptLvalue(expr)
     }
 }

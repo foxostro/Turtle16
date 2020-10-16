@@ -1565,4 +1565,22 @@ let baz = foo.arr[0]
 """))
         XCTAssertEqual(computer?.loadSymbolU8("baz"), 42)
     }
+    
+    func testSubscriptStructMemberThatIsADynamicArray() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        var computer: Computer? = nil
+        XCTAssertNoThrow(computer = try executor.execute(program: """
+let backing: [64]u8 = undefined
+struct Foo {
+    arr: []u8
+}
+var foo = Foo {
+    .arr = backing
+}
+foo.arr[0] = 42
+let baz = foo.arr[0]
+"""))
+        XCTAssertEqual(computer?.loadSymbolU8("baz"), 42)
+    }
 }

@@ -825,11 +825,11 @@ public class SnapParser: Parser {
                     throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "malformed argument to struct initializer: expected expression")
                 }
                 
-                let argumentExpression = try consumeExpression()
-                
-                let argument = Expression.StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
-                
-                arguments.append(argument)
+                if nil == accept(TokenUndefined.self) {
+                    let argumentExpression = try consumeExpression()
+                    let argument = Expression.StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
+                    arguments.append(argument)
+                }
             } while nil != accept(TokenComma.self)
             
             let sourceAnchor = identifierToken.sourceAnchor?.union(peek()?.sourceAnchor)

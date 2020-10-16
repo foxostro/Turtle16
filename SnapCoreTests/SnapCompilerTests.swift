@@ -9,6 +9,7 @@
 import XCTest
 import SnapCore
 import TurtleCore
+import TurtleSimulatorCore
 
 class SnapCompilerTests: XCTestCase {
     let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
@@ -1532,5 +1533,21 @@ let foo = Foo {
 foo.bar("Hello, World!")
 """)
         XCTAssertEqual(serialOutput, "Hello, World!")
+    }
+    
+    func testStructInitializerCanHaveExplicitUndefinedValue() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        var computer: Computer? = nil
+        XCTAssertNoThrow(computer = try executor.execute(program: """
+struct Foo {
+    arr: [64]u8
+}
+var foo = Foo {
+    .arr = undefined
+}
+"""))
+        let arr = computer?.lookupSymbol("foo")
+        XCTAssertNotNil(arr)
     }
 }

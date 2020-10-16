@@ -189,7 +189,7 @@ public class BaseExpressionCompiler: NSObject {
         // Check the range begin index to make sure it's in bounds, else panic.
         let labelRangeBeginIsValid = labelMaker.next()
         instructions += [
-            .storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type)),
+            .storeImmediate16(tempArrayCount.address, symbol.type.arrayCount!),
             .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeBeginOffset, tempArrayCount.address),
             .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
         ]
@@ -355,10 +355,10 @@ public class BaseExpressionCompiler: NSObject {
         let tempBaseAddress = temporaryStack.pop()
         
         let tempArrayCount = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempArrayCount.address, determineArrayCount(symbol.type))]
+        instructions += [.storeImmediate16(tempArrayCount.address, symbol.type.arrayCount!)]
         
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, determineArrayElementType(symbol.type).sizeof)]
+        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, symbol.type.arrayElementType.sizeof)]
         tempArrayCount.consume()
         
         let tempArrayLimit = temporaryAllocator.allocate()
@@ -447,30 +447,6 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    private func determineArrayCount(_ type: SymbolType) -> Int {
-        let count: Int
-        switch type {
-        case .array(count: let n, elementType: _):
-            count = n!
-        default:
-            abort()
-        }
-        return count
-    }
-    
-    private func determineArrayElementType(_ type: SymbolType) -> SymbolType {
-        let result: SymbolType
-        switch type {
-        case .array(count: _, let elementType),
-             .constDynamicArray(elementType: let elementType),
-             .dynamicArray(elementType: let elementType):
-            result = elementType
-        default:
-            abort()
-        }
-        return result
-    }
-    
     public func dynamicArraySubscriptLvalue(_ symbol: Symbol, _ depth: Int, _ expr: Expression.Subscript, _ elementType: SymbolType) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
@@ -518,7 +494,7 @@ public class BaseExpressionCompiler: NSObject {
         tempArrayCountAddress.consume()
         
         let tempArrayElementSize = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempArrayElementSize.address, determineArrayElementType(symbol.type).sizeof)]
+        instructions += [.storeImmediate16(tempArrayElementSize.address, symbol.type.arrayElementType.sizeof)]
         let tempArraySize = temporaryAllocator.allocate()
         instructions += [.mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
         tempArrayElementSize.consume()

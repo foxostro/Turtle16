@@ -143,11 +143,7 @@ public class BaseExpressionCompiler: NSObject {
                 instructions += try arraySubscript(expr)
             }
             else if case .structType = argumentType {
-                let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
-                let symbol = resolution.0
-                let depth = symbols.stackFrameIndex - resolution.1
-                
-                instructions += try arraySlice(expr, symbol, depth, elementType)
+                instructions += try arraySlice(expr)
             }
             else {
                 abort()
@@ -175,8 +171,12 @@ public class BaseExpressionCompiler: NSObject {
         return instructions
     }
     
-    private func arraySlice(_ expr: Expression.Subscript, _ symbol: Symbol, _ depth: Int, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    private func arraySlice(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
+        
+        guard let symbolType = try lvalueContext().typeChecker.check(expression: expr.subscriptable) else {
+            throw CompilerError(sourceAnchor: expr.subscriptable.sourceAnchor, message: "lvalue required in array slice")
+        }
         
         let tempSlice = temporaryAllocator.allocate(size: kSliceSize)
         
@@ -193,7 +193,7 @@ public class BaseExpressionCompiler: NSObject {
         // Check the range begin index to make sure it's in bounds, else panic.
         let labelRangeBeginIsValid = labelMaker.next()
         instructions += [
-            .storeImmediate16(tempArrayCount.address, symbol.type.arrayCount!),
+            .storeImmediate16(tempArrayCount.address, symbolType.arrayCount!),
             .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeBeginOffset, tempArrayCount.address),
             .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
         ]
@@ -205,7 +205,7 @@ public class BaseExpressionCompiler: NSObject {
         // Check the range limit index to make sure it's in bounds, else panic.
         let labelRangeLimitIsValid = labelMaker.next()
         instructions += [
-            .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
+            .gt16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
         instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
@@ -225,12 +225,12 @@ public class BaseExpressionCompiler: NSObject {
         
         // Compute the base address of the array slice. This is an offset from
         // the original array's base address.
-        instructions += computeAddressOfSymbol(symbol, depth)
+        instructions += try lvalueContext().compile(expression: expr.subscriptable)
         let tempArrayBaseAddress = temporaryStack.pop()
         instructions += [
             .muli16(tempSlice.address + kSliceBaseAddressOffset,
                     tempRangeStruct.address + 0,
-                    elementType.sizeof),
+                    symbolType.arrayElementType.sizeof),
             .add16(tempSlice.address + kSliceBaseAddressOffset,
                    tempSlice.address + kSliceBaseAddressOffset,
                    tempArrayBaseAddress.address)

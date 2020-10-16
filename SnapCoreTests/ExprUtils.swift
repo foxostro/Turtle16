@@ -102,4 +102,8 @@ public class ExprUtils: NSObject {
     public static func makeSubscript(identifier: String, expr: Expression) -> Expression {
         return Expression.Subscript(subscriptable: Expression.Identifier(identifier), argument: expr)
     }
+    
+    public static func makeRange(_ begin: Int, _ limit: Int) -> Expression {
+        return Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)), Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))])
+    }
 }

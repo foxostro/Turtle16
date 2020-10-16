@@ -2494,4 +2494,29 @@ let foo: func (u8) -> u8 = undefined
                                       isMutable: false)
         XCTAssertEqual(ast.children.first, expected)
     }
+    
+    func testGetArrayFromStructAndSubscriptIt() {
+        let parser = parse("""
+foo.bar[0]
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo")
+        let bar = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "bar")
+        let zero = Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 0)
+        let getExpr = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 7), expr: foo, member: bar)
+        let expr = Expression.Subscript(sourceAnchor: parser.lineMapper.anchor(0, 10),
+                                        subscriptable: getExpr,
+                                        argument: zero)
+        XCTAssertEqual(ast.children.first, expr)
+    }
 }

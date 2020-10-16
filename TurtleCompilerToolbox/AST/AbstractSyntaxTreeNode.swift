@@ -30,8 +30,10 @@ open class AbstractSyntaxTreeNode : NSObject {
             return false
         }
         guard sourceAnchor == rhs.sourceAnchor else {
-//            print("lhs sourceAnchor: \(String(describing: sourceAnchor))")
-//            print("rhs sourceAnchor: \(String(describing: rhs.sourceAnchor))")
+            if let _ = NSClassFromString("XCTest") {
+                print("lhs sourceAnchor: \(String(describing: sourceAnchor))")
+                print("rhs sourceAnchor: \(String(describing: rhs.sourceAnchor))")
+            }
             return false
         }
         return true

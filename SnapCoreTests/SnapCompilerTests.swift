@@ -1550,4 +1550,19 @@ var foo = Foo {
         let arr = computer?.lookupSymbol("foo")
         XCTAssertNotNil(arr)
     }
+    
+    func DISABLED_testSubscriptStructMemberThatIsAnArray() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        var computer: Computer? = nil
+        XCTAssertNoThrow(computer = try executor.execute(program: """
+struct Foo {
+    arr: [64]u8
+}
+var foo: Foo = undefined
+foo.arr[0] = 42
+let baz = foo.arr[0]
+"""))
+        XCTAssertEqual(computer?.loadSymbolU8("baz"), 42)
+    }
 }

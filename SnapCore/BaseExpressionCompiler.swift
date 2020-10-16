@@ -134,7 +134,7 @@ public class BaseExpressionCompiler: NSObject {
     public func compile(subscript expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: expr.subscriptable.identifier)
+        let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         

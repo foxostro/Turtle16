@@ -1600,4 +1600,24 @@ assert(slice[0] == 't')
 """))
         XCTAssertEqual(serialOutput, "All Tests Passed.")
     }
+    
+    func testBugWhenConvertingStringLiteralToDynamicArrayInFunctionParameter() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        var computer: Computer? = nil
+        XCTAssertNoThrow(computer = try executor.execute(program: """
+public struct Foo {
+}
+
+impl Foo {
+    func bar(self: *Foo, s: []const u8) -> u8 {
+        return s[0]
+    }
+}
+
+var foo: Foo = undefined
+let baz = foo.bar("t")
+"""))
+        XCTAssertEqual(computer?.loadSymbolU8("baz"), 116)
+    }
 }

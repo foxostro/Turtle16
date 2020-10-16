@@ -153,7 +153,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(unary: Expression.Unary) throws -> [CrackleInstruction] {
-        let childExpr = try compile(expression: unary.child)
         let childType = try typeChecker.check(expression: unary.child)
         
         var instructions: [CrackleInstruction] = []
@@ -171,6 +170,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 instructions += try lvalueContext().compile(expression: unary.child)
             }
         } else {
+            let childExpr = try compile(expression: unary.child)
             let a = temporaryAllocator.allocate()
             let c = temporaryAllocator.allocate()
             let b = temporaryStack.pop()
@@ -193,8 +193,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "`\(unary.op)' is not a prefix unary operator")
             }
             
-            a.consume()
             b.consume()
+            a.consume()
         }
         
         return instructions
@@ -928,50 +928,82 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compileFunctionUserDefined(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
-        return try compileGenericUserDefinedFunctionCall(typ, node) { () -> [CrackleInstruction] in
-            return try pushFunctionArguments(typ, node)
+        let evaluateFunctionArguments = { () -> [CrackleInstruction] in
+            var instructions: [CrackleInstruction] = []
+            for i in (0..<typ.arguments.count).reversed() {
+                let argumentType = typ.arguments[i]
+                instructions += try self.compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: argumentType)
+            }
+            return instructions
         }
+        return try compileGenericUserDefinedFunctionCall(typ, node, evaluateFunctionArguments)
     }
     
     private func compileStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
-        return try compileGenericUserDefinedFunctionCall(typ, node) { () -> [CrackleInstruction] in
-            return try pushFunctionArgumentsForStructMemberFunctionCall(typ, node, selfExpr)
+        let evaluateFunctionArguments = { () -> [CrackleInstruction] in
+            var instructions: [CrackleInstruction] = []
+            
+            for i in (0..<node.arguments.count).reversed() {
+                instructions += try self.compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: typ.arguments[i+1])
+            }
+            
+            instructions += try self.compileAndConvertExpressionForAssignment(rexpr: selfExpr, ltype: typ.arguments[0])
+            
+            return instructions
         }
+        return try compileGenericUserDefinedFunctionCall(typ, node, evaluateFunctionArguments)
     }
     
-    private func pushFunctionArgumentsForStructMemberFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ selfExpr: Expression) throws -> [CrackleInstruction] {
+    private func compileGenericUserDefinedFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ evaluateFunctionArguments: () throws -> [CrackleInstruction]) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
-        // For the first argument, push a pointer to the object itself. (self)
-        let type0 = typ.arguments[0]
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: selfExpr, ltype: type0)
-        let tempArgumentValue0 = temporaryStack.pop()
-        instructions += pushTemporary(temporary: tempArgumentValue0, explicitSize: type0.sizeof)
-        tempArgumentValue0.consume()
+        // Determine the temporaries that need to be preserved across the call.
+        // Only preserve the temporaries which are live on entering this method.
+        // The ones generated below are consumed below as well.
+        let temporariesToPreserve = temporaryAllocator.liveTemporaries
         
-        // The rest of the function arguments come from the parameters list as usual.
-        for i in 0..<node.arguments.count {
-            let type = typ.arguments[i+1]
-            instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
+        // Evaluate function arguments, putting the value of each into a
+        // temporary. These are all evaluated in reverse order and end up on
+        // the compiler temporaries stack in reverse order.
+        instructions += try evaluateFunctionArguments()
+        
+        // Now we preserve those temporaries. We can't do that sooner because
+        // the evaluation of function arguments might allocate memory on the
+        // stack. The temporaries must be preserved on the stack with a
+        // predictable memory layout.
+        instructions += saveCompilerTemporariesForFunctionCall(temporariesToPreserve)
+        
+        // Allocate a compiler temporary, and space on the program stack, for
+        // the function's return value.
+        let tempReturnValue: CompilerTemporary? = allocateTemporaryForFunctionCallReturn(typ)
+        instructions += try pushToAllocateFunctionReturnValue(typ)
+        
+        // The values of function arguments are on the compiler temporaries
+        // stack right now. Push them to the program stack to build up the
+        // function arguments pack.
+        for argumentType in typ.arguments {
             let tempArgumentValue = temporaryStack.pop()
-            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
+            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: argumentType.sizeof)
             tempArgumentValue.consume()
         }
         
-        return instructions
-    }
-    
-    private func compileGenericUserDefinedFunctionCall(_ typ: FunctionType, _ node: Expression.Call, _ functionArgumentsPusher: () throws -> [CrackleInstruction]) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        let temporariesToPreserve = temporaryAllocator.liveTemporaries
-        instructions += saveCompilerTemporariesForFunctionCall(temporariesToPreserve)
-        let tempReturnValue: CompilerTemporary? = allocateTemporaryForFunctionCallReturn(typ)
-        instructions += try pushToAllocateFunctionReturnValue(typ)
-        instructions += try functionArgumentsPusher()
+        // Compile the branch to the function. The branch may be compiled
+        // differently depending on whether this is a call to a function known
+        // at compile time, or a call through a function pointer.
         instructions += try compileBranchToCallee(node)
+        
         instructions += popFunctionArguments(typ)
+        
+        // Copy the return value from the program stack to the temporary we
+        // allocated earlier. This pushes that temporary to the compiler's
+        // temporaries stack to allow this call to be composed with the
+        // evaluation of other expressions.
         instructions += copyReturnValueForFunctionCall(typ, tempReturnValue)
+        
+        // The call to the function will have surely trampled on compiler
+        // temporaries which were in use before the call. Restore those now.
         instructions += restoreCompilerTemporariesForFunctionCall(temporariesToPreserve)
+        
         return instructions
     }
     

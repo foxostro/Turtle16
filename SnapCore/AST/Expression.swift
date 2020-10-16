@@ -1110,7 +1110,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@",
+            return String(format: "%@\"%@\"",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           value)
         }

@@ -137,7 +137,7 @@ public class BaseExpressionCompiler: NSObject {
         let symbolType = try rvalueContext().typeChecker.check(expression: expr.subscriptable)
         
         switch symbolType {
-        case .array(count: _, elementType: let elementType):
+        case .array:
             let argumentType = try rvalueContext().typeChecker.check(expression: expr.argument)
             if argumentType.isArithmeticType {
                 instructions += try arraySubscript(expr)
@@ -148,8 +148,7 @@ public class BaseExpressionCompiler: NSObject {
             else {
                 abort()
             }
-        case .constDynamicArray(elementType: let elementType),
-             .dynamicArray(elementType: let elementType):
+        case .constDynamicArray, .dynamicArray:
             let argumentType = try rvalueContext().typeChecker.check(expression: expr.argument)
             if argumentType.isArithmeticType {
                 instructions += try dynamicArraySubscript(expr)
@@ -550,8 +549,6 @@ public class BaseExpressionCompiler: NSObject {
         
         // Specifically do not consume tempAccessAddress as we need to leave
         // that in place on the stack when we're done.
-        
-        temporaryStack.push(tempAccessAddress)
         
         return instructions
     }

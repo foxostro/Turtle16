@@ -643,6 +643,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 }
                 temporaryStack.push(dst)
             case let identifier as Expression.Identifier:
+                // TODO: Is it bad to check for the Expression.Identifier type here explicitly? Do I get unexpected/incorrect behavior if I retrieve the array from a struct via a Get expression, for example?
                 let elements = stride(from: 0, through: n-1, by: 1).map({i in
                     Expression.As(sourceAnchor: identifier.sourceAnchor,
                                   expr: Expression.Subscript(sourceAnchor: identifier.sourceAnchor,
@@ -1293,8 +1294,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
         for i in 0..<expr.arguments.count {
             let arg = expr.arguments[i]
-            let member = try! typ.symbols.resolve(identifier: arg.name)
-            instructions += try! compileAndConvertExpressionForExplicitCast(rexpr: arg.expr, ltype: member.type)
+            let member = try typ.symbols.resolve(identifier: arg.name)
+            instructions += try compileAndConvertExpressionForExplicitCast(rexpr: arg.expr, ltype: member.type)
             let tempArg = temporaryStack.pop()
             instructions += [.copyWords(tempResult.address + member.offset, tempArg.address, member.type.sizeof)]
             tempArg.consume()

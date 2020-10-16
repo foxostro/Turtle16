@@ -1583,4 +1583,21 @@ let baz = foo.arr[0]
 """))
         XCTAssertEqual(computer?.loadSymbolU8("baz"), 42)
     }
+    
+    func testBugWithCompilerTemporaryPushedTwiceInDynamicArrayBoundsCheck() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.shouldRunTests = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        XCTAssertNoThrow(try executor.execute(program: """
+let slice: []const u8 = "test"
+assert(slice[0] == 't')
+"""))
+        XCTAssertEqual(serialOutput, "All Tests Passed.")
+    }
 }

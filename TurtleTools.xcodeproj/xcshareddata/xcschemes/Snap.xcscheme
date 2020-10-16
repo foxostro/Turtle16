@@ -109,7 +109,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/andrewfox/src/TurtleTTL/TurtleTools/Examples/piano.snap"
+            argument = "/Users/andrewfox/Desktop/test.snap"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

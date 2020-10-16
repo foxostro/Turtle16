@@ -10,6 +10,7 @@ public class CompilerTemporariesStack: NSObject {
     private var stack: [CompilerTemporary] = []
     
     public func push(_ temporary: CompilerTemporary) {
+        assert(!stack.contains(temporary))
         stack.append(temporary)
     }
     

@@ -4360,4 +4360,35 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + kSliceBaseAddressOffset), UInt16(addressOfFoo))
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + kSliceCountOffset), 1)
     }
+    
+    func testGetDynamicArrayFromStructAndSubscriptItWithARange() {
+        let foo = Expression.Identifier("foo")
+        let bar = Expression.Identifier("bar")
+        let range = ExprUtils.makeRange(0, 1)
+        let getExpr = Expression.Get(expr: foo, member: bar)
+        let expr = Expression.Subscript(subscriptable: getExpr, argument: range)
+        
+        let arrayBaseAddress = 0x1000
+        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
+            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0)
+        ])))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: Foo, offset: addressOfFoo)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: addressOfFoo + self.kSliceBaseAddressOffset)
+            computer.dataRAM.store16(value: 1, to: addressOfFoo + self.kSliceCountOffset)
+        }
+        let computer = try! executor.execute(ir: actual)
+        
+        // Check that the array slice is as expected.
+        XCTAssertEqual(tempResult.size, 4)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + kSliceBaseAddressOffset), UInt16(arrayBaseAddress))
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + kSliceCountOffset), 1)
+    }
 }

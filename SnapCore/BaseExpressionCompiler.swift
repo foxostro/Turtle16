@@ -155,11 +155,7 @@ public class BaseExpressionCompiler: NSObject {
                 instructions += try dynamicArraySubscript(expr)
             }
             else if case .structType = argumentType {
-                let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.subscriptable.sourceAnchor, identifier: (expr.subscriptable as! Expression.Identifier).identifier)
-                let symbol = resolution.0
-                let depth = symbols.stackFrameIndex - resolution.1
-                
-                instructions += try dynamicArraySlice(expr, symbol, depth, elementType)
+                instructions += try dynamicArraySlice(expr)
             }
             else {
                 abort()
@@ -219,8 +215,8 @@ public class BaseExpressionCompiler: NSObject {
         // Compute the array slice count from the range value.
         instructions += [
             .sub16(tempSlice.address + kSliceCountOffset,
-                   tempRangeStruct.address + SymbolType.u16.sizeof,
-                   tempRangeStruct.address + 0)
+                   tempRangeStruct.address + kRangeLimitOffset,
+                   tempRangeStruct.address + kRangeBeginOffset)
         ]
         
         // Compute the base address of the array slice. This is an offset from
@@ -229,7 +225,7 @@ public class BaseExpressionCompiler: NSObject {
         let tempArrayBaseAddress = temporaryStack.pop()
         instructions += [
             .muli16(tempSlice.address + kSliceBaseAddressOffset,
-                    tempRangeStruct.address + 0,
+                    tempRangeStruct.address + kRangeBeginOffset,
                     symbolType.arrayElementType.sizeof),
             .add16(tempSlice.address + kSliceBaseAddressOffset,
                    tempSlice.address + kSliceBaseAddressOffset,
@@ -255,11 +251,15 @@ public class BaseExpressionCompiler: NSObject {
         abort() // override in a subclass
     }
     
-    private func dynamicArraySlice(_ expr: Expression.Subscript, _ symbol: Symbol, _ depth: Int, _ elementType: SymbolType) throws -> [CrackleInstruction] {
+    private func dynamicArraySlice(_ expr: Expression.Subscript) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         
+        guard let symbolType = try lvalueContext().typeChecker.check(expression: expr.subscriptable) else {
+            throw CompilerError(sourceAnchor: expr.subscriptable.sourceAnchor, message: "lvalue required in array slice")
+        }
+        
         // Get the address of the dynamic array symbol.
-        instructions += computeAddressOfSymbol(symbol, depth)
+        instructions += try lvalueContext().compile(expression: expr.subscriptable)
         let tempDynamicArrayAddress = temporaryStack.pop()
         
         // Evaluate the range expression to get the range value.
@@ -293,7 +293,7 @@ public class BaseExpressionCompiler: NSObject {
         // Check the range limit index to make sure it's in bounds, else panic.
         let labelRangeLimitIsValid = labelMaker.next()
         instructions += [
-            .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
+            .gt16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
         instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
@@ -321,7 +321,7 @@ public class BaseExpressionCompiler: NSObject {
                                      SymbolType.u16.sizeof),
             .muli16(tempSlice.address + kSliceBaseAddressOffset,
                     tempRangeStruct.address + kRangeBeginOffset,
-                    elementType.sizeof),
+                    symbolType.arrayElementType.sizeof),
             .add16(tempSlice.address + kSliceBaseAddressOffset,
                    tempSlice.address + kSliceBaseAddressOffset,
                    tempArrayBaseAddress.address)

@@ -2519,4 +2519,25 @@ foo.bar[0]
                                         argument: zero)
         XCTAssertEqual(ast.children.first, expr)
     }
+    
+    func testParseBitcast() {
+        let parser = parse("""
+foo bitcastAs *Bar
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expr = Expression.Bitcast(sourceAnchor: parser.lineMapper.anchor(0, 18),
+                                      expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
+                                      targetType: Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 18), identifier: "Bar")))
+        XCTAssertEqual(ast.children.first, expr)
+    }
 }

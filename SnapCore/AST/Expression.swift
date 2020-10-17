@@ -416,6 +416,41 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    public class Bitcast: Expression {
+        public let expr: Expression
+        public let targetType: Expression
+        
+        public convenience init(expr: Expression, targetType: Expression) {
+            self.init(sourceAnchor: nil, expr: expr, targetType: targetType)
+        }
+        
+        public init(sourceAnchor: SourceAnchor?, expr: Expression, targetType: Expression) {
+            self.expr = expr
+            self.targetType = targetType
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? Bitcast else { return false }
+            guard expr == rhs.expr else { return false }
+            guard targetType == rhs.targetType else { return false }
+            return true
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@%@\n%@convertingTo: %@\n%@expr: %@",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
+                          targetType.makeIndentedDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
+                          expr.makeIndentedDescription(depth: depth+1))
+        }
+    }
+    
     public class Is: Expression {
         public let expr: Expression
         public let testType: Expression

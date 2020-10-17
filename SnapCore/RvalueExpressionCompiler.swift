@@ -121,6 +121,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compile(structInitializer: expr)
         case let expr as Expression.LiteralString:
             return try compile(literalString: expr)
+        case let expr as Expression.Bitcast:
+            return try compile(bitcast: expr)
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error about an unsupported expression before
@@ -1346,5 +1348,22 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                                           arrayType: typ,
                                           elements: elements)
         return try compile(literalArray: arr)
+    }
+    
+    private func compile(bitcast expr: Expression.Bitcast) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        
+        let targetType = try typeChecker.check(expression: expr.targetType)
+        let tempDst = temporaryAllocator.allocate(size: targetType.sizeof)
+        
+        instructions += try compile(expression: expr.expr)
+        let tempSrc = temporaryStack.pop()
+        instructions += [
+            .copyWords(tempDst.address, tempSrc.address, targetType.sizeof)
+        ]
+        tempSrc.consume()
+        temporaryStack.push(tempDst)
+        
+        return instructions
     }
 }

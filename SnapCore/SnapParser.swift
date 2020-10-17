@@ -641,9 +641,9 @@ public class SnapParser: Parser {
     }
     
     private func consumeMultiplication() throws -> Expression {
-        var expression = try consumeCast()
+        var expression = try consumeBitcast()
         while let tokenOperator = accept(operators: [.star, .divide, .modulus]) {
-            let right = try consumeCast()
+            let right = try consumeBitcast()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
             expression = Expression.Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
@@ -651,6 +651,19 @@ public class SnapParser: Parser {
                                            right: right)
         }
         return expression
+    }
+    
+    private func consumeBitcast() throws -> Expression {
+        let expr = try consumeCast()
+        if let tokenBitcastAs = accept(TokenBitcastAs.self) as? TokenBitcastAs {
+            let targetType = try consumeType()
+            let sourceAnchor = expr.sourceAnchor?.union(tokenBitcastAs.sourceAnchor).union(previous?.sourceAnchor)
+            return Expression.Bitcast(sourceAnchor: sourceAnchor,
+                                      expr: expr,
+                                      targetType: targetType)
+        } else {
+            return expr
+        }
     }
     
     private func consumeCast() throws -> Expression {

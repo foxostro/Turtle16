@@ -80,6 +80,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "\\|") {
                 TokenOperator(sourceAnchor: $0, op: .pipe)
             },
+            Rule(pattern: "bitcastAs\\b") {
+                TokenBitcastAs(sourceAnchor: $0)
+            },
             Rule(pattern: "as\\b") {
                 TokenAs(sourceAnchor: $0)
             },

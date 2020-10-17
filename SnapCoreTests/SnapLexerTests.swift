@@ -462,6 +462,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
     }
     
+    func testTokenizeBitcast() {
+        let tokenizer = SnapLexer("bitcastAs")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenBitcastAs(sourceAnchor: tokenizer.lineMapper.anchor(0, 9)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))])
+    }
+    
     func testTokenizeSquareBrackets() {
         let tokenizer = SnapLexer("foo[[bar]]")
         tokenizer.scanTokens()

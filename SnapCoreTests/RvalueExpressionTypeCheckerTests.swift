@@ -3212,4 +3212,24 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expected: SymbolType = .void
         XCTAssertEqual(result, expected)
     }
+    
+    func testBitcastBoolAsU8() {
+        let expr = Expression.Bitcast(expr: ExprUtils.makeU8(value: 0),
+                                      targetType: Expression.PrimitiveType(.bool))
+        let typeChecker = RvalueExpressionTypeChecker()
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBitcastPointerToADifferentPointer() {
+        let expr = Expression.Bitcast(expr: Expression.Identifier("foo"), targetType: Expression.PointerType(Expression.PrimitiveType(.u16)))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: SnapToCrackleCompiler.kStaticStorageStartAddress)
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .pointer(.u16))
+    }
 }

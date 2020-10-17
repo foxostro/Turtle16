@@ -26,6 +26,7 @@ public class TokenFor : Token {}
 public class TokenIn : Token {}
 public class TokenStatic : Token {}
 public class TokenAs : Token {}
+public class TokenBitcastAs : Token {}
 public class TokenIs : Token {}
 public class TokenDoubleDot : Token {}
 public class TokenDot : Token {}

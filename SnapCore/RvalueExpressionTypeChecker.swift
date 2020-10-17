@@ -75,6 +75,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(literalString: expr)
         case let expr as Expression.TypeOf:
             return try check(typeOf: expr)
+        case let expr as Expression.Bitcast:
+            return try check(bitcast: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -823,6 +825,10 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     public func check(typeOf expr: Expression.TypeOf) throws -> SymbolType {
         return try rvalueContext().check(expression: expr.expr)
+    }
+    
+    public func check(bitcast expr: Expression.Bitcast) throws -> SymbolType {
+        return try rvalueContext().check(expression: expr.targetType)
     }
     
     func unsupportedError(expression: Expression) -> Error {

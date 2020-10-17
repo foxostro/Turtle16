@@ -4391,4 +4391,33 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + kSliceBaseAddressOffset), UInt16(arrayBaseAddress))
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + kSliceCountOffset), 1)
     }
+    
+    func testBitcastBoolAsU8() {
+        let expr = Expression.Bitcast(expr: ExprUtils.makeU8(value: 0),
+                                      targetType: Expression.PrimitiveType(.bool))
+        let compiler = makeCompiler()
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0)
+    }
+    
+    func testBitcastPointerToADifferentPointer() {
+        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let expr = Expression.Bitcast(expr: Expression.Identifier("foo"),
+                                      targetType: Expression.PointerType(Expression.PrimitiveType(.u16)))
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .pointer(.u8), offset: offset)
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let tempResult = compiler.temporaryStack.peek()
+        let executor = CrackleExecutor()
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: 0xabcd, to: offset)
+        }
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xabcd)
+    }
 }

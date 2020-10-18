@@ -642,4 +642,11 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenImport(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))])
     }
+    
+    func testTokenizeTrait() {
+        let tokenizer = SnapLexer("trait")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenTrait(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))])
+    }
 }

@@ -21,13 +21,14 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
     case constPointer(SymbolType), pointer(SymbolType)
     case constStructType(StructType), structType(StructType)
+    case traitType(TraitType)
     case unionType(UnionType)
     
     public var isConst: Bool {
         switch self {
         case .void, .function:
             return true
-        case .compTimeBool, .constBool, .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType:
+        case .compTimeBool, .constBool, .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType, .traitType:
             return true
         default:
             return false
@@ -111,6 +112,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func unwrapTraitType() -> TraitType {
+        switch self {
+        case .traitType(let typ):
+            return typ
+        default:
+            abort()
+        }
+    }
+    
     public var isFunctionType: Bool {
         switch self {
         case .function:
@@ -153,6 +163,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .array(count: let count, elementType: let elementType):
             return (count ?? 0) * elementType.sizeof
         case .constStructType(let typ), .structType(let typ):
+            return typ.sizeof
+        case .traitType(let typ):
             return typ.sizeof
         case .unionType(let typ):
             return typ.sizeof
@@ -214,6 +226,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .constStructType(let typ):
             return "const \(typ.name)"
         case .structType(let typ):
+            return "\(typ.name)"
+        case .traitType(let typ):
             return "\(typ.name)"
         case .constPointer(let pointee):
             return "const *\(pointee.description)"
@@ -358,6 +372,71 @@ struct \(name) {
             return false
         }
         guard let rhs = rhs as? StructType else {
+            return false
+        }
+        guard name == rhs.name else {
+            return false
+        }
+        guard symbols == rhs.symbols else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(name)
+        hasher.combine(symbols)
+        return hasher.finalize()
+    }
+}
+
+public class TraitType: NSObject {
+    public let name: String
+    public let symbols: SymbolTable
+    
+    public init(name: String, symbols: SymbolTable) {
+        self.name = name
+        self.symbols = symbols
+    }
+    
+    public override var description: String {
+        return """
+trait \(name) {
+\(makeMembersDescription())
+}
+"""
+    }
+    
+    public func makeMembersDescription() -> String {
+        var members: [String] = []
+        for (name, symbol) in symbols.symbolTable {
+            members.append("\(name): \(symbol.type)")
+        }
+        let result = members.map({"\t\($0)"}).joined(separator: ",\n")
+        return result
+    }
+    
+    public var sizeof: Int {
+        var accum = 0
+        for (_, symbol) in symbols.symbolTable {
+            accum += symbol.type.sizeof
+        }
+        return accum
+    }
+    
+    public static func ==(lhs: TraitType, rhs: TraitType) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? TraitType else {
             return false
         }
         guard name == rhs.name else {

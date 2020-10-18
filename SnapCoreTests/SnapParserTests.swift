@@ -2540,4 +2540,38 @@ foo bitcastAs *Bar
                                       targetType: Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 18), identifier: "Bar")))
         XCTAssertEqual(ast.children.first, expr)
     }
+    
+    func testParseWellformedTrait() {
+        let parser = parse("""
+trait Foo {
+    func foo(a: u8, b: u8) -> u8
+    func bar(self: *Foo) -> u8
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let foo = TraitDeclaration.Member(name: "foo", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(16, 44), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(16, 44), name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(42, 44), typ: .u8), arguments: [
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(28, 30), typ: .u8),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 37), typ: .u8)
+        ])))
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 75), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(49, 75), name: "bar", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .u8), arguments: [
+            Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(64, 68), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(65, 68), identifier: "Foo"))
+        ])))
+        let expr = TraitDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 77),
+                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 9), identifier: "Foo"),
+                                    members: [
+                                        foo, bar
+                                    ],
+                                    visibility: .privateVisibility)
+        XCTAssertEqual(ast.children.first, expr)
+    }
 }

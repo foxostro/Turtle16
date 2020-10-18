@@ -41,3 +41,4 @@ public class TokenPrivate : Token {}
 public class TokenAssert : Token {}
 public class TokenTest : Token {}
 public class TokenImport : Token {}
+public class TokenTrait : Token {}

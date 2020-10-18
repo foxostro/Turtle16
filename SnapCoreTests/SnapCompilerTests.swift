@@ -1665,7 +1665,7 @@ impl SerialFake {
     }
 }
 
-test "call through vtable pseudo-interface" {
+test "call through vtable pseudo-binterface" {
     var serialFake = SerialFake.init()
     let serial = serialFake.asSerial()
     serial.print("test")

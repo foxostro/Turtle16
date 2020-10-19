@@ -138,7 +138,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 11),
-                                               arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .u16)),
+                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 6), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .u16)),
                                                elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -151,11 +151,11 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 26),
-                                                 arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .u16)),
+                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .u16)),
                                                  elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(17, 20), identifier: "foo"),
                                                             Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(22, 25), identifier: "foo")])
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 27),
-                                               arrayType: Expression.ArrayType(count: nil, elementType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .u16))),
+                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 9), count: nil, elementType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .u16))),
                                                elements: [innerArray])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -169,7 +169,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 11),
-                                               arrayType: Expression.ArrayType(count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .u16)),
+                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 6), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .u16)),
                                                elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -183,14 +183,14 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
-                                                 arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
+                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
                                                  elements: [])
         
         // Note that the parser doesn't know that the expression will actually
         // yield a result of the the type [0]u8.
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
                                       expression: innerArray,
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -207,9 +207,9 @@ class SnapParserTests: XCTestCase {
         
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
                                       expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
-                                                                          arrayType: Expression.ArrayType(count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
+                                                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
                                                                           elements: []),
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -228,7 +228,7 @@ class SnapParserTests: XCTestCase {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
                                       expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 18),
-                                                                          arrayType: Expression.ArrayType(count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .u8)),
+                                                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 15), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .u8)),
                                                                           elements: [
                                         Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
                                       ]),
@@ -244,7 +244,7 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         let arr = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 24),
-                                          arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .u8)),
+                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 15), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .u8)),
                                           elements: [
             Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1),
             Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 2),
@@ -288,7 +288,7 @@ let foo: []u8 = bar
         XCTAssertEqual(ast.children.count, 1)
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.DynamicArrayType(Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(11, 13), typ: .u8)),
+                                      explicitType: Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(9, 13), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(11, 13), typ: .u8)),
                                       expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "bar"),
                                       storage: .stackStorage,
                                       isMutable: false)
@@ -305,7 +305,7 @@ let foo: [1]u8 = undefined
         XCTAssertEqual(ast.children.count, 1)
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
                                       expression: nil,
                                       storage: .stackStorage,
                                       isMutable: false)

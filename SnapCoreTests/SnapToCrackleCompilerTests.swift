@@ -2664,7 +2664,7 @@ public func foo() -> None {
         let actual = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
         
-        XCTAssertEqual(SymbolType.u16.sizeof, actual?.sizeof)
+        XCTAssertEqual(SymbolType.pointer(.void).sizeof*2, actual?.sizeof)
     }
     
     func testCompileTraitAddsVtableType_Empty() {
@@ -2760,7 +2760,7 @@ public func foo() -> None {
         let traitType = try! compiler.globalSymbols.resolveType(identifier: "Foo")
         
         let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType
-        let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: SymbolTable([
+        let expectedVtableType: SymbolType = .constStructType(StructType(name: nameOfVtableType, symbols: SymbolTable([
             "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0) // TODO: do I need something like a .constVoid type here?
         ])))
         

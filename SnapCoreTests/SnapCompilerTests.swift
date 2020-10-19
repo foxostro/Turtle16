@@ -1665,10 +1665,68 @@ impl SerialFake {
     }
 }
 
-test "call through vtable pseudo-binterface" {
+test "call through vtable pseudo-interface" {
     var serialFake = SerialFake.init()
     let serial = serialFake.asSerial()
     serial.print("test")
+    assert(serialFake.cursor == 4)
+    assert(serialFake.buffer[0] == 't')
+    assert(serialFake.buffer[1] == 'e')
+    assert(serialFake.buffer[2] == 's')
+    assert(serialFake.buffer[3] == 't')
+}
+
+"""))
+        XCTAssertEqual(serialOutput, "All Tests Passed.")
+    }
+    
+    func testTraitsDemo() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.shouldRunTests = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        XCTAssertNoThrow(try executor.execute(program: """
+trait Serial {
+    func puts(self: *Serial, s: []const u8)
+}
+
+struct SerialFake {
+    buffer: [64]u8,
+    cursor: u16
+}
+
+impl SerialFake {
+    func init() -> SerialFake {
+        var serial: SerialFake = undefined
+        serial.cursor = 0
+        for i in 0..(serial.buffer.count) {
+            serial.buffer[i] = 0
+        }
+        return serial
+    }
+}
+
+impl Serial for SerialFake {
+    func puts(self: *SerialFake, s: []const u8) {
+        for i in 0..(s.count) {
+            self.buffer[cursor + i] = s[i]
+        }
+        self.cursor = self.cursor + s.count
+    }
+}
+
+test "call through trait interface" {
+    var serialFake = SerialFake.init()
+    let serial = __Serial_object {
+        .object = &serialFake bitcastAs *void,
+        .vtable = &__Serial_SerialFake_vtable_instance
+    }
+    serial.puts("test")
     assert(serialFake.cursor == 4)
     assert(serialFake.buffer[0] == 't')
     assert(serialFake.buffer[1] == 'e')

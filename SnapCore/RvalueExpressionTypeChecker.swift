@@ -442,6 +442,16 @@ public class RvalueExpressionTypeChecker: NSObject {
                 }
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        case (.constPointer(let a), .traitType(let b)),
+             (.pointer(let a), .traitType(let b)):
+            if case .structType(let structType) = a {
+                let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
+                let vtableInstance = symbols.maybeResolve(identifier: nameOfVtableInstance)
+                if vtableInstance != nil {
+                    return .acceptable(ltype)
+                }
+            }
+            return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         default:
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         }
@@ -513,13 +523,16 @@ public class RvalueExpressionTypeChecker: NSObject {
                 selfExpr = nil
             }
             if let selfExpr = selfExpr {
-                let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
+                var selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
+                if case .traitType(let typ) = selfType {
+                    selfType = try symbols.resolveType(identifier: typ.nameOfTraitObjectType)
+                }
                 let argType0 = typ.arguments[0]
                 if argType0 == selfType || argType0.correspondingConstType == selfType {
                     return try checkStructMemberFunctionCall(call, selfExpr)
                 }
                 if argType0 == .pointer(selfType) || argType0.correspondingConstType == .pointer(selfType.correspondingConstType) {
-                    let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
+                    let addressOf = Expression.Bitcast(expr: Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr), targetType: Expression.PrimitiveType(argType0))
                     return try checkStructMemberFunctionCall(call, addressOf)
                 }
             }
@@ -727,6 +740,10 @@ public class RvalueExpressionTypeChecker: NSObject {
                     break
                 }
             }
+        case .traitType(let typ):
+            return try check(get: Expression.Get(sourceAnchor: expr.sourceAnchor,
+                                                 expr: Expression.Identifier(typ.nameOfTraitObjectType),
+                                                 member: expr.member))
         default:
             break
         }

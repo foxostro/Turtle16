@@ -1722,10 +1722,7 @@ impl Serial for SerialFake {
 
 test "call through trait interface" {
     var serialFake = SerialFake.init()
-    let serial = __Serial_object {
-        .object = &serialFake bitcastAs *void,
-        .vtable = &__Serial_SerialFake_vtable_instance
-    }
+    let serial: Serial = &serialFake
     serial.puts("test")
     assert(serialFake.cursor == 4)
     assert(serialFake.buffer[0] == 't')

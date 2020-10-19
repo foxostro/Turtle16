@@ -796,6 +796,19 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.copyWords(dst.address, src.address+1, ltype.sizeof)]
             temporaryStack.push(dst)
             src.consume()
+        case (.constPointer(let a), .traitType(let b)),
+             (.pointer(let a), .traitType(let b)):
+            guard case .structType(let structType) = a else {
+                abort()
+            }
+            let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
+            instructions += try compile(expression: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
+                // Take the pointer to the object and cast as an opaque *void
+                Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(expr: rexpr, targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
+                
+                // Attach a pointer to the appropriate vtable instance.
+                Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
+            ]))
         default:
             assert(false) // unreachable
             abort()
@@ -829,13 +842,16 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 selfExpr = nil
             }
             if let selfExpr = selfExpr {
-                let selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
+                var selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
+                if case .traitType(let typ) = selfType {
+                    selfType = try symbols.resolveType(identifier: typ.nameOfTraitObjectType)
+                }
                 let argType0 = typ.arguments[0]
                 if argType0 == selfType || argType0.correspondingConstType == selfType {
                     return try compileStructMemberFunctionCall(typ, node, selfExpr)
                 }
                 if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
-                    let addressOf = Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr)
+                    let addressOf = Expression.Bitcast(expr: Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr), targetType: Expression.PrimitiveType(argType0))
                     return try compileStructMemberFunctionCall(typ, node, addressOf)
                 }
             }

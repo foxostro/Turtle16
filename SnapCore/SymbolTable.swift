@@ -158,13 +158,11 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return 2
         case .constPointer, .pointer:
             return 2
-        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _):
+        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .traitType(_):
             return 4
         case .array(count: let count, elementType: let elementType):
             return (count ?? 0) * elementType.sizeof
         case .constStructType(let typ), .structType(let typ):
-            return typ.sizeof
-        case .traitType(let typ):
             return typ.sizeof
         case .unionType(let typ):
             return typ.sizeof

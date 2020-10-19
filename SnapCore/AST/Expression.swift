@@ -831,6 +831,10 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(arguments)
             return hasher.finalize()
         }
+//        
+//        public func rename(_ name: String?) -> FunctionType {
+//            return FunctionType(sourceAnchor: sourceAnchor, name: name, returnType: returnType, arguments: arguments)
+//        }
     }
 
     public class PointerType: Expression {

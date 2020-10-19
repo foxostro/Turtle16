@@ -364,7 +364,18 @@ struct \(name) {
         return lhs.isEqual(rhs)
     }
     
+    private var isDoingEqualityTest = false
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
+        // Avoid recursive comparisons. These can occur if a trait contains a
+        // method with a parameter whose type is a pointer to the trait. If we
+        // don't detect these cases then we get infinite recursion.
+        guard false == isDoingEqualityTest else {
+            return true
+        }
+        isDoingEqualityTest = true
+        defer { isDoingEqualityTest = false }
+        
         guard rhs != nil else {
             return false
         }
@@ -394,15 +405,21 @@ struct \(name) {
 public class TraitType: NSObject {
     public let name: String
     public let symbols: SymbolTable
+    public let nameOfTraitObjectType: String
+    public let nameOfVtableType: String
     
-    public init(name: String, symbols: SymbolTable) {
+    public init(name: String, nameOfTraitObjectType: String, nameOfVtableType: String, symbols: SymbolTable) {
         self.name = name
+        self.nameOfTraitObjectType = nameOfTraitObjectType
+        self.nameOfVtableType = nameOfVtableType
         self.symbols = symbols
     }
     
     public override var description: String {
         return """
 trait \(name) {
+\ttrait object type: \(nameOfTraitObjectType),
+\tvtable type: \(nameOfVtableType),
 \(makeMembersDescription())
 }
 """
@@ -429,7 +446,18 @@ trait \(name) {
         return lhs.isEqual(rhs)
     }
     
+    private var isDoingEqualityTest = false
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
+        // Avoid recursive comparisons. These can occur if a trait contains a
+        // method with a parameter whose type is a pointer to the trait. If we
+        // don't detect these cases then we get infinite recursion.
+        guard false == isDoingEqualityTest else {
+            return true
+        }
+        isDoingEqualityTest = true
+        defer { isDoingEqualityTest = false }
+        
         guard rhs != nil else {
             return false
         }
@@ -442,6 +470,9 @@ trait \(name) {
         guard name == rhs.name else {
             return false
         }
+        guard nameOfVtableType == rhs.nameOfVtableType else {
+            return false
+        }
         guard symbols == rhs.symbols else {
             return false
         }
@@ -451,6 +482,7 @@ trait \(name) {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(name)
+        hasher.combine(nameOfVtableType)
         hasher.combine(symbols)
         return hasher.finalize()
     }

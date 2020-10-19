@@ -945,7 +945,7 @@ public class SnapParser: Parser {
             
             let funcSourceAnchor = tokenFunc.sourceAnchor?.union(previous?.sourceAnchor)
             
-            let typeExpr = Expression.PointerType(sourceAnchor: funcSourceAnchor, typ: Expression.FunctionType(sourceAnchor: funcSourceAnchor, name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes))
+            let typeExpr = Expression.PointerType(sourceAnchor: funcSourceAnchor, typ: Expression.FunctionType(sourceAnchor: funcSourceAnchor, name: nil, returnType: returnType, arguments: argumentTypes))
             members.append(TraitDeclaration.Member(name: tokenIdentifier.lexeme, type: typeExpr))
             
             if let tok = accept(TokenCurlyRight.self) {

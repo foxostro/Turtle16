@@ -2559,11 +2559,11 @@ trait Foo {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        let foo = TraitDeclaration.Member(name: "foo", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(16, 44), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(16, 44), name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(42, 44), typ: .u8), arguments: [
+        let foo = TraitDeclaration.Member(name: "foo", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(16, 44), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(16, 44), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(42, 44), typ: .u8), arguments: [
             Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(28, 30), typ: .u8),
             Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 37), typ: .u8)
         ])))
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 75), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(49, 75), name: "bar", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .u8), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 75), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(49, 75), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .u8), arguments: [
             Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(64, 68), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(65, 68), identifier: "Foo"))
         ])))
         let expr = TraitDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 77),

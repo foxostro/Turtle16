@@ -2616,4 +2616,162 @@ public func foo() -> None {
         let result = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(result, .pointer(.function(FunctionType(returnType: .u8, arguments: []))))
     }
+    
+    func testCompileTraitAddsToTypeTable_Empty() {
+        let ast = TopLevel(children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+        ])
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: SymbolTable()))
+        let actual = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testCompileTraitAddsToTypeTable_HasMethod() {
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            Expression.PointerType(Expression.Identifier("Foo"))
+        ])))
+        let ast = TopLevel(children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                             members: [bar],
+                             visibility: .privateVisibility)
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        
+        let members = SymbolTable()
+        let fullyQualifiedTraitType = TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: members)
+        let expected: SymbolType = .traitType(fullyQualifiedTraitType)
+        members.enclosingFunctionName = "Foo"
+        let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
+        let symbol = Symbol(type: memberType, offset: members.storagePointer)
+        members.bind(identifier: "bar", symbol: symbol)
+        members.storagePointer += memberType.sizeof
+        members.parent = nil
+        
+        let actual = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(expected, actual)
+        
+        XCTAssertEqual(SymbolType.u16.sizeof, actual?.sizeof)
+    }
+    
+    func testCompileTraitAddsVtableType_Empty() {
+        let ast = TopLevel(children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let traitType = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
+        XCTAssertEqual("__Foo_vtable", nameOfVtableType)
+        
+        let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: SymbolTable()))
+        let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
+        XCTAssertEqual(expectedVtableType, actualVtableType)
+    }
+    
+    func testCompileTraitAddsVtableType_HasMethod() {
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            Expression.PointerType(Expression.Identifier("Foo"))
+        ])))
+        let ast = TopLevel(children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                             members: [bar],
+                             visibility: .privateVisibility)
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let traitType = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
+        let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: SymbolTable([
+            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0)
+        ])))
+        let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
+        XCTAssertEqual(expectedVtableType, actualVtableType)
+    }
+    
+    func testCompileTraitAddsVtableType_HasConstMethod() {
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            Expression.ConstType(Expression.PointerType(Expression.Identifier("Foo")))
+        ])))
+        let ast = TopLevel(children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                             members: [bar],
+                             visibility: .privateVisibility)
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let traitType = try? compiler.globalSymbols.resolveType(identifier: "Foo")
+        let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
+        let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: SymbolTable([
+            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0) // TODO: do I need something like a .constVoid type here?
+        ])))
+        let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
+        XCTAssertEqual(expectedVtableType, actualVtableType)
+    }
+    
+    func testCompileTraitAddsTraitObjectType() {
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            Expression.PointerType(Expression.Identifier("Foo"))
+        ])))
+        let ast = TopLevel(children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                             members: [bar],
+                             visibility: .privateVisibility)
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let traitType = try! compiler.globalSymbols.resolveType(identifier: "Foo")
+        
+        let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType
+        let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: SymbolTable([
+            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0) // TODO: do I need something like a .constVoid type here?
+        ])))
+        
+        let nameOfTraitObjectType = traitType.unwrapTraitType().nameOfTraitObjectType
+        let traitObjectSymbols = SymbolTable([
+            "object" : Symbol(type: .pointer(.void), offset: 0),
+            "vtable" : Symbol(type: .pointer(expectedVtableType), offset: SymbolType.pointer(.void).sizeof)
+        ])
+        let expectedTraitObjectType: SymbolType = .structType(StructType(name: nameOfTraitObjectType, symbols: traitObjectSymbols))
+        traitObjectSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(FunctionType(name: "bar", mangledName: "__Foo_object_bar", returnType: .u8, arguments: [.pointer(expectedTraitObjectType)])), offset: 0))
+        let actualTraitObjectType = try? compiler.globalSymbols.resolveType(identifier: nameOfTraitObjectType)
+        XCTAssertEqual(expectedTraitObjectType, actualTraitObjectType)
+    }
 }

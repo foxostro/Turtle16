@@ -313,10 +313,11 @@ public class SnapParser: Parser {
     }
     
     fileprivate func consumeArrayType() throws -> Expression {
-        try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in array type"))
+        let tokenBracketLeft = try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in array type"))
         if nil != accept(TokenSquareBracketRight.self) {
             let elementType = try consumeType()
-            return Expression.DynamicArrayType(elementType)
+            let sourceAnchor = tokenBracketLeft.sourceAnchor?.union(elementType.sourceAnchor)
+            return Expression.DynamicArrayType(sourceAnchor: sourceAnchor, elementType: elementType)
         }
         else {
             let count: Expression?
@@ -327,7 +328,8 @@ public class SnapParser: Parser {
             }
             try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]' in array type"))
             let elementType = try consumeType()
-            return Expression.ArrayType(count: count, elementType: elementType)
+            let sourceAnchor = tokenBracketLeft.sourceAnchor?.union(elementType.sourceAnchor)
+            return Expression.ArrayType(sourceAnchor: sourceAnchor, count: count, elementType: elementType)
         }
     }
     
@@ -966,6 +968,16 @@ public class SnapParser: Parser {
     private func consumeImpl(_ tokenImpl: TokenImpl) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in impl declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        
+        // An impl-for statement will have "for identifier" next.
+        let structIdentifier: Expression.Identifier?
+        if nil != accept(TokenFor.self) {
+            let tok = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in impl-for declaration"))
+            structIdentifier = Expression.Identifier(sourceAnchor: tok.sourceAnchor, identifier: tok.lexeme)
+        } else {
+            structIdentifier = nil
+        }
+            
         try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in impl declaration"))
         try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected newline"))
         
@@ -986,7 +998,11 @@ public class SnapParser: Parser {
             }
             else if nil != accept(TokenCurlyRight.self) {
                 let sourceAnchor = tokenImpl.sourceAnchor?.union(previous?.sourceAnchor)
-                return [Impl(sourceAnchor: sourceAnchor, identifier: identifier, children: children)]
+                if let structIdentifier = structIdentifier {
+                    return [ImplFor(sourceAnchor: sourceAnchor, traitIdentifier: identifier, structIdentifier: structIdentifier, children: children)]
+                } else {
+                    return [Impl(sourceAnchor: sourceAnchor, identifier: identifier, children: children)]
+                }
             }
             else {
                 let expr = try consumeExpression()

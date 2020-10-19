@@ -2574,4 +2574,29 @@ trait Foo {
                                     visibility: .privateVisibility)
         XCTAssertEqual(ast.children.first, expr)
     }
+    
+    func testImplForStatement() {
+        let parser = parse("""
+impl Serial for SerialFake {
+    func puts(self: *SerialFake, s: []const u8) {
+    }
+}
+""")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            ImplFor(sourceAnchor: parser.lineMapper.anchor(0, 86),
+                    traitIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 11), identifier: "Serial"),
+                    structIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 26), identifier: "SerialFake"),
+                    children: [
+                        FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(33, 84),
+                                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(38, 42), identifier: "puts"),
+                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 60), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(50, 60), identifier: "SerialFake")),
+                                                Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(65, 75), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(67, 75), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .u8)))
+                                            ]),
+                                            argumentNames: ["self", "s"],
+                                            body: Block(sourceAnchor: parser.lineMapper.anchor(77, 84))),
+                    ])
+        ])
+    }
 }

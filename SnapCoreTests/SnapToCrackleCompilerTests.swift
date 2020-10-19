@@ -2774,4 +2774,46 @@ public func foo() -> None {
         let actualTraitObjectType = try? compiler.globalSymbols.resolveType(identifier: nameOfTraitObjectType)
         XCTAssertEqual(expectedTraitObjectType, actualTraitObjectType)
     }
+    
+    func testCompileImplForTrait() {
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let ast = TopLevel(children: [
+            traitDecl,
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(identifier: Expression.Identifier("puts"),
+                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                Expression.PointerType(Expression.Identifier("Serial")),
+                                                Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                            ]),
+                                            argumentNames: ["self", "s"],
+                                            body: Block())
+                    ])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        
+        let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
+        let vtableInstance = try! compiler.globalSymbols.resolve(identifier: nameOfVtableInstance)
+        let vtableStructType = vtableInstance.type.unwrapStructType()
+        XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
+        XCTAssertTrue(vtableStructType.symbols.exists(identifier: "puts"))
+        let putsSymbol = try! vtableStructType.symbols.resolve(identifier: "puts")
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(putsSymbol.offset, 0)
+    }
 }

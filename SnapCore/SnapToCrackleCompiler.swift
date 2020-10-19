@@ -419,7 +419,7 @@ public class SnapToCrackleCompiler: NSObject {
     fileprivate func declareTraitObjectType(_ traitDecl: TraitDeclaration) throws {
         let members: [StructDeclaration.Member] = [
             StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
-            StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.Identifier(traitDecl.nameOfVtableType)))
+            StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier(traitDecl.nameOfVtableType))))
         ]
         let structDecl = StructDeclaration(sourceAnchor: traitDecl.sourceAnchor,
                                            identifier: Expression.Identifier(traitDecl.nameOfTraitObjectType),
@@ -449,6 +449,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(func: node)
         case let node as Impl:
             try compile(impl: node)
+        case let node as ImplFor:
+            try compile(implFor: node)
         case let node as Match:
             try compile(match: node)
         case let node as Assert:
@@ -813,6 +815,27 @@ public class SnapToCrackleCompiler: NSObject {
         typ.symbols.parent = nil
     }
     
+    private func compile(implFor: ImplFor) throws {
+        let traitType = try symbols.resolveType(identifier: implFor.traitIdentifier.identifier).unwrapTraitType()
+        let structType = try symbols.resolveType(identifier: implFor.structIdentifier.identifier).unwrapStructType()
+        let vtableType = try symbols.resolveType(identifier: traitType.nameOfVtableType).unwrapStructType()
+        
+        try compile(impl: Impl(sourceAnchor: implFor.sourceAnchor, identifier: implFor.structIdentifier, children: implFor.children))
+        
+        let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
+        var arguments: [Expression.StructInitializer.Argument] = []
+        for (methodName, methodSymbol) in vtableType.symbols.symbolTable {
+            let arg = Expression.StructInitializer.Argument(name: methodName, expr: Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: Expression.Get(expr: Expression.Identifier(structType.name), member: Expression.Identifier(methodName))), targetType: Expression.PrimitiveType(methodSymbol.type)))
+            arguments.append(arg)
+        }
+        let initializer = Expression.StructInitializer(identifier: Expression.Identifier(traitType.nameOfVtableType), arguments: arguments)
+        try compile(varDecl: VarDeclaration(identifier: Expression.Identifier(nameOfVtableInstance),
+                                            explicitType: Expression.Identifier(traitType.nameOfVtableType),
+                                            expression: initializer,
+                                            storage: .staticStorage,
+                                            isMutable: false))
+    }
+    
     private func compile(match: Match) throws {
         let ast = try MatchCompiler().compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
@@ -854,8 +877,15 @@ public class SnapToCrackleCompiler: NSObject {
             let argumentNames = (0..<functionType.arguments.count).map { ($0 == 0) ? "self" : "arg\($0)" }
             let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
             let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
-            let ret = Return(Expression.Call(callee: callee, arguments: arguments))
-            let fnBody = Block(children: [ret])
+            
+            let fnBody: Block
+            let returnType = try TypeContextTypeChecker(symbols: symbols).check(expression: functionType.returnType)
+            if returnType == .void {
+                fnBody = Block(children: [Expression.Call(callee: callee, arguments: arguments)])
+            } else {
+                fnBody = Block(children: [Return(Expression.Call(callee: callee, arguments: arguments))])
+            }
+            
             let fnDecl = FunctionDeclaration(identifier: Expression.Identifier(method.name),
                                              functionType: functionType,
                                              argumentNames: argumentNames,

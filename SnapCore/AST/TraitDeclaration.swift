@@ -45,6 +45,12 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     public let identifier: Expression.Identifier
+    public var nameOfVtableType: String {
+        return "__\(identifier.identifier)_vtable"
+    }
+    public var nameOfTraitObjectType: String {
+        return "__\(identifier.identifier)_object"
+    }
     public let members: [Member]
     public let visibility: SymbolVisibility
     

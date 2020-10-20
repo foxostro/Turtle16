@@ -2816,4 +2816,145 @@ public func foo() -> None {
         XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
         XCTAssertEqual(putsSymbol.offset, 0)
     }
+    
+    func testFailToCompileImplForTraitBecauseMethodsAreMissing() {
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let ast = TopLevel(children: [
+            traitDecl,
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: [])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' does not implement all trait methods; missing `puts'.")
+    }
+    
+    func testFailToCompileImplForTraitBecauseMethodHasIncorrectNumberOfParameters() {
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let ast = TopLevel(children: [
+            traitDecl,
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(identifier: Expression.Identifier("puts"),
+                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                Expression.PointerType(Expression.Identifier("SerialFake"))
+                                            ]),
+                                            argumentNames: ["self"],
+                                            body: Block())
+                    ])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
+    }
+    
+    func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() {
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let ast = TopLevel(children: [
+            traitDecl,
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(identifier: Expression.Identifier("puts"),
+                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                Expression.PointerType(Expression.Identifier("SerialFake")),
+                                                Expression.PrimitiveType(.u8)
+                                            ]),
+                                            argumentNames: ["self", "s"],
+                                            body: Block())
+                    ])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `[]u8' argument, got `u8' instead")
+    }
+    
+    func testFailToCompileImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() {
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let ast = TopLevel(children: [
+            traitDecl,
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(identifier: Expression.Identifier("puts"),
+                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                Expression.PrimitiveType(.u8),
+                                                Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                            ]),
+                                            argumentNames: ["self", "s"],
+                                            body: Block())
+                    ])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `*SerialFake' argument, got `u8' instead")
+    }
+    
+    func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() {
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.bool), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let ast = TopLevel(children: [
+            traitDecl,
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(identifier: Expression.Identifier("puts"),
+                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                Expression.PointerType(Expression.Identifier("SerialFake")),
+                                                Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                            ]),
+                                            argumentNames: ["self", "s"],
+                                            body: Block())
+                    ])
+        ])
+        
+        let compiler = SnapToCrackleCompiler()
+        compiler.compile(ast: ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `bool' return value, got `void' instead")
+    }
 }

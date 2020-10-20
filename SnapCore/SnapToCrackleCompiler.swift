@@ -822,6 +822,47 @@ public class SnapToCrackleCompiler: NSObject {
         
         try compile(impl: Impl(sourceAnchor: implFor.sourceAnchor, identifier: implFor.structIdentifier, children: implFor.children))
         
+        for (requiredMethodName, requiredMethodSymbol) in traitType.symbols.symbolTable {
+            let maybeActualMethodSymbol = structType.symbols.maybeResolve(identifier: requiredMethodName)
+            guard let actualMethodSymbol = maybeActualMethodSymbol else {
+                throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' does not implement all trait methods; missing `\(requiredMethodName)'.")
+            }
+            let actualMethodType = actualMethodSymbol.type.unwrapFunctionType()
+            let expectedMethodType = requiredMethodSymbol.type.unwrapPointerType().unwrapFunctionType()
+            guard actualMethodType.arguments.count == expectedMethodType.arguments.count else {
+                throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has \(actualMethodType.arguments.count) parameter but the declaration in the `\(traitType.name)' trait has \(expectedMethodType.arguments.count).")
+            }
+            if actualMethodType.arguments.count > 0 {
+                let actualArgumentType = actualMethodType.arguments[0]
+                let expectedArgumentType = expectedMethodType.arguments[0]
+                if actualArgumentType != expectedArgumentType {
+                    let typeChecker = TypeContextTypeChecker(symbols: symbols)
+                    let genericMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(traitType.name)))
+                    let concreteMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(structType.name)))
+                    if expectedArgumentType == genericMutableSelfPointerType {
+                        if actualArgumentType != concreteMutableSelfPointerType {
+                            throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(concreteMutableSelfPointerType)' argument, got `\(actualArgumentType)' instead")
+                        }
+                    }
+                    else {
+                        throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead")
+                    }
+                }
+            }
+            if actualMethodType.arguments.count > 1 {
+                for i in 1..<actualMethodType.arguments.count {
+                    let actualArgumentType = actualMethodType.arguments[i]
+                    let expectedArgumentType = expectedMethodType.arguments[i]
+                    guard actualArgumentType == expectedArgumentType else {
+                        throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead")
+                    }
+                }
+            }
+            if actualMethodType.returnType != expectedMethodType.returnType {
+                throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedMethodType.returnType)' return value, got `\(actualMethodType.returnType)' instead")
+            }
+        }
+        
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
         var arguments: [Expression.StructInitializer.Argument] = []
         for (methodName, methodSymbol) in vtableType.symbols.symbolTable {

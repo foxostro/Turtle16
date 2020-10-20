@@ -94,6 +94,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func unwrapPointerType() -> SymbolType {
+        switch self {
+        case .pointer(let typ), .constPointer(let typ):
+            return typ
+        default:
+            abort()
+        }
+    }
+    
     public func unwrapFunctionType() -> FunctionType {
         switch self {
         case .function(let typ):

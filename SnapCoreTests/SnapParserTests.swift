@@ -1928,7 +1928,7 @@ impl Foo {
 """)
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Impl(sourceAnchor: parser.lineMapper.anchor(0, 12),
+            Impl(sourceAnchor: parser.lineMapper.anchor(0, 10),
                  identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
                  children: [])
         ])
@@ -2002,7 +2002,7 @@ impl Foo {
 """)
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Impl(sourceAnchor: parser.lineMapper.anchor(0, 43),
+            Impl(sourceAnchor: parser.lineMapper.anchor(0, 10),
                  identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
                  children: [
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 41),
@@ -2027,7 +2027,7 @@ impl Foo {
 """)
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            Impl(sourceAnchor: parser.lineMapper.anchor(0, 78),
+            Impl(sourceAnchor: parser.lineMapper.anchor(0, 10),
                  identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
                  children: [
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 42),
@@ -2584,7 +2584,7 @@ impl Serial for SerialFake {
 """)
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
-            ImplFor(sourceAnchor: parser.lineMapper.anchor(0, 86),
+            ImplFor(sourceAnchor: parser.lineMapper.anchor(0, 28),
                     traitIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 11), identifier: "Serial"),
                     structIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 26), identifier: "SerialFake"),
                     children: [

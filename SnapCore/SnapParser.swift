@@ -978,7 +978,7 @@ public class SnapParser: Parser {
             structIdentifier = nil
         }
             
-        try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in impl declaration"))
+        let openingCurlyBrace = try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in impl declaration"))
         try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected newline"))
         
         var children: [FunctionDeclaration] = []
@@ -997,7 +997,7 @@ public class SnapParser: Parser {
                 children += child.compactMap({$0 as? FunctionDeclaration})
             }
             else if nil != accept(TokenCurlyRight.self) {
-                let sourceAnchor = tokenImpl.sourceAnchor?.union(previous?.sourceAnchor)
+                let sourceAnchor = tokenImpl.sourceAnchor?.union(openingCurlyBrace.sourceAnchor)
                 if let structIdentifier = structIdentifier {
                     return [ImplFor(sourceAnchor: sourceAnchor, traitIdentifier: identifier, structIdentifier: structIdentifier, children: children)]
                 } else {

@@ -315,7 +315,7 @@ public class SnapParser: Parser {
     fileprivate func consumeArrayType() throws -> Expression {
         let tokenBracketLeft = try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in array type"))
         if nil != accept(TokenSquareBracketRight.self) {
-            let elementType = try consumeType()
+            let elementType = try consumeConstType()
             let sourceAnchor = tokenBracketLeft.sourceAnchor?.union(elementType.sourceAnchor)
             return Expression.DynamicArrayType(sourceAnchor: sourceAnchor, elementType: elementType)
         }
@@ -327,7 +327,7 @@ public class SnapParser: Parser {
                 count = try consumeExpression()
             }
             try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]' in array type"))
-            let elementType = try consumeType()
+            let elementType = try consumeConstType()
             let sourceAnchor = tokenBracketLeft.sourceAnchor?.union(elementType.sourceAnchor)
             return Expression.ArrayType(sourceAnchor: sourceAnchor, count: count, elementType: elementType)
         }

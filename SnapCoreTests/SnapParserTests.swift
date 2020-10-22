@@ -2599,4 +2599,17 @@ impl Serial for SerialFake {
                     ])
         ])
     }
+    
+    func testBugWhereTypeExpressionPrecedenceEasilyLeadsToUnexpectedTypes() {
+        let parser = parse("typealias Foo = []const u8 | None")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            Typealias(sourceAnchor: parser.lineMapper.anchor(0, 33),
+                      lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(10, 13), identifier: "Foo"),
+                      rexpr: Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(16, 33), members: [
+                        Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(16, 26), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(18, 26), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(24, 26), typ: .u8))),
+                        Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(29, 33), identifier: "None")
+                      ]))
+        ])
+    }
 }

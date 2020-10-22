@@ -21,8 +21,12 @@ public class CompilerTemporariesAllocator: NSObject {
     }
     
     public func allocate(size: Int = 2) -> CompilerTemporary {
-        // TODO: need a nice compiler error when a temporary cannot be allocated
-        return maybeAllocate(size: size)!
+        // TODO: I wonder whether this should throw a CompilerError instead of dying in an abort?
+        guard let temporary = maybeAllocate(size: size) else {
+            print("Failed to allocate compiler temporary of size \(size).")
+            abort()
+        }
+        return temporary
     }
     
     public func maybeAllocate(size size0: Int) -> CompilerTemporary? {

@@ -62,7 +62,15 @@ public class LvalueExpressionTypeChecker: NSObject {
                 return typ
             } else {
                 switch typ {
-                case .constStructType(let b), .structType(let b):
+                case .array, .constDynamicArray, .dynamicArray:
+                    if name == "count" {
+                        return nil
+                    }
+                case .constStructType(let b):
+                    if let symbol = b.symbols.maybeResolve(identifier: name) {
+                        return symbol.type.correspondingConstType
+                    }
+                case .structType(let b):
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
                         return symbol.type
                     }

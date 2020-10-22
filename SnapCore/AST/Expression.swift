@@ -515,9 +515,9 @@ public class Expression: AbstractSyntaxTreeNode {
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           makeIndent(depth: depth+1),
-                          subscriptable.makeIndentedDescription(depth: depth),
+                          subscriptable.makeIndentedDescription(depth: depth+1),
                           makeIndent(depth: depth+1),
-                          argument.makeIndentedDescription(depth: depth))
+                          argument.makeIndentedDescription(depth: depth+1))
         }
     }
     

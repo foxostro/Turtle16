@@ -1781,4 +1781,20 @@ test "call through trait interface" {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 20..<21)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
     }
+    
+    func testBugWhereUnableToAllocateTemporaryWhenReturningLargeStructByValue() {
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        XCTAssertNoThrow(try executor.execute(program: """
+struct Foo {
+    buffer: [1000]u8
+}
+
+var foo: Foo = undefined
+
+func init() -> Foo {
+    return foo
+}
+"""))
+    }
 }

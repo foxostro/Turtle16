@@ -1875,4 +1875,14 @@ impl Foo {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
     }
+    
+    func testBugWhereConstSelfPointerInTraitCausesCompilerCrash() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+trait Serial {
+    func print(self: *const Serial, s: []const u8)
+}
+""")
+        XCTAssertFalse(compiler.hasError)
+    }
 }

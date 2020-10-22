@@ -3925,7 +3925,6 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        executor.isVerboseLogging = true
         executor.configure = { computer in
             computer.dataRAM.store(value: 0, to: offset+0)  // type tag
             computer.dataRAM.store(value: 42, to: offset+1) // storage[0]

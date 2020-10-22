@@ -796,23 +796,27 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(impl: Impl) throws {
         let typ = try symbols.resolveType(identifier: impl.identifier.identifier).unwrapStructType()
         
-        // For the moment, make the struct symbol table the local scope.
-        typ.symbols.parent = symbols
-        symbols = typ.symbols
+        pushScopeForBlock()
+        symbols.enclosingFunctionName = impl.identifier.identifier
         
         for child in impl.children {
+            let identifier = child.identifier.identifier
+            if typ.symbols.exists(identifier: identifier) {
+                throw CompilerError(sourceAnchor: child.sourceAnchor,
+                                    message: "function redefines existing symbol: `\(identifier)'")
+            }
             try performDeclPass(func: child)
+            
+            // Put the symbol back into the struct type's symbol table too.
+            typ.symbols.bind(identifier: identifier, symbol: symbols.symbolTable[identifier]!)
         }
         
         for child in impl.children {
             try compile(func: child)
         }
         
-        // Pop scopes and restore the struct symbol table.
-        let storagePointer = symbols.storagePointer
-        symbols = symbols.parent!
-        symbols.storagePointer = storagePointer
-        typ.symbols.parent = nil
+        symbols.enclosingFunctionName = nil
+        popScopeForBlock()
     }
     
     private func compile(implFor: ImplFor) throws {

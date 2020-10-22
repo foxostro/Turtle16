@@ -2600,7 +2600,6 @@ public func foo() -> None {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        executor.isVerboseLogging = true
         let computer = try! executor.execute(ir: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset

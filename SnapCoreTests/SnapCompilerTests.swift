@@ -1862,4 +1862,17 @@ puts(foo.buffer)
 """)
         XCTAssertEqual(serialOutput, "Hello")
     }
+    
+    func testBugWhereImplErrorIsMissingSourceAnchor() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+impl Foo {
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "Foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
+    }
 }

@@ -1797,4 +1797,23 @@ func init() -> Foo {
 }
 """))
     }
+    
+    func testBugWhereConstRangeCannotBeUsedToSubscriptAString() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+let helloWorld = "Hello, World!"
+let range = 0..6
+let helloComma = helloWorld[range]
+let hello = helloComma[0..(helloComma.count-1)]
+puts(hello)
+""")
+        XCTAssertEqual(serialOutput, "Hello")
+    }
 }

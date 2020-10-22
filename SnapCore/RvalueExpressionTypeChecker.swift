@@ -649,12 +649,15 @@ public class RvalueExpressionTypeChecker: NSObject {
              .dynamicArray(elementType: let elementType):
             let argumentType = try rvalueContext().check(expression: expr.argument)
             let typeError = CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot subscript a value of type `\(subscriptableType)' with an argument of type `\(argumentType)'")
-            if case .structType(let typ) = argumentType {
+            switch argumentType {
+            case .structType(let typ), .constStructType(let typ):
                 if isRangeType(typ) {
                     return .dynamicArray(elementType: elementType)
                 } else {
                     throw typeError
                 }
+            default:
+                break
             }
             if argumentType.isArithmeticType {
                 return elementType

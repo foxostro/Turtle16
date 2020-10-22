@@ -141,23 +141,25 @@ public class BaseExpressionCompiler: NSObject {
             let argumentType = try rvalueContext().typeChecker.check(expression: expr.argument)
             if argumentType.isArithmeticType {
                 instructions += try arraySubscript(expr)
-            }
-            else if case .structType = argumentType {
-                instructions += try arraySlice(expr)
-            }
-            else {
-                abort()
+            } else {
+                switch argumentType {
+                case .structType, .constStructType:
+                    instructions += try arraySlice(expr)
+                default:
+                    abort()
+                }
             }
         case .constDynamicArray, .dynamicArray:
             let argumentType = try rvalueContext().typeChecker.check(expression: expr.argument)
             if argumentType.isArithmeticType {
                 instructions += try dynamicArraySubscript(expr)
-            }
-            else if case .structType = argumentType {
-                instructions += try dynamicArraySlice(expr)
-            }
-            else {
-                abort()
+            } else {
+                switch argumentType {
+                case .structType, .constStructType:
+                    instructions += try dynamicArraySlice(expr)
+                default:
+                    abort()
+                }
             }
         default:
             abort()

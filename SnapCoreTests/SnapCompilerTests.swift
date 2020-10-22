@@ -1659,7 +1659,7 @@ impl SerialFake {
 
     func print_(self: *SerialFake, s: []const u8) {
         for i in 0..(s.count) {
-            self.buffer[cursor + i] = s[i]
+            self.buffer[self.cursor + i] = s[i]
         }
         self.cursor = self.cursor + s.count
     }
@@ -1714,7 +1714,7 @@ impl SerialFake {
 impl Serial for SerialFake {
     func puts(self: *SerialFake, s: []const u8) {
         for i in 0..(s.count) {
-            self.buffer[cursor + i] = s[i]
+            self.buffer[self.cursor + i] = s[i]
         }
         self.cursor = self.cursor + s.count
     }
@@ -1815,5 +1815,29 @@ let hello = helloComma[0..(helloComma.count-1)]
 puts(hello)
 """)
         XCTAssertEqual(serialOutput, "Hello")
+    }
+    
+    func testBugSymbolResolutionInStructMethodsPutsMembersInScopeWithBrokenOffsets() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+struct Foo {
+    bar: u8
+}
+
+impl Foo {
+    func init() -> Foo {
+        var foo: Foo = undefined
+        bar = 42
+        return foo
+    }
+}
+
+let foo = Foo.init()
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "bar")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 7..<8)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `bar'")
     }
 }

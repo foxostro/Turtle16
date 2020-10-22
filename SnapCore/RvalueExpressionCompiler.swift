@@ -552,41 +552,6 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                                 message: "lvalue required in assignment")
         }
         
-        let rtype = try rvalueContext().typeChecker.check(expression: assignment.rexpr)
-        
-        if ltype == rtype {
-            let lvalueForRexpr = try lvalueContext().typeChecker.check(expression: assignment.rexpr)
-            let doesRexprHaveAnLvalue = (lvalueForRexpr != nil)
-            if doesRexprHaveAnLvalue {
-                instructions += try lvalueContext().compile(expression: assignment.rexpr)
-                let source = temporaryStack.pop()
-                
-                // Perform a raw byte copy from the lvalue of rexpr to the
-                // lvalue of lexpr. No conversion is necessary.
-                instructions += [.copyWordsIndirectDestinationIndirectSource(lvalue.address, source.address, ltype.sizeof)]
-                
-                source.consume()
-                
-                // TODO: So there's a lurking bug here and I need to find a good solution. It is expected that the expression will push a temporary to the stack to hold the value in rexpr. However, that value may be too large to hold in a temporary. I may not be able to allocate one here right now. Also, it is a waste of CPU cycles to copy the value from memory to a temporary if that value isn't actually used in a subsequent expression.
-                
-                if let tempValueOfAssignmentExpr = temporaryAllocator.maybeAllocate(size: ltype.sizeof) {
-                    tempValueOfAssignmentExpr.consume()
-                    instructions += try rvalueContext().compile(expression: assignment.rexpr)
-                } else {
-                    var message = "WARNING: Due to a compiler bug, the compiler may crash if you take the value of this expression"
-                    if let source = assignment.sourceAnchor?.text {
-                        message += " `\(source)'"
-                    }
-                    if let line = assignment.sourceAnchor?.lineNumbers?.first {
-                        message += " on line \(line)"
-                    }
-                    print(message)
-                }
-                
-                return instructions
-            }
-        }
-        
         // Calculate the rvalue, the value that is being assigned.
         // To handle automatic conversion and promotion, the value of this
         // expression is converted now to the type of the destination variable.

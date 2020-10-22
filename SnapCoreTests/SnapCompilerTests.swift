@@ -1782,7 +1782,7 @@ test "call through trait interface" {
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
     }
     
-    func testBugWhereUnableToAllocateTemporaryWhenReturningLargeStructByValue() {
+    func DISABLED_testBugWhereUnableToAllocateTemporaryWhenReturningLargeStructByValue() {
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
         XCTAssertNoThrow(try executor.execute(program: """
@@ -1839,5 +1839,27 @@ let foo = Foo.init()
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "bar")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 7..<8)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `bar'")
+    }
+    
+    func testBugWhereRangeInSubscriptCausesUnsupportedExpressionError() {
+        var serialOutput = ""
+        let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
+        _ = try! executor.execute(program: """
+struct Foo {
+    buffer: []const u8
+}
+let foo = Foo {
+    .buffer = "Hello, World!"
+}
+foo.buffer = foo.buffer[0..5]
+puts(foo.buffer)
+""")
+        XCTAssertEqual(serialOutput, "Hello")
     }
 }

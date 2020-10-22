@@ -794,7 +794,7 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(impl: Impl) throws {
-        let typ = try symbols.resolveType(identifier: impl.identifier.identifier).unwrapStructType()
+        let typ = try symbols.resolveType(sourceAnchor: impl.identifier.sourceAnchor, identifier: impl.identifier.identifier).unwrapStructType()
         
         pushScopeForBlock()
         symbols.enclosingFunctionName = impl.identifier.identifier

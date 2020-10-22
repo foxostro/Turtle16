@@ -2715,7 +2715,7 @@ public func foo() -> None {
     
     func testCompileTraitAddsVtableType_HasConstMethod() {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
-            Expression.ConstType(Expression.PointerType(Expression.Identifier("Foo")))
+            Expression.PointerType(Expression.ConstType(Expression.Identifier("Foo")))
         ])))
         let ast = TopLevel(children: [
             TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -2733,7 +2733,7 @@ public func foo() -> None {
         let traitType = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
         let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: SymbolTable([
-            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0) // TODO: do I need something like a .constVoid type here?
+            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0)
         ])))
         let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
         XCTAssertEqual(expectedVtableType, actualVtableType)

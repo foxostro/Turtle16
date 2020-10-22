@@ -404,9 +404,9 @@ public class SnapToCrackleCompiler: NSObject {
                     return Expression.PointerType(modifiedFunctionType)
                 }
                 
-                if (((arg0 as? Expression.ConstType)?.typ as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
                     var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void)) // TODO: do I need something like a .constVoid type here?
+                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
                     let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
                     return Expression.PointerType(modifiedFunctionType)
                 }
@@ -955,9 +955,9 @@ public class SnapToCrackleCompiler: NSObject {
                 return modifiedFunctionType
             }
             
-            if (((arg0 as? Expression.ConstType)?.typ as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+            if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
+                arguments[0] = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitObjectName)))
                 let modifiedFunctionType = Expression.FunctionType(name: method.name, returnType: functionType.returnType, arguments: arguments)
                 return modifiedFunctionType
             }

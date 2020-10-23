@@ -42,7 +42,7 @@ class SnapExecutor: NSObject {
             }
             
             if shouldAlwaysPrintIR || isVerboseLogging {
-                print("IR:\n" + CrackleInstruction.makeListing(instructions: compiler.ir) + "\n\n")
+                print("IR:\n" + CrackleInstruction.makeListing(instructions: compiler.ir, programDebugInfo: programDebugInfo) + "\n\n")
             }
 
             let computer = try execute(instructions: instructions, programDebugInfo: programDebugInfo)

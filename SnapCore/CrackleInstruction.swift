@@ -6,6 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
 import TurtleCompilerToolbox
 
 // Defines a stack-based intermediate language.
@@ -183,7 +184,22 @@ public enum CrackleInstruction: Equatable {
         }
     }
     
-    public static func makeListing(instructions: [CrackleInstruction]) -> String {
-        return instructions.map{ $0.description }.joined(separator: "\n") + "\n"
+    public static func makeListing(instructions: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) -> String {
+        var previousSourceContext: SourceAnchor? = nil
+        var result = ""
+        for i in 0..<instructions.count {
+            let sourceContext = programDebugInfo?.lookupSourceAnchor(crackleInstructionIndex: i)?.split().first
+            if (sourceContext != nil) && ((previousSourceContext == nil) || previousSourceContext!.context != sourceContext!.context) {
+                if (previousSourceContext != nil) {
+                    result += "\n"
+                }
+                result += sourceContext!.text.split(separator: "\n").map({"# " + $0}).joined(separator: "\n")
+                result += "\n"
+            }
+            result += instructions[i].description
+            result += "\n"
+            previousSourceContext = sourceContext
+        }
+        return result
     }
 }

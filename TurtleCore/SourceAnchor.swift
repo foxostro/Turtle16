@@ -105,4 +105,21 @@ public class SourceAnchor: NSObject {
         }
         return result
     }
+    
+    public func split() -> [SourceAnchor] {
+        let text = lineMapper.text[range]
+        var index = range.lowerBound
+        while index != range.upperBound {
+            if text[index] == "\n" {
+                let lowerRange = (range.lowerBound)..<(index)
+                text.formIndex(after: &index)
+                let upperRange = (index)..<(range.upperBound)
+                return SourceAnchor(range: lowerRange, lineMapper: lineMapper).split() +
+                       SourceAnchor(range: upperRange, lineMapper: lineMapper).split()
+            } else {
+                text.formIndex(after: &index)
+            }
+        }
+        return [self]
+    }
 }

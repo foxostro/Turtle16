@@ -76,7 +76,7 @@ public class SnapCommandLineDriver: NSObject {
         if shouldOutputAssembly {
             try writeDisassemblyToFile(instructions: frontEnd.instructions)
         } else if shouldOutputIR {
-            try writeToFile(ir: frontEnd.ir)
+            try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
         } else {
             try writeToFile(instructions: frontEnd.instructions)
         }
@@ -106,8 +106,8 @@ public class SnapCommandLineDriver: NSObject {
         self.stdout.write("\n")
     }
     
-    func writeToFile(ir: [CrackleInstruction]) throws {
-        let string = CrackleInstruction.makeListing(instructions: ir)
+    func writeToFile(ir: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) throws {
+        let string = CrackleInstruction.makeListing(instructions: ir, programDebugInfo: programDebugInfo)
         try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     

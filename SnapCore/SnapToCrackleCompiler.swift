@@ -610,7 +610,8 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(while stmt: While) throws {
-        currentSourceAnchor = stmt.sourceAnchor
+        let sourceAnchors = stmt.sourceAnchor?.split()
+        currentSourceAnchor = sourceAnchors?.first
         let labelHead = labelMaker.next()
         let labelTail = labelMaker.next()
         emit([.label(labelHead)])
@@ -619,6 +620,7 @@ public class SnapToCrackleCompiler: NSObject {
             .jz(labelTail, tempConditionResult.address)
         ])
         try compile(genericNode: stmt.body)
+        currentSourceAnchor = sourceAnchors?.last
         emit([
             .jmp(labelHead),
             .label(labelTail)
@@ -672,36 +674,51 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compileForInArray(_ stmt: ForIn) throws {
-        let sequence = Expression.Identifier("__sequence")
-        let index = Expression.Identifier("__index")
-        let limit = Expression.Identifier("__limit")
+        let sequence = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__sequence")
+        let index = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__index")
+        let limit = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__limit")
         
-        let ast = Block(children: [
-            VarDeclaration(identifier: sequence,
+        let ast = Block(sourceAnchor: stmt.sourceAnchor, children: [
+            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
+                           identifier: sequence,
                            explicitType: nil,
                            expression: stmt.sequenceExpr,
                            storage: .stackStorage,
                            isMutable: false),
-            VarDeclaration(identifier: index,
+            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
+                           identifier: index,
                            explicitType: nil,
-                           expression: Expression.LiteralInt(0),
+                           expression: Expression.LiteralInt(sourceAnchor: stmt.sourceAnchor, value: 0),
                            storage: .stackStorage,
                            isMutable: true),
-            VarDeclaration(identifier: limit,
+            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
+                           identifier: limit,
                            explicitType: nil,
-                           expression: Expression.Get(expr: sequence, member: Expression.Identifier("count")),
+                           expression: Expression.Get(expr: sequence, member: Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "count")),
                            storage: .stackStorage,
                            isMutable: false),
-            VarDeclaration(identifier: stmt.identifier,
-                           explicitType: Expression.PrimitiveType(try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType.correspondingMutableType),
+            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
+                           identifier: stmt.identifier,
+                           explicitType: Expression.PrimitiveType(sourceAnchor: stmt.sourceAnchor, typ: try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType.correspondingMutableType),
                            expression: nil,
                            storage: .stackStorage,
                            isMutable: true),
-            While(condition: Expression.Binary(op: .ne, left: index, right: limit),
-                  body: Block(children: [
-                    Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Subscript(subscriptable: sequence, argument: index)),
+            While(sourceAnchor: stmt.sourceAnchor,
+                  condition: Expression.Binary(sourceAnchor: stmt.sourceAnchor,
+                                               op: .ne, left: index, right: limit),
+                  body: Block(sourceAnchor: stmt.sourceAnchor,
+                              children: [
+                    Expression.Assignment(sourceAnchor: stmt.sourceAnchor,
+                                          lexpr: stmt.identifier,
+                                          rexpr: Expression.Subscript(sourceAnchor: stmt.sourceAnchor,
+                                                                      subscriptable: sequence,
+                                                                      argument: index)),
                     stmt.body,
-                    Expression.Assignment(lexpr: index, rexpr: Expression.Binary(op: .plus, left: index, right: Expression.LiteralInt(1))),
+                    Expression.Assignment(sourceAnchor: stmt.sourceAnchor,
+                                          lexpr: index,
+                                          rexpr: Expression.Binary(op: .plus,
+                                                                   left: index,
+                                                                   right: Expression.LiteralInt(sourceAnchor: stmt.sourceAnchor, value: 1))),
                   ]))
         ])
         
@@ -761,7 +778,8 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(func node: FunctionDeclaration) throws {
-        currentSourceAnchor = node.sourceAnchor
+        let sourceAnchors = node.sourceAnchor?.split()
+        currentSourceAnchor = sourceAnchors?.first
         
         let functionType = try evaluateFunctionTypeExpression(node.functionType)
         
@@ -783,9 +801,11 @@ public class SnapToCrackleCompiler: NSObject {
         for child in node.body.children {
             try compile(genericNode: child)
         }
+         
         if try shouldSynthesizeTerminalReturnStatement(func: node) {
-            try compile(return: Return(sourceAnchor: node.sourceAnchor, expression: nil))
+            try compile(return: Return(sourceAnchor: sourceAnchors?.last, expression: nil))
         }
+        currentSourceAnchor = sourceAnchors?.last
         popScopeForStackFrame()
         
         emit([

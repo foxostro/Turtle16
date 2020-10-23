@@ -10,6 +10,7 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 public class BaseExpressionCompiler: NSObject {
+    public let isBoundsCheckEnabled = true
     public let symbols: SymbolTable
     public let labelMaker: LabelMaker
     public let temporaryStack: CompilerTemporariesStack
@@ -194,7 +195,9 @@ public class BaseExpressionCompiler: NSObject {
             .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeBeginOffset, tempArrayCount.address),
             .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
         ]
-        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        if isBoundsCheckEnabled {
+            instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        }
         instructions += [
             .label(labelRangeBeginIsValid)
         ]
@@ -205,7 +208,9 @@ public class BaseExpressionCompiler: NSObject {
             .gt16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
-        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        if isBoundsCheckEnabled {
+            instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        }
         instructions += [
             .label(labelRangeLimitIsValid)
         ]
@@ -286,7 +291,9 @@ public class BaseExpressionCompiler: NSObject {
                   tempArrayCount.address),
             .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
         ]
-        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        if isBoundsCheckEnabled {
+            instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        }
         instructions += [
             .label(labelRangeBeginIsValid)
         ]
@@ -297,7 +304,9 @@ public class BaseExpressionCompiler: NSObject {
             .gt16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
-        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        if isBoundsCheckEnabled {
+            instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        }
         instructions += [
             .label(labelRangeLimitIsValid)
         ]
@@ -399,7 +408,9 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
-        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        if isBoundsCheckEnabled {
+            instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        }
         instructions += [.label(label)]
         
         return instructions
@@ -502,7 +513,9 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
-        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        if isBoundsCheckEnabled {
+            instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        }
         instructions += [.label(label)]
         
         // Specifically do not consume tempAccessAddress as we need to leave

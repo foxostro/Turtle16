@@ -194,7 +194,7 @@ public class BaseExpressionCompiler: NSObject {
             .ge16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeBeginOffset, tempArrayCount.address),
             .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
         ]
-        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [
             .label(labelRangeBeginIsValid)
         ]
@@ -205,7 +205,7 @@ public class BaseExpressionCompiler: NSObject {
             .gt16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
-        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [
             .label(labelRangeLimitIsValid)
         ]
@@ -286,7 +286,7 @@ public class BaseExpressionCompiler: NSObject {
                   tempArrayCount.address),
             .jz(labelRangeBeginIsValid, tempIsUnacceptable.address)
         ]
-        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [
             .label(labelRangeBeginIsValid)
         ]
@@ -297,7 +297,7 @@ public class BaseExpressionCompiler: NSObject {
             .gt16(tempIsUnacceptable.address, tempRangeStruct.address + kRangeLimitOffset, tempArrayCount.address),
             .jz(labelRangeLimitIsValid, tempIsUnacceptable.address)
         ]
-        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [
             .label(labelRangeLimitIsValid)
         ]
@@ -399,14 +399,13 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
-        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [.label(label)]
         
         return instructions
     }
     
-    private func panicOutOfBoundsError(sourceAnchor: SourceAnchor?) -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
+    private func panicOutOfBoundsError(sourceAnchor: SourceAnchor?) throws -> [CrackleInstruction] {
         var message = "array access is out of bounds"
         if let sourceAnchor = sourceAnchor {
             message += ": `\(sourceAnchor.text)'"
@@ -414,53 +413,10 @@ public class BaseExpressionCompiler: NSObject {
                 message += " on line \(lineNumbers.lowerBound + 1)"
             }
         }
-        let arr: [Int] = message.utf8.map({Int($0)})
-        let n = arr.count
-        
-        // Allocate space on the stack for `n' characters and an array slice.
-        instructions += [.subi16(kStackPointerAddress, kStackPointerAddress, n+kSliceSize)]
-        
-        // Copy the string onto the stack.
-        let tempDstAddress = temporaryAllocator.allocate()
-        let tempCharacter = temporaryAllocator.allocate()
-        instructions += [
-            .addi16(tempDstAddress.address, kStackPointerAddress, kSliceSize)
-        ]
-        for i in 0..<n {
-            instructions += [
-                .storeImmediate(tempCharacter.address, arr[i]),
-                .copyWordsIndirectDestination(tempDstAddress.address, tempCharacter.address, 1)
-            ]
-            if i != n-1 {
-                instructions += [
-                    .addi16(tempDstAddress.address, tempDstAddress.address, 1)
-                ]
-            }
-        }
-        tempCharacter.consume()
-        
-        // Form an array slice on the top of the stack.
-        let tempArrayBaseAddress = temporaryAllocator.allocate()
-        let tempCount = temporaryAllocator.allocate()
-        assert(kSliceBaseAddressOffset == 0)
-        assert(kSliceBaseAddressSize == 2)
-        instructions += [
-            .addi16(tempArrayBaseAddress.address, kStackPointerAddress, kSliceSize),
-            .copyWordsIndirectDestination(kStackPointerAddress, tempArrayBaseAddress.address, kSliceBaseAddressSize),
-            
-            .addi16(tempDstAddress.address, kStackPointerAddress, kSliceCountOffset),
-            .storeImmediate16(tempCount.address, n),
-            .copyWordsIndirectDestination(tempDstAddress.address, tempCount.address, kSliceCountSize),
-        ]
-        tempCount.consume()
-        tempArrayBaseAddress.consume()
-        tempDstAddress.consume()
-        
-        // Jump to the panic routine.
-        instructions += [
-            .jalr("panic")
-        ]
-        
+        let panic = Expression.Call(sourceAnchor: sourceAnchor, callee: Expression.Identifier("panic"), arguments: [
+            Expression.LiteralString(message)
+        ])
+        let instructions = try rvalueContext().compile(expression: panic)
         return instructions
     }
     
@@ -546,7 +502,7 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.jz(label, tempIsUnacceptable.address)]
         tempIsUnacceptable.consume()
         
-        instructions += panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
+        instructions += try panicOutOfBoundsError(sourceAnchor: expr.sourceAnchor)
         instructions += [.label(label)]
         
         // Specifically do not consume tempAccessAddress as we need to leave

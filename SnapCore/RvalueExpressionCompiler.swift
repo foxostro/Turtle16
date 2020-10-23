@@ -1365,11 +1365,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let resultType = try typeChecker.check(expression: expr)
         assert((expr.value.utf8.count * SymbolType.u8.sizeof) == resultType.sizeof)
         let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
-        var offset = 0
-        for el in expr.value.utf8 {
-            instructions += [.storeImmediate(tempResult.address + offset, Int(el))]
-            offset += SymbolType.u8.sizeof
-        }
+        instructions += [.storeImmediateBytes(tempResult.address, Array<UInt8>(expr.value.utf8))]
         temporaryStack.push(tempResult)
         return instructions
     }

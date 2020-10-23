@@ -19,6 +19,7 @@ public enum CrackleInstruction: Equatable {
     case muli16(Int, Int, Int) // (c, a, imm) -- computes c = a * imm
     case storeImmediate(Int, Int)
     case storeImmediate16(Int, Int)
+    case storeImmediateBytes(Int, [UInt8]) // (dst, bytes) -- stores the given bytes sequentially in memory at the destination
     case label(String) // declares a label
     case jmp(String) // unconditional jump, no change to the stack
     case jalr(String) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register.
@@ -89,6 +90,14 @@ public enum CrackleInstruction: Equatable {
             return String(format: "STORE-IMMEDIATE 0x%04x, 0x%02x", address, value)
         case .storeImmediate16(let address, let value):
             return String(format: "STORE-IMMEDIATE16 0x%04x, 0x%04x", address, value)
+        case .storeImmediateBytes(let address, let bytes):
+            if let string = String(bytes: bytes, encoding: .utf8) {
+                return String(format: "STORE-IMMEDIATE-BYTES 0x%04x, \"\(string)\"", address)
+            } else {
+                return String(format: "STORE-IMMEDIATE-BYTES 0x%04x, [%@]",
+                              address,
+                              bytes.map({String(format: "0x%02x", $0)}).joined(separator: ", "))
+            }
         case .label(let name):
             return "\(name):"
         case .jmp(let label):

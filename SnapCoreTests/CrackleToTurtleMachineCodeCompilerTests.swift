@@ -133,7 +133,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
     
     func testPushManyDoubleWordValues() {
         let kStackPointerInitialValue = UInt16(CrackleToTurtleMachineCodeCompiler.kStackPointerInitialValue)
-        let count = 1000
+        let count = 500
         var ir: [CrackleInstruction] = []
         for i in 0..<count {
             ir.append(.push16(i))
@@ -213,6 +213,26 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         let value = 0xabcd
         let computer = try! execute(ir: [.storeImmediate16(address, value)])
         XCTAssertEqual(computer.dataRAM.load16(from: address), UInt16(value))
+    }
+    
+    func testStoreImmediateBytes_Empty() {
+        let kProloguePlusEpilogueSize = 11
+        let address = 0x0010
+        let bytes: [UInt8] = []
+        let instructions = compile([.storeImmediateBytes(address, bytes)])
+        XCTAssertEqual(instructions.count, kProloguePlusEpilogueSize)
+    }
+    
+    func testStoreImmediateBytes() {
+        let address = 0x0010
+        let bytes: [UInt8] = [0xa, 0xb, 0xc, 0xd]
+        let computer = try! execute(ir: [.storeImmediateBytes(address, bytes)])
+        
+        var arr: [UInt8] = []
+        for i in 0..<bytes.count {
+            arr.append(computer.dataRAM.load(from: address + i))
+        }
+        XCTAssertEqual(arr, bytes)
     }
     
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {

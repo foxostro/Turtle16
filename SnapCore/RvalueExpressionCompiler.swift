@@ -1076,16 +1076,20 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     private func allocateTemporaryForFunctionCallReturn(_ typ: FunctionType) -> CompilerTemporary? {
         let tempReturnValue: CompilerTemporary?
-        if typ.returnType.sizeof > 0 {
-            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
-        } else {
+        if case .void = typ.returnType {
             tempReturnValue = nil
+        } else {
+            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
         }
         return tempReturnValue
     }
     
     private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
-        return [.subi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)]
+        if typ.returnType.sizeof > 0 {
+            return [.subi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)]
+        } else {
+            return []
+        }
     }
     
     private func pushFunctionArgumentsToCompilerTemporariesStack(_ typ: FunctionType, _ node: Expression.Call) throws -> [CrackleInstruction] {
@@ -1114,11 +1118,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     // stack. Copy it to the temporary we allocated for it, above.
     private func copyReturnValueForFunctionCall(_ typ: FunctionType, _ tempReturnValue: CompilerTemporary?) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
-        if typ.returnType.sizeof > 0, let tempReturnValue = tempReturnValue {
-            instructions += [
-                .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
-                .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
-            ]
+        if let tempReturnValue = tempReturnValue {
+            if typ.returnType.sizeof > 0 {
+                instructions += [
+                    .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
+                    .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
+                ]
+            }
             temporaryStack.push(tempReturnValue)
         }
         return instructions

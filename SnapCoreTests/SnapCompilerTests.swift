@@ -1885,4 +1885,16 @@ trait Serial {
 """)
         XCTAssertFalse(compiler.hasError)
     }
+    
+    func testCrashWhenReturningAZeroSizeStruct() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+struct Empty {}
+func init() -> Empty {
+    return Empty {}
+}
+let foo = init()
+""")
+        XCTAssertFalse(compiler.hasError)
+    }
 }

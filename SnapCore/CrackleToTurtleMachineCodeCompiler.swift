@@ -8,6 +8,7 @@
 
 import TurtleCore
 import TurtleCompilerToolbox
+import Darwin // for fputs
 
 // Generates machine code for given IR code.
 public class CrackleToTurtleMachineCodeCompiler: NSObject {
@@ -100,6 +101,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                               base: base)
         instructions = try patcher.patch()
         
+        if assembler.programCounter > 32767 {
+            fputs("WARNING: generated code exceeds 32768 instruction memory words: \(assembler.programCounter) words used\n", stderr)
+        }
+        
         programDebugInfo?.generateMappingToProgramCounter(base: base)
     }
     
@@ -142,6 +147,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .muli16(let c, let a, let b): try muli16(c, a, b)
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
+        case .storeImmediateBytes(let address, let bytes): try storeImmediateBytes(address, bytes)
         case .label(let name): try label(name)
         case .jmp(let label): try jmp(label)
         case .jalr(let label): try jalr(label)
@@ -420,6 +426,20 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.M, (value>>8) & 0xff)
         try setUV(address+1)
         try assembler.li(.M, value & 0xff)
+    }
+    
+    public func storeImmediateBytes(_ address: Int, _ bytes: [UInt8]) throws {
+        guard !bytes.isEmpty else {
+            return
+        }
+        try setUV(address)
+        for i in 0..<bytes.count {
+            let value = Int(bytes[i])
+            try assembler.li(.M, value)
+            if i != bytes.count-1 {
+                assembler.inuv()
+            }
+        }
     }
     
     public func label(_ name: String) throws {

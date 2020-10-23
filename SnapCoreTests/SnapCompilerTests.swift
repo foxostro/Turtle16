@@ -1737,6 +1737,7 @@ test "call through trait interface" {
     
     func testTraitsFailToCompileBecauseTraitNotImplementedAppropriately() {
         let compiler = SnapCompiler()
+        compiler.isUsingStandardLibrary = true
         compiler.compile("""
 trait Serial {
     func puts(self: *Serial, s: []const u8)

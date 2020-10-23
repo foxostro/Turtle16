@@ -894,12 +894,8 @@ public class SnapToCrackleCompiler: NSObject {
         } else {
             message = node.message
         }
-        let elements = message.utf8.map {
-            Expression.LiteralInt(sourceAnchor: s, value: Int($0))
-        }
-        let arrayType = Expression.ArrayType(sourceAnchor: s, count: nil, elementType: Expression.PrimitiveType(.u8))
         let panic = Expression.Call(sourceAnchor: s, callee: Expression.Identifier("panic"), arguments: [
-            Expression.LiteralArray(sourceAnchor: s, arrayType: arrayType, elements: elements)
+            Expression.LiteralString(message)
         ])
         let condition = Expression.Binary(sourceAnchor: s, op: .eq, left: node.condition, right: Expression.LiteralBool(false))
         try compile(if: If(sourceAnchor: s,

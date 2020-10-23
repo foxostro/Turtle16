@@ -1702,6 +1702,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 ]))
         ])
         let compiler = SnapToCrackleCompiler()
+        compiler.globalSymbols.bind(identifier: "panic", symbol: Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0))
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
@@ -1735,6 +1736,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 ]))
         ])
         let compiler = SnapToCrackleCompiler()
+        compiler.globalSymbols.bind(identifier: "panic", symbol: Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0))
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
@@ -1778,6 +1780,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 ]))
         ])
         let compiler = SnapToCrackleCompiler()
+        compiler.globalSymbols.bind(identifier: "panic", symbol: Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0))
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {

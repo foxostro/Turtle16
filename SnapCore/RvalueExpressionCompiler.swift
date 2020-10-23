@@ -1361,15 +1361,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(literalString expr: Expression.LiteralString) throws -> [CrackleInstruction] {
-        let typ = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
-        let sourceAnchor = expr.sourceAnchor
-        let elements = expr.value.utf8.map({
-            Expression.LiteralInt(sourceAnchor: sourceAnchor, value: Int($0))
-        })
-        let arr = Expression.LiteralArray(sourceAnchor: sourceAnchor,
-                                          arrayType: typ,
-                                          elements: elements)
-        return try compile(literalArray: arr)
+        var instructions: [CrackleInstruction] = []
+        let resultType = try typeChecker.check(expression: expr)
+        assert((expr.value.utf8.count * SymbolType.u8.sizeof) == resultType.sizeof)
+        let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
+        var offset = 0
+        for el in expr.value.utf8 {
+            instructions += [.storeImmediate(tempResult.address + offset, Int(el))]
+            offset += SymbolType.u8.sizeof
+        }
+        temporaryStack.push(tempResult)
+        return instructions
     }
     
     private func compile(bitcast expr: Expression.Bitcast) throws -> [CrackleInstruction] {

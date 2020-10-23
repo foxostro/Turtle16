@@ -531,7 +531,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                 if argType0 == selfType || argType0.correspondingConstType == selfType {
                     return try checkStructMemberFunctionCall(call, selfExpr)
                 }
-                if argType0 == .pointer(selfType) || argType0.correspondingConstType == .pointer(selfType.correspondingConstType) {
+                if argType0 == .pointer(selfType) || argType0 == .pointer(selfType.correspondingConstType) || argType0.correspondingConstType == .pointer(selfType.correspondingConstType) {
                     let addressOf = Expression.Bitcast(expr: Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr), targetType: Expression.PrimitiveType(argType0))
                     return try checkStructMemberFunctionCall(call, addressOf)
                 }

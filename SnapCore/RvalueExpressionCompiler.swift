@@ -850,7 +850,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 if argType0 == selfType || argType0.correspondingConstType == selfType {
                     return try compileStructMemberFunctionCall(typ, node, selfExpr)
                 }
-                if argType0 == .pointer(selfType) || argType0.correspondingConstType == .constPointer(selfType) {
+                if argType0 == .pointer(selfType) || argType0 == .pointer(selfType.correspondingConstType) || argType0.correspondingConstType == .constPointer(selfType) {
                     let addressOf = Expression.Bitcast(expr: Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr), targetType: Expression.PrimitiveType(argType0))
                     return try compileStructMemberFunctionCall(typ, node, addressOf)
                 }

@@ -85,7 +85,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
                 // evaluating `pointee' in an lvalue context.
             } else {
                 switch typ {
-                case .structType(let b):
+                case .structType(let b), .constStructType(let b):
                     // We'll leave this temporary on the stack and modify it in place.
                     let symbol = try b.symbols.resolve(identifier: name)
                     if symbol.offset != 0 {

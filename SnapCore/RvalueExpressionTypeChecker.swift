@@ -413,6 +413,9 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             return .acceptable(ltype)
         case (.unionType(let typ), _):
+            if !isExplicitCast {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "cannot implicitly convert a union type `\(rtype)' to `\(ltype)'; use an explicit conversion instead"))
+            }
             for member in typ.members {
                 let status = convertBetweenTypes(ltype: ltype,
                                                  rtype: member,

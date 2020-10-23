@@ -1897,4 +1897,17 @@ let foo = init()
 """)
         XCTAssertFalse(compiler.hasError)
     }
+    
+    func testBugWhereCompilerPermitsImplicitConversionFromUnionToMemberType() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+var a: u8 | bool = 42
+var b: u8 = a
+""")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot implicitly convert a union type `u8 | bool' to `u8'; use an explicit conversion instead")
+    }
 }

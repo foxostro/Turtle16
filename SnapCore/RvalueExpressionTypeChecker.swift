@@ -412,6 +412,14 @@ public class RvalueExpressionTypeChecker: NSObject {
                 return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
             }
             return .acceptable(ltype)
+        case (.unionType(let a), .unionType(let b)):
+            if b == a.correspondingConstType {
+                return .acceptable(ltype)
+            } else if b.correspondingConstType == a {
+                return .acceptable(ltype)
+            } else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
         case (.unionType(let typ), _):
             if !isExplicitCast {
                 return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "cannot implicitly convert a union type `\(rtype)' to `\(ltype)'; use an explicit conversion instead"))

@@ -214,6 +214,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.hlt()
         try generateProcedureCopyWordsWithLoop()
         try generateProcedureEnter()
+        try generateProcedureLeave()
         try doAtEpilogue(self)
     }
     
@@ -467,7 +468,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
+    fileprivate var isJalrPermitted = true
+    
     public func jalr(_ label: String) throws {
+        assert(isJalrPermitted)
         try setAddressToLabel(label)
         assembler.jalr()
         assembler.nop()
@@ -475,6 +479,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func indirectJalr(_ address: Int) throws {
+        assert(isJalrPermitted)
         try setUV(address)
         try assembler.mov(.X, .M)
         assembler.inuv()
@@ -504,24 +509,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public func leave() throws {
         // sp <- fp ; fp <- pop two bytes from the stack
-        
-        try setUV(kFramePointerAddressHi)
-        try assembler.mov(.X, .M)
-        try setUV(kFramePointerAddressLo)
-        try assembler.mov(.Y, .M)
-        
-        try setUV(kStackPointerAddressHi)
-        try assembler.mov(.M, .X)
-        try setUV(kStackPointerAddressLo)
-        try assembler.mov(.M, .Y)
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(kFramePointerAddressHi)
-        try assembler.mov(.M, .B)
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(kFramePointerAddressLo)
-        try assembler.mov(.M, .B)
+        try jalr(kProcLeave)
     }
     
     private func pushReturnAddress() throws { // TODO: need unit test for pushReturnAddress
@@ -1540,6 +1528,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     fileprivate func generateProcedureCopyWordsWithLoop() throws {
+        isJalrPermitted = false
+        defer { isJalrPermitted = true }
+        
         scratchPointer = beginningOfScratchMemory
         let tempDstPointer = allocateScratchMemory(2)
         let tempSrcPointer = allocateScratchMemory(2)
@@ -1604,6 +1595,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     fileprivate let kProcEnter = "__crackle_proc_enter"
     
     fileprivate func generateProcedureEnter() throws {
+        isJalrPermitted = false
+        defer { isJalrPermitted = true }
+        
         // push fp in two bytes ; fp <- sp
         try label(kProcEnter)
         
@@ -1624,6 +1618,35 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .X)
         try setUV(kFramePointerAddressLo)
         try assembler.mov(.M, .Y)
+        
+        try leafRet()
+    }
+    
+    fileprivate let kProcLeave = "__crackle_proc_leave"
+    
+    fileprivate func generateProcedureLeave() throws {
+        isJalrPermitted = false
+        defer { isJalrPermitted = true }
+        
+        try label(kProcLeave)
+        
+        try setUV(kFramePointerAddressHi)
+        try assembler.mov(.X, .M)
+        try setUV(kFramePointerAddressLo)
+        try assembler.mov(.Y, .M)
+        
+        try setUV(kStackPointerAddressHi)
+        try assembler.mov(.M, .X)
+        try setUV(kStackPointerAddressLo)
+        try assembler.mov(.M, .Y)
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(kFramePointerAddressHi)
+        try assembler.mov(.M, .B)
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(kFramePointerAddressLo)
+        try assembler.mov(.M, .B)
         
         try leafRet()
     }

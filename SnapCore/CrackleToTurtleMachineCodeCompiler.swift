@@ -77,8 +77,12 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func setUV(_ value: Int) throws {
-        try assembler.li(.U, (value>>8) & 0xff)
-        try assembler.li(.V, value & 0xff)
+        if ((value>>8) & 0xff) == (value & 0xff) {
+            try assembler.li(.UV, (value & 0xff))
+        } else {
+            try assembler.li(.U, (value>>8) & 0xff)
+            try assembler.li(.V, value & 0xff)
+        }
     }
     
     public func compile(ir: [CrackleInstruction], base: Int = 0x0000) throws {

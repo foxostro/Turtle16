@@ -29,8 +29,7 @@ let a = 42
 """)
         XCTAssertTrue(actual.hasPrefix("""
 NOP
-LI U, 0x00
-LI V, 0x00
+LI UV, 0x00
 LI M, 0x00
 INUV
 LI M, 0x00

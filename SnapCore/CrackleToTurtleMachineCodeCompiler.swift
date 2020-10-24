@@ -213,6 +213,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         currentSourceAnchor = nil
         assembler.hlt()
         try generateProcedureCopyWordsWithLoop()
+        try generateProcedureEnter()
         try doAtEpilogue(self)
     }
     
@@ -498,24 +499,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     public func enter() throws {
         // push fp in two bytes ; fp <- sp
-        
-        try setUV(kFramePointerAddressLo)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        try setUV(kFramePointerAddressHi)
-        try assembler.mov(.A, .M)
-        try pushAToStack()
-        
-        try setUV(kStackPointerAddressHi)
-        try assembler.mov(.X, .M)
-        try setUV(kStackPointerAddressLo)
-        try assembler.mov(.Y, .M)
-
-        try setUV(kFramePointerAddressHi)
-        try assembler.mov(.M, .X)
-        try setUV(kFramePointerAddressLo)
-        try assembler.mov(.M, .Y)
+        try jalr(kProcEnter)
     }
     
     public func leave() throws {
@@ -1546,13 +1530,13 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.li(.M, 0xff)
     }
     
-    fileprivate let kCopyWordsWithLoop = "copyWordsWithLoop"
+    fileprivate let kProcCopyWordsWithLoop = "__crackle_proc_copyWordsWithLoop"
     
     fileprivate func copyWordsWithLoop(_ tempDstPointer: Int, _ tempSrcPointer: Int, _ tempLimitPointer: Int) throws {
         assert(tempDstPointer == 0x0004)
         assert(tempSrcPointer == 0x0006)
         assert(tempLimitPointer == 0x0008)
-        try jalr(kCopyWordsWithLoop)
+        try jalr(kProcCopyWordsWithLoop)
     }
     
     fileprivate func generateProcedureCopyWordsWithLoop() throws {
@@ -1565,7 +1549,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assert(tempSrcPointer == 0x0006)
         assert(tempLimitPointer == 0x0008)
         
-        let loopHead = kCopyWordsWithLoop
+        let loopHead = kProcCopyWordsWithLoop
         try label(loopHead)
         
         // Copy one byte from the source to the destination.
@@ -1614,11 +1598,33 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
         assembler.nop()
         
-        // Return from procedure. The return address is in the link register.
-        try assembler.mov(.X, .G)
-        try assembler.mov(.Y, .H)
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
+        try leafRet()
+    }
+    
+    fileprivate let kProcEnter = "__crackle_proc_enter"
+    
+    fileprivate func generateProcedureEnter() throws {
+        // push fp in two bytes ; fp <- sp
+        try label(kProcEnter)
+        
+        try setUV(kFramePointerAddressLo)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        
+        try setUV(kFramePointerAddressHi)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        
+        try setUV(kStackPointerAddressHi)
+        try assembler.mov(.X, .M)
+        try setUV(kStackPointerAddressLo)
+        try assembler.mov(.Y, .M)
+
+        try setUV(kFramePointerAddressHi)
+        try assembler.mov(.M, .X)
+        try setUV(kFramePointerAddressLo)
+        try assembler.mov(.M, .Y)
+        
+        try leafRet()
     }
 }

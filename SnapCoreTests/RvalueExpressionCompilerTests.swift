@@ -4300,7 +4300,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 386)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 428)
     }
     
     func testCallFunctionThroughFunctionPointer() {

@@ -218,6 +218,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try generateProcedurePushToStack()
         try generateProcedurePop()
         try generateProcedurePokePeripheral()
+        try generateProcedureRet()
         try doAtEpilogue(self)
     }
     
@@ -533,22 +534,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.nop()
     }
     
-    public func ret() throws { // TODO: need unit test for ret
-        let addressOfReturnAddressHi = allocateScratchMemory(1)
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(addressOfReturnAddressHi)
-        try assembler.mov(.M, .B)
-        
-        try popInMemoryStackIntoRegisterB()
-        try assembler.mov(.Y, .B)
-        
-        try setUV(addressOfReturnAddressHi)
-        try assembler.mov(.X, .M)
-        
-        assembler.jmp()
-        assembler.nop()
-        assembler.nop()
+    public func ret() throws {
+        try jmp(kProcRet)
     }
     
     public func hlt() {
@@ -1704,5 +1691,28 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.P, .A)
         
         try leafRet()
+    }
+    
+    fileprivate let kProcRet = "__crackle_proc_poke_ret"
+    
+    fileprivate func generateProcedureRet() throws {
+        try label(kProcRet)
+        
+        scratchPointer = beginningOfScratchMemory
+        let addressOfReturnAddressHi = allocateScratchMemory(1)
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(addressOfReturnAddressHi)
+        try assembler.mov(.M, .B)
+        
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.Y, .B)
+        
+        try setUV(addressOfReturnAddressHi)
+        try assembler.mov(.X, .M)
+        
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
     }
 }

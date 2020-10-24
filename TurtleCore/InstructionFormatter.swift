@@ -32,31 +32,31 @@ public class InstructionFormatter: NSObject {
             }
         }
         else if mnemonic == "MOV A, C" {
-            return "LI A, \(instruction.immediate)"
+            return "LI A, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV B, C" {
-            return "LI B, \(instruction.immediate)"
+            return "LI B, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV D, C" {
-            return "LI D, \(instruction.immediate)"
+            return "LI D, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV X, C" {
-            return "LI X, \(instruction.immediate)"
+            return "LI X, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV Y, C" {
-            return "LI Y, \(instruction.immediate)"
+            return "LI Y, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV U, C" {
-            return "LI U, \(instruction.immediate)"
+            return "LI U, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV V, C" {
-            return "LI V, \(instruction.immediate)"
+            return "LI V, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV M, C" {
-            return "LI M, \(instruction.immediate)"
+            return "LI M, \(String(format: "0x%02x", instruction.immediate))"
         }
         else if mnemonic == "MOV P, C" {
-            return "LI P, \(instruction.immediate)"
+            return "LI P, \(String(format: "0x%02x", instruction.immediate))"
         }
         
         return mnemonic

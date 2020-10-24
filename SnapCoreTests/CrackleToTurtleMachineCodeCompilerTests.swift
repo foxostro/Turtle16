@@ -1392,6 +1392,20 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
     func testCopyWords_2() {
         let dst = 0x0104
         let src = 0x0108
+        let count = 1
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0xaa, to: src)
+            computer.dataRAM.store(value: 0x00, to: dst)
+        }
+        let computer = try! executor.execute(ir: [.copyWords(dst, src, count)])
+        XCTAssertEqual(computer.dataRAM.load(from: src), 0xaa)
+        XCTAssertEqual(computer.dataRAM.load(from: dst), 0xaa)
+    }
+    
+    func testCopyWords_3() {
+        let dst = 0x0104
+        let src = 0x0108
         let count = 4
         let executor = CrackleExecutor()
         executor.configure = { (computer: Computer) in
@@ -1405,6 +1419,28 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: src+2), 0xcafe)
         XCTAssertEqual(computer.dataRAM.load16(from: dst+0), 0xcafe)
         XCTAssertEqual(computer.dataRAM.load16(from: dst+2), 0xcafe)
+    }
+    
+    func testCopyWords_4() {
+        let dst = 0x1104
+        let src = 0x0108
+        let count = 100
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            for i in 0..<count {
+                computer.dataRAM.store(value: 0xaa, to: src+i)
+            }
+            for i in 0..<count {
+                computer.dataRAM.store(value: 0x00, to: dst+i)
+            }
+        }
+        let computer = try! executor.execute(ir: [.copyWords(dst, src, count)])
+        for i in 0..<count {
+            XCTAssertEqual(computer.dataRAM.load(from: src+i), 0xaa)
+        }
+        for i in 0..<count {
+            XCTAssertEqual(computer.dataRAM.load(from: dst+i), 0xaa)
+        }
     }
     
     func testCopyWordsIndirectSource() {

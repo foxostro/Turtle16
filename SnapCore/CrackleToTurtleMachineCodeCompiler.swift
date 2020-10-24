@@ -1336,12 +1336,81 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.M, .X)
     }
     
-    private func copyWords(_ dst: Int, _ src: Int, _ count: Int) throws {
-        for i in 0..<count {
-            try setUV(src + i)
+    private func copyWords(_ dst: Int, _ src: Int, _ numberOfBytesToCopy: Int) throws {
+        switch numberOfBytesToCopy {
+        case 0:
+            return
+        case 1..<15:
+            for i in 0..<numberOfBytesToCopy {
+                try setUV(src + i)
+                try assembler.mov(.A, .M)
+                try setUV(dst + i)
+                try assembler.mov(.M, .A)
+            }
+        default:
+            let srcLimit = src + numberOfBytesToCopy
+            
+            let tempDstPointer = allocateScratchMemory(2)
+            let tempSrcPointer = allocateScratchMemory(2)
+            
+            // Initialize the destination pointer
+            try setUV(tempDstPointer+0)
+            try assembler.li(.M, (dst >> 8) & 0xff)
+            try setUV(tempDstPointer+1)
+            try assembler.li(.M, dst & 0xff)
+            
+            // Initialize the source pointer
+            try setUV(tempSrcPointer+0)
+            try assembler.li(.M, (src >> 8) & 0xff)
+            try setUV(tempSrcPointer+1)
+            try assembler.li(.M, src & 0xff)
+            
+            let loopHead = labelMaker.next()
+            try label(loopHead)
+            
+            // Copy one byte from the source to the destination.
+            try setUV(tempSrcPointer)
+            try assembler.mov(.X, .M)
+            assembler.inuv()
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
             try assembler.mov(.A, .M)
-            try setUV(dst + i)
+            
+            try setUV(tempDstPointer)
+            try assembler.mov(.X, .M)
+            assembler.inuv()
+            try assembler.mov(.Y, .M)
+            try assembler.mov(.U, .X)
+            try assembler.mov(.V, .Y)
             try assembler.mov(.M, .A)
+            
+            // Compute the source and destination addresses.
+            try addi16(tempDstPointer, tempDstPointer, 1)
+            try addi16(tempSrcPointer, tempSrcPointer, 1)
+            
+            // if srcPointer != srcLimit then loop
+            try assembler.li(.A, (srcLimit >> 8) & 0xff)
+            try setUV(tempSrcPointer+0)
+            try assembler.mov(.B, .M)
+            assembler.cmp()
+            assembler.cmp()
+            
+            try setAddressToLabel(loopHead)
+            assembler.jne()
+            assembler.nop()
+            assembler.nop()
+            
+            try assembler.li(.A, srcLimit & 0xff)
+            try setUV(tempSrcPointer+1)
+            try assembler.mov(.B, .M)
+            assembler.cmp()
+            assembler.cmp()
+            
+            try setAddressToLabel(loopHead)
+            assembler.jne()
+            assembler.nop()
+            assembler.nop()
         }
     }
     

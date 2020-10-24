@@ -74,7 +74,7 @@ public class SnapCommandLineDriver: NSObject {
         }
         
         if shouldOutputAssembly {
-            try writeDisassemblyToFile(instructions: frontEnd.instructions)
+            try writeDisassemblyToFile(instructions: frontEnd.instructions, programDebugInfo: frontEnd.programDebugInfo)
         } else if shouldOutputIR {
             try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
         } else {
@@ -111,12 +111,9 @@ public class SnapCommandLineDriver: NSObject {
         try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     
-    func writeDisassemblyToFile(instructions: [Instruction]) throws {
-        var string = ""
-        for instruction in instructions {
-            string += instruction.disassembly ?? instruction.description
-            string += "\n"
-        }
+    func writeDisassemblyToFile(instructions: [Instruction], programDebugInfo: SnapDebugInfo?) throws {
+        let base = 0
+        let string = AssemblyListingMaker.makeListing(base, instructions, programDebugInfo)
         try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     

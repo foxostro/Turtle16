@@ -1435,7 +1435,23 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         }
     }
     
-    func testCopyWordsIndirectSource() {
+    func testCopyWordsIndirectSource_0() {
+        let dst = 0x0104
+        let src = 0x0108
+        let srcPtr = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0xcdcd, to: dst)
+            computer.dataRAM.store16(value: 0xcafe, to: src)
+            computer.dataRAM.store16(value: UInt16(src), to: srcPtr)
+        }
+        let computer = try! executor.execute(ir: [.copyWordsIndirectSource(dst, srcPtr, 0)])
+        XCTAssertEqual(computer.dataRAM.load16(from: dst), 0xcdcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: src), 0xcafe)
+        XCTAssertEqual(computer.dataRAM.load16(from: srcPtr), UInt16(src))
+    }
+    
+    func testCopyWordsIndirectSource_1() {
         let dst = 0x0104
         let src = 0x0108
         let srcPtr = 0x010a
@@ -1451,7 +1467,73 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: srcPtr), UInt16(src))
     }
     
-    func testCopyWordsIndirectDestination() {
+    func testCopyWordsIndirectSource_2() {
+        let dst = 0x2104
+        let src = 0x1108
+        let srcPtr = 0x010a
+        let n = 100
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            for i in 0..<n {
+                computer.dataRAM.store(value: 0x00, to: dst+i)
+            }
+            for i in 0..<n {
+                computer.dataRAM.store(value: 0xcc, to: src+i)
+            }
+            computer.dataRAM.store16(value: UInt16(src), to: srcPtr)
+        }
+        let computer = try! executor.execute(ir: [.copyWordsIndirectSource(dst, srcPtr, n)])
+        for i in 0..<n {
+            XCTAssertEqual(computer.dataRAM.load(from: dst+i), 0xcc)
+        }
+        for i in 0..<n {
+            XCTAssertEqual(computer.dataRAM.load(from: src+i), 0xcc)
+        }
+        XCTAssertEqual(computer.dataRAM.load16(from: srcPtr), UInt16(src))
+    }
+    
+    func testCopyWordsIndirectDestination_0() {
+        let dst = 0x0104
+        let src = 0x0108
+        let dstPtr = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0xcdcd, to: dst)
+            computer.dataRAM.store16(value: 0xcafe, to: src)
+            computer.dataRAM.store16(value: UInt16(dst), to: dstPtr)
+        }
+        let computer = try! executor.execute(ir: [.copyWordsIndirectDestination(dstPtr, src, 0)])
+        XCTAssertEqual(computer.dataRAM.load16(from: dst), 0xcdcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: src), 0xcafe)
+        XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
+    }
+    
+    func testCopyWordsIndirectDestination_1() {
+        let src = 0x2104
+        let dst = 0x1108
+        let dstPtr = 0x010a
+        let n = 100
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            for i in 0..<n {
+                computer.dataRAM.store(value: 0xcc, to: src+i)
+            }
+            for i in 0..<n {
+                computer.dataRAM.store(value: 0x00, to: dst+i)
+            }
+            computer.dataRAM.store16(value: UInt16(dst), to: dstPtr)
+        }
+        let computer = try! executor.execute(ir: [.copyWordsIndirectDestination(dstPtr, src, n)])
+        for i in 0..<n {
+            XCTAssertEqual(computer.dataRAM.load(from: src+i), 0xcc)
+        }
+        for i in 0..<n {
+            XCTAssertEqual(computer.dataRAM.load(from: dst+i), 0xcc)
+        }
+        XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
+    }
+    
+    func testCopyWordsIndirectDestination_2() {
         let dst = 0x0104
         let src = 0x0108
         let dstPtr = 0x010a
@@ -1467,7 +1549,27 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
     }
     
-    func testCopyWordsIndirectDestinationIndirectSource() {
+    func testCopyWordsIndirectDestinationIndirectSource_0() {
+        let dst = 0x2104
+        let src = 0x1108
+        let dstPtr = 0x010a
+        let srcPtr = 0x010c
+        let n = 0
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0xcdcd, to: dst)
+            computer.dataRAM.store16(value: 0xcafe, to: src)
+            computer.dataRAM.store16(value: UInt16(dst), to: dstPtr)
+            computer.dataRAM.store16(value: UInt16(src), to: srcPtr)
+        }
+        let computer = try! executor.execute(ir: [.copyWordsIndirectDestinationIndirectSource(dstPtr, srcPtr, n)])
+        XCTAssertEqual(computer.dataRAM.load16(from: dst), 0xcdcd)
+        XCTAssertEqual(computer.dataRAM.load16(from: src), 0xcafe)
+        XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
+        XCTAssertEqual(computer.dataRAM.load16(from: srcPtr), UInt16(src))
+    }
+    
+    func testCopyWordsIndirectDestinationIndirectSource_1() {
         let dst = 0x0104
         let src = 0x0108
         let dstPtr = 0x010a
@@ -1482,6 +1584,34 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         let computer = try! executor.execute(ir: [.copyWordsIndirectDestinationIndirectSource(dstPtr, srcPtr, 2)])
         XCTAssertEqual(computer.dataRAM.load16(from: dst), 0xcafe)
         XCTAssertEqual(computer.dataRAM.load16(from: src), 0xcafe)
+        XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
+        XCTAssertEqual(computer.dataRAM.load16(from: srcPtr), UInt16(src))
+    }
+    
+    func testCopyWordsIndirectDestinationIndirectSource_2() {
+        let dst = 0x2104
+        let src = 0x1108
+        let dstPtr = 0x010a
+        let srcPtr = 0x010c
+        let n = 100
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            for i in 0..<n {
+                computer.dataRAM.store(value: 0xcc, to: src+i)
+            }
+            for i in 0..<n {
+                computer.dataRAM.store(value: 0x00, to: dst+i)
+            }
+            computer.dataRAM.store16(value: UInt16(dst), to: dstPtr)
+            computer.dataRAM.store16(value: UInt16(src), to: srcPtr)
+        }
+        let computer = try! executor.execute(ir: [.copyWordsIndirectDestinationIndirectSource(dstPtr, srcPtr, n)])
+        for i in 0..<n {
+            XCTAssertEqual(computer.dataRAM.load(from: src+i), 0xcc)
+        }
+        for i in 0..<n {
+            XCTAssertEqual(computer.dataRAM.load(from: dst+i), 0xcc)
+        }
         XCTAssertEqual(computer.dataRAM.load16(from: dstPtr), UInt16(dst))
         XCTAssertEqual(computer.dataRAM.load16(from: srcPtr), UInt16(src))
     }

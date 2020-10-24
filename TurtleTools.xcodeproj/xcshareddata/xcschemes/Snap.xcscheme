@@ -109,7 +109,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "&apos;/Users/andrewfox/Desktop/bug repro/convert const.snap&apos;"
+            argument = "&apos;/Users/andrewfox/Desktop/ReceiveFile.snap&apos;"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

@@ -17,6 +17,7 @@ class CrackleExecutor: NSObject {
     var injectPanicStub = true
     var configure: (Computer) -> Void = {_ in}
     var injectCode: (CrackleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
+    var programDebugInfo: SnapDebugInfo? = nil
     let microcodeGenerator: MicrocodeGenerator
     let assembler: AssemblerBackEnd
     
@@ -28,7 +29,7 @@ class CrackleExecutor: NSObject {
     
     func execute(ir: [CrackleInstruction]) throws -> Computer {
         if isVerboseLogging {
-            print("IR:\n" + CrackleInstruction.makeListing(instructions: ir) + "\n\n")
+            print("IR:\n" + CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo) + "\n\n")
         }
         
         var computer: Computer!
@@ -81,6 +82,7 @@ class CrackleExecutor: NSObject {
     func execute(instructions: [Instruction]) throws -> Computer {
         let computer = makeComputer(microcodeGenerator: microcodeGenerator)
         computer.provideInstructions(instructions)
+        computer.programDebugInfo = programDebugInfo
         
         // Ensure unpatched branches cause the machine to halt by inserting a
         // halt instruction at address 0xffff.

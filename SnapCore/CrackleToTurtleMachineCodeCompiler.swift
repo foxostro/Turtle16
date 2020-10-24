@@ -101,7 +101,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                               base: base)
         instructions = try patcher.patch()
         
-        fputs("instruction words used: \(assembler.programCounter)\n", stderr)
+        if nil == NSClassFromString("XCTest") {
+            fputs("instruction words used: \(assembler.programCounter)\n", stderr)
+        }
         
         if assembler.programCounter > 32767 {
             fputs("WARNING: generated code exceeds 32768 instruction memory words: \(assembler.programCounter) words used\n", stderr)

@@ -35,6 +35,7 @@ class CrackleInstructionListingMakerTests: XCTestCase {
     func testMakeList_VarDeclStmt() {
         let actual = makeListing(snapSource: "let a = 42")
         XCTAssertEqual(actual, """
+# 1:
 # let a = 42
 STORE-IMMEDIATE16 0x0010, 0x0110
 STORE-IMMEDIATE 0x0012, 0x2a
@@ -45,11 +46,13 @@ COPY-ID 0x0010, 0x0012, 1
     func testMakeList_TwoVarDeclStmts() {
         let actual = makeListing(snapSource: "let a = 42\nlet b = 13")
         XCTAssertEqual(actual, """
+# 1:
 # let a = 42
 STORE-IMMEDIATE16 0x0010, 0x0110
 STORE-IMMEDIATE 0x0012, 0x2a
 COPY-ID 0x0010, 0x0012, 1
 
+# 2:
 # let b = 13
 STORE-IMMEDIATE16 0x0010, 0x0111
 STORE-IMMEDIATE 0x0012, 0x0d

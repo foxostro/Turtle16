@@ -18,7 +18,17 @@ public class CrackleInstructionListingMaker: NSObject {
                 if (previousSourceContext != nil) {
                     result += "\n"
                 }
-                result += sourceContext!.text.split(separator: "\n").map({"# " + $0}).joined(separator: "\n")
+                var locator = ""
+                if let fileName = sourceContext?.lineMapper.url?.lastPathComponent {
+                    locator += "\(fileName): "
+                }
+                if let lineNumber = sourceContext?.lineNumbers?.lowerBound {
+                    locator += "\(lineNumber+1):"
+                }
+                if !locator.isEmpty {
+                    result += "# \(locator)\n"
+                }
+                result += sourceContext!.text.split(separator: "\n").map({"# \($0)"}).joined(separator: "\n")
                 result += "\n"
             }
             result += instructions[i].description

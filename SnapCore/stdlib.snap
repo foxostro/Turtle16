@@ -14,12 +14,12 @@ public func puts(s: []const u8) {
 }
 
 public func putc(c: u8) {
-    let kSerialDevice = 7
-    let kDataPort = 1
-    let kControlPort = 0
-    let kPutCommand = 1
-    let kSckHi = 1
-    let kSckLo = 0
+    static let kSerialDevice = 7
+    static let kDataPort = 1
+    static let kControlPort = 0
+    static let kPutCommand = 1
+    static let kSckHi = 1
+    static let kSckLo = 0
 
     pokePeripheral(kPutCommand, kDataPort, kSerialDevice)
     pokePeripheral(kSckHi, kControlPort, kSerialDevice)

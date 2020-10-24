@@ -101,6 +101,8 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                               base: base)
         instructions = try patcher.patch()
         
+        fputs("instruction words used: \(assembler.programCounter)\n", stderr)
+        
         if assembler.programCounter > 32767 {
             fputs("WARNING: generated code exceeds 32768 instruction memory words: \(assembler.programCounter) words used\n", stderr)
         }
@@ -424,7 +426,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     public func storeImmediate16(_ address: Int, _ value: Int) throws {
         try setUV(address+0)
         try assembler.li(.M, (value>>8) & 0xff)
-        try setUV(address+1)
+        assembler.inuv()
         try assembler.li(.M, value & 0xff)
     }
     

@@ -27,15 +27,15 @@ class AssemblyListingMakerTests: XCTestCase {
         let actual = makeListing(snapSource: "")
         XCTAssertEqual(actual, """
 NOP
-LI U, 0
-LI V, 0
-LI M, 0
+LI U, 0x00
+LI V, 0x00
+LI M, 0x00
 INUV
-LI M, 0
+LI M, 0x00
 INUV
-LI M, 0
+LI M, 0x00
 INUV
-LI M, 0
+LI M, 0x00
 HLT
 """)
     }
@@ -46,40 +46,40 @@ let a = 42
 """)
         XCTAssertEqual(actual, """
 NOP
-LI U, 0
-LI V, 0
-LI M, 0
+LI U, 0x00
+LI V, 0x00
+LI M, 0x00
 INUV
-LI M, 0
+LI M, 0x00
 INUV
-LI M, 0
+LI M, 0x00
 INUV
-LI M, 0
+LI M, 0x00
 
 # ##############################################################################
 # let a = 42
 
 # STORE-IMMEDIATE16 0x0010, 0x0110
-LI U, 0
-LI V, 16
-LI M, 1
-LI U, 0
-LI V, 17
-LI M, 16
+LI U, 0x00
+LI V, 0x10
+LI M, 0x01
+LI U, 0x00
+LI V, 0x11
+LI M, 0x10
 
 # STORE-IMMEDIATE 0x0012, 0x2a
-LI U, 0
-LI V, 18
-LI M, 42
+LI U, 0x00
+LI V, 0x12
+LI M, 0x2a
 
 # COPY-ID 0x0010, 0x0012, 1
-LI U, 0
-LI V, 16
+LI U, 0x00
+LI V, 0x10
 MOV X, M
 INUV
 MOV Y, M
-LI U, 0
-LI V, 18
+LI U, 0x00
+LI V, 0x12
 MOV A, M
 MOV U, X
 MOV V, Y

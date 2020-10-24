@@ -44,12 +44,12 @@ HLT
     
     func testRecordTraceWithAForwardJump() {
         let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
-LI X, 1
-LI Y, 0
+LI X, 0x01
+LI Y, 0x00
 JMP
 NOP # branch delay slot
 NOP # branch delay slot
-LI A, 2
+LI A, 0x02
 HLT
 """)
         
@@ -61,29 +61,29 @@ HLT
         XCTAssertEqual(trace.description, """
 0x0000: NOP ; isBreakpoint=true
 0x0000: NOP
-0x0000: LI X, 1
-0x0001: LI Y, 0
+0x0000: LI X, 0x01
+0x0001: LI Y, 0x00
 0x0002: JMP ; guardAddress=0x0100
 0x0003: NOP
 0x0004: NOP
-0x0100: LI A, 2
+0x0100: LI A, 0x02
 0x0101: HLT
 """)
     }
     
     func testRecordTraceWithConditionalForwardJump() {
         let trace = TraceUtils.recordTraceForProgram(microcodeGenerator: microcodeGenerator, """
-LI X, 1
-LI Y, 0
-LI A, 1
-LI B, 1
+LI X, 0x01
+LI Y, 0x00
+LI A, 0x01
+LI B, 0x01
 CMP
 CMP
 NOP
 JE
 NOP # branch delay slot
 NOP # branch delay slot
-LI D, 2
+LI D, 0x02
 HLT
 """)
         
@@ -94,17 +94,17 @@ HLT
         XCTAssertEqual(trace.description, """
 0x0000: NOP ; isBreakpoint=true
 0x0000: NOP
-0x0000: LI X, 1
-0x0001: LI Y, 0
-0x0002: LI A, 1
-0x0003: LI B, 1
+0x0000: LI X, 0x01
+0x0001: LI Y, 0x00
+0x0002: LI A, 0x01
+0x0003: LI B, 0x01
 0x0004: CMP
 0x0005: CMP
 0x0006: NOP
 0x0007: JE ; guardAddress=0x0100 ; guardFlags={carryFlag: 1, equalFlag: 1}
 0x0008: NOP
 0x0009: NOP
-0x0100: LI D, 2
+0x0100: LI D, 0x02
 0x0101: HLT
 """)
     }

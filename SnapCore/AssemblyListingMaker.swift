@@ -24,6 +24,9 @@ public class AssemblyListingMaker: NSObject {
                     result += "\n\(commentedSource)\n"
                 }
                 previousSourceAnchor = sourceAnchor
+            } else if previousSourceAnchor != nil {
+                result += "\n# " + String(repeating: "#", count: 78) + "\n"
+                previousSourceAnchor = nil
             }
             if let crackleInstruction = programDebugInfo?.lookupCrackleInstruction(pc: pc) {
                 if previousCrackleInstruction != crackleInstruction {

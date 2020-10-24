@@ -215,14 +215,6 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: address), UInt16(value))
     }
     
-    func testStoreImmediateBytes_Empty() {
-        let kProloguePlusEpilogueSize = 11
-        let address = 0x0010
-        let bytes: [UInt8] = []
-        let instructions = compile([.storeImmediateBytes(address, bytes)])
-        XCTAssertEqual(instructions.count, kProloguePlusEpilogueSize)
-    }
-    
     func testStoreImmediateBytes() {
         let address = 0x0010
         let bytes: [UInt8] = [0xa, 0xb, 0xc, 0xd]

@@ -206,7 +206,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     
     // Inserts epilogue code into the program, presumably at the end.
     func insertProgramEpilogue() throws {
+        currentSourceAnchor = nil
         assembler.hlt()
+        try generateProcedureCopyWordsWithLoop()
         try doAtEpilogue(self)
     }
     
@@ -1340,7 +1342,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         switch numberOfBytesToCopy {
         case 0:
             return
-        case 1..<15:
+        case 1..<6:
             for i in 0..<numberOfBytesToCopy {
                 try setUV(src + i)
                 try assembler.mov(.A, .M)
@@ -1348,10 +1350,9 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                 try assembler.mov(.M, .A)
             }
         default:
-            let srcLimit = src + numberOfBytesToCopy
-            
             let tempDstPointer = allocateScratchMemory(2)
             let tempSrcPointer = allocateScratchMemory(2)
+            let tempLimitPointer = allocateScratchMemory(2)
             
             // Initialize the destination pointer
             try setUV(tempDstPointer+0)
@@ -1365,53 +1366,91 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
             try setUV(tempSrcPointer+1)
             try assembler.li(.M, src & 0xff)
             
-            let loopHead = labelMaker.next()
-            try label(loopHead)
+            // Initialize the limit pointer
+            let srcLimit = src + numberOfBytesToCopy
+            try setUV(tempLimitPointer+0)
+            try assembler.li(.M, (srcLimit >> 8) & 0xff)
+            try setUV(tempLimitPointer+1)
+            try assembler.li(.M, srcLimit & 0xff)
             
-            // Copy one byte from the source to the destination.
-            try setUV(tempSrcPointer)
-            try assembler.mov(.X, .M)
-            assembler.inuv()
-            try assembler.mov(.Y, .M)
-            try assembler.mov(.U, .X)
-            try assembler.mov(.V, .Y)
-            try assembler.mov(.A, .M)
-            
-            try setUV(tempDstPointer)
-            try assembler.mov(.X, .M)
-            assembler.inuv()
-            try assembler.mov(.Y, .M)
-            try assembler.mov(.U, .X)
-            try assembler.mov(.V, .Y)
-            try assembler.mov(.M, .A)
-            
-            // Compute the source and destination addresses.
-            try addi16(tempDstPointer, tempDstPointer, 1)
-            try addi16(tempSrcPointer, tempSrcPointer, 1)
-            
-            // if srcPointer != srcLimit then loop
-            try assembler.li(.A, (srcLimit >> 8) & 0xff)
-            try setUV(tempSrcPointer+0)
-            try assembler.mov(.B, .M)
-            assembler.cmp()
-            assembler.cmp()
-            
-            try setAddressToLabel(loopHead)
-            assembler.jne()
-            assembler.nop()
-            assembler.nop()
-            
-            try assembler.li(.A, srcLimit & 0xff)
-            try setUV(tempSrcPointer+1)
-            try assembler.mov(.B, .M)
-            assembler.cmp()
-            assembler.cmp()
-            
-            try setAddressToLabel(loopHead)
-            assembler.jne()
-            assembler.nop()
-            assembler.nop()
+            try copyWordsWithLoop(tempSrcPointer, tempDstPointer, tempLimitPointer)
         }
+    }
+    
+    fileprivate let kCopyWordsWithLoop = "copyWordsWithLoop"
+    
+    fileprivate func copyWordsWithLoop(_ tempSrcPointer: Int, _ tempDstPointer: Int, _ tempLimitPointer: Int) throws {
+        assert(tempSrcPointer == 0x0004)
+        assert(tempDstPointer == 0x0006)
+        assert(tempLimitPointer == 0x0008)
+        try jalr(kCopyWordsWithLoop)
+    }
+    
+    fileprivate func generateProcedureCopyWordsWithLoop() throws {
+        scratchPointer = beginningOfScratchMemory
+        let tempDstPointer = allocateScratchMemory(2)
+        let tempSrcPointer = allocateScratchMemory(2)
+        let tempLimitPointer = allocateScratchMemory(2)
+        
+        assert(tempSrcPointer == 0x0004)
+        assert(tempDstPointer == 0x0006)
+        assert(tempLimitPointer == 0x0008)
+        
+        let loopHead = kCopyWordsWithLoop
+        try label(loopHead)
+        
+        // Copy one byte from the source to the destination.
+        try setUV(tempSrcPointer)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.A, .M)
+        
+        try setUV(tempDstPointer)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        try assembler.mov(.M, .A)
+        
+        // Compute the source and destination addresses.
+        try addi16(tempDstPointer, tempDstPointer, 1)
+        try addi16(tempSrcPointer, tempSrcPointer, 1)
+        
+        // if srcPointer != srcLimit then loop
+        try setUV(tempLimitPointer+0)
+        try assembler.mov(.A, .M)
+        try setUV(tempSrcPointer+0)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        
+        try setAddressToLabel(loopHead)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        try setUV(tempLimitPointer+1)
+        try assembler.mov(.A, .M)
+        try setUV(tempSrcPointer+1)
+        try assembler.mov(.B, .M)
+        assembler.cmp()
+        assembler.cmp()
+        
+        try setAddressToLabel(loopHead)
+        assembler.jne()
+        assembler.nop()
+        assembler.nop()
+        
+        // Return from procedure. The return address is in the link register.
+        try assembler.mov(.X, .G)
+        try assembler.mov(.Y, .H)
+        assembler.jmp()
+        assembler.nop()
+        assembler.nop()
     }
     
     private func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ count: Int) throws {

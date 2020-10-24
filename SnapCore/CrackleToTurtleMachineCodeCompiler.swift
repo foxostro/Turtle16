@@ -215,6 +215,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try generateProcedureCopyWordsWithLoop()
         try generateProcedureEnter()
         try generateProcedureLeave()
+        try generateProcedurePushToStack()
         try doAtEpilogue(self)
     }
     
@@ -512,14 +513,17 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try jalr(kProcLeave)
     }
     
-    private func pushReturnAddress() throws { // TODO: need unit test for pushReturnAddress
-        try assembler.mov(.A, .H)
-        try pushAToStack()
-        try assembler.mov(.A, .G)
-        try pushAToStack()
+    private func pushReturnAddress() throws {
+        let tempValueToPush = allocateScratchMemory(2)
+        assert(tempValueToPush == 0x0004)
+        try setUV(tempValueToPush+0)
+        try assembler.mov(.M, .G)
+        assembler.inuv()
+        try assembler.mov(.M, .H)
+        try jalr(kProcPushToStack)
     }
     
-    private func leafRet() throws { // TODO: need unit test for leafRet
+    private func leafRet() throws {
         try assembler.mov(.X, .G)
         try assembler.mov(.Y, .H)
         assembler.jmp()
@@ -1647,6 +1651,29 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try popInMemoryStackIntoRegisterB()
         try setUV(kFramePointerAddressLo)
         try assembler.mov(.M, .B)
+        
+        try leafRet()
+    }
+    
+    fileprivate let kProcPushToStack = "__crackle_proc_pushToStack"
+    
+    fileprivate func generateProcedurePushToStack() throws {
+        isJalrPermitted = false
+        defer { isJalrPermitted = true }
+        
+        scratchPointer = beginningOfScratchMemory
+        let tempSrcPointer = allocateScratchMemory(2)
+        assert(tempSrcPointer == 0x0004)
+        
+        try label(kProcPushToStack)
+        
+        try setUV(tempSrcPointer+1)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
+        
+        try setUV(tempSrcPointer+0)
+        try assembler.mov(.A, .M)
+        try pushAToStack()
         
         try leafRet()
     }

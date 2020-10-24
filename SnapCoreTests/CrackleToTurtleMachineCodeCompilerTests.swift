@@ -274,7 +274,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         
         let executor = CrackleExecutor()
         executor.configure = { (computer: Computer) in
-            computer.dataRAM.store16(value: 73, to: 0x0100)
+            computer.dataRAM.store16(value: 0xffff, to: 0x0100)
         }
         let computer = try! executor.execute(ir: instructions)
         XCTAssertEqual(computer.stack(at: 0), 1)
@@ -1663,7 +1663,7 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
             .copyLabel(a, "foo"),
             .label("foo")
         ])
-        let expectedAddress: UInt16 = 15 // This is a tad fragile since the label address depends on the prologue.
+        let expectedAddress: UInt16 = 14 // This is a tad fragile since the label address depends on the prologue.
         XCTAssertEqual(computer.dataRAM.load16(from: a), expectedAddress)
     }
 }

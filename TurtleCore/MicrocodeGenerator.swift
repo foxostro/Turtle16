@@ -57,7 +57,7 @@ public class MicrocodeGenerator: NSObject {
     // Registers which can take in a value from the bus.
     // These can be the destination for a MOV instruction.
     public enum DestinationRegister : CaseIterable {
-        case A, B, D, M, P, U, V, X, Y
+        case A, B, D, M, P, U, V, X, Y, UV
     }
     
     public func modifyControlWord(controlWord: ControlWord, toInputFromBus: DestinationRegister) -> ControlWord {
@@ -80,6 +80,8 @@ public class MicrocodeGenerator: NSObject {
             return controlWord.inputXFromBus()
         case .Y:
             return controlWord.inputYFromBus()
+        case .UV:
+            return controlWord.inputUVFromBus()
         }
     }
     

@@ -1811,6 +1811,37 @@ public class ControlWord: NSObject {
                            withHLT: HLT)
     }
     
+    func inputUVFromBus() -> ControlWord {
+        return ControlWord(withAI: .inactive,
+                           withAO: AO,
+                           withBI: .inactive,
+                           withBO: BO,
+                           withCO: CO,
+                           withDI: .inactive,
+                           withEO: EO,
+                           withFI: FI,
+                           withUI: .active,
+                           withUO: UO,
+                           withVI: .active,
+                           withVO: VO,
+                           withUVInc: UVInc,
+                           withPI: .inactive,
+                           withPO: PO,
+                           withXI: .inactive,
+                           withXO: XO,
+                           withYI: .inactive,
+                           withYO: YO,
+                           withXYInc: XYInc,
+                           withMI: .inactive,
+                           withMO: MO,
+                           withLinkIn: LinkIn,
+                           withLinkLoOut: LinkLoOut,
+                           withLinkHiOut: LinkHiOut,
+                           withJ: J,
+                           withCarryIn: CarryIn,
+                           withHLT: HLT)
+    }
+    
     public static func ==(lhs: ControlWord, rhs: ControlWord) -> Bool {
         return lhs.isEqual(rhs)
     }

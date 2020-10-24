@@ -6,4 +6,4 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public enum RegisterName { case A, B, C, D, E, G, H, M, P, U, V, X, Y, NONE }
+public enum RegisterName { case A, B, C, D, E, G, H, M, P, U, V, X, Y, NONE, UV }

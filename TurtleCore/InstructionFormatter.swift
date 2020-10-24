@@ -58,6 +58,9 @@ public class InstructionFormatter: NSObject {
         else if mnemonic == "MOV P, C" {
             return "LI P, \(String(format: "0x%02x", instruction.immediate))"
         }
+        else if mnemonic == "MOV UV, C" {
+            return "LI UV, \(String(format: "0x%02x", instruction.immediate))"
+        }
         
         return mnemonic
     }

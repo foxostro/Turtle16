@@ -217,6 +217,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try generateProcedureLeave()
         try generateProcedurePushToStack()
         try generateProcedurePop()
+        try generateProcedurePokePeripheral()
         try doAtEpilogue(self)
     }
     
@@ -564,39 +565,16 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try pushAToStack()
     }
     
-    public func pokePeripheral() throws { // TODO: need unit test for pokePeripheral
-        try popInMemoryStackIntoRegisterB()
-        try assembler.mov(.D, .B)
-        
-        try pop16()
-        
-        // Stash the destination address in a well-known scratch location.
-        let stashedDestinationAddress = allocateScratchMemory(2)
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.M, .A)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.M, .B)
-        
-        // Copy the top of the stack into A.
-        try loadStackPointerIntoUVandXY()
-        try assembler.mov(.A, .M)
-        
-        // Restore the stashed destination address to XY.
-        try setUV(stashedDestinationAddress+0)
-        try assembler.mov(.X, .M)
-        try setUV(stashedDestinationAddress+1)
-        try assembler.mov(.Y, .M)
-        
-        // Store A to the destination address on the peripheral bus.
-        try assembler.mov(.P, .A)
+    public func pokePeripheral() throws {
+        try jalr(kProcPokePeripheral)
     }
-        
+    
     private func add(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         try assembler.add(.NONE)
         try assembler.add(.M)
     }
-        
+    
     private func setupALUOperandsAndDestinationAddress(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(b)
         try assembler.mov(.B, .M)
@@ -1686,7 +1664,45 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         defer { isJalrPermitted = true }
         
         try label(kProcPop)
+        
         try popInMemoryStackIntoRegisterB()
+        
+        try leafRet()
+    }
+    
+    fileprivate let kProcPokePeripheral = "__crackle_proc_poke_peripheral"
+    
+    fileprivate func generateProcedurePokePeripheral() throws {
+        isJalrPermitted = false
+        defer { isJalrPermitted = true }
+        
+        try label(kProcPokePeripheral)
+        
+        try popInMemoryStackIntoRegisterB()
+        try assembler.mov(.D, .B)
+        
+        try pop16()
+        
+        // Stash the destination address in a well-known scratch location.
+        let stashedDestinationAddress = allocateScratchMemory(2)
+        try setUV(stashedDestinationAddress+0)
+        try assembler.mov(.M, .A)
+        try setUV(stashedDestinationAddress+1)
+        try assembler.mov(.M, .B)
+        
+        // Copy the top of the stack into A.
+        try loadStackPointerIntoUVandXY()
+        try assembler.mov(.A, .M)
+        
+        // Restore the stashed destination address to XY.
+        try setUV(stashedDestinationAddress+0)
+        try assembler.mov(.X, .M)
+        try setUV(stashedDestinationAddress+1)
+        try assembler.mov(.Y, .M)
+        
+        // Store A to the destination address on the peripheral bus.
+        try assembler.mov(.P, .A)
+        
         try leafRet()
     }
 }

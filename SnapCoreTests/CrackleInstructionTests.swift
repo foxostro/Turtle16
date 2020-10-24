@@ -63,14 +63,4 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.copyWordsIndirectDestinationIndirectSource(0xa, 0xb, 0xc).description, "COPY-IDIS 0x000a, 0x000b, 12")
         XCTAssertEqual(CrackleInstruction.copyLabel(0xa, "label").description, "COPY-LABEL 0x000a, label")
     }
-    
-    func testMakeListing_Empty() {
-        let actual = CrackleInstruction.makeListing(instructions: [])
-        XCTAssertEqual(actual, "\n")
-    }
-    
-    func testMakeListing_Example() {
-        let actual = CrackleInstruction.makeListing(instructions: [.push(0), .pop])
-        XCTAssertEqual(actual, "PUSH 0x00\nPOP\n")
-    }
 }

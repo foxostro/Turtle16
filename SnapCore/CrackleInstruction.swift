@@ -183,23 +183,4 @@ public enum CrackleInstruction: Equatable {
             return String(format: "COPY-LABEL 0x%04x, %@", dst, label)
         }
     }
-    
-    public static func makeListing(instructions: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) -> String {
-        var previousSourceContext: SourceAnchor? = nil
-        var result = ""
-        for i in 0..<instructions.count {
-            let sourceContext = programDebugInfo?.lookupSourceAnchor(crackleInstructionIndex: i)?.split().first
-            if (sourceContext != nil) && ((previousSourceContext == nil) || previousSourceContext!.context != sourceContext!.context) {
-                if (previousSourceContext != nil) {
-                    result += "\n"
-                }
-                result += sourceContext!.text.split(separator: "\n").map({"# " + $0}).joined(separator: "\n")
-                result += "\n"
-            }
-            result += instructions[i].description
-            result += "\n"
-            previousSourceContext = sourceContext
-        }
-        return result
-    }
 }

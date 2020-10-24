@@ -38,11 +38,12 @@ class SnapExecutor: NSObject {
             let programDebugInfo = compiler.programDebugInfo
             
             if isVerboseLogging {
-                print("AST:\n" + compiler.ast.description + "\n\n")
+                print("AST:\n\(compiler.ast.description)\n\n")
             }
             
             if shouldAlwaysPrintIR || isVerboseLogging {
-                print("IR:\n" + CrackleInstruction.makeListing(instructions: compiler.ir, programDebugInfo: programDebugInfo) + "\n\n")
+                let listing = CrackleInstructionListingMaker.makeListing(instructions: compiler.ir, programDebugInfo: programDebugInfo)
+                print("IR:\n\(listing)\n\n")
             }
 
             let computer = try execute(instructions: instructions, programDebugInfo: programDebugInfo)

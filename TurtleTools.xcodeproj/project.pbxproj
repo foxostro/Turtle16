@@ -234,6 +234,8 @@
 		6FCB683224720AD900798905 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0880A2230FC09B00AB2339 /* TokenTests.swift */; };
 		6FCB6846247241ED00798905 /* Return.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6845247241ED00798905 /* Return.swift */; };
 		6FCB68482472448300798905 /* ReturnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB68472472448300798905 /* ReturnTests.swift */; };
+		6FDB699D2543616000D532C2 /* CrackleInstructionListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */; };
+		6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */; };
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE003DB22F3F4C600221C4C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003DA22F3F4C600221C4C /* main.swift */; };
 		6FE219CE241CC223006BC92A /* Example.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6FE219CD241CC223006BC92A /* Example.txt */; };
@@ -869,6 +871,8 @@
 		6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheralTests.swift; sourceTree = "<group>"; };
 		6FD8F9FE2360CAC5005A1856 /* ParameterListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterListTests.swift; sourceTree = "<group>"; };
 		6FD8FA002360CAF1005A1856 /* ParameterList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterList.swift; sourceTree = "<group>"; };
+		6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMaker.swift; sourceTree = "<group>"; };
+		6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMakerTests.swift; sourceTree = "<group>"; };
 		6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGenerator.swift; sourceTree = "<group>"; };
 		6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEnd.swift; sourceTree = "<group>"; };
@@ -1224,6 +1228,7 @@
 				6F5C55EB24F6359D008827EE /* CompilerTemporariesStack.swift */,
 				6F5C55E724F61D4E008827EE /* CompilerTemporary.swift */,
 				6F2940B62483970100C50ABA /* CrackleInstruction.swift */,
+				6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */,
 				6F18DD8E248462C30014C585 /* CrackleToTurtleMachineCodeCompiler.swift */,
 				6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */,
 				6F25325B24CB799A00339332 /* LvalueExpressionCompiler.swift */,
@@ -1255,6 +1260,7 @@
 				6F238ADC248C947C0040250D /* ComputerExtensions.swift */,
 				6F18DD92248463030014C585 /* CrackleExecutor.swift */,
 				6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */,
+				6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */,
 				6F18DD90248462D50014C585 /* CrackleToTurtleMachineCodeCompilerTests.swift */,
 				6F924E7D248B4CCA00F43741 /* ExprUtils.swift */,
 				6F25325D24CB7C6200339332 /* LvalueExpressionCompilerTests.swift */,
@@ -2157,6 +2163,7 @@
 				6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */,
 				6FCB681A2472050900798905 /* SnapLexer.swift in Sources */,
 				6F1800D3251D96F5005D9D36 /* Module.swift in Sources */,
+				6FDB699D2543616000D532C2 /* CrackleInstructionListingMaker.swift in Sources */,
 				6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */,
 				6F16BA00251E945C00A26850 /* SnapDebugInfo.swift in Sources */,
 				6F924E7A248B42D400F43741 /* RvalueExpressionTypeChecker.swift in Sources */,
@@ -2220,6 +2227,7 @@
 				6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */,
 				6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */,
 				6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */,
+				6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */,
 				6F330D9C24E8A346005C4BE5 /* MemoryExtensions.swift in Sources */,
 				6F25325E24CB7C6200339332 /* LvalueExpressionCompilerTests.swift in Sources */,
 				6F238ADD248C947D0040250D /* ComputerExtensions.swift in Sources */,

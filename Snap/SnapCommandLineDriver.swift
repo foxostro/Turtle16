@@ -107,7 +107,7 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     func writeToFile(ir: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) throws {
-        let string = CrackleInstruction.makeListing(instructions: ir, programDebugInfo: programDebugInfo)
+        let string = CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo)
         try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
     }
     

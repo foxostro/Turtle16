@@ -23,28 +23,11 @@ class AssemblyListingMakerTests: XCTestCase {
         XCTAssertEqual(actual, "")
     }
     
-    func testMakeListing_EmptyProgram() {
-        let actual = makeListing(snapSource: "")
-        XCTAssertEqual(actual, """
-NOP
-LI U, 0x00
-LI V, 0x00
-LI M, 0x00
-INUV
-LI M, 0x00
-INUV
-LI M, 0x00
-INUV
-LI M, 0x00
-HLT
-""")
-    }
-    
     func testMakeListing_VarDeclStmt() {
         let actual = makeListing(snapSource: """
 let a = 42
 """)
-        XCTAssertEqual(actual, """
+        XCTAssertTrue(actual.hasPrefix("""
 NOP
 LI U, 0x00
 LI V, 0x00
@@ -83,7 +66,9 @@ MOV A, M
 MOV U, X
 MOV V, Y
 MOV M, A
+
+# ##############################################################################
 HLT
-""")
+"""))
     }
 }

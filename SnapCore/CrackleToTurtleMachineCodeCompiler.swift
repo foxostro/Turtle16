@@ -216,6 +216,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try generateProcedureEnter()
         try generateProcedureLeave()
         try generateProcedurePushToStack()
+        try generateProcedurePop()
         try doAtEpilogue(self)
     }
     
@@ -280,7 +281,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     private func pop() throws {
-        try popInMemoryStackIntoRegisterB()
+        try jalr(kProcPop)
     }
     
     private func subi16(_ c: Int, _ a: Int, _ imm: Int) throws {
@@ -1675,6 +1676,17 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try assembler.mov(.A, .M)
         try pushAToStack()
         
+        try leafRet()
+    }
+    
+    fileprivate let kProcPop = "__crackle_proc_pop"
+    
+    fileprivate func generateProcedurePop() throws {
+        isJalrPermitted = false
+        defer { isJalrPermitted = true }
+        
+        try label(kProcPop)
+        try popInMemoryStackIntoRegisterB()
         try leafRet()
     }
 }

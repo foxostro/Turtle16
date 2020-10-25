@@ -841,9 +841,12 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(implFor: ImplFor) throws {
-        let traitType = try symbols.resolveType(identifier: implFor.traitIdentifier.identifier).unwrapTraitType()
-        let structType = try symbols.resolveType(identifier: implFor.structIdentifier.identifier).unwrapStructType()
-        let vtableType = try symbols.resolveType(identifier: traitType.nameOfVtableType).unwrapStructType()
+        let traitType = try symbols.resolveType(sourceAnchor: implFor.sourceAnchor,
+                                                identifier: implFor.traitIdentifier.identifier).unwrapTraitType()
+        let structType = try symbols.resolveType(sourceAnchor: implFor.sourceAnchor,
+                                                 identifier: implFor.structIdentifier.identifier).unwrapStructType()
+        let vtableType = try symbols.resolveType(sourceAnchor: implFor.sourceAnchor,
+                                                 identifier: traitType.nameOfVtableType).unwrapStructType()
         
         try compile(impl: Impl(sourceAnchor: implFor.sourceAnchor, identifier: implFor.structIdentifier, children: implFor.children))
         
@@ -895,11 +898,14 @@ public class SnapToCrackleCompiler: NSObject {
             arguments.append(arg)
         }
         let initializer = Expression.StructInitializer(identifier: Expression.Identifier(traitType.nameOfVtableType), arguments: arguments)
+        let visibility = try symbols.resolveTypeRecord(sourceAnchor: implFor.sourceAnchor,
+                                                       identifier: implFor.traitIdentifier.identifier).visibility
         try compile(varDecl: VarDeclaration(identifier: Expression.Identifier(nameOfVtableInstance),
                                             explicitType: Expression.Identifier(traitType.nameOfVtableType),
                                             expression: initializer,
                                             storage: .staticStorage,
-                                            isMutable: false))
+                                            isMutable: false,
+                                            visibility: visibility))
     }
     
     private func compile(match: Match) throws {

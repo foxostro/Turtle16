@@ -739,6 +739,21 @@ public class SymbolTable: NSObject {
         return parent?.maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
+    public func resolveTypeRecord(sourceAnchor: SourceAnchor?, identifier: String) throws -> TypeRecord {
+        guard let resolution = maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier) else {
+            throw CompilerError(sourceAnchor: sourceAnchor,
+                                message: "use of undeclared type `\(identifier)'")
+        }
+        return resolution.0
+    }
+    
+    private func maybeResolveTypeRecord(sourceAnchor: SourceAnchor?, identifier: String) -> (TypeRecord, Int)? {
+        if let symbolRecord = typeTable[identifier] {
+            return (symbolRecord, stackFrameIndex)
+        }
+        return parent?.maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false

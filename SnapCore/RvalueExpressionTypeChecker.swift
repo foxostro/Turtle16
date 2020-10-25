@@ -109,6 +109,32 @@ public class RvalueExpressionTypeChecker: NSObject {
             } else {
                 return .pointer(lvalueType)
             }
+        case .tilde:
+            switch expressionType {
+            case .compTimeInt(let value):
+                return .compTimeInt(~value)
+            case .constU16:
+                return .constU16
+            case .u16:
+                return .u16
+            case .constU8:
+                return .constU8
+            case .u8:
+                return .u8
+            default:
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
+            }
+        case .bang:
+            switch expressionType {
+            case .compTimeBool(let value):
+                return .compTimeBool(!value)
+            case .constBool:
+                return .constBool
+            case .bool:
+                return .bool
+            default:
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
+            }
         default:
             let operatorString: String
             if let lexeme = unary.sourceAnchor?.text {
@@ -181,7 +207,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                      messageWhenNotConvertible: "cannot convert value of type `\(rightType)' to type `bool'")
         
         switch binary.op {
-        case .eq, .ne:
+        case .eq, .ne, .doubleAmpersand, .doublePipe:
             return .bool
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
@@ -229,7 +255,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch binary.op {
         case .eq, .ne, .lt, .gt, .le, .ge:
             return .bool
-        case .plus, .minus, .star, .divide, .modulus:
+        case .plus, .minus, .star, .divide, .modulus, .ampersand, .pipe, .caret, .leftDoubleAngle, .rightDoubleAngle:
             return typeForArithmetic
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
@@ -265,6 +291,16 @@ public class RvalueExpressionTypeChecker: NSObject {
             return .compTimeInt(a / b)
         case .modulus:
             return .compTimeInt(a % b)
+        case .ampersand:
+            return .compTimeInt(a & b)
+        case .pipe:
+            return .compTimeInt(a | b)
+        case .caret:
+            return .compTimeInt(a ^ b)
+        case .leftDoubleAngle:
+            return .compTimeInt(a << b)
+        case .rightDoubleAngle:
+            return .compTimeInt(a >> b)
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }

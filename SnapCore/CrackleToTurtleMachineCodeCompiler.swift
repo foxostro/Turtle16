@@ -448,13 +448,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         guard !bytes.isEmpty else {
             return
         }
-        try setUV(address)
+        try setUV(address-1)
         for i in 0..<bytes.count {
             let value = Int(bytes[i])
-            try assembler.li(.M, value)
-            if i != bytes.count-1 {
-                assembler.inuv()
-            }
+            try assembler.blti(.M, value)
         }
     }
     

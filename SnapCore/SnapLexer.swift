@@ -44,14 +44,23 @@ public class SnapLexer: Lexer {
             Rule(pattern: "!=") {
                 TokenOperator(sourceAnchor: $0, op: .ne)
             },
+            Rule(pattern: "!") {
+                TokenOperator(sourceAnchor: $0, op: .bang)
+            },
             Rule(pattern: "<=") {
                 TokenOperator(sourceAnchor: $0, op: .le)
             },
             Rule(pattern: ">=") {
                 TokenOperator(sourceAnchor: $0, op: .ge)
             },
+            Rule(pattern: "<<") {
+                TokenOperator(sourceAnchor: $0, op: .leftDoubleAngle)
+            },
             Rule(pattern: "<") {
                 TokenOperator(sourceAnchor: $0, op: .lt)
+            },
+            Rule(pattern: ">>") {
+                TokenOperator(sourceAnchor: $0, op: .rightDoubleAngle)
             },
             Rule(pattern: ">") {
                 TokenOperator(sourceAnchor: $0, op: .gt)
@@ -74,11 +83,23 @@ public class SnapLexer: Lexer {
             Rule(pattern: "%") {
                 TokenOperator(sourceAnchor: $0, op: .modulus)
             },
+            Rule(pattern: "&&") {
+                TokenOperator(sourceAnchor: $0, op: .doubleAmpersand)
+            },
             Rule(pattern: "&") {
                 TokenOperator(sourceAnchor: $0, op: .ampersand)
             },
+            Rule(pattern: "\\|\\|") {
+                TokenOperator(sourceAnchor: $0, op: .doublePipe)
+            },
             Rule(pattern: "\\|") {
                 TokenOperator(sourceAnchor: $0, op: .pipe)
+            },
+            Rule(pattern: "\\^") {
+                TokenOperator(sourceAnchor: $0, op: .caret)
+            },
+            Rule(pattern: "~") {
+                TokenOperator(sourceAnchor: $0, op: .tilde)
             },
             Rule(pattern: "bitcastAs\\b") {
                 TokenBitcastAs(sourceAnchor: $0)

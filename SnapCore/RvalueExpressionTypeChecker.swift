@@ -134,7 +134,14 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .divide: return "/"
         case .modulus: return "%"
         case .ampersand: return "&"
+        case .doubleAmpersand: return "&&"
         case .pipe: return "|"
+        case .doublePipe: return "||"
+        case .bang: return "!"
+        case .caret: return "^"
+        case .leftDoubleAngle: return "<<"
+        case .rightDoubleAngle: return ">>"
+        case .tilde: return "~"
         }
     }
     

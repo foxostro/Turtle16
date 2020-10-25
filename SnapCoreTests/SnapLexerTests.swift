@@ -209,6 +209,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
     }
     
+    func testTokenizeLeftDoubleAngle() {
+        let tokenizer = SnapLexer("<<")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .leftDoubleAngle),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
+    }
+    
     func testTokenizeLessThan() {
         let tokenizer = SnapLexer("<")
         tokenizer.scanTokens()
@@ -221,6 +228,13 @@ class SnapLexerTests: XCTestCase {
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .gt),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
+    }
+    
+    func testTokenizeRightDoubleAngle() {
+        let tokenizer = SnapLexer(">>")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .rightDoubleAngle),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
     }
     
     func testTokenizeLessThanOrEqual() {
@@ -258,6 +272,28 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .ampersand),
                                           TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
+    func testTokenizeDoubleAmpersand() {
+        let tokenizer = SnapLexer("&&")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .doubleAmpersand),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
+    }
+    
+    func testTokenizeUnaryBang() {
+        let tokenizer = SnapLexer("!foo")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .bang),
+                                          TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
+    func testTokenizeDoublePipe() {
+        let tokenizer = SnapLexer("||")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .doublePipe),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
     }
         
     func testTokenizePipe() {
@@ -648,5 +684,19 @@ class SnapLexerTests: XCTestCase {
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenTrait(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))])
+    }
+    
+    func testTokenizeCaret() {
+        let tokenizer = SnapLexer("^")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .caret),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
+    }
+    
+    func testTokenizeTilde() {
+        let tokenizer = SnapLexer("~")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .tilde),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
     }
 }

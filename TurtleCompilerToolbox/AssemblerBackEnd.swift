@@ -272,4 +272,11 @@ public class AssemblerBackEnd: NSObject {
         let mnemonic = "BLT \(String(describing: destination)), \(String(describing: source))"
         try instruction(mnemonic: mnemonic, immediate: 0)
     }
+    
+    // Bit Blit -- Copy the immediate value to data RAM and increment the
+    // address register.
+    public func blti(_ destination: RegisterName, _ immediate: Int) throws {
+        let mnemonic = "BLTI \(String(describing: destination))"
+        try instruction(mnemonic: mnemonic, immediate: immediate)
+    }
 }

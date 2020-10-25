@@ -104,6 +104,7 @@ public class MicrocodeGenerator: NSObject {
         inuv()
         inxy()
         blt()
+        blti()
     }
     
     func record(mnemonic: String, opcode: Int) {
@@ -302,6 +303,25 @@ public class MicrocodeGenerator: NSObject {
                 record(mnemonic: mnemonic, opcode: opcode)
                 microcode.store(opcode: opcode, controlWord: controlWord)
             }
+        }
+    }
+    
+    public func blti() {
+        let destinations = [DestinationRegister.P, DestinationRegister.M]
+        for destination in destinations {
+            var controlWord = ControlWord();
+            if destination == .M {
+                controlWord = controlWord.withUVInc(.active)
+            } else if destination == .P {
+                controlWord = controlWord.withXYInc(.active)
+            }
+            
+            controlWord = modifyControlWord(controlWord: controlWord, toOutputToBus: .C)
+            controlWord = modifyControlWord(controlWord: controlWord, toInputFromBus: destination)
+            let mnemonic = "BLTI \(String(describing: destination))"
+            let opcode = getNextOpcode()
+            record(mnemonic: mnemonic, opcode: opcode)
+            microcode.store(opcode: opcode, controlWord: controlWord)
         }
     }
     

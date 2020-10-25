@@ -26,7 +26,7 @@ public class TokenOperator : Token {
             case .divide: return "/"
             case .modulus: return "%"
             case .ampersand: return "&"
-            case .doubleAmpersand: return "||"
+            case .doubleAmpersand: return "&&"
             case .pipe: return "|"
             case .doublePipe: return "||"
             case .bang: return "!"

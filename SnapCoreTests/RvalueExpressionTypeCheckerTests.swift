@@ -83,6 +83,86 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
+    func testUnaryBitwiseNegationOfIntegerConstantIsIntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: Expression.LiteralInt(1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .compTimeInt(-1))
+    }
+    
+    func testUnaryBitwiseNegationOfU8IsU8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testUnaryBitwiseNegationOfU16IsU16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU16(value: 1000))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testUnaryBitwiseNegationOfBooleanIsInvalid() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Unary operator `~' cannot be applied to an operand of type `bool'")
+        }
+    }
+    
+    func testUnaryLogicalNegationOfIntegerConstantIsInvalid() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: Expression.LiteralInt(1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Unary operator `!' cannot be applied to an operand of type `integer constant 1'")
+        }
+    }
+    
+    func testUnaryLogicalNegationOfU8IsInvalid() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU8(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Unary operator `!' cannot be applied to an operand of type `u8'")
+        }
+    }
+    
+    func testUnaryLogicalNegationOfU16IsInvalid() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Unary operator `!' cannot be applied to an operand of type `u16'")
+        }
+    }
+    
+    func testUnaryLogicalNegationOfBooleanIsBool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Unary(op: .bang,
+                                    expression: ExprUtils.makeBool(value: false))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
     func testBinary_IntegerConstant_Eq_IntegerConstant() {
         let typeChecker = RvalueExpressionTypeChecker()
         let expr = ExprUtils.makeComparisonEq(left: Expression.LiteralInt(1000),
@@ -2094,6 +2174,1316 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to two `bool' operands")
         }
     }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .compTimeInt(0b1010101010101010))
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_U8_YieldingU16() {
+        // Adding an integer constant to u8 may yield a u16 value if we can
+        // determine at compile time that the value will be greater than 255.
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(0x10101010),
+                                     right: ExprUtils.makeU8(value: 0x11111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_BitwiseAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseAnd_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseAnd_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_BitwiseAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_BitwiseAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_BitwiseAnd_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_BitwiseAnd_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseAnd_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .ampersand,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `bool' and `u8'")
+       }
+   }
+    
+    func testBinary_Bool_BitwiseAnd_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .ampersand,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to two `bool' operands")
+       }
+   }
+    
+    func testBinary_IntegerConstant_BitwiseOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .compTimeInt(0b1010101010101010))
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_U8_YieldingU16() {
+        // Adding an integer constant to u8 may yield a u16 value if we can
+        // determine at compile time that the value will be greater than 255.
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(0x10101010),
+                                     right: ExprUtils.makeU8(value: 0x11111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_BitwiseOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseOr_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseOr_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_BitwiseOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_BitwiseOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_BitwiseOr_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_BitwiseOr_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseOr_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .pipe,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `bool' and `u8'")
+       }
+   }
+    
+    func testBinary_Bool_BitwiseOr_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .pipe,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to two `bool' operands")
+       }
+   }
+    
+    func testBinary_IntegerConstant_BitwiseXor_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .compTimeInt(0b1010101010101010))
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_U8_YieldingU16() {
+        // Adding an integer constant to u8 may yield a u16 value if we can
+        // determine at compile time that the value will be greater than 255.
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(0x10101010),
+                                     right: ExprUtils.makeU8(value: 0x11111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_BitwiseXor_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseXor_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseXor_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_BitwiseXor_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_BitwiseXor_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_BitwiseXor_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_BitwiseXor_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_BitwiseXor_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseXor_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseXor_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseXor_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .caret,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `bool' and `u8'")
+       }
+   }
+    
+    func testBinary_Bool_BitwiseXor_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .caret,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to two `bool' operands")
+       }
+   }
+    
+    func testBinary_IntegerConstant_LeftShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(2))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .compTimeInt(1 << 2))
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_U8_YieldingU16() {
+        // Adding an integer constant to u8 may yield a u16 value if we can
+        // determine at compile time that the value will be greater than 255.
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_LeftShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_LeftShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_LeftShift_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_LeftShift_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_LeftShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_LeftShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_LeftShift_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_LeftShift_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_LeftShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_LeftShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_LeftShift_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .leftDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `bool' and `u8'")
+       }
+   }
+    
+    func testBinary_Bool_LeftShift_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .leftDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to two `bool' operands")
+       }
+   }
+    
+    func testBinary_IntegerConstant_RightShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(2),
+                                     right: Expression.LiteralInt(1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .compTimeInt(2 >> 1))
+    }
+    
+    func testBinary_IntegerConstant_RightShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_RightShift_U8_YieldingU16() {
+        // Adding an integer constant to u8 may yield a u16 value if we can
+        // determine at compile time that the value will be greater than 255.
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_IntegerConstant_RightShift_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_IntegerConstant_RightShift_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_RightShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_RightShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_RightShift_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U16_RightShift_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_RightShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_RightShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testBinary_U8_RightShift_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u8)
+    }
+    
+    func testBinary_U8_RightShift_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_RightShift_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_RightShift_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_RightShift_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .rightDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_RightShift_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .leftDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to two `bool' operands")
+       }
+    }
+    
+    func testBinary_IntegerConstant_LogicalAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: Expression.LiteralInt(2),
+                                     right: Expression.LiteralInt(1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `integer constant 2' and `integer constant 1'")
+        }
+    }
+    
+    func testBinary_IntegerConstant_LogicalAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `integer constant 43690' and `u16'")
+        }
+    }
+    
+    func testBinary_IntegerConstant_LogicalAnd_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `integer constant 1' and `u8'")
+        }
+    }
+    
+    func testBinary_IntegerConstant_LogicalAnd_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_LogicalAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `u16' and `integer constant 65535'")
+        }
+    }
+    
+    func testBinary_U16_LogicalAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to two operands of type `u16'")
+        }
+    }
+    
+    func testBinary_U16_LogicalAnd_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `u16' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_LogicalAnd_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_LogicalAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `u8' and `integer constant 100'")
+        }
+    }
+    
+    func testBinary_U8_LogicalAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `u8' and `u16'")
+        }
+    }
+    
+    func testBinary_U8_LogicalAnd_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to two operands of type `u8'")
+        }
+    }
+    
+    func testBinary_U8_LogicalAnd_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_LogicalAnd_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_LogicalAnd_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_LogicalAnd_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .doubleAmpersand,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `&&' cannot be applied to operands of types `bool' and `u8'")
+       }
+   }
+    
+    func testBinary_Bool_LogicalAnd_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .doubleAmpersand,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+    }
+    
+    func testBinary_IntegerConstant_LogicalOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: Expression.LiteralInt(2),
+                                     right: Expression.LiteralInt(1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `integer constant 2' and `integer constant 1'")
+        }
+    }
+    
+    func testBinary_IntegerConstant_LogicalOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: Expression.LiteralInt(0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `integer constant 43690' and `u16'")
+        }
+    }
+    
+    func testBinary_IntegerConstant_LogicalOr_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `integer constant 1' and `u8'")
+        }
+    }
+    
+    func testBinary_IntegerConstant_LogicalOr_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `integer constant 1000' and `bool'")
+        }
+    }
+    
+    func testBinary_U16_LogicalOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: Expression.LiteralInt(0b1111111111111111))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `u16' and `integer constant 65535'")
+        }
+    }
+    
+    func testBinary_U16_LogicalOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU16(value: 0b1010101010101010),
+                                     right: ExprUtils.makeU16(value: 0b1111111111111111))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to two operands of type `u16'")
+        }
+    }
+    
+    func testBinary_U16_LogicalOr_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `u16' and `u8'")
+        }
+    }
+    
+    func testBinary_U16_LogicalOr_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_LogicalOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: Expression.LiteralInt(100))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `u8' and `integer constant 100'")
+        }
+    }
+    
+    func testBinary_U8_LogicalOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 100))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `u8' and `u16'")
+        }
+    }
+    
+    func testBinary_U8_LogicalOr_U8() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 1))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to two operands of type `u8'")
+        }
+    }
+    
+    func testBinary_U8_LogicalOr_Bool() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_LogicalOr_IntegerConstant() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: Expression.LiteralInt(1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `bool' and `integer constant 1000'")
+        }
+    }
+    
+    func testBinary_Bool_LogicalOr_U16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_LogicalOr_U8() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .doublePipe,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `||' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_LogicalOr_Bool() {
+       let typeChecker = RvalueExpressionTypeChecker()
+       let expr = Expression.Binary(op: .doublePipe,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .bool)
+   }
     
     func testAssignment_IntegerConstant_to_U16_Overflows() {
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: 0x0010)])

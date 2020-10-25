@@ -156,6 +156,44 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
     }
     
+    func testUnaryBitwiseNegationOfU8() {
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU8(value: 42))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        let expectedResult = ~UInt8(42)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
+    }
+    
+    func testUnaryBitwiseNegationOfU16() {
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU16(value: 1000))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        let expectedResult = ~UInt16(1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
+    }
+    
+    func testUnaryBitwiseNegationOfIntegerConstant() {
+        let expr = Expression.Unary(op: .tilde,
+                                    expression: ExprUtils.makeU16(value: 1000))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        let expectedResult = ~UInt16(1000)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
+    }
+    
+    func testUnaryLogicalNegationOfBoolean() {
+        let expr = Expression.Unary(op: .bang, expression: ExprUtils.makeBool(value: false))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), UInt8(1))
+    }
+    
     func testFailToCompileInvalidPrefixUnaryOperator() {
         let expr = Expression.Unary(op: .star,
                                     expression: ExprUtils.makeU8(value: 1))
@@ -2441,6 +2479,751 @@ class RvalueExpressionCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "binary operator `%' cannot be applied to two `bool' operands")
         }
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(3),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_IntegerConstant() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(1025),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_U16() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(1025),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseAnd_U8() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: Expression.LiteralInt(3),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
+    }
+    
+    func testBinary_U16_BitwiseAnd_IntegerConstant() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 1025),
+                                     right: Expression.LiteralInt(1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+    }
+    
+    func testBinary_U16_BitwiseAnd_U16() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 1025),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+    }
+    
+    func testBinary_U16_BitwiseAnd_U8() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 1025),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
+    }
+    
+    func testBinary_U16_BitwiseAnd_Bool() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_BitwiseAnd_U16() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 1025))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1)
+    }
+    
+    func testBinary_U8_BitwiseAnd_U8() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 3),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
+    }
+    
+    func testBinary_U8_BitwiseAnd_Bool() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseAnd_U16() {
+        let expr = Expression.Binary(op: .ampersand,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseAnd_U8() {
+       let expr = Expression.Binary(op: .ampersand,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_BitwiseAnd_Bool() {
+       let expr = Expression.Binary(op: .ampersand,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `&' cannot be applied to two `bool' operands")
+       }
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(2))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 3)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_IntegerConstant() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(1000),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1001)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_U16() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU16(value: 1000))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseOr_U8() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
+    }
+    
+    func testBinary_U16_BitwiseOr_IntegerConstant() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: Expression.LiteralInt(1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
+    }
+    
+    func testBinary_U16_BitwiseOr_U16() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
+    }
+    
+    func testBinary_U16_BitwiseOr_U8() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
+    }
+    
+    func testBinary_U16_BitwiseOr_Bool() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_BitwiseOr_U16() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 1000))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1001)
+    }
+    
+    func testBinary_U8_BitwiseOr_U8() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
+    }
+    
+    func testBinary_U8_BitwiseOr_Bool() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseOr_U16() {
+        let expr = Expression.Binary(op: .pipe,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseOr_U8() {
+       let expr = Expression.Binary(op: .pipe,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_BitwiseOr_Bool() {
+       let expr = Expression.Binary(op: .pipe,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `|' cannot be applied to two `bool' operands")
+       }
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_IntegerConstant() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(1000),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1001)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_U16() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU16(value: 1000))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
+    }
+    
+    func testBinary_IntegerConstant_BitwiseXor_U8() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
+    }
+    
+    func testBinary_U16_BitwiseXor_IntegerConstant() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: Expression.LiteralInt(1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
+    }
+    
+    func testBinary_U16_BitwiseXor_U16() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
+    }
+    
+    func testBinary_U16_BitwiseXor_U8() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
+    }
+    
+    func testBinary_U16_BitwiseXor_Bool() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_BitwiseXor_U16() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 1000))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1001)
+    }
+    
+    func testBinary_U8_BitwiseXor_U8() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
+    }
+    
+    func testBinary_U8_BitwiseXor_Bool() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseXor_U16() {
+        let expr = Expression.Binary(op: .caret,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_BitwiseXor_U8() {
+       let expr = Expression.Binary(op: .caret,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_BitwiseXor_Bool() {
+       let expr = Expression.Binary(op: .caret,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `^' cannot be applied to two `bool' operands")
+       }
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 2)
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_IntegerConstant() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1000),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 2000)
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_U16() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1000),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+    }
+    
+    func testBinary_IntegerConstant_LeftShift_U8() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: Expression.LiteralInt(1),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 4)
+    }
+    
+    func testBinary_U16_LeftShift_IntegerConstant() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: Expression.LiteralInt(1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+    }
+    
+    func testBinary_U16_LeftShift_U16() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+    }
+    
+    func testBinary_U16_LeftShift_U8() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+    }
+    
+    func testBinary_U16_LeftShift_Bool() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_LeftShift_U16() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU16(value: 4))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 16)
+    }
+    
+    func testBinary_U8_LeftShift_U8() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 4)
+    }
+    
+    func testBinary_U8_LeftShift_Bool() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_LeftShift_U16() {
+        let expr = Expression.Binary(op: .leftDoubleAngle,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_LeftShift_U8() {
+       let expr = Expression.Binary(op: .leftDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_LeftShift_Bool() {
+       let expr = Expression.Binary(op: .leftDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `<<' cannot be applied to two `bool' operands")
+       }
+    }
+    
+    func testBinary_IntegerConstant_RightShift_IntegerConstant_Small() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(1),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 2)
+    }
+    
+    func testBinary_IntegerConstant_RightShift_IntegerConstant() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(2000),
+                                     right: Expression.LiteralInt(1))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1000)
+    }
+    
+    func testBinary_IntegerConstant_RightShift_U16() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(2000),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
+    }
+    
+    func testBinary_IntegerConstant_RightShift_U8() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: Expression.LiteralInt(4),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
+    }
+    
+    func testBinary_U16_RightShift_IntegerConstant() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 2000),
+                                     right: Expression.LiteralInt(1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
+    }
+    
+    func testBinary_U16_RightShift_U16() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 2000),
+                                     right: ExprUtils.makeU16(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
+    }
+    
+    func testBinary_U16_RightShift_U8() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 2000),
+                                     right: ExprUtils.makeU8(value: 1))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
+    }
+    
+    func testBinary_U16_RightShift_Bool() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU16(value: 1000),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `u16' and `bool'")
+        }
+    }
+    
+    func testBinary_U8_RightShift_U16() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 16),
+                                     right: ExprUtils.makeU16(value: 4))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load16(from: t1), 1)
+    }
+    
+    func testBinary_U8_RightShift_U8() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 4),
+                                     right: ExprUtils.makeU8(value: 2))
+        let actual = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
+    }
+    
+    func testBinary_U8_RightShift_Bool() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeU8(value: 1),
+                                     right: ExprUtils.makeBool(value: false))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `u8' and `bool'")
+        }
+    }
+    
+    func testBinary_Bool_RightShift_U16() {
+        let expr = Expression.Binary(op: .rightDoubleAngle,
+                                     left: ExprUtils.makeBool(value: false),
+                                     right: ExprUtils.makeU16(value: 1000))
+        XCTAssertThrowsError(try tryCompile(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `bool' and `u16'")
+        }
+    }
+    
+    func testBinary_Bool_RightShift_U8() {
+       let expr = Expression.Binary(op: .rightDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeU8(value: 1))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to operands of types `bool' and `u8'")
+       }
+    }
+    
+    func testBinary_Bool_RightShift_Bool() {
+       let expr = Expression.Binary(op: .rightDoubleAngle,
+                                    left: ExprUtils.makeBool(value: false),
+                                    right: ExprUtils.makeBool(value: false))
+       XCTAssertThrowsError(try tryCompile(expression: expr)) {
+           let compilerError = $0 as? CompilerError
+           XCTAssertNotNil(compilerError)
+           XCTAssertEqual(compilerError?.message, "binary operator `>>' cannot be applied to two `bool' operands")
+       }
+    }
+    
+    func testBinary_Bool_LogicalAnd_Bool() {
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: Expression.LiteralBool(true),
+                                     right: Expression.LiteralBool(true))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_Bool_LogicalOr_Bool() {
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: Expression.LiteralBool(true),
+                                     right: Expression.LiteralBool(false))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
     func testCompileIdentifierExpression_U8_Static() {

@@ -249,6 +249,7 @@ public class SnapToCrackleCompiler: NSObject {
         // Change the storage pointer so the new one doesn't overwrite existing
         // symbols.
         let oldModulesAlreadyImported = modulesAlreadyImported
+        modulesAlreadyImported = []
         let oldSymbols = symbols
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable())
         symbols.storagePointer = oldSymbols.storagePointer

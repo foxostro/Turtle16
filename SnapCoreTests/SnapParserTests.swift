@@ -2612,4 +2612,92 @@ impl Serial for SerialFake {
                       ]))
         ])
     }
+    
+    func testExpressionStatement_BitwiseNegation() {
+        let parser = parse("~0b10101010")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Unary(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                         op: .tilde,
+                                         expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 11), value: 0b10101010))])
+    }
+    
+    func testExpressionStatement_LogicalNot() {
+        let parser = parse("!0b10101010")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Unary(sourceAnchor: parser.lineMapper.anchor(0, 11),
+                                         op: .bang,
+                                         expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 11), value: 0b10101010))])
+    }
+    
+    func testExpressionStatement_BitwiseXor() {
+        let parser = parse("1^2")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                          op: .caret,
+                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                          right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(2, 3), value: 2))])
+    }
+    
+    func testExpressionStatement_BitwiseAnd() {
+        let parser = parse("1&2")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                          op: .ampersand,
+                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                          right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(2, 3), value: 2))])
+    }
+    
+    func testExpressionStatement_BitwiseOr() {
+        let parser = parse("1|2")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                          op: .pipe,
+                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                          right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(2, 3), value: 2))])
+    }
+    
+    func testExpressionStatement_LogicalANd() {
+        let parser = parse("true && false")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 13),
+                                          op: .doubleAmpersand,
+                                          left: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(0, 4), value: true),
+                                          right: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(8, 13), value: false))])
+    }
+    
+    func testExpressionStatement_LogicalOr() {
+        let parser = parse("true || false")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 13),
+                                          op: .doublePipe,
+                                          left: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(0, 4), value: true),
+                                          right: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(8, 13), value: false))])
+    }
+    
+    func testExpressionStatement_BitwiseLeftShift() {
+        let parser = parse("1<<2")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 4),
+                                          op: .leftDoubleAngle,
+                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                          right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 2))])
+    }
+    
+    func testExpressionStatement_BitwiseRightShift() {
+        let parser = parse("1>>2")
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children,
+                       [Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 4),
+                                          op: .rightDoubleAngle,
+                                          left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                          right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 2))])
+    }
 }

@@ -605,15 +605,28 @@ public class SnapParser: Parser {
     
     private func consumeExpression(allowsStructInitializer: Bool = true) throws -> Expression {
         isStructInitializerExpressionAllowed.append(allowsStructInitializer)
-        let expr = try consumeComparison()
+        let expr = try consumeAssignment()
         isStructInitializerExpressionAllowed.removeLast()
         return expr
     }
     
-    private func consumeComparison() throws -> Expression {
-        var expression = try consumeAssignment()
-        while let tokenOperator = accept(operators: [.eq, .ne, .lt, .gt, .le, .ge]) {
-            let right = try consumeAssignment()
+    private func consumeAssignment() throws -> Expression {
+        let lexpr = try consumeLogicalOperator()
+        if nil != accept(TokenEqual.self) {
+            let rexpr = try consumeLogicalOperator()
+            let sourceAnchor = lexpr.sourceAnchor?.union(rexpr.sourceAnchor)
+            let expression = Expression.Assignment(sourceAnchor: sourceAnchor,
+                                                   lexpr: lexpr,
+                                                   rexpr: rexpr)
+            return expression
+        }
+        return lexpr
+    }
+    
+    private func consumeLogicalOperator() throws -> Expression {
+        var expression = try consumeBitwiseOperator()
+        while let tokenOperator = accept(operators: [.doubleAmpersand, .doublePipe]) {
+            let right = try consumeBitwiseOperator()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
             expression = Expression.Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
@@ -623,17 +636,43 @@ public class SnapParser: Parser {
         return expression
     }
     
-    private func consumeAssignment() throws -> Expression {
-        let lexpr = try consumeAddition()
-        if nil != accept(TokenEqual.self) {
-            let rexpr = try consumeAddition()
-            let sourceAnchor = lexpr.sourceAnchor?.union(rexpr.sourceAnchor)
-            let expression = Expression.Assignment(sourceAnchor: sourceAnchor,
-                                                   lexpr: lexpr,
-                                                   rexpr: rexpr)
-            return expression
+    private func consumeBitwiseOperator() throws -> Expression {
+        var expression = try consumeRelationalOperator()
+        while let tokenOperator = accept(operators: [.pipe, .caret, .ampersand]) {
+            let right = try consumeRelationalOperator()
+            let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
+            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+                                           op: tokenOperator.op,
+                                           left: expression,
+                                           right: right)
         }
-        return lexpr
+        return expression
+    }
+    
+    private func consumeRelationalOperator() throws -> Expression {
+        var expression = try consumeBitwiseShift()
+        while let tokenOperator = accept(operators: [.ne, .eq, .gt, .ge, .lt, .le]) {
+            let right = try consumeBitwiseShift()
+            let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
+            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+                                           op: tokenOperator.op,
+                                           left: expression,
+                                           right: right)
+        }
+        return expression
+    }
+    
+    private func consumeBitwiseShift() throws -> Expression {
+        var expression = try consumeAddition()
+        while let tokenOperator = accept(operators: [.leftDoubleAngle, .rightDoubleAngle]) {
+            let right = try consumeAddition()
+            let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
+            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+                                           op: tokenOperator.op,
+                                           left: expression,
+                                           right: right)
+        }
+        return expression
     }
     
     private func consumeAddition() throws -> Expression {
@@ -688,7 +727,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeUnary() throws -> Expression {
-        if let token = accept(operators: [.minus, .ampersand]) {
+        if let token = accept(operators: [.ampersand, .tilde, .bang, .minus]) {
             let right = try consumeUnary()
             let sourceAnchor = token.sourceAnchor?.union(right.sourceAnchor)
             return Expression.Unary(sourceAnchor: sourceAnchor,

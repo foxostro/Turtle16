@@ -978,7 +978,7 @@ puts("Hello, World!")
 panic("oops!")
 puts("Hello, World!")
 """)
-        XCTAssertEqual(serialOutput, "PANIC: oops!")
+        XCTAssertEqual(serialOutput, "PANIC: oops!\n")
     }
     
     func testArrayOutOfBoundsError() {
@@ -994,7 +994,7 @@ puts("Hello, World!")
 let arr = "Hello"
 let foo = arr[10]
 """)
-        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 2")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 2\n")
     }
     
     func test_EndToEndIntegration_ReadAndWriteToStructMember() {
@@ -1389,7 +1389,7 @@ let helloComma = helloWorld[0..6]
 let hello = helloComma[0..1000]
 puts(hello)
 """)
-        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `helloComma[0..1000]' on line 3")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `helloComma[0..1000]' on line 3\n")
     }
     
     func testAssertionFailed() {
@@ -1404,14 +1404,14 @@ puts(hello)
         _ = try! executor.execute(program: """
 assert(1 == 2)
 """)
-        XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 1")
+        XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 1\n")
     }
     
     func testRunTests_AllTestsPassed() {
         var serialOutput = ""
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
-        executor.shouldRunTests = true
+        executor.shouldRunSpecificTest = "foo"
         executor.configure = { computer in
             computer.didUpdateSerialOutput = {
                 serialOutput = $0
@@ -1421,14 +1421,14 @@ assert(1 == 2)
 test "foo" {
 }
 """)
-        XCTAssertEqual(serialOutput, "All Tests Passed.")
+        XCTAssertEqual(serialOutput, "passed\n")
     }
     
     func testRunTests_FailingAssertMentionsFailingTestByName() {
         var serialOutput = ""
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
-        executor.shouldRunTests = true
+        executor.shouldRunSpecificTest = "foo"
         executor.configure = { computer in
             computer.didUpdateSerialOutput = {
                 serialOutput = $0
@@ -1439,7 +1439,7 @@ test "foo" {
     assert(1 == 2)
 }
 """)
-        XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 2 in test \"foo\"")
+        XCTAssertEqual(serialOutput, "PANIC: assertion failed: `1 == 2' on line 2 in test \"foo\"\n")
     }
     
     func testImportModule() {
@@ -1588,7 +1588,7 @@ let baz = foo.arr[0]
         var serialOutput = ""
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
-        executor.shouldRunTests = true
+        executor.shouldRunSpecificTest = "foo"
         executor.configure = { computer in
             computer.didUpdateSerialOutput = {
                 serialOutput = $0
@@ -1596,9 +1596,11 @@ let baz = foo.arr[0]
         }
         XCTAssertNoThrow(try executor.execute(program: """
 let slice: []const u8 = "test"
-assert(slice[0] == 't')
+test "foo" {
+    assert(slice[0] == 't')
+}
 """))
-        XCTAssertEqual(serialOutput, "All Tests Passed.")
+        XCTAssertEqual(serialOutput, "passed\n")
     }
     
     func testBugWhenConvertingStringLiteralToDynamicArrayInFunctionParameter() {
@@ -1625,7 +1627,7 @@ let baz = foo.bar("t")
         var serialOutput = ""
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
-        executor.shouldRunTests = true
+        executor.shouldRunSpecificTest = "call through vtable pseudo-interface"
         executor.configure = { computer in
             computer.didUpdateSerialOutput = {
                 serialOutput = $0
@@ -1677,14 +1679,14 @@ test "call through vtable pseudo-interface" {
 }
 
 """))
-        XCTAssertEqual(serialOutput, "All Tests Passed.")
+        XCTAssertEqual(serialOutput, "passed\n")
     }
     
     func testTraitsDemo() {
         var serialOutput = ""
         let executor = SnapExecutor()
         executor.isUsingStandardLibrary = true
-        executor.shouldRunTests = true
+        executor.shouldRunSpecificTest = "call through trait interface"
         executor.configure = { computer in
             computer.didUpdateSerialOutput = {
                 serialOutput = $0
@@ -1732,7 +1734,7 @@ test "call through trait interface" {
 }
 
 """))
-        XCTAssertEqual(serialOutput, "All Tests Passed.")
+        XCTAssertEqual(serialOutput, "passed\n")
     }
     
     func testTraitsFailToCompileBecauseTraitNotImplementedAppropriately() {

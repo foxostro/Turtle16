@@ -15,7 +15,8 @@ public protocol SandboxAccessManager {
 
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
-    public var shouldRunTests = false
+    public var shouldRunSpecificTest: String? = nil
+    public private(set) var testNames: [String] = []
     public var ast: TopLevel! = nil
     public var ir: [CrackleInstruction] = []
     public var instructions: [Instruction] = []
@@ -66,7 +67,7 @@ public class SnapCompiler: NSObject {
         }
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.isUsingStandardLibrary = isUsingStandardLibrary
-        snapToCrackleCompiler.shouldRunTests = shouldRunTests
+        snapToCrackleCompiler.shouldRunSpecificTest = shouldRunSpecificTest
         snapToCrackleCompiler.sandboxAccessManager = sandboxAccessManager
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
@@ -74,6 +75,7 @@ public class SnapCompiler: NSObject {
             return
         }
         ir = snapToCrackleCompiler.instructions
+        testNames = snapToCrackleCompiler.testNames
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()

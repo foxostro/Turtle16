@@ -2534,7 +2534,7 @@ public func foo() -> None {
         ])
         
         let compiler = SnapToCrackleCompiler()
-        compiler.shouldRunTests = true
+        compiler.shouldRunSpecificTest = "bar"
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "declaration is only valid at file scope")
@@ -2548,7 +2548,6 @@ public func foo() -> None {
         ])
         
         let compiler = SnapToCrackleCompiler()
-        compiler.shouldRunTests = true
         compiler.compile(ast: ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "test \"bar\" already exists")
@@ -2569,7 +2568,7 @@ public func foo() -> None {
         ])
         
         let compiler = SnapToCrackleCompiler()
-        compiler.shouldRunTests = true
+        compiler.shouldRunSpecificTest = "bar"
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {

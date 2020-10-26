@@ -27,7 +27,7 @@ public class SnapToCrackleCompiler: NSObject {
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [CrackleInstruction] = []
     public var programDebugInfo: SnapDebugInfo? = nil
-    public var shouldRunTests: Bool = false
+    public var shouldRunSpecificTest: String? = nil
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
@@ -39,7 +39,7 @@ public class SnapToCrackleCompiler: NSObject {
     public static let kStandardLibraryModuleName = "stdlib"
     public var isUsingStandardLibrary = false
     
-    private var testNames = Set<String>()
+    public private(set) var testNames: [String] = []
     private var testDeclarations: [TestDeclaration] = []
     private var currentTest: TestDeclaration? = nil
     
@@ -93,7 +93,7 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(genericNode: node)
         }
         
-        if shouldRunTests {
+        if shouldRunSpecificTest != nil {
             try compileTestRunner()
         }
         else if nil != globalSymbols.maybeResolve(identifier: SnapToCrackleCompiler.kMainFunctionName) {
@@ -352,7 +352,7 @@ public class SnapToCrackleCompiler: NSObject {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "test \"\(node.name)\" already exists")
         }
         
-        testNames.insert(node.name)
+        testNames.append(node.name)
         testDeclarations.append(node)
     }
     
@@ -1084,12 +1084,14 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func compileTestRunner() throws {
         for testDeclaration in testDeclarations {
-            currentTest = testDeclaration
-            try compile(block: testDeclaration.body)
-            currentTest = nil
+            if testDeclaration.name == shouldRunSpecificTest! {
+                currentTest = testDeclaration
+                try compile(block: testDeclaration.body)
+                currentTest = nil
+            }
         }
         try compile(block: Block(children: try compileProgramText(url: nil, text: """
-puts("All Tests Passed.")
+puts("passed\\n")
 """).children))
     }
 }

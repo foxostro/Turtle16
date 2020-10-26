@@ -4,6 +4,7 @@ public let none = None {}
 public func panic(message: []const u8) {
     puts("PANIC: ")
     puts(message)
+    puts("\n")
     hlt()
 }
 

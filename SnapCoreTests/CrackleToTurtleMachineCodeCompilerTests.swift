@@ -1666,4 +1666,202 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         let expectedAddress: UInt16 = 14 // This is a tad fragile since the label address depends on the prologue.
         XCTAssertEqual(computer.dataRAM.load16(from: a), expectedAddress)
     }
+    
+    func testAnd() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0b11001100, to: a)
+            computer.dataRAM.store(value: 0b10101010, to: b)
+        }
+        let computer = try! executor.execute(ir: [.and(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0b11001100)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0b10101010)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0b10001000)
+    }
+    
+    func testAnd16() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0b1100110011001100, to: a)
+            computer.dataRAM.store16(value: 0b1010101010101010, to: b)
+        }
+        let computer = try! executor.execute(ir: [.and16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0b1100110011001100)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0b1010101010101010)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 0b1000100010001000)
+    }
+    
+    func testOr() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0b11001100, to: a)
+            computer.dataRAM.store(value: 0b10101010, to: b)
+        }
+        let computer = try! executor.execute(ir: [.or(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0b11001100)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0b10101010)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0b11101110)
+    }
+    
+    func testOr16() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0b1100110011001100, to: a)
+            computer.dataRAM.store16(value: 0b1010101010101010, to: b)
+        }
+        let computer = try! executor.execute(ir: [.or16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0b1100110011001100)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0b1010101010101010)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 0b1110111011101110)
+    }
+    
+    func testXor() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0b11001100, to: a)
+            computer.dataRAM.store(value: 0b10101010, to: b)
+        }
+        let computer = try! executor.execute(ir: [.xor(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0b11001100)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 0b10101010)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0b01100110)
+    }
+    
+    func testXor16() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0b1100110011001100, to: a)
+            computer.dataRAM.store16(value: 0b1010101010101010, to: b)
+        }
+        let computer = try! executor.execute(ir: [.xor16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0b1100110011001100)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0b1010101010101010)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 0b0110011001100110)
+    }
+    
+    func testLsl() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0b00001000, to: a)
+            computer.dataRAM.store(value: 2, to: b)
+        }
+        let computer = try! executor.execute(ir: [.lsl(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0b00001000)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 2)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0b00100000)
+    }
+    
+    func testLsl16() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0b0000000010000000, to: a)
+            computer.dataRAM.store16(value: 2, to: b)
+        }
+        let computer = try! executor.execute(ir: [.lsl16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0b0000000010000000)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 2)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 0b0000001000000000)
+    }
+    
+    func testLsr() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0b00001000, to: a)
+            computer.dataRAM.store(value: 1, to: b)
+        }
+        let computer = try! executor.execute(ir: [.lsr(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0b00001000)
+        XCTAssertEqual(computer.dataRAM.load(from: b), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0b00000100)
+    }
+    
+    func testLsr16() {
+        let a = 0x0104
+        let b = 0x0108
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0b0000000100000000, to: a)
+            computer.dataRAM.store16(value: 0, to: b)
+        }
+        let computer = try! executor.execute(ir: [.lsr16(c, a, b)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0b0000000100000000)
+        XCTAssertEqual(computer.dataRAM.load16(from: b), 0)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 0b0000000100000000)
+    }
+    
+    func testNEG() {
+        let a = 0x0104
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0b10101010, to: a)
+        }
+        let computer = try! executor.execute(ir: [.neg(c, a)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0b10101010)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0b01010101)
+    }
+    
+    func testNEG16() {
+        let a = 0x0104
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: 0b1010101010101010, to: a)
+        }
+        let computer = try! executor.execute(ir: [.neg16(c, a)])
+        XCTAssertEqual(computer.dataRAM.load16(from: a), 0b1010101010101010)
+        XCTAssertEqual(computer.dataRAM.load16(from: c), 0b0101010101010101)
+    }
+    
+    func testNOT_false() {
+        let a = 0x0104
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 0, to: a)
+        }
+        let computer = try! executor.execute(ir: [.not(c, a)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 0)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 1)
+    }
+    
+    func testNOT_true() {
+        let a = 0x0104
+        let c = 0x010a
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store(value: 1, to: a)
+        }
+        let computer = try! executor.execute(ir: [.not(c, a)])
+        XCTAssertEqual(computer.dataRAM.load(from: a), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: c), 0)
+    }
 }

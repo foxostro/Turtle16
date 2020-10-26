@@ -225,6 +225,10 @@ public class RvalueExpressionTypeChecker: NSObject {
             return .compTimeBool(a == b)
         case .ne:
             return .compTimeBool(a != b)
+        case .doubleAmpersand:
+            return .compTimeBool(a && b)
+        case .doublePipe:
+            return .compTimeBool(a || b)
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }

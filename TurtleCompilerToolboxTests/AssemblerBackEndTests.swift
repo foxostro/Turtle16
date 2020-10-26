@@ -226,4 +226,48 @@ class AssemblerBackEndTests: XCTestCase {
         XCTAssertEqual(instructions[0].immediate, 0)
         XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "BLT P, M")!))
     }
+    
+    func testAND() {
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        assembler.begin()
+        try! assembler.and(.D)
+        assembler.end()
+        let instructions = assembler.instructions
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b11011)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC D")!))
+    }
+    
+    func testOR() {
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        assembler.begin()
+        try! assembler.or(.D)
+        assembler.end()
+        let instructions = assembler.instructions
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b11110)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC D")!))
+    }
+    
+    func testXOR() {
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        assembler.begin()
+        try! assembler.xor(.D)
+        assembler.end()
+        let instructions = assembler.instructions
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b10110)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC D")!))
+    }
+    
+    func testLSL() {
+        let assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
+        assembler.begin()
+        try! assembler.lsl(.D)
+        assembler.end()
+        let instructions = assembler.instructions
+        XCTAssertEqual(instructions.count, 1)
+        XCTAssertEqual(instructions[0].immediate, 0b1100)
+        XCTAssertEqual(instructions[0].opcode, UInt8(microcodeGenerator.getOpcode(mnemonic: "ALUwoC D")!))
+    }
 }

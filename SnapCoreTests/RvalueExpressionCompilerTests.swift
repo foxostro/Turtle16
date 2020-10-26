@@ -2498,7 +2498,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: t0), 1)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
     func testBinary_IntegerConstant_BitwiseAnd_U16() {
@@ -2648,12 +2648,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_IntegerConstant_BitwiseOr_U16() {
         let expr = Expression.Binary(op: .pipe,
-                                     left: Expression.LiteralInt(1000),
-                                     right: ExprUtils.makeU16(value: 1000))
+                                     left: Expression.LiteralInt(1002),
+                                     right: ExprUtils.makeU16(value: 1001))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: actual)
-        XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
+        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1003)
     }
     
     func testBinary_IntegerConstant_BitwiseOr_U8() {
@@ -3063,7 +3063,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testBinary_IntegerConstant_RightShift_IntegerConstant_Small() {
         let expr = Expression.Binary(op: .rightDoubleAngle,
-                                     left: Expression.LiteralInt(1),
+                                     left: Expression.LiteralInt(4),
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
@@ -3206,7 +3206,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        }
     }
     
-    func testBinary_Bool_LogicalAnd_Bool() {
+    func testBinary_BoolConstant_LogicalAnd_BoolConstant() {
         let expr = Expression.Binary(op: .doubleAmpersand,
                                      left: Expression.LiteralBool(true),
                                      right: Expression.LiteralBool(true))
@@ -3216,10 +3216,30 @@ class RvalueExpressionCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
-    func testBinary_Bool_LogicalOr_Bool() {
+    func testBinary_BoolConstant_LogicalAnd_Bool() {
+        let expr = Expression.Binary(op: .doubleAmpersand,
+                                     left: ExprUtils.makeBool(value: true),
+                                     right: ExprUtils.makeBool(value: true))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_BoolConstant_LogicalOr_BoolConstant() {
         let expr = Expression.Binary(op: .doublePipe,
                                      left: Expression.LiteralBool(true),
                                      right: Expression.LiteralBool(false))
+        let ir = mustCompile(expression: expr)
+        let executor = CrackleExecutor()
+        let computer = try! executor.execute(ir: ir)
+        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
+    }
+    
+    func testBinary_Bool_LogicalOr_Bool() {
+        let expr = Expression.Binary(op: .doublePipe,
+                                     left: ExprUtils.makeBool(value: true),
+                                     right: ExprUtils.makeBool(value: true))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(ir: ir)

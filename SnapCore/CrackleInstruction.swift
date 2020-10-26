@@ -56,8 +56,22 @@ public enum CrackleInstruction: Equatable {
     case le16(Int, Int, Int)
     case ge(Int, Int, Int)
     case ge16(Int, Int, Int)
+    case and(Int, Int, Int)
+    case and16(Int, Int, Int)
+    case or(Int, Int, Int)
+    case or16(Int, Int, Int)
+    case xor(Int, Int, Int)
+    case xor16(Int, Int, Int)
+    case lsl(Int, Int, Int)
+    case lsl16(Int, Int, Int)
+    case lsr(Int, Int, Int)
+    case lsr16(Int, Int, Int)
+    case neg(Int, Int)
+    case neg16(Int, Int)
+    case not(Int, Int)
     
     case jz(String, Int) // (label, test) -- Branch if the word in memory at the address given by `test' is zero
+    case jnz(String, Int) // (label, test) -- Branch if the word in memory at the address given by `test' is non-zero
     
     case copyWordZeroExtend(Int, Int) // copies an 8-bit word at the specified source address to a 16-bit slot at the specified destination address, filling the high bits with zero
     
@@ -177,8 +191,36 @@ public enum CrackleInstruction: Equatable {
             return String(format: "GE 0x%04x, 0x%04x, 0x%04x", c, a, b)
         case .ge16(let c, let a, let b):
             return String(format: "GE16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .and(let c, let a, let b):
+            return String(format: "AND 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .and16(let c, let a, let b):
+            return String(format: "AND16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .or(let c, let a, let b):
+            return String(format: "OR 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .or16(let c, let a, let b):
+            return String(format: "OR16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .xor(let c, let a, let b):
+            return String(format: "XOR 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .xor16(let c, let a, let b):
+            return String(format: "XOR16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .lsl(let c, let a, let b):
+            return String(format: "LSL 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .lsl16(let c, let a, let b):
+            return String(format: "LSL16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .lsr(let c, let a, let b):
+            return String(format: "LSR 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .lsr16(let c, let a, let b):
+            return String(format: "LSR16 0x%04x, 0x%04x, 0x%04x", c, a, b)
+        case .neg(let c, let a):
+            return String(format: "NEG 0x%04x, 0x%04x", c, a)
+        case .neg16(let c, let a):
+            return String(format: "NEG16 0x%04x, 0x%04x", c, a)
+        case .not(let c, let a):
+            return String(format: "NOT 0x%04x, 0x%04x", c, a)
         case .jz(let label, let test):
             return String(format: "JZ %@, 0x%04x", label, test)
+        case .jnz(let label, let test):
+            return String(format: "JNZ %@, 0x%04x", label, test)
         case .copyWordZeroExtend(let b, let a):
             return String(format: "COPY-ZX 0x%04x, 0x%04x", b, a)
         case .copyWords(let dst, let src, let numberOfWords):

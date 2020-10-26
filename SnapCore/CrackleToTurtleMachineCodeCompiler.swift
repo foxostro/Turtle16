@@ -190,7 +190,21 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .le16(let c, let a, let b): try le16(c, a, b)
         case .ge(let c, let a, let b): try ge(c, a, b)
         case .ge16(let c, let a, let b): try ge16(c, a, b)
+        case .and(let c, let a, let b): try and(c, a, b)
+        case .and16(let c, let a, let b): try and16(c, a, b)
+        case .or(let c, let a, let b): try or(c, a, b)
+        case .or16(let c, let a, let b): try or16(c, a, b)
+        case .xor(let c, let a, let b): try xor(c, a, b)
+        case .xor16(let c, let a, let b): try xor16(c, a, b)
+        case .lsl(let c, let a, let b): try lsl(c, a, b)
+        case .lsl16(let c, let a, let b): try lsl16(c, a, b)
+        case .lsr(let c, let a, let b): try lsr(c, a, b)
+        case .lsr16(let c, let a, let b): try lsr16(c, a, b)
+        case .neg(let c, let a): try neg(c, a)
+        case .neg16(let c, let a): try neg16(c, a)
+        case .not(let c, let a): try not(c, a)
         case .jz(let label, let test): try jz(label, test)
+        case .jnz(let label, let test): try jnz(label, test)
         case .copyWordZeroExtend(let b, let a): try copyWordZeroExtend(b, a)
         case .copyWords(let dst, let src, let count): try copyWords(dst, src, count)
         case .copyWordsIndirectSource(let dst, let srcPtr, let count): try copyWordsIndirectSource(dst, srcPtr, count)
@@ -1258,6 +1272,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try jei(label, test, 0)
     }
     
+    private func jnz(_ label: String, _ test: Int) throws {
+        try jei(label, test, 1)
+    }
+    
     private func jei(_ label: String, _ addressOfTestValue: Int, _ valueToTestAgainst: Int) throws {
         try setUV(addressOfTestValue)
         try assembler.mov(.A, .M)
@@ -1711,5 +1729,311 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         assembler.jmp()
         assembler.nop()
         assembler.nop()
+    }
+    
+    private func and(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setupALUOperandsAndDestinationAddress(c, a, b)
+        try assembler.and(.NONE)
+        try assembler.and(.M)
+    }
+    
+    private func and16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setUV(a+1)
+        try assembler.mov(.A, .M)
+        try setUV(b+1)
+        try assembler.mov(.B, .M)
+        try setUV(c+1)
+        try assembler.and(.NONE)
+        try assembler.and(.M)
+        
+        try setUV(a+0)
+        try assembler.mov(.A, .M)
+        try setUV(b+0)
+        try assembler.mov(.B, .M)
+        try setUV(c+0)
+        try assembler.and(.NONE)
+        try assembler.and(.M)
+    }
+    
+    private func or(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setupALUOperandsAndDestinationAddress(c, a, b)
+        try assembler.or(.NONE)
+        try assembler.or(.M)
+    }
+    
+    private func or16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setUV(a+1)
+        try assembler.mov(.A, .M)
+        try setUV(b+1)
+        try assembler.mov(.B, .M)
+        try setUV(c+1)
+        try assembler.or(.NONE)
+        try assembler.or(.M)
+        
+        try setUV(a+0)
+        try assembler.mov(.A, .M)
+        try setUV(b+0)
+        try assembler.mov(.B, .M)
+        try setUV(c+0)
+        try assembler.or(.NONE)
+        try assembler.or(.M)
+    }
+    
+    private func xor(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setupALUOperandsAndDestinationAddress(c, a, b)
+        try assembler.xor(.NONE)
+        try assembler.xor(.M)
+    }
+    
+    private func xor16(_ c: Int, _ a: Int, _ b: Int) throws {
+        try setUV(a+1)
+        try assembler.mov(.A, .M)
+        try setUV(b+1)
+        try assembler.mov(.B, .M)
+        try setUV(c+1)
+        try assembler.xor(.NONE)
+        try assembler.xor(.M)
+        
+        try setUV(a+0)
+        try assembler.mov(.A, .M)
+        try setUV(b+0)
+        try assembler.mov(.B, .M)
+        try setUV(c+0)
+        try assembler.xor(.NONE)
+        try assembler.xor(.M)
+    }
+    
+    private func lsl(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        // Initialize the result
+        try setUV(leftOperand)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress)
+        try assembler.mov(.M, .A)
+        
+        // Copy the right operand to a scratch location because we modify it in
+        // the loop.
+        let counter = allocateScratchMemory(1)
+        try setUV(rightOperand)
+        try assembler.mov(.A, .M)
+        try setUV(counter)
+        try assembler.mov(.M, .A)
+        
+        try label(loopHead)
+        
+        // If the counter is equal to zero then bail because we're done.
+        try setAddressToLabel(loopTail)
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        // Shift the result left by one.
+        try setUV(resultAddress)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress)
+        try assembler.lsl(.NONE)
+        try assembler.lsl(.M)
+        
+        // Decrement the counter.
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        
+        try jmp(loopHead) // Jump back to the beginning of the loop
+        try label(loopTail)
+    }
+    
+    private func lsl16(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        // Initialize the result
+        try setUV(leftOperand+0)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress+0)
+        try assembler.mov(.M, .A)
+        try setUV(leftOperand+1)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress+1)
+        try assembler.mov(.M, .A)
+        
+        // Copy the right operand to a scratch location because we modify it in
+        // the loop. Discard the upper byte because we can shift by, at most,
+        // sixteen.
+        let counter = allocateScratchMemory(1)
+        try setUV(rightOperand+1)
+        try assembler.mov(.A, .M)
+        try setUV(counter)
+        try assembler.mov(.M, .A)
+        
+        try label(loopHead)
+        
+        // If the counter is equal to zero then bail because we're done.
+        try setAddressToLabel(loopTail)
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        try add16(resultAddress, resultAddress, resultAddress)
+        
+        // Decrement the counter.
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        
+        try jmp(loopHead) // Jump back to the beginning of the loop
+        try label(loopTail)
+    }
+    
+    private func lsr(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        let two = allocateScratchMemory(1)
+        try setUV(two)
+        try assembler.li(.M, 2)
+        
+        // Initialize the result
+        try setUV(leftOperand)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress)
+        try assembler.mov(.M, .A)
+        
+        // Copy the right operand to a scratch location because we modify it in
+        // the loop.
+        let counter = allocateScratchMemory(1)
+        try setUV(rightOperand)
+        try assembler.mov(.A, .M)
+        try setUV(counter)
+        try assembler.mov(.M, .A)
+        
+        try label(loopHead)
+        
+        // If the counter is equal to zero then bail because we're done.
+        try setAddressToLabel(loopTail)
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        try div(resultAddress, resultAddress, two)
+        
+        // Decrement the counter.
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        
+        try jmp(loopHead) // Jump back to the beginning of the loop
+        try label(loopTail)
+    }
+    
+    private func lsr16(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+        let loopHead = labelMaker.next()
+        let loopTail = labelMaker.next()
+        
+        let two = allocateScratchMemory(2)
+        try setUV(two)
+        try assembler.li(.M, 0)
+        assembler.inuv()
+        try assembler.li(.M, 2)
+        
+        // Initialize the result
+        try setUV(leftOperand+0)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress+0)
+        try assembler.mov(.M, .A)
+        try setUV(leftOperand+1)
+        try assembler.mov(.A, .M)
+        try setUV(resultAddress+1)
+        try assembler.mov(.M, .A)
+        
+        // Copy the right operand to a scratch location because we modify it in
+        // the loop. Discard the upper byte because we can shift by, at most,
+        // sixteen.
+        let counter = allocateScratchMemory(1)
+        try setUV(rightOperand+1)
+        try assembler.mov(.A, .M)
+        try setUV(counter)
+        try assembler.mov(.M, .A)
+        
+        try label(loopHead)
+        
+        // If the counter is equal to zero then bail because we're done.
+        try setAddressToLabel(loopTail)
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.li(.B, 0)
+        assembler.cmp()
+        assembler.cmp()
+        assembler.nop()
+        assembler.je()
+        assembler.nop()
+        assembler.nop()
+        
+        try div16(resultAddress, resultAddress, two)
+        
+        // Decrement the counter.
+        try setUV(counter)
+        try assembler.mov(.A, .M)
+        try assembler.dea(.NONE)
+        try assembler.dea(.M)
+        
+        try jmp(loopHead) // Jump back to the beginning of the loop
+        try label(loopTail)
+    }
+    
+    private func neg(_ result: Int, _ value: Int) throws {
+        try setUV(value)
+        try assembler.mov(.A, .M)
+        try setUV(result)
+        try assembler.neg(.NONE)
+        try assembler.neg(.M)
+    }
+    
+    private func neg16(_ result: Int, _ value: Int) throws {
+        try setUV(value+1)
+        try assembler.mov(.A, .M)
+        try setUV(result+1)
+        try assembler.neg(.NONE)
+        try assembler.neg(.M)
+        
+        try setUV(value+0)
+        try assembler.mov(.A, .M)
+        try setUV(result+0)
+        try assembler.neg(.NONE)
+        try assembler.neg(.M)
+    }
+    
+    private func not(_ result: Int, _ value: Int) throws {
+        try setUV(value)
+        try assembler.mov(.A, .M)
+        try setUV(result)
+        try assembler.neg(.NONE)
+        try assembler.neg(.A)
+        try assembler.li(.B, 0b00000001)
+        try assembler.and(.NONE)
+        try assembler.and(.M)
     }
 }

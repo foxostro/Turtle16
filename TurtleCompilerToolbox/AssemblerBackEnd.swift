@@ -279,4 +279,68 @@ public class AssemblerBackEnd: NSObject {
         let mnemonic = "BLTI \(String(describing: destination))"
         try instruction(mnemonic: mnemonic, immediate: immediate)
     }
+    
+    // Bitwise AND -- The ALU performs a bitwise AND on the contents of the A
+    // and B registers and moves the result to the specified destination device.
+    public func and(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUwoC"
+        } else {
+            mnemonic = "ALUwoC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b11011)
+    }
+    
+    // Bitwise OR -- The ALU performs a bitwise OR on the contents of the A
+    // and B registers and moves the result to the specified destination device.
+    public func or(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUwoC"
+        } else {
+            mnemonic = "ALUwoC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b11110)
+    }
+    
+    // Bitwise XOR -- The ALU performs a bitwise XOR on the contents of the A
+    // and B registers and moves the result to the specified destination device.
+    public func xor(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUwoC"
+        } else {
+            mnemonic = "ALUwoC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b10110)
+    }
+    
+    // Bitwise LSL -- The ALU shifts the value in the A register left by one.
+    public func lsl(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUwoC"
+        } else {
+            mnemonic = "ALUwoC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b1100)
+    }
+    
+    // Bitwise NEG -- The ALU performs a bitwise negation of the contents of the
+    // A register and moves the result to the specified destination device.
+    public func neg(_ destination: RegisterName) throws {
+        assert(isAssembling)
+        let mnemonic: String
+        if destination == .NONE {
+            mnemonic = "ALUwoC"
+        } else {
+            mnemonic = "ALUwoC \(String(describing: destination))"
+        }
+        try instruction(mnemonic: mnemonic, immediate: 0b10000)
+    }
 }

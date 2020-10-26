@@ -179,14 +179,23 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             temporaryStack.push(c)
             
             switch (childType, unary.op) {
-            case (.u16, .minus):
-                instructions += childExpr
-                instructions += [.storeImmediate16(a.address, 0)]
-                instructions += [.sub16(c.address, a.address, b.address)]
             case (.u8, .minus):
                 instructions += childExpr
                 instructions += [.storeImmediate(a.address, 0)]
                 instructions += [.sub(c.address, a.address, b.address)]
+            case (.u16, .minus):
+                instructions += childExpr
+                instructions += [.storeImmediate16(a.address, 0)]
+                instructions += [.sub16(c.address, a.address, b.address)]
+            case (.bool, .bang):
+                instructions += childExpr
+                instructions += [.not(c.address, b.address)]
+            case (.u8, .tilde):
+                instructions += childExpr
+                instructions += [.neg(c.address, b.address)]
+            case (.u16, .tilde):
+                instructions += childExpr
+                instructions += [.neg16(c.address, b.address)]
             default:
                 // This is basically unreachable since the type checker will
                 // typically throw an error about an invalid unary operator before
@@ -232,20 +241,33 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             return try compileConstantBooleanBinaryExpression(binary, leftType, rightType)
         }
         
-        let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
-        let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
-        
-        let c = temporaryAllocator.allocate()
-        let a = temporaryStack.pop()
-        let b = temporaryStack.pop()
-        
         var instructions: [CrackleInstruction] = []
         
         switch binary.op {
         case .eq:
+            let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
+            let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
             instructions += right + left + [.eq(c.address, a.address, b.address)]
+            temporaryStack.push(c)
+            a.consume()
+            b.consume()
         case .ne:
+            let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
+            let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+            let c = temporaryAllocator.allocate()
+            let a = temporaryStack.pop()
+            let b = temporaryStack.pop()
             instructions += right + left + [.ne(c.address, a.address, b.address)]
+            temporaryStack.push(c)
+            a.consume()
+            b.consume()
+        case .doubleAmpersand:
+            instructions += try logicalAnd(binary)
+        case .doublePipe:
+            instructions += try logicalOr(binary)
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
@@ -253,10 +275,54 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             throw unsupportedError(expression: binary)
         }
         
+        return instructions
+    }
+    
+    fileprivate func logicalAnd(_ binary: Expression.Binary) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        let c = temporaryAllocator.allocate()
+        let labelFalse = labelMaker.next()
+        let labelTail = labelMaker.next()
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+        let a = temporaryStack.pop()
+        instructions += [.jz(labelFalse, a.address)]
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
+        let b = temporaryStack.pop()
+        instructions += [
+            .jz(labelFalse, b.address),
+            .storeImmediate(c.address, 1),
+            .jmp(labelTail),
+            .label(labelFalse),
+            .storeImmediate(c.address, 0),
+            .label(labelTail)
+        ]
         temporaryStack.push(c)
         a.consume()
         b.consume()
-        
+        return instructions
+    }
+    
+    fileprivate func logicalOr(_ binary: Expression.Binary) throws -> [CrackleInstruction] {
+        var instructions: [CrackleInstruction] = []
+        let c = temporaryAllocator.allocate()
+        let labelTrue = labelMaker.next()
+        let labelTail = labelMaker.next()
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+        let a = temporaryStack.pop()
+        instructions += [.jnz(labelTrue, a.address)]
+        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
+        let b = temporaryStack.pop()
+        instructions += [
+            .jnz(labelTrue, b.address),
+            .storeImmediate(c.address, 0),
+            .jmp(labelTail),
+            .label(labelTrue),
+            .storeImmediate(c.address, 1),
+            .label(labelTail)
+        ]
+        temporaryStack.push(c)
+        a.consume()
+        b.consume()
         return instructions
     }
     
@@ -277,6 +343,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.storeImmediate(dst.address, (a == b) ? 1 : 0)]
         case .ne:
             instructions += [.storeImmediate(dst.address, (a != b) ? 1 : 0)]
+        case .doubleAmpersand:
+            instructions += [.storeImmediate(dst.address, (a && b) ? 1 : 0)]
+        case .doublePipe:
+            instructions += [.storeImmediate(dst.address, (a || b) ? 1 : 0)]
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
@@ -359,6 +429,26 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.mod(c.address, a.address, b.address)]
         case (.modulus, .u16):
             instructions += [.mod16(c.address, a.address, b.address)]
+        case (.ampersand, .u8):
+            instructions += [.and(c.address, a.address, b.address)]
+        case (.ampersand, .u16):
+            instructions += [.and16(c.address, a.address, b.address)]
+        case (.pipe, .u8):
+            instructions += [.or(c.address, a.address, b.address)]
+        case (.pipe, .u16):
+            instructions += [.or16(c.address, a.address, b.address)]
+        case (.caret, .u8):
+            instructions += [.xor(c.address, a.address, b.address)]
+        case (.caret, .u16):
+            instructions += [.xor16(c.address, a.address, b.address)]
+        case (.leftDoubleAngle, .u8):
+            instructions += [.lsl(c.address, a.address, b.address)]
+        case (.leftDoubleAngle, .u16):
+            instructions += [.lsl16(c.address, a.address, b.address)]
+        case (.rightDoubleAngle, .u8):
+            instructions += [.lsr(c.address, a.address, b.address)]
+        case (.rightDoubleAngle, .u16):
+            instructions += [.lsr16(c.address, a.address, b.address)]
         default:
             // This is basically unreachable since the type checker will
             // typically throw an error before we get to this point.
@@ -428,6 +518,41 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
         case .modulus:
             let value = a % b
+            if value > 255 {
+                instructions += [.storeImmediate16(dst.address, value)]
+            } else {
+                instructions += [.storeImmediate(dst.address, value)]
+            }
+        case .ampersand:
+            let value = a & b
+            if value > 255 {
+                instructions += [.storeImmediate16(dst.address, value)]
+            } else {
+                instructions += [.storeImmediate(dst.address, value)]
+            }
+        case .pipe:
+            let value = a | b
+            if value > 255 {
+                instructions += [.storeImmediate16(dst.address, value)]
+            } else {
+                instructions += [.storeImmediate(dst.address, value)]
+            }
+        case .caret:
+            let value = a ^ b
+            if value > 255 {
+                instructions += [.storeImmediate16(dst.address, value)]
+            } else {
+                instructions += [.storeImmediate(dst.address, value)]
+            }
+        case .leftDoubleAngle:
+            let value = a << b
+            if value > 255 {
+                instructions += [.storeImmediate16(dst.address, value)]
+            } else {
+                instructions += [.storeImmediate(dst.address, value)]
+            }
+        case .rightDoubleAngle:
+            let value = a >> b
             if value > 255 {
                 instructions += [.storeImmediate16(dst.address, value)]
             } else {

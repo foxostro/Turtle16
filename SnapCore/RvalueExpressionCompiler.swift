@@ -934,6 +934,12 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 // Attach a pointer to the appropriate vtable instance.
                 Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
             ]))
+        case (.traitType(let a), .traitType(let b)):
+            guard a == b else {
+                assert(false) // unreachable
+                abort()
+            }
+            instructions += try compile(expression: rexpr)
         default:
             assert(false) // unreachable
             abort()

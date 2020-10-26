@@ -55,6 +55,11 @@ public class SnapCommandLineDriver: NSObject {
     func tryRun() throws {
         try parseArguments()
         
+        if shouldRunTests {
+            try tryRunTests()
+            return
+        }
+        
         let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
@@ -62,7 +67,7 @@ public class SnapCommandLineDriver: NSObject {
         }
         let frontEnd = SnapCompiler()
         frontEnd.isUsingStandardLibrary = true
-        frontEnd.shouldRunTests = shouldRunTests
+        frontEnd.shouldRunSpecificTest = nil
         frontEnd.compile(text, inputFileName)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
@@ -81,29 +86,50 @@ public class SnapCommandLineDriver: NSObject {
             try writeToFile(instructions: frontEnd.instructions)
         }
         
-        if shouldRunTests {
-            try runUnitTests(frontEnd)
-        }
-        
         status = 0
     }
     
-    fileprivate func runUnitTests(_ frontEnd: SnapCompiler) throws {
-        let computer = Computer()
-        let microcodeGenerator = MicrocodeGenerator()
-        microcodeGenerator.generate()
-        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.logger = nil
-        computer.programDebugInfo = frontEnd.programDebugInfo
-        computer.provideInstructions(frontEnd.instructions)
-        var previousSerialOutput = ""
-        computer.didUpdateSerialOutput = {
-            let delta = String($0.dropFirst(previousSerialOutput.count))
-            previousSerialOutput = $0
-            self.stdout.write(delta)
+    func tryRunTests() throws {
+        let fileName = inputFileName!.relativePath
+        let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+        guard let text = maybeText else {
+            throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
-        try computer.runUntilHalted()
-        self.stdout.write("\n")
+        
+        let frontEnd0 = SnapCompiler()
+        frontEnd0.isUsingStandardLibrary = true
+        frontEnd0.compile(text, inputFileName)
+        if frontEnd0.hasError {
+            throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd0.errors)
+        }
+        let testNames: [String] = frontEnd0.testNames
+        
+        for testName in testNames {
+            self.stdout.write("Running test \"\(testName)\"...\n")
+            let frontEnd = SnapCompiler()
+            frontEnd.isUsingStandardLibrary = true
+            frontEnd.shouldRunSpecificTest = testName
+            frontEnd.compile(text, inputFileName)
+            if frontEnd.hasError {
+                throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
+            }
+            let computer = Computer()
+            let microcodeGenerator = MicrocodeGenerator()
+            microcodeGenerator.generate()
+            computer.provideMicrocode(microcode: microcodeGenerator.microcode)
+            computer.logger = nil
+            computer.programDebugInfo = frontEnd.programDebugInfo
+            computer.provideInstructions(frontEnd.instructions)
+            var previousSerialOutput = ""
+            computer.didUpdateSerialOutput = {
+                let delta = String($0.dropFirst(previousSerialOutput.count))
+                previousSerialOutput = $0
+                self.stdout.write(delta)
+            }
+            try computer.runUntilHalted()
+        }
+        
+        status = 0
     }
     
     func writeToFile(ir: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) throws {

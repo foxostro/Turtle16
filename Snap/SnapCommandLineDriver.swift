@@ -26,11 +26,15 @@ public class SnapCommandLineDriver: NSObject {
     public var stderr: TextOutputStream = String()
     let arguments: [String]
     public private(set) var inputFileName: URL? = nil
-    public private(set) var outputFileName: URL? = nil
+    public private(set) var programOutputFileName: URL? = nil
+    public private(set) var irOutputFileName: URL? = nil
+    public private(set) var asmOutputFileName: URL? = nil
     public var shouldOutputIR = false
     public var shouldOutputAssembly = false
     public var shouldDoASTDump = false
+    public var shouldListTests = false
     public var shouldRunTests = false
+    public var chooseSpecificTest: String? = nil
     public var shouldBeQuiet = false
     
     public required init(withArguments arguments: [String]) {
@@ -58,8 +62,24 @@ public class SnapCommandLineDriver: NSObject {
     func tryRun() throws {
         try parseArguments()
         
+        if shouldListTests {
+            let fileName = inputFileName!.relativePath
+            let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+            guard let text = maybeText else {
+                throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
+            }
+            let testNames = try collectNamesOfTests(text, fileName)
+            stdout.write("Unit Tests:\n")
+            for testName in testNames {
+                stdout.write(testName + "\n")
+            }
+            status = 0
+            return
+        }
+        
         if shouldRunTests {
             try tryRunTests()
+            status = 0
             return
         }
         
@@ -84,11 +104,13 @@ public class SnapCommandLineDriver: NSObject {
         
         if shouldOutputAssembly {
             try writeDisassemblyToFile(instructions: frontEnd.instructions, programDebugInfo: frontEnd.programDebugInfo)
-        } else if shouldOutputIR {
-            try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
-        } else {
-            try writeToFile(instructions: frontEnd.instructions)
         }
+        
+        if shouldOutputIR {
+            try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
+        }
+        
+        try writeToFile(instructions: frontEnd.instructions)
         
         status = 0
     }
@@ -114,60 +136,80 @@ public class SnapCommandLineDriver: NSObject {
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
-        
+        let testNames = try collectNamesOfTests(text, fileName)
+        if let chooseSpecificTest = chooseSpecificTest {
+            try runSpecificTest(chooseSpecificTest, text, fileName)
+        } else {
+            for testName in testNames {
+                try runSpecificTest(testName, text, fileName)
+            }
+        }
+        status = 0
+    }
+    
+    fileprivate func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
         let frontEnd0 = SnapCompiler()
         frontEnd0.isUsingStandardLibrary = true
         frontEnd0.compile(text, inputFileName)
         if frontEnd0.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd0.errors)
         }
-        let testNames: [String] = frontEnd0.testNames
-        
-        for testName in testNames {
-            reportInfoMessage("Running test \"\(testName)\"...\n")
-            let frontEnd = SnapCompiler()
-            frontEnd.isUsingStandardLibrary = true
-            frontEnd.shouldRunSpecificTest = testName
-            frontEnd.compile(text, inputFileName)
-            if frontEnd.hasError {
-                throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
-            }
-            printNumberOfInstructionWordsUsed(frontEnd)
-            let computer = Computer()
-            let microcodeGenerator = MicrocodeGenerator()
-            microcodeGenerator.generate()
-            computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-            computer.logger = nil
-            computer.programDebugInfo = frontEnd.programDebugInfo
-            computer.provideInstructions(frontEnd.instructions)
-            var previousSerialOutput = ""
-            computer.didUpdateSerialOutput = {
-                let delta = String($0.dropFirst(previousSerialOutput.count))
-                previousSerialOutput = $0
-                self.stdout.write(delta)
-            }
-            try computer.runUntilHalted()
+        return frontEnd0.testNames
+    }
+    
+    fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws {
+        reportInfoMessage("Running test \"\(testName)\"...\n")
+        let frontEnd = SnapCompiler()
+        frontEnd.isUsingStandardLibrary = true
+        frontEnd.shouldRunSpecificTest = testName
+        frontEnd.compile(text, inputFileName)
+        if frontEnd.hasError {
+            throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
         }
-        
-        status = 0
+        printNumberOfInstructionWordsUsed(frontEnd)
+        let directory: URL = inputFileName!.deletingPathExtension().deletingLastPathComponent()
+        let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent + " -- \(testName)"
+        irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
+        asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
+        if shouldOutputIR {
+            try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
+        }
+        if shouldOutputAssembly {
+            try writeDisassemblyToFile(instructions: frontEnd.instructions, programDebugInfo: frontEnd.programDebugInfo)
+        }
+        let computer = Computer()
+        let microcodeGenerator = MicrocodeGenerator()
+        microcodeGenerator.generate()
+        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
+        computer.logger = nil
+        computer.programDebugInfo = frontEnd.programDebugInfo
+        computer.provideInstructions(frontEnd.instructions)
+        var previousSerialOutput = ""
+        computer.didUpdateSerialOutput = {
+            let delta = String($0.dropFirst(previousSerialOutput.count))
+            previousSerialOutput = $0
+            self.stdout.write(delta)
+        }
+        try computer.runUntilHalted()
+        reportInfoMessage("\n\n")
     }
     
     func writeToFile(ir: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) throws {
         let string = CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo)
-        try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
+        try string.write(to: irOutputFileName!, atomically: true, encoding: .utf8)
     }
     
     func writeDisassemblyToFile(instructions: [Instruction], programDebugInfo: SnapDebugInfo?) throws {
         let base = 0
         let string = AssemblyListingMaker.makeListing(base, instructions, programDebugInfo)
-        try string.write(to: outputFileName!, atomically: true, encoding: .utf8)
+        try string.write(to: asmOutputFileName!, atomically: true, encoding: .utf8)
     }
     
     func writeToFile(instructions: [Instruction]) throws {
-        if let outputFileName = outputFileName {
+        if let programOutputFileName = programOutputFileName {
             let computer = Computer()
             computer.provideInstructions(instructions)
-            try computer.saveProgram(to: outputFileName)
+            try computer.saveProgram(to: programOutputFileName)
         }
     }
     
@@ -202,15 +244,9 @@ public class SnapCommandLineDriver: NSObject {
                 try parseOutputFileName(fileName)
                 
             case .S:
-                if shouldOutputIR {
-                    throw SnapCommandLineDriverError("-S and -ir are mutually exclusive")
-                }
                 shouldOutputAssembly = true
                 
             case .ir:
-                if shouldOutputAssembly {
-                    throw SnapCommandLineDriverError("-S and -ir are mutually exclusive")
-                }
                 shouldOutputIR = true
                 
             case .astDump:
@@ -218,6 +254,12 @@ public class SnapCommandLineDriver: NSObject {
                 
             case .test:
                 shouldRunTests = true
+                
+            case .listTests:
+                shouldListTests = true
+                
+            case .chooseSpecificTest(let testName):
+                chooseSpecificTest = testName
                 
             case .quiet:
                 shouldBeQuiet = true
@@ -228,17 +270,18 @@ public class SnapCommandLineDriver: NSObject {
             throw SnapCommandLineDriverError("expected input filename")
         }
         
-        if !shouldRunTests && outputFileName == nil {
-            let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent
-            let ext: String
-            if shouldOutputAssembly {
-                ext = ".asm"
-            } else if shouldOutputIR {
-                ext = ".ir"
-            } else {
-                ext = ".program"
-            }
-            outputFileName = URL(fileURLWithPath: baseName + ext)
+        let baseName: URL = inputFileName!.deletingPathExtension()
+        
+        if programOutputFileName == nil {
+            programOutputFileName = baseName.appendingPathExtension("program")
+        }
+        
+        if irOutputFileName == nil {
+            irOutputFileName = baseName.appendingPathExtension("ir")
+        }
+        
+        if asmOutputFileName == nil {
+            asmOutputFileName = baseName.appendingPathExtension("asm")
         }
     }
     
@@ -278,17 +321,17 @@ OPTIONS:
     }
     
     func parseOutputFileName(_ fileName: String) throws {
-        if outputFileName != nil {
+        if programOutputFileName != nil {
             throw SnapCommandLineDriverError("output filename can only be specified one time.")
         }
-        outputFileName = URL(fileURLWithPath: fileName)
-        if !FileManager.default.fileExists(atPath: outputFileName!.deletingLastPathComponent().relativePath) {
-            let name = outputFileName!.deletingLastPathComponent().relativePath
+        programOutputFileName = URL(fileURLWithPath: fileName)
+        if !FileManager.default.fileExists(atPath: programOutputFileName!.deletingLastPathComponent().relativePath) {
+            let name = programOutputFileName!.deletingLastPathComponent().relativePath
             throw SnapCommandLineDriverError("specified output directory does not exist: \(name)")
         }
-        if FileManager.default.fileExists(atPath: outputFileName!.relativePath) {
-            if !FileManager.default.isWritableFile(atPath: outputFileName!.relativePath) {
-                let name = outputFileName!.relativePath
+        if FileManager.default.fileExists(atPath: programOutputFileName!.relativePath) {
+            if !FileManager.default.isWritableFile(atPath: programOutputFileName!.relativePath) {
+                let name = programOutputFileName!.relativePath
                 throw SnapCommandLineDriverError("output file exists but is not writable: \(name)")
             }
         }

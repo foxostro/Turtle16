@@ -21,6 +21,8 @@ public class SnapCommandLineArgumentParser: NSObject {
         case ir
         case astDump
         case test
+        case chooseSpecificTest(String)
+        case listTests
         case quiet
     }
     public private(set) var options: [Option] = []
@@ -73,6 +75,16 @@ public class SnapCommandLineArgumentParser: NSObject {
             else if option == "-q" {
                 try advance()
                 options.append(.quiet)
+            }
+            else if option == "-t" {
+                try advance()
+                let testName = try peek()
+                try advance()
+                options.append(.chooseSpecificTest(testName))
+            }
+            else if option == "-listTests" {
+                try advance()
+                options.append(.listTests)
             }
             else {
                 throw SnapCommandLineParserError.unknownOption(option)

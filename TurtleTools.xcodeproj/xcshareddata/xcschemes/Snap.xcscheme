@@ -109,6 +109,14 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-S"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-ir"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "&apos;/Users/andrewfox/Desktop/ReceiveFile.snap&apos;"
             isEnabled = "YES">
          </CommandLineArgument>

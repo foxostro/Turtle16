@@ -8,7 +8,6 @@
 
 import TurtleCore
 import TurtleCompilerToolbox
-import Darwin // for fputs
 
 // Generates machine code for given IR code.
 public class CrackleToTurtleMachineCodeCompiler: NSObject {
@@ -104,14 +103,6 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
                               actions: patcherActions,
                               base: base)
         instructions = try patcher.patch()
-        
-        if nil == NSClassFromString("XCTest") {
-            fputs("instruction words used: \(assembler.programCounter)\n", stderr)
-        }
-        
-        if assembler.programCounter > 32767 {
-            fputs("WARNING: generated code exceeds 32768 instruction memory words: \(assembler.programCounter) words used\n", stderr)
-        }
         
         programDebugInfo?.generateMappingToProgramCounter(base: base)
     }

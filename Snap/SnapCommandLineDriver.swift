@@ -31,6 +31,7 @@ public class SnapCommandLineDriver: NSObject {
     public var shouldOutputAssembly = false
     public var shouldDoASTDump = false
     public var shouldRunTests = false
+    public var shouldBeQuiet = false
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -49,7 +50,9 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     func reportError(withMessage message: String) {
-        stderr.write("Error: " + message)
+        if !shouldBeQuiet {
+            stderr.write("Error: " + message)
+        }
     }
     
     func tryRun() throws {
@@ -72,6 +75,7 @@ public class SnapCommandLineDriver: NSObject {
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
         }
+        printNumberOfInstructionWordsUsed(frontEnd)
         
         if shouldDoASTDump {
             stdout.write(frontEnd.ast.description)
@@ -87,6 +91,21 @@ public class SnapCommandLineDriver: NSObject {
         }
         
         status = 0
+    }
+    
+    fileprivate func reportInfoMessage(_ message: String) {
+        if !shouldBeQuiet {
+            self.stdout.write(message)
+        }
+    }
+    
+    fileprivate func printNumberOfInstructionWordsUsed(_ frontEnd: SnapCompiler) {
+        let numberOfInstructions = frontEnd.instructions.count
+        if numberOfInstructions > 32767 {
+            reportInfoMessage("WARNING: generated code exceeds 32768 instruction memory words: \(numberOfInstructions) words used\n")
+        } else {
+            reportInfoMessage("instruction words used: \(numberOfInstructions)\n")
+        }
     }
     
     func tryRunTests() throws {
@@ -105,7 +124,7 @@ public class SnapCommandLineDriver: NSObject {
         let testNames: [String] = frontEnd0.testNames
         
         for testName in testNames {
-            self.stdout.write("Running test \"\(testName)\"...\n")
+            reportInfoMessage("Running test \"\(testName)\"...\n")
             let frontEnd = SnapCompiler()
             frontEnd.isUsingStandardLibrary = true
             frontEnd.shouldRunSpecificTest = testName
@@ -113,6 +132,7 @@ public class SnapCommandLineDriver: NSObject {
             if frontEnd.hasError {
                 throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
             }
+            printNumberOfInstructionWordsUsed(frontEnd)
             let computer = Computer()
             let microcodeGenerator = MicrocodeGenerator()
             microcodeGenerator.generate()
@@ -198,6 +218,9 @@ public class SnapCommandLineDriver: NSObject {
                 
             case .test:
                 shouldRunTests = true
+                
+            case .quiet:
+                shouldBeQuiet = true
             }
         }
         
@@ -233,6 +256,7 @@ OPTIONS:
 \t-S         Output assembly code
 \t-ir        Output intermediate representation
 \t-ast-dump  Print the abstract syntax tree to stdout.
+\t-q         Quiet. Do not print progress to stdout.
 """
     }
 

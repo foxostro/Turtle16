@@ -98,6 +98,9 @@ public class SnapCompiler: NSObject {
     }
     
     private func optimize(_ snapToCrackleCompiler: SnapToCrackleCompiler) {
+//        print("Unoptimized:")
+//        print(CrackleInstructionListingMaker.makeListing(instructions: snapToCrackleCompiler.instructions, programDebugInfo: programDebugInfo))
+        
         let optimizer = CrackleGlobalOptimizer()
         optimizer.unoptimizedProgram.instructions = snapToCrackleCompiler.instructions
         optimizer.unoptimizedProgram.mapCrackleInstructionToSource = programDebugInfo.mapCrackleInstructionToSource
@@ -106,6 +109,9 @@ public class SnapCompiler: NSObject {
         ir = optimizer.optimizedProgram.instructions
         programDebugInfo.mapCrackleInstructionToSource = optimizer.optimizedProgram.mapCrackleInstructionToSource
         programDebugInfo.mapCrackleInstructionToSymbols = optimizer.optimizedProgram.mapCrackleInstructionToSymbols
+        
+//        print("Optimized:")
+//        print(CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo))
     }
     
     private func makeAssembler() -> AssemblerBackEnd {

@@ -79,6 +79,15 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 return instruction
             }
             
+        case .storeImmediateBytesIndirect(let dstPtr, let bytes):
+            if let dst0 = memory[dstPtr+0], let dst1 = memory[dstPtr+1] {
+                let dst = (UInt16(dst0)<<8) + UInt16(dst1)
+                return rewrite(.storeImmediateBytes(Int(dst), bytes))
+            } else {
+                invalidateAllOfMemory()
+                return instruction
+            }
+            
         case .add(let c, let a, let b):
             if let left = memory[a], let right = memory[b] {
                 let result = UInt8(left) &+ UInt8(right)
@@ -461,7 +470,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let dst = (UInt16(dst0)<<8) + UInt16(dst1)
                 return rewrite(.copyWords(Int(dst), src, n))
             } else {
-                if isContentsOfMemoryKnown(src, n) {
+                if n<=2 && isContentsOfMemoryKnown(src, n) {
                     let bytes = contentsOfMemory(src, n)
                     return .storeImmediateBytesIndirect(dstPtr, bytes)
                 } else {

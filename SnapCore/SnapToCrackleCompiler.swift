@@ -850,7 +850,8 @@ public class SnapToCrackleCompiler: NSObject {
         
         try compile(impl: Impl(sourceAnchor: implFor.sourceAnchor, identifier: implFor.structIdentifier, children: implFor.children))
         
-        for (requiredMethodName, requiredMethodSymbol) in traitType.symbols.symbolTable {
+        let sortedTraitSymbols = traitType.symbols.symbolTable.sorted { $0.0 < $1.0 }
+        for (requiredMethodName, requiredMethodSymbol) in sortedTraitSymbols {
             let maybeActualMethodSymbol = structType.symbols.maybeResolve(identifier: requiredMethodName)
             guard let actualMethodSymbol = maybeActualMethodSymbol else {
                 throw CompilerError(sourceAnchor: implFor.sourceAnchor, message: "`\(structType.name)' does not implement all trait methods; missing `\(requiredMethodName)'.")
@@ -893,7 +894,8 @@ public class SnapToCrackleCompiler: NSObject {
         
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
         var arguments: [Expression.StructInitializer.Argument] = []
-        for (methodName, methodSymbol) in vtableType.symbols.symbolTable {
+        let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
+        for (methodName, methodSymbol) in sortedVtableSymbols {
             let arg = Expression.StructInitializer.Argument(name: methodName, expr: Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: Expression.Get(expr: Expression.Identifier(structType.name), member: Expression.Identifier(methodName))), targetType: Expression.PrimitiveType(methodSymbol.type)))
             arguments.append(arg)
         }

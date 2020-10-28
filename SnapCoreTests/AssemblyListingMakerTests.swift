@@ -13,6 +13,7 @@ class AssemblyListingMakerTests: XCTestCase {
     fileprivate func makeListing(snapSource: String) -> String {
         let base = 0
         let compiler = SnapCompiler()
+        compiler.shouldEnableOptimizations = false
         compiler.compile(snapSource)
         let listing = AssemblyListingMaker.makeListing(base, compiler.instructions, compiler.programDebugInfo)
         return listing

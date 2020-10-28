@@ -13,6 +13,7 @@ import TurtleCompilerToolbox
 class CrackleInstructionTests: XCTestCase {
     func testDescription() {
         let L0 = ".L0"
+        XCTAssertEqual(CrackleInstruction.nop.description, "NOP")
         XCTAssertEqual(CrackleInstruction.push(0xff).description, "PUSH 0xff")
         XCTAssertEqual(CrackleInstruction.push16(0xffff).description, "PUSH16 0xffff")
         XCTAssertEqual(CrackleInstruction.pop.description, "POP")

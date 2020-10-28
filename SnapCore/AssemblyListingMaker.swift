@@ -20,6 +20,16 @@ public class AssemblyListingMaker: NSObject {
             if let sourceAnchor = programDebugInfo?.lookupSourceAnchor(pc: pc) {
                 if previousSourceAnchor != sourceAnchor {
                     result += "\n# " + String(repeating: "#", count: 78)
+                    var locator = ""
+                    if let fileName = sourceAnchor.lineMapper.url?.lastPathComponent {
+                        locator += "\(fileName): "
+                    }
+                    if let lineNumber = sourceAnchor.lineNumbers?.lowerBound {
+                        locator += "\(lineNumber+1):"
+                    }
+                    if !locator.isEmpty {
+                        result += "\n# \(locator)"
+                    }
                     let commentedSource = sourceAnchor.text.split(separator: "\n").map({"# \($0)"}).joined(separator: "\n")
                     result += "\n\(commentedSource)\n"
                 }

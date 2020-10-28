@@ -448,10 +448,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
     }
     
     public func storeImmediate16(_ address: Int, _ value: Int) throws {
-        try setUV(address+0)
-        try assembler.li(.M, (value>>8) & 0xff)
-        assembler.inuv()
-        try assembler.li(.M, value & 0xff)
+        try storeImmediateBytes(address, [
+            UInt8((value>>8) & 0xff),
+            UInt8(value & 0xff)
+        ])
     }
     
     public func storeImmediateBytes(_ address: Int, _ bytes: [UInt8]) throws {

@@ -914,6 +914,14 @@ class CrackleConstantPropagationOptimizationPassTests: XCTestCase {
         XCTAssertEqual(optimized, .copyWords(0xabcd, 0x2000, 3))
     }
     
+    func testCopyWordsIndirectDestinationMayBeRewrittenIfWeKnowContentsOfMemoryAtTheSourceAddress() {
+        let local = CrackleConstantPropagationOptimizationPass()
+        local.memory[0x2000] = 0x12
+        local.memory[0x2001] = 0x34
+        let optimized = local.rewrite(.copyWordsIndirectDestination(0x3000, 0x2000, 2))
+        XCTAssertEqual(optimized, .storeImmediateBytesIndirect(0x3000, [0x12, 0x34]))
+    }
+    
     func testCopyWordsIDISMayInvalidateAllOfMemoryIfWeCannotDetermineTheDestinationAddress() {
         let local = CrackleConstantPropagationOptimizationPass()
         let _ = local.rewrite(.copyWordsIndirectDestinationIndirectSource(0x3000, 0x2000, 3))

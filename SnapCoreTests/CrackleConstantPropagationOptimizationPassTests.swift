@@ -25,6 +25,15 @@ class CrackleConstantPropagationOptimizationPassTests: XCTestCase {
         XCTAssertEqual(actual, [])
     }
     
+    func testInstructionIsUnmodifiedIfWeCannotImproveIt() {
+        let actual = optimize([
+            .nop
+        ])
+        XCTAssertEqual(actual, [
+            .nop
+        ])
+    }
+    
     func testIfWeKnowAMemoryAddressContainsAValueThenDontSetItAgain() {
         let actual = optimize([
             .storeImmediate(0x1000, 0xff),
@@ -820,7 +829,7 @@ class CrackleConstantPropagationOptimizationPassTests: XCTestCase {
         XCTAssertEqual(local.memory[0x1003], 0x12)
     }
     
-    func testCopyWordsMayBeRemovedIfTheValueIsAlreadyPresent() {
+    func testCopyWordsMayBeRemovedIfWeKnowTheSourceValueAndWeKnowTheDestinationAlreadyHoldsIt() {
         let local = CrackleConstantPropagationOptimizationPass()
         local.memory[0x1000] = 0xab
         local.memory[0x1001] = 0xcd
@@ -830,6 +839,42 @@ class CrackleConstantPropagationOptimizationPassTests: XCTestCase {
         local.memory[0x2002] = 0xef
         let optimized = local.rewrite(.copyWords(0x1000, 0x2000, 3))
         XCTAssertEqual(optimized, .nop)
+    }
+    
+    func testCopyWordsMayBeReplacedIfWeKnowTheSourceValueButNotTheContentsAtDestination_Size1() {
+        let local = CrackleConstantPropagationOptimizationPass()
+        local.memory[0x2000] = 0xab
+        let optimized = local.rewrite(.copyWords(0x1000, 0x2000, 1))
+        XCTAssertEqual(optimized, .storeImmediate(0x1000, 0xab))
+    }
+    
+    func testCopyWordsMayBeReplacedIfWeKnowTheSourceValueButNotTheContentsAtDestination_Size2() {
+        let local = CrackleConstantPropagationOptimizationPass()
+        local.memory[0x2000] = 0xab
+        local.memory[0x2001] = 0xcd
+        let optimized = local.rewrite(.copyWords(0x1000, 0x2000, 2))
+        XCTAssertEqual(optimized, .storeImmediate16(0x1000, 0xabcd))
+    }
+    
+    func testCopyWordsMayBeReplacedIfWeKnowTheSourceValueButNotTheContentsAtDestination_Size3() {
+        let local = CrackleConstantPropagationOptimizationPass()
+        local.memory[0x2000] = 0xab
+        local.memory[0x2001] = 0xcd
+        local.memory[0x2002] = 0xef
+        let optimized = local.rewrite(.copyWords(0x1000, 0x2000, 3))
+        XCTAssertEqual(optimized, .storeImmediateBytes(0x1000, [0xab, 0xcd, 0xef]))
+    }
+    
+    func testCopyWordsMayBeReplacedIfWeKnowTheSourceValueButNotTheContentsAtDestination_CaseWhereDestinationIsKnown() {
+        let local = CrackleConstantPropagationOptimizationPass()
+        local.memory[0x1000] = 0x00
+        local.memory[0x1001] = 0x00
+        local.memory[0x1002] = 0x00
+        local.memory[0x2000] = 0xab
+        local.memory[0x2001] = 0xcd
+        local.memory[0x2002] = 0xef
+        let optimized = local.rewrite(.copyWords(0x1000, 0x2000, 3))
+        XCTAssertEqual(optimized, .storeImmediateBytes(0x1000, [0xab, 0xcd, 0xef]))
     }
     
     func testCopyWordsIndirectSourceMayMakeARangeOfMemoryHaveUnknownValue() {
@@ -871,8 +916,6 @@ class CrackleConstantPropagationOptimizationPassTests: XCTestCase {
     
     func testCopyWordsIDISMayInvalidateAllOfMemoryIfWeCannotDetermineTheDestinationAddress() {
         let local = CrackleConstantPropagationOptimizationPass()
-        local.memory[0x2000] = 0xab
-        local.memory[0x2001] = 0xcd
         let _ = local.rewrite(.copyWordsIndirectDestinationIndirectSource(0x3000, 0x2000, 3))
         XCTAssertTrue(local.memory.allSatisfy({$0 == nil}))
     }
@@ -897,7 +940,7 @@ class CrackleConstantPropagationOptimizationPassTests: XCTestCase {
         let local = CrackleConstantPropagationOptimizationPass()
         local.memory[0x1000] = 0xab
         local.memory[0x1001] = 0xcd
-        let _ = local.rewrite(.add16(0x1000, 0x1002, 0x1004))
+        let _ = local.rewrite(.copyLabel(0x1000, ""))
         XCTAssertEqual(local.memory[0x1000], nil)
         XCTAssertEqual(local.memory[0x1001], nil)
     }

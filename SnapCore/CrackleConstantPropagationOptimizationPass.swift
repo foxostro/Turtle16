@@ -432,25 +432,51 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
             return instruction
             
         case .copyWords(let dst, let src, let n):
-            var doesAlreadyContainValue = true
+            var isValueOfSourceCompletelyKnown = true
             for i in 0..<n {
-                if let valueAtDestination = memory[dst+i], let valueAtSource = memory[src+i] {
-                    if valueAtDestination != valueAtSource {
-                        doesAlreadyContainValue = false
-                        break
-                    }
-                } else {
-                    doesAlreadyContainValue = false
+                if nil == memory[src+i] {
+                    isValueOfSourceCompletelyKnown = false
                     break
                 }
             }
-            if doesAlreadyContainValue {
-                return .nop
+            if isValueOfSourceCompletelyKnown {
+                var doesDestinationAlreadyContainTheValue = true
+                for i in 0..<n {
+                    if let valueAtDestination = memory[dst+i], let valueAtSource = memory[src+i] {
+                        if valueAtDestination != valueAtSource {
+                            doesDestinationAlreadyContainTheValue = false
+                            break
+                        }
+                    } else {
+                        doesDestinationAlreadyContainTheValue = false
+                        break
+                    }
+                }
+                if doesDestinationAlreadyContainTheValue {
+                    return .nop
+                } else {
+                    switch n {
+                    case 1:
+                        let value = UInt8(memory[src]!)
+                        return rewrite(.storeImmediate(dst, Int(value)))
+                    case 2:
+                        let hi = UInt16(memory[src+0]!)
+                        let lo = UInt16(memory[src+1]!)
+                        let value = (hi<<8) + lo
+                        return rewrite(.storeImmediate16(dst, Int(value)))
+                    default:
+                        let bytes = memory[src..<(src+n)].map {
+                            UInt8($0!)
+                        }
+                        return rewrite(.storeImmediateBytes(dst, bytes))
+                    }
+                }
+            } else {
+                for i in 0..<n {
+                    memory[dst+i] = nil
+                }
+                return instruction
             }
-            for i in 0..<n {
-                memory[dst+i] = nil
-            }
-            return instruction
             
         case .copyWordsIndirectSource(let dst, let srcPtr, let n):
             if let src0 = memory[srcPtr+0], let src1 = memory[srcPtr+1] {

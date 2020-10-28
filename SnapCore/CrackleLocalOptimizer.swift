@@ -12,13 +12,15 @@ public class CrackleLocalOptimizer: NSObject {
     
     public func optimize() {
         optimizedProgram = unoptimizedProgram
-        doConstantPropagation()
-    }
     
-    fileprivate func doConstantPropagation() {
         let constantPropagation = CrackleConstantPropagationOptimizationPass()
         constantPropagation.unoptimizedProgram = optimizedProgram
         constantPropagation.optimize()
         optimizedProgram = constantPropagation.optimizedProgram
+        
+        let deadCodeElimination = CrackleDeadCodeEliminationOptimizationPass()
+        deadCodeElimination.unoptimizedProgram = optimizedProgram
+        deadCodeElimination.optimize()
+        optimizedProgram = deadCodeElimination.optimizedProgram
     }
 }

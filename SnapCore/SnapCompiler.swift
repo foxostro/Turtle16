@@ -16,6 +16,7 @@ public protocol SandboxAccessManager {
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
     public var shouldRunSpecificTest: String? = nil
+    public var shouldEnableOptimizations = true
     public private(set) var testNames: [String] = []
     public var ast: TopLevel! = nil
     public var ir: [CrackleInstruction] = []
@@ -74,8 +75,12 @@ public class SnapCompiler: NSObject {
             errors = snapToCrackleCompiler.errors
             return
         }
-        ir = snapToCrackleCompiler.instructions
         testNames = snapToCrackleCompiler.testNames
+        if shouldEnableOptimizations {
+            optimize(snapToCrackleCompiler)
+        } else {
+            ir = snapToCrackleCompiler.instructions
+        }
         
         // Compile the IR code to Turtle machine code
         let assembler = makeAssembler()
@@ -90,6 +95,17 @@ public class SnapCompiler: NSObject {
             abort()
         }
         instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: irToMachineCode.instructions)
+    }
+    
+    private func optimize(_ snapToCrackleCompiler: SnapToCrackleCompiler) {
+        let optimizer = CrackleGlobalOptimizer()
+        optimizer.unoptimizedProgram.instructions = snapToCrackleCompiler.instructions
+        optimizer.unoptimizedProgram.mapCrackleInstructionToSource = programDebugInfo.mapCrackleInstructionToSource
+        optimizer.unoptimizedProgram.mapCrackleInstructionToSymbols = programDebugInfo.mapCrackleInstructionToSymbols
+        optimizer.optimize()
+        ir = optimizer.optimizedProgram.instructions
+        programDebugInfo.mapCrackleInstructionToSource = optimizer.optimizedProgram.mapCrackleInstructionToSource
+        programDebugInfo.mapCrackleInstructionToSymbols = optimizer.optimizedProgram.mapCrackleInstructionToSymbols
     }
     
     private func makeAssembler() -> AssemblerBackEnd {

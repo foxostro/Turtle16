@@ -15,6 +15,7 @@ import TurtleSimulatorCore
 class SnapExecutor: NSObject {
     public var isUsingStandardLibrary = false
     public var isVerboseLogging = false
+    public var shouldEnableOptimizations = true
     public var shouldAlwaysPrintIR = false
     public var shouldRunSpecificTest: String? = nil
     let microcodeGenerator: MicrocodeGenerator
@@ -29,6 +30,7 @@ class SnapExecutor: NSObject {
     func execute(program: String) throws -> Computer {
         compiler.isUsingStandardLibrary = isUsingStandardLibrary
         compiler.shouldRunSpecificTest = shouldRunSpecificTest
+        compiler.shouldEnableOptimizations = shouldEnableOptimizations
         compiler.compile(program: program, base: 0)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)

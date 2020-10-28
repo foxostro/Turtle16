@@ -10,7 +10,8 @@ import TurtleCore
 import TurtleCompilerToolbox
 
 // Defines a stack-based intermediate language.
-public enum CrackleInstruction: Equatable {
+public enum CrackleInstruction: Equatable, Hashable {
+    case nop // no operation
     case push(Int) // push the specified word-sized value to the stack
     case push16(Int) // push the specified sixteen-bit double-word-sized value to the stack
     case pop // pop the stack
@@ -87,6 +88,8 @@ public enum CrackleInstruction: Equatable {
     
     public var description: String {
         switch self {
+        case .nop:
+            return "NOP"
         case .push(let value):
             return String(format: "PUSH 0x%02x", value)
         case .push16(let value):
@@ -107,15 +110,15 @@ public enum CrackleInstruction: Equatable {
             return String(format: "STORE-IMMEDIATE16 0x%04x, 0x%04x", address, value)
         case .storeImmediateBytes(let address, let bytes):
             if var string = String(bytes: bytes, encoding: .utf8) {
-                let map = ["\\0" : "\0",
-                           "\\t" : "\t",
-                           "\\n" : "\n",
-                           "\\r" : "\r",
-                           "\\\"" : "\"",
-                           "\\\'" : "\'",
-                           "\\\\" : "\\"]
+                let map = ["\0" : "\\0",
+                           "\t" : "\\t",
+                           "\n" : "\\n",
+                           "\r" : "\\r",
+                           "\"" : "\\\"",
+                           "\'" : "\\\'",
+                           "\\" : "\\\\"]
                 for (entity, description) in map {
-                    string = string.replacingOccurrences(of: description, with: entity)
+                    string = string.replacingOccurrences(of: entity, with: description)
                 }
                 return String(format: "STORE-IMMEDIATE-BYTES 0x%04x, \"\(string)\"", address)
             } else {

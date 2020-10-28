@@ -36,6 +36,7 @@ public class SnapCommandLineDriver: NSObject {
     public var shouldRunTests = false
     public var chooseSpecificTest: String? = nil
     public var shouldBeQuiet = false
+    public var shouldEnableOptimizations = true
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -91,6 +92,7 @@ public class SnapCommandLineDriver: NSObject {
         let frontEnd = SnapCompiler()
         frontEnd.isUsingStandardLibrary = true
         frontEnd.shouldRunSpecificTest = nil
+        frontEnd.shouldEnableOptimizations = shouldEnableOptimizations
         frontEnd.compile(text, inputFileName)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
@@ -263,6 +265,9 @@ public class SnapCommandLineDriver: NSObject {
                 
             case .quiet:
                 shouldBeQuiet = true
+                
+            case .unoptimized:
+                shouldEnableOptimizations = false
             }
         }
         
@@ -298,8 +303,9 @@ OPTIONS:
 \t-o <file>  Specify the output filename
 \t-S         Output assembly code
 \t-ir        Output intermediate representation
-\t-ast-dump  Print the abstract syntax tree to stdout.
-\t-q         Quiet. Do not print progress to stdout.
+\t-ast-dump  Print the abstract syntax tree to stdout
+\t-q         Quiet. Do not print progress to stdout
+\t-O0        Disable optimizations
 """
     }
 

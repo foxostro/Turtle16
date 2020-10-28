@@ -137,6 +137,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         scratchPointer = beginningOfScratchMemory
         let instructionsBegin = assembler.instructions.count
         switch instruction {
+        case .nop: nop()
         case .push(let value): try push(value)
         case .push16(let value): try push16(value)
         case .pop: try pop()
@@ -225,6 +226,10 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         try generateProcedurePokePeripheral()
         try generateProcedureRet()
         try doAtEpilogue(self)
+    }
+    
+    public func nop() {
+        // do nothing
     }
     
     public func push(_ value: Int) throws {

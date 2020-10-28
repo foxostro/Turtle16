@@ -10,13 +10,13 @@ import TurtleCore
 import TurtleCompilerToolbox
 
 public class SnapDebugInfo: ProgramDebugInfo {
-    private var mapCrackleInstructionToSource: [SourceAnchor?] = []
+    public var mapCrackleInstructionToSource: [SourceAnchor?] = []
     private var mapAssemblyInstructionToSource: [SourceAnchor?] = []
     
     private var mapAssemblyInstructionToCrackleInstruction: [CrackleInstruction?] = []
     private var mapProgramCounterToCrackleInstruction: [CrackleInstruction?] = []
     
-    private var mapCrackleInstructionToSymbols: [SymbolTable?] = []
+    public var mapCrackleInstructionToSymbols: [SymbolTable?] = []
     private var mapAssemblyInstructionToSymbols: [SymbolTable?] = []
     private var mapProgramCounterToSymbols: [SymbolTable?] = []
     

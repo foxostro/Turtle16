@@ -109,17 +109,8 @@ public enum CrackleInstruction: Equatable, Hashable {
         case .storeImmediate16(let address, let value):
             return String(format: "STORE-IMMEDIATE16 0x%04x, 0x%04x", address, value)
         case .storeImmediateBytes(let address, let bytes):
-            if var string = String(bytes: bytes, encoding: .utf8) {
-                let map = ["\0" : "\\0",
-                           "\t" : "\\t",
-                           "\n" : "\\n",
-                           "\r" : "\\r",
-                           "\"" : "\\\"",
-                           "\'" : "\\\'",
-                           "\\" : "\\\\"]
-                for (entity, description) in map {
-                    string = string.replacingOccurrences(of: entity, with: description)
-                }
+            if let unicodeScalars = String(bytes: bytes, encoding: .utf8)?.unicodeScalars {
+                let string = unicodeScalars.map({$0.escaped(asASCII: true)}).joined()
                 return String(format: "STORE-IMMEDIATE-BYTES 0x%04x, \"\(string)\"", address)
             } else {
                 return String(format: "STORE-IMMEDIATE-BYTES 0x%04x, [%@]",

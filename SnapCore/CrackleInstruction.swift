@@ -22,6 +22,7 @@ public enum CrackleInstruction: Equatable, Hashable {
     case storeImmediate(Int, Int)
     case storeImmediate16(Int, Int)
     case storeImmediateBytes(Int, [UInt8]) // (dst, bytes) -- stores the given bytes sequentially in memory at the destination
+    case storeImmediateBytesIndirect(Int, [UInt8]) // (dstPtr, bytes) -- stores the given bytes sequentially in memory at the destination. The destination address is located in memory at the address given by `dstPtr'.
     case label(String) // declares a label
     case jmp(String) // unconditional jump, no change to the stack
     case jalr(String) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register.
@@ -115,6 +116,15 @@ public enum CrackleInstruction: Equatable, Hashable {
             } else {
                 return String(format: "STORE-IMMEDIATE-BYTES 0x%04x, [%@]",
                               address,
+                              bytes.map({String(format: "0x%02x", $0)}).joined(separator: ", "))
+            }
+        case .storeImmediateBytesIndirect(let dstPtr, let bytes):
+            if let unicodeScalars = String(bytes: bytes, encoding: .utf8)?.unicodeScalars {
+                let string = unicodeScalars.map({$0.escaped(asASCII: true)}).joined()
+                return String(format: "STORE-IMMEDIATE-BYTES-INDIRECT 0x%04x, \"\(string)\"", dstPtr)
+            } else {
+                return String(format: "STORE-IMMEDIATE-BYTES-INDIRECT 0x%04x, [%@]",
+                              dstPtr,
                               bytes.map({String(format: "0x%02x", $0)}).joined(separator: ", "))
             }
         case .label(let name):

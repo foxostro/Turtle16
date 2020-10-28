@@ -148,6 +148,7 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         case .storeImmediate(let address, let value): try storeImmediate(address, value)
         case .storeImmediate16(let address, let value): try storeImmediate16(address, value)
         case .storeImmediateBytes(let address, let bytes): try storeImmediateBytes(address, bytes)
+        case .storeImmediateBytesIndirect(let dstPtr, let bytes): try storeImmediateBytesIndirect(dstPtr, bytes)
         case .label(let name): try label(name)
         case .jmp(let label): try jmp(label)
         case .jalr(let label): try jalr(label)
@@ -462,6 +463,19 @@ public class CrackleToTurtleMachineCodeCompiler: NSObject {
         for i in 0..<bytes.count {
             let value = Int(bytes[i])
             try assembler.blti(.M, value)
+        }
+    }
+    
+    public func storeImmediateBytesIndirect(_ dstPtr: Int, _ bytes: [UInt8]) throws {
+        try setUV(dstPtr)
+        try assembler.mov(.X, .M)
+        assembler.inuv()
+        try assembler.mov(.Y, .M)
+        try assembler.mov(.U, .X)
+        try assembler.mov(.V, .Y)
+        for i in 0..<bytes.count {
+            try assembler.li(.M, Int(bytes[i]))
+            assembler.inuv()
         }
     }
     

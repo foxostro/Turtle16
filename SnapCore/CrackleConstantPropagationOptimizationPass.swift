@@ -24,8 +24,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left &- UInt16(right)
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .addi16(let c, let a, let right):
@@ -34,8 +33,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left &+ UInt16(right)
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .muli16(let c, let a, let right):
@@ -44,8 +42,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left &* UInt16(right)
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .storeImmediate(let address, let value):
@@ -87,7 +84,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) &+ UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .add16(let c, let a, let b):
@@ -97,8 +94,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left &+ right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .sub(let c, let a, let b):
@@ -106,7 +102,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) &- UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .sub16(let c, let a, let b):
@@ -116,8 +112,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left &- right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .mul(let c, let a, let b):
@@ -125,7 +120,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) &* UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .mul16(let c, let a, let b):
@@ -135,8 +130,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left &* right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .div(let c, let a, let b):
@@ -144,7 +138,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) / UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .div16(let c, let a, let b):
@@ -154,8 +148,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left / right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .mod(let c, let a, let b):
@@ -163,7 +156,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) % UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .mod16(let c, let a, let b):
@@ -173,8 +166,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left % right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .eq(let c, let a, let b):
@@ -182,7 +174,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(UInt8(left) == UInt8(right))
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .eq16(let c, let a, let b):
@@ -192,8 +184,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(left == right)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .ne(let c, let a, let b):
@@ -201,7 +192,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(UInt8(left) != UInt8(right))
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .ne16(let c, let a, let b):
@@ -211,8 +202,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(left != right)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .lt(let c, let a, let b):
@@ -220,7 +210,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(UInt8(left) < UInt8(right))
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .lt16(let c, let a, let b):
@@ -230,8 +220,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(left < right)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .gt(let c, let a, let b):
@@ -239,7 +228,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(UInt8(left) > UInt8(right))
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .gt16(let c, let a, let b):
@@ -249,8 +238,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(left > right)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .le(let c, let a, let b):
@@ -258,7 +246,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(UInt8(left) <= UInt8(right))
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .le16(let c, let a, let b):
@@ -268,8 +256,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(left <= right)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .ge(let c, let a, let b):
@@ -277,7 +264,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(UInt8(left) >= UInt8(right))
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .ge16(let c, let a, let b):
@@ -287,8 +274,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(left >= right)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .and(let c, let a, let b):
@@ -296,7 +282,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) & UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .and16(let c, let a, let b):
@@ -306,8 +292,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left & right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .or(let c, let a, let b):
@@ -315,7 +300,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) | UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .or16(let c, let a, let b):
@@ -325,8 +310,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left | right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .xor(let c, let a, let b):
@@ -334,7 +318,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) ^ UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .xor16(let c, let a, let b):
@@ -344,8 +328,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left ^ right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .lsl(let c, let a, let b):
@@ -353,7 +336,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) << UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .lsl16(let c, let a, let b):
@@ -363,8 +346,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left << right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .lsr(let c, let a, let b):
@@ -372,7 +354,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = UInt8(left) >> UInt8(right)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .lsr16(let c, let a, let b):
@@ -382,8 +364,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = left >> right
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .neg(let c, let a):
@@ -391,7 +372,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = ~UInt8(val)
                 return rewrite(.storeImmediate(c, Int(result)))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .neg16(let c, let a):
@@ -400,8 +381,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = ~val
                 return rewrite(.storeImmediate16(c, Int(result)))
             }
-            memory[c+0] = nil
-            memory[c+1] = nil
+            invalidateMemory(c, 2)
             return instruction
             
         case .not(let c, let a):
@@ -409,7 +389,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let result = boolAsInt(val == 0)
                 return rewrite(.storeImmediate(c, result))
             }
-            memory[c] = nil
+            invalidateMemory(c, 1)
             return instruction
             
         case .copyWordZeroExtend(let dst, let src):
@@ -432,14 +412,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
             return instruction
             
         case .copyWords(let dst, let src, let n):
-            var isValueOfSourceCompletelyKnown = true
-            for i in 0..<n {
-                if nil == memory[src+i] {
-                    isValueOfSourceCompletelyKnown = false
-                    break
-                }
-            }
-            if isValueOfSourceCompletelyKnown {
+            if isContentsOfMemoryKnown(src, n) {
                 var doesDestinationAlreadyContainTheValue = true
                 for i in 0..<n {
                     if let valueAtDestination = memory[dst+i], let valueAtSource = memory[src+i] {
@@ -465,16 +438,12 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                         let value = (hi<<8) + lo
                         return rewrite(.storeImmediate16(dst, Int(value)))
                     default:
-                        let bytes = memory[src..<(src+n)].map {
-                            UInt8($0!)
-                        }
+                        let bytes = contentsOfMemory(src, n)
                         return rewrite(.storeImmediateBytes(dst, bytes))
                     }
                 }
             } else {
-                for i in 0..<n {
-                    memory[dst+i] = nil
-                }
+                invalidateMemory(dst, n)
                 return instruction
             }
             
@@ -483,9 +452,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let src = (UInt16(src0)<<8) + UInt16(src1)
                 return rewrite(.copyWords(dst, Int(src), n))
             } else {
-                for i in 0..<n {
-                    memory[dst+i] = nil
-                }
+                invalidateMemory(dst, n)
                 return instruction
             }
             
@@ -494,8 +461,13 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
                 let dst = (UInt16(dst0)<<8) + UInt16(dst1)
                 return rewrite(.copyWords(Int(dst), src, n))
             } else {
-                invalidateAllOfMemory()
-                return instruction
+                if isContentsOfMemoryKnown(src, n) {
+                    let bytes = contentsOfMemory(src, n)
+                    return .storeImmediateBytesIndirect(dstPtr, bytes)
+                } else {
+                    invalidateAllOfMemory()
+                    return instruction
+                }
             }
             
         case .copyWordsIndirectDestinationIndirectSource(let dstPtr, let srcPtr, let n):
@@ -512,8 +484,7 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
             
         case .copyLabel(let dst, _):
             // We can't know the label value at this stage in the compile.
-            memory[dst+0] = nil
-            memory[dst+1] = nil
+            invalidateMemory(dst, 2)
             return instruction
             
         default:
@@ -523,6 +494,27 @@ public class CrackleConstantPropagationOptimizationPass: NSObject {
     
     fileprivate func boolAsInt(_ b: Bool) -> Int {
         return (b) ? 1 : 0
+    }
+    
+    fileprivate func invalidateMemory(_ dst: Int, _ n: Int) {
+        for i in 0..<n {
+            memory[dst+i] = nil
+        }
+    }
+    
+    fileprivate func isContentsOfMemoryKnown(_ src: Int, _ n: Int) -> Bool {
+        for i in 0..<n {
+            if nil == memory[src+i] {
+                return false
+            }
+        }
+        return true
+    }
+    
+    fileprivate func contentsOfMemory(_ src: Int, _ n: Int) -> [UInt8] {
+        return memory[src..<(src+n)].map {
+            UInt8($0!)
+        }
     }
     
     fileprivate func invalidateAllOfMemory() {

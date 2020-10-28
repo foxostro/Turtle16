@@ -227,6 +227,23 @@ class CrackleToTurtleMachineCodeCompilerTests: XCTestCase {
         XCTAssertEqual(arr, bytes)
     }
     
+    func testStoreImmediateBytesIndirect() {
+        let address = 0x0010
+        let bytes: [UInt8] = [0xa, 0xb, 0xc, 0xd]
+        
+        let executor = CrackleExecutor()
+        executor.configure = { (computer: Computer) in
+            computer.dataRAM.store16(value: UInt16(address), to: 0x1000)
+        }
+        let computer = try! executor.execute(ir: [.storeImmediateBytesIndirect(0x1000, bytes)])
+        
+        var arr: [UInt8] = []
+        for i in 0..<bytes.count {
+            arr.append(computer.dataRAM.load(from: address + i))
+        }
+        XCTAssertEqual(arr, bytes)
+    }
+    
     func testCompileFailsBecauseLabelRedefinesExistingLabel() {
         let instructions: [CrackleInstruction] = [
             .label("foo"),

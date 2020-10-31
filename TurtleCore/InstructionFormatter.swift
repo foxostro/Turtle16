@@ -27,8 +27,46 @@ public class InstructionFormatter: NSObject {
                 return "CMP"
             case 0b1001:
                 return "ADD" + mnemonic.dropFirst(6)
+            case 0b1100:
+                return "LSL" + mnemonic.dropFirst(6)
+            case 0b1111:
+                return "DEA" + mnemonic.dropFirst(6)
+            case 0b10000:
+                return "NEG" + mnemonic.dropFirst(6)
+            case 0b11110:
+                return "OR" + mnemonic.dropFirst(6)
+            case 0b10110:
+                return "XOR" + mnemonic.dropFirst(6)
+            case 0b11011:
+                return "AND" + mnemonic.dropFirst(6)
             default:
-                return mnemonic
+                return mnemonic + " 0b" + String(instruction.immediate, radix: 2)
+            }
+        }
+        else if mnemonic.hasPrefix("ALUwC") {
+            switch instruction.immediate {
+            case 0b0110:
+                return "SUB" + mnemonic.dropFirst(5)
+            default:
+                return mnemonic + " 0b" + String(instruction.immediate, radix: 2)
+            }
+        }
+        else if mnemonic.hasPrefix("ALUxC") {
+            switch instruction.immediate {
+            case 0b1001:
+                return "ADC" + mnemonic.dropFirst(5)
+            case 0b0110:
+                return "SBC" + mnemonic.dropFirst(5)
+            default:
+                return mnemonic + " 0b" + String(instruction.immediate, radix: 2)
+            }
+        }
+        else if mnemonic.hasPrefix("CALUwoC") {
+            switch instruction.immediate {
+            case 0b1111:
+                return "DCA" + mnemonic.dropFirst(7)
+            default:
+                return mnemonic + " " + String(instruction.immediate, radix: 2)
             }
         }
         else if mnemonic == "MOV A, C" {

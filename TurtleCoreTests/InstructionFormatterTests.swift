@@ -56,6 +56,66 @@ class InstructionFormatterTests: XCTestCase {
         XCTAssertEqual(result, "ADD A")
     }
     
+    func testFormatSUB() {
+        let instruction = assemble("SUB A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "SUB A")
+    }
+    
+    func testFormatADC() {
+        let instruction = assemble("ADC A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "ADC A")
+    }
+    
+    func testFormatSBC() {
+        let instruction = assemble("SBC A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "SBC A")
+    }
+    
+    func testFormatDEA() {
+        let instruction = assemble("DEA A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "DEA A")
+    }
+    
+    func testFormatDCA() {
+        let instruction = assemble("DCA A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "DCA A")
+    }
+    
+    func testFormatAND() {
+        let instruction = assemble("AND A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "AND A")
+    }
+    
+    func testFormatOR() {
+        let instruction = assemble("OR A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "OR A")
+    }
+    
+    func testFormatXOR() {
+        let instruction = assemble("XOR A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "XOR A")
+    }
+    
+    func testFormatLSL() {
+        let instruction = assemble("LSL A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "LSL A")
+    }
+    
+    func testFormatNEG() {
+        let instruction = assemble("NEG A")
+        let result = formatter.format(instruction: instruction)
+        XCTAssertEqual(result, "NEG A")
+    }
+    
     func testFormatCMP() {
         let result = formatter.format(instruction: assemble("CMP"))
         XCTAssertEqual(result, "CMP")

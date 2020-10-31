@@ -115,7 +115,12 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
             "MOV"  : { try self.mov(node) },
             "NOP"  : { try self.nop(node) },
             "DEA"  : { try self.dea(node) },
-            "DCA"  : { try self.dca(node) }
+            "DCA"  : { try self.dca(node) },
+            "AND"  : { try self.and(node) },
+            "OR"   : { try self.or(node)  },
+            "XOR"  : { try self.xor(node) },
+            "LSL"  : { try self.lsl(node) },
+            "NEG"  : { try self.neg(node) }
         ]
         if let closure = instructions[node.instruction] {
             try closure()
@@ -468,5 +473,75 @@ public class AssemblerCodeGenerator: NSObject, CodeGenerator {
         try expectRegisterCanBeUsedAsDestination(register)
         
         try assemblerBackEnd.dca(node.destination)
+    }
+    
+    public func and(_ node: InstructionNode) throws {
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try assemblerBackEnd.and(node.destination)
+    }
+    
+    public func or(_ node: InstructionNode) throws {
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try assemblerBackEnd.or(node.destination)
+    }
+    
+    public func xor(_ node: InstructionNode) throws {
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try assemblerBackEnd.xor(node.destination)
+    }
+    
+    public func lsl(_ node: InstructionNode) throws {
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try assemblerBackEnd.lsl(node.destination)
+    }
+    
+    public func neg(_ node: InstructionNode) throws {
+        guard node.parameters.elements.count == 1 else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        guard let register = node.parameters.elements.first as? ParameterRegister else {
+            throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
+        }
+        
+        try expectRegisterCanBeUsedAsDestination(register)
+        
+        try assemblerBackEnd.neg(node.destination)
     }
 }

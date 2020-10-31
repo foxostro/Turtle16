@@ -171,4 +171,133 @@ public enum PopInstruction: Equatable, Hashable {
     fileprivate func toHex4(_ value: Int) -> String {
         return String(format: "0x%04x", value)
     }
+    
+    public var dependencies: Set<RegisterName> {
+        switch self {
+        case .inuv:
+            return [.U, .V]
+            
+        case .inxy:
+            return [.X, .Y]
+            
+        case .mov(let dst, let src):
+            var registers = Set<RegisterName>()
+            if dst == .M || src == .M {
+                registers.insert(.U)
+                registers.insert(.V)
+            }
+            if dst == .P || src == .P {
+                registers.insert(.X)
+                registers.insert(.Y)
+            }
+            if (src != .M) && (src != .P) {
+                registers.insert(src)
+            }
+            return registers
+            
+        case .li(let dst, _):
+            if dst == .M {
+                return [.U, .V]
+            }
+            else if dst == .P {
+                return [.X, .Y]
+            }
+            else {
+                return []
+            }
+            
+        case .add(let dst), .sub(let dst), .adc(let dst), .sbc(let dst), .dea(let dst), .dca(let dst), .and(let dst), .or(let dst), .xor(let dst), .lsl(let dst), .neg(let dst):
+            if dst == .M {
+                return [.U, .V, .A, .B]
+            }
+            else if dst == .P {
+                return [.X, .Y, .A, .B]
+            }
+            else {
+                return [.A, .B]
+            }
+            
+        case .cmp:
+            return [.A, .B]
+            
+        case .explicitJalr, .explicitJmp:
+            return [.X, .Y]
+        
+        case .blt(_, let src):
+            return [.U, .V, .X, .Y, src]
+            
+        case .blti(let dst, _):
+            if dst == .M {
+                return [.U, .V]
+            }
+            else if dst == .P {
+                return [.X, .Y]
+            }
+            else {
+                return []
+            }
+            
+        case .fake, .nop, .hlt, .label, .copyLabel, .lixy, .jalr, .jmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge:
+            return []
+        }
+    }
+    
+    public var dependents: Set<RegisterName> {
+        switch self {
+        case .inuv:
+            return [.U, .V]
+            
+        case .inxy:
+            return [.X, .Y]
+            
+        case .mov(let dst, _), .li(let dst, _), .add(let dst), .sub(let dst), .adc(let dst), .sbc(let dst), .dea(let dst), .dca(let dst), .and(let dst), .or(let dst), .xor(let dst), .lsl(let dst), .neg(let dst):
+            if (dst != .M) && (dst != .P) {
+                if dst == .UV {
+                    return [.U, .V]
+                } else {
+                    return [dst]
+                }
+            } else {
+                return []
+            }
+        
+        case .blt(let dst, _):
+            if dst == .UV {
+                return [.X, .Y, .U, .V]
+            } else {
+                return [dst, .X, .Y, .U, .V]
+            }
+            
+        case .blti(let dst, _):
+            if dst == .M {
+                return [.U, .V]
+            }
+            else if dst == .P {
+                return [.X, .Y]
+            }
+            else {
+                return []
+            }
+            
+        case .fake, .nop, .hlt, .cmp, .explicitJalr, .explicitJmp, .label, .copyLabel, .lixy, .jalr, .jmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge:
+            return []
+        }
+    }
+    
+    public var doesInstructionHaveSideEffects: Bool {
+        switch self {
+        case .fake, .inuv, .inxy, .lixy:
+            return false
+    
+        case .nop, .hlt, .cmp, .label, .jalr, .explicitJalr, .jmp, .explicitJmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge, .blt, .blti, .copyLabel:
+            return true
+        
+        case .mov(let dst, _), .li(let dst, _), .add(let dst), .sub(let dst), .adc(let dst), .sbc(let dst), .dea(let dst), .dca(let dst), .and(let dst), .or(let dst), .xor(let dst), .lsl(let dst), .neg(let dst):
+            if dst == .M || dst == .P || dst == .NONE {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
 }

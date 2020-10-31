@@ -9,7 +9,12 @@
 import TurtleCore
 import TurtleCompilerToolbox
 
-// Defines a stack-based intermediate language.
+// An instruction in the "Crackle" intermediate language.
+// This is basically a three-address code IR with a somewhat low-level focus.
+// Instructions entirely revolve around memory-to-memory operations because
+// the underlying hardware has too few registers to use those directly at this
+// level. (That is, they are always all in use up by code which implements
+// the Crackle instructions.)
 public enum CrackleInstruction: Equatable, Hashable {
     case nop // no operation
     case push(Int) // push the specified word-sized value to the stack

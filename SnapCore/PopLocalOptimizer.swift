@@ -18,9 +18,9 @@ public class PopLocalOptimizer: NSObject {
         constantPropagation.optimize()
         optimizedProgram = constantPropagation.optimizedProgram
         
-//        let deadCodeElimination = PopDeadCodeEliminationOptimizationPass()
-//        deadCodeElimination.unoptimizedProgram = optimizedProgram
-//        deadCodeElimination.optimize()
-//        optimizedProgram = deadCodeElimination.optimizedProgram
+        let deadStoreElimination = PopDeadStoreEliminationOptimizationPass()
+        deadStoreElimination.unoptimizedProgram = optimizedProgram
+        deadStoreElimination.optimize()
+        optimizedProgram = deadStoreElimination.optimizedProgram
     }
 }

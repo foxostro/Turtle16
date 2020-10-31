@@ -16,7 +16,6 @@ public class PopConstantPropagationOptimizationPass: NSObject {
     public var registers: [RegisterName : CellState] = [
         .A : .unknown,
         .B : .unknown,
-        .C : .unknown,
         .D : .unknown,
         .X : .unknown,
         .Y : .unknown,

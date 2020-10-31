@@ -30,40 +30,37 @@ public class PopCompiler: NSObject {
     public func compile(pop: [PopInstruction], base: Int = 0x0000) throws {
         patcherActions = []
         assembler.begin()
-        for i in pop {
-            try compileSinglePopInstruction(i)
-        }
+        try compileProgramBody(pop)
         assembler.end()
         try patch(base)
         programDebugInfo?.generateMappingToProgramCounter(base: base)
         formatInstructions()
     }
     
-    fileprivate func patch(_ base: Int) throws {
-        let resolver: (SourceAnchor?, String) throws -> Int = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
-            if let address = self!.labelTable[identifier] {
-                return address
+    fileprivate func compileProgramBody(_ pop: [PopInstruction]) throws {
+        for i in 0..<pop.count {
+            let currentPopInstruction = pop[i]
+            currentSourceAnchor = programDebugInfo?.lookupSourceAnchor(popInstructionIndex: i)
+            let currentCrackleInstruction = programDebugInfo?.lookupCrackleInstruction(popInstructionIndex: i)
+            let currentSymbols = programDebugInfo?.lookupSymbols(popInstructionIndex: i)
+            let assemblyInstructionsBegin = assembler.instructions.count
+            try compileSinglePopInstruction(currentPopInstruction)
+            let assemblyInstructionsEnd = assembler.instructions.count
+            if assemblyInstructionsBegin < assemblyInstructionsEnd {
+                for i in assemblyInstructionsBegin..<assemblyInstructionsEnd {
+                    programDebugInfo?.bind(assemblyInstructionIndex: i, crackleInstruction: currentCrackleInstruction)
+                    programDebugInfo?.bind(assemblyInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                    programDebugInfo?.bind(assemblyInstructionIndex: i, symbols: currentSymbols)
+                }
             }
-            throw CompilerError(sourceAnchor: sourceAnchor, message: "cannot resolve label `\(identifier)'")
         }
-        let patcher = Patcher(inputInstructions: assembler.instructions,
-                              resolver: resolver,
-                              actions: patcherActions,
-                              base: base)
-        instructions = try patcher.patch()
-    }
-    
-    private func formatInstructions() {
-        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: instructions)
     }
     
     private func compileSinglePopInstruction(_ instruction: PopInstruction) throws {
-        let asmIdx = assembler.instructions.count
-        currentSourceAnchor = programDebugInfo?.lookupSourceAnchor(assemblyInstructionIndex: asmIdx)
-        let currentCrackleInstruction = programDebugInfo?.lookupCrackleInstruction(assemblyInstructionIndex: asmIdx)
-        let currentSymbols = programDebugInfo?.lookupSymbols(assemblyInstructionIndex: asmIdx)
-        
         switch instruction {
+        case .fake:
+            fake()
+            
         case .nop:
             nop()
             
@@ -169,15 +166,27 @@ public class PopCompiler: NSObject {
         case .copyLabel(let dst, let name):
             try copyLabel(dst, name)
         }
-        let assemblyInstructionsEnd = assembler.instructions.count
-        if asmIdx < assemblyInstructionsEnd {
-            for i in asmIdx..<assemblyInstructionsEnd {
-                programDebugInfo?.bind(assemblyInstructionIndex: i, crackleInstruction: currentCrackleInstruction)
-                programDebugInfo?.bind(assemblyInstructionIndex: i, sourceAnchor: currentSourceAnchor)
-                programDebugInfo?.bind(assemblyInstructionIndex: i, symbols: currentSymbols)
-            }
-        }
     }
+    
+    fileprivate func patch(_ base: Int) throws {
+        let resolver: (SourceAnchor?, String) throws -> Int = {[weak self] (sourceAnchor: SourceAnchor?, identifier: String) in
+            if let address = self!.labelTable[identifier] {
+                return address
+            }
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "cannot resolve label `\(identifier)'")
+        }
+        let patcher = Patcher(inputInstructions: assembler.instructions,
+                              resolver: resolver,
+                              actions: patcherActions,
+                              base: base)
+        instructions = try patcher.patch()
+    }
+    
+    private func formatInstructions() {
+        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: instructions)
+    }
+    
+    public func fake() {}
     
     public func nop() {
         assembler.nop()
@@ -372,7 +381,7 @@ public class PopCompiler: NSObject {
     }
     
     public func copyLabel(_ dst: Int, _ name: String) throws {
-        try li(.U, (dst<<8) & 0xff)
+        try li(.U, (dst>>8) & 0xff)
         try li(.V, dst & 0xff)
         patcherActions.append((index: assembler.programCounter,
                                sourceAnchor: currentSourceAnchor,

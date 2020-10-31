@@ -11,12 +11,15 @@ import TurtleCompilerToolbox
 
 public class SnapDebugInfo: ProgramDebugInfo {
     public var mapCrackleInstructionToSource: [SourceAnchor?] = []
+    private var mapPopInstructionToSource: [SourceAnchor?] = []
     private var mapAssemblyInstructionToSource: [SourceAnchor?] = []
     
+    private var mapPopInstructionToCrackleInstruction: [CrackleInstruction?] = []
     private var mapAssemblyInstructionToCrackleInstruction: [CrackleInstruction?] = []
     private var mapProgramCounterToCrackleInstruction: [CrackleInstruction?] = []
     
     public var mapCrackleInstructionToSymbols: [SymbolTable?] = []
+    public var mapPopInstructionToSymbols: [SymbolTable?] = []
     private var mapAssemblyInstructionToSymbols: [SymbolTable?] = []
     private var mapProgramCounterToSymbols: [SymbolTable?] = []
     
@@ -42,6 +45,28 @@ public class SnapDebugInfo: ProgramDebugInfo {
         return sourceAnchor
     }
     
+    public func bind(popInstructionIndex ci: Int, sourceAnchor: SourceAnchor?) {
+        assert(ci >= 0)
+        if ci < mapPopInstructionToSource.count {
+            mapPopInstructionToSource[ci] = sourceAnchor
+        } else {
+            let last = mapPopInstructionToSource.last as? SourceAnchor
+            for _ in mapPopInstructionToSource.count..<ci {
+                mapPopInstructionToSource.append(last)
+            }
+            mapPopInstructionToSource.append(sourceAnchor)
+        }
+    }
+    
+    public func lookupSourceAnchor(popInstructionIndex ci: Int) -> SourceAnchor? {
+        assert(ci >= 0)
+        guard ci < mapPopInstructionToSource.count else {
+            return nil
+        }
+        let sourceAnchor = mapPopInstructionToSource[ci]
+        return sourceAnchor
+    }
+    
     public func bind(assemblyInstructionIndex ai: Int, sourceAnchor: SourceAnchor?) {
         assert(ai >= 0)
         if ai < mapAssemblyInstructionToSource.count {
@@ -62,6 +87,28 @@ public class SnapDebugInfo: ProgramDebugInfo {
         }
         let sourceAnchor = mapAssemblyInstructionToSource[ci]
         return sourceAnchor
+    }
+    
+    public func bind(popInstructionIndex ai: Int, crackleInstruction: CrackleInstruction?) {
+        assert(ai >= 0)
+        if ai < mapPopInstructionToCrackleInstruction.count {
+            mapPopInstructionToCrackleInstruction[ai] = crackleInstruction
+        } else {
+            let last = mapPopInstructionToCrackleInstruction.last as? CrackleInstruction
+            for _ in mapPopInstructionToCrackleInstruction.count..<ai {
+                mapPopInstructionToCrackleInstruction.append(last)
+            }
+            mapPopInstructionToCrackleInstruction.append(crackleInstruction)
+        }
+    }
+    
+    public func lookupCrackleInstruction(popInstructionIndex ai: Int) -> CrackleInstruction? {
+        assert(ai >= 0)
+        guard ai < mapPopInstructionToCrackleInstruction.count else {
+            return nil
+        }
+        let crackleInstruction = mapPopInstructionToCrackleInstruction[ai]
+        return crackleInstruction
     }
     
     public func bind(assemblyInstructionIndex ai: Int, crackleInstruction: CrackleInstruction?) {
@@ -119,6 +166,28 @@ public class SnapDebugInfo: ProgramDebugInfo {
             }
             mapCrackleInstructionToSymbols.append(symbols)
         }
+    }
+    
+    public func bind(popInstructionIndex: Int, symbols: SymbolTable?) {
+        assert(popInstructionIndex >= 0)
+        if popInstructionIndex < mapPopInstructionToSymbols.count {
+            mapPopInstructionToSymbols[popInstructionIndex] = symbols
+        } else {
+            let last = mapPopInstructionToSymbols.last as? SymbolTable
+            for _ in mapPopInstructionToSymbols.count..<popInstructionIndex {
+                mapPopInstructionToSymbols.append(last)
+            }
+            mapPopInstructionToSymbols.append(symbols)
+        }
+    }
+    
+    public func lookupSymbols(popInstructionIndex: Int) -> SymbolTable? {
+        assert(popInstructionIndex >= 0)
+        guard popInstructionIndex < mapPopInstructionToSymbols.count else {
+            return nil
+        }
+        let symbols = mapPopInstructionToSymbols[popInstructionIndex]
+        return symbols
     }
     
     public func lookupSymbols(crackleInstructionIndex: Int) -> SymbolTable? {

@@ -17,12 +17,12 @@ public class CrackleToPopCompiler: NSObject {
     public static let kStackPointerAddressHi: UInt16 = 0x0000
     public static let kStackPointerAddressLo: UInt16 = 0x0001
     public static let kStackPointerInitialValue: Int = 0x0000
-    let kStackPointerAddressHi: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
-    let kStackPointerAddressLo: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo)
-    let kStackPointerHiHi = Int((CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0xff00) >> 8)
-    let kStackPointerHiLo = Int( CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi & 0x00ff)
-    let kStackPointerLoHi = Int((CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0xff00) >> 8)
-    let kStackPointerLoLo = Int( CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo & 0x00ff)
+    let kStackPointerAddressHi: Int = Int(CrackleToPopCompiler.kStackPointerAddressHi)
+    let kStackPointerAddressLo: Int = Int(CrackleToPopCompiler.kStackPointerAddressLo)
+    let kStackPointerHiHi = Int((CrackleToPopCompiler.kStackPointerAddressHi & 0xff00) >> 8)
+    let kStackPointerHiLo = Int( CrackleToPopCompiler.kStackPointerAddressHi & 0x00ff)
+    let kStackPointerLoHi = Int((CrackleToPopCompiler.kStackPointerAddressLo & 0xff00) >> 8)
+    let kStackPointerLoLo = Int( CrackleToPopCompiler.kStackPointerAddressLo & 0x00ff)
     let kStackPointerInitialValueHi: Int = (kStackPointerInitialValue & 0xff00) >> 8
     let kStackPointerInitialValueLo: Int =  kStackPointerInitialValue & 0x00ff
     
@@ -31,12 +31,12 @@ public class CrackleToPopCompiler: NSObject {
     public static let kFramePointerAddressHi: UInt16 = 0x0002
     public static let kFramePointerAddressLo: UInt16 = 0x0003
     public static let kFramePointerInitialValue: Int = 0x0000
-    let kFramePointerAddressHi: Int = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
-    let kFramePointerAddressLo: Int = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
-    let kFramePointerHiHi = Int((CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0xff00) >> 8)
-    let kFramePointerHiLo = Int( CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi & 0x00ff)
-    let kFramePointerLoHi = Int((CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0xff00) >> 8)
-    let kFramePointerLoLo = Int( CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo & 0x00ff)
+    let kFramePointerAddressHi: Int = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+    let kFramePointerAddressLo: Int = Int(CrackleToPopCompiler.kFramePointerAddressLo)
+    let kFramePointerHiHi = Int((CrackleToPopCompiler.kFramePointerAddressHi & 0xff00) >> 8)
+    let kFramePointerHiLo = Int( CrackleToPopCompiler.kFramePointerAddressHi & 0x00ff)
+    let kFramePointerLoHi = Int((CrackleToPopCompiler.kFramePointerAddressLo & 0xff00) >> 8)
+    let kFramePointerLoLo = Int( CrackleToPopCompiler.kFramePointerAddressLo & 0x00ff)
     let kFramePointerInitialValueHi: Int = (kFramePointerInitialValue & 0xff00) >> 8
     let kFramePointerInitialValueLo: Int =  kFramePointerInitialValue & 0x00ff
     
@@ -108,10 +108,19 @@ public class CrackleToPopCompiler: NSObject {
     
     private func compileProgramBody(_ ir: [CrackleInstruction]) throws {
         for i in 0..<ir.count {
+            let currentCrackleInstruction = ir[i]
             currentSourceAnchor = programDebugInfo?.lookupSourceAnchor(crackleInstructionIndex: i)
             currentSymbols = programDebugInfo?.lookupSymbols(crackleInstructionIndex: i)
-            let instruction = ir[i]
-            try compileSingleCrackleInstruction(instruction)
+            let instructionsBegin = instructions.count
+            try compileSingleCrackleInstruction(currentCrackleInstruction)
+            let instructionsEnd = instructions.count
+            if instructionsBegin < instructionsEnd {
+                for i in instructionsBegin..<instructionsEnd {
+                    programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: currentCrackleInstruction)
+                    programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                    programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
+                }
+            }
         }
     }
     
@@ -191,6 +200,9 @@ public class CrackleToPopCompiler: NSObject {
     // Inserts epilogue code into the program, presumably at the end.
     func insertProgramEpilogue() throws {
         currentSourceAnchor = nil
+        
+        let instructionsBegin = instructions.count
+        
         emit(.hlt)
         try generateProcedureCopyWordsWithLoop()
         try generateProcedureEnter()
@@ -200,6 +212,15 @@ public class CrackleToPopCompiler: NSObject {
         try generateProcedurePokePeripheral()
         try generateProcedureRet()
         try doAtEpilogue(self)
+        
+        let instructionsEnd = instructions.count
+        if instructionsBegin < instructionsEnd {
+            for i in instructionsBegin..<instructionsEnd {
+                programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: nil)
+                programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
+            }
+        }
     }
     
     public func nop() {}
@@ -222,7 +243,6 @@ public class CrackleToPopCompiler: NSObject {
         try setUV(kStackPointerAddressHi)
         emit(.mov(.X, .M))
         try setUV(kStackPointerAddressLo)
-        emit(.mov(.X, .M))
         emit(.mov(.Y, .M))
         emit(.mov(.U, .X))
         emit(.mov(.V, .Y))
@@ -475,8 +495,6 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.X, .G))
         emit(.mov(.Y, .H))
         emit(.explicitJmp)
-        emit(.nop)
-        emit(.nop)
     }
     
     public func ret() throws {
@@ -909,7 +927,6 @@ public class CrackleToPopCompiler: NSObject {
         try setUV(a+1)
         emit(.mov(.B, .M))
         emit(.cmp)
-        emit(.cmp)
         
         emit(.jne(label_fail_test))
         
@@ -917,7 +934,6 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.A, .M))
         try setUV(a+0)
         emit(.mov(.B, .M))
-        emit(.cmp)
         emit(.cmp)
         
         emit(.jne(label_fail_test))
@@ -1381,22 +1397,16 @@ public class CrackleToPopCompiler: NSObject {
         try setUV(tempSrcPointer+0)
         emit(.mov(.B, .M))
         emit(.cmp)
-        emit(.cmp)
         
         emit(.jne(loopHead))
-        emit(.nop)
-        emit(.nop)
         
         try setUV(tempLimitPointer+1)
         emit(.mov(.A, .M))
         try setUV(tempSrcPointer+1)
         emit(.mov(.B, .M))
         emit(.cmp)
-        emit(.cmp)
         
         emit(.jne(loopHead))
-        emit(.nop)
-        emit(.nop)
         
         try leafRet()
     }

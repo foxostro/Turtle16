@@ -22,6 +22,12 @@ class PopCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
+    func testCompileFake() throws {
+        let compiler = PopCompiler()
+        XCTAssertNoThrow(try compiler.compile(pop: [.fake]))
+        XCTAssertEqual(makeListing(compiler), "")
+    }
+    
     func testCompileNOP() throws {
         let compiler = PopCompiler()
         XCTAssertNoThrow(try compiler.compile(pop: [.nop]))

@@ -12,8 +12,8 @@ import TurtleSimulatorCore
 
 extension Computer {    
     public var stackPointer: Int {
-        let stackPointerHi = Int(dataRAM.load(from: Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)))
-        let stackPointerLo = Int(dataRAM.load(from: Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressLo)))
+        let stackPointerHi = Int(dataRAM.load(from: Int(CrackleToPopCompiler.kStackPointerAddressHi)))
+        let stackPointerLo = Int(dataRAM.load(from: Int(CrackleToPopCompiler.kStackPointerAddressLo)))
         let stackPointer = (stackPointerHi << 8) + stackPointerLo
         return stackPointer
     }
@@ -31,8 +31,8 @@ extension Computer {
     }
     
     public var framePointer: Int {
-        let framePointerHi = Int(dataRAM.load(from: Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)))
-        let framePointerLo = Int(dataRAM.load(from: Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)))
+        let framePointerHi = Int(dataRAM.load(from: Int(CrackleToPopCompiler.kFramePointerAddressHi)))
+        let framePointerLo = Int(dataRAM.load(from: Int(CrackleToPopCompiler.kFramePointerAddressLo)))
         let framePointer = (framePointerHi << 8) + framePointerLo
         return framePointer
     }

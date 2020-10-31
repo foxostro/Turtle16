@@ -21,7 +21,7 @@ public class SnapToCrackleCompiler: NSObject {
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress = kTemporaryStorageStartAddress + kTemporaryStorageLength
     
-    private let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
+    private let kStackPointerAddress: Int = Int(CrackleToPopCompiler.kStackPointerAddressHi)
     
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }

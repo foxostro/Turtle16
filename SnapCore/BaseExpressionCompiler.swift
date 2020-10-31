@@ -16,9 +16,9 @@ public class BaseExpressionCompiler: NSObject {
     public let temporaryStack: CompilerTemporariesStack
     public let temporaryAllocator: CompilerTemporariesAllocator
     
-    let kFramePointerAddressHi = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
-    let kFramePointerAddressLo = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressLo)
-    let kStackPointerAddress: Int = Int(CrackleToTurtleMachineCodeCompiler.kStackPointerAddressHi)
+    let kFramePointerAddressHi = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+    let kFramePointerAddressLo = Int(CrackleToPopCompiler.kFramePointerAddressLo)
+    let kStackPointerAddress: Int = Int(CrackleToPopCompiler.kStackPointerAddressHi)
     
     let kSliceBaseAddressOffset = 0
     let kSliceBaseAddressSize = 2

@@ -16,27 +16,27 @@ class CrackleExecutor: NSObject {
     var isVerboseLogging = false
     var injectPanicStub = true
     var configure: (Computer) -> Void = {_ in}
-    var injectCode: (CrackleToTurtleMachineCodeCompiler) throws -> Void = {_ in}
+    var injectCode: (CrackleToPopCompiler) throws -> Void = {_ in}
     var programDebugInfo: SnapDebugInfo? = nil
     let microcodeGenerator: MicrocodeGenerator
-    let assembler: AssemblerBackEnd
     
     override init() {
         microcodeGenerator = MicrocodeGenerator()
         microcodeGenerator.generate()
-        assembler = AssemblerBackEnd(microcodeGenerator: microcodeGenerator)
     }
     
-    func execute(ir: [CrackleInstruction]) throws -> Computer {
+    func execute(crackle: [CrackleInstruction]) throws -> Computer {
+        let base = 0
+        
         if isVerboseLogging {
-            print("IR:\n" + CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo) + "\n\n")
+            print("IR:\n" + CrackleInstructionListingMaker.makeListing(instructions: crackle, programDebugInfo: programDebugInfo) + "\n\n")
         }
         
-        var computer: Computer!
-        
+        // Compile the Crackle IR code to Pop IR code.
+        let crackleToPopCompiler = CrackleToPopCompiler()
+        crackleToPopCompiler.programDebugInfo = programDebugInfo
         do {
-            let compiler = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
-            compiler.doAtEpilogue = { [weak self] (compiler: CrackleToTurtleMachineCodeCompiler) in
+            crackleToPopCompiler.doAtEpilogue = { [weak self] (compiler: CrackleToPopCompiler) in
                 try self!.injectCode(compiler)
                 if self!.injectPanicStub {
                     try compiler.label("panic")
@@ -44,20 +44,34 @@ class CrackleExecutor: NSObject {
                 }
                 compiler.hlt()
             }
-            let base = 0
-            try compiler.compile(ir: ir, base: base)
-            let instructions = compiler.instructions
-            
-            if isVerboseLogging {
-                let disassembly = AssemblyListingMaker.makeListing(base, instructions, programDebugInfo)
-                print("Assembly:\n\(disassembly)\n")
-            }
-            
-            computer = try execute(instructions: instructions)
-        } catch let e as CompilerError {
-            print(e.message)
-            throw e
+            try crackleToPopCompiler.compile(ir: crackle)
+        } catch let error as CompilerError {
+            print(error.message)
+            throw error
+        } catch {
+            abort()
         }
+        let pop = crackleToPopCompiler.instructions
+        
+        // Compiler the Pop IR code to machine code.
+        let popToMachineCodeCompiler = PopCompiler()
+        popToMachineCodeCompiler.programDebugInfo = programDebugInfo
+        do {
+            try popToMachineCodeCompiler.compile(pop: pop, base: base)
+        } catch let error as CompilerError {
+            print(error.message)
+            throw error
+        } catch {
+            abort()
+        }
+        let machineCode = popToMachineCodeCompiler.instructions
+        
+        if isVerboseLogging {
+            let disassembly = AssemblyListingMaker.makeListing(base, machineCode, programDebugInfo)
+            print("Assembly:\n\(disassembly)\n")
+        }
+        
+        let computer = try execute(instructions: machineCode)
         return computer
     }
     

@@ -19,7 +19,8 @@ public class SnapCompiler: NSObject {
     public var shouldEnableOptimizations = true
     public private(set) var testNames: [String] = []
     public var ast: TopLevel! = nil
-    public var ir: [CrackleInstruction] = []
+    public var crackle: [CrackleInstruction] = []
+    public var pop: [PopInstruction] = []
     public var instructions: [Instruction] = []
     public let programDebugInfo = SnapDebugInfo()
     public var sandboxAccessManager: SandboxAccessManager? = nil
@@ -77,27 +78,43 @@ public class SnapCompiler: NSObject {
         }
         testNames = snapToCrackleCompiler.testNames
         if shouldEnableOptimizations {
-            optimize(snapToCrackleCompiler)
+            optimizeCrackle(snapToCrackleCompiler)
         } else {
-            ir = snapToCrackleCompiler.instructions
+            crackle = snapToCrackleCompiler.instructions
         }
         
-        // Compile the IR code to Turtle machine code
-        let assembler = makeAssembler()
-        let irToMachineCode = CrackleToTurtleMachineCodeCompiler(assembler: assembler)
-        irToMachineCode.programDebugInfo = programDebugInfo
+        // Compile the Crackle IR code to Pop IR code.
+        let crackleToPopCompiler = CrackleToPopCompiler()
+        crackleToPopCompiler.programDebugInfo = programDebugInfo
         do {
-            try irToMachineCode.compile(ir: ir, base: base)
+            try crackleToPopCompiler.compile(ir: crackle)
         } catch let error as CompilerError {
             errors = [error]
             return
         } catch {
             abort()
         }
-        instructions = InstructionFormatter.makeInstructionsWithDisassembly(instructions: irToMachineCode.instructions)
+        if shouldEnableOptimizations {
+            optimizePop(crackleToPopCompiler)
+        } else {
+            pop = crackleToPopCompiler.instructions
+        }
+        
+        // Compiler the Pop IR code to machine code.
+        let popToMachineCodeCompiler = PopCompiler(assembler: makeAssembler())
+        popToMachineCodeCompiler.programDebugInfo = programDebugInfo
+        do {
+            try popToMachineCodeCompiler.compile(pop: pop, base: base)
+        } catch let error as CompilerError {
+            errors = [error]
+            return
+        } catch {
+            abort()
+        }
+        instructions = popToMachineCodeCompiler.instructions
     }
     
-    private func optimize(_ snapToCrackleCompiler: SnapToCrackleCompiler) {
+    private func optimizeCrackle(_ snapToCrackleCompiler: SnapToCrackleCompiler) {
 //        print("Unoptimized:")
 //        print(CrackleInstructionListingMaker.makeListing(instructions: snapToCrackleCompiler.instructions, programDebugInfo: programDebugInfo))
         
@@ -106,12 +123,24 @@ public class SnapCompiler: NSObject {
         optimizer.unoptimizedProgram.mapCrackleInstructionToSource = programDebugInfo.mapCrackleInstructionToSource
         optimizer.unoptimizedProgram.mapCrackleInstructionToSymbols = programDebugInfo.mapCrackleInstructionToSymbols
         optimizer.optimize()
-        ir = optimizer.optimizedProgram.instructions
+        crackle = optimizer.optimizedProgram.instructions
         programDebugInfo.mapCrackleInstructionToSource = optimizer.optimizedProgram.mapCrackleInstructionToSource
         programDebugInfo.mapCrackleInstructionToSymbols = optimizer.optimizedProgram.mapCrackleInstructionToSymbols
         
 //        print("Optimized:")
 //        print(CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo))
+    }
+    
+    private func optimizePop(_ crackleToPopCompiler: CrackleToPopCompiler) {
+        let optimizer = PopGlobalOptimizer()
+        optimizer.unoptimizedProgram = crackleToPopCompiler.instructions
+        optimizer.optimize()
+        pop = optimizer.optimizedProgram
+        
+//        print("Unoptimized:")
+//        print(optimizer.unoptimizedProgram.map({$0.description}).joined(separator: "\n"))
+//        print("Optimized:")
+//        print(optimizer.optimizedProgram.map({$0.description}).joined(separator: "\n"))
     }
     
     private func makeAssembler() -> AssemblerBackEnd {

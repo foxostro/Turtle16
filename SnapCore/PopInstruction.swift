@@ -15,6 +15,7 @@ import TurtleCompilerToolbox
 // supports some macro instructions to paper over hardware annoyances like
 // delay slots.
 public enum PopInstruction: Equatable, Hashable {
+    case fake // Placeholder instructions. Compiles down to nothing.
     case nop // The CPU executes one NOP instruction, doing nothing.
     case hlt // Halt the computer until reset
     case inuv // Increment the UV register pair
@@ -53,6 +54,9 @@ public enum PopInstruction: Equatable, Hashable {
     
     public var description: String {
         switch self {
+        case .fake:
+            return "fake"
+        
         case .nop:
             return "NOP"
         

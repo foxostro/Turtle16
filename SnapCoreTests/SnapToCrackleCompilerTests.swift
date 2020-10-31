@@ -259,7 +259,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         // The statement puts the string on the stack.
         XCTAssertEqual(computer.stackPointer, Int(UInt16(0) &- UInt16(0xd)))
@@ -402,7 +402,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 2)
     }
     
@@ -448,7 +448,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 3)
     }
     
@@ -474,7 +474,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
@@ -519,7 +519,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+4), 2)
@@ -875,7 +875,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
@@ -1017,7 +1017,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
@@ -1041,7 +1041,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xabcd)
     }
     
@@ -1065,7 +1065,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
     }
     
@@ -1196,7 +1196,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
@@ -1226,7 +1226,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
@@ -1250,7 +1250,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
@@ -1295,7 +1295,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
@@ -1337,7 +1337,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xbb)
     }
     
@@ -1388,7 +1388,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(ir: ir)
+            let computer = try! executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
     }
@@ -1410,7 +1410,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(ir: ir)
+            let computer = try! executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
     }
@@ -1446,7 +1446,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 .copyWordsIndirectDestination(t0, t2, 1)
             ])
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(ir: ir)
+            let computer = try! executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xaa)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xaa)
         }
@@ -1471,7 +1471,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 .copyWordsIndirectDestination(t1, t0, 1)
             ])
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(ir: ir)
+            let computer = try! executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
     }
@@ -1499,7 +1499,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(ir: ir)
+            let computer = try! executor.execute(crackle: ir)
             XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), 0xff)
             XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), 0xff)
         }
@@ -1524,7 +1524,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(ir: ir)
+            let computer = try! executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
     }
@@ -1564,7 +1564,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 3)
     }
         
@@ -1647,7 +1647,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(9))
     }
     
@@ -1677,7 +1677,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(299))
     }
     
@@ -1711,7 +1711,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), UInt8("o".utf8.first!))
     }
     
@@ -1745,7 +1745,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x5000))
     }
     
@@ -1789,7 +1789,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), UInt16(0x0005))
     }
     
@@ -1815,7 +1815,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+1), UInt16(kStaticStorageStartAddress))
     }
     
@@ -1924,7 +1924,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
@@ -1998,7 +1998,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
@@ -2080,7 +2080,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
@@ -2144,7 +2144,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
@@ -2202,7 +2202,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
@@ -2449,7 +2449,7 @@ public func foo() -> None {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
@@ -2482,7 +2482,7 @@ public func foo() -> None {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 2)
@@ -2511,7 +2511,7 @@ public func foo() -> None {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
@@ -2578,7 +2578,7 @@ public func foo() -> None {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
@@ -2602,7 +2602,7 @@ public func foo() -> None {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfFoo), 14)

@@ -74,6 +74,12 @@
 		6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */; };
 		6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */; };
 		6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C46249EBC3A0018BBBC /* TokenType.swift */; };
+		6F4F7B12254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B11254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift */; };
+		6F4F7B22254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B21254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift */; };
+		6F4F7B40254D21970030E3CB /* PopLocalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */; };
+		6F4F7B50254D21CE0030E3CB /* PopGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */; };
+		6F4F7B60254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */; };
+		6F4F7B70254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */; };
 		6F5337252474BC7700CFD33C /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */; };
 		6F5337262474BC7700CFD33C /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
 		6F5337272474BC7700CFD33C /* ParameterList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterList.swift */; };
@@ -752,6 +758,12 @@
 		6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclaration.swift; sourceTree = "<group>"; };
 		6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclarationTests.swift; sourceTree = "<group>"; };
 		6F4F3C46249EBC3A0018BBBC /* TokenType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenType.swift; sourceTree = "<group>"; };
+		6F4F7B11254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopBasicBlockPartitioner.swift; sourceTree = "<group>"; };
+		6F4F7B21254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopBasicBlockPartitionerTests.swift; sourceTree = "<group>"; };
+		6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopLocalOptimizer.swift; sourceTree = "<group>"; };
+		6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopGlobalOptimizer.swift; sourceTree = "<group>"; };
+		6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopConstantPropagationOptimizationPass.swift; sourceTree = "<group>"; };
+		6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopConstantPropagationOptimizationPassTests.swift; sourceTree = "<group>"; };
 		6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTableTests.swift; sourceTree = "<group>"; };
 		6F5337342474BE7D00CFD33C /* VarDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclarationTests.swift; sourceTree = "<group>"; };
 		6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitDeclaration.swift; sourceTree = "<group>"; };
@@ -1273,7 +1285,11 @@
 				6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */,
 				6F25325B24CB799A00339332 /* LvalueExpressionCompiler.swift */,
 				6F25325724CB5A7200339332 /* LvalueExpressionTypeChecker.swift */,
+				6F4F7B11254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift */,
 				6FBD6EAF254C9E9A00CE5D06 /* PopCompiler.swift */,
+				6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */,
+				6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */,
+				6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */,
 				6FBD6ECF254C9EF700CE5D06 /* PopInstruction.swift */,
 				6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */,
 				6F924E79248B42D400F43741 /* RvalueExpressionTypeChecker.swift */,
@@ -1313,6 +1329,8 @@
 				6F25325D24CB7C6200339332 /* LvalueExpressionCompilerTests.swift */,
 				6F25325924CB5D0B00339332 /* LvalueExpressionTypeCheckerTests.swift */,
 				6F330D9B24E8A346005C4BE5 /* MemoryExtensions.swift */,
+				6F4F7B21254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift */,
+				6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */,
 				6FBD6EBF254C9EA900CE5D06 /* PopCompilerTests.swift */,
 				6F41B69724784B680043A8D7 /* RvalueExpressionCompilerTests.swift */,
 				6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */,
@@ -2226,10 +2244,14 @@
 				6F2940A9248306EC00C50ABA /* While.swift in Sources */,
 				6F915D4A24D14F99002B3850 /* BaseExpressionCompiler.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
+				6F4F7B60254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,
 				6F546311253D3B5F005DDAB6 /* ImplFor.swift in Sources */,
 				6F5C55EC24F6359D008827EE /* CompilerTemporariesStack.swift in Sources */,
+				6F4F7B40254D21970030E3CB /* PopLocalOptimizer.swift in Sources */,
 				6F25325824CB5A7200339332 /* LvalueExpressionTypeChecker.swift in Sources */,
+				6F4F7B12254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift in Sources */,
+				6F4F7B50254D21CE0030E3CB /* PopGlobalOptimizer.swift in Sources */,
 				6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */,
 				6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */,
 				6F870FEB2505913900FE2B25 /* StructDeclaration.swift in Sources */,
@@ -2276,6 +2298,7 @@
 				6F25325A24CB5D0C00339332 /* LvalueExpressionTypeCheckerTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
+				6F4F7B70254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift in Sources */,
 				6F7E41B12547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
 				6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */,
@@ -2284,6 +2307,7 @@
 				6F924E7C248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
 				6F9E287F2543CFD000946974 /* AssemblyListingMakerTests.swift in Sources */,
+				6F4F7B22254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift in Sources */,
 				6F16BA10251E946100A26850 /* SnapDebugInfoTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */,

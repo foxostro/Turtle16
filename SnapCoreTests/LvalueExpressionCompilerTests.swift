@@ -27,7 +27,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = try! compile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 0x0100)
     }
@@ -48,7 +48,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let dst = compiler.temporaryStack.pop()
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: dst.address), 0x0101)
     }
     
@@ -85,7 +85,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: dst.address), expected)
     }
     
@@ -101,7 +101,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcd, to: 0x0101)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
@@ -120,7 +120,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0, to: 0x0102)
             computer.dataRAM.store(value: 0xcd, to: 0x0104)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
@@ -139,7 +139,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: dst.address), UInt16(offset+0))
     }
     
@@ -158,7 +158,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: dst.address), UInt16(offset+1))
     }
     
@@ -176,7 +176,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0102, to: 0x0100)
             computer.dataRAM.store(value: 0x2a, to: 0x0102)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0x0100)
     }
     
@@ -195,7 +195,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0102, to: 0x0100)
             computer.dataRAM.store(value: 0x2a, to: 0x0102)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0x0102)
     }
     
@@ -236,7 +236,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0x1000, to: offset)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: dst.address), 0x1000)
     }
 }

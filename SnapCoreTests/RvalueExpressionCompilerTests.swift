@@ -118,7 +118,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         let expectedResult = UInt8(0) &- UInt8(42)
         XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
@@ -134,7 +134,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         let expectedResult = UInt16(0) &- UInt16(1000)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
@@ -150,7 +150,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         let expectedResult = UInt16(0) &- UInt16(1000)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
@@ -161,7 +161,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                     expression: ExprUtils.makeU8(value: 42))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         let expectedResult = ~UInt8(42)
         XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
     }
@@ -171,7 +171,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                     expression: ExprUtils.makeU16(value: 1000))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         let expectedResult = ~UInt16(1000)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
     }
@@ -181,7 +181,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                     expression: ExprUtils.makeU16(value: 1000))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         let expectedResult = ~UInt16(1000)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), expectedResult)
     }
@@ -190,7 +190,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Unary(op: .bang, expression: ExprUtils.makeBool(value: false))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), UInt8(1))
     }
     
@@ -212,7 +212,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -225,7 +225,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -240,7 +240,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -255,7 +255,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -271,7 +271,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -307,7 +307,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 2)
     }
@@ -323,7 +323,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t1), 0)
     }
@@ -338,7 +338,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -353,7 +353,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -388,7 +388,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -403,7 +403,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -426,7 +426,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -439,7 +439,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -454,7 +454,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -477,7 +477,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -490,7 +490,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -505,7 +505,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -520,7 +520,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -536,7 +536,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -572,7 +572,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
@@ -587,7 +587,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -602,7 +602,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -637,7 +637,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -652,7 +652,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -675,7 +675,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -688,7 +688,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -703,7 +703,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -726,7 +726,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -739,7 +739,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -754,7 +754,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -769,7 +769,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -785,7 +785,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -812,7 +812,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
@@ -828,7 +828,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -843,7 +843,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -887,7 +887,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -901,7 +901,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -917,7 +917,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -932,7 +932,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -947,7 +947,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -963,7 +963,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -989,7 +989,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1004,7 +1004,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1019,7 +1019,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1063,7 +1063,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -1077,7 +1077,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -1092,7 +1092,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1107,7 +1107,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1122,7 +1122,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1138,7 +1138,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1164,7 +1164,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t1), 1)
     }
@@ -1179,7 +1179,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1194,7 +1194,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1209,7 +1209,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1253,7 +1253,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -1267,7 +1267,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
@@ -1282,7 +1282,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1297,7 +1297,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1312,7 +1312,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1328,7 +1328,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1354,7 +1354,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t1), 0)
     }
@@ -1369,7 +1369,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 0)
     }
@@ -1384,7 +1384,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1399,7 +1399,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1440,7 +1440,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(ir, [
             .storeImmediate(t0, 2)
         ])
@@ -1453,7 +1453,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(ir, [
             .storeImmediate16(t0, 1001)
         ])
@@ -1471,7 +1471,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
@@ -1487,7 +1487,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 2)
     }
@@ -1503,7 +1503,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
@@ -1519,7 +1519,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
@@ -1536,7 +1536,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
@@ -1564,7 +1564,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1001)
     }
@@ -1580,7 +1580,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 2)
     }
@@ -1638,7 +1638,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
-       let computer = try! executor.execute(ir: actual)
+       let computer = try! executor.execute(crackle: actual)
        XCTAssertEqual(actual, expected)
        XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
    }
@@ -1652,7 +1652,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
-       let computer = try! executor.execute(ir: actual)
+       let computer = try! executor.execute(crackle: actual)
        XCTAssertEqual(actual, expected)
        XCTAssertEqual(computer.dataRAM.load16(from: t0), 999)
    }
@@ -1668,7 +1668,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
-       let computer = try! executor.execute(ir: actual)
+       let computer = try! executor.execute(crackle: actual)
        XCTAssertEqual(actual, expected)
        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
    }
@@ -1684,7 +1684,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
-       let computer = try! executor.execute(ir: actual)
+       let computer = try! executor.execute(crackle: actual)
        XCTAssertEqual(actual, expected)
        XCTAssertEqual(computer.dataRAM.load(from: t2), 254)
    }
@@ -1700,7 +1700,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
        ]
        let actual = mustCompile(expression: expr)
        let executor = CrackleExecutor()
-       let computer = try! executor.execute(ir: actual)
+       let computer = try! executor.execute(crackle: actual)
        XCTAssertEqual(actual, expected)
        XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
    }
@@ -1716,7 +1716,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
@@ -1733,7 +1733,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 999)
     }
@@ -1760,7 +1760,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1777,7 +1777,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), UInt16(1) &- UInt16(1000))
     }
@@ -1793,7 +1793,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
@@ -1851,7 +1851,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 16)
     }
@@ -1865,7 +1865,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 10000)
     }
@@ -1881,7 +1881,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), UInt16(256) &* UInt16(256))
     }
@@ -1897,7 +1897,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 255)
     }
@@ -1913,7 +1913,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), UInt16(256) &* UInt16(256))
     }
@@ -1929,7 +1929,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), UInt16(256) &* UInt16(256))
     }
@@ -1946,7 +1946,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
@@ -1973,7 +1973,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 255)
     }
@@ -1990,7 +1990,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1000)
     }
@@ -2006,7 +2006,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 6)
     }
@@ -2064,7 +2064,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -2078,7 +2078,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 1000)
     }
@@ -2094,7 +2094,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
@@ -2110,7 +2110,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
@@ -2126,7 +2126,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
@@ -2142,7 +2142,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
@@ -2159,7 +2159,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
@@ -2186,7 +2186,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
@@ -2203,7 +2203,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 0)
     }
@@ -2219,7 +2219,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
@@ -2277,7 +2277,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -2291,7 +2291,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 999)
     }
@@ -2307,7 +2307,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
@@ -2323,7 +2323,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
@@ -2339,7 +2339,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
@@ -2355,7 +2355,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
@@ -2372,7 +2372,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
@@ -2399,7 +2399,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
@@ -2416,7 +2416,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1)
     }
@@ -2432,7 +2432,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
@@ -2487,7 +2487,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
@@ -2497,7 +2497,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
@@ -2507,7 +2507,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
     
@@ -2517,7 +2517,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
@@ -2527,7 +2527,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
     
@@ -2537,7 +2537,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
     
@@ -2547,7 +2547,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1)
     }
     
@@ -2568,7 +2568,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1025))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1)
     }
     
@@ -2578,7 +2578,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
@@ -2632,7 +2632,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(2))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 3)
     }
     
@@ -2642,7 +2642,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 1001)
     }
     
@@ -2652,7 +2652,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1001))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1003)
     }
     
@@ -2662,7 +2662,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
@@ -2672,7 +2672,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
@@ -2682,7 +2682,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
@@ -2692,7 +2692,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
@@ -2713,7 +2713,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1000))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1001)
     }
     
@@ -2723,7 +2723,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
@@ -2777,7 +2777,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0)
     }
     
@@ -2787,7 +2787,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 1001)
     }
     
@@ -2797,7 +2797,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1000))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 0)
     }
     
@@ -2807,7 +2807,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
@@ -2817,7 +2817,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
@@ -2827,7 +2827,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
@@ -2837,7 +2837,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1001)
     }
     
@@ -2858,7 +2858,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1000))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1001)
     }
     
@@ -2868,7 +2868,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 3)
     }
     
@@ -2922,7 +2922,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 2)
     }
     
@@ -2932,7 +2932,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 2000)
     }
     
@@ -2942,7 +2942,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
     
@@ -2952,7 +2952,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 4)
     }
     
@@ -2962,7 +2962,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
     
@@ -2972,7 +2972,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
     
@@ -2982,7 +2982,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 2000)
     }
     
@@ -3003,7 +3003,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 4))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 16)
     }
     
@@ -3013,7 +3013,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 4)
     }
     
@@ -3067,7 +3067,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 2)
     }
     
@@ -3077,7 +3077,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 1000)
     }
     
@@ -3087,7 +3087,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
     
@@ -3097,7 +3097,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
@@ -3107,7 +3107,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
     
@@ -3117,7 +3117,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
     
@@ -3127,7 +3127,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 1))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t2), 1000)
     }
     
@@ -3148,7 +3148,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU16(value: 4))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 1)
     }
     
@@ -3158,7 +3158,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeU8(value: 2))
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: t2), 1)
     }
     
@@ -3212,7 +3212,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralBool(true))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
@@ -3222,7 +3222,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeBool(value: true))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
@@ -3232,7 +3232,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralBool(false))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
@@ -3242,7 +3242,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: ExprUtils.makeBool(value: true))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
     
@@ -3257,7 +3257,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xab, to: 0x0100)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0xab)
     }
@@ -3273,13 +3273,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0xabcd, to: 0x0100)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 0xabcd)
     }
     
     func testCompileIdentifierExpression_U8_Stack() {
-        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .constU8, offset: 0x0010, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3296,7 +3296,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             // which is 0x0000.
             computer.dataRAM.store(value: 0xaa, to: 0xfff0)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 0xaa)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), 0xfff0)
@@ -3304,7 +3304,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U16_Stack() {
-        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .constU16, offset: 0x0010, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3321,7 +3321,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             // which is 0x0000.
             computer.dataRAM.store16(value: 0xabcd, to: 0xfff0)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 0xabcd)
     }
@@ -3337,7 +3337,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store(value: 1, to: 0x0100)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -3370,7 +3370,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 4000, to: offset + 6)
             computer.dataRAM.store16(value: 5000, to: offset + 8)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 3000)
@@ -3405,7 +3405,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 4000, to: address + 6)
             computer.dataRAM.store16(value: 5000, to: address + 8)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 3000)
@@ -3426,7 +3426,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: offset), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), UInt16(offset))
@@ -3444,7 +3444,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: offset), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), UInt16(offset))
@@ -3463,7 +3463,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: offset), 42)
     }
@@ -3480,7 +3480,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: offset), UInt16(value))
     }
@@ -3497,7 +3497,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+2), 2000)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+4), 3000)
@@ -3518,14 +3518,14 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: offset), UInt16(value))
     }
     
     func testCompileAssignment_Bool_Stack() {
         let offset = 0x0004
-        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
         let symbol = Symbol(type: .bool, offset: offset, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3537,7 +3537,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 1)
     }
@@ -3545,7 +3545,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignment_U8_Stack() {
         let offset = 0x0004
         let value = 42
-        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
         let symbol = Symbol(type: .u8, offset: offset, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3557,7 +3557,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: 0xfffc), 42)
     }
@@ -3565,7 +3565,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignment_U16_Stack() {
         let offset = 0x0004
         let value = 0xabcd
-        let kFramePointerAddress = Int(CrackleToTurtleMachineCodeCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
         let symbol = Symbol(type: .u16, offset: offset, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3577,7 +3577,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: 0xfffc), UInt16(value))
     }
@@ -3593,7 +3593,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, storage: .stackStorage)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         let address = 0xfff0
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 2000)
@@ -3619,7 +3619,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                   typeDict: ["Foo" : .structType(typ)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         let address = 0xfff0
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 0xabab)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 0xcdcd)
@@ -3666,7 +3666,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: 0x0100), 0xaa)
     }
     
@@ -3726,7 +3726,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 1)
     }
@@ -3750,7 +3750,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t1), UInt16(value))
     }
@@ -3762,7 +3762,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t0), 42)
     }
@@ -3794,7 +3794,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load16(from: t0), 0xabcd)
     }
@@ -3808,7 +3808,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(computer.dataRAM.load(from: t1), 0xcd)
     }
@@ -3867,7 +3867,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 4, to: offset + 3)
             computer.dataRAM.store(value: 5, to: offset + 4)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(tempResult.size, 10)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2)
@@ -3881,7 +3881,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        _ = try! executor.execute(ir: ir)
+        _ = try! executor.execute(crackle: ir)
         XCTAssertEqual(ir, [])
     }
     
@@ -3899,7 +3899,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 0), 0)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), 1)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), 2)
@@ -3916,7 +3916,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
 
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 2)
@@ -3936,7 +3936,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 2)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 4), 1000)
@@ -3956,7 +3956,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 0), 0)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), 0)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), 1)
@@ -3981,7 +3981,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                      right: Expression.LiteralInt(4))
         let ir = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(ir, [
             .storeImmediate16(t0, 4004)
         ])
@@ -4055,7 +4055,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                             to: 0x0100 + j*elementType.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         let actual = computer.dataRAM.loadValue(ofType: elementType, from: tempResult.address)
         XCTAssertEqual(actual, i)
     }
@@ -4110,7 +4110,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                             to: addressOfData + j*elementType.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         let actual = computer.dataRAM.loadValue(ofType: elementType, from: tempResult.address)
         XCTAssertEqual(actual, i)
     }
@@ -4144,7 +4144,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(1000*i), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), UInt16(addressOfData))
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), UInt16(count))
     }
@@ -4173,7 +4173,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfData + 2*SymbolType.u16.sizeof), 0xcafe)
     }
     
@@ -4196,7 +4196,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfPointer), UInt16(addressOfData))
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfCount), UInt16(count))
     }
@@ -4230,7 +4230,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 3)
     }
@@ -4252,7 +4252,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 3)
     }
@@ -4278,7 +4278,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(offset+4), to: offset+0)
             computer.dataRAM.store16(value: 0x0003, to: offset+2)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 3)
     }
@@ -4295,7 +4295,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcd, to: offset+1)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
     
@@ -4313,7 +4313,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0, to: offset+2)
             computer.dataRAM.store(value: 0xcd, to: offset+4)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
         
@@ -4326,7 +4326,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ]
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(actual, expected)
         let expectedResult = UInt8(0) &- UInt8(42)
         XCTAssertEqual(computer.dataRAM.load(from: t2), expectedResult)
@@ -4341,7 +4341,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store(value: 0xcc, to: 0xabcd)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0xcc)
     }
         
@@ -4349,7 +4349,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Call(callee: Expression.Identifier("pokeMemory"), arguments: [ExprUtils.makeU8(value: 0xcc), ExprUtils.makeU16(value: 0xabcd)])
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 0xcc)
     }
         
@@ -4364,7 +4364,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.upperInstructionRAM.store(value: UInt8((HLT >> 8) & 0xff), to: address)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), UInt8((HLT >> 8) & 0xff))
     }
     
@@ -4372,7 +4372,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Call(callee: Expression.Identifier("pokePeripheral"), arguments: [ExprUtils.makeU8(value: 42), ExprUtils.makeU16(value: 0xffff), ExprUtils.makeU8(value: 0)])
         let actual = mustCompile(expression: expr)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         
         // There's a hardware bug in Rev 2 where the bits of the instruction
         // RAM port are connected to the data bus are in reverse order.
@@ -4410,12 +4410,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let actual = mustCompile(compiler: compiler, expression: expr)
         let executor = CrackleExecutor()
         injectFunctionFooWhichWritesToMemoryAsSideEffect(executor)
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
     }
     
     fileprivate func injectFunctionFooWhichWritesToMemoryAsSideEffect(_ executor: CrackleExecutor) {
-        executor.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
+        executor.injectCode = { compiler in
             try! compiler.injectCode([
                 .label("foo"),
                 .storeImmediate(0xabcd, 42),
@@ -4436,7 +4436,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         injectFunctionFooWhichReturnsU16AndStompsOnTemporaries(executor)
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 42)
     }
     
@@ -4452,12 +4452,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         injectFunctionFooWhichReturnsU16AndStompsOnTemporaries(executor)
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 42)
     }
     
     fileprivate func injectFunctionFooWhichReturnsU16AndStompsOnTemporaries(_ executor: CrackleExecutor) {
-        executor.injectCode = { [weak self] (compiler: CrackleToTurtleMachineCodeCompiler) in
+        executor.injectCode = { [weak self] compiler in
             try! compiler.injectCode([
                 .label("foo"),
                 .storeImmediate16(self!.t0, 0xffff),
@@ -4485,7 +4485,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store16(value: value, to: offset)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), value)
     }
     
@@ -4508,7 +4508,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0xab, to: offset+0)
             computer.dataRAM.store16(value: 0xcdef, to: offset+1)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xcdef)
     }
     
@@ -4575,7 +4575,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0xabab)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 0xcdcd)
     }
@@ -4609,7 +4609,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 0), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address + 2), 0)
     }
@@ -4641,7 +4641,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xabcd)
     }
     
@@ -4660,7 +4660,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0x0102, to: 0x0100)
             computer.dataRAM.store(value: 0x2a, to: 0x0102)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0x2a)
     }
     
@@ -4684,7 +4684,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: 0xcafe, to: 0x0102)
             computer.dataRAM.store16(value: 0xbeef, to: 0x0104)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xbeef)
     }
     
@@ -4717,7 +4717,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .stackStorage)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         let address = 0xfff0
         XCTAssertEqual(computer.dataRAM.load16(from: address + 0), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: address + 2), 10)
@@ -4749,7 +4749,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 42, to: offset+1) // storage[0]
             computer.dataRAM.store(value: 0, to: offset+2)  // storage[1]
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
     }
     
@@ -4759,7 +4759,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 1)
     }
     
@@ -4769,7 +4769,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0)
     }
     
@@ -4782,7 +4782,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0)
     }
     
@@ -4799,7 +4799,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0, to: offset+0)  // type tag
             computer.dataRAM.store(value: 42, to: offset+1) // storage
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 1)
     }
     
@@ -4816,7 +4816,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 1, to: offset+0)  // type tag
             computer.dataRAM.store(value: 42, to: offset+1) // storage
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: 0x0010), 1)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 1)
     }
@@ -4833,7 +4833,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store(value: 0xff, to: offset+1) // storage[0]
             computer.dataRAM.store(value: 0xff, to: offset+2) // storage[1]
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: offset+0), 0)
         XCTAssertEqual(computer.dataRAM.load16(from: offset+1), 0x002a)
     }
@@ -4866,7 +4866,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*elementType.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
         let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 2)
@@ -4903,7 +4903,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*elementType.sizeof)
             }
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
         let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 2)
@@ -4929,7 +4929,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
     
@@ -4950,7 +4950,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
     
@@ -4979,7 +4979,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
             computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         
         let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
         let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + SymbolType.u16.sizeof)
@@ -5009,7 +5009,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
             computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
@@ -5042,7 +5042,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
             computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
         }
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
     
@@ -5052,7 +5052,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 0), "f".utf8.first)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 1), "o".utf8.first)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address + 2), "o".utf8.first)
@@ -5065,7 +5065,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: str.count, elementType: .u8), offset: offset)])
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         
         var arr: [UInt8] = []
         for i in 0..<str.count {
@@ -5084,7 +5084,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let executor = CrackleExecutor()
-        XCTAssertThrowsError(try executor.execute(ir: ir)) {
+        XCTAssertThrowsError(try executor.execute(crackle: ir)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot resolve label `foo'")
@@ -5102,35 +5102,35 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: ir)
+        let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 428)
     }
     
-    func testCallFunctionThroughFunctionPointer() {
-        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
-        var addressOfFoo: UInt16 = 0
-        let addressOfBar = SnapToCrackleCompiler.kStaticStorageStartAddress
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
-            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = mustCompile(compiler: compiler, expression: expr)
-        let executor = CrackleExecutor()
-        executor.injectCode = { (compiler: CrackleToTurtleMachineCodeCompiler) in
-            try! compiler.injectCode([
-                .label("foo"),
-                .storeImmediate(0xabcd, 42),
-                .leafRet
-            ])
-            addressOfFoo = UInt16(compiler.labelTable["foo"]!)
-        }
-        executor.configure = { computer in
-            computer.dataRAM.store16(value: addressOfFoo, to: addressOfBar)
-        }
-        let computer = try! executor.execute(ir: actual)
-        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
-    }
+//    func testCallFunctionThroughFunctionPointer() {
+//        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
+//        var addressOfFoo: UInt16 = 0
+//        let addressOfBar = SnapToCrackleCompiler.kStaticStorageStartAddress
+//        let symbols = SymbolTable([
+//            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
+//            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
+//        ])
+//        let compiler = makeCompiler(symbols: symbols)
+//        let actual = mustCompile(compiler: compiler, expression: expr)
+//        let executor = CrackleExecutor()
+//        executor.injectCode = { (compiler: CrackleToPopCompiler) in
+//            try! compiler.injectCode([
+//                .label("foo"),
+//                .storeImmediate(0xabcd, 42),
+//                .leafRet
+//            ])
+//            addressOfFoo = UInt16(compiler.labelTable["foo"]!)
+//        }
+//        executor.configure = { computer in
+//            computer.dataRAM.store16(value: addressOfFoo, to: addressOfBar)
+//        }
+//        let computer = try! executor.execute(crackle: actual)
+//        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
+//    }
     
     func testGetArrayFromStructAndSubscriptIt() {
         let foo = Expression.Identifier("foo")
@@ -5154,7 +5154,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store(value: 42, to: addressOfFoo)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
     }
@@ -5184,7 +5184,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: addressOfFoo + self.kSliceBaseAddressOffset)
             computer.dataRAM.store16(value: 1, to: addressOfFoo + self.kSliceCountOffset)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 42)
     }
@@ -5208,7 +5208,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let actual = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         
         // Check that the array slice is as expected.
         XCTAssertEqual(tempResult.size, 4)
@@ -5240,7 +5240,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: addressOfFoo + self.kSliceBaseAddressOffset)
             computer.dataRAM.store16(value: 1, to: addressOfFoo + self.kSliceCountOffset)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         
         // Check that the array slice is as expected.
         XCTAssertEqual(tempResult.size, 4)
@@ -5255,7 +5255,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let actual = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load(from: tempResult.address), 0)
     }
     
@@ -5273,7 +5273,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0xabcd, to: offset)
         }
-        let computer = try! executor.execute(ir: actual)
+        let computer = try! executor.execute(crackle: actual)
         XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 0xabcd)
     }
 }

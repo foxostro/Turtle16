@@ -14,7 +14,7 @@ class CrackleInstructionListingMakerTests: XCTestCase {
         let compiler = SnapCompiler()
         compiler.shouldEnableOptimizations = false
         compiler.compile(snapSource)
-        let listing = CrackleInstructionListingMaker.makeListing(instructions: compiler.ir, programDebugInfo:  compiler.programDebugInfo)
+        let listing = CrackleInstructionListingMaker.makeListing(instructions: compiler.crackle, programDebugInfo:  compiler.programDebugInfo)
         return listing
     }
     

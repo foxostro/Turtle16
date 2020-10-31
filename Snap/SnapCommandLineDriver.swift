@@ -109,7 +109,7 @@ public class SnapCommandLineDriver: NSObject {
         }
         
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
+            try writeToFile(ir: frontEnd.crackle, programDebugInfo: frontEnd.programDebugInfo)
         }
         
         try writeToFile(instructions: frontEnd.instructions)
@@ -174,7 +174,7 @@ public class SnapCommandLineDriver: NSObject {
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
         asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.ir, programDebugInfo: frontEnd.programDebugInfo)
+            try writeToFile(ir: frontEnd.crackle, programDebugInfo: frontEnd.programDebugInfo)
         }
         if shouldOutputAssembly {
             try writeDisassemblyToFile(instructions: frontEnd.instructions, programDebugInfo: frontEnd.programDebugInfo)

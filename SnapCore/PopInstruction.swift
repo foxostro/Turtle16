@@ -172,7 +172,7 @@ public enum PopInstruction: Equatable, Hashable {
         return String(format: "0x%04x", value)
     }
     
-    public var dependencies: Set<RegisterName> {
+    public var setOfRegistersOnWhichThisInstructionDepends: Set<RegisterName> {
         switch self {
         case .inuv:
             return [.U, .V]
@@ -189,6 +189,7 @@ public enum PopInstruction: Equatable, Hashable {
             if dst == .P || src == .P {
                 registers.insert(.X)
                 registers.insert(.Y)
+                registers.insert(.D)
             }
             if (src != .M) && (src != .P) {
                 registers.insert(src)
@@ -200,7 +201,7 @@ public enum PopInstruction: Equatable, Hashable {
                 return [.U, .V]
             }
             else if dst == .P {
-                return [.X, .Y]
+                return [.X, .Y, .D]
             }
             else {
                 return []
@@ -211,7 +212,7 @@ public enum PopInstruction: Equatable, Hashable {
                 return [.U, .V, .A, .B]
             }
             else if dst == .P {
-                return [.X, .Y, .A, .B]
+                return [.X, .Y, .D, .A, .B]
             }
             else {
                 return [.A, .B]
@@ -219,85 +220,86 @@ public enum PopInstruction: Equatable, Hashable {
             
         case .cmp:
             return [.A, .B]
-            
-        case .explicitJalr, .explicitJmp:
-            return [.X, .Y]
         
         case .blt(_, let src):
-            return [.U, .V, .X, .Y, src]
+            assert(src == .M || src == .P)
+            return [.U, .V, .X, .Y, .D]
             
         case .blti(let dst, _):
+            assert(dst == .M || dst == .P)
             if dst == .M {
                 return [.U, .V]
-            }
-            else if dst == .P {
-                return [.X, .Y]
-            }
-            else {
-                return []
+            } else {
+                return [.X, .Y, .D]
             }
             
-        case .fake, .nop, .hlt, .label, .copyLabel, .lixy, .jalr, .jmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge:
+        case .fake, .nop, .hlt, .label, .copyLabel, .lixy, .jalr, .jmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge, .explicitJalr, .explicitJmp:
+            // We cannot reason across basic block boundaries. So just say the
+            // branch instructions modify no registers.
             return []
         }
     }
     
-    public var dependents: Set<RegisterName> {
+    public var setOfRegistersModifiedByThisInstruction: Set<RegisterName> {
         switch self {
         case .inuv:
             return [.U, .V]
             
-        case .inxy:
+        case .inxy, .lixy:
             return [.X, .Y]
             
         case .mov(let dst, _), .li(let dst, _), .add(let dst), .sub(let dst), .adc(let dst), .sbc(let dst), .dea(let dst), .dca(let dst), .and(let dst), .or(let dst), .xor(let dst), .lsl(let dst), .neg(let dst):
-            if (dst != .M) && (dst != .P) {
-                if dst == .UV {
-                    return [.U, .V]
-                } else {
-                    return [dst]
-                }
+            if dst == .UV {
+                return [.U, .V]
+            } else if (dst != .M) && (dst != .P) {
+                return [dst]
             } else {
                 return []
             }
         
         case .blt(let dst, _):
-            if dst == .UV {
-                return [.X, .Y, .U, .V]
-            } else {
-                return [dst, .X, .Y, .U, .V]
-            }
+            assert(dst == .M || dst == .P)
+            return [.X, .Y, .U, .V]
             
         case .blti(let dst, _):
             if dst == .M {
                 return [.U, .V]
-            }
-            else if dst == .P {
+            } else {
+                assert(dst == .P)
                 return [.X, .Y]
             }
-            else {
-                return []
-            }
             
-        case .fake, .nop, .hlt, .cmp, .explicitJalr, .explicitJmp, .label, .copyLabel, .lixy, .jalr, .jmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge:
+        case .fake, .nop, .hlt, .cmp, .explicitJmp, .label, .copyLabel, .jmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge, .explicitJalr, .jalr:
+            // We cannot reason across basic block boundaries. So just say the
+            // branch instructions modify no registers.
             return []
         }
     }
     
-    public var doesInstructionHaveSideEffects: Bool {
+    public var doesInstructionModifyStateOtherThanRegisterValues: Bool {
         switch self {
         case .fake, .inuv, .inxy, .lixy:
             return false
-    
-        case .nop, .hlt, .cmp, .label, .jalr, .explicitJalr, .jmp, .explicitJmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge, .blt, .blti, .copyLabel:
-            return true
-        
-        case .mov(let dst, _), .li(let dst, _), .add(let dst), .sub(let dst), .adc(let dst), .sbc(let dst), .dea(let dst), .dca(let dst), .and(let dst), .or(let dst), .xor(let dst), .lsl(let dst), .neg(let dst):
-            if dst == .M || dst == .P || dst == .NONE {
+            
+        case .mov(let dst, let src):
+            if dst == .M || dst == .P || src == .M || src == .P {
                 return true
             } else {
                 return false
             }
+        
+        case .blti(let dst, _), .li(let dst, _):
+            if dst == .M || dst == .P {
+                return true
+            } else {
+                return false
+            }
+            
+        case .add, .sub, .adc, .sbc, .dea, .dca, .and, .or, .xor, .lsl, .neg:
+            return true
+            
+        case .nop, .hlt, .cmp, .label, .jalr, .explicitJalr, .jmp, .explicitJmp, .jc, .jnc, .je, .jne, .jg, .jle, .jl, .jge, .blt, .copyLabel:
+            return true
         }
     }
 }

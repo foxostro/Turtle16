@@ -79,7 +79,7 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .mov(.A, .P)
         ]
         optimizer.optimize()
-        print(optimizer.state.registers.values)
+//        print(optimizer.state.registers.values)
         XCTAssertTrue(optimizer.state.registers.values.allSatisfy({ $0 == .unknown }))
         XCTAssertTrue(optimizer.state.memory.allSatisfy({ $0 == .unknown }))
     }

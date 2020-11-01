@@ -18,91 +18,30 @@ class PopDeadStoreEliminationOptimizationPassTests: XCTestCase {
         XCTAssertEqual(actual, [])
     }
     
-    func testOptimizeSingleNOP() throws {
+    func testCantImproveOnTwoNOPs() throws {
         let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.unoptimizedProgram = [.nop]
+        optimizer.unoptimizedProgram = [.nop, .nop]
         optimizer.optimize()
         let actual = optimizer.optimizedProgram
-        XCTAssertEqual(actual, [.nop])
+        XCTAssertEqual(actual, [.nop, .nop])
     }
     
-    func testADDdependsOnTheValueOfAandBatLeast() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.markAllRegisters(.notNeeded)
-        _ = optimizer.rewrite(.add(.A))
-        XCTAssertEqual(optimizer.registers[.A], .needed)
-        XCTAssertEqual(optimizer.registers[.B], .needed)
-        XCTAssertEqual(optimizer.registers[.D], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.X], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.Y], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.U], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.V], .notNeeded)
-    }
-    
-    func testAccessToMemoryIntroducesDependencyOnUV() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.markAllRegisters(.notNeeded)
-        _ = optimizer.rewrite(.add(.M))
-        XCTAssertEqual(optimizer.registers[.A], .needed)
-        XCTAssertEqual(optimizer.registers[.B], .needed)
-        XCTAssertEqual(optimizer.registers[.D], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.X], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.Y], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.U], .needed)
-        XCTAssertEqual(optimizer.registers[.V], .needed)
-    }
-    
-    func testAccessToPeripheralsIntroducesDependencyOnXY() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.markAllRegisters(.notNeeded)
-        _ = optimizer.rewrite(.add(.P))
-        XCTAssertEqual(optimizer.registers[.A], .needed)
-        XCTAssertEqual(optimizer.registers[.B], .needed)
-        XCTAssertEqual(optimizer.registers[.D], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.X], .needed)
-        XCTAssertEqual(optimizer.registers[.Y], .needed)
-        XCTAssertEqual(optimizer.registers[.U], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.V], .notNeeded)
-    }
-    
-    func testMovMayDependOnUVandXYtoo_1() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.markAllRegisters(.notNeeded)
-        _ = optimizer.rewrite(.mov(.M, .P))
-        XCTAssertEqual(optimizer.registers[.A], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.B], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.D], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.X], .needed)
-        XCTAssertEqual(optimizer.registers[.Y], .needed)
-        XCTAssertEqual(optimizer.registers[.U], .needed)
-        XCTAssertEqual(optimizer.registers[.V], .needed)
-    }
-    
-    func testMovMayDependOnUVandXYtoo_2() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.markAllRegisters(.notNeeded)
-        _ = optimizer.rewrite(.mov(.P, .M))
-        XCTAssertEqual(optimizer.registers[.A], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.B], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.D], .notNeeded)
-        XCTAssertEqual(optimizer.registers[.X], .needed)
-        XCTAssertEqual(optimizer.registers[.Y], .needed)
-        XCTAssertEqual(optimizer.registers[.U], .needed)
-        XCTAssertEqual(optimizer.registers[.V], .needed)
-    }
-    
-    func testOptimizeSingleLI() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.unoptimizedProgram = [.li(.A, 0)]
-        optimizer.optimize()
-        let actual = optimizer.optimizedProgram
-        XCTAssertEqual(actual, [.li(.A, 0)])
-    }
-    
-    func testOneLIMaySquashValueSetEarlier() throws {
+    func testCantImproveOnOneLI() throws {
         let optimizer = PopDeadStoreEliminationOptimizationPass()
         optimizer.unoptimizedProgram = [
-            .li(.A, 0),
+            .li(.A, 1)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.A, 1)
+        ])
+    }
+    
+    func testRemoveRedundantLI() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.A, 1),
             .li(.A, 1)
         ]
         optimizer.optimize()
@@ -113,83 +52,351 @@ class PopDeadStoreEliminationOptimizationPassTests: XCTestCase {
         ])
     }
     
-    func testOneMovMaySquashValueSetEarlier() throws {
+    func testCannotRemoveStoreToMemory() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.M, 1),
+            .li(.M, 1)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.M, 1),
+            .li(.M, 1)
+        ])
+    }
+    
+    func testRemoveRedundantMOV() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .mov(.A, .B),
+            .li(.A, 1)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .li(.A, 1)
+        ])
+    }
+    
+    func testCannotRemoveReadFromPeripheralDevice() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .mov(.A, .P),
+            .li(.A, 1)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .mov(.A, .P),
+            .li(.A, 1)
+        ])
+    }
+    
+    func testStoreToMemoryDependsOnUV() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.U, 0),
+            .li(.V, 0),
+            .mov(.M, .A),
+            .li(.U, 0),
+            .li(.V, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.U, 0),
+            .li(.V, 0),
+            .mov(.M, .A),
+            .li(.U, 0),
+            .li(.V, 0)
+        ])
+    }
+    
+    func testCannotRemoveAnyArithmeticOrLogicalInstructionBecauseTheyCanAffectFlags() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .add(.A),
+            .add(.A)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .add(.A),
+            .add(.A)
+        ])
+    }
+    
+    func testRemoveRedundantINUV() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .inuv,
+            .li(.U, 0),
+            .li(.V, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .li(.U, 0),
+            .li(.V, 0)
+        ])
+    }
+    
+    func testRemoveRedundantINUV_withUVconstruct() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .inuv,
+            .li(.UV, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .li(.UV, 0)
+        ])
+    }
+    
+    func testRemoveRedundantINXY() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .inxy,
+            .li(.X, 0),
+            .li(.Y, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .li(.X, 0),
+            .li(.Y, 0)
+        ])
+    }
+    
+    func testRemoveRedundantLIXY() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .lixy(""),
+            .li(.X, 0),
+            .li(.Y, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .li(.X, 0),
+            .li(.Y, 0)
+        ])
+    }
+    
+    func testRemoveRedundantLIXbeforeLIXY() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.X, 0),
+            .li(.Y, 0),
+            .lixy("")
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .fake,
+            .lixy("")
+        ])
+    }
+    
+    func testRemoveRedundantReadFromG() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .mov(.X, .G),
+            .mov(.X, .G)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .fake,
+            .mov(.X, .G)
+        ])
+    }
+    
+    func testStoreToNone() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .add(.NONE)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .add(.NONE)
+        ])
+    }
+    
+    func testBLTIbothDependsOnUVandModifiesIt() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.U, 0),
+            .li(.V, 0),
+            .blti(.M, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.U, 0),
+            .li(.V, 0),
+            .blti(.M, 0)
+        ])
+    }
+    
+    func testBLTIdependsOnXYDandModifiesXY() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0),
+            .blti(.P, 0)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0),
+            .blti(.P, 0)
+        ])
+    }
+    
+    func testStoreToPeripheralDeviceDependsOnRegisterD() throws {
+        // The D register selects the active peripheral device.
+        // Instructions which access peripheral devices will depend on D.
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.D, 1), // `LI P, 0' depends on the value of D here
+            .li(.P, 0),
+            .li(.D, 1),
+            .li(.D, 2)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.D, 1), // `LI P, 0' depends on the value of D here
+            .li(.P, 0),
+            .fake,
+            .li(.D, 2)
+        ])
+    }
+    
+    func testBLTbothDependsOnUVandModifiesIt() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.U, 0),
+            .li(.V, 0),
+            .blt(.M, .P)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.U, 0),
+            .li(.V, 0),
+            .blt(.M, .P)
+        ])
+    }
+    
+    func testBLTdependsOnXYDandModifiesXY() throws {
+        let optimizer = PopDeadStoreEliminationOptimizationPass()
+        optimizer.unoptimizedProgram = [
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0),
+            .blt(.P, .M)
+        ]
+        optimizer.optimize()
+        let actual = optimizer.optimizedProgram
+        XCTAssertEqual(actual, [
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0),
+            .blt(.P, .M)
+        ])
+    }
+    
+    func testCMPdependsOnRegistersAandB() throws {
         let optimizer = PopDeadStoreEliminationOptimizationPass()
         optimizer.unoptimizedProgram = [
             .li(.A, 0),
-            .mov(.A, .B)
+            .li(.B, 0),
+            .cmp,
+            .li(.A, 0),
+            .li(.B, 0)
         ]
         optimizer.optimize()
         let actual = optimizer.optimizedProgram
         XCTAssertEqual(actual, [
-            .fake,
-            .mov(.A, .B)
+            .li(.A, 0),
+            .li(.B, 0),
+            .cmp,
+            .li(.A, 0),
+            .li(.B, 0)
         ])
     }
     
-    func testOneMovMaySquashValueSetEarlier_AndReadingFromMemoryIsNotASideEffect() throws {
+    func testArithmeticInstructionsMightDependOnUVDwhenStoringToRAM() throws {
         let optimizer = PopDeadStoreEliminationOptimizationPass()
         optimizer.unoptimizedProgram = [
-            .mov(.A, .M),
-            .mov(.A, .B)
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.U, 0),
+            .li(.V, 0),
+            .add(.M),
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.U, 0),
+            .li(.V, 0)
         ]
         optimizer.optimize()
         let actual = optimizer.optimizedProgram
         XCTAssertEqual(actual, [
-            .fake,
-            .mov(.A, .B)
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.U, 0),
+            .li(.V, 0),
+            .add(.M),
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.U, 0),
+            .li(.V, 0)
         ])
     }
     
-    func testStoringToMemoryIsASideEffectThatMustBePreserved() throws {
+    func testArithmeticInstructionsMightDependOnXYDwhenStoringToPeripheralDevice() throws {
         let optimizer = PopDeadStoreEliminationOptimizationPass()
         optimizer.unoptimizedProgram = [
-            .mov(.M, .A)
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0),
+            .add(.P),
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0)
         ]
         optimizer.optimize()
         let actual = optimizer.optimizedProgram
         XCTAssertEqual(actual, [
-            .mov(.M, .A)
-        ])
-    }
-    
-    func testStoringToPeripheralIsASideEffectThatMustBePreserved() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.unoptimizedProgram = [
-            .mov(.P, .A)
-        ]
-        optimizer.optimize()
-        let actual = optimizer.optimizedProgram
-        XCTAssertEqual(actual, [
-            .mov(.P, .A)
-        ])
-    }
-    
-    func testSpecialHandlingForSpecialConstructUV() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.unoptimizedProgram = [
-            .li(.U, 1),
-            .li(.V, 2),
-            .li(.UV, 0)
-        ]
-        optimizer.optimize()
-        let actual = optimizer.optimizedProgram
-        XCTAssertEqual(actual, [
-            .fake,
-            .fake,
-            .li(.UV, 0)
-        ])
-    }
-    
-    func testArithmeticInstructionWithExplicitlyNoOutputMeansWeCareAboutSideEffects() throws {
-        let optimizer = PopDeadStoreEliminationOptimizationPass()
-        optimizer.unoptimizedProgram = [
-            .sub(.NONE)
-        ]
-        optimizer.optimize()
-        let actual = optimizer.optimizedProgram
-        XCTAssertEqual(actual, [
-            .sub(.NONE)
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0),
+            .add(.P),
+            .li(.A, 0),
+            .li(.B, 0),
+            .li(.X, 0),
+            .li(.Y, 0),
+            .li(.D, 0)
         ])
     }
 }

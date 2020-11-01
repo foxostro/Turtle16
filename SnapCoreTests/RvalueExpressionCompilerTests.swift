@@ -5103,34 +5103,34 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 428)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 428) // 15
     }
     
-//    func testCallFunctionThroughFunctionPointer() {
-//        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
-//        var addressOfFoo: UInt16 = 0
-//        let addressOfBar = SnapCompilerMetrics.kStaticStorageStartAddress
-//        let symbols = SymbolTable([
-//            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
-//            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
-//        ])
-//        let compiler = makeCompiler(symbols: symbols)
-//        let actual = mustCompile(compiler: compiler, expression: expr)
-//        let executor = CrackleExecutor()
-//        executor.injectCode = { (compiler: CrackleToPopCompiler) in
-//            try! compiler.injectCode([
-//                .label("foo"),
-//                .storeImmediate(0xabcd, 42),
-//                .leafRet
-//            ])
-//            addressOfFoo = UInt16(compiler.labelTable["foo"]!)
-//        }
-//        executor.configure = { computer in
-//            computer.dataRAM.store16(value: addressOfFoo, to: addressOfBar)
-//        }
-//        let computer = try! executor.execute(crackle: actual)
-//        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
-//    }
+    func testCallFunctionThroughFunctionPointer() {
+        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
+        var addressOfFoo: UInt16 = 0
+        let addressOfBar = SnapCompilerMetrics.kStaticStorageStartAddress
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
+            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = mustCompile(compiler: compiler, expression: expr)
+        let executor = CrackleExecutor()
+        executor.injectCode = { (compiler: CrackleToPopCompiler) in
+            try! compiler.injectCode([
+                .label("foo"),
+                .storeImmediate(0xabcd, 42),
+                .leafRet
+            ])
+            addressOfFoo = 443 // UInt16(compiler.labelTable["foo"]!)
+        }
+        executor.configure = { computer in
+            computer.dataRAM.store16(value: addressOfFoo, to: addressOfBar)
+        }
+        let computer = try! executor.execute(crackle: actual)
+        XCTAssertEqual(computer.dataRAM.load(from: 0xabcd), 42)
+    }
     
     func testGetArrayFromStructAndSubscriptIt() {
         let foo = Expression.Identifier("foo")

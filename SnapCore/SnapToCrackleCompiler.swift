@@ -11,17 +11,7 @@ import TurtleCore
 
 // Compiles a Snap AST to the IR language.
 public class SnapToCrackleCompiler: NSObject {
-    // Temporary storage is allocated in a region starting at this address.
-    // These temporaries are slots for scratch memory which are treated as,
-    // allocated as, pseudo-registers.
-    public static let kTemporaryStorageStartAddress = 0x0010
-    public static let kTemporaryStorageLength = 0x0100
-    
-    // Static storage is allocated in a region starting at this address.
-    // The allocator is a simple bump pointer.
-    public static let kStaticStorageStartAddress = kTemporaryStorageStartAddress + kTemporaryStorageLength
-    
-    private let kStackPointerAddress: Int = Int(CrackleToPopCompiler.kStackPointerAddressHi)
+    private let kStackPointerAddress: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
     
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }
@@ -32,7 +22,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     private var symbols: SymbolTable
     private let labelMaker = LabelMaker()
-    private var staticStoragePointer = SnapToCrackleCompiler.kStaticStorageStartAddress
+    private var staticStoragePointer = SnapCompilerMetrics.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
     public static let kMainFunctionName = "main"

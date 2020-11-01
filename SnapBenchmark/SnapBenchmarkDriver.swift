@@ -84,7 +84,7 @@ class SnapBenchmarkDriver: NSObject {
         let elapsedTime = self.measure {
             try! computer.runUntilHalted()
         }
-        let resultAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let resultAddress = SnapCompilerMetrics.kStaticStorageStartAddress
         let expectedResult = 233
         if computer.dataRAM.load(from: resultAddress) != expectedResult {
             throw SnapBenchmarkDriverError(format: "Program runtime benchmark finished with an incorrect result.")

@@ -4463,7 +4463,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testCompileFailsWhenCastingUnionTypeToNonMemberType() {
         let union = Expression.Identifier("foo")
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
         let expr = Expression.As(expr: union, targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4476,7 +4476,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testSuccessfullyCastUnionTypeToMemberType() {
         let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
         let expected: SymbolType = .u8
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4507,7 +4507,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testTestUnionVariantTypeAgainstNonMemberType() {
         let union = Expression.Identifier("foo")
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
         let expected: SymbolType = .compTimeBool(false)
@@ -4519,7 +4519,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testTestUnionVariantTypeAgainstKnownMemberType() {
         let union = Expression.Identifier("foo")
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .stackStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
         let expected: SymbolType = .bool
@@ -4553,7 +4553,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testSubscriptADynamicArrayWithARange_1() {
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(["foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: offset)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
@@ -4591,7 +4591,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testCallFunctionThroughFunctionPointer() {
         let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
-        let addressOfBar = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressOfBar = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable([
             "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
             "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
@@ -4615,7 +4615,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testBitcastPointerToADifferentPointer() {
         let expr = Expression.Bitcast(expr: Expression.Identifier("foo"), targetType: Expression.PointerType(Expression.PrimitiveType(.u16)))
         let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.u8), offset: SnapToCrackleCompiler.kStaticStorageStartAddress)
+            "foo" : Symbol(type: .pointer(.u8), offset: SnapCompilerMetrics.kStaticStorageStartAddress)
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil

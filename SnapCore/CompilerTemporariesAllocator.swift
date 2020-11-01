@@ -11,7 +11,7 @@ public class CompilerTemporariesAllocator: NSObject {
     public private(set) var liveTemporaries: [CompilerTemporary] = []
     
     public convenience override init() {
-        self.init(base: SnapToCrackleCompiler.kTemporaryStorageStartAddress, limit: SnapToCrackleCompiler.kTemporaryStorageStartAddress + SnapToCrackleCompiler.kTemporaryStorageLength)
+        self.init(base: SnapCompilerMetrics.kTemporaryStorageStartAddress, limit: SnapCompilerMetrics.kTemporaryStorageStartAddress + SnapCompilerMetrics.kTemporaryStorageLength)
     }
     
     public init(base: Int, limit: Int) {

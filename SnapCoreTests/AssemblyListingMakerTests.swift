@@ -30,15 +30,11 @@ let a = 42
 """)
 //        print(actual)
         XCTAssertTrue(actual.hasPrefix("""
-NOP
-LI UV, 0x00
-LI M, 0x00
-INUV
-LI M, 0x00
-INUV
-LI M, 0x00
-INUV
-LI M, 0x00
+LI UV, 0xff
+BLTI M, 0x00
+BLTI M, 0x00
+BLTI M, 0x00
+BLTI M, 0x00
 
 # ##############################################################################
 # 1:

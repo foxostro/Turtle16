@@ -2605,7 +2605,7 @@ public func foo() -> None {
         let computer = try! executor.execute(crackle: ir)
         
         let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
-        XCTAssertEqual(computer.dataRAM.load16(from: addressOfFoo), 14)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressOfFoo), 10)
     }
     
     func testCompileTypealiasToFunctionPointer() {

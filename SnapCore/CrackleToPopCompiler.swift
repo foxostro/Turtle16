@@ -84,15 +84,11 @@ public class CrackleToPopCompiler: NSObject {
     // Likewise, correct operation of a program written in Snap requires some
     // initialization to be performed before anything else occurs.
     func insertProgramPrologue() throws {
-        emit(.nop)
-        try setUV(0)
-        emit(.li(.M, kStackPointerInitialValueHi))
-        emit(.inuv)
-        emit(.li(.M, kStackPointerInitialValueLo))
-        emit(.inuv)
-        emit(.li(.M, kFramePointerInitialValueHi))
-        emit(.inuv)
-        emit(.li(.M, kFramePointerInitialValueLo))
+        emit(.li(.UV, 0xff))
+        emit(.blti(.M, 0))
+        emit(.blti(.M, 0))
+        emit(.blti(.M, 0))
+        emit(.blti(.M, 0))
     }
     
     private func compileProgramBody(_ ir: [CrackleInstruction]) throws {

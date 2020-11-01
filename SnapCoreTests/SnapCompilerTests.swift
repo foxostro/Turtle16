@@ -49,7 +49,7 @@ class SnapCompilerTests: XCTestCase {
         compiler.compile("")
         XCTAssertFalse(compiler.hasError)
         XCTAssertGreaterThan(compiler.instructions.count, 0)
-        XCTAssertEqual(compiler.instructions.first?.disassembly, "NOP")
+        XCTAssertEqual(compiler.instructions.first?.disassembly, "LI UV, 0xff")
     }
     
     func test_EndToEndIntegration_SimplestProgram() {

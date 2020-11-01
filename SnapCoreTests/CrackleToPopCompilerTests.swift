@@ -1683,7 +1683,7 @@ class CrackleToPopCompilerTests: XCTestCase {
             .copyLabel(a, "foo"),
             .label("foo")
         ])
-        let expectedAddress: UInt16 = 14 // This is a tad fragile since the label address depends on the prologue.
+        let expectedAddress: UInt16 = 10 // This is a tad fragile since the label address depends on the prologue.
         XCTAssertEqual(computer.dataRAM.load16(from: a), expectedAddress)
     }
     

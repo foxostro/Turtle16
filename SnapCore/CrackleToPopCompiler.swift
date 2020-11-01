@@ -185,17 +185,9 @@ public class CrackleToPopCompiler: NSObject {
     // Inserts epilogue code into the program, presumably at the end.
     func insertProgramEpilogue() throws {
         currentSourceAnchor = nil
-        
         let instructionsBegin = instructions.count
         
         emit(.hlt)
-        try generateProcedureCopyWordsWithLoop()
-        try generateProcedureEnter()
-        try generateProcedureLeave()
-        try generateProcedurePushToStack()
-        try generateProcedurePop()
-        try generateProcedurePokePeripheral()
-        try generateProcedureRet()
         try doAtEpilogue(self)
         
         let instructionsEnd = instructions.count
@@ -267,7 +259,7 @@ public class CrackleToPopCompiler: NSObject {
     }
     
     private func pop() throws {
-        try jalr(kProcPop)
+        try popInMemoryStackIntoRegisterB()
     }
     
     private func subi16(_ c: Int, _ a: Int, _ imm: Int) throws {
@@ -440,15 +432,11 @@ public class CrackleToPopCompiler: NSObject {
         emit(.jmp(label))
     }
     
-    fileprivate var isJalrPermitted = true
-    
     public func jalr(_ label: String) throws {
-        assert(isJalrPermitted)
         emit(.jalr(label))
     }
     
     public func indirectJalr(_ address: Int) throws {
-        assert(isJalrPermitted)
         try setUV(address)
         emit(.mov(.X, .M))
         emit(.inuv)
@@ -458,22 +446,52 @@ public class CrackleToPopCompiler: NSObject {
     
     public func enter() throws {
         // push fp in two bytes ; fp <- sp
-        try jalr(kProcEnter)
+        try setUV(kFramePointerAddressLo)
+        emit(.mov(.A, .M))
+        try pushAToStack()
+        
+        try setUV(kFramePointerAddressHi)
+        emit(.mov(.A, .M))
+        try pushAToStack()
+        
+        try setUV(kStackPointerAddressHi)
+        emit(.mov(.X, .M))
+        try setUV(kStackPointerAddressLo)
+        emit(.mov(.Y, .M))
+
+        try setUV(kFramePointerAddressHi)
+        emit(.mov(.M, .X))
+        try setUV(kFramePointerAddressLo)
+        emit(.mov(.M, .Y))
     }
     
     public func leave() throws {
         // sp <- fp ; fp <- pop two bytes from the stack
-        try jalr(kProcLeave)
+        try setUV(kFramePointerAddressHi)
+        emit(.mov(.X, .M))
+        try setUV(kFramePointerAddressLo)
+        emit(.mov(.Y, .M))
+        
+        try setUV(kStackPointerAddressHi)
+        emit(.mov(.M, .X))
+        try setUV(kStackPointerAddressLo)
+        emit(.mov(.M, .Y))
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(kFramePointerAddressHi)
+        emit(.mov(.M, .B))
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(kFramePointerAddressLo)
+        emit(.mov(.M, .B))
     }
     
     private func pushReturnAddress() throws {
-        let tempValueToPush = allocateScratchMemory(2)
-        assert(tempValueToPush == 0x0004)
-        try setUV(tempValueToPush+0)
-        emit(.mov(.M, .G))
-        emit(.inuv)
-        emit(.mov(.M, .H))
-        try jalr(kProcPushToStack)
+        emit(.mov(.A, .H))
+        try pushAToStack()
+        
+        emit(.mov(.A, .G))
+        try pushAToStack()
     }
     
     private func leafRet() throws {
@@ -483,7 +501,19 @@ public class CrackleToPopCompiler: NSObject {
     }
     
     public func ret() throws {
-        try jmp(kProcRet)
+        let addressOfReturnAddressHi = allocateScratchMemory(1)
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(addressOfReturnAddressHi)
+        emit(.mov(.M, .B))
+        
+        try popInMemoryStackIntoRegisterB()
+        emit(.mov(.Y, .B))
+        
+        try setUV(addressOfReturnAddressHi)
+        emit(.mov(.X, .M))
+        
+        emit(.explicitJmp)
     }
     
     public func hlt() {
@@ -501,7 +531,30 @@ public class CrackleToPopCompiler: NSObject {
     }
     
     public func pokePeripheral() throws {
-        try jalr(kProcPokePeripheral)
+        try popInMemoryStackIntoRegisterB()
+        emit(.mov(.D, .B))
+        
+        try pop16()
+        
+        // Stash the destination address in a well-known scratch location.
+        let stashedDestinationAddress = allocateScratchMemory(2)
+        try setUV(stashedDestinationAddress+0)
+        emit(.mov(.M, .A))
+        try setUV(stashedDestinationAddress+1)
+        emit(.mov(.M, .B))
+        
+        // Copy the top of the stack into A.
+        try loadStackPointerIntoUVandXY()
+        emit(.mov(.A, .M))
+        
+        // Restore the stashed destination address to XY.
+        try setUV(stashedDestinationAddress+0)
+        emit(.mov(.X, .M))
+        try setUV(stashedDestinationAddress+1)
+        emit(.mov(.Y, .M))
+        
+        // Store A to the destination address on the peripheral bus.
+        emit(.mov(.P, .A))
     }
     
     private func add(_ c: Int, _ a: Int, _ b: Int) throws {
@@ -1330,29 +1383,8 @@ public class CrackleToPopCompiler: NSObject {
         emit(.copyLabel(dst, label))
     }
     
-    fileprivate let kProcCopyWordsWithLoop = "__crackle_proc_copyWordsWithLoop"
-    
     fileprivate func copyWordsWithLoop(_ tempDstPointer: Int, _ tempSrcPointer: Int, _ tempLimitPointer: Int) throws {
-        assert(tempDstPointer == 0x0004)
-        assert(tempSrcPointer == 0x0006)
-        assert(tempLimitPointer == 0x0008)
-        try jalr(kProcCopyWordsWithLoop)
-    }
-    
-    fileprivate func generateProcedureCopyWordsWithLoop() throws {
-        isJalrPermitted = false
-        defer { isJalrPermitted = true }
-        
-        scratchPointer = beginningOfScratchMemory
-        let tempDstPointer = allocateScratchMemory(2)
-        let tempSrcPointer = allocateScratchMemory(2)
-        let tempLimitPointer = allocateScratchMemory(2)
-        
-        assert(tempDstPointer == 0x0004)
-        assert(tempSrcPointer == 0x0006)
-        assert(tempLimitPointer == 0x0008)
-        
-        let loopHead = kProcCopyWordsWithLoop
+        let loopHead = labelMaker.next()
         try label(loopHead)
         
         // Copy one byte from the source to the destination.
@@ -1392,160 +1424,6 @@ public class CrackleToPopCompiler: NSObject {
         emit(.cmp)
         
         emit(.jne(loopHead))
-        
-        try leafRet()
-    }
-    
-    fileprivate let kProcEnter = "__crackle_proc_enter"
-    
-    fileprivate func generateProcedureEnter() throws {
-        isJalrPermitted = false
-        defer { isJalrPermitted = true }
-        
-        // push fp in two bytes ; fp <- sp
-        try label(kProcEnter)
-        
-        try setUV(kFramePointerAddressLo)
-        emit(.mov(.A, .M))
-        try pushAToStack()
-        
-        try setUV(kFramePointerAddressHi)
-        emit(.mov(.A, .M))
-        try pushAToStack()
-        
-        try setUV(kStackPointerAddressHi)
-        emit(.mov(.X, .M))
-        try setUV(kStackPointerAddressLo)
-        emit(.mov(.Y, .M))
-
-        try setUV(kFramePointerAddressHi)
-        emit(.mov(.M, .X))
-        try setUV(kFramePointerAddressLo)
-        emit(.mov(.M, .Y))
-        
-        try leafRet()
-    }
-    
-    fileprivate let kProcLeave = "__crackle_proc_leave"
-    
-    fileprivate func generateProcedureLeave() throws {
-        isJalrPermitted = false
-        defer { isJalrPermitted = true }
-        
-        try label(kProcLeave)
-        
-        try setUV(kFramePointerAddressHi)
-        emit(.mov(.X, .M))
-        try setUV(kFramePointerAddressLo)
-        emit(.mov(.Y, .M))
-        
-        try setUV(kStackPointerAddressHi)
-        emit(.mov(.M, .X))
-        try setUV(kStackPointerAddressLo)
-        emit(.mov(.M, .Y))
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(kFramePointerAddressHi)
-        emit(.mov(.M, .B))
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(kFramePointerAddressLo)
-        emit(.mov(.M, .B))
-        
-        try leafRet()
-    }
-    
-    fileprivate let kProcPushToStack = "__crackle_proc_pushToStack"
-    
-    fileprivate func generateProcedurePushToStack() throws {
-        isJalrPermitted = false
-        defer { isJalrPermitted = true }
-        
-        scratchPointer = beginningOfScratchMemory
-        let tempSrcPointer = allocateScratchMemory(2)
-        assert(tempSrcPointer == 0x0004)
-        
-        try label(kProcPushToStack)
-        
-        try setUV(tempSrcPointer+1)
-        emit(.mov(.A, .M))
-        try pushAToStack()
-        
-        try setUV(tempSrcPointer+0)
-        emit(.mov(.A, .M))
-        try pushAToStack()
-        
-        try leafRet()
-    }
-    
-    fileprivate let kProcPop = "__crackle_proc_pop"
-    
-    fileprivate func generateProcedurePop() throws {
-        isJalrPermitted = false
-        defer { isJalrPermitted = true }
-        
-        try label(kProcPop)
-        
-        try popInMemoryStackIntoRegisterB()
-        
-        try leafRet()
-    }
-    
-    fileprivate let kProcPokePeripheral = "__crackle_proc_poke_peripheral"
-    
-    fileprivate func generateProcedurePokePeripheral() throws {
-        isJalrPermitted = false
-        defer { isJalrPermitted = true }
-        
-        try label(kProcPokePeripheral)
-        
-        try popInMemoryStackIntoRegisterB()
-        emit(.mov(.D, .B))
-        
-        try pop16()
-        
-        // Stash the destination address in a well-known scratch location.
-        let stashedDestinationAddress = allocateScratchMemory(2)
-        try setUV(stashedDestinationAddress+0)
-        emit(.mov(.M, .A))
-        try setUV(stashedDestinationAddress+1)
-        emit(.mov(.M, .B))
-        
-        // Copy the top of the stack into A.
-        try loadStackPointerIntoUVandXY()
-        emit(.mov(.A, .M))
-        
-        // Restore the stashed destination address to XY.
-        try setUV(stashedDestinationAddress+0)
-        emit(.mov(.X, .M))
-        try setUV(stashedDestinationAddress+1)
-        emit(.mov(.Y, .M))
-        
-        // Store A to the destination address on the peripheral bus.
-        emit(.mov(.P, .A))
-        
-        try leafRet()
-    }
-    
-    fileprivate let kProcRet = "__crackle_proc_poke_ret"
-    
-    fileprivate func generateProcedureRet() throws {
-        try label(kProcRet)
-        
-        scratchPointer = beginningOfScratchMemory
-        let addressOfReturnAddressHi = allocateScratchMemory(1)
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(addressOfReturnAddressHi)
-        emit(.mov(.M, .B))
-        
-        try popInMemoryStackIntoRegisterB()
-        emit(.mov(.Y, .B))
-        
-        try setUV(addressOfReturnAddressHi)
-        emit(.mov(.X, .M))
-        
-        emit(.explicitJmp)
     }
     
     private func and(_ c: Int, _ a: Int, _ b: Int) throws {

@@ -24,7 +24,7 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .li(.A, 0xaa)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.A], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.A], .known(0xaa))
     }
     
     func testMovingARegisterMayUpdateKnowledgeOfRegisterContents() throws {
@@ -34,8 +34,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .mov(.B, .A),
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.A], .known(0xaa))
-        XCTAssertEqual(optimizer.registers[.B], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.A], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.B], .known(0xaa))
     }
     
     func testMovingARegisterMayRemoveKnowledgeOfRegisterContents() throws {
@@ -45,7 +45,7 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .mov(.A, .B),
         ]
         optimizer.optimize()
-        let actual = optimizer.registers[.A]
+        let actual = optimizer.state.registers[.A]
         XCTAssertEqual(actual, .unknown)
     }
     
@@ -58,8 +58,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .mov(.A, .M)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.memory[0xabcd], .known(0xcc))
-        XCTAssertEqual(optimizer.registers[.A], .known(0xcc))
+        XCTAssertEqual(optimizer.state.memory[0xabcd], .known(0xcc))
+        XCTAssertEqual(optimizer.state.registers[.A], .known(0xcc))
     }
     
     func testLoadingTheSpecialConstructUV() throws {
@@ -68,8 +68,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .li(.UV, 0xaa)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.U], .known(0xaa))
-        XCTAssertEqual(optimizer.registers[.V], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.U], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.V], .known(0xaa))
     }
     
     func testWeCannotSayAnythingAboutStoresToPeripheralDevices() throws {
@@ -79,9 +79,9 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .mov(.A, .P)
         ]
         optimizer.optimize()
-        print(optimizer.registers.values)
-        XCTAssertTrue(optimizer.registers.values.allSatisfy({ $0 == .unknown }))
-        XCTAssertTrue(optimizer.memory.allSatisfy({ $0 == .unknown }))
+        print(optimizer.state.registers.values)
+        XCTAssertTrue(optimizer.state.registers.values.allSatisfy({ $0 == .unknown }))
+        XCTAssertTrue(optimizer.state.memory.allSatisfy({ $0 == .unknown }))
     }
     
     func testOmitLoadImmediateWhenWeCanDetermineItDoesNothing() throws {
@@ -133,8 +133,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .inuv
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.U], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.V], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.U], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.V], .known(0x00))
     }
     
     func testSometimesWeCanReasonAboutINUVWithoutKnowingTheHighByte() throws {
@@ -144,8 +144,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .inuv
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.U], .unknown)
-        XCTAssertEqual(optimizer.registers[.V], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.U], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.V], .known(0x00))
     }
     
     func testIncrementXYWithINXY() throws {
@@ -156,8 +156,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .inxy
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.Y], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.X], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.Y], .known(0x00))
     }
     
     func testSometimesWeCanReasonAboutINXYWithoutKnowingTheHighByte() throws {
@@ -167,8 +167,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .inxy
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .unknown)
-        XCTAssertEqual(optimizer.registers[.Y], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.X], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.Y], .known(0x00))
     }
     
     func testIncrementUVWithBLTI() throws {
@@ -179,9 +179,9 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .blti(.M, 0xaa)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.U], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.V], .known(0x00))
-        XCTAssertEqual(optimizer.memory[0x0100], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.U], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.V], .known(0x00))
+        XCTAssertEqual(optimizer.state.memory[0x0100], .known(0xaa))
     }
     
     func testBLTIInvalidatesRegisters_XY() throws {
@@ -191,8 +191,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .blti(.P, 0)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .unknown)
-        XCTAssertEqual(optimizer.registers[.Y], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.X], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.Y], .unknown)
     }
     
     func testBLTIInvalidatesRegistersAndMemory_UV() throws {
@@ -202,9 +202,9 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .blti(.M, 0)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.U], .unknown)
-        XCTAssertEqual(optimizer.registers[.V], .unknown)
-        XCTAssertTrue(optimizer.memory.allSatisfy({ $0 == .unknown }))
+        XCTAssertEqual(optimizer.state.registers[.U], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.V], .unknown)
+        XCTAssertTrue(optimizer.state.memory.allSatisfy({ $0 == .unknown }))
     }
     
     func testIncrementXYWithBLTI() throws {
@@ -215,8 +215,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .blti(.P, 0)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.Y], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.X], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.Y], .known(0x00))
     }
     
     func testIncrementUVXYWithBLT_storeToMemory() throws {
@@ -230,11 +230,11 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .blt(.M, .P)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.Y], .known(0x00))
-        XCTAssertEqual(optimizer.registers[.U], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.V], .known(0x00))
-        XCTAssertTrue(optimizer.memory.allSatisfy({ $0 == .unknown }))
+        XCTAssertEqual(optimizer.state.registers[.X], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.Y], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.U], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.V], .known(0x00))
+        XCTAssertTrue(optimizer.state.memory.allSatisfy({ $0 == .unknown }))
     }
     
     func testIncrementUVXYWithBLT_loadFromMemory() throws {
@@ -248,11 +248,11 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .blt(.P, .M)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.Y], .known(0x00))
-        XCTAssertEqual(optimizer.registers[.U], .known(0x01))
-        XCTAssertEqual(optimizer.registers[.V], .known(0x00))
-        XCTAssertEqual(optimizer.memory[0x00ff], .known(0xaa))
+        XCTAssertEqual(optimizer.state.registers[.X], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.Y], .known(0x00))
+        XCTAssertEqual(optimizer.state.registers[.U], .known(0x01))
+        XCTAssertEqual(optimizer.state.registers[.V], .known(0x00))
+        XCTAssertEqual(optimizer.state.memory[0x00ff], .known(0xaa))
     }
     
     func testArithmeticInstructionsInvalidateRegisters() throws {
@@ -262,17 +262,17 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .add(.A)
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.A], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.A], .unknown)
     }
     
     func testArithmeticInstructionsMayInvalidateAllOfMemory() throws {
         let optimizer = PopConstantPropagationOptimizationPass()
-        optimizer.memory[0xbcd] = .known(0x2a)
+        optimizer.state.memory[0xbcd] = .known(0x2a)
         optimizer.unoptimizedProgram = [
             .add(.M)
         ]
         optimizer.optimize()
-        XCTAssertTrue(optimizer.memory.allSatisfy({ $0 == .unknown }))
+        XCTAssertTrue(optimizer.state.memory.allSatisfy({ $0 == .unknown }))
     }
     
     func testBranchToLabelWillInvalidateXY() throws {
@@ -283,8 +283,8 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .jmp("")
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .unknown)
-        XCTAssertEqual(optimizer.registers[.Y], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.X], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.Y], .unknown)
     }
     
     func testLIXYWillInvalidateXY() throws {
@@ -295,19 +295,19 @@ class PopConstantPropagationOptimizationPassTests: XCTestCase {
             .lixy("")
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.registers[.X], .unknown)
-        XCTAssertEqual(optimizer.registers[.Y], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.X], .unknown)
+        XCTAssertEqual(optimizer.state.registers[.Y], .unknown)
     }
     
     func testCopyLabelWillInvalidateTheDestinationLocationInMemory() throws {
         let optimizer = PopConstantPropagationOptimizationPass()
-        optimizer.memory[0xabcd] = .known(0xaa)
-        optimizer.memory[0xabce] = .known(0xbb)
+        optimizer.state.memory[0xabcd] = .known(0xaa)
+        optimizer.state.memory[0xabce] = .known(0xbb)
         optimizer.unoptimizedProgram = [
             .copyLabel(0xabcd, "")
         ]
         optimizer.optimize()
-        XCTAssertEqual(optimizer.memory[0xabcd], .unknown)
-        XCTAssertEqual(optimizer.memory[0xabce], .unknown)
+        XCTAssertEqual(optimizer.state.memory[0xabcd], .unknown)
+        XCTAssertEqual(optimizer.state.memory[0xabce], .unknown)
     }
 }

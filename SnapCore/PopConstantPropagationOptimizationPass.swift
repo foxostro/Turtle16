@@ -9,36 +9,135 @@
 import TurtleCompilerToolbox
 
 public class PopConstantPropagationOptimizationPass: NSObject {
+    public let shouldCheckForDivergenceForDebugging = false
     public var unoptimizedProgram = PopBasicBlock()
     public var optimizedProgram = PopBasicBlock()
-    public enum CellState: Equatable { case known(UInt8), unknown }
-    public var memory = Array<CellState>.init(repeating: .unknown, count: 65536)
-    public var registers: [RegisterName : CellState] = [
-        .A : .unknown,
-        .B : .unknown,
-        .D : .unknown,
-        .X : .unknown,
-        .Y : .unknown,
-        .U : .unknown,
-        .V : .unknown
-    ]
-    
-    public func optimize() {
-        optimizedProgram = unoptimizedProgram.compactMap { rewrite($0) }
+    public enum CellState: Equatable, Hashable {
+        case known(UInt8), unknown
+        
+        public var description: String {
+            switch self {
+            case .known(let value):
+                return toHex2(value)
+                
+            case .unknown:
+                return "unknown"
+            }
+        }
+        
+        func toHex2(_ value: UInt8) -> String {
+            return String(format: "0x%02x", value)
+        }
     }
-    
-    fileprivate func invalidateAll() {
-        invalidateMemory()
-        registers = [
+    public class State: NSObject {
+        public var memory = Array<CellState>.init(repeating: .unknown, count: 65536)
+        public var registers: [RegisterName : CellState] = [
             .A : .unknown,
             .B : .unknown,
-            .C : .unknown,
             .D : .unknown,
             .X : .unknown,
             .Y : .unknown,
             .U : .unknown,
             .V : .unknown
         ]
+        
+        func invalidateAll() {
+            invalidateMemory()
+            registers = [
+                .A : .unknown,
+                .B : .unknown,
+                .D : .unknown,
+                .X : .unknown,
+                .Y : .unknown,
+                .U : .unknown,
+                .V : .unknown
+            ]
+        }
+        
+        func invalidateMemory() {
+            memory = Array<CellState>.init(repeating: .unknown, count: 65536)
+        }
+        
+        func copy() -> State {
+            let theCopy = State()
+            theCopy.memory = memory
+            theCopy.registers = registers
+            return theCopy
+        }
+        
+        open override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard let rhs = rhs as? State else {
+                return false
+            }
+            guard memory == rhs.memory else {
+                return false
+            }
+            guard registers == rhs.registers else {
+                return false
+            }
+            return true
+        }
+        
+        open override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(memory)
+            hasher.combine(registers)
+            return hasher.finalize()
+        }
+        
+        func diff(_ other: State) -> String {
+            var result = ""
+            for i in 0..<65536 {
+                let expected = memory[i]
+                let actual = other.memory[i]
+                if expected != actual {
+                    result += "\nmemory[\(toHex4(i))] = \(actual) ; expected \(expected)"
+                }
+            }
+            for key in registers.keys {
+                let expected = registers[key]!
+                let actual = other.registers[key]!
+                if expected != actual {
+                    result += "\nregisters[\(key)] = \(actual) ; expected \(expected)"
+                }
+            }
+            return result
+        }
+        
+        fileprivate func toHex4(_ value: Int) -> String {
+            return String(format: "0x%04x", value)
+        }
+    }
+    public let state = State()
+    
+    public func optimize() {
+        var unoptimizedStateProgression: [State] = []
+        
+        if shouldCheckForDivergenceForDebugging {
+            unoptimizedStateProgression = unoptimizedProgram.map { (instruction: PopInstruction) -> State in
+                _ = rewrite(instruction)
+                return state.copy()
+            }
+        }
+        
+        state.invalidateAll()
+        
+        optimizedProgram = unoptimizedProgram.map {
+            let modifiedInstruction = rewrite($0)
+            if shouldCheckForDivergenceForDebugging {
+                let reference = unoptimizedStateProgression.removeFirst()
+                if state != reference {
+                    print("divergent state:\n\(reference.diff(state))")
+                }
+            }
+            return modifiedInstruction
+        }
     }
     
     public func rewrite(_ instruction: PopInstruction) -> PopInstruction {
@@ -47,7 +146,10 @@ public class PopConstantPropagationOptimizationPass: NSObject {
             defer {
                 setRegisterContents(dst: dst, value: UInt8(immediate))
             }
-            if case .known(let existingContents) = getRegisterContents(dst) {
+            if dst == .UV {
+                // do nothing
+            }
+            else if case .known(let existingContents) = getRegisterContents(dst) {
                 if existingContents == UInt8(immediate) {
                     return .fake
                 }
@@ -66,8 +168,14 @@ public class PopConstantPropagationOptimizationPass: NSObject {
                     return .fake
                 }
 
-            case (.unknown, .known(let src)):
-                return .li(dst, Int(src))
+            case (.unknown, .known(let srcValue)):
+                if dst == .M && src == .B {
+                    break
+                } else if dst == .Y && src == .B {
+                    break
+                } else {
+                    return .li(dst, Int(srcValue))
+                }
 
             default:
                 break
@@ -84,21 +192,21 @@ public class PopConstantPropagationOptimizationPass: NSObject {
             case .M:
                 inuv()
                 if let uv = getRamAddress() {
-                    memory[Int(uv)] = .known(UInt8(immediate))
+                    state.memory[Int(uv)] = .known(UInt8(immediate))
                 } else {
-                    invalidateMemory()
+                    state.invalidateMemory()
                 }
 
             case .P:
                 inxy()
 
             default:
-                abort()
+                break
             }
             
         case .blt(let dst, _):
             if dst == .M {
-                invalidateMemory()
+                state.invalidateMemory()
             }
             inuv()
             inxy()
@@ -111,8 +219,8 @@ public class PopConstantPropagationOptimizationPass: NSObject {
             setRegisterContents(dst: .Y, state: .unknown)
             
         case .copyLabel(let dst, _):
-            memory[dst+0] = .unknown
-            memory[dst+1] = .unknown
+            state.memory[dst+0] = .unknown
+            state.memory[dst+1] = .unknown
         
         default:
             break
@@ -128,11 +236,11 @@ public class PopConstantPropagationOptimizationPass: NSObject {
             let lo = UInt8(incremented & 0xff)
             setRegisterContents(dst: .U, value: hi)
             setRegisterContents(dst: .V, value: lo)
-        } else if case .known(let v) = registers[.V] {
-            registers[.V] = .known(UInt8(v &+ 1))
+        } else if case .known(let v) = state.registers[.V] {
+            state.registers[.V] = .known(UInt8(v &+ 1))
         } else {
-            registers[.U] = .unknown
-            registers[.V] = .unknown
+            state.registers[.U] = .unknown
+            state.registers[.V] = .unknown
         }
     }
     
@@ -141,13 +249,13 @@ public class PopConstantPropagationOptimizationPass: NSObject {
             let incremented = xy &+ 1
             let hi = UInt8((incremented >> 8) & 0xff)
             let lo = UInt8(incremented & 0xff)
-            registers[.X] = .known(hi)
-            registers[.Y] = .known(lo)
-        } else if case .known(let y) = registers[.Y] {
-            registers[.Y] = .known(UInt8(y &+ 1))
+            state.registers[.X] = .known(hi)
+            state.registers[.Y] = .known(lo)
+        } else if case .known(let y) = state.registers[.Y] {
+            state.registers[.Y] = .known(UInt8(y &+ 1))
         } else {
-            registers[.X] = .unknown
-            registers[.Y] = .unknown
+            state.registers[.X] = .unknown
+            state.registers[.Y] = .unknown
         }
     }
     
@@ -155,20 +263,20 @@ public class PopConstantPropagationOptimizationPass: NSObject {
         setRegisterContents(dst: dst, state: .known(value))
     }
     
-    fileprivate func setRegisterContents(dst: RegisterName, state: CellState) {
+    fileprivate func setRegisterContents(dst: RegisterName, state cellState: CellState) {
         switch dst {
-        case .A, .B, .C, .D, .U, .V, .X, .Y:
-            registers[dst] = state
+        case .A, .B, .D, .U, .V, .X, .Y:
+            state.registers[dst] = cellState
             
         case .UV:
-            registers[.U] = state
-            registers[.V] = state
+            state.registers[.U] = cellState
+            state.registers[.V] = cellState
         
         case .M:
             if let uv = getRamAddress() {
-                memory[Int(uv)] = state
+                state.memory[Int(uv)] = cellState
             } else {
-                invalidateMemory()
+                state.invalidateMemory()
             }
             
         default:
@@ -178,17 +286,18 @@ public class PopConstantPropagationOptimizationPass: NSObject {
     
     fileprivate func setRegisterContents(dst: RegisterName, src: RegisterName) {
         switch dst {
-        case .A, .B, .C, .D, .U, .V, .X, .Y:
+        case .A, .B, .D, .U, .V, .X, .Y:
             switch src {
             case .M:
                 if let uv = getRamAddress() {
-                    registers[dst] = memory[Int(uv)]
+                    state.registers[dst] = state.memory[Int(uv)]
                 } else {
-                    invalidateMemory()
+                    state.registers[dst] = .unknown
+                    state.invalidateMemory()
                 }
             
             default:
-                registers[dst] = registers[src]
+                state.registers[dst] = state.registers[src]
             }
             
         case .UV:
@@ -196,10 +305,10 @@ public class PopConstantPropagationOptimizationPass: NSObject {
             setRegisterContents(dst: .V, src: src)
         
         case .M:
-            if let uv = getRamAddress(), let knownValue = registers[src] {
-                memory[Int(uv)] = knownValue
+            if let uv = getRamAddress(), let knownValue = state.registers[src] {
+                state.memory[Int(uv)] = knownValue
             } else {
-                invalidateMemory()
+                state.invalidateMemory()
             }
             
         default:
@@ -209,12 +318,12 @@ public class PopConstantPropagationOptimizationPass: NSObject {
     
     fileprivate func getRegisterContents(_ src: RegisterName) -> CellState {
         switch src {
-        case .A, .B, .C, .D, .U, .V, .X, .Y:
-            return registers[src] ?? .unknown
+        case .A, .B, .D, .U, .V, .X, .Y:
+            return state.registers[src] ?? .unknown
         
         case .M:
             if let uv = getRamAddress() {
-                return memory[Int(uv)]
+                return state.memory[Int(uv)]
             }
             
         default:
@@ -225,7 +334,7 @@ public class PopConstantPropagationOptimizationPass: NSObject {
     }
     
     func getRamAddress() -> UInt16? {
-        switch (registers[.U], registers[.V]) {
+        switch (state.registers[.U], state.registers[.V]) {
         case (.known(let u), .known(let v)):
             let uv = ((UInt16(u) & 0xff) << 8) + (UInt16(v) & 0xff)
             return uv
@@ -236,7 +345,7 @@ public class PopConstantPropagationOptimizationPass: NSObject {
     }
     
     func getPeripheralAddress() -> UInt16? {
-        switch (registers[.X], registers[.Y]) {
+        switch (state.registers[.X], state.registers[.Y]) {
         case (.known(let x), .known(let y)):
             let xy = ((UInt16(x) & 0xff) << 8) + (UInt16(y) & 0xff)
             return xy
@@ -244,9 +353,5 @@ public class PopConstantPropagationOptimizationPass: NSObject {
         default:
             return nil
         }
-    }
-    
-    func invalidateMemory() {
-        memory = Array<CellState>.init(repeating: .unknown, count: 65536)
     }
 }

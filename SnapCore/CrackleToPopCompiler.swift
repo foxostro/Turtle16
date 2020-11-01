@@ -1170,7 +1170,7 @@ public class CrackleToPopCompiler: NSObject {
         switch numberOfBytesToCopy {
         case 0:
             return
-        case 1..<5:
+        case 1..<4:
             try setUV(srcPtr)
             emit(.mov(.X, .M))
             emit(.inuv)
@@ -1216,7 +1216,7 @@ public class CrackleToPopCompiler: NSObject {
         switch numberOfBytesToCopy {
         case 0:
             return
-        case 1..<5:
+        case 1..<4:
             try setUV(dstPtr)
             emit(.mov(.X, .M))
             emit(.inuv)

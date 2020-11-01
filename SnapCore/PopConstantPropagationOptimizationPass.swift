@@ -170,9 +170,9 @@ public class PopConstantPropagationOptimizationPass: NSObject {
 
             case (.unknown, .known(let srcValue)):
                 if dst == .M && src == .B {
-                    break
+                    break // TODO: this case is a hack which hides an underlying bug
                 } else if dst == .Y && src == .B {
-                    break
+                    break // TODO: this case is a hack which hides an underlying bug
                 } else {
                     return .li(dst, Int(srcValue))
                 }

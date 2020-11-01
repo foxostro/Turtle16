@@ -11,9 +11,9 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class RvalueExpressionCompilerTests: XCTestCase {
-    let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
-    let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
-    let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
+    let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
+    let t1 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 2
+    let t2 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 4
     
     let kSliceBaseAddressOffset = 0
     let kSliceCountOffset = 2
@@ -3279,7 +3279,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U8_Stack() {
-        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .constU8, offset: 0x0010, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3304,7 +3304,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testCompileIdentifierExpression_U16_Stack() {
-        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .constU16, offset: 0x0010, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3525,7 +3525,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileAssignment_Bool_Stack() {
         let offset = 0x0004
-        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
         let symbol = Symbol(type: .bool, offset: offset, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3545,7 +3545,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignment_U8_Stack() {
         let offset = 0x0004
         let value = 42
-        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
         let symbol = Symbol(type: .u8, offset: offset, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -3565,7 +3565,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignment_U16_Stack() {
         let offset = 0x0004
         let value = 0xabcd
-        let kFramePointerAddress = Int(CrackleToPopCompiler.kFramePointerAddressHi)
+        let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
         let symbol = Symbol(type: .u16, offset: offset, storage: .stackStorage)
         let symbols = SymbolTable(["foo" : symbol])
@@ -4738,7 +4738,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
 
     func testSuccessfullyCastUnionTypeToMemberType() {
         let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage)])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4775,7 +4775,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testTestUnionVariantTypeAgainstNonMemberType() {
         let union = Expression.Identifier("foo")
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
         let compiler = makeCompiler(symbols: symbols)
@@ -4788,7 +4788,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testTestUnionVariantTypeAgainstKnownMemberType_Tag0() {
         let union = Expression.Identifier("foo")
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
         let compiler = makeCompiler(symbols: symbols)
@@ -4805,7 +4805,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testTestUnionVariantTypeAgainstKnownMemberType_Tag1() {
         let union = Expression.Identifier("foo")
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
         let compiler = makeCompiler(symbols: symbols)
@@ -4823,7 +4823,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCanAssignToUnionGivenTypeWhichConvertsToMatchingUnionMember() {
         let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"), rexpr: ExprUtils.makeU8(value: 42))
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u16])), offset: offset, storage: .staticStorage)])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4839,7 +4839,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange_1() {
-        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let n = 10
         let elementType = SymbolType.u8
         
@@ -4876,7 +4876,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange_2() {
-        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let n = 10
         let elementType = SymbolType.u16
         
@@ -4913,7 +4913,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange_PanicWhenRangeBeginIsOutOfBounds() {
-        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
@@ -4934,7 +4934,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange_PanicWhenRangeLimitIsOutOfBounds() {
-        let arrayBase = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
@@ -4955,7 +4955,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptADynamicArrayWithARange_1() {
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         let begin = 1
         let limit = 9
@@ -4989,7 +4989,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptADynamicArrayWithARange_PanicWhenRangeBeginIsOutOfBounds() {
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         let begin = 100
         let limit = 109
@@ -5018,7 +5018,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testSubscriptADynamicArrayWithARange_PanicWhenRangeLimitIsOutOfBounds() {
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         let begin = 0
         let limit = 100
@@ -5060,7 +5060,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testAssignmentWithLiteralString() {
         let str = "foo"
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralString(str))
         let symbols = SymbolTable(["foo" : Symbol(type: .array(count: str.count, elementType: .u8), offset: offset)])
         let actual = mustCompile(expression: expr, symbols: symbols)
@@ -5109,7 +5109,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
 //    func testCallFunctionThroughFunctionPointer() {
 //        let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
 //        var addressOfFoo: UInt16 = 0
-//        let addressOfBar = SnapToCrackleCompiler.kStaticStorageStartAddress
+//        let addressOfBar = SnapCompilerMetrics.kStaticStorageStartAddress
 //        let symbols = SymbolTable([
 //            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
 //            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
@@ -5139,7 +5139,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let getExpr = Expression.Get(expr: foo, member: bar)
         let expr = Expression.Subscript(subscriptable: getExpr, argument: zero)
         
-        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
             "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0)
         ])))
@@ -5166,7 +5166,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let getExpr = Expression.Get(expr: foo, member: bar)
         let expr = Expression.Subscript(subscriptable: getExpr, argument: zero)
         
-        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
             "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0)
         ])))
@@ -5196,7 +5196,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let getExpr = Expression.Get(expr: foo, member: bar)
         let expr = Expression.Subscript(subscriptable: getExpr, argument: range)
         
-        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
             "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0)
         ])))
@@ -5224,7 +5224,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: getExpr, argument: range)
         
         let arrayBaseAddress = 0x1000
-        let addressOfFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
             "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0)
         ])))
@@ -5260,7 +5260,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testBitcastPointerToADifferentPointer() {
-        let offset = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let expr = Expression.Bitcast(expr: Expression.Identifier("foo"),
                                       targetType: Expression.PointerType(Expression.PrimitiveType(.u16)))
         let symbols = SymbolTable([

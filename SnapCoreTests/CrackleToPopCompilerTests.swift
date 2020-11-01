@@ -13,9 +13,9 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class CrackleToPopCompilerTests: XCTestCase {
-    let kStackPointerAddress = Int(CrackleToPopCompiler.kStackPointerAddressHi)
-    let kFramePointerHi = Int(CrackleToPopCompiler.kFramePointerAddressHi)
-    let kFramePointerLo = Int(CrackleToPopCompiler.kFramePointerAddressLo)
+    let kStackPointerAddress = Int(SnapCompilerMetrics.kStackPointerAddressHi)
+    let kFramePointerHi = Int(SnapCompilerMetrics.kFramePointerAddressHi)
+    let kFramePointerLo = Int(SnapCompilerMetrics.kFramePointerAddressLo)
     
     func disassemble(_ instructions: [Instruction]) -> String {
         let microcodeGenerator = MicrocodeGenerator()
@@ -60,8 +60,8 @@ class CrackleToPopCompilerTests: XCTestCase {
     }
     
     func testEmptyProgram() {
-        let kFramePointerInitialValue = CrackleToPopCompiler.kFramePointerInitialValue
-        let kStackPointerInitialValue = CrackleToPopCompiler.kStackPointerInitialValue
+        let kFramePointerInitialValue = SnapCompilerMetrics.kFramePointerInitialValue
+        let kStackPointerInitialValue = SnapCompilerMetrics.kStackPointerInitialValue
         let computer = try! execute(ir: [])
         XCTAssertEqual(computer.framePointer, kFramePointerInitialValue)
         XCTAssertEqual(computer.stackPointer, kStackPointerInitialValue)
@@ -99,7 +99,7 @@ class CrackleToPopCompilerTests: XCTestCase {
     }
     
     func testPushManyValues() {
-        let kStackPointerInitialValue = UInt16(CrackleToPopCompiler.kStackPointerInitialValue)
+        let kStackPointerInitialValue = UInt16(SnapCompilerMetrics.kStackPointerInitialValue)
         let count = 300
         var ir: [CrackleInstruction] = []
         for i in 0..<count {
@@ -143,7 +143,7 @@ class CrackleToPopCompilerTests: XCTestCase {
     }
     
     func testPushManyDoubleWordValues() {
-        let kStackPointerInitialValue = UInt16(CrackleToPopCompiler.kStackPointerInitialValue)
+        let kStackPointerInitialValue = UInt16(SnapCompilerMetrics.kStackPointerInitialValue)
         let count = 500
         var ir: [CrackleInstruction] = []
         for i in 0..<count {

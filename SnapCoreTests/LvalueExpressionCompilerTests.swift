@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCompilerToolbox
 
 class LvalueExpressionCompilerTests: XCTestCase {
-    let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
+    let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
     
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [CrackleInstruction] {
         let compiler = LvalueExpressionCompiler(symbols: symbols)

@@ -11,34 +11,23 @@ import TurtleCompilerToolbox
 
 // Compiles a program in the Crackle IR language to the Pop IR language.
 public class CrackleToPopCompiler: NSObject {
-    // Programs written in Snap use a push down stack, and store the stack
-    // pointer in data RAM at addresses 0x0000 and 0x0001.
-    // This is initialized on launch to 0x0000.
-    public static let kStackPointerAddressHi: UInt16 = 0x0000
-    public static let kStackPointerAddressLo: UInt16 = 0x0001
-    public static let kStackPointerInitialValue: Int = 0x0000
-    let kStackPointerAddressHi: Int = Int(CrackleToPopCompiler.kStackPointerAddressHi)
-    let kStackPointerAddressLo: Int = Int(CrackleToPopCompiler.kStackPointerAddressLo)
-    let kStackPointerHiHi = Int((CrackleToPopCompiler.kStackPointerAddressHi & 0xff00) >> 8)
-    let kStackPointerHiLo = Int( CrackleToPopCompiler.kStackPointerAddressHi & 0x00ff)
-    let kStackPointerLoHi = Int((CrackleToPopCompiler.kStackPointerAddressLo & 0xff00) >> 8)
-    let kStackPointerLoLo = Int( CrackleToPopCompiler.kStackPointerAddressLo & 0x00ff)
-    let kStackPointerInitialValueHi: Int = (kStackPointerInitialValue & 0xff00) >> 8
-    let kStackPointerInitialValueLo: Int =  kStackPointerInitialValue & 0x00ff
+    let kStackPointerAddressHi: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
+    let kStackPointerAddressLo: Int = Int(SnapCompilerMetrics.kStackPointerAddressLo)
+    let kStackPointerHiHi = Int((SnapCompilerMetrics.kStackPointerAddressHi & 0xff00) >> 8)
+    let kStackPointerHiLo = Int( SnapCompilerMetrics.kStackPointerAddressHi & 0x00ff)
+    let kStackPointerLoHi = Int((SnapCompilerMetrics.kStackPointerAddressLo & 0xff00) >> 8)
+    let kStackPointerLoLo = Int( SnapCompilerMetrics.kStackPointerAddressLo & 0x00ff)
+    let kStackPointerInitialValueHi: Int = (SnapCompilerMetrics.kStackPointerInitialValue & 0xff00) >> 8
+    let kStackPointerInitialValueLo: Int =  SnapCompilerMetrics.kStackPointerInitialValue & 0x00ff
     
-    // Programs written in Snap store the frame pointer in data RAM at
-    // addresses 0x0002 and 0x0003. This is initialized on launch to 0x0000.
-    public static let kFramePointerAddressHi: UInt16 = 0x0002
-    public static let kFramePointerAddressLo: UInt16 = 0x0003
-    public static let kFramePointerInitialValue: Int = 0x0000
-    let kFramePointerAddressHi: Int = Int(CrackleToPopCompiler.kFramePointerAddressHi)
-    let kFramePointerAddressLo: Int = Int(CrackleToPopCompiler.kFramePointerAddressLo)
-    let kFramePointerHiHi = Int((CrackleToPopCompiler.kFramePointerAddressHi & 0xff00) >> 8)
-    let kFramePointerHiLo = Int( CrackleToPopCompiler.kFramePointerAddressHi & 0x00ff)
-    let kFramePointerLoHi = Int((CrackleToPopCompiler.kFramePointerAddressLo & 0xff00) >> 8)
-    let kFramePointerLoLo = Int( CrackleToPopCompiler.kFramePointerAddressLo & 0x00ff)
-    let kFramePointerInitialValueHi: Int = (kFramePointerInitialValue & 0xff00) >> 8
-    let kFramePointerInitialValueLo: Int =  kFramePointerInitialValue & 0x00ff
+    let kFramePointerAddressHi: Int = Int(SnapCompilerMetrics.kFramePointerAddressHi)
+    let kFramePointerAddressLo: Int = Int(SnapCompilerMetrics.kFramePointerAddressLo)
+    let kFramePointerHiHi = Int((SnapCompilerMetrics.kFramePointerAddressHi & 0xff00) >> 8)
+    let kFramePointerHiLo = Int( SnapCompilerMetrics.kFramePointerAddressHi & 0x00ff)
+    let kFramePointerLoHi = Int((SnapCompilerMetrics.kFramePointerAddressLo & 0xff00) >> 8)
+    let kFramePointerLoLo = Int( SnapCompilerMetrics.kFramePointerAddressLo & 0x00ff)
+    let kFramePointerInitialValueHi: Int = (SnapCompilerMetrics.kFramePointerInitialValue & 0xff00) >> 8
+    let kFramePointerInitialValueLo: Int =  SnapCompilerMetrics.kFramePointerInitialValue & 0x00ff
     
     private var beginningOfScratchMemory = 0x0004
     private var scratchPointer: Int

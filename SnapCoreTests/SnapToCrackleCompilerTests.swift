@@ -12,11 +12,11 @@ import TurtleCompilerToolbox
 import TurtleCore
 
 class SnapToCrackleCompilerTests: XCTestCase {
-    let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
-    let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 2
-    let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
-    let t3 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
-    let kStaticStorageStartAddress = SnapToCrackleCompiler.kStaticStorageStartAddress
+    let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
+    let t1 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 2
+    let t2 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 4
+    let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
+    let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
     func testNoErrorsAtFirst() {
         let compiler = SnapToCrackleCompiler()
@@ -56,7 +56,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
@@ -101,8 +101,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
-        let addressBar = SnapToCrackleCompiler.kStaticStorageStartAddress+1
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
+        let addressBar = SnapCompilerMetrics.kStaticStorageStartAddress+1
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -127,7 +127,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -153,7 +153,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -186,7 +186,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -248,7 +248,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -291,7 +291,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -324,12 +324,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         var symbolFoo: Symbol? = nil
         XCTAssertNoThrow(symbolFoo = try compiler.globalSymbols.resolve(identifier: "foo"))
         XCTAssertEqual(symbolFoo, Symbol(type: .u16, offset: addressFoo))
         
-        let addressBar = SnapToCrackleCompiler.kStaticStorageStartAddress+2
+        let addressBar = SnapCompilerMetrics.kStaticStorageStartAddress+2
         var symbolBar: Symbol? = nil
         XCTAssertNoThrow(symbolBar = try compiler.globalSymbols.resolve(identifier: "bar"))
         XCTAssertEqual(symbolBar, Symbol(type: .u16, offset: addressBar))
@@ -486,7 +486,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress+0
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -591,8 +591,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileExpressionStatement_ArrayOfU8() {
-        let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
-        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 4
+        let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
+        let t1 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 4
         
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
@@ -619,8 +619,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileExpressionStatement_ArrayOfU16() {
-        let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
-        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
+        let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
+        let t1 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
         
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
@@ -647,10 +647,10 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileExpressionStatement_ArrayOfArrayOfU16() {
-        let t0 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 0
-        let t1 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 6
-        let t2 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 12
-        let t3 = SnapToCrackleCompiler.kTemporaryStorageStartAddress + 18
+        let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
+        let t1 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
+        let t2 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 12
+        let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 18
         
         // The expression compiler contains more detailed tests. This is more
         // for testing integration between the two classes.
@@ -704,7 +704,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                else: nil)
         ])
         
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
@@ -744,7 +744,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                else: ExprUtils.makeAssignment(name: "foo",
                                               right: Expression.LiteralInt(2)))
         ])
-        let addressFoo = SnapToCrackleCompiler.kStaticStorageStartAddress
+        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = SnapToCrackleCompiler()
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)

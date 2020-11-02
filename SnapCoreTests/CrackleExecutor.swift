@@ -39,10 +39,14 @@ class CrackleExecutor: NSObject {
             crackleToPopCompiler.doAtEpilogue = { [weak self] (compiler: CrackleToPopCompiler) in
                 try self!.injectCode(compiler)
                 if self!.injectPanicStub {
-                    try compiler.label("panic")
-                    try compiler.push16(0xdead)
+                    try compiler.injectCode([
+                        .label("panic"),
+                        .push16(0xdead)
+                    ])
                 }
-                compiler.hlt()
+                try compiler.injectCode([
+                    .hlt
+                ])
             }
             try crackleToPopCompiler.compile(ir: crackle)
         } catch let error as CompilerError {

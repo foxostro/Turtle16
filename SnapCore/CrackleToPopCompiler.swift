@@ -11,39 +11,12 @@ import TurtleCompilerToolbox
 
 // Compiles a program in the Crackle IR language to the Pop IR language.
 public class CrackleToPopCompiler: NSObject {
-    let kStackPointerAddressHi: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
-    let kStackPointerAddressLo: Int = Int(SnapCompilerMetrics.kStackPointerAddressLo)
-    let kStackPointerHiHi = Int((SnapCompilerMetrics.kStackPointerAddressHi & 0xff00) >> 8)
-    let kStackPointerHiLo = Int( SnapCompilerMetrics.kStackPointerAddressHi & 0x00ff)
-    let kStackPointerLoHi = Int((SnapCompilerMetrics.kStackPointerAddressLo & 0xff00) >> 8)
-    let kStackPointerLoLo = Int( SnapCompilerMetrics.kStackPointerAddressLo & 0x00ff)
-    let kStackPointerInitialValueHi: Int = (SnapCompilerMetrics.kStackPointerInitialValue & 0xff00) >> 8
-    let kStackPointerInitialValueLo: Int =  SnapCompilerMetrics.kStackPointerInitialValue & 0x00ff
-    
-    let kFramePointerAddressHi: Int = Int(SnapCompilerMetrics.kFramePointerAddressHi)
-    let kFramePointerAddressLo: Int = Int(SnapCompilerMetrics.kFramePointerAddressLo)
-    let kFramePointerHiHi = Int((SnapCompilerMetrics.kFramePointerAddressHi & 0xff00) >> 8)
-    let kFramePointerHiLo = Int( SnapCompilerMetrics.kFramePointerAddressHi & 0x00ff)
-    let kFramePointerLoHi = Int((SnapCompilerMetrics.kFramePointerAddressLo & 0xff00) >> 8)
-    let kFramePointerLoLo = Int( SnapCompilerMetrics.kFramePointerAddressLo & 0x00ff)
-    let kFramePointerInitialValueHi: Int = (SnapCompilerMetrics.kFramePointerInitialValue & 0xff00) >> 8
-    let kFramePointerInitialValueLo: Int =  SnapCompilerMetrics.kFramePointerInitialValue & 0x00ff
-    
-    private var beginningOfScratchMemory = 0x0004
-    private var scratchPointer: Int
-    
     public private(set) var instructions: [PopInstruction] = []
-    public var programDebugInfo: SnapDebugInfo? = nil
-    private var currentSourceAnchor: SourceAnchor? = nil
-    private var currentSymbols: SymbolTable? = nil
-    
-    let labelMaker = LabelMaker(prefix: ".LL")
-    
     public var doAtEpilogue: (CrackleToPopCompiler) throws -> Void = {_ in}
-    
-    public override init() {
-        scratchPointer = beginningOfScratchMemory
-    }
+    public var programDebugInfo: SnapDebugInfo? = nil
+    var currentSourceAnchor: SourceAnchor? = nil
+    var currentSymbols: SymbolTable? = nil
+    let labelMaker = LabelMaker(prefix: ".LL")
     
     public func injectCode(_ ir: [CrackleInstruction]) throws {
         currentSourceAnchor = nil
@@ -53,29 +26,14 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    private func allocateScratchMemory(_ numWords: Int) -> Int {
-        let result = scratchPointer
-        scratchPointer += numWords
-        return result
-    }
-    
-    private func emit(_ instruction: PopInstruction) {
-        instructions.append(instruction)
-    }
-    
-    private func setUV(_ value: Int) throws {
-        if ((value>>8) & 0xff) == (value & 0xff) {
-            emit(.li(.UV, value & 0xff))
-        } else {
-            emit(.li(.U, (value>>8) & 0xff))
-            emit(.li(.V, value & 0xff))
-        }
-    }
-    
     public func compile(ir: [CrackleInstruction]) throws {
         try insertProgramPrologue()
         try compileProgramBody(ir)
         try insertProgramEpilogue()
+    }
+    
+    func emit(_ instruction: PopInstruction) {
+        instructions.append(instruction)
     }
     
     // Inserts prologue code into the program, presumably at the beginning.
@@ -91,7 +49,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.blti(.M, 0))
     }
     
-    private func compileProgramBody(_ ir: [CrackleInstruction]) throws {
+    func compileProgramBody(_ ir: [CrackleInstruction]) throws {
         for i in 0..<ir.count {
             let currentCrackleInstruction = ir[i]
             currentSourceAnchor = programDebugInfo?.lookupSourceAnchor(crackleInstructionIndex: i)
@@ -109,7 +67,49 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    private func compileSingleCrackleInstruction(_ instruction: CrackleInstruction) throws {
+    func compileSingleCrackleInstruction(_ instruction: CrackleInstruction) throws {
+        let helper = CrackleToPopCompilerSingleInstruction(labelMaker: labelMaker)
+        try helper.compile(instruction)
+        instructions += helper.instructions
+    }
+    
+    // Inserts epilogue code into the program, presumably at the end.
+    func insertProgramEpilogue() throws {
+        currentSourceAnchor = nil
+        let instructionsBegin = instructions.count
+        
+        emit(.hlt)
+        try doAtEpilogue(self)
+        
+        let instructionsEnd = instructions.count
+        if instructionsBegin < instructionsEnd {
+            for i in instructionsBegin..<instructionsEnd {
+                programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: nil)
+                programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
+            }
+        }
+    }
+}
+
+// A helper class for CrackleToPopCompiler which compiles one Crackle instruction.
+public class CrackleToPopCompilerSingleInstruction: NSObject {
+    let kStackPointerAddressHi: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
+    let kStackPointerAddressLo: Int = Int(SnapCompilerMetrics.kStackPointerAddressLo)
+    let kFramePointerAddressHi: Int = Int(SnapCompilerMetrics.kFramePointerAddressHi)
+    let kFramePointerAddressLo: Int = Int(SnapCompilerMetrics.kFramePointerAddressLo)
+    
+    public private(set) var instructions: [PopInstruction] = []
+    let beginningOfScratchMemory = 0x0004
+    var scratchPointer: Int
+    let labelMaker: LabelMaker
+    
+    public required init(labelMaker labelMaker_: LabelMaker) {
+        scratchPointer = beginningOfScratchMemory
+        labelMaker = labelMaker_
+    }
+    
+    public func compile(_ instruction: CrackleInstruction) throws {
         scratchPointer = beginningOfScratchMemory
         switch instruction {
         case .nop: nop()
@@ -182,40 +182,41 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    // Inserts epilogue code into the program, presumably at the end.
-    func insertProgramEpilogue() throws {
-        currentSourceAnchor = nil
-        let instructionsBegin = instructions.count
-        
-        emit(.hlt)
-        try doAtEpilogue(self)
-        
-        let instructionsEnd = instructions.count
-        if instructionsBegin < instructionsEnd {
-            for i in instructionsBegin..<instructionsEnd {
-                programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: nil)
-                programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
-                programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
-            }
+    func allocateScratchMemory(_ numWords: Int) -> Int {
+        let result = scratchPointer
+        scratchPointer += numWords
+        return result
+    }
+    
+    func emit(_ instruction: PopInstruction) {
+        instructions.append(instruction)
+    }
+    
+    func setUV(_ value: Int) throws {
+        if ((value>>8) & 0xff) == (value & 0xff) {
+            emit(.li(.UV, value & 0xff))
+        } else {
+            emit(.li(.U, (value>>8) & 0xff))
+            emit(.li(.V, value & 0xff))
         }
     }
     
-    public func nop() {}
+    func nop() {}
     
-    public func push(_ value: Int) throws {
+    func push(_ value: Int) throws {
         try decrementStackPointer()
         try loadStackPointerIntoUVandXY()
         emit(.li(.M, value)) // Write the new value to the top of the stack.
     }
     
-    public func push16(_ value: Int) throws {
+    func push16(_ value: Int) throws {
         let hi = (value>>8) & 0xff
         let lo =  value & 0xff
         try push(lo)
         try push(hi)
     }
     
-    private func loadStackPointerIntoUVandXY() throws {
+    func loadStackPointerIntoUVandXY() throws {
         // Load the 16-bit stack pointer into XY.
         try setUV(kStackPointerAddressHi)
         emit(.mov(.X, .M))
@@ -225,7 +226,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.V, .Y))
     }
     
-    private func decrementStackPointer() throws {
+    func decrementStackPointer() throws {
         // First, save A in a well-known scratch location.
         let scratch = allocateScratchMemory(1)
         try setUV(scratch)
@@ -258,11 +259,11 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.A, .M))
     }
     
-    private func pop() throws {
+    func pop() throws {
         try popInMemoryStackIntoRegisterB()
     }
     
-    private func subi16(_ c: Int, _ a: Int, _ imm: Int) throws {
+    func subi16(_ c: Int, _ a: Int, _ imm: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         emit(.li(.B, imm & 0xff))
@@ -276,7 +277,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.sbc(.M))
     }
     
-    private func addi16(_ c: Int, _ a: Int, _ imm: Int) throws {
+    func addi16(_ c: Int, _ a: Int, _ imm: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         emit(.li(.B, imm & 0xff))
@@ -290,7 +291,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.adc(.M))
     }
     
-    private func muli16(_ resultAddress: Int, _ multiplicandAddress: Int, _ imm: Int) throws {
+    func muli16(_ resultAddress: Int, _ multiplicandAddress: Int, _ imm: Int) throws {
         // Copy the multiplier to a scratch location because we modify it in
         // the loop.
         let multiplierAddress = allocateScratchMemory(2)
@@ -351,7 +352,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func pushAToStack() throws {
+    func pushAToStack() throws {
         try decrementStackPointer()
         try loadStackPointerIntoUVandXY()
         
@@ -359,7 +360,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .A))
     }
     
-    private func popInMemoryStackIntoRegisterB() throws {
+    func popInMemoryStackIntoRegisterB() throws {
         try loadStackPointerIntoUVandXY()
         
         // Load the top of the stack into B.
@@ -374,7 +375,7 @@ public class CrackleToPopCompiler: NSObject {
         try storeXYToStackPointer()
     }
     
-    private func storeXYToStackPointer() throws {
+    func storeXYToStackPointer() throws {
         // Write the modified stack pointer back to memory.
         try setUV(kStackPointerAddressHi)
         emit(.mov(.M, .X))
@@ -382,25 +383,25 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .Y))
     }
     
-    public func pop16() throws {
+    func pop16() throws {
         try popInMemoryStackIntoRegisterB()
         emit(.mov(.A, .B))
         try popInMemoryStackIntoRegisterB()
     }
     
-    public func storeImmediate(_ address: Int, _ value: Int) throws {
+    func storeImmediate(_ address: Int, _ value: Int) throws {
         try setUV(address)
         emit(.li(.M, value & 0xff))
     }
     
-    public func storeImmediate16(_ address: Int, _ value: Int) throws {
+    func storeImmediate16(_ address: Int, _ value: Int) throws {
         try storeImmediateBytes(address, [
             UInt8((value>>8) & 0xff),
             UInt8(value & 0xff)
         ])
     }
     
-    public func storeImmediateBytes(_ address: Int, _ bytes: [UInt8]) throws {
+    func storeImmediateBytes(_ address: Int, _ bytes: [UInt8]) throws {
         guard !bytes.isEmpty else {
             return
         }
@@ -411,7 +412,7 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    public func storeImmediateBytesIndirect(_ dstPtr: Int, _ bytes: [UInt8]) throws {
+    func storeImmediateBytesIndirect(_ dstPtr: Int, _ bytes: [UInt8]) throws {
         try setUV(dstPtr)
         emit(.mov(.X, .M))
         emit(.inuv)
@@ -424,19 +425,19 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    public func label(_ name: String) throws {
+    func label(_ name: String) throws {
         emit(.label(name))
     }
     
-    public func jmp(_ label: String) throws {
+    func jmp(_ label: String) throws {
         emit(.jmp(label))
     }
     
-    public func jalr(_ label: String) throws {
+    func jalr(_ label: String) throws {
         emit(.jalr(label))
     }
     
-    public func indirectJalr(_ address: Int) throws {
+    func indirectJalr(_ address: Int) throws {
         try setUV(address)
         emit(.mov(.X, .M))
         emit(.inuv)
@@ -444,7 +445,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.explicitJalr)
     }
     
-    public func enter() throws {
+    func enter() throws {
         // push fp in two bytes ; fp <- sp
         try setUV(kFramePointerAddressLo)
         emit(.mov(.A, .M))
@@ -465,7 +466,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .Y))
     }
     
-    public func leave() throws {
+    func leave() throws {
         // sp <- fp ; fp <- pop two bytes from the stack
         try setUV(kFramePointerAddressHi)
         emit(.mov(.X, .M))
@@ -486,7 +487,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .B))
     }
     
-    private func pushReturnAddress() throws {
+    func pushReturnAddress() throws {
         emit(.mov(.A, .H))
         try pushAToStack()
         
@@ -494,13 +495,13 @@ public class CrackleToPopCompiler: NSObject {
         try pushAToStack()
     }
     
-    private func leafRet() throws {
+    func leafRet() throws {
         emit(.mov(.X, .G))
         emit(.mov(.Y, .H))
         emit(.explicitJmp)
     }
     
-    public func ret() throws {
+    func ret() throws {
         let addressOfReturnAddressHi = allocateScratchMemory(1)
         
         try popInMemoryStackIntoRegisterB()
@@ -516,11 +517,11 @@ public class CrackleToPopCompiler: NSObject {
         emit(.explicitJmp)
     }
     
-    public func hlt() {
+    func hlt() {
         emit(.hlt)
     }
     
-    public func peekPeripheral() throws { // TODO: need unit test for peekPeripheral
+    func peekPeripheral() throws {
         try popInMemoryStackIntoRegisterB()
         emit(.mov(.D, .B))
         try pop16()
@@ -530,7 +531,7 @@ public class CrackleToPopCompiler: NSObject {
         try pushAToStack()
     }
     
-    public func pokePeripheral() throws {
+    func pokePeripheral() throws {
         try popInMemoryStackIntoRegisterB()
         emit(.mov(.D, .B))
         
@@ -557,12 +558,12 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.P, .A))
     }
     
-    private func add(_ c: Int, _ a: Int, _ b: Int) throws {
+    func add(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         emit(.add(.M))
     }
     
-    private func setupALUOperandsAndDestinationAddress(_ c: Int, _ a: Int, _ b: Int) throws {
+    func setupALUOperandsAndDestinationAddress(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(b)
         emit(.mov(.B, .M))
         try setUV(a)
@@ -570,7 +571,7 @@ public class CrackleToPopCompiler: NSObject {
         try setUV(c)
     }
     
-    private func add16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func add16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         try setUV(b+1)
@@ -586,12 +587,12 @@ public class CrackleToPopCompiler: NSObject {
         emit(.adc(.M))
     }
     
-    private func sub(_ c: Int, _ a: Int, _ b: Int) throws {
+    func sub(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         emit(.sub(.M))
     }
     
-    private func sub16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func sub16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         try setUV(b+1)
@@ -607,7 +608,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.sbc(.M))
     }
     
-    private func mul(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
+    func mul(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
@@ -648,7 +649,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func mul16(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
+    func mul16(_ resultAddress: Int, _ multiplicandAddress: Int, _ originalMultiplierAddress: Int) throws {
         // Copy the multiplier to a scratch location because we modify it in
         // the loop.
         let multiplierAddress = allocateScratchMemory(2)
@@ -711,7 +712,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func div(_ counter: Int, _ originalA: Int, _ b: Int) throws {
+    func div(_ counter: Int, _ originalA: Int, _ b: Int) throws {
         // Copy `a' to a scratch location because we modify it in the loop.
         let a = allocateScratchMemory(1)
         try setUV(originalA)
@@ -722,7 +723,7 @@ public class CrackleToPopCompiler: NSObject {
         try div_modifyingA(counter, a, b)
     }
     
-    private func div_modifyingA(_ counter: Int, _ a: Int, _ b: Int) throws {
+    func div_modifyingA(_ counter: Int, _ a: Int, _ b: Int) throws {
         // Reset the counter
         try setUV(counter)
         emit(.li(.M, 0))
@@ -767,7 +768,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func div16(_ counterAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+    func div16(_ counterAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         // Copy the dividend `a' to a scratch location because we modify it in
         // the loop.
         let addressOfA = allocateScratchMemory(2)
@@ -783,7 +784,7 @@ public class CrackleToPopCompiler: NSObject {
         try div16_modifyingA(counterAddress, addressOfA, addressOfB)
     }
     
-    private func div16_modifyingA(_ counterAddress: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    func div16_modifyingA(_ counterAddress: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         // Initialize the counter to zero.
         // `c' is the counter
         try setUV(counterAddress+0)
@@ -861,7 +862,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func mod(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+    func mod(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         let counterAddress = allocateScratchMemory(1)
         
         // Copy `a' to a scratch location because we modify it in the loop.
@@ -873,7 +874,7 @@ public class CrackleToPopCompiler: NSObject {
         try div_modifyingA(counterAddress, resultAddress, addressOfB)
     }
     
-    private func mod16(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
+    func mod16(_ resultAddress: Int, _ addressOfOriginalA: Int, _ addressOfB: Int) throws {
         let counterAddress = allocateScratchMemory(2)
         
         // Copy the dividend `a' to a scratch location because we modify it in
@@ -890,31 +891,31 @@ public class CrackleToPopCompiler: NSObject {
         try div16_modifyingA(counterAddress, resultAddress, addressOfB)
     }
     
-    public func eq(_ c: Int, _ a: Int, _ b: Int) throws {
+    func eq(_ c: Int, _ a: Int, _ b: Int) throws {
         try comparison("JE", c, a, b)
     }
     
-    public func ne(_ c: Int, _ a: Int, _ b: Int) throws {
+    func ne(_ c: Int, _ a: Int, _ b: Int) throws {
         try comparison("JNE", c, a, b)
     }
     
-    public func lt(_ c: Int, _ a: Int, _ b: Int) throws {
+    func lt(_ c: Int, _ a: Int, _ b: Int) throws {
         try comparison("JL", c, a, b)
     }
     
-    public func gt(_ c: Int, _ a: Int, _ b: Int) throws {
+    func gt(_ c: Int, _ a: Int, _ b: Int) throws {
         try comparison("JG", c, a, b)
     }
     
-    public func le(_ c: Int, _ a: Int, _ b: Int) throws {
+    func le(_ c: Int, _ a: Int, _ b: Int) throws {
         try comparison("JLE", c, a, b)
     }
     
-    public func ge(_ c: Int, _ a: Int, _ b: Int) throws {
+    func ge(_ c: Int, _ a: Int, _ b: Int) throws {
         try comparison("JGE", c, a, b)
     }
     
-    private func comparison(_ comparison: String, _ c: Int, _ a: Int, _ b: Int) throws {
+    func comparison(_ comparison: String, _ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a)
         emit(.mov(.A, .M))
         
@@ -948,15 +949,15 @@ public class CrackleToPopCompiler: NSObject {
         try label(tail)
     }
     
-    private func eq16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func eq16(_ c: Int, _ a: Int, _ b: Int) throws {
         try eq16(c, a, b, 1, 0)
     }
     
-    private func ne16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func ne16(_ c: Int, _ a: Int, _ b: Int) throws {
         try eq16(c, a, b, 0, 1)
     }
     
-    private func eq16(_ c: Int, _ a: Int, _ b: Int, _ valueOnPass: Int, _ valueOnFail: Int) throws {
+    func eq16(_ c: Int, _ a: Int, _ b: Int, _ valueOnPass: Int, _ valueOnFail: Int) throws {
         let label_fail_test = labelMaker.next()
         let label_tail = labelMaker.next()
         
@@ -987,7 +988,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(label_tail)
     }
     
-    private func lt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    func lt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         
@@ -1042,7 +1043,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .A))
     }
     
-    private func gt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    func gt16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         let labelFailEqualityTest = labelMaker.next()
         let labelTail = labelMaker.next()
         let labelThen = labelMaker.next()
@@ -1099,7 +1100,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .A))
     }
     
-    private func le16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    func le16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         // Load the low bytes of `a' and `b' into the A and B registers.
         try setUV(addressOfB+1)
         emit(.mov(.A, .M))
@@ -1130,7 +1131,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .A))
     }
     
-    private func ge16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
+    func ge16(_ addressOfC: Int, _ addressOfA: Int, _ addressOfB: Int) throws {
         // Load the low bytes of `a' and `b' into the A and B registers.
         try setUV(addressOfA+1)
         emit(.mov(.A, .M))
@@ -1163,15 +1164,15 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .A))
     }
     
-    private func jz(_ label: String, _ test: Int) throws {
+    func jz(_ label: String, _ test: Int) throws {
         try jei(label, test, 0)
     }
     
-    private func jnz(_ label: String, _ test: Int) throws {
+    func jnz(_ label: String, _ test: Int) throws {
         try jei(label, test, 1)
     }
     
-    private func jei(_ label: String, _ addressOfTestValue: Int, _ valueToTestAgainst: Int) throws {
+    func jei(_ label: String, _ addressOfTestValue: Int, _ valueToTestAgainst: Int) throws {
         try setUV(addressOfTestValue)
         emit(.mov(.A, .M))
         emit(.li(.B, valueToTestAgainst))
@@ -1179,7 +1180,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.je(label))
     }
     
-    private func copyWordZeroExtend(_ dst: Int, _ src: Int) throws {
+    func copyWordZeroExtend(_ dst: Int, _ src: Int) throws {
         try setUV(src)
         emit(.mov(.X, .M))
         
@@ -1190,7 +1191,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.mov(.M, .X))
     }
     
-    private func copyWords(_ dst: Int, _ src: Int, _ numberOfBytesToCopy: Int) throws {
+    func copyWords(_ dst: Int, _ src: Int, _ numberOfBytesToCopy: Int) throws {
         switch numberOfBytesToCopy {
         case 0:
             return
@@ -1219,7 +1220,7 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    private func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ numberOfBytesToCopy: Int) throws {
+    func copyWordsIndirectSource(_ dst: Int, _ srcPtr: Int, _ numberOfBytesToCopy: Int) throws {
         switch numberOfBytesToCopy {
         case 0:
             return
@@ -1265,7 +1266,7 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    private func copyWordsIndirectDestination(_ dstPtr: Int, _ src: Int, _ numberOfBytesToCopy: Int) throws {
+    func copyWordsIndirectDestination(_ dstPtr: Int, _ src: Int, _ numberOfBytesToCopy: Int) throws {
         switch numberOfBytesToCopy {
         case 0:
             return
@@ -1311,8 +1312,8 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    private func copyWordsIndirectDestinationIndirectSource(_ originalDstPtr: Int, _ originalSrcPtr: Int, _ count: Int) throws {
-        if count == 0 { // TODO: need unit test for case where count is zero
+    func copyWordsIndirectDestinationIndirectSource(_ originalDstPtr: Int, _ originalSrcPtr: Int, _ count: Int) throws {
+        if count == 0 {
             return
         }
         
@@ -1379,11 +1380,11 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    private func copyLabel(_ dst: Int, _ label: String) throws {
+    func copyLabel(_ dst: Int, _ label: String) throws {
         emit(.copyLabel(dst, label))
     }
     
-    fileprivate func copyWordsWithLoop(_ tempDstPointer: Int, _ tempSrcPointer: Int, _ tempLimitPointer: Int) throws {
+    func copyWordsWithLoop(_ tempDstPointer: Int, _ tempSrcPointer: Int, _ tempLimitPointer: Int) throws {
         let loopHead = labelMaker.next()
         try label(loopHead)
         
@@ -1426,12 +1427,12 @@ public class CrackleToPopCompiler: NSObject {
         emit(.jne(loopHead))
     }
     
-    private func and(_ c: Int, _ a: Int, _ b: Int) throws {
+    func and(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         emit(.and(.M))
     }
     
-    private func and16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func and16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         try setUV(b+1)
@@ -1447,12 +1448,12 @@ public class CrackleToPopCompiler: NSObject {
         emit(.and(.M))
     }
     
-    private func or(_ c: Int, _ a: Int, _ b: Int) throws {
+    func or(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         emit(.or(.M))
     }
     
-    private func or16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func or16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         try setUV(b+1)
@@ -1468,12 +1469,12 @@ public class CrackleToPopCompiler: NSObject {
         emit(.or(.M))
     }
     
-    private func xor(_ c: Int, _ a: Int, _ b: Int) throws {
+    func xor(_ c: Int, _ a: Int, _ b: Int) throws {
         try setupALUOperandsAndDestinationAddress(c, a, b)
         emit(.xor(.M))
     }
     
-    private func xor16(_ c: Int, _ a: Int, _ b: Int) throws {
+    func xor16(_ c: Int, _ a: Int, _ b: Int) throws {
         try setUV(a+1)
         emit(.mov(.A, .M))
         try setUV(b+1)
@@ -1489,7 +1490,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.xor(.M))
     }
     
-    private func lsl(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+    func lsl(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
@@ -1531,7 +1532,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func lsl16(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+    func lsl16(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
@@ -1574,7 +1575,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func lsr(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+    func lsr(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
@@ -1616,7 +1617,7 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func lsr16(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
+    func lsr16(_ resultAddress: Int, _ leftOperand: Int, _ rightOperand: Int) throws {
         let loopHead = labelMaker.next()
         let loopTail = labelMaker.next()
         
@@ -1665,14 +1666,14 @@ public class CrackleToPopCompiler: NSObject {
         try label(loopTail)
     }
     
-    private func neg(_ result: Int, _ value: Int) throws {
+    func neg(_ result: Int, _ value: Int) throws {
         try setUV(value)
         emit(.mov(.A, .M))
         try setUV(result)
         emit(.neg(.M))
     }
     
-    private func neg16(_ result: Int, _ value: Int) throws {
+    func neg16(_ result: Int, _ value: Int) throws {
         try setUV(value+1)
         emit(.mov(.A, .M))
         try setUV(result+1)
@@ -1684,7 +1685,7 @@ public class CrackleToPopCompiler: NSObject {
         emit(.neg(.M))
     }
     
-    private func not(_ result: Int, _ value: Int) throws {
+    func not(_ result: Int, _ value: Int) throws {
         try setUV(value)
         emit(.mov(.A, .M))
         try setUV(result)

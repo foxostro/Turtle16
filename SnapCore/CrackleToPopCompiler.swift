@@ -62,11 +62,16 @@ public class CrackleToPopCompiler: NSObject {
     }
     
     func isWorthwhileToExtract(_ numberOfTimesUsed: Int, _ instruction: CrackleInstruction) -> Bool {
-        let procedureConstantOverhead = 5
+        // If we don't extract this instruction then the larger basic block
+        // provides additional opportunities for optimization later. Make a
+        // guess about how this would affect the cost.
+        let fineTune = 70
+        
+        let procedureConstantOverhead = 3
         let lengthOfImplementation = determineLengthOfImplementation(instruction)
-        let procedureLinearOverhead = 3*numberOfTimesUsed
+        let procedureLinearOverhead = 1
         let costWhenExtracted = procedureConstantOverhead + lengthOfImplementation + numberOfTimesUsed * procedureLinearOverhead
-        let costWhenNotExtracted = numberOfTimesUsed * lengthOfImplementation
+        let costWhenNotExtracted = numberOfTimesUsed * lengthOfImplementation * fineTune / 100
         let isWorthwhileToExtract = costWhenExtracted < costWhenNotExtracted
         return isWorthwhileToExtract
     }

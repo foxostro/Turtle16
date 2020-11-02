@@ -163,18 +163,16 @@ public class CrackleToPopCompiler: NSObject {
     }
     
     func generateProcedureForInstruction(_ instruction: CrackleInstruction) throws {
-        currentCrackleInstruction = instruction
         let label = makeLabelNameForInstructionProcedure(instruction)
+        try compileInstructionWithDebugInfo(.label(label))
+        try compileInstructionWithDebugInfo(instruction)
+        try compileInstructionWithDebugInfo(.leafRet)
+    }
+    
+    func compileInstructionWithDebugInfo(_ instruction: CrackleInstruction) throws {
         try applyDebugInfo {
-            instructions += [
-                .label(label)
-            ]
+            currentCrackleInstruction = instruction
             try compileInstructionImplementation(instruction)
-            instructions += [
-                .mov(.X, .G),
-                .mov(.Y, .H),
-                .explicitJmp
-            ]
         }
     }
     

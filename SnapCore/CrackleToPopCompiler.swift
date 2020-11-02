@@ -15,25 +15,82 @@ public class CrackleToPopCompiler: NSObject {
     public var doAtEpilogue: (CrackleToPopCompiler) throws -> Void = {_ in}
     public var programDebugInfo: SnapDebugInfo? = nil
     var currentSourceAnchor: SourceAnchor? = nil
+    var currentCrackleInstruction: CrackleInstruction? = nil
     var currentSymbols: SymbolTable? = nil
     let labelMaker = LabelMaker(prefix: ".LL")
+    var instructionsToCompress = Set<CrackleInstruction>()
     
     public func injectCode(_ ir: [CrackleInstruction]) throws {
         currentSourceAnchor = nil
         currentSymbols = nil
         for instruction in ir {
-            try compileSingleCrackleInstruction(instruction)
+            currentCrackleInstruction = instruction
+            try applyDebugInfo {
+                try compileSingleCrackleInstruction(instruction)
+            }
         }
     }
     
     public func compile(ir: [CrackleInstruction]) throws {
+        instructionsToCompress = determineInstructionToCompress(ir)
         try insertProgramPrologue()
         try compileProgramBody(ir)
-        try insertProgramEpilogue()
+        try applyTerminatingHlt()
+        try generateProceduresForInstructionsToCompress()
+        try doAtEpilogue(self)
     }
     
-    func emit(_ instruction: PopInstruction) {
-        instructions.append(instruction)
+    func determineInstructionToCompress(_ ir: [CrackleInstruction]) -> Set<CrackleInstruction> {
+        var result = Set<CrackleInstruction>()
+        
+        let uniqueInstructions = NSCountedSet()
+        for instruction in ir {
+            uniqueInstructions.add(instruction)
+        }
+        
+        for instruction_ in uniqueInstructions {
+            let instruction = instruction_ as! CrackleInstruction
+            if instructionIsEligibleForCompression(instruction) {
+                let numberOfTimesUsed = uniqueInstructions.count(for: instruction)
+                if isWorthwhileToExtract(numberOfTimesUsed, instruction) {
+                    result.insert(instruction)
+                }
+            }
+        }
+        
+        return result
+    }
+    
+    func isWorthwhileToExtract(_ numberOfTimesUsed: Int, _ instruction: CrackleInstruction) -> Bool {
+        let procedureConstantOverhead = 5
+        let lengthOfImplementation = determineLengthOfImplementation(instruction)
+        let procedureLinearOverhead = 3*numberOfTimesUsed
+        let costWhenExtracted = procedureConstantOverhead + lengthOfImplementation + numberOfTimesUsed * procedureLinearOverhead
+        let costWhenNotExtracted = numberOfTimesUsed * lengthOfImplementation
+        let isWorthwhileToExtract = costWhenExtracted < costWhenNotExtracted
+        return isWorthwhileToExtract
+    }
+    
+    func determineLengthOfImplementation(_ instruction: CrackleInstruction) -> Int {
+        let helper = CrackleToPopCompilerSingleInstruction(labelMaker: labelMaker)
+        try! helper.compile(instruction)
+        let lengthOfImplementation = helper.instructions.count
+        return lengthOfImplementation
+    }
+    
+    // Instructions are eligible if they can possibly function when extracted to
+    // a separate procedure, and if extracting to a separate procedure is ever
+    // possibly a good idea. This excludes some instructions like label and the
+    // control flow intructions. Whether it's actually a good trade-off or not
+    // is a calculation done elsewhere.
+    func instructionIsEligibleForCompression(_ instruction: CrackleInstruction) -> Bool {
+        switch instruction {
+        case .nop, .label, .jmp, .jalr, .indirectJalr, .pushReturnAddress, .ret, .leafRet, .hlt, .jz, .jnz:
+            return false
+            
+        case .push, .push16, .pop, .pop16, .subi16, .addi16, .muli16, .storeImmediate, .storeImmediate16, .storeImmediateBytes, .storeImmediateBytesIndirect, .enter, .leave, .peekPeripheral, .pokePeripheral, .add, .add16, .sub, .sub16, .mul, .mul16, .div, .div16, .mod, .mod16, .eq, .eq16, .ne, .ne16, .lt, .lt16, .gt, .gt16, .le, .le16, .ge, .ge16, .and, .and16, .or, .or16, .xor, .xor16, .lsl, .lsl16, .lsr, .lsr16, .neg, .neg16, .not, .copyWordZeroExtend, .copyWords, .copyWordsIndirectSource, .copyWordsIndirectDestination, .copyWordsIndirectDestinationIndirectSource, .copyLabel:
+            return true
+        }
     }
     
     // Inserts prologue code into the program, presumably at the beginning.
@@ -49,46 +106,84 @@ public class CrackleToPopCompiler: NSObject {
         emit(.blti(.M, 0))
     }
     
+    func applyTerminatingHlt() throws {
+        currentSourceAnchor = nil
+        currentSymbols = nil
+        try applyDebugInfo {
+            emit(.hlt)
+        }
+    }
+    
+    func emit(_ instruction: PopInstruction) {
+        instructions.append(instruction)
+    }
+    
     func compileProgramBody(_ ir: [CrackleInstruction]) throws {
         for i in 0..<ir.count {
-            let currentCrackleInstruction = ir[i]
+            currentCrackleInstruction = ir[i]
             currentSourceAnchor = programDebugInfo?.lookupSourceAnchor(crackleInstructionIndex: i)
             currentSymbols = programDebugInfo?.lookupSymbols(crackleInstructionIndex: i)
-            let instructionsBegin = instructions.count
-            try compileSingleCrackleInstruction(currentCrackleInstruction)
-            let instructionsEnd = instructions.count
-            if instructionsBegin < instructionsEnd {
-                for i in instructionsBegin..<instructionsEnd {
-                    programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: currentCrackleInstruction)
-                    programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
-                    programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
-                }
+            try applyDebugInfo {
+                try compileSingleCrackleInstruction(currentCrackleInstruction!)
+            }
+        }
+    }
+    
+    func applyDebugInfo(_ block: () throws -> Void) throws {
+        let instructionsBegin = instructions.count
+        try block()
+        let instructionsEnd = instructions.count
+        if instructionsBegin < instructionsEnd {
+            for i in instructionsBegin..<instructionsEnd {
+                programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: currentCrackleInstruction)
+                programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
+                programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
             }
         }
     }
     
     func compileSingleCrackleInstruction(_ instruction: CrackleInstruction) throws {
+        if instructionsToCompress.contains(instruction) {
+            let label = makeLabelNameForInstructionProcedure(instruction)
+            emit(.jalr(label))
+        } else {
+            try compileInstructionImplementation(instruction)
+        }
+    }
+    
+    func generateProceduresForInstructionsToCompress() throws {
+        for instruction in instructionsToCompress {
+            try generateProcedureForInstruction(instruction)
+        }
+    }
+    
+    func generateProcedureForInstruction(_ instruction: CrackleInstruction) throws {
+        currentCrackleInstruction = instruction
+        let label = makeLabelNameForInstructionProcedure(instruction)
+        try applyDebugInfo {
+            instructions += [
+                .label(label)
+            ]
+            try compileInstructionImplementation(instruction)
+            instructions += [
+                .mov(.X, .G),
+                .mov(.Y, .H),
+                .explicitJmp
+            ]
+        }
+    }
+    
+    func compileInstructionImplementation(_ instruction: CrackleInstruction) throws {
         let helper = CrackleToPopCompilerSingleInstruction(labelMaker: labelMaker)
         try helper.compile(instruction)
         instructions += helper.instructions
     }
     
-    // Inserts epilogue code into the program, presumably at the end.
-    func insertProgramEpilogue() throws {
-        currentSourceAnchor = nil
-        let instructionsBegin = instructions.count
-        
-        emit(.hlt)
-        try doAtEpilogue(self)
-        
-        let instructionsEnd = instructions.count
-        if instructionsBegin < instructionsEnd {
-            for i in instructionsBegin..<instructionsEnd {
-                programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: nil)
-                programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
-                programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
-            }
-        }
+    func makeLabelNameForInstructionProcedure(_ instruction: CrackleInstruction) -> String {
+        return "__crackle_" + instruction.description
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+            .replacingOccurrences(of: ",", with: "")
     }
 }
 

@@ -142,7 +142,13 @@ public class CrackleToPopCompiler: NSObject {
             for i in instructionsBegin..<instructionsEnd {
                 programDebugInfo?.bind(popInstructionIndex: i, crackleInstruction: currentCrackleInstruction)
                 programDebugInfo?.bind(popInstructionIndex: i, sourceAnchor: currentSourceAnchor)
-                programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
+                
+                if i > 0 && currentSymbols == nil {
+                    let prevSymbols = programDebugInfo?.mapPopInstructionToSymbols.last(where: { $0 != nil }) ?? nil
+                    programDebugInfo?.bind(popInstructionIndex: i, symbols: prevSymbols)
+                } else {
+                    programDebugInfo?.bind(popInstructionIndex: i, symbols: currentSymbols)
+                }
             }
         }
     }

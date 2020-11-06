@@ -36,6 +36,7 @@ public class CrackleToPopCompiler: NSObject {
         try insertProgramPrologue()
         try compileProgramBody(ir)
         try applyTerminatingHlt()
+        try generateProceduresForInstructionImplementation()
         try generateProceduresForInstructionsToCompress()
         try doAtEpilogue(self)
     }
@@ -119,8 +120,14 @@ public class CrackleToPopCompiler: NSObject {
         }
     }
     
-    func emit(_ instruction: PopInstruction) {
-        instructions.append(instruction)
+    func generateProceduresForInstructionImplementation() throws {
+        currentSourceAnchor = nil
+        currentSymbols = nil
+        try applyDebugInfo {
+            let helper = CrackleToPopCompilerSingleInstruction(labelMaker: labelMaker)
+            try helper.generateProcedurePushToStack()
+            instructions += helper.instructions
+        }
     }
     
     func compileProgramBody(_ ir: [CrackleInstruction]) throws {
@@ -193,6 +200,10 @@ public class CrackleToPopCompiler: NSObject {
             .replacingOccurrences(of: " ", with: "_")
             .replacingOccurrences(of: "-", with: "_")
             .replacingOccurrences(of: ",", with: "")
+    }
+    
+    func emit(_ instruction: PopInstruction) {
+        instructions.append(instruction)
     }
 }
 
@@ -591,12 +602,14 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
         emit(.mov(.M, .B))
     }
     
-    func pushReturnAddress() throws {
-        emit(.mov(.A, .H))
-        try pushAToStack()
-        
-        emit(.mov(.A, .G))
-        try pushAToStack()
+    private func pushReturnAddress() throws {
+        let tempValueToPush = allocateScratchMemory(2)
+        assert(tempValueToPush == 0x0004)
+        try setUV(tempValueToPush+0)
+        emit(.mov(.M, .G))
+        emit(.inuv)
+        emit(.mov(.M, .H))
+        try jalr(kProcPushToStack)
     }
     
     func leafRet() throws {
@@ -1796,5 +1809,25 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
         emit(.neg(.A))
         emit(.li(.B, 0b00000001))
         emit(.and(.M))
+    }
+    
+    fileprivate let kProcPushToStack = "__crackle_proc_pushToStack"
+    
+    fileprivate func generateProcedurePushToStack() throws {
+        scratchPointer = beginningOfScratchMemory
+        let tempSrcPointer = allocateScratchMemory(2)
+        assert(tempSrcPointer == 0x0004)
+        
+        try label(kProcPushToStack)
+        
+        try setUV(tempSrcPointer+1)
+        emit(.mov(.A, .M))
+        try pushAToStack()
+        
+        try setUV(tempSrcPointer+0)
+        emit(.mov(.A, .M))
+        try pushAToStack()
+        
+        try leafRet()
     }
 }

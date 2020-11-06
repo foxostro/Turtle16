@@ -125,7 +125,13 @@ public class CrackleToPopCompiler: NSObject {
         currentSymbols = nil
         try applyDebugInfo {
             let helper = CrackleToPopCompilerSingleInstruction(labelMaker: labelMaker)
+            
+            currentCrackleInstruction = .pushReturnAddress
             try helper.generateProcedurePushToStack()
+            
+            currentCrackleInstruction = .ret
+            try helper.generateProcedureRet()
+            
             instructions += helper.instructions
         }
     }
@@ -619,19 +625,7 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
     }
     
     func ret() throws {
-        let addressOfReturnAddressHi = allocateScratchMemory(1)
-        
-        try popInMemoryStackIntoRegisterB()
-        try setUV(addressOfReturnAddressHi)
-        emit(.mov(.M, .B))
-        
-        try popInMemoryStackIntoRegisterB()
-        emit(.mov(.Y, .B))
-        
-        try setUV(addressOfReturnAddressHi)
-        emit(.mov(.X, .M))
-        
-        emit(.explicitJmp)
+        try jmp(kProcRet)
     }
     
     func hlt() {
@@ -1829,5 +1823,26 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
         try pushAToStack()
         
         try leafRet()
+    }
+    
+    fileprivate let kProcRet = "__crackle_proc_poke_ret"
+    
+    fileprivate func generateProcedureRet() throws {
+        scratchPointer = beginningOfScratchMemory
+        let addressOfReturnAddressHi = allocateScratchMemory(1)
+        
+        try label(kProcRet)
+        
+        try popInMemoryStackIntoRegisterB()
+        try setUV(addressOfReturnAddressHi)
+        emit(.mov(.M, .B))
+        
+        try popInMemoryStackIntoRegisterB()
+        emit(.mov(.Y, .B))
+        
+        try setUV(addressOfReturnAddressHi)
+        emit(.mov(.X, .M))
+        
+        emit(.explicitJmp)
     }
 }

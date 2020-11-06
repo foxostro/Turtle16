@@ -276,6 +276,7 @@ public class PopCompiler: NSObject {
         guard labelTable[name] == nil else {
             throw CompilerError(sourceAnchor: currentSourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }
+//        print("label \(name) = \(assembler.programCounter)")
         labelTable[name] = assembler.programCounter
     }
     

@@ -5103,7 +5103,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 76)
+        XCTAssertEqual(computer.dataRAM.load16(from: tempResult.address), 118)
     }
     
     func testCallFunctionThroughFunctionPointer() {
@@ -5123,7 +5123,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                 .storeImmediate(0xabcd, 42),
                 .leafRet
             ])
-            addressOfFoo = 91 // UInt16(compiler.labelTable["foo"]!)
+            addressOfFoo = 133 // UInt16(compiler.labelTable["foo"]!)
         }
         executor.configure = { computer in
             computer.dataRAM.store16(value: addressOfFoo, to: addressOfBar)

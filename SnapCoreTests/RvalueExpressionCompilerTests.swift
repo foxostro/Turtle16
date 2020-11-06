@@ -3848,7 +3848,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable([
             "foo" : Symbol(type: .array(count: 5, elementType: .u8), offset: offset),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         
         let compiler = makeCompiler(symbols: symbols)
@@ -4036,7 +4036,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let ident = "foo"
         let symbols = SymbolTable([
             ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0100),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         let compiler = makeCompiler(symbols: symbols)
@@ -4086,7 +4086,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfData = 0x0104
         let symbols = SymbolTable([
             ident : Symbol(type: .dynamicArray(elementType: elementType), offset: addressOfPointer),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         let compiler = makeCompiler(symbols: symbols)
@@ -4162,7 +4162,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
@@ -4287,7 +4287,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable([
             "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: offset),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr, symbols: symbols)
@@ -4303,7 +4303,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         let ir = mustCompile(expression: expr, symbols: symbols)
@@ -4845,7 +4845,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
@@ -4882,7 +4882,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(2)),
@@ -4918,7 +4918,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(50)),
@@ -4939,7 +4939,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
@@ -4964,7 +4964,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
@@ -4998,7 +4998,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
@@ -5027,7 +5027,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
@@ -5092,7 +5092,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func testTakingTheAddressOfAFunctionYieldsTheAddressOfTheCorrespondingLabel() {
-        let name = "panic"
+        let name = "__oob"
         let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier(name))
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
@@ -5145,7 +5145,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5172,7 +5172,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5202,7 +5202,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5230,7 +5230,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)

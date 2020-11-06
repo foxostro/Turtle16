@@ -37,7 +37,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
                                         argument: Expression.LiteralInt(1))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .array(count: 2, elementType: .bool), offset: 0x0100),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         
         // We don't really care about the exact sequence of instructions which
@@ -67,7 +67,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer),
             "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         
         // We don't really care about the exact sequence of instructions which
@@ -92,7 +92,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     func testOutOfBoundsLvalueArrayAccessCausesPanic_StaticArray() {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0100),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
         var ir: [CrackleInstruction] = []
@@ -109,7 +109,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
     func testOutOfBoundsLvalueArrayAccessCausesPanic_DynamicArray() {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0100),
-            "panic" : Symbol(type: .function(FunctionType(name: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .u8)])), offset: 0)
+            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         var ir: [CrackleInstruction] = []

@@ -417,16 +417,7 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     private func panicOutOfBoundsError(sourceAnchor: SourceAnchor?) throws -> [CrackleInstruction] {
-        var message = "array access is out of bounds"
-        if let sourceAnchor = sourceAnchor {
-            message += ": `\(sourceAnchor.text)'"
-            if let lineNumbers = sourceAnchor.lineNumbers {
-                message += " on line \(lineNumbers.lowerBound + 1)"
-            }
-        }
-        let panic = Expression.Call(sourceAnchor: sourceAnchor, callee: Expression.Identifier("panic"), arguments: [
-            Expression.LiteralString(message)
-        ])
+        let panic = Expression.Call(sourceAnchor: sourceAnchor, callee: Expression.Identifier("__oob"), arguments: [])
         let instructions = try rvalueContext().compile(expression: panic)
         return instructions
     }

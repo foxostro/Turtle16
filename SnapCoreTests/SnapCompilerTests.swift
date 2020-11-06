@@ -994,7 +994,7 @@ puts("Hello, World!")
 let arr = "Hello"
 let foo = arr[10]
 """)
-        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `arr[10]' on line 2\n")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds\n")
     }
     
     func test_EndToEndIntegration_ReadAndWriteToStructMember() {
@@ -1389,7 +1389,7 @@ let helloComma = helloWorld[0..6]
 let hello = helloComma[0..1000]
 puts(hello)
 """)
-        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds: `helloComma[0..1000]' on line 3\n")
+        XCTAssertEqual(serialOutput, "PANIC: array access is out of bounds\n")
     }
     
     func testAssertionFailed() {

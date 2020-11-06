@@ -91,10 +91,10 @@ public class CrackleToPopCompiler: NSObject {
     // is a calculation done elsewhere.
     func instructionIsEligibleForCompression(_ instruction: CrackleInstruction) -> Bool {
         switch instruction {
-        case .nop, .label, .jmp, .jalr, .indirectJalr, .pushReturnAddress, .ret, .leafRet, .hlt, .jz, .jnz:
+        case .nop, .label, .jmp, .jalr, .indirectJalr, .pushReturnAddress, .ret, .leafRet, .hlt, .jz, .jnz, .storeImmediate, .storeImmediate16:
             return false
             
-        case .push, .push16, .pop, .pop16, .subi16, .addi16, .muli16, .storeImmediate, .storeImmediate16, .storeImmediateBytes, .storeImmediateBytesIndirect, .enter, .leave, .peekPeripheral, .pokePeripheral, .add, .add16, .sub, .sub16, .mul, .mul16, .div, .div16, .mod, .mod16, .eq, .eq16, .ne, .ne16, .lt, .lt16, .gt, .gt16, .le, .le16, .ge, .ge16, .and, .and16, .or, .or16, .xor, .xor16, .lsl, .lsl16, .lsr, .lsr16, .neg, .neg16, .not, .copyWordZeroExtend, .copyWords, .copyWordsIndirectSource, .copyWordsIndirectDestination, .copyWordsIndirectDestinationIndirectSource, .copyLabel:
+        case .push, .push16, .pop, .pop16, .subi16, .addi16, .muli16, .storeImmediateBytes, .storeImmediateBytesIndirect, .enter, .leave, .peekPeripheral, .pokePeripheral, .add, .add16, .sub, .sub16, .mul, .mul16, .div, .div16, .mod, .mod16, .eq, .eq16, .ne, .ne16, .lt, .lt16, .gt, .gt16, .le, .le16, .ge, .ge16, .and, .and16, .or, .or16, .xor, .xor16, .lsl, .lsl16, .lsr, .lsr16, .neg, .neg16, .not, .copyWordZeroExtend, .copyWords, .copyWordsIndirectSource, .copyWordsIndirectDestination, .copyWordsIndirectDestinationIndirectSource, .copyLabel:
             return true
         }
     }

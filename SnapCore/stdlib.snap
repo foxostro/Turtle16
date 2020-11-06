@@ -1,6 +1,11 @@
 public struct None {}
 public let none = None {}
 
+public func __oob() {
+    static let kPanicMessageOOB = "array access is out of bounds"
+    panic(kPanicMessageOOB)
+}
+
 public func panic(message: []const u8) {
     puts("PANIC: ")
     puts(message)

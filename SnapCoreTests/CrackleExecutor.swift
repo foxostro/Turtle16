@@ -40,7 +40,7 @@ class CrackleExecutor: NSObject {
                 try self!.injectCode(compiler)
                 if self!.injectPanicStub {
                     try compiler.injectCode([
-                        .label("panic"),
+                        .label("__oob"),
                         .push16(0xdead)
                     ])
                 }

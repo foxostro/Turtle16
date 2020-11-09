@@ -1,0 +1,389 @@
+EESchema Schematic File Version 4
+LIBS:TurtleTTL-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 13 24
+Title "Instruction RAM Control Logic"
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 "Logic for the control signals which drive Instruction RAM."
+$EndDescr
+Text GLabel 1600 2650 0    50   Input ~ 0
+~MI
+Text GLabel 4700 2900 0    50   Input ~ 0
+~MO
+$Comp
+L 74xx:74LS04 U?
+U 1 1 5DA7F270
+P 5350 2700
+AR Path="/5D8005AF/5D800744/5DA7F270" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DA7F270" Ref="U42"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DA7F270" Ref="U49"  Part="1" 
+F 0 "U42" H 5350 3017 50  0000 C CNN
+F 1 "74LS04" H 5350 2926 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 5350 2700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 5350 2700 50  0001 C CNN
+	1    5350 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS08 U?
+U 1 2 5DA7F276
+P 6100 2800
+AR Path="/5D8005AF/5D800744/5DA7F276" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DA7F276" Ref="U44"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DA7F276" Ref="U50"  Part="1" 
+F 0 "U44" H 6100 3125 50  0000 C CNN
+F 1 "74LS08" H 6100 3034 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 6100 2800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS08" H 6100 2800 50  0001 C CNN
+	1    6100 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5800 2700 5650 2700
+$Comp
+L 74xx:74LS08 U?
+U 2 2 5DA7F27D
+P 8900 2600
+AR Path="/5D8005AF/5D800744/5DA7F27D" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DA7F27D" Ref="U46"  Part="2" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DA7F27D" Ref="U43"  Part="2" 
+F 0 "U46" H 8900 2925 50  0000 C CNN
+F 1 "74LS08" H 8900 2834 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 8900 2600 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS08" H 8900 2600 50  0001 C CNN
+	2    8900 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS32 U?
+U 1 2 5DA7F283
+P 2200 2750
+AR Path="/5D2C0C74/5DA7F283" Ref="U?"  Part="1" 
+AR Path="/5D2C1188/5DA7F283" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA7F283" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DA7F283" Ref="U36"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DA7F283" Ref="U48"  Part="1" 
+F 0 "U36" H 2200 3075 50  0000 C CNN
+F 1 "74LS32" H 2200 2984 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 2200 2750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS32" H 2200 2750 50  0001 C CNN
+	1    2200 2750
+	1    0    0    -1  
+$EndComp
+Text HLabel 6650 2800 2    50   Output ~ 0
+~OE
+Text HLabel 2800 2750 2    50   Output ~ 0
+~WE
+Text HLabel 10400 2700 2    50   Output ~ 0
+~OutToBus
+Wire Wire Line
+	1600 2650 1900 2650
+Text HLabel 1600 2850 0    50   Input ~ 0
+Select
+Wire Wire Line
+	1600 2850 1900 2850
+Wire Wire Line
+	2800 2750 2500 2750
+Text Notes 1450 3300 0    50   ~ 0
+Only write to the Instruction SRAM when\nthe MI signal is active and the appropriate\nplane of Instruction RAM is selected.
+Text HLabel 4700 2700 0    50   Input ~ 0
+Select
+Wire Wire Line
+	4700 2700 5050 2700
+Wire Wire Line
+	5800 2900 4700 2900
+Text Notes 4650 3500 0    50   ~ 0
+Always output from Instruction SRAM when\nthe plane of Instruction RAM is deselected.\nThis allows RAM to be read for use in IF.\n\nElse, if the plane is selected then only read\nfrom SRAM when the MO signal is active.
+Wire Wire Line
+	6650 2800 6400 2800
+Text GLabel 8250 2500 0    50   Input ~ 0
+~MI
+Text GLabel 8250 2700 0    50   Input ~ 0
+~MO
+Wire Wire Line
+	8250 2500 8600 2500
+Wire Wire Line
+	8250 2700 8600 2700
+$Comp
+L 74xx:74LS32 U?
+U 2 2 5DBDE3AD
+P 9800 2700
+AR Path="/5D2C0C74/5DBDE3AD" Ref="U?"  Part="1" 
+AR Path="/5D2C1188/5DBDE3AD" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DBDE3AD" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DBDE3AD" Ref="U47"  Part="2" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DBDE3AD" Ref="U34"  Part="2" 
+F 0 "U47" H 9800 3025 50  0000 C CNN
+F 1 "74LS32" H 9800 2934 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 9800 2700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS32" H 9800 2700 50  0001 C CNN
+	2    9800 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 2600 9500 2600
+Text HLabel 8250 2900 0    50   Input ~ 0
+Select
+Wire Wire Line
+	10400 2700 10100 2700
+Wire Wire Line
+	9500 2800 9150 2800
+Wire Wire Line
+	9150 2800 9150 2900
+Wire Wire Line
+	9150 2900 8250 2900
+Text Notes 8350 3700 0    50   ~ 0
+The bus transceiver should connect the\nInstruction SRAM to the Data Bus when\nthe plane is selected and either MO or MI\nis active.\n\nThe direction of the bus transceiver must\nalso be set appropriately. This is done\nelsewhere.
+$Comp
+L Device:C C?
+U 1 1 5DBF6C0C
+P 8600 5550
+AR Path="/5D2C07CD/5DBF6C0C" Ref="C?"  Part="1" 
+AR Path="/5D2C1188/5DBF6C0C" Ref="C?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DBF6C0C" Ref="C?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DBF6C0C" Ref="C33"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DBF6C0C" Ref="C36"  Part="1" 
+F 0 "C33" H 8715 5596 50  0000 L CNN
+F 1 "100nF" H 8715 5505 50  0000 L CNN
+F 2 "Capacitor_THT:C_Disc_D4.3mm_W1.9mm_P5.00mm" H 8638 5400 50  0001 C CNN
+F 3 "~" H 8600 5550 50  0001 C CNN
+	1    8600 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5DBF6C12
+P 9100 5550
+AR Path="/5D2C07CD/5DBF6C12" Ref="C?"  Part="1" 
+AR Path="/5D2C1188/5DBF6C12" Ref="C?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DBF6C12" Ref="C?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DBF6C12" Ref="C34"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DBF6C12" Ref="C37"  Part="1" 
+F 0 "C34" H 9215 5596 50  0000 L CNN
+F 1 "100nF" H 9215 5505 50  0000 L CNN
+F 2 "Capacitor_THT:C_Disc_D4.3mm_W1.9mm_P5.00mm" H 9138 5400 50  0001 C CNN
+F 3 "~" H 9100 5550 50  0001 C CNN
+	1    9100 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5DBF6C18
+P 9600 5550
+AR Path="/5D2C07CD/5DBF6C18" Ref="C?"  Part="1" 
+AR Path="/5D2C1188/5DBF6C18" Ref="C?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DBF6C18" Ref="C?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DBF6C18" Ref="C35"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DBF6C18" Ref="C38"  Part="1" 
+F 0 "C35" H 9715 5596 50  0000 L CNN
+F 1 "100nF" H 9715 5505 50  0000 L CNN
+F 2 "Capacitor_THT:C_Disc_D4.3mm_W1.9mm_P5.00mm" H 9638 5400 50  0001 C CNN
+F 3 "~" H 9600 5550 50  0001 C CNN
+	1    9600 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBF6C24
+P 8600 5700
+AR Path="/5D2C07CD/5DBF6C24" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C1188/5DBF6C24" Ref="#PWR?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DBF6C24" Ref="#PWR?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DBF6C24" Ref="#PWR089"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DBF6C24" Ref="#PWR091"  Part="1" 
+F 0 "#PWR089" H 8600 5450 50  0001 C CNN
+F 1 "GND" H 8605 5527 50  0000 C CNN
+F 2 "" H 8600 5700 50  0001 C CNN
+F 3 "" H 8600 5700 50  0001 C CNN
+	1    8600 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5DBF6C2A
+P 8600 5400
+AR Path="/5D2C07CD/5DBF6C2A" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C1188/5DBF6C2A" Ref="#PWR?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DBF6C2A" Ref="#PWR?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DBF6C2A" Ref="#PWR088"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DBF6C2A" Ref="#PWR090"  Part="1" 
+F 0 "#PWR088" H 8600 5250 50  0001 C CNN
+F 1 "VCC" H 8617 5573 50  0000 C CNN
+F 2 "" H 8600 5400 50  0001 C CNN
+F 3 "" H 8600 5400 50  0001 C CNN
+	1    8600 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8600 5400 9100 5400
+Connection ~ 8600 5400
+Wire Wire Line
+	9100 5400 9600 5400
+Connection ~ 9100 5400
+Wire Wire Line
+	9600 5700 9100 5700
+Wire Wire Line
+	9100 5700 8600 5700
+Connection ~ 9100 5700
+Connection ~ 8600 5700
+$Comp
+L 74xx:74LS32 U?
+U 1 2 5DC9B82D
+P 1250 6550
+AR Path="/5D2C0C74/5DC9B82D" Ref="U?"  Part="1" 
+AR Path="/5D2C1188/5DC9B82D" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DC9B82D" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DC9B82D" Ref="U34"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DC9B82D" Ref="U34"  Part="3" 
+F 0 "U34" H 1250 6875 50  0000 C CNN
+F 1 "74LS32" H 1250 6784 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 1250 6550 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS32" H 1250 6550 50  0001 C CNN
+	1    1250 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS32 U?
+U 1 2 5DC9C9DD
+P 2000 6550
+AR Path="/5D2C0C74/5DC9C9DD" Ref="U?"  Part="1" 
+AR Path="/5D2C1188/5DC9C9DD" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DC9C9DD" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DC9C9DD" Ref="U35"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DC9C9DD" Ref="U34"  Part="4" 
+F 0 "U35" H 2000 6875 50  0000 C CNN
+F 1 "74LS32" H 2000 6784 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 2000 6550 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS32" H 2000 6550 50  0001 C CNN
+	1    2000 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS08 U?
+U 1 2 5DC9F2EE
+P 5600 6400
+AR Path="/5D8005AF/5D800744/5DC9F2EE" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DC9F2EE" Ref="U43"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DC9F2EE" Ref="U43"  Part="3" 
+F 0 "U43" H 5600 6725 50  0000 C CNN
+F 1 "74LS08" H 5600 6634 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 5600 6400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS08" H 5600 6400 50  0001 C CNN
+	1    5600 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS08 U?
+U 1 2 5DCA09A1
+P 6400 6400
+AR Path="/5D8005AF/5D800744/5DCA09A1" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DCA09A1" Ref="U45"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DCA09A1" Ref="U43"  Part="4" 
+F 0 "U45" H 6400 6725 50  0000 C CNN
+F 1 "74LS08" H 6400 6634 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 6400 6400 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS08" H 6400 6400 50  0001 C CNN
+	1    6400 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 2 1 5DCA1CA3
+P 3050 6250
+AR Path="/5D8005AF/5D800744/5DCA1CA3" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DCA1CA3" Ref="U37"  Part="2" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DCA1CA3" Ref="U37"  Part="2" 
+F 0 "U37" H 3050 6567 50  0000 C CNN
+F 1 "74LS04" H 3050 6476 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 3050 6250 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3050 6250 50  0001 C CNN
+	2    3050 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 3 1 5DCA263C
+P 3800 6250
+AR Path="/5D8005AF/5D800744/5DCA263C" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DCA263C" Ref="U39"  Part="3" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DCA263C" Ref="U37"  Part="3" 
+F 0 "U39" H 3800 6567 50  0000 C CNN
+F 1 "74LS04" H 3800 6476 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 3800 6250 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3800 6250 50  0001 C CNN
+	3    3800 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 5 1 5DCA2B61
+P 3050 6800
+AR Path="/5D8005AF/5D800744/5DCA2B61" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DCA2B61" Ref="U38"  Part="5" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DCA2B61" Ref="U37"  Part="5" 
+F 0 "U38" H 3050 7117 50  0000 C CNN
+F 1 "74LS04" H 3050 7026 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 3050 6800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3050 6800 50  0001 C CNN
+	5    3050 6800
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 6 1 5DCA408E
+P 3800 6800
+AR Path="/5D8005AF/5D800744/5DCA408E" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DCA408E" Ref="U40"  Part="6" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DCA408E" Ref="U37"  Part="6" 
+F 0 "U40" H 3800 7117 50  0000 C CNN
+F 1 "74LS04" H 3800 7026 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 3800 6800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3800 6800 50  0001 C CNN
+	6    3800 6800
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 4 1 5DCA490A
+P 4550 6250
+AR Path="/5D8005AF/5D800744/5DCA490A" Ref="U?"  Part="1" 
+AR Path="/5D8005AF/5D800744/5DA74300/5DCA490A" Ref="U41"  Part="4" 
+AR Path="/5D8005AF/5D800744/5DA75946/5DCA490A" Ref="U37"  Part="4" 
+F 0 "U41" H 4550 6567 50  0000 C CNN
+F 1 "74LS04" H 4550 6476 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 4550 6250 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 4550 6250 50  0001 C CNN
+	4    4550 6250
+	1    0    0    -1  
+$EndComp
+NoConn ~ 950  6450
+NoConn ~ 950  6650
+NoConn ~ 1550 6550
+NoConn ~ 1700 6450
+NoConn ~ 1700 6650
+NoConn ~ 2300 6550
+NoConn ~ 5300 6300
+NoConn ~ 5300 6500
+NoConn ~ 5900 6400
+NoConn ~ 6100 6300
+NoConn ~ 6100 6500
+NoConn ~ 11100 5150
+NoConn ~ 2750 6250
+NoConn ~ 2750 6800
+NoConn ~ 3350 6800
+NoConn ~ 3350 6250
+NoConn ~ 3500 6250
+NoConn ~ 3500 6800
+NoConn ~ 4100 6800
+NoConn ~ 4100 6250
+NoConn ~ 4250 6250
+NoConn ~ 4850 6250
+$EndSCHEMATC

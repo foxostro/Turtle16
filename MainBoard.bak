@@ -2,71 +2,28 @@ EESchema Schematic File Version 4
 LIBS:MainBoard-cache
 EELAYER 29 0
 EELAYER END
-$Descr A 11000 8500
+$Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 21
-Title "TurtleTTL: Main Board"
+Sheet 1 88
+Title "Turtle16: Main Board"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "TTL microcomputer built from 74xx series logic chips."
+Comment4 "Microcomputer built from 74xx series logic chips."
 $EndDescr
 $Sheet
-S 6650 3100 1500 500 
-U 5D29E36D
-F0 "Register D" 50
-F1 "Register D.sch" 50
-$EndSheet
-$Sheet
-S 3200 2400 1500 500 
+S 1650 1350 1200 500 
 U 5D2C07CD
 F0 "Program Counter" 50
 F1 "Program Counter.sch" 50
-$EndSheet
-$Sheet
-S 3200 3800 1500 500 
-U 5D8005AF
-F0 "Instruction Fetch" 50
-F1 "Instruction Fetch.sch" 50
-$EndSheet
-$Sheet
-S 3200 4500 1500 500 
-U 5D2C0B92
-F0 "Instruction Decode" 50
-F1 "Instruction Decode.sch" 50
-$EndSheet
-$Sheet
-S 4950 1700 1500 500 
-U 5D2C0CA7
-F0 "Register A" 50
-F1 "Register A.sch" 50
-$EndSheet
-$Sheet
-S 4950 2400 1500 500 
-U 5D2C0D13
-F0 "Register B" 50
-F1 "Register B.sch" 50
-$EndSheet
-$Sheet
-S 4950 3100 1500 500 
-U 5D2C0CE4
-F0 "ALU" 50
-F1 "ALU.sch" 50
-$EndSheet
-$Sheet
-S 4950 4500 1500 500 
-U 5D2C12A5
-F0 "Bus Display" 50
-F1 "Bus Display.sch" 50
-$EndSheet
-$Sheet
-S 6650 3800 1500 500 
-U 5D9F1D54
-F0 "Expansion" 50
-F1 "Expansion.sch" 50
+F2 "ALUResult[0..15]" I L 1650 1650 50 
+F3 "Phi1" I L 1650 1450 50 
+F4 "~RST" I L 1650 1550 50 
+F5 "~J" I L 1650 1750 50 
+F6 "PC[0..15]" O R 2850 1600 50 
 $EndSheet
 $Comp
 L Mechanical:MountingHole_Pad H1
@@ -82,12 +39,12 @@ $EndComp
 $Comp
 L Mechanical:MountingHole_Pad H3
 U 1 1 5D9D8A27
-P 4800 6650
-F 0 "H3" H 4900 6699 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4900 6608 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 4800 6650 50  0001 C CNN
-F 3 "~" H 4800 6650 50  0001 C CNN
-	1    4800 6650
+P 4050 6650
+F 0 "H3" H 4150 6699 50  0000 L CNN
+F 1 "MountingHole_Pad" H 4150 6608 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 4050 6650 50  0001 C CNN
+F 3 "~" H 4050 6650 50  0001 C CNN
+	1    4050 6650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -104,12 +61,12 @@ $EndComp
 $Comp
 L power:GND #PWR0226
 U 1 1 5D9D9546
-P 4800 6750
-F 0 "#PWR0226" H 4800 6500 50  0001 C CNN
-F 1 "GND" H 4805 6577 50  0000 C CNN
-F 2 "" H 4800 6750 50  0001 C CNN
-F 3 "" H 4800 6750 50  0001 C CNN
-	1    4800 6750
+P 4050 6750
+F 0 "#PWR0226" H 4050 6500 50  0001 C CNN
+F 1 "GND" H 4055 6577 50  0000 C CNN
+F 2 "" H 4050 6750 50  0001 C CNN
+F 3 "" H 4050 6750 50  0001 C CNN
+	1    4050 6750
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -126,12 +83,12 @@ $EndComp
 $Comp
 L Mechanical:MountingHole_Pad H4
 U 1 1 5D9DB4F3
-P 4800 7150
-F 0 "H4" H 4900 7199 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4900 7108 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 4800 7150 50  0001 C CNN
-F 3 "~" H 4800 7150 50  0001 C CNN
-	1    4800 7150
+P 4050 7150
+F 0 "H4" H 4150 7199 50  0000 L CNN
+F 1 "MountingHole_Pad" H 4150 7108 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 4050 7150 50  0001 C CNN
+F 3 "~" H 4050 7150 50  0001 C CNN
+	1    4050 7150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -148,164 +105,597 @@ $EndComp
 $Comp
 L power:GND #PWR0228
 U 1 1 5D9DB4FF
-P 4800 7250
-F 0 "#PWR0228" H 4800 7000 50  0001 C CNN
-F 1 "GND" H 4805 7077 50  0000 C CNN
-F 2 "" H 4800 7250 50  0001 C CNN
-F 3 "" H 4800 7250 50  0001 C CNN
-	1    4800 7250
+P 4050 7250
+F 0 "#PWR0228" H 4050 7000 50  0001 C CNN
+F 1 "GND" H 4055 7077 50  0000 C CNN
+F 2 "" H 4050 7250 50  0001 C CNN
+F 3 "" H 4050 7250 50  0001 C CNN
+	1    4050 7250
 	1    0    0    -1  
 $EndComp
 $Sheet
-S 6650 5200 1500 500 
-U 5DAA13E6
-F0 "Data RAM" 50
-F1 "Data RAM.sch" 50
-$EndSheet
-$Sheet
-S 3200 3100 1500 500 
-U 5DA6B866
-F0 "Link Register" 50
-F1 "Link Register.sch" 50
-$EndSheet
-$Comp
-L Mechanical:MountingHole_Pad H5
-U 1 1 661EA07C
-P 3050 7600
-F 0 "H5" H 3150 7649 50  0000 L CNN
-F 1 "MountingHole_Pad" H 3150 7558 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 3050 7600 50  0001 C CNN
-F 3 "~" H 3050 7600 50  0001 C CNN
-	1    3050 7600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0154
-U 1 1 661EA082
-P 3050 7700
-F 0 "#PWR0154" H 3050 7450 50  0001 C CNN
-F 1 "GND" H 3055 7527 50  0000 C CNN
-F 2 "" H 3050 7700 50  0001 C CNN
-F 3 "" H 3050 7700 50  0001 C CNN
-	1    3050 7700
-	1    0    0    -1  
-$EndComp
-$Comp
-L Mechanical:MountingHole_Pad H6
-U 1 1 661EC32F
-P 4800 7600
-F 0 "H6" H 4900 7649 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4900 7558 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 4800 7600 50  0001 C CNN
-F 3 "~" H 4800 7600 50  0001 C CNN
-	1    4800 7600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0157
-U 1 1 661EC335
-P 4800 7700
-F 0 "#PWR0157" H 4800 7450 50  0001 C CNN
-F 1 "GND" H 4805 7527 50  0000 C CNN
-F 2 "" H 4800 7700 50  0001 C CNN
-F 3 "" H 4800 7700 50  0001 C CNN
-	1    4800 7700
-	1    0    0    -1  
-$EndComp
-$Sheet
-S 4950 5200 1500 500 
-U 5DCFC665
-F0 "Power Supply" 50
-F1 "PowerSupply.sch" 50
-$EndSheet
-$Comp
-L Mechanical:MountingHole_Pad H7
-U 1 1 5DED8C63
-P 3950 7150
-F 0 "H7" H 4050 7199 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4050 7108 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 3950 7150 50  0001 C CNN
-F 3 "~" H 3950 7150 50  0001 C CNN
-	1    3950 7150
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0217
-U 1 1 5DED8C69
-P 3950 7250
-F 0 "#PWR0217" H 3950 7000 50  0001 C CNN
-F 1 "GND" H 3955 7077 50  0000 C CNN
-F 2 "" H 3950 7250 50  0001 C CNN
-F 3 "" H 3950 7250 50  0001 C CNN
-	1    3950 7250
-	1    0    0    -1  
-$EndComp
-$Sheet
-S 3200 5200 1500 500 
-U 5D2C13FD
-F0 "Execute" 50
-F1 "Execute.sch" 50
-$EndSheet
-$Comp
-L Mechanical:MountingHole_Pad H8
-U 1 1 5E0E2F6B
-P 3950 6650
-F 0 "H8" H 4050 6699 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4050 6608 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 3950 6650 50  0001 C CNN
-F 3 "~" H 3950 6650 50  0001 C CNN
-	1    3950 6650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0236
-U 1 1 5E0E2F71
-P 3950 6750
-F 0 "#PWR0236" H 3950 6500 50  0001 C CNN
-F 1 "GND" H 3955 6577 50  0000 C CNN
-F 2 "" H 3950 6750 50  0001 C CNN
-F 3 "" H 3950 6750 50  0001 C CNN
-	1    3950 6750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Mechanical:MountingHole_Pad H9
-U 1 1 5E0E37C1
-P 3950 7600
-F 0 "H9" H 4050 7649 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4050 7558 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 3950 7600 50  0001 C CNN
-F 3 "~" H 3950 7600 50  0001 C CNN
-	1    3950 7600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0237
-U 1 1 5E0E37C7
-P 3950 7700
-F 0 "#PWR0237" H 3950 7450 50  0001 C CNN
-F 1 "GND" H 3955 7527 50  0000 C CNN
-F 2 "" H 3950 7700 50  0001 C CNN
-F 3 "" H 3950 7700 50  0001 C CNN
-	1    3950 7700
-	1    0    0    -1  
-$EndComp
-$Sheet
-S 4950 3800 1500 500 
+S 600  650  550  450 
 U 5D2C0720
 F0 "Clock" 50
 F1 "Clock.sch" 50
+F2 "~RST" O R 1150 950 50 
+F3 "Phi1" O R 1150 850 50 
+F4 "Phi2" O R 1150 750 50 
+F5 "~HLT" I L 600 750 50 
 $EndSheet
 $Sheet
-S 6650 4500 1500 500 
-U 5E0B0BBA
-F0 "Register UV" 50
-F1 "Register UV.sch" 50
+S 3050 1300 1050 550 
+U 5FE21410
+F0 "PC/IF" 50
+F1 "PC_IF.sch" 50
+F2 "PC[0..15]" I L 3050 1600 50 
+F3 "Phi1" I L 3050 1400 50 
+F4 "PC_IF[0..15]" O R 4100 1600 50 
+$EndSheet
+Wire Bus Line
+	2850 1600 3050 1600
+$Sheet
+S 4300 1350 1000 500 
+U 5FE35007
+F0 "IF" 50
+F1 "IF.sch" 50
+F2 "PC_IF[0..15]" I L 4300 1600 50 
+F3 "InstructionWord[0..15]" O R 5300 1750 50 
+$EndSheet
+Wire Bus Line
+	4300 1600 4200 1600
+$Sheet
+S 5600 1350 1150 500 
+U 5FE8EB3D
+F0 "IF/ID" 50
+F1 "IF_ID.sch" 50
+F2 "PCIn[0..15]" I L 5600 1550 50 
+F3 "Phi1" I L 5600 1450 50 
+F4 "PCOut[0..15]" O R 6750 1450 50 
+F5 "InsIn[0..15]" I L 5600 1750 50 
+F6 "InsOut[0..15]" O R 6750 1550 50 
+$EndSheet
+Wire Bus Line
+	4200 1600 4200 1150
+Connection ~ 4200 1600
+Wire Bus Line
+	4200 1600 4100 1600
+Wire Wire Line
+	5500 850  2950 850 
+Wire Wire Line
+	3050 1400 2950 1400
+Wire Wire Line
+	2950 1400 2950 850 
+Connection ~ 2950 850 
+Wire Wire Line
+	2950 850  1300 850 
+Wire Wire Line
+	1650 1450 1300 1450
+Wire Wire Line
+	1300 1450 1300 850 
+Wire Wire Line
+	1250 950  1250 1550
+Wire Wire Line
+	1250 1550 1650 1550
+Wire Wire Line
+	1150 950  1250 950 
+Wire Wire Line
+	1150 850  1300 850 
+Connection ~ 1300 850 
+Wire Wire Line
+	5500 850  5500 1450
+Wire Wire Line
+	5500 1450 5600 1450
+Wire Bus Line
+	5300 1750 5600 1750
+Wire Bus Line
+	5600 1550 5400 1550
+Wire Bus Line
+	5400 1550 5400 1150
+Wire Bus Line
+	5400 1150 4200 1150
+$Sheet
+S 7150 1350 1300 500 
+U 5FED3839
+F0 "ID" 50
+F1 "ID.sch" 50
+F2 "~A=B" I L 7150 1750 50 
+F3 "~Carry" I L 7150 1650 50 
+F4 "Ins[0..15]" I L 7150 1550 50 
+F5 "ControlWord[0..23]" O R 8450 1700 50 
+$EndSheet
+Wire Bus Line
+	6750 1550 7050 1550
+Wire Bus Line
+	6750 1450 7000 1450
+Wire Bus Line
+	7000 1450 7000 1000
+Wire Wire Line
+	8850 1350 8750 1350
+Wire Wire Line
+	8750 1350 8750 850 
+Wire Wire Line
+	8750 850  5500 850 
+Connection ~ 5500 850 
+$Comp
+L power:VCC #PWR?
+U 1 1 608FD908
+P 2200 6900
+AR Path="/5D2C0761/608FD908" Ref="#PWR?"  Part="1" 
+AR Path="/608FD908" Ref="#PWR?"  Part="1" 
+AR Path="/5DCFC665/608FD908" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2200 6750 50  0001 C CNN
+F 1 "VCC" V 2217 7028 50  0000 L CNN
+F 2 "" H 2200 6900 50  0001 C CNN
+F 3 "" H 2200 6900 50  0001 C CNN
+	1    2200 6900
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 608FD90E
+P 2200 7200
+AR Path="/5D2C0761/608FD90E" Ref="#PWR?"  Part="1" 
+AR Path="/608FD90E" Ref="#PWR?"  Part="1" 
+AR Path="/5DCFC665/608FD90E" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2200 6950 50  0001 C CNN
+F 1 "GND" V 2205 7072 50  0000 R CNN
+F 2 "" H 2200 7200 50  0001 C CNN
+F 3 "" H 2200 7200 50  0001 C CNN
+	1    2200 7200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:CP1 C?
+U 1 1 608FD914
+P 1650 7050
+AR Path="/5D2C0720/608FD914" Ref="C?"  Part="1" 
+AR Path="/5D2C0761/608FD914" Ref="C?"  Part="1" 
+AR Path="/608FD914" Ref="C?"  Part="1" 
+AR Path="/5DCFC665/608FD914" Ref="C?"  Part="1" 
+F 0 "C?" H 1742 7096 50  0000 L CNN
+F 1 "100µF" H 1742 7005 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 1650 7050 50  0001 C CNN
+F 3 "~" H 1650 7050 50  0001 C CNN
+	1    1650 7050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2200 6900 2050 6900
+Wire Wire Line
+	1650 7200 2050 7200
+Wire Wire Line
+	1300 7100 1400 7100
+Wire Wire Line
+	1300 7000 1400 7000
+$Comp
+L power:PWR_FLAG #FLG?
+U 1 1 608FD924
+P 2050 7400
+AR Path="/5DCFC665/608FD924" Ref="#FLG?"  Part="1" 
+AR Path="/608FD924" Ref="#FLG?"  Part="1" 
+F 0 "#FLG?" H 2050 7475 50  0001 C CNN
+F 1 "PWR_FLAG" H 2050 7573 50  0000 C CNN
+F 2 "" H 2050 7400 50  0001 C CNN
+F 3 "~" H 2050 7400 50  0001 C CNN
+	1    2050 7400
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2050 7400 2050 7200
+Connection ~ 2050 7200
+Wire Wire Line
+	2050 7200 2200 7200
+$Comp
+L power:PWR_FLAG #FLG?
+U 1 1 608FD92D
+P 2050 6700
+AR Path="/5DCFC665/608FD92D" Ref="#FLG?"  Part="1" 
+AR Path="/608FD92D" Ref="#FLG?"  Part="1" 
+F 0 "#FLG?" H 2050 6775 50  0001 C CNN
+F 1 "PWR_FLAG" H 2050 6873 50  0000 C CNN
+F 2 "" H 2050 6700 50  0001 C CNN
+F 3 "~" H 2050 6700 50  0001 C CNN
+	1    2050 6700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2050 6700 2050 6900
+Connection ~ 2050 6900
+Wire Wire Line
+	2050 6900 1650 6900
+Wire Wire Line
+	1400 6900 1400 7000
+Wire Wire Line
+	1400 7100 1400 7200
+Wire Wire Line
+	1650 6900 1400 6900
+Connection ~ 1650 6900
+Wire Wire Line
+	1400 7200 1650 7200
+Connection ~ 1650 7200
+$Comp
+L Connector:Screw_Terminal_01x02 J?
+U 1 1 608FD91C
+P 1100 7100
+AR Path="/5DCFC665/608FD91C" Ref="J?"  Part="1" 
+AR Path="/608FD91C" Ref="J?"  Part="1" 
+F 0 "J?" V 1200 7050 50  0000 C CNN
+F 1 "DC Power +5V" V 1300 7050 50  0000 C CNN
+F 2 "TerminalBlock_MetzConnect:TerminalBlock_MetzConnect_Type055_RT01502HDWU_1x02_P5.00mm_Horizontal" H 1100 7100 50  0001 C CNN
+F 3 "~" H 1100 7100 50  0001 C CNN
+	1    1100 7100
+	-1   0    0    1   
+$EndComp
+Wire Bus Line
+	7050 1550 7050 1050
+Wire Bus Line
+	7050 1050 8550 1050
+Wire Bus Line
+	8550 1050 8550 1600
+Connection ~ 7050 1550
+Wire Bus Line
+	7050 1550 7150 1550
+Wire Bus Line
+	8600 1000 8600 1500
+Wire Bus Line
+	8600 1500 8850 1500
+Wire Bus Line
+	7000 1000 8600 1000
+Wire Bus Line
+	8550 1600 8850 1600
+Wire Bus Line
+	8850 1700 8450 1700
+Wire Bus Line
+	10000 1700 10100 1700
+Wire Bus Line
+	10000 1600 10150 1600
+Wire Bus Line
+	10200 1500 10000 1500
+Wire Bus Line
+	10200 3200 10000 3200
+Wire Bus Line
+	10150 3100 10000 3100
+Wire Bus Line
+	10100 3000 10000 3000
+Wire Bus Line
+	10100 1700 10100 3000
+Wire Bus Line
+	10150 1600 10150 3100
+Wire Bus Line
+	10200 1500 10200 3200
+Wire Wire Line
+	1150 750  1350 750 
+Wire Wire Line
+	10400 750  10400 4400
+Wire Wire Line
+	10400 4400 10000 4400
+Wire Bus Line
+	8600 3100 8800 3100
+Wire Bus Line
+	8800 3200 8600 3200
+Wire Bus Line
+	8600 3300 8800 3300
+Wire Bus Line
+	5700 3250 5150 3250
+Wire Bus Line
+	5200 2400 5200 3050
+Wire Bus Line
+	5200 3050 4950 3050
+Wire Wire Line
+	5100 2250 5100 2950
+Wire Wire Line
+	5100 2950 4950 2950
+Wire Bus Line
+	1450 2150 5150 2150
+Wire Bus Line
+	5150 3250 4950 3250
+Wire Wire Line
+	1300 1450 1300 2250
+Wire Wire Line
+	1300 2250 5100 2250
+Connection ~ 1300 1450
+Connection ~ 5100 2250
+Wire Wire Line
+	5100 2250 5450 2250
+Wire Bus Line
+	1650 1650 1450 1650
+Wire Bus Line
+	1450 1650 1450 2150
+Wire Wire Line
+	1650 1750 1550 1750
+Wire Wire Line
+	1550 1750 1550 2050
+$Sheet
+S 3400 2850 1550 600 
+U 60A8EF0C
+F0 "EX/MEM" 50
+F1 "EX_MEM.sch" 50
+F2 "Phi1" I R 4950 2950 50 
+F3 "StoreOp[0..15]" O L 3400 3050 50 
+F4 "StoreOpIn[0..15]" I R 4950 3050 50 
+F5 "ALUResultIn[0..15]" I R 4950 3250 50 
+F6 "SelCIn[0..2]" I R 4950 3150 50 
+F7 "SelC[0..2]" O L 3400 3350 50 
+F8 "ALUResult[0..15]" O L 3400 3250 50 
+F9 "CtlIn[13..23]" I R 4950 3350 50 
+F10 "Ctl[13..23]" O L 3400 3150 50 
+$EndSheet
+Wire Bus Line
+	8800 3000 8600 3000
+Wire Bus Line
+	3400 3050 3100 3050
+Wire Bus Line
+	5150 2150 5150 3250
+Wire Bus Line
+	3400 3150 3100 3150
+Wire Wire Line
+	8700 2900 8600 2900
+Wire Wire Line
+	8700 2250 8700 2900
+Connection ~ 5150 3250
+Wire Bus Line
+	6050 4000 8800 4000
+Wire Bus Line
+	6050 4100 8800 4100
+Wire Wire Line
+	6050 4300 8800 4300
+Wire Wire Line
+	6050 4200 8800 4200
+Wire Bus Line
+	1550 3050 1000 3050
+Wire Bus Line
+	1550 3150 1050 3150
+Connection ~ 1300 2250
+Wire Bus Line
+	8800 3400 8600 3400
+Wire Bus Line
+	1000 3050 1000 4400
+Wire Bus Line
+	1050 3150 1050 4300
+Wire Wire Line
+	5400 2950 5400 2150
+Wire Wire Line
+	5400 2150 7050 2150
+Wire Wire Line
+	7050 2150 7050 1750
+Wire Wire Line
+	7050 1750 7150 1750
+Wire Wire Line
+	5400 2950 5700 2950
+Wire Wire Line
+	7150 1650 6950 1650
+Wire Wire Line
+	6950 1650 6950 2050
+Wire Wire Line
+	6950 2050 5350 2050
+Wire Wire Line
+	5350 2050 5350 3050
+Wire Wire Line
+	5350 3050 5700 3050
+Wire Bus Line
+	4950 3350 5700 3350
+Wire Bus Line
+	7200 3250 7000 3250
+Wire Bus Line
+	7000 3150 7200 3150
+Wire Bus Line
+	7000 3350 7200 3350
+Wire Bus Line
+	7200 2850 7150 2850
+Wire Bus Line
+	7150 2850 7150 2400
+Wire Bus Line
+	5200 2400 7150 2400
+Wire Bus Line
+	7200 2950 7100 2950
+Wire Bus Line
+	7100 2950 7100 2450
+Wire Bus Line
+	7100 2450 5250 2450
+Wire Bus Line
+	5250 2450 5250 3150
+Wire Bus Line
+	5250 3150 4950 3150
+Wire Wire Line
+	5300 2050 5300 3150
+Wire Wire Line
+	5300 3150 5700 3150
+Wire Wire Line
+	1550 2050 5300 2050
+$Sheet
+S 1550 2950 1550 500 
+U 60AF64DE
+F0 "MEM" 50
+F1 "MEM.sch" 50
+F2 "Phi2" I L 1550 3250 50 
+F3 "~RST" I L 1550 3350 50 
+F4 "StoreOpIn[0..15]" I R 3100 3050 50 
+F5 "StoreOp[0..15]" O L 1550 3050 50 
+F6 "ALUResult[0..15]" I R 3100 3250 50 
+F7 "CtlIn[13..23]" I R 3100 3150 50 
+F8 "Ctl[15..23]" O L 1550 3150 50 
 $EndSheet
 $Sheet
-S 3200 1700 1500 500 
-U 5D7BD0EA
-F0 "Register XY" 50
-F1 "Register XY.sch" 50
+S 7200 2750 1400 750 
+U 60A72859
+F0 "REG/EX" 50
+F1 "REG_EX.sch" 50
+F2 "OpR[0..15]" O L 7200 3250 50 
+F3 "OpL[0..15]" O L 7200 3150 50 
+F4 "StoreOp[0..15]" O L 7200 2850 50 
+F5 "OpRIn[0..15]" I R 8600 3300 50 
+F6 "OpLIn[0..15]" I R 8600 3200 50 
+F7 "StoreOpIn[0..15]" I R 8600 3000 50 
+F8 "Phi1" I R 8600 2900 50 
+F9 "SelCIn[0..2]" I R 8600 3400 50 
+F10 "SelC[0..2]" O L 7200 2950 50 
+F11 "CtlIn[5..23]" I R 8600 3100 50 
+F12 "Ctl[5..23]" O L 7200 3350 50 
 $EndSheet
+Wire Wire Line
+	5700 2750 5450 2750
+Wire Wire Line
+	5450 2750 5450 2250
+Connection ~ 5450 2250
+Wire Wire Line
+	5450 2250 8700 2250
+$Sheet
+S 1500 3900 1600 600 
+U 5FF41DF6
+F0 "MEM/WB" 50
+F1 "MEM_WB.sch" 50
+F2 "Phi1" I L 1500 4000 50 
+F3 "ALUResultIn[0..15]" I L 1500 4200 50 
+F4 "StoreOp[0..15]" O R 3100 4300 50 
+F5 "StoreOpIn[0..15]" I L 1500 4400 50 
+F6 "ALUResult[0..15]" O R 3100 4100 50 
+F7 "SelCIn[0..2]" I L 1500 4100 50 
+F8 "SelC[0..2]" O R 3100 4400 50 
+F9 "CtlIn[15..23]" I L 1500 4300 50 
+F10 "Ctl[15..23]" O R 3100 4200 50 
+$EndSheet
+Wire Wire Line
+	1300 4000 1500 4000
+Wire Bus Line
+	1100 4200 1500 4200
+Wire Bus Line
+	1050 4300 1500 4300
+Wire Bus Line
+	1000 4400 1500 4400
+Wire Bus Line
+	3100 4100 4150 4100
+Wire Bus Line
+	3100 4200 4150 4200
+Wire Wire Line
+	1250 1550 1250 3350
+Wire Wire Line
+	1250 3350 1550 3350
+Connection ~ 1250 1550
+Wire Wire Line
+	1350 750  1350 3250
+Wire Wire Line
+	1350 3250 1550 3250
+Connection ~ 1350 750 
+Wire Wire Line
+	1350 750  10400 750 
+Wire Wire Line
+	1350 3250 1350 3750
+Wire Wire Line
+	1350 3750 3850 3750
+Connection ~ 1350 3250
+Wire Wire Line
+	3850 3900 4150 3900
+Wire Wire Line
+	3850 3750 3850 3900
+Wire Bus Line
+	3300 3650 1150 3650
+Wire Bus Line
+	1150 4100 1500 4100
+Wire Bus Line
+	1150 3650 1150 4100
+Wire Bus Line
+	3250 3600 1100 3600
+Wire Bus Line
+	1100 3600 1100 4200
+Wire Bus Line
+	3400 3350 3300 3350
+Wire Bus Line
+	3300 3350 3300 3650
+Wire Bus Line
+	3400 3250 3250 3250
+Wire Bus Line
+	3250 3250 3250 3600
+Wire Bus Line
+	3250 3250 3100 3250
+Connection ~ 3250 3250
+Wire Bus Line
+	4150 4300 3100 4300
+$Sheet
+S 5700 2650 1300 800 
+U 60A71BBF
+F0 "EX" 50
+F1 "EX.sch" 50
+F2 "OpR[0..15]" I R 7000 3250 50 
+F3 "OpL[0..15]" I R 7000 3150 50 
+F4 "ALUResult[0..15]" O L 5700 3250 50 
+F5 "~J" O L 5700 3150 50 
+F6 "~Carry" O L 5700 3050 50 
+F7 "~A=B" O L 5700 2950 50 
+F8 "Phi1" I L 5700 2750 50 
+F9 "CtlIn[5..23]" I R 7000 3350 50 
+F10 "Ctl[13..23]" O L 5700 3350 50 
+$EndSheet
+$Sheet
+S 8800 2850 1200 1650
+U 60906BCD
+F0 "REG" 50
+F1 "REG.sch" 50
+F2 "~WRH" I L 8800 4200 50 
+F3 "~WRL" I L 8800 4300 50 
+F4 "OpR[0..15]" O L 8800 3300 50 
+F5 "OpL[0..15]" O L 8800 3200 50 
+F6 "StoreOp[0..15]" O L 8800 3000 50 
+F7 "PC[0..15]" I R 10000 3100 50 
+F8 "Phi2" I R 10000 4400 50 
+F9 "WriteLower[0..7]" I L 8800 4100 50 
+F10 "WriteUpper[0..7]" I L 8800 4000 50 
+F11 "SelCIn[0..2]" I L 8800 4400 50 
+F12 "SelCOut[0..2]" O L 8800 3400 50 
+F13 "Ins[0..15]" I R 10000 3200 50 
+F14 "~HLT" O R 10000 3500 50 
+F15 "CtlIn[0..23]" I R 10000 3000 50 
+F16 "Ctl[5..23]" O L 8800 3100 50 
+$EndSheet
+Wire Wire Line
+	600  750  550  750 
+Wire Wire Line
+	550  750  550  550 
+Wire Wire Line
+	550  550  10450 550 
+$Sheet
+S 8850 1250 1150 550 
+U 60153F0B
+F0 "ID/REG" 50
+F1 "ID_REG.sch" 50
+F2 "PCIn[0..15]" I L 8850 1600 50 
+F3 "Phi1" I L 8850 1350 50 
+F4 "InsIn[0..15]" I L 8850 1500 50 
+F5 "PC[0..15]" O R 10000 1600 50 
+F6 "Ins[0..15]" O R 10000 1500 50 
+F7 "CtlIn[0..23]" I L 8850 1700 50 
+F8 "Ctl[0..23]" O R 10000 1700 50 
+$EndSheet
+Wire Wire Line
+	10000 3500 10450 3500
+Wire Wire Line
+	10450 550  10450 3500
+$Sheet
+S 4150 3800 1900 700 
+U 60B264DC
+F0 "WB" 50
+F1 "WB.sch" 50
+F2 "ToRegisterFileUpper[0..7]" O R 6050 4000 50 
+F3 "ALUResultIn[0..15]" I L 4150 4100 50 
+F4 "ToRegisterFileLower[0..7]" O R 6050 4100 50 
+F5 "~WRH" O R 6050 4200 50 
+F6 "~WRL" O R 6050 4300 50 
+F7 "Phi2" I L 4150 3900 50 
+F8 "StoreOp[0..15]" I L 4150 4300 50 
+F9 "CtlIn[15..23]" I L 4150 4200 50 
+$EndSheet
+Wire Bus Line
+	8800 4400 6500 4400
+Wire Bus Line
+	6500 4400 6500 4800
+Wire Bus Line
+	6500 4800 3850 4800
+Wire Bus Line
+	3850 4800 3850 4400
+Wire Bus Line
+	3850 4400 3100 4400
+Wire Wire Line
+	1300 2250 1300 4000
+Text Notes 5200 5950 0    50   ~ 0
+TODO:\n* ERC\n* Move the memory bus connector to the top level.\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation.
 $EndSCHEMATC

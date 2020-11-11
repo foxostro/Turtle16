@@ -220,113 +220,100 @@ Connection ~ 5500 850
 $Comp
 L power:VCC #PWR?
 U 1 1 608FD908
-P 2200 6900
+P 2250 6850
 AR Path="/5D2C0761/608FD908" Ref="#PWR?"  Part="1" 
 AR Path="/608FD908" Ref="#PWR?"  Part="1" 
 AR Path="/5DCFC665/608FD908" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2200 6750 50  0001 C CNN
-F 1 "VCC" V 2217 7028 50  0000 L CNN
-F 2 "" H 2200 6900 50  0001 C CNN
-F 3 "" H 2200 6900 50  0001 C CNN
-	1    2200 6900
+F 0 "#PWR?" H 2250 6700 50  0001 C CNN
+F 1 "VCC" V 2267 6978 50  0000 L CNN
+F 2 "" H 2250 6850 50  0001 C CNN
+F 3 "" H 2250 6850 50  0001 C CNN
+	1    2250 6850
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 608FD90E
-P 2200 7200
+P 2250 7150
 AR Path="/5D2C0761/608FD90E" Ref="#PWR?"  Part="1" 
 AR Path="/608FD90E" Ref="#PWR?"  Part="1" 
 AR Path="/5DCFC665/608FD90E" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2200 6950 50  0001 C CNN
-F 1 "GND" V 2205 7072 50  0000 R CNN
-F 2 "" H 2200 7200 50  0001 C CNN
-F 3 "" H 2200 7200 50  0001 C CNN
-	1    2200 7200
+F 0 "#PWR?" H 2250 6900 50  0001 C CNN
+F 1 "GND" V 2255 7022 50  0000 R CNN
+F 2 "" H 2250 7150 50  0001 C CNN
+F 3 "" H 2250 7150 50  0001 C CNN
+	1    2250 7150
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:CP1 C?
 U 1 1 608FD914
-P 1650 7050
+P 1700 7000
 AR Path="/5D2C0720/608FD914" Ref="C?"  Part="1" 
 AR Path="/5D2C0761/608FD914" Ref="C?"  Part="1" 
 AR Path="/608FD914" Ref="C?"  Part="1" 
 AR Path="/5DCFC665/608FD914" Ref="C?"  Part="1" 
-F 0 "C?" H 1742 7096 50  0000 L CNN
-F 1 "100µF" H 1742 7005 50  0000 L CNN
-F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 1650 7050 50  0001 C CNN
-F 3 "~" H 1650 7050 50  0001 C CNN
-	1    1650 7050
+F 0 "C?" H 1792 7046 50  0000 L CNN
+F 1 "100µF" H 1792 6955 50  0000 L CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 1700 7000 50  0001 C CNN
+F 3 "~" H 1700 7000 50  0001 C CNN
+	1    1700 7000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2200 6900 2050 6900
+	2250 6850 2100 6850
 Wire Wire Line
-	1650 7200 2050 7200
+	1700 7150 2100 7150
 Wire Wire Line
-	1300 7100 1400 7100
+	1350 7050 1450 7050
 Wire Wire Line
-	1300 7000 1400 7000
+	1350 6950 1450 6950
 $Comp
 L power:PWR_FLAG #FLG?
 U 1 1 608FD924
-P 2050 7400
+P 2100 7350
 AR Path="/5DCFC665/608FD924" Ref="#FLG?"  Part="1" 
 AR Path="/608FD924" Ref="#FLG?"  Part="1" 
-F 0 "#FLG?" H 2050 7475 50  0001 C CNN
-F 1 "PWR_FLAG" H 2050 7573 50  0000 C CNN
-F 2 "" H 2050 7400 50  0001 C CNN
-F 3 "~" H 2050 7400 50  0001 C CNN
-	1    2050 7400
+F 0 "#FLG?" H 2100 7425 50  0001 C CNN
+F 1 "PWR_FLAG" H 2100 7523 50  0000 C CNN
+F 2 "" H 2100 7350 50  0001 C CNN
+F 3 "~" H 2100 7350 50  0001 C CNN
+	1    2100 7350
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	2050 7400 2050 7200
-Connection ~ 2050 7200
+	2100 7350 2100 7150
+Connection ~ 2100 7150
 Wire Wire Line
-	2050 7200 2200 7200
+	2100 7150 2250 7150
 $Comp
 L power:PWR_FLAG #FLG?
 U 1 1 608FD92D
-P 2050 6700
+P 2100 6650
 AR Path="/5DCFC665/608FD92D" Ref="#FLG?"  Part="1" 
 AR Path="/608FD92D" Ref="#FLG?"  Part="1" 
-F 0 "#FLG?" H 2050 6775 50  0001 C CNN
-F 1 "PWR_FLAG" H 2050 6873 50  0000 C CNN
-F 2 "" H 2050 6700 50  0001 C CNN
-F 3 "~" H 2050 6700 50  0001 C CNN
-	1    2050 6700
+F 0 "#FLG?" H 2100 6725 50  0001 C CNN
+F 1 "PWR_FLAG" H 2100 6823 50  0000 C CNN
+F 2 "" H 2100 6650 50  0001 C CNN
+F 3 "~" H 2100 6650 50  0001 C CNN
+	1    2100 6650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2050 6700 2050 6900
-Connection ~ 2050 6900
+	2100 6650 2100 6850
+Connection ~ 2100 6850
 Wire Wire Line
-	2050 6900 1650 6900
+	2100 6850 1700 6850
 Wire Wire Line
-	1400 6900 1400 7000
+	1450 6850 1450 6950
 Wire Wire Line
-	1400 7100 1400 7200
+	1450 7050 1450 7150
 Wire Wire Line
-	1650 6900 1400 6900
-Connection ~ 1650 6900
+	1700 6850 1450 6850
+Connection ~ 1700 6850
 Wire Wire Line
-	1400 7200 1650 7200
-Connection ~ 1650 7200
-$Comp
-L Connector:Screw_Terminal_01x02 J?
-U 1 1 608FD91C
-P 1100 7100
-AR Path="/5DCFC665/608FD91C" Ref="J?"  Part="1" 
-AR Path="/608FD91C" Ref="J?"  Part="1" 
-F 0 "J?" V 1200 7050 50  0000 C CNN
-F 1 "DC Power +5V" V 1300 7050 50  0000 C CNN
-F 2 "TerminalBlock_MetzConnect:TerminalBlock_MetzConnect_Type055_RT01502HDWU_1x02_P5.00mm_Horizontal" H 1100 7100 50  0001 C CNN
-F 3 "~" H 1100 7100 50  0001 C CNN
-	1    1100 7100
-	-1   0    0    1   
-$EndComp
+	1450 7150 1700 7150
+Connection ~ 1700 7150
 Wire Bus Line
 	7050 1550 7050 1050
 Wire Bus Line
@@ -697,5 +684,16 @@ Wire Bus Line
 Wire Wire Line
 	1300 2250 1300 4000
 Text Notes 5200 5950 0    50   ~ 0
-TODO:\n* ERC\n* Move the memory bus connector to the top level\n* Replace screw terminal connection for power with molex\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation
+TODO:\n* ERC\n* Move the memory bus connector to the top level\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation
+$Comp
+L Connector:Conn_01x02_Male J?
+U 1 1 5FAC7F8A
+P 1150 6950
+F 0 "J?" H 1050 7250 50  0000 C CNN
+F 1 "Power Connector" H 1050 7150 50  0000 C CNN
+F 2 "Connector_Molex:Molex_Mini-Fit_Jr_5569-02A2_2x01_P4.20mm_Horizontal" H 1150 6950 50  0001 C CNN
+F 3 "~" H 1150 6950 50  0001 C CNN
+	1    1150 6950
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

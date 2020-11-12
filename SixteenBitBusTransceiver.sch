@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 28 89
+Sheet 28 86
 Title "16-Bit Bus Transceiver"
 Date ""
 Rev ""

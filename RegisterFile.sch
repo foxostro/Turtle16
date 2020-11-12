@@ -686,7 +686,7 @@ F 3 "" H 9250 9900 50  0001 C CNN
 	1    9250 9900
 	0    -1   1    0   
 $EndComp
-Text HLabel 10650 6400 2    50   Input ~ 0
+Text HLabel 10650 6400 2    50   Output ~ 0
 A[0..15]
 Entry Wire Line
 	10500 6500 10400 6600
@@ -1648,7 +1648,7 @@ F 3 "" H 14650 9900 50  0001 C CNN
 	1    14650 9900
 	0    -1   1    0   
 $EndComp
-Text HLabel 16050 6400 2    50   Input ~ 0
+Text HLabel 16050 6400 2    50   Output ~ 0
 B[0..15]
 Entry Wire Line
 	15900 6500 15800 6600

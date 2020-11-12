@@ -1,6 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:MainBoard-cache
-EELAYER 29 0
+EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
@@ -15,7 +14,7 @@ Comment3 ""
 Comment4 "Triple Port Register File build from dual port SRAM"
 $EndDescr
 $Comp
-L Memory_RAM:IDT7134 U?
+L MainBoard-rescue:IDT7134-Memory_RAM U?
 U 1 1 5FAA829D
 P 8550 6000
 AR Path="/60906BCD/5FAA829D" Ref="U?"  Part="1" 
@@ -47,7 +46,7 @@ F 3 "" H 8550 4600 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Memory_RAM:IDT7134 U?
+L MainBoard-rescue:IDT7134-Memory_RAM U?
 U 1 1 5FAC2CA7
 P 8550 9500
 AR Path="/60906BCD/5FAC2CA7" Ref="U?"  Part="1" 
@@ -977,7 +976,7 @@ F 3 "" H 8550 11100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Memory_RAM:IDT7134 U?
+L MainBoard-rescue:IDT7134-Memory_RAM U?
 U 1 1 5FB63ADE
 P 13950 6000
 AR Path="/60906BCD/5FB63ADE" Ref="U?"  Part="1" 
@@ -1009,7 +1008,7 @@ F 3 "" H 13950 4600 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Memory_RAM:IDT7134 U?
+L MainBoard-rescue:IDT7134-Memory_RAM U?
 U 1 1 5FB63AEE
 P 13950 9500
 AR Path="/60906BCD/5FB63AEE" Ref="U?"  Part="1" 

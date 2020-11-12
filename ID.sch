@@ -1,6 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:MainBoard-cache
-EELAYER 29 0
+EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
@@ -15,7 +14,7 @@ Comment3 "The decoder takes the condition code from the flags register into acco
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
 $Comp
-L Memory_EEPROM:GLS29EE010 U?
+L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
 U 1 1 5FF07E09
 P 11550 7650
 AR Path="/5D2C0AA0/5FF07E09" Ref="U?"  Part="1" 
@@ -29,7 +28,7 @@ F 3 "" H 11550 7650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Memory_EEPROM:GLS29EE010 U?
+L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
 U 1 1 5FF07E0F
 P 11550 10600
 AR Path="/5D2C0AA0/5FF07E0F" Ref="U?"  Part="1" 
@@ -455,7 +454,7 @@ Entry Wire Line
 Entry Wire Line
 	13200 7750 13300 7850
 $Comp
-L Memory_EEPROM:GLS29EE010 U?
+L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
 U 1 1 5FF07F6C
 P 11550 4700
 AR Path="/5D2C0AA0/5FF07F6C" Ref="U?"  Part="1" 

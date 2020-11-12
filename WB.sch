@@ -559,8 +559,8 @@ P -1050 5800
 AR Path="/5D2C0761/5FC58A0E" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/5FC58A0E" Ref="U?"  Part="7" 
 AR Path="/5D2C07CD/5FC58A0E" Ref="U?"  Part="7" 
-AR Path="/60B264DC/5FC58A0E" Ref="U?"  Part="7" 
-F 0 "U?" H -1050 5850 50  0000 C CNN
+AR Path="/60B264DC/5FC58A0E" Ref="U105"  Part="7" 
+F 0 "U105" H -1050 5850 50  0000 C CNN
 F 1 "74AHCT04" H -1050 5750 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -1050 5800 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1050 5800 50  0001 C CNN
@@ -574,8 +574,8 @@ P -750 5000
 AR Path="/5D8005AF/5D800744/5FC58A14" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC58A14" Ref="U?"  Part="6" 
 AR Path="/5D2C07CD/5FC58A14" Ref="U?"  Part="6" 
-AR Path="/60B264DC/5FC58A14" Ref="U?"  Part="6" 
-F 0 "U?" H -750 5317 50  0000 C CNN
+AR Path="/60B264DC/5FC58A14" Ref="U105"  Part="6" 
+F 0 "U105" H -750 5317 50  0000 C CNN
 F 1 "74AHCT04" H -750 5226 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 5000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 5000 50  0001 C CNN
@@ -589,8 +589,8 @@ P -750 3000
 AR Path="/5D8005AF/5D800744/5FC58A1A" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC58A1A" Ref="U?"  Part="2" 
 AR Path="/5D2C07CD/5FC58A1A" Ref="U?"  Part="2" 
-AR Path="/60B264DC/5FC58A1A" Ref="U?"  Part="2" 
-F 0 "U?" H -750 3317 50  0000 C CNN
+AR Path="/60B264DC/5FC58A1A" Ref="U105"  Part="2" 
+F 0 "U105" H -750 3317 50  0000 C CNN
 F 1 "74AHCT04" H -750 3226 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 3000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3000 50  0001 C CNN
@@ -604,8 +604,8 @@ P -750 4500
 AR Path="/5D8005AF/5D800744/5FC58A20" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC58A20" Ref="U?"  Part="5" 
 AR Path="/5D2C07CD/5FC58A20" Ref="U?"  Part="5" 
-AR Path="/60B264DC/5FC58A20" Ref="U?"  Part="5" 
-F 0 "U?" H -750 4817 50  0000 C CNN
+AR Path="/60B264DC/5FC58A20" Ref="U105"  Part="5" 
+F 0 "U105" H -750 4817 50  0000 C CNN
 F 1 "74AHCT04" H -750 4726 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 4500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4500 50  0001 C CNN
@@ -619,8 +619,8 @@ P -750 4000
 AR Path="/5D8005AF/5D800744/5FC58A26" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC58A26" Ref="U?"  Part="4" 
 AR Path="/5D2C07CD/5FC58A26" Ref="U?"  Part="4" 
-AR Path="/60B264DC/5FC58A26" Ref="U?"  Part="4" 
-F 0 "U?" H -750 4317 50  0000 C CNN
+AR Path="/60B264DC/5FC58A26" Ref="U105"  Part="4" 
+F 0 "U105" H -750 4317 50  0000 C CNN
 F 1 "74AHCT04" H -750 4226 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 4000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4000 50  0001 C CNN
@@ -634,8 +634,8 @@ P -750 3500
 AR Path="/5D8005AF/5D800744/5FC58A2C" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC58A2C" Ref="U?"  Part="3" 
 AR Path="/5D2C07CD/5FC58A2C" Ref="U?"  Part="3" 
-AR Path="/60B264DC/5FC58A2C" Ref="U?"  Part="3" 
-F 0 "U?" H -750 3817 50  0000 C CNN
+AR Path="/60B264DC/5FC58A2C" Ref="U105"  Part="3" 
+F 0 "U105" H -750 3817 50  0000 C CNN
 F 1 "74AHCT04" H -750 3726 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 3500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3500 50  0001 C CNN
@@ -651,8 +651,8 @@ P -1050 2100
 AR Path="/5D2C0761/5FC58A34" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FC58A34" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FC58A34" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FC58A34" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H -1050 1950 50  0001 C CNN
+AR Path="/60B264DC/5FC58A34" Ref="#PWR0574"  Part="1" 
+F 0 "#PWR0574" H -1050 1950 50  0001 C CNN
 F 1 "VCC" H -1033 2273 50  0000 C CNN
 F 2 "" H -1050 2100 50  0001 C CNN
 F 3 "" H -1050 2100 50  0001 C CNN
@@ -678,8 +678,8 @@ P -1050 6450
 AR Path="/5D2C0720/5FC58A42" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0761/5FC58A42" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FC58A42" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FC58A42" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H -1050 6200 50  0001 C CNN
+AR Path="/60B264DC/5FC58A42" Ref="#PWR0575"  Part="1" 
+F 0 "#PWR0575" H -1050 6200 50  0001 C CNN
 F 1 "GND" H -1045 6277 50  0000 C CNN
 F 2 "" H -1050 6450 50  0001 C CNN
 F 3 "" H -1050 6450 50  0001 C CNN
@@ -698,8 +698,8 @@ P 6000 3650
 AR Path="/5D8005AF/5D800744/5FC58A4C" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC58A4C" Ref="U?"  Part="2" 
 AR Path="/5D2C07CD/5FC58A4C" Ref="U?"  Part="1" 
-AR Path="/60B264DC/5FC58A4C" Ref="U?"  Part="1" 
-F 0 "U?" H 6000 3967 50  0000 C CNN
+AR Path="/60B264DC/5FC58A4C" Ref="U105"  Part="1" 
+F 0 "U105" H 6000 3967 50  0000 C CNN
 F 1 "74AHCT04" H 6000 3876 50  0000 C CNN
 F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6000 3650 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 6000 3650 50  0001 C CNN
@@ -709,10 +709,10 @@ $EndComp
 Wire Wire Line
 	-1050 2100 -1050 3000
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0576
 U 1 1 5FCB55CF
 P 8500 3150
-F 0 "#PWR?" H 8500 2900 50  0001 C CNN
+F 0 "#PWR0576" H 8500 2900 50  0001 C CNN
 F 1 "GND" V 8505 3022 50  0000 R CNN
 F 2 "" H 8500 3150 50  0001 C CNN
 F 3 "" H 8500 3150 50  0001 C CNN
@@ -720,10 +720,10 @@ F 3 "" H 8500 3150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0577
 U 1 1 5FCB58C7
 P 8500 3450
-F 0 "#PWR?" H 8500 3200 50  0001 C CNN
+F 0 "#PWR0577" H 8500 3200 50  0001 C CNN
 F 1 "GND" V 8505 3322 50  0000 R CNN
 F 2 "" H 8500 3450 50  0001 C CNN
 F 3 "" H 8500 3450 50  0001 C CNN

@@ -359,7 +359,7 @@ AR Path="/60A72859/603C451A/6041A550" Ref="C?"  Part="1"
 AR Path="/60A72859/6041A550" Ref="C31"  Part="1" 
 F 0 "C31" H 965 7246 50  0000 L CNN
 F 1 "100nF" H 965 7155 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 888 7050 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric_Pad0.64x0.40mm_HandSolder" H 888 7050 50  0001 C CNN
 F 3 "~" H 850 7200 50  0001 C CNN
 	1    850  7200
 	1    0    0    -1  

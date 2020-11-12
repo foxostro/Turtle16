@@ -254,7 +254,7 @@ AR Path="/608FD914" Ref="C1"  Part="1"
 AR Path="/5DCFC665/608FD914" Ref="C?"  Part="1" 
 F 0 "C1" H 1792 7046 50  0000 L CNN
 F 1 "100µF" H 1792 6955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 1700 7000 50  0001 C CNN
+F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder" H 1700 7000 50  0001 C CNN
 F 3 "~" H 1700 7000 50  0001 C CNN
 	1    1700 7000
 	1    0    0    -1  

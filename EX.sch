@@ -1,6 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:MainBoard-cache
-EELAYER 29 0
+EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
@@ -27,11 +26,12 @@ CtlIn[5..23]
 Text HLabel 16500 2250 2    50   Output ~ 0
 Ctl[13..23]
 $Comp
-L 74xx:74LS181 U?
+L MainBoard-rescue:74LS181-74xx U?
 U 1 1 5FDDF597
 P 11100 4400
 AR Path="/5D2C0CE4/5FDDF597" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDF597" Ref="U43"  Part="1" 
+AR Path="/5FDDF597" Ref="U43"  Part="1" 
 F 0 "U43" H 10850 5400 50  0000 C CNN
 F 1 "74F181" H 10850 5300 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W15.24mm_Socket" H 11100 4400 50  0001 C CNN
@@ -121,11 +121,12 @@ F 3 "" H 11100 6000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS181 U?
+L MainBoard-rescue:74LS181-74xx U?
 U 1 1 5FDDF644
 P 11100 7000
 AR Path="/5D2C0CE4/5FDDF644" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDF644" Ref="U44"  Part="1" 
+AR Path="/5FDDF644" Ref="U44"  Part="1" 
 F 0 "U44" H 10850 8000 50  0000 C CNN
 F 1 "74F181" H 10850 7900 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W15.24mm_Socket" H 11100 7000 50  0001 C CNN
@@ -162,11 +163,12 @@ F 3 "" H 11100 8600 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS181 U?
+L MainBoard-rescue:74LS181-74xx U?
 U 1 1 5FE143D3
 P 11100 9600
 AR Path="/5D2C0CE4/5FE143D3" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FE143D3" Ref="U45"  Part="1" 
+AR Path="/5FE143D3" Ref="U45"  Part="1" 
 F 0 "U45" H 10850 10600 50  0000 C CNN
 F 1 "74F181" H 10850 10500 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W15.24mm_Socket" H 11100 9600 50  0001 C CNN
@@ -220,11 +222,12 @@ $EndComp
 Wire Wire Line
 	12500 12500 11700 12500
 $Comp
-L 74xx:74LS181 U?
+L MainBoard-rescue:74LS181-74xx U?
 U 1 1 5FE16AA4
 P 11100 12200
 AR Path="/5D2C0CE4/5FE16AA4" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FE16AA4" Ref="U46"  Part="1" 
+AR Path="/5FE16AA4" Ref="U46"  Part="1" 
 F 0 "U46" H 10850 13200 50  0000 C CNN
 F 1 "74F181" H 10850 13100 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W15.24mm_Socket" H 11100 12200 50  0001 C CNN

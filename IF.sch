@@ -1,6 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:MainBoard-cache
-EELAYER 29 0
+EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
@@ -273,7 +272,7 @@ Entry Wire Line
 Entry Wire Line
 	3200 3150 3300 3250
 $Comp
-L Memory_EEPROM:GLS29EE010 U?
+L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
 U 1 1 5FE3C801
 P 6800 3050
 AR Path="/5D8005AF/5D800742/5FE3C801" Ref="U?"  Part="1" 
@@ -345,7 +344,7 @@ NoConn ~ 7400 4150
 Wire Bus Line
 	3200 2750 8250 2750
 $Comp
-L Memory_EEPROM:GLS29EE010 U?
+L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
 U 1 1 5FE3C794
 P 4750 3050
 AR Path="/5D8005AF/5D800742/5FE3C794" Ref="U?"  Part="1" 

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 86 86
+Sheet 86 48
 Title "System Bus Connector"
 Date ""
 Rev ""

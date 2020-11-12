@@ -609,7 +609,7 @@ Wire Bus Line
 Wire Wire Line
 	1300 2250 1300 5300
 Text Notes -2950 6650 0    50   ~ 0
-TODO:\n* ERC\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation
+TODO:\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation\n* Layout PCBs for individual modules
 $Comp
 L Connector:Conn_01x02_Male J1
 U 1 1 5FAC7F8A
@@ -733,6 +733,6 @@ F4 "InsIn[0..15]" I L 8850 1500 50
 F5 "PCOut[0..15]" O R 10000 1600 50 
 F6 "CtlIn[0..23]" I L 8850 1700 50 
 F7 "CtlOut[0..23]" O R 10000 1700 50 
-F8 "InsIn[0..10]" I R 10000 1500 50 
+F8 "InsOut[0..10]" O R 10000 1500 50 
 $EndSheet
 $EndSCHEMATC

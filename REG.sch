@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
-Sheet 55 86
+Sheet 55 48
 Title "REG"
 Date ""
 Rev ""

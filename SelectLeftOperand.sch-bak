@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
-Sheet 27 40
+Sheet 26 40
 Title ""
 Date ""
 Rev ""
@@ -574,7 +574,7 @@ Wire Wire Line
 	15600 12150 15600 12050
 Connection ~ 15600 12050
 Text HLabel 9350 4300 0    50   Input ~ 0
-Ins[0..15]
+Ins[0..10]
 Text HLabel 9350 4200 0    50   Input ~ 0
 A[0..15]
 Text HLabel 13250 4000 2    50   Output ~ 0

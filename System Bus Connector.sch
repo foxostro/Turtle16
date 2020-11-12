@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 43 40
+Sheet 36 40
 Title "System Bus Connector"
 Date ""
 Rev ""
@@ -171,36 +171,20 @@ Wire Wire Line
 	5650 4600 5700 4600
 Entry Wire Line
 	5050 4700 4950 4800
-Text Label 5500 4700 2    50   ~ 0
-StoreOp0
 Entry Wire Line
 	5050 4800 4950 4900
-Text Label 5500 4800 2    50   ~ 0
-StoreOp1
 Entry Wire Line
 	5050 4900 4950 5000
-Text Label 5500 4900 2    50   ~ 0
-StoreOp2
 Entry Wire Line
 	5050 5000 4950 5100
-Text Label 5500 5000 2    50   ~ 0
-StoreOp3
 Entry Wire Line
 	5050 5100 4950 5200
-Text Label 5500 5100 2    50   ~ 0
-StoreOp4
 Entry Wire Line
 	5050 5200 4950 5300
-Text Label 5500 5200 2    50   ~ 0
-StoreOp5
 Entry Wire Line
 	5050 5300 4950 5400
-Text Label 5500 5300 2    50   ~ 0
-StoreOp6
 Entry Wire Line
 	5050 5400 4950 5500
-Text Label 5500 5400 2    50   ~ 0
-StoreOp7
 $Comp
 L power:GND #PWR?
 U 1 1 5FAF7941
@@ -541,4 +525,20 @@ Wire Bus Line
 	4950 4800 4950 6150
 Wire Bus Line
 	4850 3100 4850 5800
+Text Label 5100 4700 0    50   ~ 0
+IO0
+Text Label 5100 4800 0    50   ~ 0
+IO1
+Text Label 5100 4900 0    50   ~ 0
+IO2
+Text Label 5100 5000 0    50   ~ 0
+IO3
+Text Label 5100 5100 0    50   ~ 0
+IO4
+Text Label 5100 5200 0    50   ~ 0
+IO5
+Text Label 5100 5300 0    50   ~ 0
+IO6
+Text Label 5100 5400 0    50   ~ 0
+IO7
 $EndSCHEMATC

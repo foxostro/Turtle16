@@ -702,8 +702,6 @@ Text Label 10350 6700 2    50   ~ 0
 A14
 Entry Wire Line
 	10500 6700 10400 6800
-Wire Wire Line
-	10400 6800 9250 6800
 Text Label 10350 6800 2    50   ~ 0
 A13
 Entry Wire Line
@@ -1865,6 +1863,8 @@ F 3 "" H 9250 5100 50  0001 C CNN
 	1    9250 5100
 	0    -1   1    0   
 $EndComp
+Wire Wire Line
+	9250 6800 10400 6800
 Wire Bus Line
 	7100 5150 7100 8900
 Wire Bus Line

@@ -548,7 +548,7 @@ Wire Wire Line
 	2350 15500 1850 15500
 Connection ~ 1850 15500
 Text HLabel 7200 2950 0    50   Input ~ 0
-Ins[0..15]
+Ins[0..10]
 Text HLabel 16300 3000 2    50   Output ~ 0
 Z[0..15]
 $Comp

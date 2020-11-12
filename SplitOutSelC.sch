@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 31 40
+Sheet 29 40
 Title ""
 Date ""
 Rev ""
@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text HLabel 4650 2900 0    50   Input ~ 0
-Ins[0..15]
+Ins[0..10]
 Text HLabel 7150 2900 2    50   Output ~ 0
 SelCOut[0..2]
 Text Label 5300 3200 0    50   ~ 0

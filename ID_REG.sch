@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 32 40
+Sheet 40 40
 Title "ID/REG Interstage Registers"
 Date ""
 Rev ""
@@ -1367,8 +1367,6 @@ F 3 "" H 8750 700 50  0001 C CNN
 	1    8750 700 
 	1    0    0    -1  
 $EndComp
-Text HLabel 7550 750  0    50   Input ~ 0
-InsIn[0..15]
 Wire Wire Line
 	9650 1700 9250 1700
 Entry Wire Line
@@ -1583,26 +1581,6 @@ F 3 "" H 8250 4050 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	7850 3750 8250 3750
-Entry Wire Line
-	7750 3650 7850 3750
-Wire Wire Line
-	7850 3650 8250 3650
-Entry Wire Line
-	7750 3550 7850 3650
-Wire Wire Line
-	7850 3550 8250 3550
-Entry Wire Line
-	7750 3450 7850 3550
-Wire Wire Line
-	7850 3450 8250 3450
-Entry Wire Line
-	7750 3350 7850 3450
-Wire Wire Line
-	7850 3350 8250 3350
-Entry Wire Line
-	7750 3250 7850 3350
-Wire Wire Line
 	7850 3250 8250 3250
 Entry Wire Line
 	7750 3150 7850 3250
@@ -1789,26 +1767,6 @@ F 3 "" H 8750 2750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9650 3750 9250 3750
-Entry Wire Line
-	9750 3650 9650 3750
-Wire Wire Line
-	9650 3650 9250 3650
-Entry Wire Line
-	9750 3550 9650 3650
-Wire Wire Line
-	9650 3550 9250 3550
-Entry Wire Line
-	9750 3450 9650 3550
-Wire Wire Line
-	9650 3450 9250 3450
-Entry Wire Line
-	9750 3350 9650 3450
-Wire Wire Line
-	9650 3350 9250 3350
-Entry Wire Line
-	9750 3250 9650 3350
-Wire Wire Line
 	9650 3250 9250 3250
 Entry Wire Line
 	9750 3150 9650 3250
@@ -1908,8 +1866,6 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    8750 3550
 	1    0    0    -1  
 $EndComp
-Text HLabel 9900 700  2    50   Output ~ 0
-InsOut[0..15]
 Text Label 7900 1100 0    50   ~ 0
 InsIn1
 Text Label 7900 1200 0    50   ~ 0
@@ -1930,16 +1886,6 @@ Text Label 7900 3150 0    50   ~ 0
 InsIn9
 Text Label 7900 3250 0    50   ~ 0
 InsIn10
-Text Label 7900 3350 0    50   ~ 0
-InsIn11
-Text Label 7900 3450 0    50   ~ 0
-InsIn12
-Text Label 7900 3550 0    50   ~ 0
-InsIn13
-Text Label 7900 3650 0    50   ~ 0
-InsIn14
-Text Label 7900 3750 0    50   ~ 0
-InsIn15
 Wire Wire Line
 	7650 1900 8250 1900
 Wire Wire Line
@@ -1968,16 +1914,6 @@ Text Label 9550 3150 2    50   ~ 0
 InsOut9
 Text Label 9550 3250 2    50   ~ 0
 InsOut10
-Text Label 9550 3350 2    50   ~ 0
-InsOut11
-Text Label 9550 3450 2    50   ~ 0
-InsOut12
-Text Label 9550 3550 2    50   ~ 0
-InsOut13
-Text Label 9550 3650 2    50   ~ 0
-InsOut14
-Text Label 9550 3750 2    50   ~ 0
-InsOut15
 $Comp
 L Device:C C?
 U 1 1 5FB663AA
@@ -3977,16 +3913,55 @@ Wire Wire Line
 	1800 7150 1800 7750
 Wire Bus Line
 	3100 650  2950 650 
+NoConn ~ 9250 3750
+NoConn ~ 9250 3550
+NoConn ~ 9250 3450
+NoConn ~ 9250 3650
+Text HLabel 7550 750  0    50   Input ~ 0
+InsIn[0..15]
+Text Label 7900 3750 0    50   ~ 0
+InsIn15
+Text Label 7900 3650 0    50   ~ 0
+InsIn14
+Text Label 7900 3550 0    50   ~ 0
+InsIn13
+Text Label 7900 3450 0    50   ~ 0
+InsIn12
+Text Label 7900 3350 0    50   ~ 0
+InsIn11
+Entry Wire Line
+	7750 3250 7850 3350
+Wire Wire Line
+	7850 3350 8250 3350
+Entry Wire Line
+	7750 3350 7850 3450
+Wire Wire Line
+	7850 3450 8250 3450
+Entry Wire Line
+	7750 3450 7850 3550
+Wire Wire Line
+	7850 3550 8250 3550
+Entry Wire Line
+	7750 3550 7850 3650
+Wire Wire Line
+	7850 3650 8250 3650
+Entry Wire Line
+	7750 3650 7850 3750
+Wire Wire Line
+	7850 3750 8250 3750
+NoConn ~ 9250 3350
 Wire Bus Line
 	4300 800  4300 3700
 Wire Bus Line
 	6300 750  6300 3700
 Wire Bus Line
-	7750 750  7750 3650
+	9750 700  9750 3150
 Wire Bus Line
-	9750 700  9750 3650
+	7750 750  7750 3650
 Wire Bus Line
 	950  850  950  5800
 Wire Bus Line
 	2950 650  2950 5800
+Text HLabel 9900 700  2    50   Output ~ 0
+InsOut[0..10]
 $EndSCHEMATC

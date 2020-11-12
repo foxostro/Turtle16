@@ -515,67 +515,67 @@ Wire Wire Line
 Entry Wire Line
 	12250 4000 12350 3900
 Text Label 12200 4000 2    50   ~ 0
-ALUResult0
+ALUResult1
 Wire Wire Line
 	11700 4100 12250 4100
 Entry Wire Line
 	12250 4100 12350 4000
 Text Label 12200 4100 2    50   ~ 0
-ALUResult0
+ALUResult2
 Wire Wire Line
 	11700 4200 12250 4200
 Entry Wire Line
 	12250 4200 12350 4100
 Text Label 12200 4200 2    50   ~ 0
-ALUResult0
+ALUResult3
 Wire Wire Line
 	11700 6500 12250 6500
 Entry Wire Line
 	12250 6500 12350 6400
 Text Label 12200 6500 2    50   ~ 0
-ALUResult0
+ALUResult4
 Wire Wire Line
 	11700 6600 12250 6600
 Entry Wire Line
 	12250 6600 12350 6500
 Text Label 12200 6600 2    50   ~ 0
-ALUResult0
+ALUResult5
 Wire Wire Line
 	11700 6700 12250 6700
 Entry Wire Line
 	12250 6700 12350 6600
 Text Label 12200 6700 2    50   ~ 0
-ALUResult0
+ALUResult6
 Wire Wire Line
 	11700 6800 12250 6800
 Entry Wire Line
 	12250 6800 12350 6700
 Text Label 12200 6800 2    50   ~ 0
-ALUResult0
+ALUResult7
 Wire Wire Line
 	11700 9100 12250 9100
 Entry Wire Line
 	12250 9100 12350 9000
 Text Label 12200 9100 2    50   ~ 0
-ALUResult0
+ALUResult8
 Wire Wire Line
 	11700 9200 12250 9200
 Entry Wire Line
 	12250 9200 12350 9100
 Text Label 12200 9200 2    50   ~ 0
-ALUResult0
+ALUResult9
 Wire Wire Line
 	11700 9300 12250 9300
 Entry Wire Line
 	12250 9300 12350 9200
 Text Label 12200 9300 2    50   ~ 0
-ALUResult0
+ALUResult10
 Wire Wire Line
 	11700 9400 12250 9400
 Entry Wire Line
 	12250 9400 12350 9300
 Text Label 12200 9400 2    50   ~ 0
-ALUResult0
+ALUResult11
 Wire Bus Line
 	15500 3650 12350 3650
 Entry Wire Line
@@ -1474,6 +1474,30 @@ Wire Wire Line
 	16200 13100 16200 13300
 Wire Wire Line
 	16200 13300 16650 13300
+Wire Wire Line
+	11700 11700 12250 11700
+Entry Wire Line
+	12250 11700 12350 11600
+Text Label 12200 11700 2    50   ~ 0
+ALUResult12
+Wire Wire Line
+	11700 11800 12250 11800
+Entry Wire Line
+	12250 11800 12350 11700
+Text Label 12200 11800 2    50   ~ 0
+ALUResult13
+Wire Wire Line
+	11700 11900 12250 11900
+Entry Wire Line
+	12250 11900 12350 11800
+Text Label 12200 11900 2    50   ~ 0
+ALUResult14
+Wire Wire Line
+	11700 12000 12250 12000
+Entry Wire Line
+	12250 12000 12350 11900
+Text Label 12200 12000 2    50   ~ 0
+ALUResult15
 Wire Bus Line
 	9800 3600 9800 3900
 Wire Bus Line
@@ -1493,5 +1517,5 @@ Wire Bus Line
 Wire Bus Line
 	6000 2150 15250 2150
 Wire Bus Line
-	12350 3650 12350 9300
+	12350 3650 12350 11900
 $EndSCHEMATC

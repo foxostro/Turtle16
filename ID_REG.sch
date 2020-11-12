@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 40 41
+Sheet 41 41
 Title "ID/REG Interstage Registers"
 Date ""
 Rev ""
@@ -11,7 +11,7 @@ Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "Registers holding state between the ID and REG stages of the pipeline."
+Comment4 "Interstage pipeline registers between ID and REG"
 $EndDescr
 NoConn ~ -450 3350
 NoConn ~ -450 4850
@@ -1992,91 +1992,10 @@ F 3 "~" H 8600 6250 50  0001 C CNN
 	1    8600 6250
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5FB663B6
-P 8100 6100
-AR Path="/5D8005AF/5D833E4B/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/5FE21410/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/5FE8EB3D/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FB663B6" Ref="#PWR0463"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FC56568/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD447EB/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD45108/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD45557/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD45834/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/60040306/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/60040791/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/60044374/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/5FB663B6" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FB663B6" Ref="#PWR?"  Part="1" 
-F 0 "#PWR0463" H 8100 5950 50  0001 C CNN
-F 1 "VCC" H 8117 6273 50  0000 C CNN
-F 2 "" H 8100 6100 50  0001 C CNN
-F 3 "" H 8100 6100 50  0001 C CNN
-	1    8100 6100
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	8100 6100 8600 6100
-Connection ~ 8100 6100
 Wire Wire Line
 	8600 6400 8100 6400
-$Comp
-L power:GND #PWR?
-U 1 1 5FB663BF
-P 8100 6500
-AR Path="/5D8005AF/5D833E4B/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/5FE21410/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/5FE8EB3D/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FB663BF" Ref="#PWR0464"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FC56568/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD447EB/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD45108/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD45557/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD45834/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/60040306/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/60040791/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/60044374/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/5FB663BF" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FB663BF" Ref="#PWR?"  Part="1" 
-F 0 "#PWR0464" H 8100 6250 50  0001 C CNN
-F 1 "GND" H 8105 6327 50  0000 C CNN
-F 2 "" H 8100 6500 50  0001 C CNN
-F 3 "" H 8100 6500 50  0001 C CNN
-	1    8100 6500
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8100 6500 8100 6400
 Connection ~ 8100 6400
 $Comp
 L Device:C C?
@@ -2122,92 +2041,6 @@ Wire Wire Line
 Wire Wire Line
 	9100 6400 8600 6400
 $Comp
-L Device:C C?
-U 1 1 5FB663CF
-P 9600 6250
-AR Path="/5D8005AF/5D833E4B/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/5FE21410/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/5FE8EB3D/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FB663CF" Ref="C87"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC56568/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD447EB/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45108/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45557/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45834/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040306/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040791/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60044374/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/5FB663CF" Ref="C?"  Part="1" 
-AR Path="/60A71BBF/5FB663CF" Ref="C?"  Part="1" 
-F 0 "C87" H 9715 6296 50  0000 L CNN
-F 1 "100nF" H 9715 6205 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric_Pad0.64x0.40mm_HandSolder" H 9638 6100 50  0001 C CNN
-F 3 "~" H 9600 6250 50  0001 C CNN
-	1    9600 6250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9100 6100 9600 6100
-Wire Wire Line
-	9600 6400 9100 6400
-$Comp
-L Device:C C?
-U 1 1 5FB663D7
-P 10100 6250
-AR Path="/5D8005AF/5D833E4B/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/5FE21410/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/5FE8EB3D/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FB663D7" Ref="C88"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC56568/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD447EB/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45108/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45557/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45834/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040306/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040791/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60044374/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/5FB663D7" Ref="C?"  Part="1" 
-AR Path="/60A71BBF/5FB663D7" Ref="C?"  Part="1" 
-F 0 "C88" H 10215 6296 50  0000 L CNN
-F 1 "100nF" H 10215 6205 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric_Pad0.64x0.40mm_HandSolder" H 10138 6100 50  0001 C CNN
-F 3 "~" H 10100 6250 50  0001 C CNN
-	1    10100 6250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9600 6100 10100 6100
-Wire Wire Line
-	10100 6400 9600 6400
-$Comp
 L 74xx:74LS04 U?
 U 1 1 5FC1E142
 P 1200 7750
@@ -2224,10 +2057,6 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 $EndComp
 Connection ~ 8600 6100
 Connection ~ 8600 6400
-Connection ~ 9100 6100
-Connection ~ 9100 6400
-Connection ~ 9600 6100
-Connection ~ 9600 6400
 $Comp
 L power:GND #PWR?
 U 1 1 5FC40644
@@ -3950,6 +3779,15 @@ Entry Wire Line
 Wire Wire Line
 	7850 3750 8250 3750
 NoConn ~ 9250 3350
+Text HLabel 9900 700  2    50   Output ~ 0
+InsOut[0..10]
+Wire Wire Line
+	7650 6100 8100 6100
+Connection ~ 7650 6100
+Connection ~ 8100 6100
+Wire Wire Line
+	7650 6400 8100 6400
+Connection ~ 7650 6400
 Wire Bus Line
 	4300 800  4300 3700
 Wire Bus Line
@@ -3962,6 +3800,4 @@ Wire Bus Line
 	950  850  950  5800
 Wire Bus Line
 	2950 650  2950 5800
-Text HLabel 9900 700  2    50   Output ~ 0
-InsOut[0..10]
 $EndSCHEMATC

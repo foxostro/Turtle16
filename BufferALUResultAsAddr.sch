@@ -4,14 +4,14 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 38 41
-Title ""
+Title "MEM: Buffer ALUResult"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "Buffer the effective address before it leaves the main board."
 $EndDescr
 $Comp
 L Device:C C?

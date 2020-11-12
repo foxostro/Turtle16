@@ -8,10 +8,10 @@ Title "PC/IF"
 Date ""
 Rev ""
 Comp ""
-Comment1 ""
-Comment2 "and the control clock."
-Comment3 "This alleviates timing constraints related to the phase shift between the register clock"
-Comment4 "The PC/IF register sits between the program counter and the Instruction Fetch stage."
+Comment1 "increments or loads."
+Comment2 "This basically serves to hold the PC value steady for IF while the counter"
+Comment3 "These registers sit between the PC pipeline stage and the IF stage."
+Comment4 "Interstage pipeline registers between PC and IF"
 $EndDescr
 Text HLabel 2950 3450 0    50   Input ~ 0
 Phi1

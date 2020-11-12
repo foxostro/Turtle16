@@ -3,15 +3,15 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 47 41
-Title ""
+Sheet 39 41
+Title "MEM: Buffer StoreOp"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment3 "This allows peripheral devices to assert their own value to the bus during a Load."
+Comment4 "The store operand can be disconnected from the system memory bus via tristate outputs."
 $EndDescr
 $Comp
 L Device:C C?

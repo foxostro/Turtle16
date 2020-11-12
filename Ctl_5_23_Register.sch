@@ -4,7 +4,7 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 16 41
-Title ""
+Title "REG/EX: Control Word Register"
 Date ""
 Rev ""
 Comp ""

@@ -3,15 +3,15 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 36 41
-Title ""
+Sheet 35 41
+Title "MEM: Buffer Before Register Write"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment2 "edge of Phi2."
+Comment3 "Take the value we've selected to write back and latch it in the register on the rising"
+Comment4 "Writes to the register file may only occur in the second clock phase."
 $EndDescr
 Text HLabel 4600 3300 0    50   Input ~ 0
 CP

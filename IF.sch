@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 5 48
+Sheet 5 39
 Title "IF"
 Date ""
 Rev ""
@@ -356,8 +356,6 @@ F 3 "" H 4750 3050 50  0001 C CNN
 	1    4750 3050
 	-1   0    0    -1  
 $EndComp
-Wire Bus Line
-	5850 2650 5850 4550
 Wire Wire Line
 	5400 4650 6050 4650
 Wire Wire Line
@@ -394,4 +392,6 @@ Wire Bus Line
 	3200 2750 3200 3750
 Wire Bus Line
 	8250 2750 8250 3750
+Wire Bus Line
+	5850 2650 5850 4550
 $EndSCHEMATC

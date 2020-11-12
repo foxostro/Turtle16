@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 48
+Sheet 1 39
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -590,8 +590,8 @@ F1 "ID_REG.sch" 50
 F2 "PCIn[0..15]" I L 8850 1600 50 
 F3 "Phi1" I L 8850 1350 50 
 F4 "InsIn[0..15]" I L 8850 1500 50 
-F5 "PC[0..15]" O R 10000 1600 50 
-F6 "Ins[0..15]" O R 10000 1500 50 
+F5 "PCOut[0..15]" O R 10000 1600 50 
+F6 "InsOut[0..15]" O R 10000 1500 50 
 F7 "CtlIn[0..23]" I L 8850 1700 50 
 F8 "Ctl[0..23]" O R 10000 1700 50 
 $EndSheet

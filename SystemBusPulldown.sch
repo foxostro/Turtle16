@@ -1,0 +1,538 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 40 41
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text Notes 4200 3400 0    50   ~ 0
+The bus needs pull-down\nresistors since these lines\nmay otherwise float\nsometimes.
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC38F
+P 7450 4200
+AR Path="/60AF64DE/5FAFC38F" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC38F" Ref="R16"  Part="1" 
+F 0 "R16" H 7509 4246 50  0000 L CNN
+F 1 "10kΩ" H 7509 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7450 4200 50  0001 C CNN
+F 3 "~" H 7450 4200 50  0001 C CNN
+	1    7450 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC395
+P 7750 4200
+AR Path="/60AF64DE/5FAFC395" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC395" Ref="R17"  Part="1" 
+F 0 "R17" H 7809 4246 50  0000 L CNN
+F 1 "10kΩ" H 7809 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7750 4200 50  0001 C CNN
+F 3 "~" H 7750 4200 50  0001 C CNN
+	1    7750 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC39B
+P 8050 4200
+AR Path="/60AF64DE/5FAFC39B" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC39B" Ref="R18"  Part="1" 
+F 0 "R18" H 8109 4246 50  0000 L CNN
+F 1 "10kΩ" H 8109 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 8050 4200 50  0001 C CNN
+F 3 "~" H 8050 4200 50  0001 C CNN
+	1    8050 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3A1
+P 8350 4200
+AR Path="/60AF64DE/5FAFC3A1" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3A1" Ref="R19"  Part="1" 
+F 0 "R19" H 8409 4246 50  0000 L CNN
+F 1 "10kΩ" H 8409 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 8350 4200 50  0001 C CNN
+F 3 "~" H 8350 4200 50  0001 C CNN
+	1    8350 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3A7
+P 6250 4200
+AR Path="/60AF64DE/5FAFC3A7" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3A7" Ref="R12"  Part="1" 
+F 0 "R12" H 6309 4246 50  0000 L CNN
+F 1 "10kΩ" H 6309 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 6250 4200 50  0001 C CNN
+F 3 "~" H 6250 4200 50  0001 C CNN
+	1    6250 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3AD
+P 6550 4200
+AR Path="/60AF64DE/5FAFC3AD" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3AD" Ref="R13"  Part="1" 
+F 0 "R13" H 6609 4246 50  0000 L CNN
+F 1 "10kΩ" H 6609 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 6550 4200 50  0001 C CNN
+F 3 "~" H 6550 4200 50  0001 C CNN
+	1    6550 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3B3
+P 6850 4200
+AR Path="/60AF64DE/5FAFC3B3" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3B3" Ref="R14"  Part="1" 
+F 0 "R14" H 6909 4246 50  0000 L CNN
+F 1 "10kΩ" H 6909 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 6850 4200 50  0001 C CNN
+F 3 "~" H 6850 4200 50  0001 C CNN
+	1    6850 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3B9
+P 7150 4200
+AR Path="/60AF64DE/5FAFC3B9" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3B9" Ref="R15"  Part="1" 
+F 0 "R15" H 7209 4246 50  0000 L CNN
+F 1 "10kΩ" H 7209 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7150 4200 50  0001 C CNN
+F 3 "~" H 7150 4200 50  0001 C CNN
+	1    7150 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3BF
+P 7450 4300
+AR Path="/60AF64DE/5FAFC3BF" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3BF" Ref="#PWR0550"  Part="1" 
+F 0 "#PWR0550" H 7450 4050 50  0001 C CNN
+F 1 "GND" H 7455 4127 50  0000 C CNN
+F 2 "" H 7450 4300 50  0001 C CNN
+F 3 "" H 7450 4300 50  0001 C CNN
+	1    7450 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3C5
+P 7750 4300
+AR Path="/60AF64DE/5FAFC3C5" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3C5" Ref="#PWR0551"  Part="1" 
+F 0 "#PWR0551" H 7750 4050 50  0001 C CNN
+F 1 "GND" H 7755 4127 50  0000 C CNN
+F 2 "" H 7750 4300 50  0001 C CNN
+F 3 "" H 7750 4300 50  0001 C CNN
+	1    7750 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3CB
+P 8050 4300
+AR Path="/60AF64DE/5FAFC3CB" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3CB" Ref="#PWR0552"  Part="1" 
+F 0 "#PWR0552" H 8050 4050 50  0001 C CNN
+F 1 "GND" H 8055 4127 50  0000 C CNN
+F 2 "" H 8050 4300 50  0001 C CNN
+F 3 "" H 8050 4300 50  0001 C CNN
+	1    8050 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3D1
+P 8350 4300
+AR Path="/60AF64DE/5FAFC3D1" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3D1" Ref="#PWR0567"  Part="1" 
+F 0 "#PWR0567" H 8350 4050 50  0001 C CNN
+F 1 "GND" H 8355 4127 50  0000 C CNN
+F 2 "" H 8350 4300 50  0001 C CNN
+F 3 "" H 8350 4300 50  0001 C CNN
+	1    8350 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3D7
+P 6250 4300
+AR Path="/60AF64DE/5FAFC3D7" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3D7" Ref="#PWR0546"  Part="1" 
+F 0 "#PWR0546" H 6250 4050 50  0001 C CNN
+F 1 "GND" H 6255 4127 50  0000 C CNN
+F 2 "" H 6250 4300 50  0001 C CNN
+F 3 "" H 6250 4300 50  0001 C CNN
+	1    6250 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3DD
+P 6550 4300
+AR Path="/60AF64DE/5FAFC3DD" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3DD" Ref="#PWR0547"  Part="1" 
+F 0 "#PWR0547" H 6550 4050 50  0001 C CNN
+F 1 "GND" H 6555 4127 50  0000 C CNN
+F 2 "" H 6550 4300 50  0001 C CNN
+F 3 "" H 6550 4300 50  0001 C CNN
+	1    6550 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3E3
+P 6850 4300
+AR Path="/60AF64DE/5FAFC3E3" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3E3" Ref="#PWR0548"  Part="1" 
+F 0 "#PWR0548" H 6850 4050 50  0001 C CNN
+F 1 "GND" H 6855 4127 50  0000 C CNN
+F 2 "" H 6850 4300 50  0001 C CNN
+F 3 "" H 6850 4300 50  0001 C CNN
+	1    6850 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC3E9
+P 7150 4300
+AR Path="/60AF64DE/5FAFC3E9" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3E9" Ref="#PWR0549"  Part="1" 
+F 0 "#PWR0549" H 7150 4050 50  0001 C CNN
+F 1 "GND" H 7155 4127 50  0000 C CNN
+F 2 "" H 7150 4300 50  0001 C CNN
+F 3 "" H 7150 4300 50  0001 C CNN
+	1    7150 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3EF
+P 5050 4200
+AR Path="/60AF64DE/5FAFC3EF" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3EF" Ref="R8"  Part="1" 
+F 0 "R8" H 5109 4246 50  0000 L CNN
+F 1 "10kΩ" H 5109 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5050 4200 50  0001 C CNN
+F 3 "~" H 5050 4200 50  0001 C CNN
+	1    5050 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3F5
+P 5350 4200
+AR Path="/60AF64DE/5FAFC3F5" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3F5" Ref="R9"  Part="1" 
+F 0 "R9" H 5409 4246 50  0000 L CNN
+F 1 "10kΩ" H 5409 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5350 4200 50  0001 C CNN
+F 3 "~" H 5350 4200 50  0001 C CNN
+	1    5350 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC3FB
+P 5650 4200
+AR Path="/60AF64DE/5FAFC3FB" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC3FB" Ref="R10"  Part="1" 
+F 0 "R10" H 5709 4246 50  0000 L CNN
+F 1 "10kΩ" H 5709 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5650 4200 50  0001 C CNN
+F 3 "~" H 5650 4200 50  0001 C CNN
+	1    5650 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC401
+P 5950 4200
+AR Path="/60AF64DE/5FAFC401" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC401" Ref="R11"  Part="1" 
+F 0 "R11" H 6009 4246 50  0000 L CNN
+F 1 "10kΩ" H 6009 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5950 4200 50  0001 C CNN
+F 3 "~" H 5950 4200 50  0001 C CNN
+	1    5950 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC407
+P 3850 4200
+AR Path="/60AF64DE/5FAFC407" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC407" Ref="R4"  Part="1" 
+F 0 "R4" H 3909 4246 50  0000 L CNN
+F 1 "10kΩ" H 3909 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3850 4200 50  0001 C CNN
+F 3 "~" H 3850 4200 50  0001 C CNN
+	1    3850 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC40D
+P 4150 4200
+AR Path="/60AF64DE/5FAFC40D" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC40D" Ref="R5"  Part="1" 
+F 0 "R5" H 4209 4246 50  0000 L CNN
+F 1 "10kΩ" H 4209 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4150 4200 50  0001 C CNN
+F 3 "~" H 4150 4200 50  0001 C CNN
+	1    4150 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC413
+P 4450 4200
+AR Path="/60AF64DE/5FAFC413" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC413" Ref="R6"  Part="1" 
+F 0 "R6" H 4509 4246 50  0000 L CNN
+F 1 "10kΩ" H 4509 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4450 4200 50  0001 C CNN
+F 3 "~" H 4450 4200 50  0001 C CNN
+	1    4450 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FAFC419
+P 4750 4200
+AR Path="/60AF64DE/5FAFC419" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC419" Ref="R7"  Part="1" 
+F 0 "R7" H 4809 4246 50  0000 L CNN
+F 1 "10kΩ" H 4809 4155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4750 4200 50  0001 C CNN
+F 3 "~" H 4750 4200 50  0001 C CNN
+	1    4750 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC41F
+P 5050 4300
+AR Path="/60AF64DE/5FAFC41F" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC41F" Ref="#PWR0541"  Part="1" 
+F 0 "#PWR0541" H 5050 4050 50  0001 C CNN
+F 1 "GND" H 5055 4127 50  0000 C CNN
+F 2 "" H 5050 4300 50  0001 C CNN
+F 3 "" H 5050 4300 50  0001 C CNN
+	1    5050 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC425
+P 5350 4300
+AR Path="/60AF64DE/5FAFC425" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC425" Ref="#PWR0542"  Part="1" 
+F 0 "#PWR0542" H 5350 4050 50  0001 C CNN
+F 1 "GND" H 5355 4127 50  0000 C CNN
+F 2 "" H 5350 4300 50  0001 C CNN
+F 3 "" H 5350 4300 50  0001 C CNN
+	1    5350 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC42B
+P 5650 4300
+AR Path="/60AF64DE/5FAFC42B" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC42B" Ref="#PWR0543"  Part="1" 
+F 0 "#PWR0543" H 5650 4050 50  0001 C CNN
+F 1 "GND" H 5655 4127 50  0000 C CNN
+F 2 "" H 5650 4300 50  0001 C CNN
+F 3 "" H 5650 4300 50  0001 C CNN
+	1    5650 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC431
+P 5950 4300
+AR Path="/60AF64DE/5FAFC431" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC431" Ref="#PWR0545"  Part="1" 
+F 0 "#PWR0545" H 5950 4050 50  0001 C CNN
+F 1 "GND" H 5955 4127 50  0000 C CNN
+F 2 "" H 5950 4300 50  0001 C CNN
+F 3 "" H 5950 4300 50  0001 C CNN
+	1    5950 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC437
+P 3850 4300
+AR Path="/60AF64DE/5FAFC437" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC437" Ref="#PWR0537"  Part="1" 
+F 0 "#PWR0537" H 3850 4050 50  0001 C CNN
+F 1 "GND" H 3855 4127 50  0000 C CNN
+F 2 "" H 3850 4300 50  0001 C CNN
+F 3 "" H 3850 4300 50  0001 C CNN
+	1    3850 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC43D
+P 4150 4300
+AR Path="/60AF64DE/5FAFC43D" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC43D" Ref="#PWR0538"  Part="1" 
+F 0 "#PWR0538" H 4150 4050 50  0001 C CNN
+F 1 "GND" H 4155 4127 50  0000 C CNN
+F 2 "" H 4150 4300 50  0001 C CNN
+F 3 "" H 4150 4300 50  0001 C CNN
+	1    4150 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC443
+P 4450 4300
+AR Path="/60AF64DE/5FAFC443" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC443" Ref="#PWR0539"  Part="1" 
+F 0 "#PWR0539" H 4450 4050 50  0001 C CNN
+F 1 "GND" H 4455 4127 50  0000 C CNN
+F 2 "" H 4450 4300 50  0001 C CNN
+F 3 "" H 4450 4300 50  0001 C CNN
+	1    4450 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FAFC449
+P 4750 4300
+AR Path="/60AF64DE/5FAFC449" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FAFC449" Ref="#PWR0540"  Part="1" 
+F 0 "#PWR0540" H 4750 4050 50  0001 C CNN
+F 1 "GND" H 4755 4127 50  0000 C CNN
+F 2 "" H 4750 4300 50  0001 C CNN
+F 3 "" H 4750 4300 50  0001 C CNN
+	1    4750 4300
+	1    0    0    -1  
+$EndComp
+Entry Wire Line
+	8350 3600 8250 3500
+Wire Wire Line
+	3850 3600 3850 4100
+Text Label 3850 3650 3    50   ~ 0
+StoreOp0
+Entry Wire Line
+	8050 3600 7950 3500
+Wire Wire Line
+	4150 3600 4150 4100
+Text Label 4150 3650 3    50   ~ 0
+StoreOp1
+Entry Wire Line
+	7750 3600 7650 3500
+Wire Wire Line
+	4450 3600 4450 4100
+Text Label 4450 3650 3    50   ~ 0
+StoreOp2
+Entry Wire Line
+	7450 3600 7350 3500
+Wire Wire Line
+	4750 3600 4750 4100
+Text Label 4750 3650 3    50   ~ 0
+StoreOp3
+Entry Wire Line
+	7150 3600 7050 3500
+Wire Wire Line
+	5050 3600 5050 4100
+Text Label 5050 3650 3    50   ~ 0
+StoreOp4
+Entry Wire Line
+	6850 3600 6750 3500
+Wire Wire Line
+	5350 3600 5350 4100
+Text Label 5350 3650 3    50   ~ 0
+StoreOp5
+Entry Wire Line
+	6550 3600 6450 3500
+Wire Wire Line
+	5650 3600 5650 4100
+Text Label 5650 3650 3    50   ~ 0
+StoreOp6
+Entry Wire Line
+	6250 3600 6150 3500
+Wire Wire Line
+	5950 3600 5950 4100
+Text Label 5950 3650 3    50   ~ 0
+StoreOp7
+Entry Wire Line
+	5950 3600 5850 3500
+Wire Wire Line
+	6250 3600 6250 4100
+Text Label 6250 3650 3    50   ~ 0
+StoreOp8
+Entry Wire Line
+	5650 3600 5550 3500
+Wire Wire Line
+	6550 3600 6550 4100
+Text Label 6550 3650 3    50   ~ 0
+StoreOp9
+Entry Wire Line
+	5350 3600 5250 3500
+Wire Wire Line
+	6850 3600 6850 4100
+Text Label 6850 3650 3    50   ~ 0
+StoreOp10
+Entry Wire Line
+	5050 3600 4950 3500
+Wire Wire Line
+	7150 3600 7150 4100
+Text Label 7150 3650 3    50   ~ 0
+StoreOp11
+Entry Wire Line
+	4750 3600 4650 3500
+Wire Wire Line
+	7450 3600 7450 4100
+Text Label 7450 3650 3    50   ~ 0
+StoreOp12
+Entry Wire Line
+	4450 3600 4350 3500
+Wire Wire Line
+	7750 3600 7750 4100
+Text Label 7750 3650 3    50   ~ 0
+StoreOp13
+Entry Wire Line
+	4150 3600 4050 3500
+Wire Wire Line
+	8050 3600 8050 4100
+Text Label 8050 3650 3    50   ~ 0
+StoreOp14
+Entry Wire Line
+	3850 3600 3750 3500
+Wire Wire Line
+	8350 3600 8350 4100
+Text Label 8350 3650 3    50   ~ 0
+StoreOp15
+Wire Bus Line
+	3750 3500 3750 2950
+Text HLabel 3600 2950 0    50   Input ~ 0
+StoreOp[0..15]
+Wire Bus Line
+	3600 2950 3750 2950
+Wire Bus Line
+	3750 3500 8250 3500
+$EndSCHEMATC

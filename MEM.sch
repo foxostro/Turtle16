@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 37 40
+Sheet 37 41
 Title "MEM"
 Date ""
 Rev ""
@@ -13,564 +13,337 @@ Comment2 ""
 Comment3 "These devices connect to the main board via a 40-pin IDC connector."
 Comment4 "The MEM stage interfaces with memory and memory-mapped peripherals."
 $EndDescr
-Text HLabel 3650 4300 0    50   Input ~ 0
+Text HLabel 2300 2900 0    50   Input ~ 0
 StoreOpIn[0..15]
 Text HLabel 2300 1150 0    50   Input ~ 0
 CtlIn[13..23]
 Text HLabel 8800 1250 2    50   Output ~ 0
 Ctl[15..23]
-Text HLabel 8800 4300 2    50   Output ~ 0
+Text HLabel 8800 2900 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 3650 3800 0    50   Input ~ 0
+Text HLabel 2300 2400 0    50   Input ~ 0
 ALUResult[0..15]
 Entry Wire Line
 	2700 1150 2800 1250
 Entry Wire Line
-	2800 1150 2900 1250
+	2600 1150 2700 1250
 Entry Bus Bus
 	6250 1150 6350 1250
 Wire Bus Line
 	6350 1250 8800 1250
 Text Label 6450 1250 0    50   ~ 0
 CtlIn[15..23]
-Text Label 2900 1650 3    50   ~ 0
+Text Label 2950 1600 0    50   ~ 0
 ~MemLoad
-Text Label 2800 1650 3    50   ~ 0
+Text Label 2950 1700 0    50   ~ 0
 ~MemStore
-Text Label 2900 1250 3    50   ~ 0
+Text Label 2700 1250 3    50   ~ 0
 CtlIn13
 Text Label 2800 1250 3    50   ~ 0
 CtlIn14
 Wire Bus Line
-	3650 4300 3950 4300
+	2300 2900 3950 2900
 Wire Bus Line
-	3650 3800 3950 3800
+	2300 2400 2900 2400
 Wire Wire Line
-	2800 1250 2800 2850
+	2700 1250 2700 1600
 Wire Wire Line
-	2900 2650 8800 2650
-Wire Wire Line
-	2900 1250 2900 2650
-Wire Wire Line
-	8800 2850 2800 2850
+	8800 1700 2800 1700
 $Comp
 L power:GND #PWR0544
 U 1 1 60111E7A
-P 3650 3700
-F 0 "#PWR0544" H 3650 3450 50  0001 C CNN
-F 1 "GND" V 3655 3572 50  0000 R CNN
-F 2 "" H 3650 3700 50  0001 C CNN
-F 3 "" H 3650 3700 50  0001 C CNN
-	1    3650 3700
+P 3650 2300
+F 0 "#PWR0544" H 3650 2050 50  0001 C CNN
+F 1 "GND" V 3655 2172 50  0000 R CNN
+F 2 "" H 3650 2300 50  0001 C CNN
+F 3 "" H 3650 2300 50  0001 C CNN
+	1    3650 2300
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	3650 3700 3950 3700
+	3650 2300 3950 2300
 Wire Bus Line
-	5200 3800 8800 3800
-Text Notes 1450 4800 0    50   ~ 0
-The bus needs pull-down\nresistors since these lines\nmay otherwise float\nsometimes.
+	5200 2400 8800 2400
+Text Notes 3750 2050 0    50   ~ 0
+The ALUResult becomes the effective\naddress for devices on the bus. The\nvalue is buffered to isolate the bus\nfrom the rest of the pipeline.
+Text HLabel 8800 1700 2    50   Output ~ 0
+~MemStore
+Text HLabel 8800 1600 2    50   Output ~ 0
+~MemLoad
+Text HLabel 8800 2400 2    50   Output ~ 0
+Addr[0..15]
+Wire Wire Line
+	2800 2800 3950 2800
+Entry Bus Bus
+	6950 2750 7050 2650
+Wire Bus Line
+	7050 2650 8800 2650
+Wire Bus Line
+	6950 2750 6950 2900
+Connection ~ 6950 2900
+Wire Bus Line
+	6950 2900 8800 2900
+Text Label 7600 2650 2    50   ~ 0
+StoreOp[0..7]
+Text HLabel 8800 2650 2    50   3State ~ 0
+SystemBus[0..7]
+$Sheet
+S 3950 2200 1250 300 
+U 5FEF8718
+F0 "Buffer ALUResult As Addr" 50
+F1 "BufferALUResultAsAddr.sch" 50
+F2 "~OE" I L 3950 2300 50 
+F3 "Q[0..15]" T R 5200 2400 50 
+F4 "D[0..15]" I L 3950 2400 50 
+$EndSheet
+$Sheet
+S 3950 2700 1250 300 
+U 5FF1115C
+F0 "Buffer StoreOp As Bus I/O" 50
+F1 "BufferStoreOpAsBusIO.sch" 50
+F2 "~OE" I L 3950 2800 50 
+F3 "Q[0..15]" T R 5200 2900 50 
+F4 "D[0..15]" I L 3950 2900 50 
+$EndSheet
+Wire Wire Line
+	2800 1700 2800 2800
+$Sheet
+S 7400 3050 1150 200 
+U 5FAF68C1
+F0 "System Bus Pull-down" 50
+F1 "SystemBusPulldown.sch" 50
+F2 "StoreOp[0..15]" I L 7400 3150 50 
+$EndSheet
+Wire Bus Line
+	6950 2900 6950 3150
+Wire Bus Line
+	6950 3150 7400 3150
+Wire Bus Line
+	5200 2900 6000 2900
 $Comp
-L Device:R_Small R16
-U 1 1 5FCF82F2
-P 5000 5550
-F 0 "R16" H 5059 5596 50  0000 L CNN
-F 1 "10kΩ" H 5059 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5000 5550 50  0001 C CNN
-F 3 "~" H 5000 5550 50  0001 C CNN
-	1    5000 5550
+L Memory_RAM:CY62256-70PC U104
+U 1 1 5FB189CF
+P 4650 4850
+F 0 "U104" H 4200 5850 50  0000 C CNN
+F 1 "IS61C256AL-12TLI" H 4200 5750 50  0000 C CNN
+F 2 "Package_SO:TSOP-I-28_11.8x8mm_P0.55mm" H 4650 4750 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/198/61C256AL-258651.pdf" H 4650 4750 50  0001 C CNN
+	1    4650 4850
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Small R17
-U 1 1 5FCFC969
-P 5300 5550
-F 0 "R17" H 5359 5596 50  0000 L CNN
-F 1 "10kΩ" H 5359 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5300 5550 50  0001 C CNN
-F 3 "~" H 5300 5550 50  0001 C CNN
-	1    5300 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R18
-U 1 1 5FCFCD0B
-P 5600 5550
-F 0 "R18" H 5659 5596 50  0000 L CNN
-F 1 "10kΩ" H 5659 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5600 5550 50  0001 C CNN
-F 3 "~" H 5600 5550 50  0001 C CNN
-	1    5600 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R19
-U 1 1 5FCFCEDF
-P 5900 5550
-F 0 "R19" H 5959 5596 50  0000 L CNN
-F 1 "10kΩ" H 5959 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5900 5550 50  0001 C CNN
-F 3 "~" H 5900 5550 50  0001 C CNN
-	1    5900 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R12
-U 1 1 5FD02572
-P 3800 5550
-F 0 "R12" H 3859 5596 50  0000 L CNN
-F 1 "10kΩ" H 3859 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3800 5550 50  0001 C CNN
-F 3 "~" H 3800 5550 50  0001 C CNN
-	1    3800 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R13
-U 1 1 5FD02578
-P 4100 5550
-F 0 "R13" H 4159 5596 50  0000 L CNN
-F 1 "10kΩ" H 4159 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4100 5550 50  0001 C CNN
-F 3 "~" H 4100 5550 50  0001 C CNN
-	1    4100 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R14
-U 1 1 5FD0257E
-P 4400 5550
-F 0 "R14" H 4459 5596 50  0000 L CNN
-F 1 "10kΩ" H 4459 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4400 5550 50  0001 C CNN
-F 3 "~" H 4400 5550 50  0001 C CNN
-	1    4400 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R15
-U 1 1 5FD02584
-P 4700 5550
-F 0 "R15" H 4759 5596 50  0000 L CNN
-F 1 "10kΩ" H 4759 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4700 5550 50  0001 C CNN
-F 3 "~" H 4700 5550 50  0001 C CNN
-	1    4700 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0549
-U 1 1 5FD06011
-P 5000 5650
-F 0 "#PWR0549" H 5000 5400 50  0001 C CNN
-F 1 "GND" H 5005 5477 50  0000 C CNN
-F 2 "" H 5000 5650 50  0001 C CNN
-F 3 "" H 5000 5650 50  0001 C CNN
-	1    5000 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0550
-U 1 1 5FD06519
-P 5300 5650
-F 0 "#PWR0550" H 5300 5400 50  0001 C CNN
-F 1 "GND" H 5305 5477 50  0000 C CNN
-F 2 "" H 5300 5650 50  0001 C CNN
-F 3 "" H 5300 5650 50  0001 C CNN
-	1    5300 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0551
-U 1 1 5FD067E4
-P 5600 5650
-F 0 "#PWR0551" H 5600 5400 50  0001 C CNN
-F 1 "GND" H 5605 5477 50  0000 C CNN
-F 2 "" H 5600 5650 50  0001 C CNN
-F 3 "" H 5600 5650 50  0001 C CNN
-	1    5600 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0552
-U 1 1 5FD0694A
-P 5900 5650
-F 0 "#PWR0552" H 5900 5400 50  0001 C CNN
-F 1 "GND" H 5905 5477 50  0000 C CNN
-F 2 "" H 5900 5650 50  0001 C CNN
-F 3 "" H 5900 5650 50  0001 C CNN
-	1    5900 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0545
-U 1 1 5FD06B5A
-P 3800 5650
-F 0 "#PWR0545" H 3800 5400 50  0001 C CNN
-F 1 "GND" H 3805 5477 50  0000 C CNN
-F 2 "" H 3800 5650 50  0001 C CNN
-F 3 "" H 3800 5650 50  0001 C CNN
-	1    3800 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0546
-U 1 1 5FD06EE0
-P 4100 5650
-F 0 "#PWR0546" H 4100 5400 50  0001 C CNN
-F 1 "GND" H 4105 5477 50  0000 C CNN
-F 2 "" H 4100 5650 50  0001 C CNN
-F 3 "" H 4100 5650 50  0001 C CNN
-	1    4100 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0547
-U 1 1 5FD070CE
-P 4400 5650
-F 0 "#PWR0547" H 4400 5400 50  0001 C CNN
-F 1 "GND" H 4405 5477 50  0000 C CNN
-F 2 "" H 4400 5650 50  0001 C CNN
-F 3 "" H 4400 5650 50  0001 C CNN
-	1    4400 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0548
-U 1 1 5FD072EF
-P 4700 5650
-F 0 "#PWR0548" H 4700 5400 50  0001 C CNN
-F 1 "GND" H 4705 5477 50  0000 C CNN
-F 2 "" H 4700 5650 50  0001 C CNN
-F 3 "" H 4700 5650 50  0001 C CNN
-	1    4700 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R8
-U 1 1 5FD3F8FB
-P 2600 5550
-F 0 "R8" H 2659 5596 50  0000 L CNN
-F 1 "10kΩ" H 2659 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2600 5550 50  0001 C CNN
-F 3 "~" H 2600 5550 50  0001 C CNN
-	1    2600 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R9
-U 1 1 5FD3F901
-P 2900 5550
-F 0 "R9" H 2959 5596 50  0000 L CNN
-F 1 "10kΩ" H 2959 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2900 5550 50  0001 C CNN
-F 3 "~" H 2900 5550 50  0001 C CNN
-	1    2900 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R10
-U 1 1 5FD3F907
-P 3200 5550
-F 0 "R10" H 3259 5596 50  0000 L CNN
-F 1 "10kΩ" H 3259 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3200 5550 50  0001 C CNN
-F 3 "~" H 3200 5550 50  0001 C CNN
-	1    3200 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R11
-U 1 1 5FD3F90D
-P 3500 5550
-F 0 "R11" H 3559 5596 50  0000 L CNN
-F 1 "10kΩ" H 3559 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3500 5550 50  0001 C CNN
-F 3 "~" H 3500 5550 50  0001 C CNN
-	1    3500 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R4
-U 1 1 5FD3F913
-P 1400 5550
-F 0 "R4" H 1459 5596 50  0000 L CNN
-F 1 "10kΩ" H 1459 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1400 5550 50  0001 C CNN
-F 3 "~" H 1400 5550 50  0001 C CNN
-	1    1400 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R5
-U 1 1 5FD3F919
-P 1700 5550
-F 0 "R5" H 1759 5596 50  0000 L CNN
-F 1 "10kΩ" H 1759 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1700 5550 50  0001 C CNN
-F 3 "~" H 1700 5550 50  0001 C CNN
-	1    1700 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R6
-U 1 1 5FD3F91F
-P 2000 5550
-F 0 "R6" H 2059 5596 50  0000 L CNN
-F 1 "10kΩ" H 2059 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2000 5550 50  0001 C CNN
-F 3 "~" H 2000 5550 50  0001 C CNN
-	1    2000 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R7
-U 1 1 5FD3F925
-P 2300 5550
-F 0 "R7" H 2359 5596 50  0000 L CNN
-F 1 "10kΩ" H 2359 5505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2300 5550 50  0001 C CNN
-F 3 "~" H 2300 5550 50  0001 C CNN
-	1    2300 5550
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0540
-U 1 1 5FD3F92B
-P 2600 5650
-F 0 "#PWR0540" H 2600 5400 50  0001 C CNN
-F 1 "GND" H 2605 5477 50  0000 C CNN
-F 2 "" H 2600 5650 50  0001 C CNN
-F 3 "" H 2600 5650 50  0001 C CNN
-	1    2600 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0541
-U 1 1 5FD3F931
-P 2900 5650
-F 0 "#PWR0541" H 2900 5400 50  0001 C CNN
-F 1 "GND" H 2905 5477 50  0000 C CNN
-F 2 "" H 2900 5650 50  0001 C CNN
-F 3 "" H 2900 5650 50  0001 C CNN
-	1    2900 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0542
-U 1 1 5FD3F937
-P 3200 5650
-F 0 "#PWR0542" H 3200 5400 50  0001 C CNN
-F 1 "GND" H 3205 5477 50  0000 C CNN
-F 2 "" H 3200 5650 50  0001 C CNN
-F 3 "" H 3200 5650 50  0001 C CNN
-	1    3200 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0543
-U 1 1 5FD3F93D
-P 3500 5650
-F 0 "#PWR0543" H 3500 5400 50  0001 C CNN
-F 1 "GND" H 3505 5477 50  0000 C CNN
-F 2 "" H 3500 5650 50  0001 C CNN
-F 3 "" H 3500 5650 50  0001 C CNN
-	1    3500 5650
+L power:VCC #PWR068
+U 1 1 5FB19FC6
+P 4650 3950
+F 0 "#PWR068" H 4650 3800 50  0001 C CNN
+F 1 "VCC" H 4665 4123 50  0000 C CNN
+F 2 "" H 4650 3950 50  0001 C CNN
+F 3 "" H 4650 3950 50  0001 C CNN
+	1    4650 3950
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR0536
-U 1 1 5FD3F943
-P 1400 5650
-F 0 "#PWR0536" H 1400 5400 50  0001 C CNN
-F 1 "GND" H 1405 5477 50  0000 C CNN
-F 2 "" H 1400 5650 50  0001 C CNN
-F 3 "" H 1400 5650 50  0001 C CNN
-	1    1400 5650
+U 1 1 5FB1A8AC
+P 4650 5750
+F 0 "#PWR0536" H 4650 5500 50  0001 C CNN
+F 1 "GND" H 4655 5577 50  0000 C CNN
+F 2 "" H 4650 5750 50  0001 C CNN
+F 3 "" H 4650 5750 50  0001 C CNN
+	1    4650 5750
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR0537
-U 1 1 5FD3F949
-P 1700 5650
-F 0 "#PWR0537" H 1700 5400 50  0001 C CNN
-F 1 "GND" H 1705 5477 50  0000 C CNN
-F 2 "" H 1700 5650 50  0001 C CNN
-F 3 "" H 1700 5650 50  0001 C CNN
-	1    1700 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0538
-U 1 1 5FD3F94F
-P 2000 5650
-F 0 "#PWR0538" H 2000 5400 50  0001 C CNN
-F 1 "GND" H 2005 5477 50  0000 C CNN
-F 2 "" H 2000 5650 50  0001 C CNN
-F 3 "" H 2000 5650 50  0001 C CNN
-	1    2000 5650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0539
-U 1 1 5FD3F955
-P 2300 5650
-F 0 "#PWR0539" H 2300 5400 50  0001 C CNN
-F 1 "GND" H 2305 5477 50  0000 C CNN
-F 2 "" H 2300 5650 50  0001 C CNN
-F 3 "" H 2300 5650 50  0001 C CNN
-	1    2300 5650
-	1    0    0    -1  
-$EndComp
-Entry Wire Line
-	1400 4950 1500 4850
 Wire Wire Line
-	1400 4950 1400 5450
-Text Label 1400 5000 3    50   ~ 0
+	5350 6150 5350 5250
+Wire Wire Line
+	5350 5250 5150 5250
+Wire Wire Line
+	5150 5350 5250 5350
+Wire Wire Line
+	5250 5350 5250 6050
+Wire Wire Line
+	5250 6050 2800 6050
+Wire Wire Line
+	2700 1600 8800 1600
+Wire Wire Line
+	2800 1250 2800 1700
+Connection ~ 2800 1700
+Wire Wire Line
+	2700 1600 2700 6150
+Wire Wire Line
+	2700 6150 5350 6150
+Connection ~ 2700 1600
+Wire Wire Line
+	2800 2800 2800 6050
+Connection ~ 2800 2800
+Wire Bus Line
+	2900 2400 2900 4050
+Wire Bus Line
+	2900 4050 3300 4050
+Connection ~ 2900 2400
+Wire Bus Line
+	2900 2400 3950 2400
+Entry Wire Line
+	3300 4050 3400 4150
+Entry Wire Line
+	3300 4150 3400 4250
+Wire Wire Line
+	3400 4150 4150 4150
+Wire Wire Line
+	4150 4250 3400 4250
+Entry Wire Line
+	3300 4250 3400 4350
+Wire Wire Line
+	4150 4350 3400 4350
+Entry Wire Line
+	3300 4350 3400 4450
+Wire Wire Line
+	4150 4450 3400 4450
+Entry Wire Line
+	3300 4450 3400 4550
+Entry Wire Line
+	3300 4550 3400 4650
+Wire Wire Line
+	3400 4550 4150 4550
+Wire Wire Line
+	4150 4650 3400 4650
+Entry Wire Line
+	3300 4650 3400 4750
+Wire Wire Line
+	4150 4750 3400 4750
+Entry Wire Line
+	3300 4750 3400 4850
+Wire Wire Line
+	4150 4850 3400 4850
+Entry Wire Line
+	3300 4850 3400 4950
+Entry Wire Line
+	3300 4950 3400 5050
+Wire Wire Line
+	3400 4950 4150 4950
+Wire Wire Line
+	4150 5050 3400 5050
+Entry Wire Line
+	3300 5050 3400 5150
+Wire Wire Line
+	4150 5150 3400 5150
+Entry Wire Line
+	3300 5150 3400 5250
+Wire Wire Line
+	4150 5250 3400 5250
+Entry Wire Line
+	3300 5250 3400 5350
+Entry Wire Line
+	3300 5350 3400 5450
+Wire Wire Line
+	3400 5350 4150 5350
+Wire Wire Line
+	4150 5450 3400 5450
+Entry Wire Line
+	3300 5450 3400 5550
+Wire Wire Line
+	4150 5550 3400 5550
+Text Label 3400 4150 0    50   ~ 0
+ALUResult0
+Text Label 3400 4250 0    50   ~ 0
+ALUResult1
+Text Label 3400 4350 0    50   ~ 0
+ALUResult2
+Text Label 3400 4450 0    50   ~ 0
+ALUResult3
+Text Label 3400 4550 0    50   ~ 0
+ALUResult4
+Text Label 3400 4750 0    50   ~ 0
+ALUResult6
+Text Label 3400 4850 0    50   ~ 0
+ALUResult7
+Text Label 3400 4950 0    50   ~ 0
+ALUResult8
+Text Label 3400 5050 0    50   ~ 0
+ALUResult9
+Text Label 3400 5150 0    50   ~ 0
+ALUResult10
+Text Label 3400 5250 0    50   ~ 0
+ALUResult11
+Text Label 3400 5350 0    50   ~ 0
+ALUResult12
+Text Label 3400 5450 0    50   ~ 0
+ALUResult13
+Text Label 3400 5550 0    50   ~ 0
+ALUResult14
+Text Label 3400 4650 0    50   ~ 0
+ALUResult5
+Entry Wire Line
+	3300 5550 3400 5650
+Wire Wire Line
+	3950 5650 3400 5650
+Text Label 3400 5650 0    50   ~ 0
+ALUResult15
+Wire Wire Line
+	3950 5650 3950 6250
+Wire Wire Line
+	3950 6250 5450 6250
+Wire Wire Line
+	5450 6250 5450 5050
+Wire Wire Line
+	5450 5050 5150 5050
+Text Notes 5550 5650 0    50   ~ 0
+TODO: Maybe I should add an ATF22V10C here\non the RAM to decoder and remap addresses?\nThis would allow the memory map to change\nlater.
+Connection ~ 6000 2900
+Wire Bus Line
+	6000 2900 6950 2900
+Entry Wire Line
+	5900 4150 6000 4050
+Wire Wire Line
+	5900 4150 5150 4150
+Text Label 5900 4150 2    50   ~ 0
 StoreOp0
 Entry Wire Line
-	1700 4950 1800 4850
+	5900 4250 6000 4150
 Wire Wire Line
-	1700 4950 1700 5450
-Text Label 1700 5000 3    50   ~ 0
+	5900 4250 5150 4250
+Text Label 5900 4250 2    50   ~ 0
 StoreOp1
 Entry Wire Line
-	2000 4950 2100 4850
+	5900 4350 6000 4250
 Wire Wire Line
-	2000 4950 2000 5450
-Text Label 2000 5000 3    50   ~ 0
+	5900 4350 5150 4350
+Text Label 5900 4350 2    50   ~ 0
 StoreOp2
 Entry Wire Line
-	2300 4950 2400 4850
+	5900 4450 6000 4350
 Wire Wire Line
-	2300 4950 2300 5450
-Text Label 2300 5000 3    50   ~ 0
+	5900 4450 5150 4450
+Text Label 5900 4450 2    50   ~ 0
 StoreOp3
 Entry Wire Line
-	2600 4950 2700 4850
+	5900 4550 6000 4450
 Wire Wire Line
-	2600 4950 2600 5450
-Text Label 2600 5000 3    50   ~ 0
+	5900 4550 5150 4550
+Text Label 5900 4550 2    50   ~ 0
 StoreOp4
 Entry Wire Line
-	2900 4950 3000 4850
+	5900 4650 6000 4550
 Wire Wire Line
-	2900 4950 2900 5450
-Text Label 2900 5000 3    50   ~ 0
+	5900 4650 5150 4650
+Text Label 5900 4650 2    50   ~ 0
 StoreOp5
 Entry Wire Line
-	3200 4950 3300 4850
+	5900 4750 6000 4650
 Wire Wire Line
-	3200 4950 3200 5450
-Text Label 3200 5000 3    50   ~ 0
+	5900 4750 5150 4750
+Text Label 5900 4750 2    50   ~ 0
 StoreOp6
 Entry Wire Line
-	3500 4950 3600 4850
+	5900 4850 6000 4750
 Wire Wire Line
-	3500 4950 3500 5450
-Text Label 3500 5000 3    50   ~ 0
+	5900 4850 5150 4850
+Text Label 5900 4850 2    50   ~ 0
 StoreOp7
-Entry Wire Line
-	3800 4950 3900 4850
-Wire Wire Line
-	3800 4950 3800 5450
-Text Label 3800 5000 3    50   ~ 0
-StoreOp8
-Entry Wire Line
-	4100 4950 4200 4850
-Wire Wire Line
-	4100 4950 4100 5450
-Text Label 4100 5000 3    50   ~ 0
-StoreOp9
-Entry Wire Line
-	4400 4950 4500 4850
-Wire Wire Line
-	4400 4950 4400 5450
-Text Label 4400 5000 3    50   ~ 0
-StoreOp10
-Entry Wire Line
-	4700 4950 4800 4850
-Wire Wire Line
-	4700 4950 4700 5450
-Text Label 4700 5000 3    50   ~ 0
-StoreOp11
-Entry Wire Line
-	5000 4950 5100 4850
-Wire Wire Line
-	5000 4950 5000 5450
-Text Label 5000 5000 3    50   ~ 0
-StoreOp12
-Entry Wire Line
-	5300 4950 5400 4850
-Wire Wire Line
-	5300 4950 5300 5450
-Text Label 5300 5000 3    50   ~ 0
-StoreOp13
-Entry Wire Line
-	5600 4950 5700 4850
-Wire Wire Line
-	5600 4950 5600 5450
-Text Label 5600 5000 3    50   ~ 0
-StoreOp14
-Entry Wire Line
-	5900 4950 6000 4850
-Wire Wire Line
-	5900 4950 5900 5450
-Text Label 5900 5000 3    50   ~ 0
-StoreOp15
-Wire Bus Line
-	6000 4850 6000 4300
-Wire Bus Line
-	5200 4300 6000 4300
-Connection ~ 6000 4300
-Text Notes 3750 3450 0    50   ~ 0
-The ALUResult becomes the effective\naddress for devices on the bus. The\nvalue is buffered to isolate the bus\nfrom the rest of the pipeline.
-Text HLabel 8800 2850 2    50   Output ~ 0
-~MemStore
-Text HLabel 8800 2650 2    50   Output ~ 0
-~MemLoad
-Text HLabel 8800 3800 2    50   Output ~ 0
-Addr[0..15]
-Wire Wire Line
-	2800 4200 2800 2850
-Wire Wire Line
-	2800 4200 3950 4200
-Connection ~ 2800 2850
-Entry Bus Bus
-	6950 4150 7050 4050
-Wire Bus Line
-	7050 4050 8800 4050
-Wire Bus Line
-	6000 4300 6950 4300
-Wire Bus Line
-	6950 4150 6950 4300
-Connection ~ 6950 4300
-Wire Bus Line
-	6950 4300 8800 4300
-Text Label 7600 4050 2    50   ~ 0
-StoreOp[0..7]
-Text HLabel 8800 4050 2    50   3State ~ 0
-SystemBus[0..7]
-$Sheet
-S 3950 3600 1250 300 
-U 5FEF8718
-F0 "Buffer ALUResult As Addr" 50
-F1 "BufferALUResultAsAddr.sch" 50
-F2 "~OE" I L 3950 3700 50 
-F3 "Q[0..15]" T R 5200 3800 50 
-F4 "D[0..15]" I L 3950 3800 50 
-$EndSheet
-$Sheet
-S 3950 4100 1250 300 
-U 5FF1115C
-F0 "Buffer StoreOp As Bus I/O" 50
-F1 "BufferStoreOpAsBusIO.sch" 50
-F2 "~OE" I L 3950 4200 50 
-F3 "Q[0..15]" T R 5200 4300 50 
-F4 "D[0..15]" I L 3950 4300 50 
-$EndSheet
 Wire Bus Line
 	2300 1150 6250 1150
 Wire Bus Line
-	1500 4850 6000 4850
+	6000 2900 6000 4750
+Wire Bus Line
+	3300 4050 3300 5550
 $EndSCHEMATC

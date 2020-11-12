@@ -1,0 +1,278 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr USLetter 11000 8500
+encoding utf-8
+Sheet 33 39
+Title "Extend 5-bit Immediate Value"
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 "Extend the 5-bit Immediate value to sixteen bits."
+$EndDescr
+Text HLabel 3200 3150 0    50   Input ~ 0
+Ins[0..15]
+Entry Wire Line
+	6700 3800 6800 3900
+Entry Wire Line
+	6700 3950 6800 4050
+Entry Wire Line
+	6700 4100 6800 4200
+Text Label 6800 4200 0    50   ~ 0
+Ins0
+Text Label 6800 4050 0    50   ~ 0
+Ins1
+Text Label 6800 3900 0    50   ~ 0
+Ins2
+Entry Wire Line
+	7700 4200 7800 4300
+Entry Wire Line
+	7700 4050 7800 4150
+Entry Wire Line
+	7700 3900 7800 4000
+Entry Wire Line
+	7700 3750 7800 3850
+Entry Wire Line
+	7700 3600 7800 3700
+Entry Wire Line
+	7700 3450 7800 3550
+Entry Wire Line
+	7700 3300 7800 3400
+Entry Wire Line
+	7700 3150 7800 3250
+Entry Wire Line
+	7700 3000 7800 3100
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DAA
+P 7400 3300
+AR Path="/60906BCD/5FD79DAA" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DAA" Ref="#PWR097"  Part="1" 
+F 0 "#PWR097" H 7400 3050 50  0001 C CNN
+F 1 "GND" V 7405 3172 50  0000 R CNN
+F 2 "" H 7400 3300 50  0001 C CNN
+F 3 "" H 7400 3300 50  0001 C CNN
+	1    7400 3300
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DB0
+P 7400 3150
+AR Path="/60906BCD/5FD79DB0" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DB0" Ref="#PWR096"  Part="1" 
+F 0 "#PWR096" H 7400 2900 50  0001 C CNN
+F 1 "GND" V 7405 3022 50  0000 R CNN
+F 2 "" H 7400 3150 50  0001 C CNN
+F 3 "" H 7400 3150 50  0001 C CNN
+	1    7400 3150
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DB6
+P 7400 3000
+AR Path="/60906BCD/5FD79DB6" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DB6" Ref="#PWR095"  Part="1" 
+F 0 "#PWR095" H 7400 2750 50  0001 C CNN
+F 1 "GND" V 7405 2872 50  0000 R CNN
+F 2 "" H 7400 3000 50  0001 C CNN
+F 3 "" H 7400 3000 50  0001 C CNN
+	1    7400 3000
+	0    1    1    0   
+$EndComp
+Entry Wire Line
+	7700 2850 7800 2950
+Entry Wire Line
+	7700 2700 7800 2800
+Entry Wire Line
+	7700 2550 7800 2650
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DBF
+P 7400 2850
+AR Path="/60906BCD/5FD79DBF" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DBF" Ref="#PWR094"  Part="1" 
+F 0 "#PWR094" H 7400 2600 50  0001 C CNN
+F 1 "GND" V 7405 2722 50  0000 R CNN
+F 2 "" H 7400 2850 50  0001 C CNN
+F 3 "" H 7400 2850 50  0001 C CNN
+	1    7400 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DC5
+P 7400 2700
+AR Path="/60906BCD/5FD79DC5" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DC5" Ref="#PWR093"  Part="1" 
+F 0 "#PWR093" H 7400 2450 50  0001 C CNN
+F 1 "GND" V 7405 2572 50  0000 R CNN
+F 2 "" H 7400 2700 50  0001 C CNN
+F 3 "" H 7400 2700 50  0001 C CNN
+	1    7400 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DCB
+P 7400 2550
+AR Path="/60906BCD/5FD79DCB" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DCB" Ref="#PWR092"  Part="1" 
+F 0 "#PWR092" H 7400 2300 50  0001 C CNN
+F 1 "GND" V 7405 2422 50  0000 R CNN
+F 2 "" H 7400 2550 50  0001 C CNN
+F 3 "" H 7400 2550 50  0001 C CNN
+	1    7400 2550
+	0    1    1    0   
+$EndComp
+Entry Wire Line
+	7700 2400 7800 2500
+Entry Wire Line
+	7700 2250 7800 2350
+Entry Wire Line
+	7700 2100 7800 2200
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DD4
+P 7400 2400
+AR Path="/60906BCD/5FD79DD4" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DD4" Ref="#PWR072"  Part="1" 
+F 0 "#PWR072" H 7400 2150 50  0001 C CNN
+F 1 "GND" V 7405 2272 50  0000 R CNN
+F 2 "" H 7400 2400 50  0001 C CNN
+F 3 "" H 7400 2400 50  0001 C CNN
+	1    7400 2400
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DDA
+P 7400 2250
+AR Path="/60906BCD/5FD79DDA" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DDA" Ref="#PWR071"  Part="1" 
+F 0 "#PWR071" H 7400 2000 50  0001 C CNN
+F 1 "GND" V 7405 2122 50  0000 R CNN
+F 2 "" H 7400 2250 50  0001 C CNN
+F 3 "" H 7400 2250 50  0001 C CNN
+	1    7400 2250
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DE0
+P 7400 2100
+AR Path="/60906BCD/5FD79DE0" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DE0" Ref="#PWR070"  Part="1" 
+F 0 "#PWR070" H 7400 1850 50  0001 C CNN
+F 1 "GND" V 7405 1972 50  0000 R CNN
+F 2 "" H 7400 2100 50  0001 C CNN
+F 3 "" H 7400 2100 50  0001 C CNN
+	1    7400 2100
+	0    1    1    0   
+$EndComp
+Entry Wire Line
+	7700 1950 7800 2050
+$Comp
+L power:GND #PWR?
+U 1 1 5FD79DE7
+P 7400 1950
+AR Path="/60906BCD/5FD79DE7" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FD769A2/5FD79DE7" Ref="#PWR069"  Part="1" 
+F 0 "#PWR069" H 7400 1700 50  0001 C CNN
+F 1 "GND" V 7405 1822 50  0000 R CNN
+F 2 "" H 7400 1950 50  0001 C CNN
+F 3 "" H 7400 1950 50  0001 C CNN
+	1    7400 1950
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7400 1950 7700 1950
+Wire Wire Line
+	7400 2100 7700 2100
+Wire Wire Line
+	7400 2250 7700 2250
+Wire Wire Line
+	7400 2400 7700 2400
+Wire Wire Line
+	7400 2550 7700 2550
+Wire Wire Line
+	7400 2700 7700 2700
+Wire Wire Line
+	7400 2850 7700 2850
+Wire Wire Line
+	7400 3000 7700 3000
+Wire Wire Line
+	7400 3150 7700 3150
+Wire Wire Line
+	7400 3300 7700 3300
+Wire Wire Line
+	6800 3900 7700 3900
+Wire Wire Line
+	6800 4050 7700 4050
+Wire Wire Line
+	6800 4200 7700 4200
+Text Label 7700 4050 2    50   ~ 0
+Y1
+Text Label 7700 4200 2    50   ~ 0
+Y0
+Text Label 7700 3900 2    50   ~ 0
+Y2
+Text Label 7700 3750 2    50   ~ 0
+Y3
+Text Label 7700 3600 2    50   ~ 0
+Y4
+Text Label 7700 3450 2    50   ~ 0
+Y5
+Text Label 7700 3300 2    50   ~ 0
+Y6
+Text Label 7700 3150 2    50   ~ 0
+Y7
+Text Label 7700 3000 2    50   ~ 0
+Y8
+Text Label 7700 2850 2    50   ~ 0
+Y9
+Text Label 7700 2700 2    50   ~ 0
+Y10
+Text Label 7700 2550 2    50   ~ 0
+Y11
+Text Label 7700 2400 2    50   ~ 0
+Y12
+Text Label 7700 2250 2    50   ~ 0
+Y13
+Text Label 7700 2100 2    50   ~ 0
+Y14
+Text Label 7700 1950 2    50   ~ 0
+Y15
+Entry Wire Line
+	6700 3650 6800 3750
+Text Label 6800 3750 0    50   ~ 0
+Ins3
+Wire Wire Line
+	6800 3750 7700 3750
+Entry Wire Line
+	6700 3500 6800 3600
+Text Label 6800 3600 0    50   ~ 0
+Ins4
+Wire Wire Line
+	6800 3600 7700 3600
+Text HLabel 8750 4500 2    50   Output ~ 0
+Y[0..15]
+Wire Bus Line
+	7800 4500 8750 4500
+Entry Wire Line
+	6700 3350 6800 3450
+Text Label 6800 3450 0    50   ~ 0
+Ins5
+Wire Wire Line
+	6800 3450 7700 3450
+Wire Bus Line
+	3200 3150 6700 3150
+Wire Bus Line
+	6700 3150 6700 4100
+Wire Bus Line
+	7800 2050 7800 4500
+$EndSCHEMATC

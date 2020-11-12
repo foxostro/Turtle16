@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 30 48
+Sheet 39 39
 Title "MEM"
 Date ""
 Rev ""
@@ -41,15 +41,6 @@ Text Label 2900 1250 3    50   ~ 0
 CtlIn13
 Text Label 2800 1250 3    50   ~ 0
 CtlIn14
-$Sheet
-S 3950 4100 850  300 
-U 600805C3
-F0 "Sheet600805C2" 50
-F1 "SixteenBitBusTransceiver.sch" 50
-F2 "~OE" I L 3950 4200 50 
-F3 "Q[0..15]" T R 4800 4300 50 
-F4 "D[0..15]" I L 3950 4300 50 
-$EndSheet
 Wire Bus Line
 	3650 4300 3950 4300
 Wire Bus Line
@@ -75,17 +66,8 @@ F 3 "" H 3650 3700 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3650 3700 3950 3700
-$Sheet
-S 3950 3600 850  300 
-U 600D2600
-F0 "sheet600D25FA" 50
-F1 "SixteenBitBusTransceiver.sch" 50
-F2 "~OE" I L 3950 3700 50 
-F3 "Q[0..15]" T R 4800 3800 50 
-F4 "D[0..15]" I L 3950 3800 50 
-$EndSheet
 Wire Bus Line
-	4800 3800 8800 3800
+	5200 3800 8800 3800
 Text Notes 1450 4800 0    50   ~ 0
 The bus needs pull-down\nresistors since these lines\nmay otherwise float\nsometimes.
 $Comp
@@ -539,7 +521,7 @@ StoreOp15
 Wire Bus Line
 	6000 4850 6000 4300
 Wire Bus Line
-	4800 4300 6000 4300
+	5200 4300 6000 4300
 Connection ~ 6000 4300
 Text Notes 3750 3450 0    50   ~ 0
 The ALUResult becomes the effective\naddress for devices on the bus. The\nvalue is buffered to isolate the bus\nfrom the rest of the pipeline.
@@ -562,10 +544,6 @@ Wire Bus Line
 	6000 4300 6950 4300
 Wire Bus Line
 	6950 4150 6950 4300
-Wire Bus Line
-	2300 1150 6250 1150
-Wire Bus Line
-	1500 4850 6000 4850
 Connection ~ 6950 4300
 Wire Bus Line
 	6950 4300 8800 4300
@@ -573,4 +551,26 @@ Text Label 7600 4050 2    50   ~ 0
 StoreOp[0..7]
 Text HLabel 8800 4050 2    50   3State ~ 0
 SystemBus[0..7]
+$Sheet
+S 3950 3600 1250 300 
+U 5FEF8718
+F0 "Buffer ALUResult As Addr" 50
+F1 "BufferALUResultAsAddr.sch" 50
+F2 "~OE" I L 3950 3700 50 
+F3 "Q[0..15]" T R 5200 3800 50 
+F4 "D[0..15]" I L 3950 3800 50 
+$EndSheet
+Wire Bus Line
+	2300 1150 6250 1150
+Wire Bus Line
+	1500 4850 6000 4850
+$Sheet
+S 3950 4100 1250 300 
+U 5FF1115C
+F0 "Buffer StoreOp As Bus I/O" 50
+F1 "BufferStoreOpAsBusIO.sch" 50
+F2 "~OE" I L 3950 4200 50 
+F3 "Q[0..15]" T R 5200 4300 50 
+F4 "D[0..15]" I L 3950 4300 50 
+$EndSheet
 $EndSCHEMATC

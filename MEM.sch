@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 30 89
+Sheet 30 86
 Title "MEM"
 Date ""
 Rev ""

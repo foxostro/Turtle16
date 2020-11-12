@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 83 89
+Sheet 83 86
 Title "16-Bit 3:1 Mux"
 Date ""
 Rev ""

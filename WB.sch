@@ -4,7 +4,7 @@ EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 82 89
+Sheet 79 89
 Title "WB"
 Date ""
 Rev ""
@@ -20,8 +20,6 @@ Text HLabel 8950 4750 2    50   Output ~ 0
 ToRegisterFileUpper[0..7]
 Text HLabel 8950 4900 2    50   Output ~ 0
 ToRegisterFileLower[0..7]
-Text HLabel 6700 4450 0    50   Input ~ 0
-Phi2
 Text HLabel 9600 2450 2    50   Output ~ 0
 ~WRH
 Text HLabel 9600 2750 2    50   Output ~ 0
@@ -180,8 +178,8 @@ AR Path="/5FE8EB3D/5FC806D1/5FBF1996/5FCDB0A6" Ref="C?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/5FBF0C1B/5FCDB0A6" Ref="C?"  Part="1" 
 AR Path="/60B264DC/5FCD7CF6/5FBF1996/5FCDB0A6" Ref="C?"  Part="1" 
 AR Path="/60B264DC/5FCD86F6/5FCDB0A6" Ref="C?"  Part="1" 
-AR Path="/60B264DC/5FCDB0A6" Ref="C?"  Part="1" 
-F 0 "C?" H 10315 2946 50  0000 L CNN
+AR Path="/60B264DC/5FCDB0A6" Ref="C82"  Part="1" 
+F 0 "C82" H 10315 2946 50  0000 L CNN
 F 1 "100nF" H 10315 2855 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 10238 2750 50  0001 C CNN
 F 3 "~" H 10200 2900 50  0001 C CNN
@@ -264,8 +262,8 @@ AR Path="/5FE8EB3D/5FC806D1/5FBF1996/5FCDB0AC" Ref="#PWR?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/5FBF0C1B/5FCDB0AC" Ref="#PWR?"  Part="1" 
 AR Path="/60B264DC/5FCD7CF6/5FBF1996/5FCDB0AC" Ref="#PWR?"  Part="1" 
 AR Path="/60B264DC/5FCD86F6/5FCDB0AC" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FCDB0AC" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 10200 2600 50  0001 C CNN
+AR Path="/60B264DC/5FCDB0AC" Ref="#PWR0483"  Part="1" 
+F 0 "#PWR0483" H 10200 2600 50  0001 C CNN
 F 1 "VCC" H 10217 2923 50  0000 C CNN
 F 2 "" H 10200 2750 50  0001 C CNN
 F 3 "" H 10200 2750 50  0001 C CNN
@@ -348,8 +346,8 @@ AR Path="/5FE8EB3D/5FC806D1/5FBF1996/5FCDB0B2" Ref="#PWR?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/5FBF0C1B/5FCDB0B2" Ref="#PWR?"  Part="1" 
 AR Path="/60B264DC/5FCD7CF6/5FBF1996/5FCDB0B2" Ref="#PWR?"  Part="1" 
 AR Path="/60B264DC/5FCD86F6/5FCDB0B2" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FCDB0B2" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 10200 2900 50  0001 C CNN
+AR Path="/60B264DC/5FCDB0B2" Ref="#PWR0484"  Part="1" 
+F 0 "#PWR0484" H 10200 2900 50  0001 C CNN
 F 1 "GND" H 10205 2977 50  0000 C CNN
 F 2 "" H 10200 3150 50  0001 C CNN
 F 3 "" H 10200 3150 50  0001 C CNN
@@ -376,8 +374,8 @@ AR Path="/60B264DC/5FCC63EC/5FC900A7/5FCDC2E8" Ref="U?"  Part="1"
 AR Path="/60B264DC/5FCC7594/5FC930A8/5FCDC2E8" Ref="U?"  Part="1" 
 AR Path="/60B264DC/5FCC7594/5FC930B2/5FCDC2E8" Ref="U?"  Part="1" 
 AR Path="/60B264DC/5FCC8AAB/5FCDC2E8" Ref="U?"  Part="1" 
-AR Path="/60B264DC/5FCDC2E8" Ref="U?"  Part="1" 
-F 0 "U?" H 8750 3950 50  0000 C CNN
+AR Path="/60B264DC/5FCDC2E8" Ref="U80"  Part="1" 
+F 0 "U80" H 8750 3950 50  0000 C CNN
 F 1 "74AHCT157" H 8700 3850 50  0000 C CNN
 F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 9000 3050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 9000 3050 50  0001 C CNN
@@ -385,10 +383,10 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0482
 U 1 1 5FCDC486
 P 9000 4050
-F 0 "#PWR?" H 9000 3800 50  0001 C CNN
+F 0 "#PWR0482" H 9000 3800 50  0001 C CNN
 F 1 "GND" H 9005 3877 50  0000 C CNN
 F 2 "" H 9000 4050 50  0001 C CNN
 F 3 "" H 9000 4050 50  0001 C CNN
@@ -396,10 +394,10 @@ F 3 "" H 9000 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR?
+L power:VCC #PWR0481
 U 1 1 5FCDCAC9
 P 9000 2150
-F 0 "#PWR?" H 9000 2000 50  0001 C CNN
+F 0 "#PWR0481" H 9000 2000 50  0001 C CNN
 F 1 "VCC" H 9017 2323 50  0000 C CNN
 F 2 "" H 9000 2150 50  0001 C CNN
 F 3 "" H 9000 2150 50  0001 C CNN
@@ -409,10 +407,10 @@ $EndComp
 NoConn ~ 9500 3050
 NoConn ~ 9500 3350
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0476
 U 1 1 5FCDD322
 P 8500 2450
-F 0 "#PWR?" H 8500 2200 50  0001 C CNN
+F 0 "#PWR0476" H 8500 2200 50  0001 C CNN
 F 1 "GND" V 8505 2322 50  0000 R CNN
 F 2 "" H 8500 2450 50  0001 C CNN
 F 3 "" H 8500 2450 50  0001 C CNN
@@ -420,10 +418,10 @@ F 3 "" H 8500 2450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0477
 U 1 1 5FCDD9EC
 P 8500 2750
-F 0 "#PWR?" H 8500 2500 50  0001 C CNN
+F 0 "#PWR0477" H 8500 2500 50  0001 C CNN
 F 1 "GND" V 8505 2622 50  0000 R CNN
 F 2 "" H 8500 2750 50  0001 C CNN
 F 3 "" H 8500 2750 50  0001 C CNN
@@ -431,10 +429,10 @@ F 3 "" H 8500 2750 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0478
 U 1 1 5FCDDC7E
 P 8500 3050
-F 0 "#PWR?" H 8500 2800 50  0001 C CNN
+F 0 "#PWR0478" H 8500 2800 50  0001 C CNN
 F 1 "GND" V 8505 2922 50  0000 R CNN
 F 2 "" H 8500 3050 50  0001 C CNN
 F 3 "" H 8500 3050 50  0001 C CNN
@@ -442,23 +440,23 @@ F 3 "" H 8500 3050 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0479
 U 1 1 5FCDDFDC
 P 8500 3350
-F 0 "#PWR?" H 8500 3100 50  0001 C CNN
+F 0 "#PWR0479" H 8500 3100 50  0001 C CNN
 F 1 "GND" V 8505 3222 50  0000 R CNN
 F 2 "" H 8500 3350 50  0001 C CNN
 F 3 "" H 8500 3350 50  0001 C CNN
 	1    8500 3350
 	0    1    1    0   
 $EndComp
-Text HLabel 8500 3650 0    50   Input ~ 0
+Text HLabel 5550 3650 0    50   Input ~ 0
 Phi2
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0480
 U 1 1 5FCDE3D2
 P 8500 3750
-F 0 "#PWR?" H 8500 3500 50  0001 C CNN
+F 0 "#PWR0480" H 8500 3500 50  0001 C CNN
 F 1 "GND" V 8505 3622 50  0000 R CNN
 F 2 "" H 8500 3750 50  0001 C CNN
 F 3 "" H 8500 3750 50  0001 C CNN
@@ -552,6 +550,193 @@ Text Notes 2350 2950 0    50   ~ 0
 Unused control signals
 Text Notes 7200 2350 0    50   ~ 0
 Ensure the register file\nreceives the write signals\nin the second clock phase.
+NoConn ~ -450 3000
+NoConn ~ -450 4500
+NoConn ~ -450 5000
+$Comp
+L 74xx:74LS04 U?
+U 7 1 5FC58A0E
+P -1050 5800
+AR Path="/5D2C0761/5FC58A0E" Ref="U?"  Part="7" 
+AR Path="/5D2C0720/5FC58A0E" Ref="U?"  Part="7" 
+AR Path="/5D2C07CD/5FC58A0E" Ref="U?"  Part="7" 
+AR Path="/60B264DC/5FC58A0E" Ref="U?"  Part="7" 
+F 0 "U?" H -1050 5850 50  0000 C CNN
+F 1 "74AHCT04" H -1050 5750 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -1050 5800 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1050 5800 50  0001 C CNN
+	7    -1050 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 6 1 5FC58A14
+P -750 5000
+AR Path="/5D8005AF/5D800744/5FC58A14" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC58A14" Ref="U?"  Part="6" 
+AR Path="/5D2C07CD/5FC58A14" Ref="U?"  Part="6" 
+AR Path="/60B264DC/5FC58A14" Ref="U?"  Part="6" 
+F 0 "U?" H -750 5317 50  0000 C CNN
+F 1 "74AHCT04" H -750 5226 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 5000 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 5000 50  0001 C CNN
+	6    -750 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 2 1 5FC58A1A
+P -750 3000
+AR Path="/5D8005AF/5D800744/5FC58A1A" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC58A1A" Ref="U?"  Part="2" 
+AR Path="/5D2C07CD/5FC58A1A" Ref="U?"  Part="2" 
+AR Path="/60B264DC/5FC58A1A" Ref="U?"  Part="2" 
+F 0 "U?" H -750 3317 50  0000 C CNN
+F 1 "74AHCT04" H -750 3226 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 3000 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3000 50  0001 C CNN
+	2    -750 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 5 1 5FC58A20
+P -750 4500
+AR Path="/5D8005AF/5D800744/5FC58A20" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC58A20" Ref="U?"  Part="5" 
+AR Path="/5D2C07CD/5FC58A20" Ref="U?"  Part="5" 
+AR Path="/60B264DC/5FC58A20" Ref="U?"  Part="5" 
+F 0 "U?" H -750 4817 50  0000 C CNN
+F 1 "74AHCT04" H -750 4726 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 4500 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4500 50  0001 C CNN
+	5    -750 4500
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 4 1 5FC58A26
+P -750 4000
+AR Path="/5D8005AF/5D800744/5FC58A26" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC58A26" Ref="U?"  Part="4" 
+AR Path="/5D2C07CD/5FC58A26" Ref="U?"  Part="4" 
+AR Path="/60B264DC/5FC58A26" Ref="U?"  Part="4" 
+F 0 "U?" H -750 4317 50  0000 C CNN
+F 1 "74AHCT04" H -750 4226 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 4000 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4000 50  0001 C CNN
+	4    -750 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 3 1 5FC58A2C
+P -750 3500
+AR Path="/5D8005AF/5D800744/5FC58A2C" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC58A2C" Ref="U?"  Part="3" 
+AR Path="/5D2C07CD/5FC58A2C" Ref="U?"  Part="3" 
+AR Path="/60B264DC/5FC58A2C" Ref="U?"  Part="3" 
+F 0 "U?" H -750 3817 50  0000 C CNN
+F 1 "74AHCT04" H -750 3726 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -750 3500 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3500 50  0001 C CNN
+	3    -750 3500
+	1    0    0    -1  
+$EndComp
+NoConn ~ -450 3500
+NoConn ~ -450 4000
+$Comp
+L power:VCC #PWR?
+U 1 1 5FC58A34
+P -1050 2100
+AR Path="/5D2C0761/5FC58A34" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FC58A34" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/5FC58A34" Ref="#PWR?"  Part="1" 
+AR Path="/60B264DC/5FC58A34" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H -1050 1950 50  0001 C CNN
+F 1 "VCC" H -1033 2273 50  0000 C CNN
+F 2 "" H -1050 2100 50  0001 C CNN
+F 3 "" H -1050 2100 50  0001 C CNN
+	1    -1050 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	-1050 3000 -1050 3500
+Connection ~ -1050 3000
+Connection ~ -1050 3500
+Wire Wire Line
+	-1050 3500 -1050 4000
+Connection ~ -1050 4000
+Wire Wire Line
+	-1050 4000 -1050 4500
+Connection ~ -1050 4500
+Wire Wire Line
+	-1050 4500 -1050 5000
+$Comp
+L power:GND #PWR?
+U 1 1 5FC58A42
+P -1050 6450
+AR Path="/5D2C0720/5FC58A42" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0761/5FC58A42" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/5FC58A42" Ref="#PWR?"  Part="1" 
+AR Path="/60B264DC/5FC58A42" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H -1050 6200 50  0001 C CNN
+F 1 "GND" H -1045 6277 50  0000 C CNN
+F 2 "" H -1050 6450 50  0001 C CNN
+F 3 "" H -1050 6450 50  0001 C CNN
+	1    -1050 6450
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	-1050 6300 -1050 6450
+Wire Wire Line
+	-1050 5000 -1050 5300
+Connection ~ -1050 5000
+$Comp
+L 74xx:74LS04 U?
+U 1 1 5FC58A4C
+P 6000 3650
+AR Path="/5D8005AF/5D800744/5FC58A4C" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC58A4C" Ref="U?"  Part="2" 
+AR Path="/5D2C07CD/5FC58A4C" Ref="U?"  Part="1" 
+AR Path="/60B264DC/5FC58A4C" Ref="U?"  Part="1" 
+F 0 "U?" H 6000 3967 50  0000 C CNN
+F 1 "74AHCT04" H 6000 3876 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6000 3650 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 6000 3650 50  0001 C CNN
+	1    6000 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	-1050 2100 -1050 3000
+$Comp
+L power:GND #PWR?
+U 1 1 5FCB55CF
+P 8500 3150
+F 0 "#PWR?" H 8500 2900 50  0001 C CNN
+F 1 "GND" V 8505 3022 50  0000 R CNN
+F 2 "" H 8500 3150 50  0001 C CNN
+F 3 "" H 8500 3150 50  0001 C CNN
+	1    8500 3150
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCB58C7
+P 8500 3450
+F 0 "#PWR?" H 8500 3200 50  0001 C CNN
+F 1 "GND" V 8505 3322 50  0000 R CNN
+F 2 "" H 8500 3450 50  0001 C CNN
+F 3 "" H 8500 3450 50  0001 C CNN
+	1    8500 3450
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5550 3650 5700 3650
+Wire Wire Line
+	6300 3650 6700 3650
+Wire Wire Line
+	6700 4450 6700 3650
 Wire Bus Line
 	4700 4950 4700 5350
 Wire Bus Line
@@ -560,4 +745,7 @@ Wire Bus Line
 	8350 4550 8350 4800
 Wire Bus Line
 	1950 2300 3800 2300
+Connection ~ 6700 3650
+Wire Wire Line
+	6700 3650 8500 3650
 $EndSCHEMATC

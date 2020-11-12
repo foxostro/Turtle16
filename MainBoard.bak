@@ -48,10 +48,10 @@ F 3 "~" H 4050 6650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0225
+L power:GND #PWR03
 U 1 1 5D9D8FA4
 P 3050 6750
-F 0 "#PWR0225" H 3050 6500 50  0001 C CNN
+F 0 "#PWR03" H 3050 6500 50  0001 C CNN
 F 1 "GND" H 3055 6577 50  0000 C CNN
 F 2 "" H 3050 6750 50  0001 C CNN
 F 3 "" H 3050 6750 50  0001 C CNN
@@ -59,10 +59,10 @@ F 3 "" H 3050 6750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0226
+L power:GND #PWR05
 U 1 1 5D9D9546
 P 4050 6750
-F 0 "#PWR0226" H 4050 6500 50  0001 C CNN
+F 0 "#PWR05" H 4050 6500 50  0001 C CNN
 F 1 "GND" H 4055 6577 50  0000 C CNN
 F 2 "" H 4050 6750 50  0001 C CNN
 F 3 "" H 4050 6750 50  0001 C CNN
@@ -92,10 +92,10 @@ F 3 "~" H 4050 7150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0227
+L power:GND #PWR04
 U 1 1 5D9DB4F9
 P 3050 7250
-F 0 "#PWR0227" H 3050 7000 50  0001 C CNN
+F 0 "#PWR04" H 3050 7000 50  0001 C CNN
 F 1 "GND" H 3055 7077 50  0000 C CNN
 F 2 "" H 3050 7250 50  0001 C CNN
 F 3 "" H 3050 7250 50  0001 C CNN
@@ -103,10 +103,10 @@ F 3 "" H 3050 7250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0228
+L power:GND #PWR06
 U 1 1 5D9DB4FF
 P 4050 7250
-F 0 "#PWR0228" H 4050 7000 50  0001 C CNN
+F 0 "#PWR06" H 4050 7000 50  0001 C CNN
 F 1 "GND" H 4055 7077 50  0000 C CNN
 F 2 "" H 4050 7250 50  0001 C CNN
 F 3 "" H 4050 7250 50  0001 C CNN
@@ -222,9 +222,9 @@ L power:VCC #PWR?
 U 1 1 608FD908
 P 2250 6850
 AR Path="/5D2C0761/608FD908" Ref="#PWR?"  Part="1" 
-AR Path="/608FD908" Ref="#PWR?"  Part="1" 
+AR Path="/608FD908" Ref="#PWR01"  Part="1" 
 AR Path="/5DCFC665/608FD908" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2250 6700 50  0001 C CNN
+F 0 "#PWR01" H 2250 6700 50  0001 C CNN
 F 1 "VCC" V 2267 6978 50  0000 L CNN
 F 2 "" H 2250 6850 50  0001 C CNN
 F 3 "" H 2250 6850 50  0001 C CNN
@@ -236,9 +236,9 @@ L power:GND #PWR?
 U 1 1 608FD90E
 P 2250 7150
 AR Path="/5D2C0761/608FD90E" Ref="#PWR?"  Part="1" 
-AR Path="/608FD90E" Ref="#PWR?"  Part="1" 
+AR Path="/608FD90E" Ref="#PWR02"  Part="1" 
 AR Path="/5DCFC665/608FD90E" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2250 6900 50  0001 C CNN
+F 0 "#PWR02" H 2250 6900 50  0001 C CNN
 F 1 "GND" V 2255 7022 50  0000 R CNN
 F 2 "" H 2250 7150 50  0001 C CNN
 F 3 "" H 2250 7150 50  0001 C CNN
@@ -251,9 +251,9 @@ U 1 1 608FD914
 P 1700 7000
 AR Path="/5D2C0720/608FD914" Ref="C?"  Part="1" 
 AR Path="/5D2C0761/608FD914" Ref="C?"  Part="1" 
-AR Path="/608FD914" Ref="C?"  Part="1" 
+AR Path="/608FD914" Ref="C1"  Part="1" 
 AR Path="/5DCFC665/608FD914" Ref="C?"  Part="1" 
-F 0 "C?" H 1792 7046 50  0000 L CNN
+F 0 "C1" H 1792 7046 50  0000 L CNN
 F 1 "100µF" H 1792 6955 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder" H 1700 7000 50  0001 C CNN
 F 3 "~" H 1700 7000 50  0001 C CNN
@@ -273,8 +273,8 @@ L power:PWR_FLAG #FLG?
 U 1 1 608FD924
 P 2100 7350
 AR Path="/5DCFC665/608FD924" Ref="#FLG?"  Part="1" 
-AR Path="/608FD924" Ref="#FLG?"  Part="1" 
-F 0 "#FLG?" H 2100 7425 50  0001 C CNN
+AR Path="/608FD924" Ref="#FLG02"  Part="1" 
+F 0 "#FLG02" H 2100 7425 50  0001 C CNN
 F 1 "PWR_FLAG" H 2100 7523 50  0000 C CNN
 F 2 "" H 2100 7350 50  0001 C CNN
 F 3 "~" H 2100 7350 50  0001 C CNN
@@ -291,8 +291,8 @@ L power:PWR_FLAG #FLG?
 U 1 1 608FD92D
 P 2100 6650
 AR Path="/5DCFC665/608FD92D" Ref="#FLG?"  Part="1" 
-AR Path="/608FD92D" Ref="#FLG?"  Part="1" 
-F 0 "#FLG?" H 2100 6725 50  0001 C CNN
+AR Path="/608FD92D" Ref="#FLG01"  Part="1" 
+F 0 "#FLG01" H 2100 6725 50  0001 C CNN
 F 1 "PWR_FLAG" H 2100 6823 50  0000 C CNN
 F 2 "" H 2100 6650 50  0001 C CNN
 F 3 "~" H 2100 6650 50  0001 C CNN
@@ -625,12 +625,12 @@ Wire Bus Line
 Wire Wire Line
 	1300 2250 1300 5300
 Text Notes -2950 6650 0    50   ~ 0
-TODO:\n* ERC\n* Move the memory bus connector to the top level\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation
+TODO:\n* ERC\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation
 $Comp
-L Connector:Conn_01x02_Male J?
+L Connector:Conn_01x02_Male J1
 U 1 1 5FAC7F8A
 P 1150 6950
-F 0 "J?" H 1050 7250 50  0000 C CNN
+F 0 "J1" H 1050 7250 50  0000 C CNN
 F 1 "Power Connector" H 1050 7150 50  0000 C CNN
 F 2 "Connector_Molex:Molex_Mini-Fit_Jr_5569-02A2_2x01_P4.20mm_Horizontal" H 1150 6950 50  0001 C CNN
 F 3 "~" H 1150 6950 50  0001 C CNN

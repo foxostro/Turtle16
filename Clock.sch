@@ -354,7 +354,7 @@ Wire Wire Line
 Wire Wire Line
 	1450 1150 1450 1350
 Wire Wire Line
-	1450 1350 2500 1350
+	1450 1350 2200 1350
 Connection ~ 1450 1350
 Wire Wire Line
 	1450 1350 1450 1750
@@ -759,4 +759,18 @@ Text HLabel 1700 6000 0    50   Input ~ 0
 ~HLT
 Text HLabel 8900 2800 2    50   Output ~ 0
 Phi1
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 5FC2FB0D
+P 2200 1350
+F 0 "#FLG0101" H 2200 1425 50  0001 C CNN
+F 1 "PWR_FLAG" H 2200 1523 50  0000 C CNN
+F 2 "" H 2200 1350 50  0001 C CNN
+F 3 "~" H 2200 1350 50  0001 C CNN
+	1    2200 1350
+	1    0    0    -1  
+$EndComp
+Connection ~ 2200 1350
+Wire Wire Line
+	2200 1350 2500 1350
 $EndSCHEMATC

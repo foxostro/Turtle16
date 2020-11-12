@@ -1,17 +1,17 @@
 EESchema Schematic File Version 4
 EELAYER 30 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr USLetter 11000 8500
 encoding utf-8
 Sheet 25 41
-Title ""
+Title "Buffer Register File Port B"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment2 "to keep it steady for the remainder of the clock cycle."
+Comment3 "On the Phi2 clock edge, latch the value coming out of port B in this register"
+Comment4 "The register file can only be read during the Phi1 clock cycle."
 $EndDescr
 Text HLabel 5000 3000 0    50   Input ~ 0
 CP

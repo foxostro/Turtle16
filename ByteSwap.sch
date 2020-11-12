@@ -4,14 +4,14 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 34 41
-Title ""
+Title "WB: Byte Swap"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment2 "in either the upper or lower sixteen bits of a register."
+Comment3 "This allows the WB stage to take a value from the system memory bus and store it"
+Comment4 "Swaps the upper and lower bytes of the store operand."
 $EndDescr
 Text HLabel 4550 3450 0    50   Input ~ 0
 A[0..15]
@@ -179,10 +179,10 @@ Text Label 5150 5100 0    50   ~ 0
 A15
 Text Label 6350 5100 2    50   ~ 0
 Y7
+Text Label 6350 4600 2    50   ~ 0
+Y2
 Wire Bus Line
 	5050 3450 5050 5000
 Wire Bus Line
 	6450 3450 6450 5000
-Text Label 6350 4600 2    50   ~ 0
-Y2
 $EndSCHEMATC

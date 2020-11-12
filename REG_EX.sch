@@ -1,17 +1,17 @@
 EESchema Schematic File Version 4
 EELAYER 30 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr USLetter 11000 8500
 encoding utf-8
 Sheet 12 41
-Title ""
+Title "REG/EX Interstage Registers"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "Interstage pipeline registers between REG and EX"
 $EndDescr
 Text HLabel 6700 3550 2    50   Output ~ 0
 OpR[0..15]

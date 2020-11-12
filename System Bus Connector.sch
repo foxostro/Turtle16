@@ -521,10 +521,6 @@ Wire Wire Line
 	4250 2400 5700 2400
 Text Notes 3650 3050 2    50   ~ 0
 Buffer the RST signal before it leaves the board.
-Wire Bus Line
-	4950 4800 4950 6150
-Wire Bus Line
-	4850 3100 4850 5800
 Text Label 5100 4700 0    50   ~ 0
 IO0
 Text Label 5100 4800 0    50   ~ 0
@@ -541,4 +537,8 @@ Text Label 5100 5300 0    50   ~ 0
 IO6
 Text Label 5100 5400 0    50   ~ 0
 IO7
+Wire Bus Line
+	4950 4800 4950 6150
+Wire Bus Line
+	4850 3100 4850 5800
 $EndSCHEMATC

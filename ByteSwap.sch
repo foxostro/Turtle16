@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 39 40
+Sheet 34 40
 Title ""
 Date ""
 Rev ""
@@ -129,8 +129,6 @@ Wire Wire Line
 	5150 4600 6350 4600
 Text Label 5150 4600 0    50   ~ 0
 A10
-Text Label 6350 4600 2    50   ~ 0
-Y1
 Entry Wire Line
 	5050 4600 5150 4700
 Entry Wire Line
@@ -140,7 +138,7 @@ Wire Wire Line
 Text Label 5150 4700 0    50   ~ 0
 A11
 Text Label 6350 4700 2    50   ~ 0
-Y2
+Y3
 Entry Wire Line
 	5050 4700 5150 4800
 Entry Wire Line
@@ -150,7 +148,7 @@ Wire Wire Line
 Text Label 5150 4800 0    50   ~ 0
 A12
 Text Label 6350 4800 2    50   ~ 0
-Y3
+Y4
 Entry Wire Line
 	5050 4800 5150 4900
 Entry Wire Line
@@ -160,7 +158,7 @@ Wire Wire Line
 Text Label 5150 4900 0    50   ~ 0
 A13
 Text Label 6350 4900 2    50   ~ 0
-Y4
+Y5
 Entry Wire Line
 	5050 4900 5150 5000
 Entry Wire Line
@@ -170,7 +168,7 @@ Wire Wire Line
 Text Label 5150 5000 0    50   ~ 0
 A14
 Text Label 6350 5000 2    50   ~ 0
-Y5
+Y6
 Entry Wire Line
 	5050 5000 5150 5100
 Entry Wire Line
@@ -180,9 +178,11 @@ Wire Wire Line
 Text Label 5150 5100 0    50   ~ 0
 A15
 Text Label 6350 5100 2    50   ~ 0
-Y6
+Y7
 Wire Bus Line
 	5050 3450 5050 5000
 Wire Bus Line
 	6450 3450 6450 5000
+Text Label 6350 4600 2    50   ~ 0
+Y2
 $EndSCHEMATC

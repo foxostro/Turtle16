@@ -30,7 +30,7 @@ StoreOp[0..15]
 Text HLabel 9100 10050 0    50   Input ~ 0
 PC[0..15]
 Text HLabel 6600 4800 0    50   Input ~ 0
-Ins[0..15]
+Ins[0..10]
 Text HLabel 15000 3400 2    50   Output ~ 0
 Ctl[5..23]
 Text HLabel 6650 7100 0    50   Input ~ 0
@@ -361,7 +361,7 @@ S 12800 6500 1100 400
 U 5FDE580B
 F0 "Select Left Operand" 50
 F1 "SelectLeftOperand.sch" 50
-F2 "Ins[0..15]" I L 12800 6700 50 
+F2 "Ins[0..10]" I L 12800 6700 50 
 F3 "A[0..15]" I L 12800 6800 50 
 F4 "Z[0..15]" O R 13900 6600 50 
 F5 "S" I L 12800 6600 50 
@@ -478,7 +478,7 @@ S 14350 9650 1100 600
 U 5FF2BBCA
 F0 "Select Store Operand" 50
 F1 "SelectStoreOp.sch" 50
-F2 "Ins[0..15]" I L 14350 9950 50 
+F2 "Ins[0..10]" I L 14350 9950 50 
 F3 "Z[0..15]" O R 15450 9750 50 
 F4 "S1" I L 14350 9850 50 
 F5 "PC[0..15]" I L 14350 10050 50 
@@ -490,7 +490,7 @@ S 6950 5200 1250 200
 U 606410B1
 F0 "Split Out SelC" 50
 F1 "SplitOutSelC.sch" 50
-F2 "Ins[0..15]" I L 6950 5300 50 
+F2 "Ins[0..10]" I L 6950 5300 50 
 F3 "SelCOut[0..2]" O R 8200 5300 50 
 $EndSheet
 Wire Bus Line
@@ -500,7 +500,7 @@ S 6950 6000 1150 200
 U 606889E4
 F0 "Split Out SelA" 50
 F1 "SplitOutSelA.sch" 50
-F2 "Ins[0..15]" I L 6950 6100 50 
+F2 "Ins[0..10]" I L 6950 6100 50 
 F3 "SelAOut[0..2]" O R 8100 6100 50 
 $EndSheet
 Wire Bus Line
@@ -519,7 +519,7 @@ S 6950 5600 1050 200
 U 60691E71
 F0 "Split Out SelB" 50
 F1 "SplitOutSelB.sch" 50
-F2 "Ins[0..15]" I L 6950 5700 50 
+F2 "Ins[0..10]" I L 6950 5700 50 
 F3 "SelBOut[0..2]" O R 8000 5700 50 
 $EndSheet
 Wire Bus Line

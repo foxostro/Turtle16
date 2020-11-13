@@ -518,24 +518,24 @@ Wire Wire Line
 Wire Wire Line
 	3850 5050 3850 5200
 Wire Bus Line
-	3300 4950 1150 4950
+	3350 4950 1150 4950
 Wire Bus Line
 	1150 4950 1150 5400
 Wire Bus Line
-	3250 4900 1100 4900
+	3300 4900 1100 4900
 Wire Bus Line
 	1100 4900 1100 5500
 Wire Bus Line
-	3400 4650 3300 4650
+	3400 4650 3350 4650
 Wire Bus Line
-	3300 4650 3300 4950
+	3350 4650 3350 4950
 Wire Bus Line
-	3400 4550 3250 4550
+	3400 4550 3300 4550
 Wire Bus Line
-	3250 4550 3250 4900
+	3300 4550 3300 4900
 Wire Bus Line
-	3250 4550 3100 4550
-Connection ~ 3250 4550
+	3300 4550 3100 4550
+Connection ~ 3300 4550
 Wire Bus Line
 	4150 5600 3100 5600
 $Sheet
@@ -609,7 +609,7 @@ Wire Bus Line
 Wire Wire Line
 	1300 2250 1300 5300
 Text Notes -2950 6650 0    50   ~ 0
-TODO:\n* Maybe we need a little switch or jumper for enabling the external clock\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation\n* Layout PCBs for individual modules\n* How can I have JLCPCB do SMD assembly with a KiCAD project?\n* Can I get SMD sockets for DIP chips?
+TODO:\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation\n* Layout PCBs for individual modules\n* How can I have JLCPCB do SMD assembly with a KiCAD project?\n* Can I get SMD sockets for DIP chips?
 $Comp
 L Connector:Conn_01x02_Male J1
 U 1 1 5FAC7F8A
@@ -622,18 +622,6 @@ F 3 "~" H 1150 6950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Sheet
-S 1550 2650 1550 500 
-U 5FAED671
-F0 "System Bus Connector" 50
-F1 "System Bus Connector.sch" 50
-F2 "Phi2" I L 1550 2750 50 
-F3 "~RST" I L 1550 2850 50 
-F4 "~MemLoad" I R 3100 2950 50 
-F5 "~MemStore" I R 3100 3050 50 
-F6 "Addr[0..15]" I R 3100 2750 50 
-F7 "IO[0..7]" T R 3100 2850 50 
-$EndSheet
-$Sheet
 S 1550 3750 1550 1000
 U 60AF64DE
 F0 "MEM" 50
@@ -645,8 +633,7 @@ F5 "CtlIn[13..23]" I R 3100 4450 50
 F6 "Ctl[15..23]" O L 1550 4650 50 
 F7 "~MemStore" O R 3100 3850 50 
 F8 "~MemLoad" O R 3100 3950 50 
-F9 "Addr[0..15]" O R 3100 4150 50 
-F10 "SystemBus[0..7]" T R 3100 4050 50 
+F9 "SystemBus[0..7]" T R 3100 4050 50 
 $EndSheet
 Wire Bus Line
 	1050 4650 1050 5600
@@ -704,10 +691,6 @@ Wire Bus Line
 	3250 4050 3100 4050
 Wire Bus Line
 	3100 2750 3300 2750
-Wire Bus Line
-	3300 2750 3300 4150
-Wire Bus Line
-	3300 4150 3100 4150
 Wire Wire Line
 	7200 4150 7150 4150
 Wire Wire Line
@@ -735,4 +718,18 @@ F6 "CtlIn[0..23]" I L 8850 1700 50
 F7 "CtlOut[0..23]" O R 10000 1700 50 
 F8 "InsOut[0..10]" O R 10000 1500 50 
 $EndSheet
+$Sheet
+S 1550 2650 1550 500 
+U 5FAED671
+F0 "System Bus Connector" 50
+F1 "System Bus Connector.sch" 50
+F2 "Phi2" I L 1550 2750 50 
+F3 "~RST" I L 1550 2850 50 
+F4 "~MemLoad" I R 3100 2950 50 
+F5 "~MemStore" I R 3100 3050 50 
+F6 "IO[0..7]" T R 3100 2850 50 
+F7 "ALUResult[0..15]" I R 3100 2750 50 
+$EndSheet
+Wire Bus Line
+	3300 2750 3300 4550
 $EndSCHEMATC

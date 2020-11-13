@@ -100,7 +100,7 @@ U 1 1 5FE03A19
 P 14200 7200
 F 0 "U52" H 13950 7900 50  0000 C CNN
 F 1 "74F182" H 13950 7800 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 14200 7200 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 14200 7200 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS182" H 14200 7200 50  0001 C CNN
 	1    14200 7200
 	1    0    0    -1  
@@ -1310,7 +1310,7 @@ AR Path="/5D2C07CD/5FC39954" Ref="U?"  Part="7"
 AR Path="/60A71BBF/5FC39954" Ref="U47"  Part="7" 
 F 0 "U47" H -1100 11400 50  0000 C CNN
 F 1 "74AHCT04" H -1100 11300 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -1100 11350 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1100 11350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1100 11350 50  0001 C CNN
 	7    -1100 11350
 	1    0    0    -1  
@@ -1325,7 +1325,7 @@ AR Path="/5D2C07CD/5FC3995A" Ref="U?"  Part="6"
 AR Path="/60A71BBF/5FC3995A" Ref="U47"  Part="6" 
 F 0 "U47" H -800 10867 50  0000 C CNN
 F 1 "74AHCT04" H -800 10776 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -800 10550 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 10550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 10550 50  0001 C CNN
 	6    -800 10550
 	1    0    0    -1  
@@ -1340,7 +1340,7 @@ AR Path="/5D2C07CD/5FC39960" Ref="U?"  Part="2"
 AR Path="/60A71BBF/5FC39960" Ref="U47"  Part="2" 
 F 0 "U47" H -800 8867 50  0000 C CNN
 F 1 "74AHCT04" H -800 8776 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -800 8550 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 8550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 8550 50  0001 C CNN
 	2    -800 8550
 	1    0    0    -1  
@@ -1355,7 +1355,7 @@ AR Path="/5D2C07CD/5FC39966" Ref="U?"  Part="5"
 AR Path="/60A71BBF/5FC39966" Ref="U47"  Part="5" 
 F 0 "U47" H -800 10367 50  0000 C CNN
 F 1 "74AHCT04" H -800 10276 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -800 10050 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 10050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 10050 50  0001 C CNN
 	5    -800 10050
 	1    0    0    -1  
@@ -1370,7 +1370,7 @@ AR Path="/5D2C07CD/5FC3996C" Ref="U?"  Part="4"
 AR Path="/60A71BBF/5FC3996C" Ref="U47"  Part="4" 
 F 0 "U47" H -800 9867 50  0000 C CNN
 F 1 "74AHCT04" H -800 9776 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -800 9550 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 9550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 9550 50  0001 C CNN
 	4    -800 9550
 	1    0    0    -1  
@@ -1385,7 +1385,7 @@ AR Path="/5D2C07CD/5FC39972" Ref="U?"  Part="3"
 AR Path="/60A71BBF/5FC39972" Ref="U47"  Part="3" 
 F 0 "U47" H -800 9367 50  0000 C CNN
 F 1 "74AHCT04" H -800 9276 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -800 9050 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 9050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 9050 50  0001 C CNN
 	3    -800 9050
 	1    0    0    -1  
@@ -1449,7 +1449,7 @@ AR Path="/5D2C07CD/5FC39992" Ref="U?"  Part="1"
 AR Path="/60A71BBF/5FC39992" Ref="U47"  Part="1" 
 F 0 "U47" H 15800 13417 50  0000 C CNN
 F 1 "74AHCT04" H 15800 13326 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 15800 13100 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 15800 13100 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 15800 13100 50  0001 C CNN
 	1    15800 13100
 	1    0    0    -1  
@@ -1488,6 +1488,8 @@ Text Label 12200 12000 2    50   ~ 0
 ALUResult15
 Entry Wire Line
 	7000 2150 7100 2250
+Text Notes 17800 12250 0    50   ~ 0
+Note that these signals are latched at\nthe same time as those in the EX/MEM\ninterstage registers.
 Wire Bus Line
 	9800 3600 9800 3900
 Wire Bus Line
@@ -1508,6 +1510,4 @@ Wire Bus Line
 	6000 2150 15250 2150
 Wire Bus Line
 	12350 3650 12350 11900
-Text Notes 17800 12250 0    50   ~ 0
-Note that these signals are latched at\nthe same time as those in the EX/MEM\ninterstage registers.
 $EndSCHEMATC

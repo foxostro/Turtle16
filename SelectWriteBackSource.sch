@@ -37,7 +37,7 @@ AR Path="/60906BCD/5FF2BBCA/6027143A" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/6027143A" Ref="U85"  Part="1" 
 F 0 "U85" H 14700 4750 50  0000 C CNN
 F 1 "74AHCT157" H 14650 4650 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 14950 3850 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 14950 3850 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 14950 3850 50  0001 C CNN
 	1    14950 3850
 	1    0    0    -1  
@@ -124,7 +124,7 @@ AR Path="/60906BCD/5FF2BBCA/6027144C" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/6027144C" Ref="U86"  Part="1" 
 F 0 "U86" H 14700 7100 50  0000 C CNN
 F 1 "74AHCT157" H 14650 7000 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 14950 6200 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 14950 6200 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 14950 6200 50  0001 C CNN
 	1    14950 6200
 	1    0    0    -1  
@@ -211,7 +211,7 @@ AR Path="/60906BCD/5FF2BBCA/6027145E" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/6027145E" Ref="U87"  Part="1" 
 F 0 "U87" H 14700 9450 50  0000 C CNN
 F 1 "74AHCT157" H 14650 9350 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 14950 8550 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 14950 8550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 14950 8550 50  0001 C CNN
 	1    14950 8550
 	1    0    0    -1  
@@ -298,7 +298,7 @@ AR Path="/60906BCD/5FF2BBCA/60271470" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/60271470" Ref="U88"  Part="1" 
 F 0 "U88" H 14700 11800 50  0000 C CNN
 F 1 "74AHCT157" H 14650 11700 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 14950 10900 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 14950 10900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 14950 10900 50  0001 C CNN
 	1    14950 10900
 	1    0    0    -1  
@@ -1013,7 +1013,7 @@ AR Path="/60906BCD/5FF2BBCA/60271562" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/60271562" Ref="U81"  Part="1" 
 F 0 "U81" H 9700 5050 50  0000 C CNN
 F 1 "74AHCT157" H 9650 4950 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 9950 4150 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 9950 4150 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 9950 4150 50  0001 C CNN
 	1    9950 4150
 	1    0    0    -1  
@@ -1100,7 +1100,7 @@ AR Path="/60906BCD/5FF2BBCA/60271574" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/60271574" Ref="U82"  Part="1" 
 F 0 "U82" H 9700 7400 50  0000 C CNN
 F 1 "74AHCT157" H 9650 7300 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 9950 6500 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 9950 6500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 9950 6500 50  0001 C CNN
 	1    9950 6500
 	1    0    0    -1  
@@ -1187,7 +1187,7 @@ AR Path="/60906BCD/5FF2BBCA/60271586" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/60271586" Ref="U83"  Part="1" 
 F 0 "U83" H 9700 9750 50  0000 C CNN
 F 1 "74AHCT157" H 9650 9650 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 9950 8850 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 9950 8850 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 9950 8850 50  0001 C CNN
 	1    9950 8850
 	1    0    0    -1  
@@ -1274,7 +1274,7 @@ AR Path="/60906BCD/5FF2BBCA/60271598" Ref="U?"  Part="1"
 AR Path="/60B264DC/6025930D/60271598" Ref="U84"  Part="1" 
 F 0 "U84" H 9700 12100 50  0000 C CNN
 F 1 "74AHCT157" H 9650 12000 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 9950 11200 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 9950 11200 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 9950 11200 50  0001 C CNN
 	1    9950 11200
 	1    0    0    -1  

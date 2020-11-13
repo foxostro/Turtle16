@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 39 41
+Sheet 37 41
 Title "MEM: Buffer StoreOp"
 Date ""
 Rev ""
@@ -203,7 +203,7 @@ AR Path="/60AF64DE/600D275E/5FF1989E" Ref="U?"  Part="1"
 AR Path="/60AF64DE/5FF1115C/5FF1989E" Ref="U92"  Part="1" 
 F 0 "U92" H 5600 3750 50  0000 C CNN
 F 1 "74AHCT244" H 5550 3650 50  0000 C CNN
-F 2 "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm" H 5850 2950 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5850 2950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5850 2950 50  0001 C CNN
 	1    5850 2950
 	1    0    0    -1  
@@ -365,7 +365,7 @@ AR Path="/60AF64DE/600D275E/5FF198EB" Ref="U?"  Part="1"
 AR Path="/60AF64DE/5FF1115C/5FF198EB" Ref="U93"  Part="1" 
 F 0 "U93" H 5600 5850 50  0000 C CNN
 F 1 "74AHCT244" H 5550 5750 50  0000 C CNN
-F 2 "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm" H 5850 5050 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5850 5050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5850 5050 50  0001 C CNN
 	1    5850 5050
 	1    0    0    -1  

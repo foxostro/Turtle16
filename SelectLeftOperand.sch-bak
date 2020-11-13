@@ -34,7 +34,7 @@ AR Path="/60B264DC/5FCC8AAB/5FDFFC94" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FDE580B/5FDFFC94" Ref="U63"  Part="1" 
 F 0 "U63" H 7550 3200 50  0000 C CNN
 F 1 "74AHCT157" H 7500 3100 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 7800 2300 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 7800 2300 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 7800 2300 50  0001 C CNN
 	1    7800 2300
 	1    0    0    -1  
@@ -112,7 +112,7 @@ AR Path="/60B264DC/5FCC8AAB/5FDFFCA6" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FDE580B/5FDFFCA6" Ref="U64"  Part="1" 
 F 0 "U64" H 7550 5550 50  0000 C CNN
 F 1 "74AHCT157" H 7500 5450 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 7800 4650 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 7800 4650 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 7800 4650 50  0001 C CNN
 	1    7800 4650
 	1    0    0    -1  
@@ -190,7 +190,7 @@ AR Path="/60B264DC/5FCC8AAB/5FDFFCB8" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FDE580B/5FDFFCB8" Ref="U65"  Part="1" 
 F 0 "U65" H 7550 7900 50  0000 C CNN
 F 1 "74AHCT157" H 7500 7800 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 7800 7000 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 7800 7000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 7800 7000 50  0001 C CNN
 	1    7800 7000
 	1    0    0    -1  
@@ -268,7 +268,7 @@ AR Path="/60B264DC/5FCC8AAB/5FDFFCCA" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FDE580B/5FDFFCCA" Ref="U66"  Part="1" 
 F 0 "U66" H 7550 10250 50  0000 C CNN
 F 1 "74AHCT157" H 7500 10150 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 7800 9350 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 7800 9350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 7800 9350 50  0001 C CNN
 	1    7800 9350
 	1    0    0    -1  

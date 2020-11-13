@@ -19,10 +19,6 @@ Text HLabel 8850 4450 2    50   Output ~ 0
 ToRegisterFileUpper[0..7]
 Text HLabel 8850 4550 2    50   Output ~ 0
 ToRegisterFileLower[0..7]
-Text HLabel 9600 2450 2    50   Output ~ 0
-~WRH
-Text HLabel 9600 2750 2    50   Output ~ 0
-~WRL
 Text HLabel 2500 4750 0    50   Input ~ 0
 ALUResultIn[0..15]
 Text Notes 5000 5400 0    50   ~ 0
@@ -974,4 +970,8 @@ Wire Wire Line
 	3750 2850 8500 2850
 Wire Bus Line
 	1950 2300 3800 2300
+Text HLabel 9600 2450 2    50   Output ~ 0
+~WRL
+Text HLabel 9600 2750 2    50   Output ~ 0
+~WRH
 $EndSCHEMATC

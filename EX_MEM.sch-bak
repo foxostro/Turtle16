@@ -517,7 +517,7 @@ Wire Wire Line
 	5100 3600 5100 4250
 Connection ~ 5100 3600
 Text HLabel 3800 4350 0    50   Input ~ 0
-CtlIn[13..23]
+CtlIn[12..23]
 Text HLabel 7250 4350 2    50   Output ~ 0
 Ctl[13..23]
 $Sheet
@@ -527,8 +527,13 @@ F0 "Sheet604D665B" 50
 F1 "Ctl_13_23_Register.sch" 50
 F2 "CP" I L 5200 4250 50 
 F3 "Ctl[13..23]" O R 6350 4350 50 
-F4 "CtlIn[13..23]" I L 5200 4350 50 
+F4 "CtlIn[12..23]" I L 5200 4350 50 
 F5 "SelCIn[0..2]" I L 5200 4450 50 
 F6 "SelC[0..2]" O R 6350 4450 50 
+F7 "~J" O R 6350 4250 50 
 $EndSheet
+Text HLabel 7250 4250 2    50   Output ~ 0
+~J
+Wire Wire Line
+	7250 4250 6350 4250
 $EndSCHEMATC

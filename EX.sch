@@ -19,12 +19,10 @@ Text HLabel 6000 1950 0    50   Input ~ 0
 OpL[0..15]
 Text HLabel 15500 3650 2    50   Output ~ 0
 ALUResult[0..15]
-Text HLabel 6950 3650 3    50   Output ~ 0
-~J
 Text HLabel 6000 2150 0    50   Input ~ 0
 CtlIn[5..23]
 Text HLabel 16500 2250 2    50   Output ~ 0
-Ctl[13..23]
+Ctl[12..23]
 $Comp
 L MainBoard-rescue:74LS181-74xx U?
 U 1 1 5FDDF597
@@ -578,8 +576,6 @@ Text Label 12200 9400 2    50   ~ 0
 ALUResult11
 Wire Bus Line
 	15500 3650 12350 3650
-Entry Wire Line
-	7000 2150 7100 2250
 Text Label 7100 3000 3    50   ~ 0
 ~FI
 Wire Wire Line
@@ -588,16 +584,8 @@ Wire Wire Line
 	16200 13800 16200 13400
 Wire Wire Line
 	7100 2250 7100 13800
-Entry Wire Line
-	6850 2150 6950 2250
-Wire Wire Line
-	6950 2250 6950 3650
-Text Label 6950 3000 3    50   ~ 0
-~J
 Text Label 7100 2300 3    50   ~ 0
 CtlIn5
-Text Label 6950 2300 3    50   ~ 0
-CtlIn12
 Entry Wire Line
 	7150 2150 7250 2250
 Text Label 7250 2300 3    50   ~ 0
@@ -738,7 +726,7 @@ Entry Bus Bus
 Wire Bus Line
 	15350 2250 16500 2250
 Text Label 15900 2250 0    50   ~ 0
-CtlIn[13..23]
+CtlIn[12..23]
 Entry Wire Line
 	9900 3700 9800 3600
 Wire Wire Line
@@ -1498,6 +1486,8 @@ Entry Wire Line
 	12250 12000 12350 11900
 Text Label 12200 12000 2    50   ~ 0
 ALUResult15
+Entry Wire Line
+	7000 2150 7100 2250
 Wire Bus Line
 	9800 3600 9800 3900
 Wire Bus Line

@@ -84,10 +84,10 @@ Wire Bus Line
 	5600 4750 5600 9050
 Wire Bus Line
 	5600 9050 6550 9050
-Text HLabel 3400 1900 0    50   Input ~ 0
+Text HLabel 3400 6250 0    50   Input ~ 0
 Phi2
 Wire Wire Line
-	3400 1900 3600 1900
+	3400 6250 3600 6250
 Wire Bus Line
 	6350 7600 9150 7600
 Wire Bus Line
@@ -313,29 +313,26 @@ Connection ~ -1550 8600
 $Comp
 L 74xx:74LS04 U?
 U 1 1 5FC50E97
-P 3900 1900
+P 3900 6250
 AR Path="/5D8005AF/5D800744/5FC50E97" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC50E97" Ref="U?"  Part="2" 
 AR Path="/5D2C07CD/5FC50E97" Ref="U?"  Part="1" 
 AR Path="/60906BCD/5FC50E97" Ref="U54"  Part="1" 
-F 0 "U54" H 3900 2217 50  0000 C CNN
-F 1 "74AHCT04" H 3900 2126 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 3900 1900 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3900 1900 50  0001 C CNN
-	1    3900 1900
+F 0 "U54" H 3900 6567 50  0000 C CNN
+F 1 "74AHCT04" H 3900 6476 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 3900 6250 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3900 6250 50  0001 C CNN
+	1    3900 6250
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	-1550 5700 -1550 6600
 Wire Wire Line
-	6400 4250 6400 1900
+	4200 6250 6400 6250
 Wire Wire Line
-	4200 1900 6400 1900
-Wire Wire Line
-	6400 4250 6400 8950
+	6400 4250 6400 6250
 Wire Wire Line
 	6400 8950 6550 8950
-Connection ~ 6400 4250
 $Sheet
 S 6500 4150 850  300 
 U 5FDB0470
@@ -543,6 +540,9 @@ Wire Bus Line
 	8450 7500 11600 7500
 Wire Bus Line
 	4100 2350 8450 2350
+Connection ~ 6400 6250
+Wire Wire Line
+	6400 6250 6400 8950
 Wire Bus Line
 	3750 850  9850 850 
 $EndSCHEMATC

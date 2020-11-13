@@ -359,53 +359,39 @@ Wire Bus Line
 Wire Bus Line
 	8600 4600 8800 4600
 Wire Bus Line
-	5700 4550 5150 4550
+	5350 3700 5350 4350
 Wire Bus Line
-	5200 3700 5200 4350
+	5350 4350 5200 4350
 Wire Bus Line
-	5200 4350 4950 4350
-Wire Wire Line
-	5100 2250 5100 3650
-Wire Wire Line
-	5100 4250 4950 4250
-Wire Bus Line
-	1450 2200 5150 2200
-Wire Bus Line
-	5150 4550 4950 4550
-Wire Wire Line
-	1300 2250 5100 2250
+	1450 2200 3400 2200
 Wire Bus Line
 	1650 1650 1450 1650
 Wire Bus Line
 	1450 1650 1450 2200
 Wire Wire Line
 	1650 1750 1550 1750
-Wire Wire Line
-	1550 1750 1550 2150
 $Sheet
-S 3400 4150 1550 600 
+S 3650 4050 1550 700 
 U 60A8EF0C
 F0 "EX/MEM" 50
 F1 "EX_MEM.sch" 50
-F2 "Phi1" I R 4950 4250 50 
-F3 "StoreOp[0..15]" O L 3400 4350 50 
-F4 "StoreOpIn[0..15]" I R 4950 4350 50 
-F5 "ALUResultIn[0..15]" I R 4950 4550 50 
-F6 "SelCIn[0..2]" I R 4950 4450 50 
-F7 "SelC[0..2]" O L 3400 4650 50 
-F8 "ALUResult[0..15]" O L 3400 4550 50 
-F9 "CtlIn[13..23]" I R 4950 4650 50 
-F10 "Ctl[13..23]" O L 3400 4450 50 
+F2 "Phi1" I L 3650 4150 50 
+F3 "StoreOp[0..15]" O L 3650 4350 50 
+F4 "StoreOpIn[0..15]" I R 5200 4350 50 
+F5 "ALUResultIn[0..15]" I R 5200 4550 50 
+F6 "SelCIn[0..2]" I R 5200 4450 50 
+F7 "SelC[0..2]" O L 3650 4650 50 
+F8 "ALUResult[0..15]" O L 3650 4550 50 
+F9 "Ctl[13..23]" O L 3650 4450 50 
+F10 "CtlIn[12..23]" I R 5200 4650 50 
+F11 "~J" O L 3650 4250 50 
 $EndSheet
 Wire Bus Line
 	8800 4300 8600 4300
 Wire Bus Line
-	3400 4350 3100 4350
+	3650 4350 3100 4350
 Wire Bus Line
-	5150 2200 5150 4550
-Wire Bus Line
-	3400 4450 3100 4450
-Connection ~ 5150 4550
+	3650 4450 3100 4450
 Wire Bus Line
 	6050 5300 8800 5300
 Wire Bus Line
@@ -416,27 +402,26 @@ Wire Wire Line
 	6050 5500 8800 5500
 Wire Bus Line
 	1550 4550 1000 4550
-Connection ~ 1300 2250
 Wire Bus Line
 	8800 4700 8600 4700
 Wire Wire Line
-	5400 2200 7000 2200
+	5500 2250 7000 2250
 Wire Wire Line
-	7000 2200 7000 1750
+	7000 2250 7000 1750
 Wire Wire Line
 	7000 1750 7150 1750
 Wire Wire Line
-	5400 4250 5700 4250
+	5500 4250 5700 4250
 Wire Wire Line
 	7150 1650 6950 1650
 Wire Wire Line
-	6950 1650 6950 2150
+	6950 1650 6950 2200
 Wire Wire Line
-	6950 2150 5350 2150
+	6950 2200 5450 2200
 Wire Wire Line
-	5350 4350 5700 4350
+	5450 4350 5700 4350
 Wire Bus Line
-	4950 4650 5700 4650
+	5200 4650 5700 4650
 Wire Bus Line
 	7200 4550 7000 4550
 Wire Bus Line
@@ -448,21 +433,17 @@ Wire Bus Line
 Wire Bus Line
 	7100 4250 7100 3700
 Wire Bus Line
-	5200 3700 7100 3700
+	5350 3700 7100 3700
 Wire Bus Line
 	7200 4350 7050 4350
 Wire Bus Line
 	7050 4350 7050 3750
 Wire Bus Line
-	7050 3750 5250 3750
+	7050 3750 5400 3750
 Wire Bus Line
-	5250 3750 5250 4450
+	5400 3750 5400 4450
 Wire Bus Line
-	5250 4450 4950 4450
-Wire Wire Line
-	5300 4450 5700 4450
-Wire Wire Line
-	1550 2150 5300 2150
+	5400 4450 5200 4450
 $Sheet
 S 7200 4050 1400 750 
 U 60A72859
@@ -481,9 +462,9 @@ F11 "CtlIn[5..23]" I R 8600 4400 50
 F12 "Ctl[5..23]" O L 7200 4650 50 
 $EndSheet
 Wire Wire Line
-	5700 4050 5450 4050
+	5700 4050 5550 4050
 Wire Wire Line
-	5450 4050 5450 3650
+	5550 4050 5550 3650
 $Sheet
 S 1500 5200 1600 600 
 U 5FF41DF6
@@ -518,24 +499,24 @@ Wire Wire Line
 Wire Wire Line
 	3850 5050 3850 5200
 Wire Bus Line
-	3350 4950 1150 4950
+	3450 4950 1150 4950
 Wire Bus Line
 	1150 4950 1150 5400
 Wire Bus Line
-	3300 4900 1100 4900
+	3400 4900 1100 4900
 Wire Bus Line
 	1100 4900 1100 5500
 Wire Bus Line
-	3400 4650 3350 4650
+	3650 4650 3450 4650
 Wire Bus Line
-	3350 4650 3350 4950
+	3450 4650 3450 4950
 Wire Bus Line
-	3400 4550 3300 4550
+	3650 4550 3400 4550
 Wire Bus Line
-	3300 4550 3300 4900
+	3400 4550 3400 4900
 Wire Bus Line
-	3300 4550 3100 4550
-Connection ~ 3300 4550
+	3400 4550 3100 4550
+Connection ~ 3400 4550
 Wire Bus Line
 	4150 5600 3100 5600
 $Sheet
@@ -546,12 +527,11 @@ F1 "EX.sch" 50
 F2 "OpR[0..15]" I R 7000 4550 50 
 F3 "OpL[0..15]" I R 7000 4450 50 
 F4 "ALUResult[0..15]" O L 5700 4550 50 
-F5 "~J" O L 5700 4450 50 
-F6 "~Carry" O L 5700 4350 50 
-F7 "~A=B" O L 5700 4250 50 
-F8 "Phi1" I L 5700 4050 50 
-F9 "CtlIn[5..23]" I R 7000 4650 50 
-F10 "Ctl[13..23]" O L 5700 4650 50 
+F5 "~Carry" O L 5700 4350 50 
+F6 "~A=B" O L 5700 4250 50 
+F7 "Phi1" I L 5700 4050 50 
+F8 "CtlIn[5..23]" I R 7000 4650 50 
+F9 "Ctl[12..23]" O L 5700 4650 50 
 $EndSheet
 $Sheet
 S 8800 4150 1200 1650
@@ -606,8 +586,6 @@ Wire Bus Line
 	3850 6100 3850 5700
 Wire Bus Line
 	3850 5700 3100 5700
-Wire Wire Line
-	1300 2250 1300 5300
 Text Notes -2950 6650 0    50   ~ 0
 TODO:\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation\n* Layout PCBs for individual modules\n* How can I have JLCPCB do SMD assembly with a KiCAD project?\n* Can I get SMD sockets for DIP chips?
 $Comp
@@ -645,17 +623,12 @@ Connection ~ 1350 750
 Wire Wire Line
 	1350 750  10400 750 
 Wire Wire Line
-	1300 1450 1300 2250
-Connection ~ 1300 1450
-Wire Wire Line
 	1250 1550 1250 2850
 Connection ~ 1250 1550
 Wire Wire Line
-	5300 2150 5300 4450
+	5450 2200 5450 4350
 Wire Wire Line
-	5350 2150 5350 4350
-Wire Wire Line
-	5400 2200 5400 4250
+	5500 2250 5500 4250
 Wire Wire Line
 	10400 750  10400 5700
 Wire Wire Line
@@ -672,37 +645,32 @@ Wire Wire Line
 Wire Bus Line
 	1550 4650 1050 4650
 Wire Wire Line
-	3100 3050 3150 3050
+	3100 3050 3250 3050
 Wire Wire Line
-	3150 3050 3150 3850
+	3250 3050 3250 3850
 Wire Wire Line
-	3150 3850 3100 3850
+	3250 3850 3100 3850
 Wire Wire Line
-	3100 2950 3200 2950
+	3100 2950 3300 2950
 Wire Wire Line
-	3200 2950 3200 3950
+	3300 2950 3300 3950
 Wire Wire Line
-	3200 3950 3100 3950
+	3300 3950 3100 3950
 Wire Bus Line
-	3100 2850 3250 2850
+	3100 2850 3350 2850
 Wire Bus Line
-	3250 2850 3250 4050
+	3350 2850 3350 4050
 Wire Bus Line
-	3250 4050 3100 4050
+	3350 4050 3100 4050
 Wire Bus Line
-	3100 2750 3300 2750
+	3100 2750 3400 2750
 Wire Wire Line
 	7200 4150 7150 4150
 Wire Wire Line
 	7150 4150 7150 3650
 Wire Wire Line
-	7150 3650 5450 3650
-Connection ~ 5450 3650
-Wire Wire Line
-	5450 3650 5100 3650
-Connection ~ 5100 3650
-Wire Wire Line
-	5100 3650 5100 4250
+	7150 3650 5550 3650
+Connection ~ 5550 3650
 Wire Bus Line
 	1500 5400 1150 5400
 $Sheet
@@ -731,5 +699,37 @@ F6 "IO[0..7]" T R 3100 2850 50
 F7 "ALUResult[0..15]" I R 3100 2750 50 
 $EndSheet
 Wire Bus Line
-	3300 2750 3300 4550
+	3400 2750 3400 4550
+Wire Wire Line
+	8750 850  10350 850 
+Wire Wire Line
+	10350 850  10350 3650
+Wire Wire Line
+	10350 3650 7150 3650
+Connection ~ 8750 850 
+Connection ~ 7150 3650
+Wire Wire Line
+	1300 3650 1300 5300
+Connection ~ 3550 3650
+Wire Wire Line
+	3550 3650 5550 3650
+Wire Wire Line
+	1550 2150 3450 2150
+Wire Wire Line
+	1550 1750 1550 2150
+Wire Bus Line
+	5200 4550 5700 4550
+Wire Wire Line
+	3650 4150 3550 4150
+Wire Wire Line
+	3550 4150 3550 3650
+Wire Bus Line
+	3400 2750 3400 2200
+Connection ~ 3400 2750
+Wire Wire Line
+	1300 3650 3550 3650
+Wire Wire Line
+	3650 4250 3450 4250
+Wire Wire Line
+	3450 4250 3450 2150
 $EndSCHEMATC

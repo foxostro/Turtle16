@@ -587,7 +587,7 @@ Wire Bus Line
 Wire Bus Line
 	3850 5700 3100 5700
 Text Notes -2950 6650 0    50   ~ 0
-TODO:\n* Check footprints for all parts, compare to the BOM\n* Check the control signal routing across pipeline stages again\n* Simulate the computer with pen and paper to gain confidence\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation\n* Layout PCBs for individual modules\n* How can I have JLCPCB do SMD assembly with a KiCAD project?\n* Can I get SMD sockets for DIP chips?
+TODO:\n* Simulate the computer with pen and paper to gain confidence\n* Add test points and such for debugging\n* Create new schematics which reference these modules and\nuse them to experiment with each stage in isolation\n* Layout PCBs for individual modules
 $Comp
 L Connector:Conn_01x02_Male J1
 U 1 1 5FAC7F8A

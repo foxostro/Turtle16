@@ -602,7 +602,7 @@ AR Path="/5DAA13E6/5E153BCA" Ref="U?"  Part="1"
 AR Path="/5D2C0720/5E153BCA" Ref="U7"  Part="1" 
 F 0 "U7" H 2250 6400 50  0000 C CNN
 F 1 "74AHCT138" H 2250 6300 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2550 5800 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 2550 5800 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct138" H 2550 5800 50  0001 C CNN
 	1    2550 5800
 	1    0    0    -1  

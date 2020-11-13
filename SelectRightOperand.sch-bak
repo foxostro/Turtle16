@@ -35,7 +35,7 @@ AR Path="/60906BCD/5FDE580B/5FE700B4" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FE695DA/5FE700B4" Ref="U67"  Part="1" 
 F 0 "U67" H 7850 3300 50  0000 C CNN
 F 1 "74AHCT157" H 7800 3200 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 8100 2400 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 8100 2400 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 8100 2400 50  0001 C CNN
 	1    8100 2400
 	1    0    0    -1  
@@ -116,7 +116,7 @@ AR Path="/60906BCD/5FDE580B/5FE700C6" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FE695DA/5FE700C6" Ref="U68"  Part="1" 
 F 0 "U68" H 7850 5650 50  0000 C CNN
 F 1 "74AHCT157" H 7800 5550 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 8100 4750 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 8100 4750 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 8100 4750 50  0001 C CNN
 	1    8100 4750
 	1    0    0    -1  
@@ -197,7 +197,7 @@ AR Path="/60906BCD/5FDE580B/5FE700D8" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FE695DA/5FE700D8" Ref="U69"  Part="1" 
 F 0 "U69" H 7850 8000 50  0000 C CNN
 F 1 "74AHCT157" H 7800 7900 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 8100 7100 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 8100 7100 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 8100 7100 50  0001 C CNN
 	1    8100 7100
 	1    0    0    -1  
@@ -278,7 +278,7 @@ AR Path="/60906BCD/5FDE580B/5FE700EA" Ref="U?"  Part="1"
 AR Path="/60906BCD/5FE695DA/5FE700EA" Ref="U70"  Part="1" 
 F 0 "U70" H 7850 10350 50  0000 C CNN
 F 1 "74AHCT157" H 7800 10250 50  0000 C CNN
-F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 8100 9450 50  0001 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 8100 9450 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct157" H 8100 9450 50  0001 C CNN
 	1    8100 9450
 	1    0    0    -1  
@@ -955,12 +955,12 @@ Connection ~ 11550 9200
 Connection ~ 12050 9200
 Wire Wire Line
 	12050 9500 11550 9500
+Connection ~ 12050 9500
+Connection ~ 11550 9500
 Wire Bus Line
 	6750 1750 6750 9750
 Wire Bus Line
 	7150 1650 7150 9650
 Wire Bus Line
 	9050 1450 9050 9850
-Connection ~ 12050 9500
-Connection ~ 11550 9500
 $EndSCHEMATC

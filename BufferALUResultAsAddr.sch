@@ -208,7 +208,7 @@ AR Path="/60AF64DE/5FEF8718/5FF007FD" Ref="U?"  Part="1"
 AR Path="/5FAED671/5FDF1199/5FF007FD" Ref="U103"  Part="1" 
 F 0 "U103" H 5800 3700 50  0000 C CNN
 F 1 "74AHCT244" H 5750 3600 50  0000 C CNN
-F 2 "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm" H 6050 2900 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 6050 2900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 6050 2900 50  0001 C CNN
 	1    6050 2900
 	1    0    0    -1  
@@ -373,7 +373,7 @@ AR Path="/60AF64DE/5FEF8718/5FF0084A" Ref="U?"  Part="1"
 AR Path="/5FAED671/5FDF1199/5FF0084A" Ref="U104"  Part="1" 
 F 0 "U104" H 5800 5800 50  0000 C CNN
 F 1 "74AHCT244" H 5750 5700 50  0000 C CNN
-F 2 "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm" H 6050 5000 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 6050 5000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 6050 5000 50  0001 C CNN
 	1    6050 5000
 	1    0    0    -1  

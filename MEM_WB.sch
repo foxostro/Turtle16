@@ -30,7 +30,7 @@ AR Path="/5D2C07CD/5FC24107" Ref="U?"  Part="7"
 AR Path="/5FF41DF6/5FC24107" Ref="U40"  Part="7" 
 F 0 "U40" H -1000 5350 50  0000 C CNN
 F 1 "74AHCT04" H -1000 5250 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -1000 5300 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1000 5300 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1000 5300 50  0001 C CNN
 	7    -1000 5300
 	1    0    0    -1  
@@ -45,7 +45,7 @@ AR Path="/5D2C07CD/5FC2410D" Ref="U?"  Part="6"
 AR Path="/5FF41DF6/5FC2410D" Ref="U40"  Part="6" 
 F 0 "U40" H -700 4817 50  0000 C CNN
 F 1 "74AHCT04" H -700 4726 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -700 4500 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 4500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 4500 50  0001 C CNN
 	6    -700 4500
 	1    0    0    -1  
@@ -60,7 +60,7 @@ AR Path="/5D2C07CD/5FC24113" Ref="U?"  Part="2"
 AR Path="/5FF41DF6/5FC24113" Ref="U40"  Part="2" 
 F 0 "U40" H -700 2817 50  0000 C CNN
 F 1 "74AHCT04" H -700 2726 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -700 2500 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 2500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 2500 50  0001 C CNN
 	2    -700 2500
 	1    0    0    -1  
@@ -75,7 +75,7 @@ AR Path="/5D2C07CD/5FC24119" Ref="U?"  Part="5"
 AR Path="/5FF41DF6/5FC24119" Ref="U40"  Part="5" 
 F 0 "U40" H -700 4317 50  0000 C CNN
 F 1 "74AHCT04" H -700 4226 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -700 4000 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 4000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 4000 50  0001 C CNN
 	5    -700 4000
 	1    0    0    -1  
@@ -90,7 +90,7 @@ AR Path="/5D2C07CD/5FC2411F" Ref="U?"  Part="4"
 AR Path="/5FF41DF6/5FC2411F" Ref="U40"  Part="4" 
 F 0 "U40" H -700 3817 50  0000 C CNN
 F 1 "74AHCT04" H -700 3726 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -700 3500 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 3500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 3500 50  0001 C CNN
 	4    -700 3500
 	1    0    0    -1  
@@ -105,7 +105,7 @@ AR Path="/5D2C07CD/5FC24125" Ref="U?"  Part="3"
 AR Path="/5FF41DF6/5FC24125" Ref="U40"  Part="3" 
 F 0 "U40" H -700 3317 50  0000 C CNN
 F 1 "74AHCT04" H -700 3226 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H -700 3000 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 3000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 3000 50  0001 C CNN
 	3    -700 3000
 	1    0    0    -1  
@@ -169,7 +169,7 @@ AR Path="/5D2C07CD/5FC24145" Ref="U?"  Part="1"
 AR Path="/5FF41DF6/5FC24145" Ref="U40"  Part="1" 
 F 0 "U40" H 4650 2617 50  0000 C CNN
 F 1 "74AHCT04" H 4650 2526 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 4650 2300 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4650 2300 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4650 2300 50  0001 C CNN
 	1    4650 2300
 	1    0    0    -1  

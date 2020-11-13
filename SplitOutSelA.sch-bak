@@ -49,10 +49,10 @@ Text Label 6300 3700 2    50   ~ 0
 SelAOut1
 Text Label 6300 3800 2    50   ~ 0
 SelAOut2
+Text HLabel 6950 3500 2    50   Output ~ 0
+SelAOut[0..2]
 Wire Bus Line
 	5000 3500 5000 3700
 Wire Bus Line
 	6400 3500 6400 3700
-Text HLabel 6950 3500 2    50   Output ~ 0
-SelAOut[0..2]
 $EndSCHEMATC

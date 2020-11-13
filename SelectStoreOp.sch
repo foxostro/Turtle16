@@ -802,25 +802,25 @@ Entry Wire Line
 Wire Wire Line
 	10200 4900 10550 4900
 Text Label 10200 4900 0    50   ~ 0
-Ins4
+Ins7
 Entry Wire Line
 	10200 4600 10100 4700
 Wire Wire Line
 	10200 4600 10550 4600
 Text Label 10200 4600 0    50   ~ 0
-Ins5
+Ins6
 Entry Wire Line
 	10200 4300 10100 4400
 Wire Wire Line
 	10200 4300 10550 4300
 Text Label 10200 4300 0    50   ~ 0
-Ins6
+Ins5
 Entry Wire Line
 	10200 4000 10100 4100
 Wire Wire Line
 	10200 4000 10550 4000
 Text Label 10200 4000 0    50   ~ 0
-Ins7
+Ins4
 Wire Bus Line
 	3600 1150 10100 1150
 Entry Wire Line

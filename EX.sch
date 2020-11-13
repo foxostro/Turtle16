@@ -1508,4 +1508,6 @@ Wire Bus Line
 	6000 2150 15250 2150
 Wire Bus Line
 	12350 3650 12350 11900
+Text Notes 17800 12250 0    50   ~ 0
+Note that these signals are latched at\nthe same time as those in the EX/MEM\ninterstage registers.
 $EndSCHEMATC

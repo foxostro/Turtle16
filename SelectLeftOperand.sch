@@ -1142,12 +1142,12 @@ Connection ~ 11250 9100
 Connection ~ 11750 9100
 Wire Wire Line
 	11750 9400 11250 9400
+Connection ~ 11750 9400
+Connection ~ 11250 9400
 Wire Bus Line
 	6450 1650 6450 4050
 Wire Bus Line
 	6850 1550 6850 9550
 Wire Bus Line
 	8750 1350 8750 9750
-Connection ~ 11750 9400
-Connection ~ 11250 9400
 $EndSCHEMATC

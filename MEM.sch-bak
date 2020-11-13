@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 37 41
+Sheet 36 41
 Title "MEM"
 Date ""
 Rev ""
@@ -21,7 +21,7 @@ Text HLabel 8800 1250 2    50   Output ~ 0
 Ctl[15..23]
 Text HLabel 8800 2900 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 2300 2400 0    50   Input ~ 0
+Text HLabel 2300 4050 0    50   Input ~ 0
 ALUResult[0..15]
 Entry Wire Line
 	2700 1150 2800 1250
@@ -43,35 +43,14 @@ Text Label 2800 1250 3    50   ~ 0
 CtlIn14
 Wire Bus Line
 	2300 2900 3950 2900
-Wire Bus Line
-	2300 2400 2900 2400
 Wire Wire Line
 	2700 1250 2700 1600
 Wire Wire Line
 	8800 1700 2800 1700
-$Comp
-L power:GND #PWR0544
-U 1 1 60111E7A
-P 3650 2300
-F 0 "#PWR0544" H 3650 2050 50  0001 C CNN
-F 1 "GND" V 3655 2172 50  0000 R CNN
-F 2 "" H 3650 2300 50  0001 C CNN
-F 3 "" H 3650 2300 50  0001 C CNN
-	1    3650 2300
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3650 2300 3950 2300
-Wire Bus Line
-	5200 2400 8800 2400
-Text Notes 3750 2050 0    50   ~ 0
-The ALUResult becomes the effective\naddress for devices on the bus. The\nvalue is buffered to isolate the bus\nfrom the rest of the pipeline.
 Text HLabel 8800 1700 2    50   Output ~ 0
 ~MemStore
 Text HLabel 8800 1600 2    50   Output ~ 0
 ~MemLoad
-Text HLabel 8800 2400 2    50   Output ~ 0
-Addr[0..15]
 Wire Wire Line
 	2800 2800 3950 2800
 Entry Bus Bus
@@ -87,15 +66,6 @@ Text Label 7600 2650 2    50   ~ 0
 StoreOp[0..7]
 Text HLabel 8800 2650 2    50   3State ~ 0
 SystemBus[0..7]
-$Sheet
-S 3950 2200 1250 300 
-U 5FEF8718
-F0 "Buffer ALUResult As Addr" 50
-F1 "BufferALUResultAsAddr.sch" 50
-F2 "~OE" I L 3950 2300 50 
-F3 "Q[0..15]" T R 5200 2400 50 
-F4 "D[0..15]" I L 3950 2400 50 
-$EndSheet
 $Sheet
 S 3950 2700 1250 300 
 U 5FF1115C
@@ -176,13 +146,6 @@ Connection ~ 2700 1600
 Wire Wire Line
 	2800 2800 2800 6050
 Connection ~ 2800 2800
-Wire Bus Line
-	2900 2400 2900 4050
-Wire Bus Line
-	2900 4050 3300 4050
-Connection ~ 2900 2400
-Wire Bus Line
-	2900 2400 3950 2400
 Entry Wire Line
 	3300 4050 3400 4150
 Entry Wire Line
@@ -340,6 +303,8 @@ Wire Wire Line
 	5900 4850 5150 4850
 Text Label 5900 4850 2    50   ~ 0
 StoreOp7
+Wire Bus Line
+	2300 4050 3300 4050
 Wire Bus Line
 	2300 1150 6250 1150
 Wire Bus Line

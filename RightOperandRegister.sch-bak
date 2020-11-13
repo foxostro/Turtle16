@@ -3,8 +3,8 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 19 41
-Title ""
+Sheet 14 41
+Title "REG/EX: Right Operand Register"
 Date ""
 Rev ""
 Comp ""

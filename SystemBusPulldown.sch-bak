@@ -4,17 +4,15 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 40 41
-Title ""
+Title "MEM: System Bus Pull-down Resistors"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "The bus needs pull-down resistors since these lines may otherwise float.sometimes."
 $EndDescr
-Text Notes 4200 3400 0    50   ~ 0
-The bus needs pull-down\nresistors since these lines\nmay otherwise float\nsometimes.
 $Comp
 L Device:R_Small R?
 U 1 1 5FAFC38F

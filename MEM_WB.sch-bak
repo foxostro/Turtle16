@@ -4,14 +4,14 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 17 41
-Title ""
+Title "MEM/WB Interstage Registers"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "The interstage pipeline registers between MEM and WB."
 $EndDescr
 Text HLabel 3800 4300 0    50   Input ~ 0
 CtlIn[15..23]

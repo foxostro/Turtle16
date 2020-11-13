@@ -4,14 +4,14 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 8 41
-Title ""
+Title "EX/MEM Interstage Register"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "The interstage pipeline registers between EX and MEM."
 $EndDescr
 NoConn ~ -450 3350
 NoConn ~ -450 4850

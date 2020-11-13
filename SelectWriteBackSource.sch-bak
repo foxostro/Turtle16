@@ -4,14 +4,14 @@ EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
 Sheet 33 41
-Title ""
+Title "WB: Select Write Back Source"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 ""
-Comment4 ""
+Comment2 "or a byte swapped version of the latter."
+Comment3 "It can choose either the ALU result, the store operand / value loaded from peripherals,"
+Comment4 "The write back stage can select one of several values to write back to the register file."
 $EndDescr
 $Comp
 L 74xx:74LS157 U?

@@ -4,14 +4,14 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 6 41
-Title ""
+Title "IF/ID"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 ""
+Comment4 "Interstage pipeline registers between IF and ID"
 $EndDescr
 Text HLabel 800  900  0    50   Input ~ 0
 Phi1

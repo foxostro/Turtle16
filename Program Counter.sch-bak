@@ -607,8 +607,6 @@ F 3 "" H 9300 3400 50  0001 C CNN
 	1    9300 3400
 	1    0    0    -1  
 $EndComp
-Text Notes 5600 6200 2    50   ~ 0
-TODO: Check the footprints for the 74F161. KiCAD provides two SOP-16 footprints. Which one is correct?
 NoConn ~ -350 3700
 NoConn ~ -350 5200
 NoConn ~ -350 5700

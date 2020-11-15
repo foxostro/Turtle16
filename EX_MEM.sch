@@ -23,8 +23,8 @@ P -1050 6150
 AR Path="/5D2C0761/5FC29D86" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/5FC29D86" Ref="U?"  Part="7" 
 AR Path="/5D2C07CD/5FC29D86" Ref="U?"  Part="7" 
-AR Path="/60A8EF0C/5FC29D86" Ref="U23"  Part="7" 
-F 0 "U23" H -1050 6200 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29D86" Ref="U22"  Part="7" 
+F 0 "U22" H -1050 6200 50  0000 C CNN
 F 1 "74AHCT04" H -1050 6100 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1050 6150 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1050 6150 50  0001 C CNN
@@ -38,8 +38,8 @@ P -750 5350
 AR Path="/5D8005AF/5D800744/5FC29D8C" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC29D8C" Ref="U?"  Part="6" 
 AR Path="/5D2C07CD/5FC29D8C" Ref="U?"  Part="6" 
-AR Path="/60A8EF0C/5FC29D8C" Ref="U23"  Part="6" 
-F 0 "U23" H -750 5667 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29D8C" Ref="U22"  Part="6" 
+F 0 "U22" H -750 5667 50  0000 C CNN
 F 1 "74AHCT04" H -750 5576 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 5350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 5350 50  0001 C CNN
@@ -53,8 +53,8 @@ P -750 3350
 AR Path="/5D8005AF/5D800744/5FC29D92" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC29D92" Ref="U?"  Part="2" 
 AR Path="/5D2C07CD/5FC29D92" Ref="U?"  Part="2" 
-AR Path="/60A8EF0C/5FC29D92" Ref="U23"  Part="2" 
-F 0 "U23" H -750 3667 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29D92" Ref="U22"  Part="2" 
+F 0 "U22" H -750 3667 50  0000 C CNN
 F 1 "74AHCT04" H -750 3576 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 3350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3350 50  0001 C CNN
@@ -68,8 +68,8 @@ P -750 4850
 AR Path="/5D8005AF/5D800744/5FC29D98" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC29D98" Ref="U?"  Part="5" 
 AR Path="/5D2C07CD/5FC29D98" Ref="U?"  Part="5" 
-AR Path="/60A8EF0C/5FC29D98" Ref="U23"  Part="5" 
-F 0 "U23" H -750 5167 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29D98" Ref="U22"  Part="5" 
+F 0 "U22" H -750 5167 50  0000 C CNN
 F 1 "74AHCT04" H -750 5076 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 4850 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4850 50  0001 C CNN
@@ -83,8 +83,8 @@ P -750 4350
 AR Path="/5D8005AF/5D800744/5FC29D9E" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC29D9E" Ref="U?"  Part="4" 
 AR Path="/5D2C07CD/5FC29D9E" Ref="U?"  Part="4" 
-AR Path="/60A8EF0C/5FC29D9E" Ref="U23"  Part="4" 
-F 0 "U23" H -750 4667 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29D9E" Ref="U22"  Part="4" 
+F 0 "U22" H -750 4667 50  0000 C CNN
 F 1 "74AHCT04" H -750 4576 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 4350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4350 50  0001 C CNN
@@ -98,8 +98,8 @@ P -750 3850
 AR Path="/5D8005AF/5D800744/5FC29DA4" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC29DA4" Ref="U?"  Part="3" 
 AR Path="/5D2C07CD/5FC29DA4" Ref="U?"  Part="3" 
-AR Path="/60A8EF0C/5FC29DA4" Ref="U23"  Part="3" 
-F 0 "U23" H -750 4167 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29DA4" Ref="U22"  Part="3" 
+F 0 "U22" H -750 4167 50  0000 C CNN
 F 1 "74AHCT04" H -750 4076 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 3850 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3850 50  0001 C CNN
@@ -115,8 +115,8 @@ P -1050 2450
 AR Path="/5D2C0761/5FC29DAC" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FC29DAC" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FC29DAC" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/5FC29DAC" Ref="#PWR092"  Part="1" 
-F 0 "#PWR092" H -1050 2300 50  0001 C CNN
+AR Path="/60A8EF0C/5FC29DAC" Ref="#PWR088"  Part="1" 
+F 0 "#PWR088" H -1050 2300 50  0001 C CNN
 F 1 "VCC" H -1033 2623 50  0000 C CNN
 F 2 "" H -1050 2450 50  0001 C CNN
 F 3 "" H -1050 2450 50  0001 C CNN
@@ -142,8 +142,8 @@ P -1050 6800
 AR Path="/5D2C0720/5FC29DBA" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0761/5FC29DBA" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FC29DBA" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/5FC29DBA" Ref="#PWR093"  Part="1" 
-F 0 "#PWR093" H -1050 6550 50  0001 C CNN
+AR Path="/60A8EF0C/5FC29DBA" Ref="#PWR089"  Part="1" 
+F 0 "#PWR089" H -1050 6550 50  0001 C CNN
 F 1 "GND" H -1045 6627 50  0000 C CNN
 F 2 "" H -1050 6800 50  0001 C CNN
 F 3 "" H -1050 6800 50  0001 C CNN
@@ -162,8 +162,8 @@ P 4650 2350
 AR Path="/5D8005AF/5D800744/5FC29DC4" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC29DC4" Ref="U?"  Part="2" 
 AR Path="/5D2C07CD/5FC29DC4" Ref="U?"  Part="1" 
-AR Path="/60A8EF0C/5FC29DC4" Ref="U23"  Part="1" 
-F 0 "U23" H 4650 2667 50  0000 C CNN
+AR Path="/60A8EF0C/5FC29DC4" Ref="U22"  Part="1" 
+F 0 "U22" H 4650 2667 50  0000 C CNN
 F 1 "74AHCT04" H 4650 2576 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4650 2350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4650 2350 50  0001 C CNN
@@ -391,8 +391,8 @@ AR Path="/5FF41DF6/5FC5F3B1/604A04AD" Ref="#PWR?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/604A04AD" Ref="#PWR?"  Part="1" 
 AR Path="/60A72859/603C451A/604A04AD" Ref="#PWR?"  Part="1" 
 AR Path="/60A72859/604A04AD" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/604A04AD" Ref="#PWR094"  Part="1" 
-F 0 "#PWR094" H 850 7100 50  0001 C CNN
+AR Path="/60A8EF0C/604A04AD" Ref="#PWR090"  Part="1" 
+F 0 "#PWR090" H 850 7100 50  0001 C CNN
 F 1 "VCC" H 867 7423 50  0000 C CNN
 F 2 "" H 850 7250 50  0001 C CNN
 F 3 "" H 850 7250 50  0001 C CNN
@@ -483,8 +483,8 @@ AR Path="/5FF41DF6/5FC5F3B1/604A04B3" Ref="#PWR?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/604A04B3" Ref="#PWR?"  Part="1" 
 AR Path="/60A72859/603C451A/604A04B3" Ref="#PWR?"  Part="1" 
 AR Path="/60A72859/604A04B3" Ref="#PWR?"  Part="1" 
-AR Path="/60A8EF0C/604A04B3" Ref="#PWR095"  Part="1" 
-F 0 "#PWR095" H 850 7400 50  0001 C CNN
+AR Path="/60A8EF0C/604A04B3" Ref="#PWR091"  Part="1" 
+F 0 "#PWR091" H 850 7400 50  0001 C CNN
 F 1 "GND" H 855 7477 50  0000 C CNN
 F 2 "" H 850 7650 50  0001 C CNN
 F 3 "" H 850 7650 50  0001 C CNN

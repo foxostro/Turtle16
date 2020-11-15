@@ -607,7 +607,6 @@ F 3 "" H 9300 3400 50  0001 C CNN
 	1    9300 3400
 	1    0    0    -1  
 $EndComp
-NoConn ~ -350 3700
 NoConn ~ -350 5200
 NoConn ~ -350 5700
 $Comp
@@ -636,20 +635,6 @@ F 1 "74AHCT04" H -650 5926 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -650 5700 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -650 5700 50  0001 C CNN
 	6    -650 5700
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 2 1 5FBFCBDC
-P -650 3700
-AR Path="/5D8005AF/5D800744/5FBFCBDC" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBFCBDC" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FBFCBDC" Ref="U1"  Part="2" 
-F 0 "U1" H -650 4017 50  0000 C CNN
-F 1 "74AHCT04" H -650 3926 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -650 3700 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -650 3700 50  0001 C CNN
-	2    -650 3700
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -710,9 +695,6 @@ F 3 "" H -950 2800 50  0001 C CNN
 	1    -950 2800
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	-950 3700 -950 4200
-Connection ~ -950 3700
 Connection ~ -950 4200
 Wire Wire Line
 	-950 4200 -950 4700
@@ -756,12 +738,27 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	-950 2800 -950 3700
-Wire Wire Line
 	1650 2900 2100 2900
 Connection ~ 2100 2900
 Wire Wire Line
 	2100 2900 2100 3800
+Wire Wire Line
+	-950 2800 -950 4200
+$Comp
+L Device:C C6
+U 1 1 5FCAEA31
+P 2850 7500
+F 0 "C6" H 2965 7546 50  0000 L CNN
+F 1 "100nF" H 2965 7455 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2888 7350 50  0001 C CNN
+F 3 "~" H 2850 7500 50  0001 C CNN
+	1    2850 7500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 7350 2850 7350
+Wire Wire Line
+	2850 7650 2350 7650
 Wire Bus Line
 	8150 900  8150 2300
 Wire Bus Line

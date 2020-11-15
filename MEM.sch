@@ -72,16 +72,16 @@ F3 "Q[0..15]" T R 5200 2900 50
 F4 "D[0..15]" I L 3950 2900 50 
 $EndSheet
 $Sheet
-S 7400 3050 1150 200 
+S 7700 3050 1150 200 
 U 5FAF68C1
 F0 "System Bus Pull-down" 50
 F1 "SystemBusPulldown.sch" 50
-F2 "StoreOp[0..15]" I L 7400 3150 50 
+F2 "StoreOp[0..15]" I L 7700 3150 50 
 $EndSheet
 Wire Bus Line
 	6950 2900 6950 3150
 Wire Bus Line
-	6950 3150 7400 3150
+	6950 3150 7700 3150
 Wire Wire Line
 	2700 1600 8800 1600
 Wire Wire Line
@@ -515,6 +515,12 @@ Wire Wire Line
 Connection ~ 950  7600
 Wire Wire Line
 	950  7600 700  7600
+Text Label 7550 2900 2    50   ~ 0
+StoreOp[0..15]
+Text Label 6700 2900 2    50   ~ 0
+StoreOp[0..15]
+Text Label 7550 3150 2    50   ~ 0
+StoreOp[0..15]
 Wire Bus Line
 	2300 1150 6250 1150
 Wire Bus Line

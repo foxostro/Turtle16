@@ -101,21 +101,6 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	4    -550 4050
 	1    0    0    -1  
 $EndComp
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FC492DE
-P -550 3550
-AR Path="/5D8005AF/5D800744/5FC492DE" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC492DE" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FC492DE" Ref="U?"  Part="3" 
-AR Path="/60A72859/5FC492DE" Ref="U29"  Part="3" 
-F 0 "U29" H -550 3867 50  0000 C CNN
-F 1 "74AHCT04" H -550 3776 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 3550 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 3550 50  0001 C CNN
-	3    -550 3550
-	1    0    0    -1  
-$EndComp
 NoConn ~ -250 3550
 NoConn ~ -250 4050
 $Comp
@@ -133,9 +118,6 @@ F 3 "" H -850 2150 50  0001 C CNN
 	1    -850 2150
 	1    0    0    -1  
 $EndComp
-Connection ~ -850 3550
-Wire Wire Line
-	-850 3550 -850 4050
 Connection ~ -850 4050
 Wire Wire Line
 	-850 4050 -850 4550
@@ -534,5 +516,5 @@ Wire Wire Line
 Wire Wire Line
 	5100 3450 5100 4150
 Wire Wire Line
-	-850 2150 -850 3550
+	-850 2150 -850 4050
 $EndSCHEMATC

@@ -434,9 +434,9 @@ AR Path="/5FF41DF6/6005FCFB/60427487" Ref="U?"  Part="1"
 AR Path="/5FF41DF6/5FC5F3B1/60427487" Ref="U?"  Part="1" 
 AR Path="/60B264DC/5FCD7CF6/60427487" Ref="U?"  Part="1" 
 AR Path="/60A72859/603C451A/60427487" Ref="U?"  Part="1" 
-AR Path="/60A72859/6040D849/60427487" Ref="U37"  Part="1" 
+AR Path="/60A72859/6040D849/60427487" Ref="U36"  Part="1" 
 AR Path="/60A8EF0C/604A0497/60427487" Ref="U?"  Part="1" 
-F 0 "U37" H 5450 2900 50  0000 C CNN
+F 0 "U36" H 5450 2900 50  0000 C CNN
 F 1 "74ABT574" H 5450 2800 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5700 2100 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5700 2100 50  0001 C CNN
@@ -1415,8 +1415,8 @@ AR Path="/5FF41DF6/5FC5F3B1/604274F7" Ref="U?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/604274F7" Ref="U?"  Part="1" 
 AR Path="/60A72859/603C451A/604274F7" Ref="U?"  Part="1" 
 AR Path="/60A8EF0C/604A0497/604274F7" Ref="U?"  Part="1" 
-AR Path="/60A72859/6040D849/604274F7" Ref="U38"  Part="1" 
-F 0 "U38" H 5450 4950 50  0000 C CNN
+AR Path="/60A72859/6040D849/604274F7" Ref="U37"  Part="1" 
+F 0 "U37" H 5450 4950 50  0000 C CNN
 F 1 "74ABT574" H 5450 4850 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5700 4150 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5700 4150 50  0001 C CNN
@@ -1821,8 +1821,8 @@ AR Path="/5FF41DF6/5FC5F3B1/6043D2B2" Ref="U?"  Part="1"
 AR Path="/60B264DC/5FCD7CF6/6043D2B2" Ref="U?"  Part="1" 
 AR Path="/60A72859/603C451A/6043D2B2" Ref="U?"  Part="1" 
 AR Path="/60A8EF0C/604A0497/6043D2B2" Ref="U?"  Part="1" 
-AR Path="/60A72859/6040D849/6043D2B2" Ref="U39"  Part="1" 
-F 0 "U39" H 5450 7000 50  0000 C CNN
+AR Path="/60A72859/6040D849/6043D2B2" Ref="U38"  Part="1" 
+F 0 "U38" H 5450 7000 50  0000 C CNN
 F 1 "74ABT574" H 5450 6900 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5700 6200 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5700 6200 50  0001 C CNN

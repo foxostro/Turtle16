@@ -104,49 +104,49 @@ $EndComp
 Wire Wire Line
 	5000 3000 5150 3000
 Text Label 4950 2800 2    50   ~ 0
-D7
+Bin7
 Wire Wire Line
 	4750 2800 5150 2800
 Entry Wire Line
 	4650 2700 4750 2800
 Text Label 4950 2700 2    50   ~ 0
-D6
+Bin6
 Wire Wire Line
 	4750 2700 5150 2700
 Entry Wire Line
 	4650 2600 4750 2700
 Text Label 4950 2600 2    50   ~ 0
-D5
+Bin5
 Wire Wire Line
 	4750 2600 5150 2600
 Entry Wire Line
 	4650 2500 4750 2600
 Text Label 4950 2500 2    50   ~ 0
-D4
+Bin4
 Wire Wire Line
 	4750 2500 5150 2500
 Entry Wire Line
 	4650 2400 4750 2500
 Text Label 4950 2400 2    50   ~ 0
-D3
+Bin3
 Wire Wire Line
 	4750 2400 5150 2400
 Entry Wire Line
 	4650 2300 4750 2400
 Text Label 4950 2300 2    50   ~ 0
-D2
+Bin2
 Wire Wire Line
 	4750 2300 5150 2300
 Entry Wire Line
 	4650 2200 4750 2300
 Text Label 4950 2200 2    50   ~ 0
-D1
+Bin1
 Wire Wire Line
 	4750 2200 5150 2200
 Entry Wire Line
 	4650 2100 4750 2200
 Text Label 4950 2100 2    50   ~ 0
-D0
+Bin0
 Wire Wire Line
 	4750 2100 5150 2100
 Entry Wire Line
@@ -326,51 +326,51 @@ F 3 "" H 5650 1800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text HLabel 3800 1850 0    50   Input ~ 0
-D[0..15]
+Bin[0..15]
 Text Label 6350 2800 0    50   ~ 0
-Q7
+Bout7
 Wire Wire Line
 	6550 2800 6150 2800
 Entry Wire Line
 	6650 2700 6550 2800
 Text Label 6350 2700 0    50   ~ 0
-Q6
+Bout6
 Wire Wire Line
 	6550 2700 6150 2700
 Entry Wire Line
 	6650 2600 6550 2700
 Text Label 6350 2600 0    50   ~ 0
-Q5
+Bout5
 Wire Wire Line
 	6550 2600 6150 2600
 Entry Wire Line
 	6650 2500 6550 2600
 Text Label 6350 2500 0    50   ~ 0
-Q4
+Bout4
 Wire Wire Line
 	6550 2500 6150 2500
 Entry Wire Line
 	6650 2400 6550 2500
 Text Label 6350 2400 0    50   ~ 0
-Q3
+Bout3
 Wire Wire Line
 	6550 2400 6150 2400
 Entry Wire Line
 	6650 2300 6550 2400
 Text Label 6350 2300 0    50   ~ 0
-Q2
+Bout2
 Wire Wire Line
 	6550 2300 6150 2300
 Entry Wire Line
 	6650 2200 6550 2300
 Text Label 6350 2200 0    50   ~ 0
-Q1
+Bout1
 Wire Wire Line
 	6550 2200 6150 2200
 Entry Wire Line
 	6650 2100 6550 2200
 Text Label 6350 2100 0    50   ~ 0
-Q0
+Bout0
 Wire Wire Line
 	6550 2100 6150 2100
 Entry Wire Line
@@ -1102,49 +1102,49 @@ $EndComp
 Wire Wire Line
 	5000 5050 5150 5050
 Text Label 4950 4850 2    50   ~ 0
-D15
+Bin15
 Wire Wire Line
 	4750 4850 5150 4850
 Entry Wire Line
 	4650 4750 4750 4850
 Text Label 4950 4750 2    50   ~ 0
-D14
+Bin14
 Wire Wire Line
 	4750 4750 5150 4750
 Entry Wire Line
 	4650 4650 4750 4750
 Text Label 4950 4650 2    50   ~ 0
-D13
+Bin13
 Wire Wire Line
 	4750 4650 5150 4650
 Entry Wire Line
 	4650 4550 4750 4650
 Text Label 4950 4550 2    50   ~ 0
-D12
+Bin12
 Wire Wire Line
 	4750 4550 5150 4550
 Entry Wire Line
 	4650 4450 4750 4550
 Text Label 4950 4450 2    50   ~ 0
-D11
+Bin11
 Wire Wire Line
 	4750 4450 5150 4450
 Entry Wire Line
 	4650 4350 4750 4450
 Text Label 4950 4350 2    50   ~ 0
-D10
+Bin10
 Wire Wire Line
 	4750 4350 5150 4350
 Entry Wire Line
 	4650 4250 4750 4350
 Text Label 4950 4250 2    50   ~ 0
-D9
+Bin9
 Wire Wire Line
 	4750 4250 5150 4250
 Entry Wire Line
 	4650 4150 4750 4250
 Text Label 4950 4150 2    50   ~ 0
-D8
+Bin8
 Wire Wire Line
 	4750 4150 5150 4150
 Entry Wire Line
@@ -1322,49 +1322,49 @@ F 3 "" H 5650 3850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 6350 4850 0    50   ~ 0
-Q15
+Bout15
 Wire Wire Line
 	6550 4850 6150 4850
 Entry Wire Line
 	6650 4750 6550 4850
 Text Label 6350 4750 0    50   ~ 0
-Q14
+Bout14
 Wire Wire Line
 	6550 4750 6150 4750
 Entry Wire Line
 	6650 4650 6550 4750
 Text Label 6350 4650 0    50   ~ 0
-Q13
+Bout13
 Wire Wire Line
 	6550 4650 6150 4650
 Entry Wire Line
 	6650 4550 6550 4650
 Text Label 6350 4550 0    50   ~ 0
-Q12
+Bout12
 Wire Wire Line
 	6550 4550 6150 4550
 Entry Wire Line
 	6650 4450 6550 4550
 Text Label 6350 4450 0    50   ~ 0
-Q11
+Bout11
 Wire Wire Line
 	6550 4450 6150 4450
 Entry Wire Line
 	6650 4350 6550 4450
 Text Label 6350 4350 0    50   ~ 0
-Q10
+Bout10
 Wire Wire Line
 	6550 4350 6150 4350
 Entry Wire Line
 	6650 4250 6550 4350
 Text Label 6350 4250 0    50   ~ 0
-Q9
+Bout9
 Wire Wire Line
 	6550 4250 6150 4250
 Entry Wire Line
 	6650 4150 6550 4250
 Text Label 6350 4150 0    50   ~ 0
-Q8
+Bout8
 Wire Wire Line
 	6550 4150 6150 4150
 Entry Wire Line
@@ -1460,7 +1460,7 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    0    0    -1  
 $EndComp
 Text HLabel 7500 1800 2    50   Output ~ 0
-Q[0..15]
+Bout[0..15]
 Wire Bus Line
 	4650 1850 4650 4750
 Wire Bus Line

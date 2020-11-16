@@ -463,8 +463,8 @@ AR Path="/5FF41DF6/6005FCFB/603E19F2" Ref="U?"  Part="1"
 AR Path="/5FF41DF6/5FC5F3B1/603E19F2" Ref="U?"  Part="1" 
 AR Path="/60B264DC/5FCD7CF6/603E19F2" Ref="U?"  Part="1" 
 AR Path="/60A8EF0C/604A048B/603E19F2" Ref="U?"  Part="1" 
-AR Path="/60A72859/603DC723/603E19F2" Ref="U33"  Part="1" 
-F 0 "U33" H 5600 3200 50  0000 C CNN
+AR Path="/60A72859/603DC723/603E19F2" Ref="U32"  Part="1" 
+F 0 "U32" H 5600 3200 50  0000 C CNN
 F 1 "74ABT574" H 5600 3100 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 2400 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5850 2400 50  0001 C CNN
@@ -1465,8 +1465,8 @@ AR Path="/5FF41DF6/6005FCFB/603E1A62" Ref="U?"  Part="1"
 AR Path="/5FF41DF6/5FC5F3B1/603E1A62" Ref="U?"  Part="1" 
 AR Path="/60B264DC/5FCD7CF6/603E1A62" Ref="U?"  Part="1" 
 AR Path="/60A8EF0C/604A048B/603E1A62" Ref="U?"  Part="1" 
-AR Path="/60A72859/603DC723/603E1A62" Ref="U34"  Part="1" 
-F 0 "U34" H 5600 5250 50  0000 C CNN
+AR Path="/60A72859/603DC723/603E1A62" Ref="U33"  Part="1" 
+F 0 "U33" H 5600 5250 50  0000 C CNN
 F 1 "74ABT574" H 5600 5150 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 4450 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5850 4450 50  0001 C CNN

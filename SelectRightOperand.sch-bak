@@ -951,16 +951,16 @@ Wire Wire Line
 	12050 9500 11550 9500
 Connection ~ 12050 9500
 Connection ~ 11550 9500
-Wire Bus Line
-	6750 1750 6750 9750
-Wire Bus Line
-	7150 1650 7150 9650
-Wire Bus Line
-	9050 1450 9050 9850
 Text Label 6850 2800 0    50   ~ 0
 Y3
 Text Label 7250 2700 0    50   ~ 0
 X3
 Text Label 8950 2700 2    50   ~ 0
 Z3
+Wire Bus Line
+	6750 1750 6750 9750
+Wire Bus Line
+	7150 1650 7150 9650
+Wire Bus Line
+	9050 1450 9050 9850
 $EndSCHEMATC

@@ -116,14 +116,10 @@ Wire Wire Line
 	5150 2550 5550 2550
 Entry Wire Line
 	5050 2450 5150 2550
-Text Label 5350 2450 2    50   ~ 0
-D5
 Wire Wire Line
 	5150 2450 5550 2450
 Entry Wire Line
 	5050 2350 5150 2450
-Text Label 5350 2350 2    50   ~ 0
-D4
 Wire Wire Line
 	5150 2350 5550 2350
 Entry Wire Line
@@ -140,14 +136,10 @@ Wire Wire Line
 	5150 2150 5550 2150
 Entry Wire Line
 	5050 2050 5150 2150
-Text Label 5350 2050 2    50   ~ 0
-D1
 Wire Wire Line
 	5150 2050 5550 2050
 Entry Wire Line
 	5050 1950 5150 2050
-Text Label 5350 1950 2    50   ~ 0
-D0
 Wire Wire Line
 	5150 1950 5550 1950
 Entry Wire Line
@@ -342,14 +334,10 @@ Wire Wire Line
 	6950 2550 6550 2550
 Entry Wire Line
 	7050 2450 6950 2550
-Text Label 6750 2450 0    50   ~ 0
-Q5
 Wire Wire Line
 	6950 2450 6550 2450
 Entry Wire Line
 	7050 2350 6950 2450
-Text Label 6750 2350 0    50   ~ 0
-Q4
 Wire Wire Line
 	6950 2350 6550 2350
 Entry Wire Line
@@ -366,14 +354,10 @@ Wire Wire Line
 	6950 2150 6550 2150
 Entry Wire Line
 	7050 2050 6950 2150
-Text Label 6750 2050 0    50   ~ 0
-Q1
 Wire Wire Line
 	6950 2050 6550 2050
 Entry Wire Line
 	7050 1950 6950 2050
-Text Label 6750 1950 0    50   ~ 0
-Q0
 Wire Wire Line
 	6950 1950 6550 1950
 Entry Wire Line
@@ -1479,4 +1463,20 @@ Wire Bus Line
 	5050 1700 5050 4600
 Wire Bus Line
 	7050 1650 7050 4600
+Text Label 6750 2450 0    50   ~ 0
+Q5
+Text Label 5350 2450 2    50   ~ 0
+D5
+Text Label 6750 2050 0    50   ~ 0
+Q1
+Text Label 5350 2050 2    50   ~ 0
+D1
+Text Label 6750 2350 0    50   ~ 0
+Q4
+Text Label 5350 2350 2    50   ~ 0
+D4
+Text Label 6750 1950 0    50   ~ 0
+Q0
+Text Label 5350 1950 2    50   ~ 0
+D0
 $EndSCHEMATC

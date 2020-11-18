@@ -674,13 +674,13 @@ Entry Wire Line
 Wire Wire Line
 	8650 4650 8300 4650
 Text Label 8650 4650 2    50   ~ 0
-Z2
+Z3
 Entry Wire Line
 	8650 4950 8750 5050
 Wire Wire Line
 	8650 4950 8300 4950
 Text Label 8650 4950 2    50   ~ 0
-Z3
+Z2
 Entry Wire Line
 	8650 6700 8750 6800
 Wire Wire Line
@@ -734,7 +734,7 @@ Entry Wire Line
 Wire Wire Line
 	6950 2000 7300 2000
 Text Label 6950 4950 0    50   ~ 0
-A3
+A2
 Entry Wire Line
 	6950 4050 6850 3950
 Wire Wire Line
@@ -764,7 +764,7 @@ Entry Wire Line
 Wire Wire Line
 	6950 4650 7300 4650
 Text Label 6950 4650 0    50   ~ 0
-A2
+A3
 Entry Wire Line
 	6950 4950 6850 4850
 Wire Wire Line
@@ -824,7 +824,7 @@ Wire Wire Line
 Entry Wire Line
 	6550 5050 6450 4950
 Text Label 6550 5050 0    50   ~ 0
-Ins3
+Ins2
 Wire Wire Line
 	6550 5050 7300 5050
 Entry Wire Line
@@ -1100,7 +1100,7 @@ Wire Wire Line
 Connection ~ 11750 9400
 Connection ~ 11250 9400
 Text Label 6550 4750 0    50   ~ 0
-Ins2
+Ins3
 Text Label 8650 6400 2    50   ~ 0
 Z14
 Wire Wire Line

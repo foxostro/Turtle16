@@ -3530,22 +3530,6 @@ Text HLabel 9900 700  2    50   Output ~ 0
 InsOut[0..10]
 Connection ~ 7650 6100
 Connection ~ 7650 6400
-$Comp
-L 74xx:74LS04 U?
-U 2 1 5FEB5DA5
-P 1200 7750
-AR Path="/5D8005AF/5D800744/5FEB5DA5" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FEB5DA5" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FEB5DA5" Ref="U?"  Part="2" 
-AR Path="/5FE8EB3D/5FEB5DA5" Ref="U?"  Part="2" 
-AR Path="/60153F0B/5FEB5DA5" Ref="U14"  Part="2" 
-F 0 "U14" H 1200 8067 50  0000 C CNN
-F 1 "74AHCT04" H 1200 7976 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1200 7750 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1200 7750 50  0001 C CNN
-	2    1200 7750
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7650 6400 8100 6400
 Wire Wire Line
@@ -3597,6 +3581,21 @@ Wire Wire Line
 	9100 6400 8600 6400
 Wire Wire Line
 	9100 6100 8600 6100
+$Comp
+L 74xx:74LS04 U?
+U 4 1 5FCB54D7
+P 1200 7750
+AR Path="/5D8005AF/5D800744/5FCB54D7" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FCB54D7" Ref="U?"  Part="4" 
+AR Path="/5D2C07CD/5FCB54D7" Ref="U?"  Part="4" 
+AR Path="/60153F0B/5FCB54D7" Ref="U1"  Part="4" 
+F 0 "U1" H 1200 8067 50  0000 C CNN
+F 1 "74AHCT04" H 1200 7976 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1200 7750 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1200 7750 50  0001 C CNN
+	4    1200 7750
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	4300 800  4300 3700
 Wire Bus Line

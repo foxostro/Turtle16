@@ -306,7 +306,7 @@ AR Path="/5FB18250" Ref="U?"  Part="1"
 AR Path="/60AF64DE/5FB18250" Ref="U91"  Part="1" 
 F 0 "U91" H 4350 7300 50  0000 C CNN
 F 1 "ATF22V10C" H 4350 7200 50  0000 C CNN
-F 2 "Package_DIP:DIP-24_W7.62mm_Socket" H 5500 5900 50  0001 C CNN
+F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 5500 5900 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 4650 6650 50  0001 C CNN
 	1    4650 6600
 	1    0    0    -1  

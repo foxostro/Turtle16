@@ -17,144 +17,6 @@ Text HLabel 800  900  0    50   Input ~ 0
 Phi1
 Wire Wire Line
 	800  900  900  900 
-NoConn ~ -400 4600
-NoConn ~ -400 5100
-$Comp
-L 74xx:74LS04 U?
-U 7 1 5FC18B04
-P -1000 5900
-AR Path="/5D2C0761/5FC18B04" Ref="U?"  Part="7" 
-AR Path="/5D2C0720/5FC18B04" Ref="U?"  Part="7" 
-AR Path="/5D2C07CD/5FC18B04" Ref="U?"  Part="7" 
-AR Path="/5FE8EB3D/5FC18B04" Ref="U14"  Part="7" 
-F 0 "U14" H -1000 5950 50  0000 C CNN
-F 1 "74AHCT04" H -1000 5850 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1000 5900 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1000 5900 50  0001 C CNN
-	7    -1000 5900
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 6 1 5FC18B0A
-P -700 5100
-AR Path="/5D8005AF/5D800744/5FC18B0A" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC18B0A" Ref="U?"  Part="6" 
-AR Path="/5D2C07CD/5FC18B0A" Ref="U?"  Part="6" 
-AR Path="/5FE8EB3D/5FC18B0A" Ref="U14"  Part="6" 
-F 0 "U14" H -700 5417 50  0000 C CNN
-F 1 "74AHCT04" H -700 5326 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 5100 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 5100 50  0001 C CNN
-	6    -700 5100
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 5 1 5FC18B16
-P -700 4600
-AR Path="/5D8005AF/5D800744/5FC18B16" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC18B16" Ref="U?"  Part="5" 
-AR Path="/5D2C07CD/5FC18B16" Ref="U?"  Part="5" 
-AR Path="/5FE8EB3D/5FC18B16" Ref="U14"  Part="5" 
-F 0 "U14" H -700 4917 50  0000 C CNN
-F 1 "74AHCT04" H -700 4826 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 4600 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 4600 50  0001 C CNN
-	5    -700 4600
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 4 1 5FC18B1C
-P -700 4100
-AR Path="/5D8005AF/5D800744/5FC18B1C" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC18B1C" Ref="U?"  Part="4" 
-AR Path="/5D2C07CD/5FC18B1C" Ref="U?"  Part="4" 
-AR Path="/5FE8EB3D/5FC18B1C" Ref="U14"  Part="4" 
-F 0 "U14" H -700 4417 50  0000 C CNN
-F 1 "74AHCT04" H -700 4326 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 4100 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 4100 50  0001 C CNN
-	4    -700 4100
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FC18B22
-P -700 3600
-AR Path="/5D8005AF/5D800744/5FC18B22" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC18B22" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FC18B22" Ref="U?"  Part="3" 
-AR Path="/5FE8EB3D/5FC18B22" Ref="U14"  Part="3" 
-F 0 "U14" H -700 3917 50  0000 C CNN
-F 1 "74AHCT04" H -700 3826 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -700 3600 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -700 3600 50  0001 C CNN
-	3    -700 3600
-	1    0    0    -1  
-$EndComp
-NoConn ~ -400 3600
-NoConn ~ -400 4100
-$Comp
-L power:VCC #PWR?
-U 1 1 5FC18B2A
-P -1000 2200
-AR Path="/5D2C0761/5FC18B2A" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FC18B2A" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FC18B2A" Ref="#PWR?"  Part="1" 
-AR Path="/5FE8EB3D/5FC18B2A" Ref="#PWR055"  Part="1" 
-F 0 "#PWR055" H -1000 2050 50  0001 C CNN
-F 1 "VCC" H -983 2373 50  0000 C CNN
-F 2 "" H -1000 2200 50  0001 C CNN
-F 3 "" H -1000 2200 50  0001 C CNN
-	1    -1000 2200
-	1    0    0    -1  
-$EndComp
-Connection ~ -1000 3600
-Wire Wire Line
-	-1000 3600 -1000 4100
-Connection ~ -1000 4100
-Wire Wire Line
-	-1000 4100 -1000 4600
-Connection ~ -1000 4600
-Wire Wire Line
-	-1000 4600 -1000 5100
-$Comp
-L power:GND #PWR?
-U 1 1 5FC18B38
-P -1000 6550
-AR Path="/5D2C0720/5FC18B38" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0761/5FC18B38" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FC18B38" Ref="#PWR?"  Part="1" 
-AR Path="/5FE8EB3D/5FC18B38" Ref="#PWR056"  Part="1" 
-F 0 "#PWR056" H -1000 6300 50  0001 C CNN
-F 1 "GND" H -995 6377 50  0000 C CNN
-F 2 "" H -1000 6550 50  0001 C CNN
-F 3 "" H -1000 6550 50  0001 C CNN
-	1    -1000 6550
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	-1000 6400 -1000 6550
-Wire Wire Line
-	-1000 5100 -1000 5400
-Connection ~ -1000 5100
-$Comp
-L 74xx:74LS04 U?
-U 1 1 5FC18B42
-P 1200 900
-AR Path="/5D8005AF/5D800744/5FC18B42" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC18B42" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FC18B42" Ref="U?"  Part="1" 
-AR Path="/5FE8EB3D/5FC18B42" Ref="U14"  Part="1" 
-F 0 "U14" H 1200 1217 50  0000 C CNN
-F 1 "74AHCT04" H 1200 1126 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1200 900 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1200 900 50  0001 C CNN
-	1    1200 900 
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5FAEEE7C
@@ -2131,49 +1993,6 @@ Wire Wire Line
 Wire Wire Line
 	2250 7450 1750 7450
 $Comp
-L Device:C C?
-U 1 1 5FB3A09F
-P 2750 7300
-AR Path="/5D8005AF/5D833E4B/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/5FE21410/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/5FE8EB3D/5FB3A09F" Ref="C20"  Part="1" 
-AR Path="/60153F0B/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC56568/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD447EB/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45108/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45557/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45834/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040306/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040791/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60044374/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/5FB3A09F" Ref="C?"  Part="1" 
-AR Path="/60A71BBF/5FB3A09F" Ref="C?"  Part="1" 
-F 0 "C20" H 2865 7346 50  0000 L CNN
-F 1 "100nF" H 2865 7255 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2788 7150 50  0001 C CNN
-F 3 "~" H 2750 7300 50  0001 C CNN
-	1    2750 7300
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2250 7150 2750 7150
-Wire Wire Line
-	2750 7450 2250 7450
-$Comp
 L power:GND #PWR064
 U 1 1 60663CCC
 P 3000 5350
@@ -2184,8 +2003,21 @@ F 3 "" H 3000 5350 50  0001 C CNN
 	1    3000 5350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	-1000 2200 -1000 3600
+$Comp
+L 74xx:74LS04 U?
+U 3 1 5FC919B7
+P 1200 900
+AR Path="/5D8005AF/5D800744/5FC919B7" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5FC919B7" Ref="U?"  Part="3" 
+AR Path="/5D2C07CD/5FC919B7" Ref="U?"  Part="3" 
+AR Path="/5FE8EB3D/5FC919B7" Ref="U1"  Part="3" 
+F 0 "U1" H 1200 1217 50  0000 C CNN
+F 1 "74AHCT04" H 1200 1126 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1200 900 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1200 900 50  0001 C CNN
+	3    1200 900 
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	2000 1750 2000 4650
 Wire Bus Line

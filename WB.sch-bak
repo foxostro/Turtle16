@@ -14,7 +14,7 @@ Comment3 "This can load the upper eight bits of the register, the lower eight bi
 Comment4 "The Write Back stage chooses a value and writes it back to the register file."
 $EndDescr
 Text HLabel 1950 2300 0    50   Input ~ 0
-CtlIn[15..23]
+CtlIn[15..19]
 Text HLabel 8850 4450 2    50   Output ~ 0
 ToRegisterFileUpper[0..7]
 Text HLabel 8850 4550 2    50   Output ~ 0
@@ -409,31 +409,11 @@ Entry Wire Line
 Entry Wire Line
 	3800 2300 3900 2400
 Entry Wire Line
-	2600 2300 2700 2400
-Entry Wire Line
-	2750 2300 2850 2400
-Entry Wire Line
-	2900 2300 3000 2400
-Entry Wire Line
-	3050 2300 3150 2400
-Entry Wire Line
 	3200 2300 3300 2400
 Entry Wire Line
 	3350 2300 3450 2400
 Entry Wire Line
 	3500 2300 3600 2400
-Wire Wire Line
-	2700 2400 2700 2800
-NoConn ~ 2700 2800
-Wire Wire Line
-	2850 2400 2850 2800
-NoConn ~ 2850 2800
-Wire Wire Line
-	3000 2400 3000 2800
-NoConn ~ 3000 2800
-Wire Wire Line
-	3150 2400 3150 2800
-NoConn ~ 3150 2800
 Wire Wire Line
 	3300 2400 3300 2800
 NoConn ~ 3300 2800
@@ -447,14 +427,6 @@ Text Label 3450 2450 3    50   ~ 0
 CtlIn18
 Text Label 3300 2450 3    50   ~ 0
 CtlIn19
-Text Label 3150 2450 3    50   ~ 0
-CtlIn20
-Text Label 3000 2450 3    50   ~ 0
-CtlIn21
-Text Label 2850 2450 3    50   ~ 0
-CtlIn22
-Text Label 2700 2450 3    50   ~ 0
-CtlIn23
 Wire Wire Line
 	3900 2400 3900 2750
 Wire Wire Line
@@ -473,8 +445,6 @@ Wire Wire Line
 	7250 2550 8500 2550
 Wire Wire Line
 	3750 2400 3750 2850
-Text Notes 2350 2950 0    50   ~ 0
-Unused control signals
 Text Notes 7200 2350 0    50   ~ 0
 Ensure the register file\nreceives the write signals\nin the second clock phase.
 NoConn ~ -450 3000

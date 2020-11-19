@@ -14,373 +14,106 @@ Comment3 "The decoder takes the condition code from the flags register into acco
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
 $Comp
-L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
-U 1 1 5FF07E09
-P 8000 4150
-AR Path="/5D2C0AA0/5FF07E09" Ref="U?"  Part="1" 
-AR Path="/5D2C0B92/5FF07E09" Ref="U?"  Part="1" 
-AR Path="/5FED3839/5FF07E09" Ref="U20"  Part="1" 
-F 0 "U20" H 7550 4350 50  0000 C CNN
-F 1 "Decoder ROM 2" H 7550 4250 50  0000 C CNN
-F 2 "Package_LCC:PLCC-32_SMD-Socket" H 8000 4150 50  0001 C CNN
-F 3 "" H 8000 4150 50  0001 C CNN
-	1    8000 4150
-	1    0    0    -1  
-$EndComp
-$Comp
-L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
-U 1 1 5FF07E0F
-P 8000 7100
-AR Path="/5D2C0AA0/5FF07E0F" Ref="U?"  Part="1" 
-AR Path="/5D2C0B92/5FF07E0F" Ref="U?"  Part="1" 
-AR Path="/5FED3839/5FF07E0F" Ref="U21"  Part="1" 
-F 0 "U21" H 7550 7300 50  0000 C CNN
-F 1 "Decoder ROM 1" H 7550 7200 50  0000 C CNN
-F 2 "Package_LCC:PLCC-32_SMD-Socket" H 8000 7100 50  0001 C CNN
-F 3 "" H 8000 7100 50  0001 C CNN
-	1    8000 7100
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5FF07E3B
-P 8000 7000
-AR Path="/5D2C0B92/5FF07E3B" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07E3B" Ref="#PWR086"  Part="1" 
-F 0 "#PWR086" H 8000 6850 50  0001 C CNN
-F 1 "VCC" H 8017 7173 50  0000 C CNN
-F 2 "" H 8000 7000 50  0001 C CNN
-F 3 "" H 8000 7000 50  0001 C CNN
-	1    8000 7000
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:VCC #PWR?
 U 1 1 5FF07E41
-P 8000 4050
+P 7350 6100
 AR Path="/5D2C0B92/5FF07E41" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FF07E41" Ref="#PWR084"  Part="1" 
-F 0 "#PWR084" H 8000 3900 50  0001 C CNN
-F 1 "VCC" H 8017 4223 50  0000 C CNN
-F 2 "" H 8000 4050 50  0001 C CNN
-F 3 "" H 8000 4050 50  0001 C CNN
-	1    8000 4050
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07E47
-P 8000 9400
-AR Path="/5D2C0B92/5FF07E47" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07E47" Ref="#PWR087"  Part="1" 
-F 0 "#PWR087" H 8000 9150 50  0001 C CNN
-F 1 "GND" H 8005 9227 50  0000 C CNN
-F 2 "" H 8000 9400 50  0001 C CNN
-F 3 "" H 8000 9400 50  0001 C CNN
-	1    8000 9400
+F 0 "#PWR084" H 7350 5950 50  0001 C CNN
+F 1 "VCC" H 7367 6273 50  0000 C CNN
+F 2 "" H 7350 6100 50  0001 C CNN
+F 3 "" H 7350 6100 50  0001 C CNN
+	1    7350 6100
 	1    0    0    -1  
 $EndComp
 Entry Wire Line
-	6950 7200 7050 7300
+	6200 6400 6300 6500
 Entry Wire Line
-	6950 7300 7050 7400
+	6200 6500 6300 6600
 Entry Wire Line
-	6950 7400 7050 7500
+	6200 6600 6300 6700
 Entry Wire Line
-	6950 7500 7050 7600
-Wire Wire Line
-	7350 7200 7050 7200
-Wire Wire Line
-	7050 7300 7350 7300
-Wire Wire Line
-	7350 7400 7050 7400
-Wire Wire Line
-	7050 7500 7350 7500
-Wire Wire Line
-	7350 7600 7050 7600
-Text Label 7050 7200 0    50   ~ 0
+	6200 6700 6300 6800
+Text Label 6300 6400 0    50   ~ 0
 Ins11
-Text Label 7050 7300 0    50   ~ 0
+Text Label 6300 6500 0    50   ~ 0
 Ins12
-Text Label 7050 7400 0    50   ~ 0
+Text Label 6300 6600 0    50   ~ 0
 Ins13
-Text Label 7050 7500 0    50   ~ 0
+Text Label 6300 6700 0    50   ~ 0
 Ins14
-Text Label 7050 7600 0    50   ~ 0
+Text Label 6300 6800 0    50   ~ 0
 Ins15
 Entry Wire Line
-	6950 4250 7050 4350
+	6200 3350 6300 3450
 Entry Wire Line
-	6950 4350 7050 4450
+	6200 3450 6300 3550
 Entry Wire Line
-	6950 4450 7050 4550
+	6200 3550 6300 3650
 Entry Wire Line
-	6950 4550 7050 4650
-Wire Wire Line
-	7350 4250 7050 4250
-Wire Wire Line
-	7050 4350 7350 4350
-Wire Wire Line
-	7350 4450 7050 4450
-Wire Wire Line
-	7050 4550 7350 4550
-Wire Wire Line
-	7350 4650 7050 4650
-Text Label 7050 4250 0    50   ~ 0
+	6200 3650 6300 3750
+Text Label 6300 3350 0    50   ~ 0
 Ins11
-Text Label 7050 4350 0    50   ~ 0
+Text Label 6300 3450 0    50   ~ 0
 Ins12
-Text Label 7050 4450 0    50   ~ 0
+Text Label 6300 3550 0    50   ~ 0
 Ins13
-Text Label 7050 4550 0    50   ~ 0
+Text Label 6300 3650 0    50   ~ 0
 Ins14
-Text Label 7050 4650 0    50   ~ 0
+Text Label 6300 3750 0    50   ~ 0
 Ins15
 Wire Bus Line
-	6950 10150 6200 10150
+	6200 9250 5450 9250
 Wire Wire Line
-	6650 9750 6200 9750
+	5900 8850 5450 8850
 Wire Wire Line
-	6750 9950 6200 9950
-Wire Wire Line
-	7350 9100 7300 9100
-Wire Wire Line
-	7300 9100 7300 9150
-Wire Wire Line
-	7300 9200 7350 9200
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07EAD
-P 7300 9150
-AR Path="/5D2C0B92/5FF07EAD" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07EAD" Ref="#PWR081"  Part="1" 
-F 0 "#PWR081" H 7300 8900 50  0001 C CNN
-F 1 "GND" V 7305 9022 50  0000 R CNN
-F 2 "" H 7300 9150 50  0001 C CNN
-F 3 "" H 7300 9150 50  0001 C CNN
-	1    7300 9150
-	0    1    1    0   
-$EndComp
-Connection ~ 7300 9150
-Wire Wire Line
-	7300 9150 7300 9200
-Wire Wire Line
-	7350 6150 7300 6150
-Wire Wire Line
-	7300 6150 7300 6200
-Wire Wire Line
-	7300 6250 7350 6250
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07EB8
-P 7300 6200
-AR Path="/5D2C0B92/5FF07EB8" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07EB8" Ref="#PWR078"  Part="1" 
-F 0 "#PWR078" H 7300 5950 50  0001 C CNN
-F 1 "GND" V 7305 6072 50  0000 R CNN
-F 2 "" H 7300 6200 50  0001 C CNN
-F 3 "" H 7300 6200 50  0001 C CNN
-	1    7300 6200
-	0    1    1    0   
-$EndComp
-Connection ~ 7300 6200
-Wire Wire Line
-	7300 6200 7300 6250
-$Comp
-L power:VCC #PWR?
-U 1 1 5FF07EC0
-P 7300 9000
-AR Path="/5D2C0B92/5FF07EC0" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07EC0" Ref="#PWR080"  Part="1" 
-F 0 "#PWR080" H 7300 8850 50  0001 C CNN
-F 1 "VCC" V 7318 9127 50  0000 L CNN
-F 2 "" H 7300 9000 50  0001 C CNN
-F 3 "" H 7300 9000 50  0001 C CNN
-	1    7300 9000
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	7350 9000 7300 9000
-$Comp
-L power:VCC #PWR?
-U 1 1 5FF07EC7
-P 7300 6050
-AR Path="/5D2C0B92/5FF07EC7" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07EC7" Ref="#PWR077"  Part="1" 
-F 0 "#PWR077" H 7300 5900 50  0001 C CNN
-F 1 "VCC" V 7318 6177 50  0000 L CNN
-F 2 "" H 7300 6050 50  0001 C CNN
-F 3 "" H 7300 6050 50  0001 C CNN
-	1    7300 6050
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	7350 6050 7300 6050
-Wire Wire Line
-	7350 5250 7300 5250
-Wire Wire Line
-	7300 5250 7300 5350
-Wire Wire Line
-	7300 5850 7350 5850
-Wire Wire Line
-	7350 5750 7300 5750
-Connection ~ 7300 5750
-Wire Wire Line
-	7300 5750 7300 5850
-Wire Wire Line
-	7300 5650 7350 5650
-Connection ~ 7300 5650
-Wire Wire Line
-	7300 5650 7300 5750
-Wire Wire Line
-	7350 5550 7300 5550
-Connection ~ 7300 5550
-Wire Wire Line
-	7300 5550 7300 5650
-Wire Wire Line
-	7300 5450 7350 5450
-Connection ~ 7300 5450
-Wire Wire Line
-	7350 5350 7300 5350
-Connection ~ 7300 5350
-Wire Wire Line
-	7300 5350 7300 5450
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07EDF
-P 7300 5750
-AR Path="/5D2C0B92/5FF07EDF" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07EDF" Ref="#PWR076"  Part="1" 
-F 0 "#PWR076" H 7300 5500 50  0001 C CNN
-F 1 "GND" V 7305 5622 50  0000 R CNN
-F 2 "" H 7300 5750 50  0001 C CNN
-F 3 "" H 7300 5750 50  0001 C CNN
-	1    7300 5750
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	7300 5450 7300 5550
-Wire Wire Line
-	7300 8200 7300 8300
-Wire Wire Line
-	7300 8800 7350 8800
-Wire Wire Line
-	7350 8700 7300 8700
-Connection ~ 7300 8700
-Wire Wire Line
-	7300 8700 7300 8800
-Wire Wire Line
-	7300 8600 7350 8600
-Connection ~ 7300 8600
-Wire Wire Line
-	7300 8600 7300 8700
-Wire Wire Line
-	7350 8500 7300 8500
-Connection ~ 7300 8500
-Wire Wire Line
-	7300 8500 7300 8600
-Wire Wire Line
-	7300 8400 7350 8400
-Connection ~ 7300 8400
-Wire Wire Line
-	7350 8300 7300 8300
-Connection ~ 7300 8300
-Wire Wire Line
-	7300 8300 7300 8400
+	6000 9050 5450 9050
 $Comp
 L power:GND #PWR?
 U 1 1 5FF07EF6
-P 7300 8700
+P 6750 7100
 AR Path="/5D2C0B92/5FF07EF6" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FF07EF6" Ref="#PWR079"  Part="1" 
-F 0 "#PWR079" H 7300 8450 50  0001 C CNN
-F 1 "GND" V 7305 8572 50  0000 R CNN
-F 2 "" H 7300 8700 50  0001 C CNN
-F 3 "" H 7300 8700 50  0001 C CNN
-	1    7300 8700
+F 0 "#PWR079" H 6750 6850 50  0001 C CNN
+F 1 "GND" V 6755 6972 50  0000 R CNN
+F 2 "" H 6750 7100 50  0001 C CNN
+F 3 "" H 6750 7100 50  0001 C CNN
+	1    6750 7100
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	7300 8400 7300 8500
-Wire Wire Line
-	7350 8200 7300 8200
-Wire Wire Line
-	6650 7700 7350 7700
-Wire Wire Line
-	6750 7800 7350 7800
-Wire Wire Line
-	6650 4750 7350 4750
-Wire Wire Line
-	6750 4850 7350 4850
 $Comp
 L power:GND #PWR?
 U 1 1 5FF07F02
-P 8000 6450
+P 7350 7500
 AR Path="/5D2C0B92/5FF07F02" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FF07F02" Ref="#PWR085"  Part="1" 
-F 0 "#PWR085" H 8000 6200 50  0001 C CNN
-F 1 "GND" H 8005 6277 50  0000 C CNN
-F 2 "" H 8000 6450 50  0001 C CNN
-F 3 "" H 8000 6450 50  0001 C CNN
-	1    8000 6450
+F 0 "#PWR085" H 7350 7250 50  0001 C CNN
+F 1 "GND" H 7355 7327 50  0000 C CNN
+F 2 "" H 7350 7500 50  0001 C CNN
+F 3 "" H 7350 7500 50  0001 C CNN
+	1    7350 7500
 	1    0    0    -1  
 $EndComp
 Entry Wire Line
-	9650 7200 9750 7100
+	8900 6300 9000 6200
 Entry Wire Line
-	9650 7300 9750 7200
+	8900 6400 9000 6300
 Entry Wire Line
-	9650 7400 9750 7300
+	8900 6500 9000 6400
 Entry Wire Line
-	9650 7500 9750 7400
+	8900 6600 9000 6500
 Entry Wire Line
-	9650 7600 9750 7500
+	8900 6700 9000 6600
 Entry Wire Line
-	9650 7700 9750 7600
+	8900 6800 9000 6700
 Entry Wire Line
-	9650 7800 9750 7700
+	8900 6900 9000 6800
 Entry Wire Line
-	9650 7900 9750 7800
-Text Label 9050 4250 0    50   ~ 0
-ControlWord8
-Text Label 9050 4350 0    50   ~ 0
+	8900 7000 9000 6900
+Text Label 8800 6300 2    50   ~ 0
 ControlWord9
-Text Label 9050 4450 0    50   ~ 0
-ControlWord10
-Text Label 9050 4550 0    50   ~ 0
-ControlWord11
-Text Label 9050 4650 0    50   ~ 0
-ControlWord12
-Text Label 9050 4750 0    50   ~ 0
-ControlWord13
-Text Label 9050 4850 0    50   ~ 0
-ControlWord14
-Text Label 9050 4950 0    50   ~ 0
-ControlWord15
-Text Label 9050 7200 0    50   ~ 0
-ControlWord0
-Text Label 9050 7300 0    50   ~ 0
-ControlWord1
-Text Label 9050 7400 0    50   ~ 0
-ControlWord2
-Text Label 9050 7500 0    50   ~ 0
-ControlWord3
-Text Label 9050 7600 0    50   ~ 0
-ControlWord4
-Text Label 9050 7700 0    50   ~ 0
-ControlWord5
-Text Label 9050 7800 0    50   ~ 0
-ControlWord6
-Text Label 9050 7900 0    50   ~ 0
-ControlWord7
-Connection ~ 1300 10750
 Wire Wire Line
 	1300 10750 1050 10750
-Wire Wire Line
-	1800 10750 1300 10750
-Connection ~ 1300 10450
-Wire Wire Line
-	1300 10450 1800 10450
 $Comp
 L power:GND #PWR?
 U 1 1 5FF07F3E
@@ -393,20 +126,6 @@ F 1 "GND" H 1055 10677 50  0000 C CNN
 F 2 "" H 1050 10850 50  0001 C CNN
 F 3 "" H 1050 10850 50  0001 C CNN
 	1    1050 10850
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C?
-U 1 1 5FF07F50
-P 1800 10600
-AR Path="/5D2C0761/5FF07F50" Ref="C?"  Part="1" 
-AR Path="/5D2C0B92/5FF07F50" Ref="C?"  Part="1" 
-AR Path="/5FED3839/5FF07F50" Ref="C23"  Part="1" 
-F 0 "C23" H 1915 10646 50  0000 L CNN
-F 1 "100nF" H 1915 10555 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1838 10450 50  0001 C CNN
-F 3 "~" H 1800 10600 50  0001 C CNN
-	1    1800 10600
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -437,207 +156,6 @@ F 3 "~" H 800 10600 50  0001 C CNN
 	1    800  10600
 	1    0    0    -1  
 $EndComp
-Entry Wire Line
-	9650 4950 9750 5050
-Entry Wire Line
-	9650 4850 9750 4950
-Entry Wire Line
-	9650 4750 9750 4850
-Entry Wire Line
-	9650 4650 9750 4750
-Entry Wire Line
-	9650 4550 9750 4650
-Entry Wire Line
-	9650 4450 9750 4550
-Entry Wire Line
-	9650 4350 9750 4450
-Entry Wire Line
-	9650 4250 9750 4350
-$Comp
-L MainBoard-rescue:GLS29EE010-Memory_EEPROM U?
-U 1 1 5FF07F6C
-P 8000 1200
-AR Path="/5D2C0AA0/5FF07F6C" Ref="U?"  Part="1" 
-AR Path="/5D2C0B92/5FF07F6C" Ref="U?"  Part="1" 
-AR Path="/5FED3839/5FF07F6C" Ref="U19"  Part="1" 
-F 0 "U19" H 7550 1400 50  0000 C CNN
-F 1 "Decoder ROM 3" H 7550 1300 50  0000 C CNN
-F 2 "Package_LCC:PLCC-32_SMD-Socket" H 8000 1200 50  0001 C CNN
-F 3 "" H 8000 1200 50  0001 C CNN
-	1    8000 1200
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5FF07F84
-P 8000 1100
-AR Path="/5D2C0B92/5FF07F84" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07F84" Ref="#PWR082"  Part="1" 
-F 0 "#PWR082" H 8000 950 50  0001 C CNN
-F 1 "VCC" H 8017 1273 50  0000 C CNN
-F 2 "" H 8000 1100 50  0001 C CNN
-F 3 "" H 8000 1100 50  0001 C CNN
-	1    8000 1100
-	1    0    0    -1  
-$EndComp
-Entry Wire Line
-	6950 1300 7050 1400
-Entry Wire Line
-	6950 1400 7050 1500
-Entry Wire Line
-	6950 1500 7050 1600
-Entry Wire Line
-	6950 1600 7050 1700
-Wire Wire Line
-	7350 1300 7050 1300
-Wire Wire Line
-	7050 1400 7350 1400
-Wire Wire Line
-	7350 1500 7050 1500
-Wire Wire Line
-	7050 1600 7350 1600
-Wire Wire Line
-	7350 1700 7050 1700
-Text Label 7050 1300 0    50   ~ 0
-Ins11
-Text Label 7050 1400 0    50   ~ 0
-Ins12
-Text Label 7050 1500 0    50   ~ 0
-Ins13
-Text Label 7050 1600 0    50   ~ 0
-Ins14
-Text Label 7050 1700 0    50   ~ 0
-Ins15
-Wire Wire Line
-	7350 3200 7300 3200
-Wire Wire Line
-	7300 3200 7300 3250
-Wire Wire Line
-	7300 3300 7350 3300
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07FB5
-P 7300 3250
-AR Path="/5D2C0B92/5FF07FB5" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07FB5" Ref="#PWR075"  Part="1" 
-F 0 "#PWR075" H 7300 3000 50  0001 C CNN
-F 1 "GND" V 7305 3122 50  0000 R CNN
-F 2 "" H 7300 3250 50  0001 C CNN
-F 3 "" H 7300 3250 50  0001 C CNN
-	1    7300 3250
-	0    1    1    0   
-$EndComp
-Connection ~ 7300 3250
-Wire Wire Line
-	7300 3250 7300 3300
-$Comp
-L power:VCC #PWR?
-U 1 1 5FF07FBD
-P 7300 3100
-AR Path="/5D2C0B92/5FF07FBD" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07FBD" Ref="#PWR074"  Part="1" 
-F 0 "#PWR074" H 7300 2950 50  0001 C CNN
-F 1 "VCC" V 7318 3227 50  0000 L CNN
-F 2 "" H 7300 3100 50  0001 C CNN
-F 3 "" H 7300 3100 50  0001 C CNN
-	1    7300 3100
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	7350 3100 7300 3100
-Wire Wire Line
-	7350 2300 7300 2300
-Wire Wire Line
-	7300 2300 7300 2400
-Wire Wire Line
-	7300 2900 7350 2900
-Wire Wire Line
-	7350 2800 7300 2800
-Connection ~ 7300 2800
-Wire Wire Line
-	7300 2800 7300 2900
-Wire Wire Line
-	7300 2700 7350 2700
-Connection ~ 7300 2700
-Wire Wire Line
-	7300 2700 7300 2800
-Wire Wire Line
-	7350 2600 7300 2600
-Connection ~ 7300 2600
-Wire Wire Line
-	7300 2600 7300 2700
-Wire Wire Line
-	7300 2500 7350 2500
-Connection ~ 7300 2500
-Wire Wire Line
-	7350 2400 7300 2400
-Connection ~ 7300 2400
-Wire Wire Line
-	7300 2400 7300 2500
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07FD5
-P 7300 2800
-AR Path="/5D2C0B92/5FF07FD5" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07FD5" Ref="#PWR073"  Part="1" 
-F 0 "#PWR073" H 7300 2550 50  0001 C CNN
-F 1 "GND" V 7305 2672 50  0000 R CNN
-F 2 "" H 7300 2800 50  0001 C CNN
-F 3 "" H 7300 2800 50  0001 C CNN
-	1    7300 2800
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	7300 2500 7300 2600
-Wire Wire Line
-	6650 1800 7350 1800
-Wire Wire Line
-	6750 1900 7350 1900
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07FDE
-P 8000 3500
-AR Path="/5D2C0B92/5FF07FDE" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07FDE" Ref="#PWR083"  Part="1" 
-F 0 "#PWR083" H 8000 3250 50  0001 C CNN
-F 1 "GND" H 8005 3327 50  0000 C CNN
-F 2 "" H 8000 3500 50  0001 C CNN
-F 3 "" H 8000 3500 50  0001 C CNN
-	1    8000 3500
-	1    0    0    -1  
-$EndComp
-Text Label 9050 1300 0    50   ~ 0
-ControlWord16
-Text Label 9050 1400 0    50   ~ 0
-ControlWord17
-Text Label 9050 1500 0    50   ~ 0
-ControlWord18
-Text Label 9050 1600 0    50   ~ 0
-ControlWord19
-Text Label 9050 1700 0    50   ~ 0
-ControlWord20
-Text Label 9050 1800 0    50   ~ 0
-ControlWord21
-Text Label 9050 1900 0    50   ~ 0
-ControlWord22
-Text Label 9050 2000 0    50   ~ 0
-ControlWord23
-Entry Wire Line
-	9650 2000 9750 2100
-Entry Wire Line
-	9650 1900 9750 2000
-Entry Wire Line
-	9650 1800 9750 1900
-Entry Wire Line
-	9650 1700 9750 1800
-Entry Wire Line
-	9650 1600 9750 1700
-Entry Wire Line
-	9650 1500 9750 1600
-Entry Wire Line
-	9650 1400 9750 1500
-Entry Wire Line
-	9650 1300 9750 1400
 Wire Wire Line
 	800  10450 1050 10450
 $Comp
@@ -665,142 +183,305 @@ Connection ~ 1050 10750
 Wire Wire Line
 	1050 10750 800  10750
 Wire Wire Line
-	8600 4250 9650 4250
+	7850 6300 8900 6300
 Wire Wire Line
-	8600 4350 9650 4350
+	7850 6400 8900 6400
 Wire Wire Line
-	8600 4450 9650 4450
+	7850 6500 8900 6500
 Wire Wire Line
-	8600 4550 9650 4550
+	7850 6600 8900 6600
 Wire Wire Line
-	8600 4650 9650 4650
+	7850 6700 8900 6700
 Wire Wire Line
-	8600 4750 9650 4750
+	7850 6800 8900 6800
 Wire Wire Line
-	8600 4850 9650 4850
+	7850 6900 8900 6900
 Wire Wire Line
-	8600 4950 9650 4950
-Wire Wire Line
-	8600 7200 9650 7200
-Wire Wire Line
-	8600 7300 9650 7300
-Wire Wire Line
-	8600 7400 9650 7400
-Wire Wire Line
-	8600 7500 9650 7500
-Wire Wire Line
-	8600 7600 9650 7600
-Wire Wire Line
-	8600 7700 9650 7700
-Wire Wire Line
-	8600 7800 9650 7800
-Wire Wire Line
-	8600 7900 9650 7900
-Wire Wire Line
-	8600 1300 9650 1300
-Wire Wire Line
-	8600 1400 9650 1400
-Wire Wire Line
-	8600 1500 9650 1500
-Wire Wire Line
-	8600 1600 9650 1600
-Wire Wire Line
-	8600 1700 9650 1700
-Wire Wire Line
-	8600 1800 9650 1800
-Wire Wire Line
-	8600 1900 9650 1900
-Wire Wire Line
-	8600 2000 9650 2000
-Text HLabel 6200 9750 0    50   Input ~ 0
+	7850 7000 8900 7000
+Text HLabel 5450 8850 0    50   Input ~ 0
 ~A=B
-Text HLabel 6200 9950 0    50   Input ~ 0
+Text HLabel 5450 9050 0    50   Input ~ 0
 ~Carry
-Text HLabel 6200 10150 0    50   Input ~ 0
+Text HLabel 5450 9250 0    50   Input ~ 0
 Ins[0..15]
-NoConn ~ 8600 8100
-NoConn ~ 8600 8200
-NoConn ~ 8600 5150
-NoConn ~ 8600 5250
-NoConn ~ 8600 2200
-NoConn ~ 8600 2300
-Text HLabel 14500 9000 2    50   Output ~ 0
-ControlWord[0..23]
+Text HLabel 10450 7400 2    50   Output ~ 0
+ControlWord[0..19]
 Entry Wire Line
-	7050 1300 6950 1200
+	6300 3350 6200 3250
 Entry Wire Line
-	7050 4250 6950 4150
-Connection ~ 6650 4750
-Connection ~ 6750 4850
+	6300 6400 6200 6300
 Wire Wire Line
-	6650 4750 6650 7700
+	6800 7100 6850 7100
 Wire Wire Line
-	6750 4850 6750 7800
+	6850 7200 6800 7200
+Connection ~ 6800 7200
 Wire Wire Line
-	7350 4950 7300 4950
+	6800 7200 6800 7100
 Wire Wire Line
-	7300 4950 7300 5050
+	6800 7300 6850 7300
 Wire Wire Line
-	7300 5150 7350 5150
-Wire Wire Line
-	7350 5050 7300 5050
-Connection ~ 7300 5050
-Wire Wire Line
-	7300 5050 7300 5150
-Wire Wire Line
-	7300 5150 7300 5250
-Connection ~ 7300 5150
-Connection ~ 7300 5250
-Wire Wire Line
-	6650 1800 6650 4750
-Wire Wire Line
-	6750 1900 6750 4850
-Wire Wire Line
-	7300 2300 7300 2200
-Wire Wire Line
-	7300 2000 7350 2000
-Connection ~ 7300 2300
-Wire Wire Line
-	7350 2100 7300 2100
-Connection ~ 7300 2100
-Wire Wire Line
-	7300 2100 7300 2000
-Wire Wire Line
-	7300 2200 7350 2200
-Connection ~ 7300 2200
-Wire Wire Line
-	7300 2200 7300 2100
-Entry Wire Line
-	7050 7200 6950 7100
-Connection ~ 6650 7700
-Connection ~ 6750 7800
-Wire Wire Line
-	6650 7700 6650 9750
-Wire Wire Line
-	6750 7800 6750 9950
-Wire Wire Line
-	7300 8200 7300 8100
-Wire Wire Line
-	7300 7900 7350 7900
-Connection ~ 7300 8200
-Wire Wire Line
-	7350 8000 7300 8000
-Connection ~ 7300 8000
-Wire Wire Line
-	7300 8000 7300 7900
-Wire Wire Line
-	7300 8100 7350 8100
-Connection ~ 7300 8100
-Wire Wire Line
-	7300 8100 7300 8000
-Text Notes 4050 2550 0    50   ~ 0
+	6800 7300 6800 7200
+Text Notes 6400 5500 0    50   ~ 0
 Decode the instruction opcode into an array of control signals.\nThese signals are carried forward through each pipeline stage\nuntil the stage where they are used. This keeps stages\nsynchronized with the corresponding instruction.
 Wire Bus Line
-	9750 9000 14500 9000
-Text Notes 10800 5850 0    50   ~ 0
-#   Mnemonic        Description\n—————————————————————\n0   HLT             Halt Clock\n1   SelLeftOp       Select Left Operand\n2   SelRightOp      Select Right Operand\n3   SelStoreOpA     Select Store Operand 0\n4   SelStoreOpB     Select Store Operand 1\n5   /FI             Flags Register In\n6   /CarryIn        Carry Input\n7   S0              ALU S0\n8   S1              ALU S1\n9   S2              ALU S2\n10  S3              ALU S3\n11  M               ALU M\n12  /J              Jump\n13  /MemLoad        Memory Store\n14  /MemStore       Memory Load\n15  /WRL            Write back low byte\n16  /WRH            Write back high byte\n17  WriteBackSrcA   Source of write back 0\n18  WriteBackSrcB   Source of write back 1\n19  unused          unused\n20  unused          unused\n21  unused          unused\n22  unused          unused\n23  unused          unused
+	9000 7400 10450 7400
+Text Notes 10050 4950 0    50   ~ 0
+#   Mnemonic        Description\n—————————————————————\n0   HLT             Halt Clock\n1   SelLeftOp       Select Left Operand\n2   SelRightOp      Select Right Operand\n3   SelStoreOpA     Select Store Operand 0\n4   SelStoreOpB     Select Store Operand 1\n5   /FI             Flags Register In\n6   /CarryIn        Carry Input\n7   S0              ALU S0\n8   S1              ALU S1\n9   S2              ALU S2\n10  S3              ALU S3\n11  M               ALU M\n12  /J              Jump\n13  /MemLoad        Memory Store\n14  /MemStore       Memory Load\n15  /WRL            Write back low byte\n16  /WRH            Write back high byte\n17  WriteBackSrcA   Source of write back 0\n18  WriteBackSrcB   Source of write back 1\n19  unused          unused
+Connection ~ 6000 7000
+Wire Wire Line
+	6000 7000 6000 9050
+Wire Wire Line
+	6300 6400 6850 6400
+Wire Wire Line
+	6300 6500 6850 6500
+Wire Wire Line
+	6300 6600 6850 6600
+Wire Wire Line
+	6300 6700 6850 6700
+Wire Wire Line
+	6300 6800 6850 6800
+Wire Wire Line
+	6000 7000 6850 7000
+Wire Wire Line
+	6750 7100 6800 7100
+Connection ~ 6800 7100
+$Comp
+L MainBoard-rescue:ATF22V10C-Logic_Programmable U19
+U 1 1 5FBC01DB
+P 7350 6750
+F 0 "U19" H 7000 7400 50  0000 C CNN
+F 1 "ATF22V10C" H 7000 7300 50  0000 C CNN
+F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 8200 6050 50  0001 C CNN
+F 3 "" H 7350 6800 50  0001 C CNN
+	1    7350 6750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FC4D61A
+P 7900 7300
+AR Path="/5D2C0B92/5FC4D61A" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FC4D61A" Ref="#PWR0165"  Part="1" 
+F 0 "#PWR0165" H 7900 7050 50  0001 C CNN
+F 1 "GND" V 7905 7172 50  0000 R CNN
+F 2 "" H 7900 7300 50  0001 C CNN
+F 3 "" H 7900 7300 50  0001 C CNN
+	1    7900 7300
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	7850 7300 7900 7300
+Entry Wire Line
+	8900 7100 9000 7000
+Wire Wire Line
+	7850 7100 8900 7100
+Entry Wire Line
+	8900 7200 9000 7100
+Wire Wire Line
+	7850 7200 8900 7200
+Text Label 8800 6400 2    50   ~ 0
+ControlWord8
+Text Label 8800 6500 2    50   ~ 0
+ControlWord7
+Text Label 8800 6600 2    50   ~ 0
+ControlWord6
+Text Label 8800 6700 2    50   ~ 0
+ControlWord5
+Text Label 8800 6800 2    50   ~ 0
+ControlWord4
+Text Label 8800 6900 2    50   ~ 0
+ControlWord3
+Text Label 8800 7000 2    50   ~ 0
+ControlWord2
+Text Label 8800 7100 2    50   ~ 0
+ControlWord1
+Text Label 8800 7200 2    50   ~ 0
+ControlWord0
+$Comp
+L power:VCC #PWR?
+U 1 1 5FC69C6C
+P 7350 3050
+AR Path="/5D2C0B92/5FC69C6C" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FC69C6C" Ref="#PWR0166"  Part="1" 
+F 0 "#PWR0166" H 7350 2900 50  0001 C CNN
+F 1 "VCC" H 7367 3223 50  0000 C CNN
+F 2 "" H 7350 3050 50  0001 C CNN
+F 3 "" H 7350 3050 50  0001 C CNN
+	1    7350 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FC69C72
+P 7350 4450
+AR Path="/5D2C0B92/5FC69C72" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FC69C72" Ref="#PWR0193"  Part="1" 
+F 0 "#PWR0193" H 7350 4200 50  0001 C CNN
+F 1 "GND" H 7355 4277 50  0000 C CNN
+F 2 "" H 7350 4450 50  0001 C CNN
+F 3 "" H 7350 4450 50  0001 C CNN
+	1    7350 4450
+	1    0    0    -1  
+$EndComp
+Entry Wire Line
+	8900 3250 9000 3150
+Entry Wire Line
+	8900 3350 9000 3250
+Entry Wire Line
+	8900 3450 9000 3350
+Entry Wire Line
+	8900 3550 9000 3450
+Entry Wire Line
+	8900 3650 9000 3550
+Entry Wire Line
+	8900 3750 9000 3650
+Entry Wire Line
+	8900 3850 9000 3750
+Entry Wire Line
+	8900 3950 9000 3850
+Text Label 8800 3250 2    50   ~ 0
+ControlWord19
+Wire Wire Line
+	7850 3250 8900 3250
+Wire Wire Line
+	7850 3350 8900 3350
+Wire Wire Line
+	7850 3450 8900 3450
+Wire Wire Line
+	7850 3550 8900 3550
+Wire Wire Line
+	7850 3650 8900 3650
+Wire Wire Line
+	7850 3750 8900 3750
+Wire Wire Line
+	7850 3850 8900 3850
+Wire Wire Line
+	7850 3950 8900 3950
+$Comp
+L MainBoard-rescue:ATF22V10C-Logic_Programmable U14
+U 1 1 5FC69C89
+P 7350 3700
+F 0 "U14" H 7000 4350 50  0000 C CNN
+F 1 "ATF22V10C" H 7000 4250 50  0000 C CNN
+F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 8200 3000 50  0001 C CNN
+F 3 "" H 7350 3750 50  0001 C CNN
+	1    7350 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FC69C8F
+P 7900 4250
+AR Path="/5D2C0B92/5FC69C8F" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FC69C8F" Ref="#PWR0194"  Part="1" 
+F 0 "#PWR0194" H 7900 4000 50  0001 C CNN
+F 1 "GND" V 7905 4122 50  0000 R CNN
+F 2 "" H 7900 4250 50  0001 C CNN
+F 3 "" H 7900 4250 50  0001 C CNN
+	1    7900 4250
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	7850 4250 7900 4250
+Entry Wire Line
+	8900 4050 9000 3950
+Wire Wire Line
+	7850 4050 8900 4050
+Entry Wire Line
+	8900 4150 9000 4050
+Wire Wire Line
+	7850 4150 8900 4150
+Text Label 8800 3350 2    50   ~ 0
+ControlWord18
+Text Label 8800 3450 2    50   ~ 0
+ControlWord17
+Text Label 8800 3550 2    50   ~ 0
+ControlWord16
+Text Label 8800 3650 2    50   ~ 0
+ControlWord15
+Text Label 8800 3750 2    50   ~ 0
+ControlWord14
+Text Label 8800 3850 2    50   ~ 0
+ControlWord13
+Text Label 8800 3950 2    50   ~ 0
+ControlWord12
+Text Label 8800 4050 2    50   ~ 0
+ControlWord11
+Text Label 8800 4150 2    50   ~ 0
+ControlWord10
+Wire Wire Line
+	6300 3350 6850 3350
+Wire Wire Line
+	6300 3450 6850 3450
+Wire Wire Line
+	6300 3550 6850 3550
+Wire Wire Line
+	6300 3650 6850 3650
+Wire Wire Line
+	6300 3750 6850 3750
+Wire Wire Line
+	5900 3850 6850 3850
+Wire Wire Line
+	6000 3950 6850 3950
+$Comp
+L power:GND #PWR?
+U 1 1 5FC8DC12
+P 6750 4050
+AR Path="/5D2C0B92/5FC8DC12" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FC8DC12" Ref="#PWR0195"  Part="1" 
+F 0 "#PWR0195" H 6750 3800 50  0001 C CNN
+F 1 "GND" V 6755 3922 50  0000 R CNN
+F 2 "" H 6750 4050 50  0001 C CNN
+F 3 "" H 6750 4050 50  0001 C CNN
+	1    6750 4050
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6800 4050 6850 4050
+Wire Wire Line
+	6850 4150 6800 4150
+Connection ~ 6800 4150
+Wire Wire Line
+	6800 4150 6800 4050
+Wire Wire Line
+	6800 4250 6850 4250
+Wire Wire Line
+	6800 4250 6800 4150
+Wire Wire Line
+	6750 4050 6800 4050
+Connection ~ 6800 4050
+Text HLabel 5450 8650 0    50   Input ~ 0
+Phi1
+Wire Wire Line
+	5450 8650 5800 8650
+Wire Wire Line
+	5800 8650 5800 6200
+Wire Wire Line
+	5800 6200 6750 6200
+Wire Wire Line
+	6750 6200 6750 6300
+Wire Wire Line
+	6750 6300 6850 6300
+Wire Wire Line
+	5800 6200 5800 3150
+Wire Wire Line
+	5800 3150 6750 3150
+Wire Wire Line
+	6750 3150 6750 3250
+Wire Wire Line
+	6750 3250 6850 3250
+Connection ~ 5800 6200
+Wire Wire Line
+	5900 3850 5900 6900
+Wire Wire Line
+	6000 3950 6000 7000
+Wire Wire Line
+	5900 6900 6850 6900
 Wire Bus Line
-	6950 1200 6950 10150
+	6200 3250 6200 9250
 Wire Bus Line
-	9750 1400 9750 9000
+	9000 3150 9000 7400
+Connection ~ 5900 6900
+Wire Wire Line
+	5900 6900 5900 8850
 $EndSCHEMATC

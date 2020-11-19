@@ -16,9 +16,9 @@ $EndDescr
 Text HLabel 2300 2900 0    50   Input ~ 0
 StoreOpIn[0..15]
 Text HLabel 2300 1150 0    50   Input ~ 0
-CtlIn[13..23]
+CtlIn[13..19]
 Text HLabel 8800 1250 2    50   Output ~ 0
-Ctl[15..23]
+Ctl[15..19]
 Text HLabel 8800 2900 2    50   Output ~ 0
 StoreOp[0..15]
 Entry Wire Line
@@ -30,7 +30,7 @@ Entry Bus Bus
 Wire Bus Line
 	6350 1250 8800 1250
 Text Label 6450 1250 0    50   ~ 0
-CtlIn[15..23]
+CtlIn[15..19]
 Text Label 2950 1600 0    50   ~ 0
 ~MemLoad
 Text Label 2950 1700 0    50   ~ 0

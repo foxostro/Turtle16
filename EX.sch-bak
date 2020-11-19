@@ -20,9 +20,9 @@ OpL[0..15]
 Text HLabel 15500 3650 2    50   Output ~ 0
 ALUResult[0..15]
 Text HLabel 6000 2150 0    50   Input ~ 0
-CtlIn[5..23]
+CtlIn[5..19]
 Text HLabel 16500 2250 2    50   Output ~ 0
-Ctl[12..23]
+Ctl[12..19]
 $Comp
 L MainBoard-rescue:74LS181-74xx U?
 U 1 1 5FDDF597
@@ -726,7 +726,7 @@ Entry Bus Bus
 Wire Bus Line
 	15350 2250 16500 2250
 Text Label 15900 2250 0    50   ~ 0
-CtlIn[12..23]
+CtlIn[12..19]
 Entry Wire Line
 	9900 3700 9800 3600
 Wire Wire Line

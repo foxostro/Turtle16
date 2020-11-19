@@ -186,24 +186,24 @@ $EndSheet
 $Sheet
 S 5200 4700 1150 400 
 U 6040D849
-F0 "Ctl[5..23] Register" 50
+F0 "Ctl[5..19] Register" 50
 F1 "Ctl_5_23_Register.sch" 50
 F2 "SelCIn[0..2]" I L 5200 5000 50 
 F3 "SelC[0..2]" O R 6350 5000 50 
-F4 "CtlIn[5..23]" I L 5200 4900 50 
+F4 "CtlIn[5..19]" I L 5200 4900 50 
 F5 "CP" I L 5200 4800 50 
-F6 "Ctl[5..32]" O R 6350 4900 50 
+F6 "Ctl[5..19]" O R 6350 4900 50 
 $EndSheet
 Text HLabel 3800 5000 0    50   Input ~ 0
 SelCIn[0..2]
 Wire Bus Line
 	3800 5000 5200 5000
 Text HLabel 3800 4900 0    50   Input ~ 0
-CtlIn[5..23]
+CtlIn[5..19]
 Wire Bus Line
 	3800 4900 5200 4900
 Text HLabel 7250 4900 2    50   Output ~ 0
-Ctl[5..23]
+Ctl[5..19]
 Wire Bus Line
 	6350 4900 7250 4900
 Text HLabel 7250 5000 2    50   Output ~ 0

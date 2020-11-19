@@ -18,7 +18,7 @@ Text HLabel 3900 4450 0    50   Input ~ 0
 Text HLabel 3900 4550 0    50   Input ~ 0
 ~WRL
 Text HLabel 3750 850  0    50   Input ~ 0
-CtlIn[0..23]
+CtlIn[0..19]
 Text HLabel 3900 4750 0    50   Input ~ 0
 WriteLower[0..7]
 Text HLabel 13450 8850 2    50   Output ~ 0
@@ -32,7 +32,7 @@ PC[0..15]
 Text HLabel 3850 2350 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 12250 950  2    50   Output ~ 0
-Ctl[5..23]
+Ctl[5..19]
 Text HLabel 3900 4650 0    50   Input ~ 0
 WriteUpper[0..7]
 Text HLabel 5700 2850 2    50   Output ~ 0
@@ -126,7 +126,7 @@ Entry Bus Bus
 Wire Bus Line
 	9950 950  12250 950 
 Text Label 10000 950  0    50   ~ 0
-CtlIn[5..23]
+CtlIn[5..19]
 Text Label 9600 4150 0    50   ~ 0
 SelLeftOp
 Text Label 9550 7400 0    50   ~ 0

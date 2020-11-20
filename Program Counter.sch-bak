@@ -169,7 +169,7 @@ Wire Wire Line
 	2100 3100 4400 3100
 Connection ~ 2100 3100
 Wire Wire Line
-	2000 2950 4300 2950
+	2000 2950 3600 2950
 Entry Wire Line
 	5800 1350 5700 1250
 Entry Wire Line
@@ -518,8 +518,6 @@ Wire Wire Line
 NoConn ~ 9700 1750
 Text HLabel 1250 650  0    50   Input ~ 0
 ALUResult[0..15]
-Text HLabel 950  2050 0    50   Input ~ 0
-Phi1
 Text HLabel 950  3100 0    50   Input ~ 0
 ~RST
 Text HLabel 950  3250 0    50   Input ~ 0
@@ -596,12 +594,9 @@ F 3 "" H 9200 2550 50  0001 C CNN
 	1    9200 2550
 	1    0    0    -1  
 $EndComp
-Connection ~ 2000 2050
 Wire Wire Line
 	2000 2050 2000 2950
-Wire Wire Line
-	950  2050 2000 2050
-Text HLabel 2850 5000 0    50   Input ~ 0
+Text HLabel 2550 7050 0    50   Input ~ 0
 Phi1
 $Comp
 L power:GND #PWR?
@@ -1461,7 +1456,7 @@ Connection ~ 3600 5000
 Wire Wire Line
 	3600 5000 4200 5000
 Wire Wire Line
-	2850 5000 3600 5000
+	2550 7050 3600 7050
 $Comp
 L Device:C C6
 U 1 1 5FC1AD58
@@ -1498,6 +1493,13 @@ Connection ~ 9050 6150
 Connection ~ 9050 6450
 Connection ~ 9550 6150
 Connection ~ 9550 6450
+Connection ~ 3700 3400
+Wire Wire Line
+	3600 5000 3600 2950
+Connection ~ 3600 2950
+Wire Wire Line
+	3600 2950 4300 2950
+Connection ~ 3600 7050
 Wire Bus Line
 	8050 650  8050 1450
 Wire Bus Line
@@ -1515,8 +1517,7 @@ Wire Bus Line
 Wire Bus Line
 	3700 1350 3700 3400
 Wire Bus Line
-	5700 3800 5700 6750
-Wire Bus Line
 	3700 3400 3700 6750
-Connection ~ 3700 3400
+Wire Bus Line
+	5700 3800 5700 6750
 $EndSCHEMATC

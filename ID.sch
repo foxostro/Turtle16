@@ -192,15 +192,13 @@ Z
 Text HLabel 1300 6950 0    50   Input ~ 0
 Ins[0..15]
 Text HLabel 6300 5200 2    50   Output ~ 0
-ControlWord[0..19]
+ControlWord[1..19]
 Entry Wire Line
 	2050 1150 1950 1050
 Entry Wire Line
 	2050 4200 1950 4100
 Text Notes 2250 3300 0    50   ~ 0
 Decode the instruction opcode into an array of control signals.\nThese signals are carried forward through each pipeline stage\nuntil the stage where they are used. This keeps stages\nsynchronized with the corresponding instruction.
-Wire Bus Line
-	4850 5200 6300 5200
 Text Notes 5900 2750 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelLeftOp\n2   SelRightOp\n3   SelStoreOpA\n4   SelStoreOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB\n19  unused
 Connection ~ 1650 4800
@@ -477,8 +475,8 @@ L power:GND #PWR?
 U 1 1 5FBC0123
 P 2650 5100
 AR Path="/5D2C0B92/5FBC0123" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FBC0123" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2650 4850 50  0001 C CNN
+AR Path="/5FED3839/5FBC0123" Ref="#PWR0148"  Part="1" 
+F 0 "#PWR0148" H 2650 4850 50  0001 C CNN
 F 1 "GND" V 2655 4972 50  0000 R CNN
 F 2 "" H 2650 5100 50  0001 C CNN
 F 3 "" H 2650 5100 50  0001 C CNN
@@ -492,8 +490,8 @@ L power:GND #PWR?
 U 1 1 5FBC6FDF
 P 2650 2050
 AR Path="/5D2C0B92/5FBC6FDF" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FBC6FDF" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2650 1800 50  0001 C CNN
+AR Path="/5FED3839/5FBC6FDF" Ref="#PWR0149"  Part="1" 
+F 0 "#PWR0149" H 2650 1800 50  0001 C CNN
 F 1 "GND" V 2655 1922 50  0000 R CNN
 F 2 "" H 2650 2050 50  0001 C CNN
 F 3 "" H 2650 2050 50  0001 C CNN
@@ -515,6 +513,16 @@ Wire Wire Line
 Wire Wire Line
 	1850 1950 2700 1950
 Connection ~ 1850 5000
+Text HLabel 5650 6600 3    50   Output ~ 0
+~HLT
+Text Label 5650 5400 3    50   ~ 0
+ControlWord0
+Entry Wire Line
+	5650 5300 5550 5200
+Wire Wire Line
+	5650 6600 5650 5300
+Wire Bus Line
+	4850 5200 6300 5200
 Wire Bus Line
 	1950 1050 1950 6950
 Wire Bus Line

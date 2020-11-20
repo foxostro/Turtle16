@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 12 36
+Sheet 12 33
 Title "REG/EX Interstage Registers"
 Date ""
 Rev ""
@@ -13,32 +13,18 @@ Comment2 ""
 Comment3 ""
 Comment4 "Interstage pipeline registers between REG and EX"
 $EndDescr
-Text HLabel 6700 3550 2    50   Output ~ 0
-OpR[0..15]
-Text HLabel 6700 2850 2    50   Output ~ 0
-OpL[0..15]
-Text HLabel 6700 4250 2    50   Output ~ 0
+Text HLabel 7000 4050 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 4700 3550 0    50   Input ~ 0
-OpRIn[0..15]
-Text HLabel 4700 2850 0    50   Input ~ 0
-OpLIn[0..15]
-Text HLabel 4700 4250 0    50   Input ~ 0
+Text HLabel 3550 4050 0    50   Input ~ 0
 StoreOpIn[0..15]
-Wire Bus Line
-	5200 2850 4700 2850
-Text HLabel 3850 2150 0    50   Input ~ 0
+Text HLabel 3600 3450 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	3850 2150 4350 2150
+	3600 3450 4100 3450
 Wire Bus Line
-	6700 2850 6350 2850
+	4950 4050 3550 4050
 Wire Bus Line
-	6700 3550 6350 3550
-Wire Bus Line
-	5200 4250 4700 4250
-Wire Bus Line
-	6700 4250 6350 4250
+	7000 4050 6100 4050
 NoConn ~ -250 4550
 NoConn ~ -250 5050
 $Comp
@@ -89,16 +75,16 @@ $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 4 1 5FC492D8
-P 4650 2150
+P 4400 3450
 AR Path="/5D8005AF/5D800744/5FC492D8" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5FC492D8" Ref="U?"  Part="4" 
 AR Path="/5D2C07CD/5FC492D8" Ref="U?"  Part="4" 
 AR Path="/60A72859/5FC492D8" Ref="U29"  Part="4" 
-F 0 "U29" H 4650 2467 50  0000 C CNN
-F 1 "74AHCT04" H 4650 2376 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4650 2150 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4650 2150 50  0001 C CNN
-	4    4650 2150
+F 0 "U29" H 4400 3767 50  0000 C CNN
+F 1 "74AHCT04" H 4400 3676 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4400 3450 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4400 3450 50  0001 C CNN
+	4    4400 3450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -140,80 +126,50 @@ Wire Wire Line
 	-850 5050 -850 5350
 Connection ~ -850 5050
 Wire Wire Line
-	4950 2150 5100 2150
+	4700 3450 4850 3450
 Wire Wire Line
-	5100 2150 5100 2750
+	4850 3950 4950 3950
 Wire Wire Line
-	5100 2750 5200 2750
-Wire Wire Line
-	5100 2750 5100 3450
-Wire Wire Line
-	5100 3450 5200 3450
-Connection ~ 5100 2750
-Wire Wire Line
-	5100 4150 5200 4150
-Connection ~ 5100 3450
-Wire Wire Line
-	5100 4800 5200 4800
-Connection ~ 5100 4150
+	4850 4600 4950 4600
+Connection ~ 4850 3950
 $Sheet
-S 5200 2650 1150 450 
-U 603C451A
-F0 "Left Operand Register" 50
-F1 "LeftOperandRegister.sch" 50
-F2 "CP" I L 5200 2750 50 
-F3 "D[0..15]" I L 5200 2850 50 
-F4 "Q[0..15]" O R 6350 2850 50 
-$EndSheet
-$Sheet
-S 5200 3350 1150 450 
-U 603DC723
-F0 "Right Operand Register" 50
-F1 "RightOperandRegister.sch" 50
-F2 "CP" I L 5200 3450 50 
-F3 "D[0..15]" I L 5200 3550 50 
-F4 "Q[0..15]" O R 6350 3550 50 
-$EndSheet
-$Sheet
-S 5200 4000 1150 450 
+S 4950 3800 1150 450 
 U 603F3B96
 F0 "Store Operand Register" 50
 F1 "StoreOperandRegister.sch" 50
-F2 "CP" I L 5200 4150 50 
-F3 "D[0..15]" I L 5200 4250 50 
-F4 "Q[0..15]" O R 6350 4250 50 
+F2 "CP" I L 4950 3950 50 
+F3 "D[0..15]" I L 4950 4050 50 
+F4 "Q[0..15]" O R 6100 4050 50 
 $EndSheet
 $Sheet
-S 5200 4700 1150 400 
+S 4950 4500 1150 400 
 U 6040D849
 F0 "Ctl[5..19] Register" 50
 F1 "Ctl_5_23_Register.sch" 50
-F2 "SelCIn[0..2]" I L 5200 5000 50 
-F3 "SelC[0..2]" O R 6350 5000 50 
-F4 "CtlIn[5..19]" I L 5200 4900 50 
-F5 "CP" I L 5200 4800 50 
-F6 "Ctl[5..19]" O R 6350 4900 50 
+F2 "SelCIn[0..2]" I L 4950 4800 50 
+F3 "SelC[0..2]" O R 6100 4800 50 
+F4 "CtlIn[5..19]" I L 4950 4700 50 
+F5 "CP" I L 4950 4600 50 
+F6 "Ctl[5..19]" O R 6100 4700 50 
 $EndSheet
-Text HLabel 3800 5000 0    50   Input ~ 0
+Text HLabel 3550 4800 0    50   Input ~ 0
 SelCIn[0..2]
 Wire Bus Line
-	3800 5000 5200 5000
-Text HLabel 3800 4900 0    50   Input ~ 0
+	3550 4800 4950 4800
+Text HLabel 3550 4700 0    50   Input ~ 0
 CtlIn[5..19]
 Wire Bus Line
-	3800 4900 5200 4900
-Text HLabel 7250 4900 2    50   Output ~ 0
+	3550 4700 4950 4700
+Text HLabel 7000 4700 2    50   Output ~ 0
 Ctl[5..19]
 Wire Bus Line
-	6350 4900 7250 4900
-Text HLabel 7250 5000 2    50   Output ~ 0
+	6100 4700 7000 4700
+Text HLabel 7000 4800 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
-	6350 5000 7250 5000
+	6100 4800 7000 4800
 Wire Wire Line
-	5100 4150 5100 4800
-Wire Bus Line
-	4700 3550 5100 3550
+	4850 3950 4850 4600
 $Comp
 L Device:C C?
 U 1 1 6041A550
@@ -489,12 +445,8 @@ F 3 "" H 850 7450 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	850  7450 850  7350
-Wire Bus Line
-	5100 3550 5200 3550
-Wire Wire Line
-	5100 3550 5100 4150
-Wire Wire Line
-	5100 3450 5100 4150
 Wire Wire Line
 	-850 2150 -850 4550
+Wire Wire Line
+	4850 3450 4850 3950
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 31 36
+Sheet 27 33
 Title "WB: Select Write Back Source"
 Date ""
 Rev ""
@@ -1902,4 +1902,6 @@ Wire Bus Line
 	11550 5500 11550 8350
 Wire Bus Line
 	13900 2200 13900 8350
+Text Notes 5200 1850 0    50   ~ 0
+ALUResult is latched at the same time as\nthe other registers in MEM/WB.
 $EndSCHEMATC

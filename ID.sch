@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 7 36
+Sheet 7 33
 Title "ID"
 Date ""
 Rev ""
@@ -63,24 +63,11 @@ Ins14
 Text Label 6300 3750 0    50   ~ 0
 Ins15
 Wire Bus Line
-	6200 9250 5450 9250
+	6200 9050 5450 9050
 Wire Wire Line
-	5900 8850 5450 8850
+	5900 8750 5450 8750
 Wire Wire Line
-	6000 9050 5450 9050
-$Comp
-L power:GND #PWR?
-U 1 1 5FF07EF6
-P 6750 7100
-AR Path="/5D2C0B92/5FF07EF6" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF07EF6" Ref="#PWR079"  Part="1" 
-F 0 "#PWR079" H 6750 6850 50  0001 C CNN
-F 1 "GND" V 6755 6972 50  0000 R CNN
-F 2 "" H 6750 7100 50  0001 C CNN
-F 3 "" H 6750 7100 50  0001 C CNN
-	1    6750 7100
-	0    1    1    0   
-$EndComp
+	6000 8850 5450 8850
 $Comp
 L power:GND #PWR?
 U 1 1 5FF07F02
@@ -198,11 +185,11 @@ Wire Wire Line
 	7850 6900 8900 6900
 Wire Wire Line
 	7850 7000 8900 7000
+Text HLabel 5450 8750 0    50   Input ~ 0
+Carry
 Text HLabel 5450 8850 0    50   Input ~ 0
-~A=B
+Z
 Text HLabel 5450 9050 0    50   Input ~ 0
-~Carry
-Text HLabel 5450 9250 0    50   Input ~ 0
 Ins[0..15]
 Text HLabel 10450 7400 2    50   Output ~ 0
 ControlWord[0..19]
@@ -211,12 +198,7 @@ Entry Wire Line
 Entry Wire Line
 	6300 6400 6200 6300
 Wire Wire Line
-	6800 7100 6850 7100
-Wire Wire Line
 	6850 7200 6800 7200
-Connection ~ 6800 7200
-Wire Wire Line
-	6800 7200 6800 7100
 Wire Wire Line
 	6800 7300 6850 7300
 Wire Wire Line
@@ -226,10 +208,10 @@ Decode the instruction opcode into an array of control signals.\nThese signals a
 Wire Bus Line
 	9000 7400 10450 7400
 Text Notes 10050 4950 0    50   ~ 0
-#   Mnemonic        Description\n—————————————————————\n0   HLT             Halt Clock\n1   SelLeftOp       Select Left Operand\n2   SelRightOp      Select Right Operand\n3   SelStoreOpA     Select Store Operand 0\n4   SelStoreOpB     Select Store Operand 1\n5   /FI             Flags Register In\n6   /CarryIn        Carry Input\n7   S0              ALU S0\n8   S1              ALU S1\n9   S2              ALU S2\n10  S3              ALU S3\n11  M               ALU M\n12  /J              Jump\n13  /MemLoad        Memory Store\n14  /MemStore       Memory Load\n15  /WRL            Write back low byte\n16  /WRH            Write back high byte\n17  WriteBackSrcA   Source of write back 0\n18  WriteBackSrcB   Source of write back 1\n19  unused          unused
+#   Mnemonic\n——————————\n0  /HLT\n1   SelLeftOp\n2   SelRightOp\n3   SelStoreOpA\n4   SelStoreOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB\n19  unused
 Connection ~ 6000 7000
 Wire Wire Line
-	6000 7000 6000 9050
+	6000 7000 6000 8850
 Wire Wire Line
 	6300 6400 6850 6400
 Wire Wire Line
@@ -243,8 +225,7 @@ Wire Wire Line
 Wire Wire Line
 	6000 7000 6850 7000
 Wire Wire Line
-	6750 7100 6800 7100
-Connection ~ 6800 7100
+	6800 7350 6800 7300
 $Comp
 L MainBoard-rescue:ATF22V10C-Logic_Programmable U19
 U 1 1 5FBC01DB
@@ -423,33 +404,6 @@ Wire Wire Line
 	5900 3850 6850 3850
 Wire Wire Line
 	6000 3950 6850 3950
-$Comp
-L power:GND #PWR?
-U 1 1 5FC8DC12
-P 6750 4050
-AR Path="/5D2C0B92/5FC8DC12" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FC8DC12" Ref="#PWR0195"  Part="1" 
-F 0 "#PWR0195" H 6750 3800 50  0001 C CNN
-F 1 "GND" V 6755 3922 50  0000 R CNN
-F 2 "" H 6750 4050 50  0001 C CNN
-F 3 "" H 6750 4050 50  0001 C CNN
-	1    6750 4050
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	6800 4050 6850 4050
-Wire Wire Line
-	6850 4150 6800 4150
-Connection ~ 6800 4150
-Wire Wire Line
-	6800 4150 6800 4050
-Wire Wire Line
-	6800 4250 6850 4250
-Wire Wire Line
-	6800 4250 6800 4150
-Wire Wire Line
-	6750 4050 6800 4050
-Connection ~ 6800 4050
 Text HLabel 5450 8650 0    50   Input ~ 0
 Phi1
 Wire Wire Line
@@ -479,9 +433,60 @@ Wire Wire Line
 	5900 6900 6850 6900
 Connection ~ 5900 6900
 Wire Wire Line
-	5900 6900 5900 8850
+	5900 6900 5900 8750
+Text HLabel 5450 8950 0    50   Input ~ 0
+OVF
+Connection ~ 6800 7300
+$Comp
+L power:GND #PWR?
+U 1 1 5FD8555E
+P 6800 7350
+AR Path="/5D2C0B92/5FD8555E" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FD8555E" Ref="#PWR0101"  Part="1" 
+F 0 "#PWR0101" H 6800 7100 50  0001 C CNN
+F 1 "GND" H 6805 7177 50  0000 C CNN
+F 2 "" H 6800 7350 50  0001 C CNN
+F 3 "" H 6800 7350 50  0001 C CNN
+	1    6800 7350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6850 4150 6800 4150
+Wire Wire Line
+	6800 4250 6850 4250
+Wire Wire Line
+	6800 4250 6800 4150
+Wire Wire Line
+	6800 4300 6800 4250
+Connection ~ 6800 4250
+$Comp
+L power:GND #PWR?
+U 1 1 5FD8935D
+P 6800 4300
+AR Path="/5D2C0B92/5FD8935D" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FD8935D" Ref="#PWR0127"  Part="1" 
+F 0 "#PWR0127" H 6800 4050 50  0001 C CNN
+F 1 "GND" H 6805 4127 50  0000 C CNN
+F 2 "" H 6800 4300 50  0001 C CNN
+F 3 "" H 6800 4300 50  0001 C CNN
+	1    6800 4300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6100 8950 6100 7100
+Wire Wire Line
+	6100 7100 6850 7100
+Wire Wire Line
+	5450 8950 6100 8950
+Wire Wire Line
+	6100 7100 6100 4050
+Wire Wire Line
+	6100 4050 6850 4050
+Connection ~ 6100 7100
+Text Notes 10950 4950 0    50   ~ 0
+Description\n————————\nHalt Clock\nSelect Left Operand\nSelect Right Operand\nSelect Store Operand 0\nSelect Store Operand 1\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1\nunused
 Wire Bus Line
-	6200 3250 6200 9250
+	6200 3250 6200 9050
 Wire Bus Line
 	9000 3150 9000 7400
 $EndSCHEMATC

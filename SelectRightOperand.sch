@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 24 36
+Sheet 22 33
 Title "Select Right Operand"
 Date ""
 Rev ""
@@ -1449,6 +1449,8 @@ Wire Wire Line
 	7500 8850 8250 8850
 Text Label 7500 8850 0    50   ~ 0
 PC14
+Text Notes 8100 1350 0    50   ~ 0
+“B” latches on the second clock\nphase because the register file\nmay be modified then
 Wire Bus Line
 	7750 1850 7750 4750
 Wire Bus Line

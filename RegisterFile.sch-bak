@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
 encoding utf-8
-Sheet 23 41
+Sheet 23 36
 Title "Register File"
 Date ""
 Rev ""
@@ -17,8 +17,6 @@ Text HLabel 6450 5000 0    50   Input ~ 0
 ~WRH
 Text HLabel 6450 8500 0    50   Input ~ 0
 ~WRL
-Text HLabel 6450 6400 0    50   Input ~ 0
-WriteUpper[0..7]
 Text HLabel 6450 5150 0    50   Input ~ 0
 SelC[0..2]
 $Comp
@@ -56,104 +54,36 @@ F 3 "" H 8350 7500 50  0001 C CNN
 $EndComp
 Entry Wire Line
 	6700 6500 6800 6600
-Text Label 7200 6600 0    50   ~ 0
-WriteUpper0
 Entry Wire Line
 	6700 6600 6800 6700
 Wire Wire Line
 	6800 6700 7850 6700
-Text Label 7200 6700 0    50   ~ 0
-WriteUpper1
 Entry Wire Line
 	6700 6700 6800 6800
 Wire Wire Line
 	6800 6800 7850 6800
-Text Label 7200 6800 0    50   ~ 0
-WriteUpper2
 Entry Wire Line
 	6700 6800 6800 6900
 Wire Wire Line
 	6800 6900 7850 6900
-Text Label 7200 6900 0    50   ~ 0
-WriteUpper3
 Entry Wire Line
 	6700 6900 6800 7000
 Wire Wire Line
 	6800 7000 7850 7000
-Text Label 7200 7000 0    50   ~ 0
-WriteUpper4
 Entry Wire Line
 	6700 7000 6800 7100
 Wire Wire Line
 	6800 7100 7850 7100
-Text Label 7200 7100 0    50   ~ 0
-WriteUpper5
 Entry Wire Line
 	6700 7100 6800 7200
 Wire Wire Line
 	6800 7200 7850 7200
-Text Label 7200 7200 0    50   ~ 0
-WriteUpper6
 Entry Wire Line
 	6700 7200 6800 7300
 Wire Wire Line
 	6800 7300 7850 7300
-Text Label 7200 7300 0    50   ~ 0
-WriteUpper7
 Wire Bus Line
 	6450 6400 6700 6400
-Text HLabel 6450 9900 0    50   Input ~ 0
-WriteLower[0..7]
-Entry Wire Line
-	7100 10000 7200 10100
-Wire Wire Line
-	7200 10100 7850 10100
-Text Label 7200 10100 0    50   ~ 0
-WriteLower0
-Entry Wire Line
-	7100 10100 7200 10200
-Wire Wire Line
-	7200 10200 7850 10200
-Text Label 7200 10200 0    50   ~ 0
-WriteLower1
-Entry Wire Line
-	7100 10200 7200 10300
-Wire Wire Line
-	7200 10300 7850 10300
-Text Label 7200 10300 0    50   ~ 0
-WriteLower2
-Entry Wire Line
-	7100 10300 7200 10400
-Wire Wire Line
-	7200 10400 7850 10400
-Text Label 7200 10400 0    50   ~ 0
-WriteLower3
-Entry Wire Line
-	7100 10400 7200 10500
-Wire Wire Line
-	7200 10500 7850 10500
-Text Label 7200 10500 0    50   ~ 0
-WriteLower4
-Entry Wire Line
-	7100 10500 7200 10600
-Wire Wire Line
-	7200 10600 7850 10600
-Text Label 7200 10600 0    50   ~ 0
-WriteLower5
-Entry Wire Line
-	7100 10600 7200 10700
-Wire Wire Line
-	7200 10700 7850 10700
-Text Label 7200 10700 0    50   ~ 0
-WriteLower6
-Entry Wire Line
-	7100 10700 7200 10800
-Wire Wire Line
-	7200 10800 7850 10800
-Text Label 7200 10800 0    50   ~ 0
-WriteLower7
-Wire Bus Line
-	6450 9900 7100 9900
 Wire Wire Line
 	7850 5000 6450 5000
 Wire Wire Line
@@ -883,8 +813,6 @@ Text HLabel 11850 5000 0    50   Input ~ 0
 ~WRH
 Text HLabel 11850 8500 0    50   Input ~ 0
 ~WRL
-Text HLabel 11850 6400 0    50   Input ~ 0
-WriteUpper[0..7]
 Text HLabel 11850 5150 0    50   Input ~ 0
 SelC[0..2]
 $Comp
@@ -920,108 +848,6 @@ F 3 "" H 13750 7500 50  0001 C CNN
 	1    13750 7500
 	1    0    0    -1  
 $EndComp
-Entry Wire Line
-	12100 6500 12200 6600
-Wire Wire Line
-	12200 6600 13250 6600
-Text Label 12600 6600 0    50   ~ 0
-WriteUpper0
-Entry Wire Line
-	12100 6600 12200 6700
-Wire Wire Line
-	12200 6700 13250 6700
-Text Label 12600 6700 0    50   ~ 0
-WriteUpper1
-Entry Wire Line
-	12100 6700 12200 6800
-Wire Wire Line
-	12200 6800 13250 6800
-Text Label 12600 6800 0    50   ~ 0
-WriteUpper2
-Entry Wire Line
-	12100 6800 12200 6900
-Wire Wire Line
-	12200 6900 13250 6900
-Text Label 12600 6900 0    50   ~ 0
-WriteUpper3
-Entry Wire Line
-	12100 6900 12200 7000
-Wire Wire Line
-	12200 7000 13250 7000
-Text Label 12600 7000 0    50   ~ 0
-WriteUpper4
-Entry Wire Line
-	12100 7000 12200 7100
-Wire Wire Line
-	12200 7100 13250 7100
-Text Label 12600 7100 0    50   ~ 0
-WriteUpper5
-Entry Wire Line
-	12100 7100 12200 7200
-Wire Wire Line
-	12200 7200 13250 7200
-Text Label 12600 7200 0    50   ~ 0
-WriteUpper6
-Entry Wire Line
-	12100 7200 12200 7300
-Wire Wire Line
-	12200 7300 13250 7300
-Text Label 12600 7300 0    50   ~ 0
-WriteUpper7
-Wire Bus Line
-	11850 6400 12100 6400
-Text HLabel 11850 9900 0    50   Input ~ 0
-WriteLower[0..7]
-Entry Wire Line
-	12500 10000 12600 10100
-Wire Wire Line
-	12600 10100 13250 10100
-Text Label 12600 10100 0    50   ~ 0
-WriteLower0
-Entry Wire Line
-	12500 10100 12600 10200
-Wire Wire Line
-	12600 10200 13250 10200
-Text Label 12600 10200 0    50   ~ 0
-WriteLower1
-Entry Wire Line
-	12500 10200 12600 10300
-Wire Wire Line
-	12600 10300 13250 10300
-Text Label 12600 10300 0    50   ~ 0
-WriteLower2
-Entry Wire Line
-	12500 10300 12600 10400
-Wire Wire Line
-	12600 10400 13250 10400
-Text Label 12600 10400 0    50   ~ 0
-WriteLower3
-Entry Wire Line
-	12500 10400 12600 10500
-Wire Wire Line
-	12600 10500 13250 10500
-Text Label 12600 10500 0    50   ~ 0
-WriteLower4
-Entry Wire Line
-	12500 10500 12600 10600
-Wire Wire Line
-	12600 10600 13250 10600
-Text Label 12600 10600 0    50   ~ 0
-WriteLower5
-Entry Wire Line
-	12500 10600 12600 10700
-Wire Wire Line
-	12600 10700 13250 10700
-Text Label 12600 10700 0    50   ~ 0
-WriteLower6
-Entry Wire Line
-	12500 10700 12600 10800
-Wire Wire Line
-	12600 10800 13250 10800
-Text Label 12600 10800 0    50   ~ 0
-WriteLower7
-Wire Bus Line
-	11850 9900 12500 9900
 Wire Wire Line
 	13250 5000 11850 5000
 Wire Wire Line
@@ -1945,22 +1771,208 @@ F 3 "" H 13250 5100 50  0001 C CNN
 	1    13250 5100
 	0    -1   1    0   
 $EndComp
+Text HLabel 6450 6400 0    50   Input ~ 0
+C[0..15]
+Entry Wire Line
+	6700 10000 6800 10100
+Entry Wire Line
+	6700 10100 6800 10200
+Wire Wire Line
+	6800 10200 7850 10200
+Entry Wire Line
+	6700 10200 6800 10300
+Wire Wire Line
+	6800 10300 7850 10300
+Entry Wire Line
+	6700 10300 6800 10400
+Wire Wire Line
+	6800 10400 7850 10400
+Entry Wire Line
+	6700 10400 6800 10500
+Wire Wire Line
+	6800 10500 7850 10500
+Entry Wire Line
+	6700 10500 6800 10600
+Wire Wire Line
+	6800 10600 7850 10600
+Entry Wire Line
+	6700 10600 6800 10700
+Wire Wire Line
+	6800 10700 7850 10700
+Entry Wire Line
+	6700 10700 6800 10800
+Wire Wire Line
+	6800 10800 7850 10800
 Wire Bus Line
-	7100 5150 7100 8900
+	6450 9900 6700 9900
+Wire Wire Line
+	6800 10100 7850 10100
+Text HLabel 6450 9900 0    50   Input ~ 0
+C[0..15]
+Text HLabel 6450 8650 0    50   Input ~ 0
+SelC[0..2]
+Wire Bus Line
+	6450 8650 7100 8650
+Text Label 6800 10100 0    50   ~ 0
+C0
+Text Label 6800 10200 0    50   ~ 0
+C1
+Text Label 6800 10300 0    50   ~ 0
+C2
+Text Label 6800 10400 0    50   ~ 0
+C3
+Text Label 6800 10500 0    50   ~ 0
+C4
+Text Label 6800 10600 0    50   ~ 0
+C5
+Text Label 6800 10700 0    50   ~ 0
+C6
+Text Label 6800 10800 0    50   ~ 0
+C7
+Text HLabel 11850 8650 0    50   Input ~ 0
+SelC[0..2]
+Wire Bus Line
+	11850 8650 12500 8650
+Entry Wire Line
+	12100 10000 12200 10100
+Entry Wire Line
+	12100 10100 12200 10200
+Wire Wire Line
+	12200 10200 13250 10200
+Entry Wire Line
+	12100 10200 12200 10300
+Wire Wire Line
+	12200 10300 13250 10300
+Entry Wire Line
+	12100 10300 12200 10400
+Wire Wire Line
+	12200 10400 13250 10400
+Entry Wire Line
+	12100 10400 12200 10500
+Wire Wire Line
+	12200 10500 13250 10500
+Entry Wire Line
+	12100 10500 12200 10600
+Wire Wire Line
+	12200 10600 13250 10600
+Entry Wire Line
+	12100 10600 12200 10700
+Wire Wire Line
+	12200 10700 13250 10700
+Entry Wire Line
+	12100 10700 12200 10800
+Wire Wire Line
+	12200 10800 13250 10800
+Wire Bus Line
+	11850 9900 12100 9900
+Wire Wire Line
+	12200 10100 13250 10100
+Text HLabel 11850 9900 0    50   Input ~ 0
+C[0..15]
+Text Label 12200 10100 0    50   ~ 0
+C0
+Text Label 12200 10200 0    50   ~ 0
+C1
+Text Label 12200 10300 0    50   ~ 0
+C2
+Text Label 12200 10400 0    50   ~ 0
+C3
+Text Label 12200 10500 0    50   ~ 0
+C4
+Text Label 12200 10600 0    50   ~ 0
+C5
+Text Label 12200 10700 0    50   ~ 0
+C6
+Text Label 12200 10800 0    50   ~ 0
+C7
+Text Label 6800 6600 0    50   ~ 0
+C8
+Text Label 6800 6700 0    50   ~ 0
+C9
+Text Label 6800 6800 0    50   ~ 0
+C10
+Text Label 6800 6900 0    50   ~ 0
+C11
+Text Label 6800 7000 0    50   ~ 0
+C12
+Text Label 6800 7100 0    50   ~ 0
+C13
+Text Label 6800 7200 0    50   ~ 0
+C14
+Text Label 6800 7300 0    50   ~ 0
+C15
+Entry Wire Line
+	12100 6500 12200 6600
+Entry Wire Line
+	12100 6600 12200 6700
+Wire Wire Line
+	12200 6700 13250 6700
+Entry Wire Line
+	12100 6700 12200 6800
+Wire Wire Line
+	12200 6800 13250 6800
+Entry Wire Line
+	12100 6800 12200 6900
+Wire Wire Line
+	12200 6900 13250 6900
+Entry Wire Line
+	12100 6900 12200 7000
+Wire Wire Line
+	12200 7000 13250 7000
+Entry Wire Line
+	12100 7000 12200 7100
+Wire Wire Line
+	12200 7100 13250 7100
+Entry Wire Line
+	12100 7100 12200 7200
+Wire Wire Line
+	12200 7200 13250 7200
+Entry Wire Line
+	12100 7200 12200 7300
+Wire Wire Line
+	12200 7300 13250 7300
+Wire Bus Line
+	11850 6400 12100 6400
+Wire Wire Line
+	12200 6600 13250 6600
+Text HLabel 11850 6400 0    50   Input ~ 0
+C[0..15]
+Text Label 12200 6600 0    50   ~ 0
+C8
+Text Label 12200 6700 0    50   ~ 0
+C9
+Text Label 12200 6800 0    50   ~ 0
+C10
+Text Label 12200 6900 0    50   ~ 0
+C11
+Text Label 12200 7000 0    50   ~ 0
+C12
+Text Label 12200 7100 0    50   ~ 0
+C13
+Text Label 12200 7200 0    50   ~ 0
+C14
+Text Label 12200 7300 0    50   ~ 0
+C15
+Wire Bus Line
+	7100 5150 7100 5400
+Wire Bus Line
+	7100 8650 7100 8900
+Wire Bus Line
+	12500 5150 12500 5400
+Wire Bus Line
+	12500 8650 12500 8900
 Wire Bus Line
 	10000 5150 10000 8900
 Wire Bus Line
-	12500 5150 12500 8900
-Wire Bus Line
 	15400 5150 15400 8900
 Wire Bus Line
-	12500 9900 12500 10700
+	6700 6400 6700 7200
+Wire Bus Line
+	6700 9900 6700 10700
+Wire Bus Line
+	12100 9900 12100 10700
 Wire Bus Line
 	12100 6400 12100 7200
-Wire Bus Line
-	7100 9900 7100 10700
-Wire Bus Line
-	6700 6400 6700 7200
 Wire Bus Line
 	15900 6400 15900 10700
 Wire Bus Line

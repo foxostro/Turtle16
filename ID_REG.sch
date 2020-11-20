@@ -3,14 +3,14 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 39 41
+Sheet 39 36
 Title "ID/REG Interstage Registers"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
-Comment2 ""
-Comment3 ""
+Comment2 "in the GALs' internal registers."
+Comment3 "No dedicated interstage register is necessary for the control word beause it is latched"
 Comment4 "Interstage pipeline registers between ID and REG"
 $EndDescr
 $Comp

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 19 33
+Sheet 18 33
 Title "REG"
 Date ""
 Rev ""
@@ -73,10 +73,8 @@ Wire Bus Line
 	5400 4750 5600 4750
 Wire Bus Line
 	5600 4750 5600 9050
-Text HLabel 3400 6250 0    50   Input ~ 0
+Text HLabel 4200 6250 0    50   Input ~ 0
 Phi2
-Wire Wire Line
-	3400 6250 3600 6250
 Wire Bus Line
 	6350 7600 9150 7600
 Wire Bus Line
@@ -240,22 +238,6 @@ Wire Bus Line
 Connection ~ 6400 6250
 Wire Wire Line
 	6400 6250 6400 8750
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FD3C293
-P 3900 6250
-AR Path="/5D8005AF/5D800744/5FD3C293" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FD3C293" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FD3C293" Ref="U?"  Part="3" 
-AR Path="/60A72859/5FD3C293" Ref="U?"  Part="3" 
-AR Path="/60906BCD/5FD3C293" Ref="U29"  Part="3" 
-F 0 "U29" H 3900 6567 50  0000 C CNN
-F 1 "74AHCT04" H 3900 6476 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3900 6250 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3900 6250 50  0001 C CNN
-	3    3900 6250
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	10050 4050 6400 4050
 Wire Wire Line

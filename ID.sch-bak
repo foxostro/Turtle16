@@ -208,7 +208,7 @@ Decode the instruction opcode into an array of control signals.\nThese signals a
 Wire Bus Line
 	9000 7400 10450 7400
 Text Notes 10050 4950 0    50   ~ 0
-#   Mnemonic        Description\n—————————————————————\n0  /HLT              Halt Clock\n1   SelLeftOp        Select Left Operand\n2   SelRightOp       Select Right Operand\n3   SelStoreOpA     Select Store Operand 0\n4   SelStoreOpB     Select Store Operand 1\n5   /FI             Flags Register In\n6   CarryIn         ALU Carry input\n7   I0              ALU I0 input\n8   I1              ALU I1 input\n9   I2              ALU I2 input\n10  RS0             ALU RS0 input\n11  RS1             ALU RS1 input\n12  /J              Jump\n13  /MemLoad        Memory Store\n14  /MemStore       Memory Load\n15  /WRL            Write back low byte\n16  /WRH            Write back high byte\n17  WriteBackSrcA   Source of write back 0\n18  WriteBackSrcB   Source of write back 1\n19  unused          unused
+#   Mnemonic\n——————————\n0  /HLT\n1   SelLeftOp\n2   SelRightOp\n3   SelStoreOpA\n4   SelStoreOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB\n19  unused
 Connection ~ 6000 7000
 Wire Wire Line
 	6000 7000 6000 8850
@@ -482,9 +482,11 @@ Wire Wire Line
 	6100 7100 6100 4050
 Wire Wire Line
 	6100 4050 6850 4050
+Connection ~ 6100 7100
+Text Notes 10950 4950 0    50   ~ 0
+Description\n————————\nHalt Clock\nSelect Left Operand\nSelect Right Operand\nSelect Store Operand 0\nSelect Store Operand 1\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1\nunused
 Wire Bus Line
 	6200 3250 6200 9050
 Wire Bus Line
 	9000 3150 9000 7400
-Connection ~ 6100 7100
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 17 33
+Sheet 14 33
 Title "MEM/WB Interstage Registers"
 Date ""
 Rev ""
@@ -159,37 +159,18 @@ Wire Wire Line
 Wire Wire Line
 	-1000 4500 -1000 4800
 Connection ~ -1000 4500
-$Comp
-L 74xx:74LS04 U?
-U 1 1 5FC24145
-P 4350 2750
-AR Path="/5D8005AF/5D800744/5FC24145" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC24145" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FC24145" Ref="U?"  Part="1" 
-AR Path="/5FF41DF6/5FC24145" Ref="U39"  Part="1" 
-F 0 "U39" H 4350 3067 50  0000 C CNN
-F 1 "74AHCT04" H 4350 2976 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4350 2750 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4350 2750 50  0001 C CNN
-	1    4350 2750
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	-1000 1600 -1000 2500
-Text HLabel 6400 4100 2    50   Output ~ 0
+Text HLabel 6950 4100 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 4400 4100 0    50   Input ~ 0
+Text HLabel 3500 4100 0    50   Input ~ 0
 StoreOpIn[0..15]
-Text HLabel 3550 2750 0    50   Input ~ 0
+Text HLabel 3500 3750 0    50   Input ~ 0
 Phi1
-Wire Wire Line
-	3550 2750 4050 2750
 Wire Bus Line
-	4900 4100 4400 4100
+	4900 4100 3500 4100
 Wire Bus Line
-	6400 4100 6050 4100
-Wire Wire Line
-	4650 2750 4800 2750
+	6950 4100 6050 4100
 Wire Wire Line
 	4800 4000 4900 4000
 Wire Wire Line
@@ -511,5 +492,7 @@ SelCIn[0..2]
 Wire Bus Line
 	4900 4850 3500 4850
 Wire Wire Line
-	4800 2750 4800 4000
+	4800 3750 4800 4000
+Wire Wire Line
+	3500 3750 4800 3750
 $EndSCHEMATC

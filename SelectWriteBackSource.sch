@@ -1890,6 +1890,8 @@ Wire Wire Line
 Connection ~ 11450 8400
 Wire Wire Line
 	11450 8400 11450 8650
+Text Notes 5200 1850 0    50   ~ 0
+ALUResult is latched at the same time as\nthe other registers in MEM/WB.
 Wire Bus Line
 	4950 2250 4950 5150
 Wire Bus Line
@@ -1902,6 +1904,4 @@ Wire Bus Line
 	11550 5500 11550 8350
 Wire Bus Line
 	13900 2200 13900 8350
-Text Notes 5200 1850 0    50   ~ 0
-ALUResult is latched at the same time as\nthe other registers in MEM/WB.
 $EndSCHEMATC

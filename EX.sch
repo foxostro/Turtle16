@@ -23,8 +23,6 @@ Text HLabel 1200 1150 0    50   Input ~ 0
 CtlIn[5..19]
 Text HLabel 7950 1250 2    50   Output ~ 0
 Ctl[12..19]
-Wire Wire Line
-	1200 6600 1300 6600
 Text HLabel 1200 6600 0    50   Input ~ 0
 Phi1
 Wire Wire Line
@@ -346,22 +344,6 @@ Wire Wire Line
 Connection ~ 9550 6350
 Entry Wire Line
 	2300 1150 2400 1250
-$Comp
-L 74xx:74LS04 U?
-U 2 1 5FFC2D8F
-P 1600 6600
-AR Path="/5D8005AF/5D800744/5FFC2D8F" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FFC2D8F" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FFC2D8F" Ref="U?"  Part="2" 
-AR Path="/60A72859/5FFC2D8F" Ref="U?"  Part="2" 
-AR Path="/60A71BBF/5FFC2D8F" Ref="U29"  Part="2" 
-F 0 "U29" H 1600 6917 50  0000 C CNN
-F 1 "74AHCT04" H 1600 6826 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1600 6600 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1600 6600 50  0001 C CNN
-	2    1600 6600
-	1    0    0    -1  
-$EndComp
 $Comp
 L CPU:IDT7381 U23
 U 1 1 5FB9CA90
@@ -825,7 +807,7 @@ Connection ~ 2250 6600
 Wire Wire Line
 	2250 6600 7350 6600
 Wire Wire Line
-	1900 6600 2250 6600
+	1200 6600 2250 6600
 Wire Bus Line
 	1200 1150 6700 1150
 Wire Bus Line

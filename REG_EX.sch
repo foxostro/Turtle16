@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 12 33
+Sheet 11 33
 Title "REG/EX Interstage Registers"
 Date ""
 Rev ""
@@ -17,10 +17,8 @@ Text HLabel 7000 4050 2    50   Output ~ 0
 StoreOp[0..15]
 Text HLabel 3550 4050 0    50   Input ~ 0
 StoreOpIn[0..15]
-Text HLabel 3600 3450 0    50   Input ~ 0
+Text HLabel 3550 3450 0    50   Input ~ 0
 Phi1
-Wire Wire Line
-	3600 3450 4100 3450
 Wire Bus Line
 	4950 4050 3550 4050
 Wire Bus Line
@@ -73,21 +71,6 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U?
-U 4 1 5FC492D8
-P 4400 3450
-AR Path="/5D8005AF/5D800744/5FC492D8" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC492D8" Ref="U?"  Part="4" 
-AR Path="/5D2C07CD/5FC492D8" Ref="U?"  Part="4" 
-AR Path="/60A72859/5FC492D8" Ref="U29"  Part="4" 
-F 0 "U29" H 4400 3767 50  0000 C CNN
-F 1 "74AHCT04" H 4400 3676 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4400 3450 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4400 3450 50  0001 C CNN
-	4    4400 3450
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:VCC #PWR?
 U 1 1 5FC492E6
 P -850 2150
@@ -125,8 +108,6 @@ Wire Wire Line
 Wire Wire Line
 	-850 5050 -850 5350
 Connection ~ -850 5050
-Wire Wire Line
-	4700 3450 4850 3450
 Wire Wire Line
 	4850 3950 4950 3950
 Wire Wire Line
@@ -449,4 +430,6 @@ Wire Wire Line
 	-850 2150 -850 4550
 Wire Wire Line
 	4850 3450 4850 3950
+Wire Wire Line
+	3550 3450 4850 3450
 $EndSCHEMATC

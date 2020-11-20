@@ -377,7 +377,7 @@ F 3 "" H 8500 3350 50  0001 C CNN
 	1    8500 3350
 	0    1    1    0   
 $EndComp
-Text HLabel 5550 3650 0    50   Input ~ 0
+Text HLabel 8350 3650 0    50   Input ~ 0
 Phi2
 $Comp
 L power:GND #PWR0456
@@ -437,165 +437,6 @@ Wire Wire Line
 	3750 2400 3750 2850
 Text Notes 7200 2350 0    50   ~ 0
 Ensure the register file\nreceives the write signals\nin the second clock phase.
-NoConn ~ -450 3000
-NoConn ~ -450 4500
-NoConn ~ -450 5000
-$Comp
-L 74xx:74LS04 U?
-U 7 1 5FC58A0E
-P -1050 5800
-AR Path="/5D2C0761/5FC58A0E" Ref="U?"  Part="7" 
-AR Path="/5D2C0720/5FC58A0E" Ref="U?"  Part="7" 
-AR Path="/5D2C07CD/5FC58A0E" Ref="U?"  Part="7" 
-AR Path="/60B264DC/5FC58A0E" Ref="U78"  Part="7" 
-F 0 "U78" H -1050 5850 50  0000 C CNN
-F 1 "74AHCT04" H -1050 5750 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1050 5800 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1050 5800 50  0001 C CNN
-	7    -1050 5800
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 6 1 5FC58A14
-P -750 5000
-AR Path="/5D8005AF/5D800744/5FC58A14" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC58A14" Ref="U?"  Part="6" 
-AR Path="/5D2C07CD/5FC58A14" Ref="U?"  Part="6" 
-AR Path="/60B264DC/5FC58A14" Ref="U78"  Part="6" 
-F 0 "U78" H -750 5317 50  0000 C CNN
-F 1 "74AHCT04" H -750 5226 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 5000 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 5000 50  0001 C CNN
-	6    -750 5000
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 2 1 5FC58A1A
-P -750 3000
-AR Path="/5D8005AF/5D800744/5FC58A1A" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC58A1A" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FC58A1A" Ref="U?"  Part="2" 
-AR Path="/60B264DC/5FC58A1A" Ref="U78"  Part="2" 
-F 0 "U78" H -750 3317 50  0000 C CNN
-F 1 "74AHCT04" H -750 3226 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 3000 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3000 50  0001 C CNN
-	2    -750 3000
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 5 1 5FC58A20
-P -750 4500
-AR Path="/5D8005AF/5D800744/5FC58A20" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC58A20" Ref="U?"  Part="5" 
-AR Path="/5D2C07CD/5FC58A20" Ref="U?"  Part="5" 
-AR Path="/60B264DC/5FC58A20" Ref="U78"  Part="5" 
-F 0 "U78" H -750 4817 50  0000 C CNN
-F 1 "74AHCT04" H -750 4726 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 4500 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4500 50  0001 C CNN
-	5    -750 4500
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 4 1 5FC58A26
-P -750 4000
-AR Path="/5D8005AF/5D800744/5FC58A26" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC58A26" Ref="U?"  Part="4" 
-AR Path="/5D2C07CD/5FC58A26" Ref="U?"  Part="4" 
-AR Path="/60B264DC/5FC58A26" Ref="U78"  Part="4" 
-F 0 "U78" H -750 4317 50  0000 C CNN
-F 1 "74AHCT04" H -750 4226 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 4000 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 4000 50  0001 C CNN
-	4    -750 4000
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FC58A2C
-P -750 3500
-AR Path="/5D8005AF/5D800744/5FC58A2C" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC58A2C" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FC58A2C" Ref="U?"  Part="3" 
-AR Path="/60B264DC/5FC58A2C" Ref="U78"  Part="3" 
-F 0 "U78" H -750 3817 50  0000 C CNN
-F 1 "74AHCT04" H -750 3726 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -750 3500 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -750 3500 50  0001 C CNN
-	3    -750 3500
-	1    0    0    -1  
-$EndComp
-NoConn ~ -450 3500
-NoConn ~ -450 4000
-$Comp
-L power:VCC #PWR?
-U 1 1 5FC58A34
-P -1050 2100
-AR Path="/5D2C0761/5FC58A34" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FC58A34" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FC58A34" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FC58A34" Ref="#PWR0444"  Part="1" 
-F 0 "#PWR0444" H -1050 1950 50  0001 C CNN
-F 1 "VCC" H -1033 2273 50  0000 C CNN
-F 2 "" H -1050 2100 50  0001 C CNN
-F 3 "" H -1050 2100 50  0001 C CNN
-	1    -1050 2100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-1050 3000 -1050 3500
-Connection ~ -1050 3000
-Connection ~ -1050 3500
-Wire Wire Line
-	-1050 3500 -1050 4000
-Connection ~ -1050 4000
-Wire Wire Line
-	-1050 4000 -1050 4500
-Connection ~ -1050 4500
-Wire Wire Line
-	-1050 4500 -1050 5000
-$Comp
-L power:GND #PWR?
-U 1 1 5FC58A42
-P -1050 6450
-AR Path="/5D2C0720/5FC58A42" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0761/5FC58A42" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FC58A42" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FC58A42" Ref="#PWR0445"  Part="1" 
-F 0 "#PWR0445" H -1050 6200 50  0001 C CNN
-F 1 "GND" H -1045 6277 50  0000 C CNN
-F 2 "" H -1050 6450 50  0001 C CNN
-F 3 "" H -1050 6450 50  0001 C CNN
-	1    -1050 6450
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	-1050 6300 -1050 6450
-Wire Wire Line
-	-1050 5000 -1050 5300
-Connection ~ -1050 5000
-$Comp
-L 74xx:74LS04 U?
-U 1 1 5FC58A4C
-P 6000 3650
-AR Path="/5D8005AF/5D800744/5FC58A4C" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC58A4C" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FC58A4C" Ref="U?"  Part="1" 
-AR Path="/60B264DC/5FC58A4C" Ref="U78"  Part="1" 
-F 0 "U78" H 6000 3967 50  0000 C CNN
-F 1 "74AHCT04" H 6000 3876 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 6000 3650 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 6000 3650 50  0001 C CNN
-	1    6000 3650
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-1050 2100 -1050 3000
 $Comp
 L power:GND #PWR0453
 U 1 1 5FCB55CF
@@ -619,7 +460,7 @@ F 3 "" H 8500 3450 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	5550 3650 5700 3650
+	8350 3650 8500 3650
 $Sheet
 S 5000 4350 1250 600 
 U 6025930D
@@ -892,8 +733,6 @@ Text HLabel 9600 2450 2    50   Output ~ 0
 ~WRL
 Text HLabel 9600 2750 2    50   Output ~ 0
 ~WRH
-Wire Wire Line
-	6300 3650 8500 3650
 Wire Bus Line
 	6250 4550 8850 4550
 Wire Bus Line

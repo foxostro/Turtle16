@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 39 33
+Sheet 31 33
 Title "ID/REG Interstage Registers"
 Date ""
 Rev ""
@@ -2066,28 +2066,11 @@ Wire Wire Line
 NoConn ~ 7800 4550
 Text HLabel 8450 1900 2    50   Output ~ 0
 InsOut[0..10]
-$Comp
-L 74xx:74LS04 U?
-U 4 1 5FCB54D7
-P 2250 6150
-AR Path="/5D8005AF/5D800744/5FCB54D7" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FCB54D7" Ref="U?"  Part="4" 
-AR Path="/5D2C07CD/5FCB54D7" Ref="U?"  Part="4" 
-AR Path="/60153F0B/5FCB54D7" Ref="U1"  Part="4" 
-F 0 "U1" H 2250 6467 50  0000 C CNN
-F 1 "74AHCT04" H 2250 6376 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2250 6150 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 2250 6150 50  0001 C CNN
-	4    2250 6150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1850 6150 1950 6150
 Text HLabel 1850 6150 0    50   Input ~ 0
 Phi1
-Wire Wire Line
-	2550 6150 2750 6150
 Connection ~ 2750 6150
+Wire Wire Line
+	1850 6150 2750 6150
 Wire Bus Line
 	2850 2000 2850 4900
 Wire Bus Line

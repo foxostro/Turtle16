@@ -13,10 +13,8 @@ Comment2 "This basically serves to hold the PC value steady for IF while the cou
 Comment3 "These registers sit between the PC pipeline stage and the IF stage."
 Comment4 "Interstage pipeline registers between PC and IF"
 $EndDescr
-Text HLabel 2950 3450 0    50   Input ~ 0
+Text HLabel 3700 3450 0    50   Input ~ 0
 Phi1
-Wire Wire Line
-	2950 3450 3450 3450
 $Comp
 L Device:C C?
 U 1 1 5FB48CF3
@@ -1366,29 +1364,14 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4050 3450 4450 3450
-Wire Wire Line
 	4450 5500 4450 3450
 Wire Wire Line
 	4450 5500 5050 5500
 Connection ~ 4450 3450
 Wire Wire Line
 	4450 3450 5050 3450
-$Comp
-L 74xx:74LS04 U?
-U 2 1 5FCBBD6B
-P 3750 3450
-AR Path="/5D8005AF/5D800744/5FCBBD6B" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FCBBD6B" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FCBBD6B" Ref="U?"  Part="1" 
-AR Path="/5FE21410/5FCBBD6B" Ref="U1"  Part="2" 
-F 0 "U1" H 3750 3767 50  0000 C CNN
-F 1 "74AHCT04" H 3750 3676 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3750 3450 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3750 3450 50  0001 C CNN
-	2    3750 3450
-	1    0    0    -1  
-$EndComp
+Wire Wire Line
+	3700 3450 4450 3450
 Wire Bus Line
 	4550 2300 4550 5200
 Wire Bus Line

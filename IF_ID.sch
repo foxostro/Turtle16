@@ -13,10 +13,8 @@ Comment2 ""
 Comment3 ""
 Comment4 "Interstage pipeline registers between IF and ID"
 $EndDescr
-Text HLabel 800  900  0    50   Input ~ 0
+Text HLabel 1150 900  0    50   Input ~ 0
 Phi1
-Wire Wire Line
-	800  900  900  900 
 $Comp
 L power:GND #PWR?
 U 1 1 5FAEEE7C
@@ -793,8 +791,6 @@ Text Label 2150 4650 0    50   ~ 0
 PCIn14
 Text Label 2150 4750 0    50   ~ 0
 PCIn15
-Wire Wire Line
-	1500 900  1900 900 
 Wire Wire Line
 	1900 900  1900 2900
 Wire Wire Line
@@ -2003,21 +1999,8 @@ F 3 "" H 3000 5350 50  0001 C CNN
 	1    3000 5350
 	1    0    0    -1  
 $EndComp
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FC919B7
-P 1200 900
-AR Path="/5D8005AF/5D800744/5FC919B7" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FC919B7" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FC919B7" Ref="U?"  Part="3" 
-AR Path="/5FE8EB3D/5FC919B7" Ref="U1"  Part="3" 
-F 0 "U1" H 1200 1217 50  0000 C CNN
-F 1 "74AHCT04" H 1200 1126 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1200 900 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1200 900 50  0001 C CNN
-	3    1200 900 
-	1    0    0    -1  
-$EndComp
+Wire Wire Line
+	1150 900  1900 900 
 Wire Bus Line
 	2000 1750 2000 4650
 Wire Bus Line

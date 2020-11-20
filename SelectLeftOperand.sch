@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 24 36
+Sheet 21 33
 Title "Select Left Operand"
 Date ""
 Rev ""
@@ -1442,6 +1442,8 @@ Text HLabel 2650 3400 0    50   Input ~ 0
 SelLeftOp
 Wire Wire Line
 	2650 3400 3100 3400
+Text Notes 7650 1700 0    50   ~ 0
+“A” latches on the second clock\nphase because the register file\nmay be modified then
 Wire Bus Line
 	6900 6300 6900 6800
 Wire Bus Line

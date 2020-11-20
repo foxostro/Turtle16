@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 29 36
+Sheet 26 33
 Title "Select Store Operand"
 Date ""
 Rev ""
@@ -1871,4 +1871,6 @@ Wire Bus Line
 	10350 2350 10350 6950
 Wire Bus Line
 	13850 2350 13850 8500
+Text Notes 4550 1850 0    50   ~ 0
+“A” latches on the second clock\nphase because the register file\nmay be modified then
 $EndSCHEMATC

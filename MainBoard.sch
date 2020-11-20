@@ -137,13 +137,14 @@ F1 "ID.sch" 50
 F2 "Z" I L 8600 1750 50 
 F3 "Carry" I L 8600 1850 50 
 F4 "Ins[0..15]" I L 8600 1550 50 
-F5 "ControlWord[0..19]" O R 9900 1650 50 
+F5 "ControlWord[1..19]" O R 9900 1650 50 
 F6 "OVF" I L 8600 1650 50 
 F7 "PCIn[0..15]" I L 8600 1450 50 
 F8 "PCOut[0..15]" O R 9900 1450 50 
 F9 "InsOut[0..15]" O R 9900 1550 50 
 F10 "Phi1" I L 8600 1250 50 
 F11 "~RST" I L 8600 1350 50 
+F12 "~HLT" O R 9900 1250 50 
 $EndSheet
 $Comp
 L power:VCC #PWR?
@@ -294,8 +295,6 @@ Wire Wire Line
 	550  750  550  550 
 Wire Wire Line
 	550  550  10450 550 
-Wire Wire Line
-	10000 4800 10450 4800
 $Comp
 L Connector:Conn_01x02_Male J1
 U 1 1 5FAC7F8A
@@ -326,10 +325,6 @@ Wire Wire Line
 Connection ~ 1350 750 
 Wire Wire Line
 	1350 750  10400 750 
-Wire Wire Line
-	10400 750  10400 5600
-Wire Wire Line
-	10450 550  10450 4800
 Wire Wire Line
 	1350 750  1350 2750
 Wire Wire Line
@@ -446,12 +441,11 @@ F7 "Phi2" I R 10000 5600 50
 F8 "C[0..15]" I L 8800 5300 50 
 F9 "SelCIn[0..2]" I L 8800 5600 50 
 F10 "Ins[0..10]" I R 10000 4400 50 
-F11 "~HLT" O R 10000 4800 50 
-F12 "CtlIn[0..19]" I R 10000 4300 50 
-F13 "Ctl[5..19]" O L 8800 4450 50 
-F14 "LeftOp[0..15]" O L 8800 4650 50 
-F15 "Phi1" I L 8800 4150 50 
-F16 "SelC[0..2]" O L 8800 4350 50 
+F11 "CtlIn[1..19]" I R 10000 4300 50 
+F12 "Ctl[5..19]" O L 8800 4450 50 
+F13 "LeftOp[0..15]" O L 8800 4650 50 
+F14 "Phi1" I L 8800 4150 50 
+F15 "SelC[0..2]" O L 8800 4350 50 
 $EndSheet
 Wire Wire Line
 	5700 3850 5650 3850
@@ -568,4 +562,10 @@ Wire Wire Line
 	5200 950  1250 950 
 Wire Wire Line
 	1250 950  1250 2850
+Wire Wire Line
+	10400 750  10400 5600
+Wire Wire Line
+	9900 1250 10450 1250
+Wire Wire Line
+	10450 1250 10450 550 
 $EndSCHEMATC

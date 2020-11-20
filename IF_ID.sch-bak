@@ -2011,16 +2011,16 @@ Text HLabel 7250 2850 0    50   Input ~ 0
 Phi1
 Wire Wire Line
 	7350 2850 7250 2850
-Wire Bus Line
-	8850 1650 8850 4600
-Wire Bus Line
-	6850 1700 6850 4600
-Wire Bus Line
-	4000 1700 4000 4650
-Wire Bus Line
-	2000 1750 2000 4650
 Wire Wire Line
 	2500 4950 2400 4950
 Text HLabel 2400 4950 0    50   Input ~ 0
 Phi1
+Wire Bus Line
+	2000 1750 2000 4650
+Wire Bus Line
+	4000 1700 4000 4650
+Wire Bus Line
+	6850 1700 6850 4600
+Wire Bus Line
+	8850 1650 8850 4600
 $EndSCHEMATC

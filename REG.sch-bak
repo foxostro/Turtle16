@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 22 31
+Sheet 17 31
 Title "REG"
 Date ""
 Rev ""
@@ -18,7 +18,7 @@ Text HLabel 3900 4450 0    50   Input ~ 0
 Text HLabel 3900 4550 0    50   Input ~ 0
 ~WRL
 Text HLabel 3750 850  0    50   Input ~ 0
-CtlIn[0..19]
+CtlIn[1..19]
 Text HLabel 13550 8850 2    50   Output ~ 0
 RightOp[0..15]
 Text HLabel 12250 4150 2    50   Output ~ 0
@@ -126,14 +126,6 @@ Wire Bus Line
 	13550 7300 12850 7300
 Text Label 9350 1050 3    50   ~ 0
 CtlIn3
-Text HLabel 9650 2250 3    50   Output ~ 0
-~HLT
-Text Label 9650 1050 3    50   ~ 0
-CtlIn0
-Entry Wire Line
-	9650 950  9550 850 
-Wire Wire Line
-	9650 2250 9650 950 
 Wire Wire Line
 	9450 7300 11600 7300
 Wire Wire Line

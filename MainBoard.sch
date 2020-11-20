@@ -125,16 +125,12 @@ $EndSheet
 Wire Wire Line
 	5400 1450 5300 1450
 Wire Wire Line
-	1250 950  1250 1550
-Wire Wire Line
-	1250 1550 5400 1550
-Wire Wire Line
 	1150 950  1250 950 
 Wire Wire Line
 	1150 850  1300 850 
 Connection ~ 1300 850 
 $Sheet
-S 8600 1250 1300 700 
+S 8600 1150 1300 800 
 U 5FED3839
 F0 "ID" 50
 F1 "ID.sch" 50
@@ -146,7 +142,8 @@ F6 "OVF" I L 8600 1650 50
 F7 "PCIn[0..15]" I L 8600 1450 50 
 F8 "PCOut[0..15]" O R 9900 1450 50 
 F9 "InsOut[0..15]" O R 9900 1550 50 
-F10 "Phi1" I L 8600 1350 50 
+F10 "Phi1" I L 8600 1250 50 
+F11 "~RST" I L 8600 1350 50 
 $EndSheet
 $Comp
 L power:VCC #PWR?
@@ -329,9 +326,6 @@ Wire Wire Line
 Connection ~ 1350 750 
 Wire Wire Line
 	1350 750  10400 750 
-Wire Wire Line
-	1250 1550 1250 2850
-Connection ~ 1250 1550
 Wire Wire Line
 	10400 750  10400 5600
 Wire Wire Line
@@ -534,17 +528,8 @@ Wire Bus Line
 Wire Wire Line
 	1300 850  5300 850 
 Wire Wire Line
-	8600 1350 8500 1350
-Wire Wire Line
-	8500 1350 8500 850 
-Connection ~ 8500 850 
-Wire Wire Line
-	8500 850  10350 850 
-Wire Wire Line
 	7000 1350 7000 850 
 Connection ~ 7000 850 
-Wire Wire Line
-	7000 850  8500 850 
 Wire Wire Line
 	5250 1750 5250 4250
 Wire Bus Line
@@ -558,4 +543,29 @@ Wire Wire Line
 	5300 850  7000 850 
 Wire Wire Line
 	1300 850  1300 5500
+Wire Wire Line
+	7000 850  8500 850 
+Wire Wire Line
+	8600 1250 8500 1250
+Wire Wire Line
+	8500 1250 8500 850 
+Connection ~ 8500 850 
+Wire Wire Line
+	8500 850  10350 850 
+Wire Wire Line
+	8600 1350 8400 1350
+Wire Wire Line
+	8400 1350 8400 950 
+Wire Wire Line
+	8400 950  5200 950 
+Connection ~ 1250 950 
+Wire Wire Line
+	5200 1550 5200 950 
+Wire Wire Line
+	5200 1550 5400 1550
+Connection ~ 5200 950 
+Wire Wire Line
+	5200 950  1250 950 
+Wire Wire Line
+	1250 950  1250 2850
 $EndSCHEMATC

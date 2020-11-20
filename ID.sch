@@ -27,13 +27,13 @@ F 3 "" H 3200 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Entry Wire Line
-	2050 4200 2150 4300
+	1950 4200 2050 4300
 Entry Wire Line
-	2050 4300 2150 4400
+	1950 4300 2050 4400
 Entry Wire Line
-	2050 4400 2150 4500
+	1950 4400 2050 4500
 Entry Wire Line
-	2050 4500 2150 4600
+	1950 4500 2050 4600
 Text Label 2150 4200 0    50   ~ 0
 Ins11
 Text Label 2150 4300 0    50   ~ 0
@@ -45,13 +45,13 @@ Ins14
 Text Label 2150 4600 0    50   ~ 0
 Ins15
 Entry Wire Line
-	2050 1150 2150 1250
+	1950 1150 2050 1250
 Entry Wire Line
-	2050 1250 2150 1350
+	1950 1250 2050 1350
 Entry Wire Line
-	2050 1350 2150 1450
+	1950 1350 2050 1450
 Entry Wire Line
-	2050 1450 2150 1550
+	1950 1450 2050 1550
 Text Label 2150 1150 0    50   ~ 0
 Ins11
 Text Label 2150 1250 0    50   ~ 0
@@ -63,11 +63,11 @@ Ins14
 Text Label 2150 1550 0    50   ~ 0
 Ins15
 Wire Bus Line
-	2050 6850 1300 6850
+	1950 6950 1300 6950
 Wire Wire Line
-	1750 6550 1300 6550
+	1550 6550 1300 6550
 Wire Wire Line
-	1850 6650 1300 6650
+	1650 6650 1300 6650
 $Comp
 L power:GND #PWR?
 U 1 1 5FF07F02
@@ -189,43 +189,35 @@ Text HLabel 1300 6550 0    50   Input ~ 0
 Carry
 Text HLabel 1300 6650 0    50   Input ~ 0
 Z
-Text HLabel 1300 6850 0    50   Input ~ 0
+Text HLabel 1300 6950 0    50   Input ~ 0
 Ins[0..15]
 Text HLabel 6300 5200 2    50   Output ~ 0
 ControlWord[0..19]
 Entry Wire Line
-	2150 1150 2050 1050
+	2050 1150 1950 1050
 Entry Wire Line
-	2150 4200 2050 4100
-Wire Wire Line
-	2700 5000 2650 5000
-Wire Wire Line
-	2650 5100 2700 5100
-Wire Wire Line
-	2650 5100 2650 5000
+	2050 4200 1950 4100
 Text Notes 2250 3300 0    50   ~ 0
 Decode the instruction opcode into an array of control signals.\nThese signals are carried forward through each pipeline stage\nuntil the stage where they are used. This keeps stages\nsynchronized with the corresponding instruction.
 Wire Bus Line
 	4850 5200 6300 5200
 Text Notes 5900 2750 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelLeftOp\n2   SelRightOp\n3   SelStoreOpA\n4   SelStoreOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB\n19  unused
-Connection ~ 1850 4800
+Connection ~ 1650 4800
 Wire Wire Line
-	1850 4800 1850 6650
+	1650 4800 1650 6650
 Wire Wire Line
-	2150 4200 2700 4200
+	2050 4200 2700 4200
 Wire Wire Line
-	2150 4300 2700 4300
+	2050 4300 2700 4300
 Wire Wire Line
-	2150 4400 2700 4400
+	2050 4400 2700 4400
 Wire Wire Line
-	2150 4500 2700 4500
+	2050 4500 2700 4500
 Wire Wire Line
-	2150 4600 2700 4600
+	2050 4600 2700 4600
 Wire Wire Line
-	1850 4800 2700 4800
-Wire Wire Line
-	2650 5150 2650 5100
+	1650 4800 2700 4800
 $Comp
 L MainBoard-rescue:ATF22V10C-Logic_Programmable U13
 U 1 1 5FBC01DB
@@ -391,269 +383,64 @@ ControlWord11
 Text Label 4650 1950 2    50   ~ 0
 ControlWord10
 Wire Wire Line
-	2150 1150 2700 1150
+	2050 1150 2700 1150
 Wire Wire Line
-	2150 1250 2700 1250
+	2050 1250 2700 1250
 Wire Wire Line
-	2150 1350 2700 1350
+	2050 1350 2700 1350
 Wire Wire Line
-	2150 1450 2700 1450
+	2050 1450 2700 1450
 Wire Wire Line
-	2150 1550 2700 1550
+	2050 1550 2700 1550
 Wire Wire Line
-	1750 1650 2700 1650
+	1550 1650 2700 1650
 Wire Wire Line
-	1850 1750 2700 1750
+	1650 1750 2700 1750
 Text HLabel 1300 6450 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	1300 6450 1650 6450
+	1300 6450 1450 6450
 Wire Wire Line
-	1650 6450 1650 4000
+	1450 6450 1450 4000
 Wire Wire Line
-	1650 4000 2600 4000
+	1450 4000 2600 4000
 Wire Wire Line
 	2600 4000 2600 4100
 Wire Wire Line
 	2600 4100 2700 4100
 Wire Wire Line
-	1650 4000 1650 950 
+	1450 4000 1450 950 
 Wire Wire Line
-	1650 950  2600 950 
+	1450 950  2600 950 
 Wire Wire Line
 	2600 950  2600 1050
 Wire Wire Line
 	2600 1050 2700 1050
-Connection ~ 1650 4000
+Connection ~ 1450 4000
 Wire Wire Line
-	1750 1650 1750 4700
+	1550 1650 1550 4700
 Wire Wire Line
-	1850 1750 1850 4800
+	1650 1750 1650 4800
 Wire Wire Line
-	1750 4700 2700 4700
-Connection ~ 1750 4700
+	1550 4700 2700 4700
+Connection ~ 1550 4700
 Wire Wire Line
-	1750 4700 1750 6550
+	1550 4700 1550 6550
 Text HLabel 1300 6750 0    50   Input ~ 0
 OVF
-Connection ~ 2650 5100
-$Comp
-L power:GND #PWR?
-U 1 1 5FD8555E
-P 2650 5150
-AR Path="/5D2C0B92/5FD8555E" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FD8555E" Ref="#PWR048"  Part="1" 
-F 0 "#PWR048" H 2650 4900 50  0001 C CNN
-F 1 "GND" H 2655 4977 50  0000 C CNN
-F 2 "" H 2650 5150 50  0001 C CNN
-F 3 "" H 2650 5150 50  0001 C CNN
-	1    2650 5150
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	2700 1950 2650 1950
+	1750 6750 1750 4900
 Wire Wire Line
-	2650 2050 2700 2050
+	1750 4900 2700 4900
 Wire Wire Line
-	2650 2050 2650 1950
+	1300 6750 1750 6750
 Wire Wire Line
-	2650 2100 2650 2050
-Connection ~ 2650 2050
-$Comp
-L power:GND #PWR?
-U 1 1 5FD8935D
-P 2650 2100
-AR Path="/5D2C0B92/5FD8935D" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FD8935D" Ref="#PWR047"  Part="1" 
-F 0 "#PWR047" H 2650 1850 50  0001 C CNN
-F 1 "GND" H 2655 1927 50  0000 C CNN
-F 2 "" H 2650 2100 50  0001 C CNN
-F 3 "" H 2650 2100 50  0001 C CNN
-	1    2650 2100
-	1    0    0    -1  
-$EndComp
+	1750 4900 1750 1850
 Wire Wire Line
-	1950 6750 1950 4900
-Wire Wire Line
-	1950 4900 2700 4900
-Wire Wire Line
-	1300 6750 1950 6750
-Wire Wire Line
-	1950 4900 1950 1850
-Wire Wire Line
-	1950 1850 2700 1850
-Connection ~ 1950 4900
+	1750 1850 2700 1850
+Connection ~ 1750 4900
 Text Notes 6800 2750 0    50   ~ 0
 Description\n————————\nHalt Clock\nSelect Left Operand\nSelect Right Operand\nSelect Store Operand 0\nSelect Store Operand 1\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1\nunused
-NoConn ~ -1850 3850
-NoConn ~ -1850 5350
-NoConn ~ -1850 5850
-$Comp
-L 74xx:74LS04 U?
-U 7 1 5FBC7745
-P -2450 6650
-AR Path="/5D2C0761/5FBC7745" Ref="U?"  Part="7" 
-AR Path="/5D2C0720/5FBC7745" Ref="U?"  Part="7" 
-AR Path="/5D2C07CD/5FBC7745" Ref="U?"  Part="7" 
-AR Path="/60B264DC/5FBC7745" Ref="U?"  Part="7" 
-AR Path="/5FED3839/5FBC7745" Ref="U11"  Part="7" 
-F 0 "U11" H -2450 6700 50  0000 C CNN
-F 1 "74AHCT04" H -2450 6600 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2450 6650 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2450 6650 50  0001 C CNN
-	7    -2450 6650
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 6 1 5FBC774B
-P -2150 5850
-AR Path="/5D8005AF/5D800744/5FBC774B" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBC774B" Ref="U?"  Part="6" 
-AR Path="/5D2C07CD/5FBC774B" Ref="U?"  Part="6" 
-AR Path="/60B264DC/5FBC774B" Ref="U?"  Part="6" 
-AR Path="/5FED3839/5FBC774B" Ref="U11"  Part="6" 
-F 0 "U11" H -2150 6167 50  0000 C CNN
-F 1 "74AHCT04" H -2150 6076 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2150 5850 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2150 5850 50  0001 C CNN
-	6    -2150 5850
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 2 1 5FBC7751
-P -2150 3850
-AR Path="/5D8005AF/5D800744/5FBC7751" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBC7751" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FBC7751" Ref="U?"  Part="2" 
-AR Path="/60B264DC/5FBC7751" Ref="U?"  Part="2" 
-AR Path="/5FED3839/5FBC7751" Ref="U11"  Part="2" 
-F 0 "U11" H -2150 4167 50  0000 C CNN
-F 1 "74AHCT04" H -2150 4076 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2150 3850 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2150 3850 50  0001 C CNN
-	2    -2150 3850
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 5 1 5FBC7757
-P -2150 5350
-AR Path="/5D8005AF/5D800744/5FBC7757" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBC7757" Ref="U?"  Part="5" 
-AR Path="/5D2C07CD/5FBC7757" Ref="U?"  Part="5" 
-AR Path="/60B264DC/5FBC7757" Ref="U?"  Part="5" 
-AR Path="/5FED3839/5FBC7757" Ref="U11"  Part="5" 
-F 0 "U11" H -2150 5667 50  0000 C CNN
-F 1 "74AHCT04" H -2150 5576 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2150 5350 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2150 5350 50  0001 C CNN
-	5    -2150 5350
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 4 1 5FBC775D
-P -2150 4850
-AR Path="/5D8005AF/5D800744/5FBC775D" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBC775D" Ref="U?"  Part="4" 
-AR Path="/5D2C07CD/5FBC775D" Ref="U?"  Part="4" 
-AR Path="/60B264DC/5FBC775D" Ref="U?"  Part="4" 
-AR Path="/5FED3839/5FBC775D" Ref="U11"  Part="4" 
-F 0 "U11" H -2150 5167 50  0000 C CNN
-F 1 "74AHCT04" H -2150 5076 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2150 4850 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2150 4850 50  0001 C CNN
-	4    -2150 4850
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FBC7763
-P -2150 4350
-AR Path="/5D8005AF/5D800744/5FBC7763" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBC7763" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FBC7763" Ref="U?"  Part="3" 
-AR Path="/60B264DC/5FBC7763" Ref="U?"  Part="3" 
-AR Path="/5FED3839/5FBC7763" Ref="U11"  Part="3" 
-F 0 "U11" H -2150 4667 50  0000 C CNN
-F 1 "74AHCT04" H -2150 4576 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2150 4350 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2150 4350 50  0001 C CNN
-	3    -2150 4350
-	1    0    0    -1  
-$EndComp
-NoConn ~ -1850 4350
-NoConn ~ -1850 4850
-$Comp
-L power:VCC #PWR?
-U 1 1 5FBC776B
-P -2450 2950
-AR Path="/5D2C0761/5FBC776B" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FBC776B" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FBC776B" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FBC776B" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FBC776B" Ref="#PWR045"  Part="1" 
-F 0 "#PWR045" H -2450 2800 50  0001 C CNN
-F 1 "VCC" H -2433 3123 50  0000 C CNN
-F 2 "" H -2450 2950 50  0001 C CNN
-F 3 "" H -2450 2950 50  0001 C CNN
-	1    -2450 2950
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-2450 3850 -2450 4350
-Connection ~ -2450 3850
-Connection ~ -2450 4350
-Wire Wire Line
-	-2450 4350 -2450 4850
-Connection ~ -2450 4850
-Wire Wire Line
-	-2450 4850 -2450 5350
-Connection ~ -2450 5350
-Wire Wire Line
-	-2450 5350 -2450 5850
-$Comp
-L power:GND #PWR?
-U 1 1 5FBC7779
-P -2450 7300
-AR Path="/5D2C0720/5FBC7779" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0761/5FBC7779" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FBC7779" Ref="#PWR?"  Part="1" 
-AR Path="/60B264DC/5FBC7779" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FBC7779" Ref="#PWR046"  Part="1" 
-F 0 "#PWR046" H -2450 7050 50  0001 C CNN
-F 1 "GND" H -2445 7127 50  0000 C CNN
-F 2 "" H -2450 7300 50  0001 C CNN
-F 3 "" H -2450 7300 50  0001 C CNN
-	1    -2450 7300
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	-2450 7150 -2450 7300
-Wire Wire Line
-	-2450 5850 -2450 6150
-Connection ~ -2450 5850
-Wire Wire Line
-	-2450 2950 -2450 3350
-NoConn ~ -1850 3350
-$Comp
-L 74xx:74LS04 U?
-U 1 1 5FBD9307
-P -2150 3350
-AR Path="/5D8005AF/5D800744/5FBD9307" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FBD9307" Ref="U?"  Part="2" 
-AR Path="/5D2C07CD/5FBD9307" Ref="U?"  Part="2" 
-AR Path="/60B264DC/5FBD9307" Ref="U?"  Part="2" 
-AR Path="/5FED3839/5FBD9307" Ref="U11"  Part="1" 
-F 0 "U11" H -2150 3667 50  0000 C CNN
-F 1 "74AHCT04" H -2150 3576 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2150 3350 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -2150 3350 50  0001 C CNN
-	1    -2150 3350
-	1    0    0    -1  
-$EndComp
 $Sheet
 S 7400 3750 1150 450 
 U 5FD3D817
@@ -685,11 +472,51 @@ Wire Bus Line
 	8550 4100 9300 4100
 Text HLabel 9300 4100 2    50   Output ~ 0
 InsOut[0..15]
-Connection ~ -2450 3350
+$Comp
+L power:GND #PWR?
+U 1 1 5FBC0123
+P 2650 5100
+AR Path="/5D2C0B92/5FBC0123" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FBC0123" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2650 4850 50  0001 C CNN
+F 1 "GND" V 2655 4972 50  0000 R CNN
+F 2 "" H 2650 5100 50  0001 C CNN
+F 3 "" H 2650 5100 50  0001 C CNN
+	1    2650 5100
+	0    1    1    0   
+$EndComp
 Wire Wire Line
-	-2450 3350 -2450 3850
+	2700 5100 2650 5100
+$Comp
+L power:GND #PWR?
+U 1 1 5FBC6FDF
+P 2650 2050
+AR Path="/5D2C0B92/5FBC6FDF" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FBC6FDF" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2650 1800 50  0001 C CNN
+F 1 "GND" V 2655 1922 50  0000 R CNN
+F 2 "" H 2650 2050 50  0001 C CNN
+F 3 "" H 2650 2050 50  0001 C CNN
+	1    2650 2050
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2700 2050 2650 2050
+Text HLabel 1300 6850 0    50   Input ~ 0
+~RST
+Wire Wire Line
+	1300 6850 1850 6850
+Wire Wire Line
+	1850 6850 1850 5000
+Wire Wire Line
+	1850 5000 2700 5000
+Wire Wire Line
+	1850 5000 1850 1950
+Wire Wire Line
+	1850 1950 2700 1950
+Connection ~ 1850 5000
 Wire Bus Line
-	2050 1050 2050 6850
+	1950 1050 1950 6950
 Wire Bus Line
 	4850 950  4850 5200
 $EndSCHEMATC

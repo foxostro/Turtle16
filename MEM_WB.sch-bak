@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 17 41
+Sheet 17 36
 Title "MEM/WB Interstage Registers"
 Date ""
 Rev ""
@@ -176,33 +176,20 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 $EndComp
 Wire Wire Line
 	-1000 1600 -1000 2500
-Text HLabel 6400 3450 2    50   Output ~ 0
-ALUResult[0..15]
 Text HLabel 6400 4100 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 4400 3450 0    50   Input ~ 0
-ALUResultIn[0..15]
 Text HLabel 4400 4100 0    50   Input ~ 0
 StoreOpIn[0..15]
-Wire Bus Line
-	4900 3450 4400 3450
 Text HLabel 3550 2750 0    50   Input ~ 0
 Phi1
 Wire Wire Line
 	3550 2750 4050 2750
-Wire Bus Line
-	6400 3450 6050 3450
 Wire Bus Line
 	4900 4100 4400 4100
 Wire Bus Line
 	6400 4100 6050 4100
 Wire Wire Line
 	4650 2750 4800 2750
-Wire Wire Line
-	4800 2750 4800 3350
-Wire Wire Line
-	4800 3350 4900 3350
-Connection ~ 4800 3350
 Wire Wire Line
 	4800 4000 4900 4000
 Wire Wire Line
@@ -497,8 +484,6 @@ $EndComp
 Wire Wire Line
 	850  7600 850  7500
 Wire Wire Line
-	4800 3350 4800 4000
-Wire Wire Line
 	4800 4000 4800 4650
 Connection ~ 4800 4000
 $Sheet
@@ -521,17 +506,10 @@ F4 "CtlIn[15..19]" I L 4900 4750 50
 F5 "SelCIn[0..2]" I L 4900 4850 50 
 F6 "SelC[0..2]" O R 6050 4850 50 
 $EndSheet
-$Sheet
-S 4900 3250 1150 400 
-U 605616D3
-F0 "ALUResult Register 2" 50
-F1 "ALUResultRegister2.sch" 50
-F2 "CP" I L 4900 3350 50 
-F3 "D[0..15]" I L 4900 3450 50 
-F4 "Q[0..15]" O R 6050 3450 50 
-$EndSheet
 Text HLabel 3500 4850 0    50   Input ~ 0
 SelCIn[0..2]
 Wire Bus Line
 	4900 4850 3500 4850
+Wire Wire Line
+	4800 2750 4800 4000
 $EndSCHEMATC

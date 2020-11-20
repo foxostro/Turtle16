@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 32 41
+Sheet 30 36
 Title "WB"
 Date ""
 Rev ""
@@ -15,10 +15,8 @@ Comment4 "The Write Back stage chooses a value and writes it back to the registe
 $EndDescr
 Text HLabel 1950 2300 0    50   Input ~ 0
 CtlIn[15..19]
-Text HLabel 8850 4450 2    50   Output ~ 0
-ToRegisterFileUpper[0..7]
 Text HLabel 8850 4550 2    50   Output ~ 0
-ToRegisterFileLower[0..7]
+C[0..15]
 Text HLabel 2500 4750 0    50   Input ~ 0
 ALUResultIn[0..15]
 Text Notes 5000 5400 0    50   ~ 0
@@ -31,14 +29,6 @@ Wire Bus Line
 	5000 4750 2500 4750
 Text HLabel 2500 4850 0    50   Input ~ 0
 StoreOp[0..15]
-Wire Bus Line
-	6250 4550 6850 4550
-Wire Wire Line
-	6700 4450 6850 4450
-Wire Bus Line
-	8850 4450 8350 4450
-Wire Bus Line
-	8350 4550 8850 4550
 $Comp
 L Device:C C?
 U 1 1 5FCDB0A6
@@ -630,57 +620,17 @@ F 3 "" H 8500 3450 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5550 3650 5700 3650
-Wire Wire Line
-	6300 3650 6700 3650
-Wire Wire Line
-	6700 4450 6700 3650
-Connection ~ 6700 3650
-Wire Wire Line
-	6700 3650 8500 3650
 $Sheet
-S 5000 4450 1250 600 
+S 5000 4350 1250 600 
 U 6025930D
 F0 "Select Write Back Source" 50
 F1 "SelectWriteBackSource.sch" 50
-F2 "C[0..15]" I L 5000 4950 50 
-F3 "Z[0..15]" O R 6250 4550 50 
-F4 "S1" I L 5000 4650 50 
-F5 "B[0..15]" I L 5000 4850 50 
-F6 "A[0..15]" I L 5000 4750 50 
-F7 "S0" I L 5000 4550 50 
-$EndSheet
-$Sheet
-S 3350 5000 850  200 
-U 6037D211
-F0 "Byte Swap" 50
-F1 "ByteSwap.sch" 50
-F2 "A[0..15]" I L 3350 5100 50 
-F3 "Y[0..15]" O R 4200 5100 50 
-$EndSheet
-Wire Bus Line
-	2500 4850 3100 4850
-Wire Bus Line
-	4200 5100 4550 5100
-Wire Bus Line
-	4550 5100 4550 4950
-Wire Bus Line
-	4550 4950 5000 4950
-Wire Bus Line
-	3100 4850 3100 5100
-Wire Bus Line
-	3100 5100 3350 5100
-Connection ~ 3100 4850
-Wire Bus Line
-	3100 4850 5000 4850
-$Sheet
-S 6850 4350 1500 350 
-U 60386FEC
-F0 "Buffer Before Register Write" 50
-F1 "BufferBeforeRegisterWrite.sch" 50
-F2 "CP" I L 6850 4450 50 
-F3 "D[0..15]" I L 6850 4550 50 
-F4 "ToRegisterFileUpper[0..7]" O R 8350 4450 50 
-F5 "ToRegisterFileLower[0..7]" O R 8350 4550 50 
+F2 "C[0..15]" O R 6250 4550 50 
+F3 "WriteBackSrcB" I L 5000 4650 50 
+F4 "StoreOp[0..15]" I L 5000 4850 50 
+F5 "ALUResult[0..15]" I L 5000 4750 50 
+F6 "WriteBackSrcA" I L 5000 4550 50 
+F7 "Phi1" I L 5000 4450 50 
 $EndSheet
 $Comp
 L Device:C C?
@@ -942,6 +892,20 @@ Text HLabel 9600 2450 2    50   Output ~ 0
 ~WRL
 Text HLabel 9600 2750 2    50   Output ~ 0
 ~WRH
+Wire Wire Line
+	6300 3650 8500 3650
+Wire Bus Line
+	6250 4550 8850 4550
+Wire Bus Line
+	2500 4850 5000 4850
+Text HLabel 4750 4200 0    50   Input ~ 0
+Phi1
+Wire Wire Line
+	4850 4450 5000 4450
+Wire Wire Line
+	4850 4450 4850 4200
+Wire Wire Line
+	4850 4200 4750 4200
 Wire Bus Line
 	1950 2300 3800 2300
 $EndSCHEMATC

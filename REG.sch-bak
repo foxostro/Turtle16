@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 19 33
+Sheet 22 31
 Title "REG"
 Date ""
 Rev ""
@@ -23,18 +23,16 @@ Text HLabel 13550 8850 2    50   Output ~ 0
 RightOp[0..15]
 Text HLabel 12250 4150 2    50   Output ~ 0
 LeftOp[0..15]
-Text HLabel 13550 7300 2    50   Output ~ 0
+Text HLabel 15200 7300 2    50   Output ~ 0
 StoreOp[0..15]
 Text HLabel 6350 7600 0    50   Input ~ 0
 PC[0..15]
 Text HLabel 3850 2350 0    50   Input ~ 0
 Ins[0..10]
-Text HLabel 12250 950  2    50   Output ~ 0
+Text HLabel 15200 7500 2    50   Output ~ 0
 Ctl[5..19]
 Text HLabel 3900 4650 0    50   Input ~ 0
 C[0..15]
-Text HLabel 5700 2850 2    50   Output ~ 0
-SelCOut[0..2]
 Text HLabel 3900 4350 0    50   Input ~ 0
 SelCIn[0..2]
 $Sheet
@@ -73,10 +71,8 @@ Wire Bus Line
 	5400 4750 5600 4750
 Wire Bus Line
 	5600 4750 5600 9050
-Text HLabel 3400 6250 0    50   Input ~ 0
+Text HLabel 4200 6250 0    50   Input ~ 0
 Phi2
-Wire Wire Line
-	3400 6250 3600 6250
 Wire Bus Line
 	6350 7600 9150 7600
 Wire Bus Line
@@ -109,7 +105,7 @@ CtlIn4
 Entry Bus Bus
 	9850 850  9950 950 
 Wire Bus Line
-	9950 950  12250 950 
+	9950 950  10450 950 
 Text Label 10000 950  0    50   ~ 0
 CtlIn[5..19]
 Text Label 9600 4150 0    50   ~ 0
@@ -180,15 +176,13 @@ F5 "SelRightOp" I L 11600 8850 50
 F6 "Phi2" I L 11600 8750 50 
 $EndSheet
 $Sheet
-S 4200 2750 1250 200 
+S 11600 5650 1250 200 
 U 606410B1
 F0 "Split Out SelC" 50
 F1 "SplitOutSelC.sch" 50
-F2 "Ins[0..10]" I L 4200 2850 50 
-F3 "SelCOut[0..2]" O R 5450 2850 50 
+F2 "Ins[0..10]" I L 11600 5750 50 
+F3 "SelCOut[0..2]" O R 12850 5750 50 
 $EndSheet
-Wire Bus Line
-	5700 2850 5450 2850
 $Sheet
 S 4200 3550 1150 200 
 U 606889E4
@@ -224,13 +218,6 @@ Wire Bus Line
 	4200 3250 4100 3250
 Connection ~ 4100 3250
 Wire Bus Line
-	4100 3250 4100 2850
-Wire Bus Line
-	4200 2850 4100 2850
-Connection ~ 4100 2850
-Wire Bus Line
-	4100 2850 4100 2350
-Wire Bus Line
 	8450 4250 8450 7500
 Connection ~ 8450 4250
 Wire Bus Line
@@ -240,22 +227,6 @@ Wire Bus Line
 Connection ~ 6400 6250
 Wire Wire Line
 	6400 6250 6400 8750
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5FD3C293
-P 3900 6250
-AR Path="/5D8005AF/5D800744/5FD3C293" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5FD3C293" Ref="U?"  Part="3" 
-AR Path="/5D2C07CD/5FD3C293" Ref="U?"  Part="3" 
-AR Path="/60A72859/5FD3C293" Ref="U?"  Part="3" 
-AR Path="/60906BCD/5FD3C293" Ref="U29"  Part="3" 
-F 0 "U29" H 3900 6567 50  0000 C CNN
-F 1 "74AHCT04" H 3900 6476 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3900 6250 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3900 6250 50  0001 C CNN
-	3    3900 6250
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	10050 4050 6400 4050
 Wire Wire Line
@@ -287,6 +258,51 @@ Wire Wire Line
 	11500 6250 11500 7200
 Wire Wire Line
 	11500 7200 11600 7200
+$Sheet
+S 13550 7100 1400 700 
+U 5FD9B0CB
+F0 "sheet5FD9B0C2" 50
+F1 "REG_EX.sch" 50
+F2 "StoreOp[0..15]" O R 14950 7300 50 
+F3 "StoreOpIn[0..15]" I L 13550 7300 50 
+F4 "Phi1" I L 13550 7200 50 
+F5 "SelCIn[0..2]" I L 13550 7400 50 
+F6 "SelC[0..2]" O R 14950 7400 50 
+F7 "CtlIn[5..19]" I L 13550 7500 50 
+F8 "Ctl[5..19]" O R 14950 7500 50 
+$EndSheet
+Text HLabel 13300 7200 0    50   Input ~ 0
+Phi1
+Wire Wire Line
+	13300 7200 13550 7200
+Wire Bus Line
+	14950 7300 15200 7300
+Wire Bus Line
+	14950 7500 15200 7500
+Wire Bus Line
+	13450 7400 13550 7400
+Text HLabel 15200 7400 2    50   Output ~ 0
+SelC[0..2]
+Wire Bus Line
+	15200 7400 14950 7400
+Wire Bus Line
+	12950 7550 13450 7550
+Text Label 13000 7550 0    50   ~ 0
+CtlIn[5..19]
+Wire Bus Line
+	13550 7500 13450 7500
+Wire Bus Line
+	13450 7500 13450 7550
+Text HLabel 11350 5750 0    50   Input ~ 0
+Ins[0..10]
+Wire Bus Line
+	11350 5750 11600 5750
+Wire Bus Line
+	4100 2350 4100 3250
+Wire Bus Line
+	13450 7400 13450 5750
+Wire Bus Line
+	13450 5750 12850 5750
 Wire Bus Line
 	3750 850  9850 850 
 $EndSCHEMATC

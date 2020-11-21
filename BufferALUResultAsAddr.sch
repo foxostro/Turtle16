@@ -259,7 +259,7 @@ Wire Wire Line
 Wire Wire Line
 	5450 3400 5550 3400
 Text HLabel 3900 3350 0    50   Input ~ 0
-~OE
+~RDY
 Wire Wire Line
 	3900 3350 4750 3350
 Connection ~ 5450 3350

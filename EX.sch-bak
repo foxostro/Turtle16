@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 6 31
+Sheet 6 32
 Title "EX"
 Date ""
 Rev ""
@@ -17,7 +17,7 @@ Text HLabel 1200 1050 0    50   Input ~ 0
 RightOp[0..15]
 Text HLabel 1200 950  0    50   Input ~ 0
 LeftOp[0..15]
-Text HLabel 9800 1600 2    50   Output ~ 0
+Text HLabel 9800 1350 2    50   Output ~ 0
 ALUResult[0..15]
 Text HLabel 1200 1150 0    50   Input ~ 0
 CtlIn[5..19]
@@ -26,108 +26,108 @@ Ctl[13..19]
 Text HLabel 1200 6600 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	8650 3900 8950 3900
+	9450 3900 9800 3900
 Wire Wire Line
-	8950 3800 8650 3800
-NoConn ~ 8650 4500
-NoConn ~ 8650 4400
-NoConn ~ 8650 4300
-NoConn ~ 8650 4200
-NoConn ~ 8650 4100
+	9800 3800 9450 3800
+NoConn ~ 9450 4500
+NoConn ~ 9450 4400
+NoConn ~ 9450 4300
+NoConn ~ 9450 4200
+NoConn ~ 9450 4100
 $Comp
 L power:GND #PWR?
 U 1 1 5FE1BD7A
-P 8150 5100
+P 8950 5100
 AR Path="/5D2C0CE4/5FE1BD7A" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FE1BD7A" Ref="#PWR085"  Part="1" 
-F 0 "#PWR085" H 8150 4850 50  0001 C CNN
-F 1 "GND" H 8155 4927 50  0000 C CNN
-F 2 "" H 8150 5100 50  0001 C CNN
-F 3 "" H 8150 5100 50  0001 C CNN
-	1    8150 5100
+F 0 "#PWR085" H 8950 4850 50  0001 C CNN
+F 1 "GND" H 8955 4927 50  0000 C CNN
+F 2 "" H 8950 5100 50  0001 C CNN
+F 3 "" H 8950 5100 50  0001 C CNN
+	1    8950 5100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5FE1B681
-P 8150 3500
+P 8950 3500
 AR Path="/5D2C0CE4/5FE1B681" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FE1B681" Ref="#PWR084"  Part="1" 
-F 0 "#PWR084" H 8150 3350 50  0001 C CNN
-F 1 "VCC" H 8167 3673 50  0000 C CNN
-F 2 "" H 8150 3500 50  0001 C CNN
-F 3 "" H 8150 3500 50  0001 C CNN
-	1    8150 3500
+F 0 "#PWR084" H 8950 3350 50  0001 C CNN
+F 1 "VCC" H 8967 3673 50  0000 C CNN
+F 2 "" H 8950 3500 50  0001 C CNN
+F 3 "" H 8950 3500 50  0001 C CNN
+	1    8950 3500
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS377 U19
 U 1 1 5FE1ACC2
-P 8150 4300
-F 0 "U19" H 7850 5100 50  0000 C CNN
-F 1 "74ABT377" H 7850 5000 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 8150 4300 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt377a" H 8150 4300 50  0001 C CNN
-	1    8150 4300
+P 8950 4300
+F 0 "U19" H 8650 5100 50  0000 C CNN
+F 1 "74ABT377" H 8650 5000 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 8950 4300 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt377a" H 8950 4300 50  0001 C CNN
+	1    8950 4300
 	1    0    0    -1  
 $EndComp
-Text HLabel 8950 3900 2    50   Output ~ 0
+Text HLabel 9800 3900 2    50   Output ~ 0
 Z
-Text HLabel 8950 3800 2    50   Output ~ 0
+Text HLabel 9800 3800 2    50   Output ~ 0
 Carry
 $Comp
 L power:GND #PWR079
 U 1 1 5FE21D5C
-P 7650 4100
-F 0 "#PWR079" H 7650 3850 50  0001 C CNN
-F 1 "GND" V 7655 3972 50  0000 R CNN
-F 2 "" H 7650 4100 50  0001 C CNN
-F 3 "" H 7650 4100 50  0001 C CNN
-	1    7650 4100
+P 8450 4100
+F 0 "#PWR079" H 8450 3850 50  0001 C CNN
+F 1 "GND" V 8455 3972 50  0000 R CNN
+F 2 "" H 8450 4100 50  0001 C CNN
+F 3 "" H 8450 4100 50  0001 C CNN
+	1    8450 4100
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR080
 U 1 1 5FE21F4C
-P 7650 4200
-F 0 "#PWR080" H 7650 3950 50  0001 C CNN
-F 1 "GND" V 7655 4072 50  0000 R CNN
-F 2 "" H 7650 4200 50  0001 C CNN
-F 3 "" H 7650 4200 50  0001 C CNN
-	1    7650 4200
+P 8450 4200
+F 0 "#PWR080" H 8450 3950 50  0001 C CNN
+F 1 "GND" V 8455 4072 50  0000 R CNN
+F 2 "" H 8450 4200 50  0001 C CNN
+F 3 "" H 8450 4200 50  0001 C CNN
+	1    8450 4200
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR081
 U 1 1 5FE2214D
-P 7650 4300
-F 0 "#PWR081" H 7650 4050 50  0001 C CNN
-F 1 "GND" V 7655 4172 50  0000 R CNN
-F 2 "" H 7650 4300 50  0001 C CNN
-F 3 "" H 7650 4300 50  0001 C CNN
-	1    7650 4300
+P 8450 4300
+F 0 "#PWR081" H 8450 4050 50  0001 C CNN
+F 1 "GND" V 8455 4172 50  0000 R CNN
+F 2 "" H 8450 4300 50  0001 C CNN
+F 3 "" H 8450 4300 50  0001 C CNN
+	1    8450 4300
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR082
 U 1 1 5FE222C6
-P 7650 4400
-F 0 "#PWR082" H 7650 4150 50  0001 C CNN
-F 1 "GND" V 7655 4272 50  0000 R CNN
-F 2 "" H 7650 4400 50  0001 C CNN
-F 3 "" H 7650 4400 50  0001 C CNN
-	1    7650 4400
+P 8450 4400
+F 0 "#PWR082" H 8450 4150 50  0001 C CNN
+F 1 "GND" V 8455 4272 50  0000 R CNN
+F 2 "" H 8450 4400 50  0001 C CNN
+F 3 "" H 8450 4400 50  0001 C CNN
+	1    8450 4400
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR083
 U 1 1 5FE2243F
-P 7650 4500
-F 0 "#PWR083" H 7650 4250 50  0001 C CNN
-F 1 "GND" V 7655 4372 50  0000 R CNN
-F 2 "" H 7650 4500 50  0001 C CNN
-F 3 "" H 7650 4500 50  0001 C CNN
-	1    7650 4500
+P 8450 4500
+F 0 "#PWR083" H 8450 4250 50  0001 C CNN
+F 1 "GND" V 8455 4372 50  0000 R CNN
+F 2 "" H 8450 4500 50  0001 C CNN
+F 3 "" H 8450 4500 50  0001 C CNN
+	1    8450 4500
 	0    1    1    0   
 $EndComp
 Text Label 2400 2000 3    50   ~ 0
@@ -574,37 +574,37 @@ Wire Wire Line
 Entry Wire Line
 	3800 5000 3700 4900
 Text Label 7150 2100 2    50   ~ 0
-ALUResult3
+F3
 Wire Wire Line
 	7200 2100 6600 2100
 Entry Wire Line
 	7200 2100 7300 2000
 Text Label 7150 2000 2    50   ~ 0
-ALUResult2
+F2
 Wire Wire Line
 	7200 2000 6600 2000
 Entry Wire Line
 	7200 2000 7300 1900
 Text Label 7150 1900 2    50   ~ 0
-ALUResult1
+F1
 Wire Wire Line
 	7200 1900 6600 1900
 Entry Wire Line
 	7200 1900 7300 1800
 Text Label 7150 1800 2    50   ~ 0
-ALUResult0
+F0
 Wire Wire Line
 	7200 1800 6600 1800
 Entry Wire Line
 	7200 1800 7300 1700
 Text Label 7150 2200 2    50   ~ 0
-ALUResult4
+F4
 Wire Wire Line
 	7200 2200 6600 2200
 Entry Wire Line
 	7200 2200 7300 2100
 Text Label 7150 2300 2    50   ~ 0
-ALUResult5
+F5
 Wire Wire Line
 	7200 2300 6600 2300
 Entry Wire Line
@@ -614,61 +614,61 @@ Wire Wire Line
 Entry Wire Line
 	7200 2400 7300 2300
 Text Label 7150 2500 2    50   ~ 0
-ALUResult7
+F7
 Wire Wire Line
 	7200 2500 6600 2500
 Entry Wire Line
 	7200 2500 7300 2400
 Text Label 7150 2600 2    50   ~ 0
-ALUResult8
+F8
 Wire Wire Line
 	7200 2600 6600 2600
 Entry Wire Line
 	7200 2600 7300 2500
 Text Label 7150 2700 2    50   ~ 0
-ALUResult9
+F9
 Wire Wire Line
 	7200 2700 6600 2700
 Entry Wire Line
 	7200 2700 7300 2600
 Text Label 7150 2800 2    50   ~ 0
-ALUResult10
+F10
 Wire Wire Line
 	7200 2800 6600 2800
 Entry Wire Line
 	7200 2800 7300 2700
 Text Label 7150 2900 2    50   ~ 0
-ALUResult11
+F11
 Wire Wire Line
 	7200 2900 6600 2900
 Entry Wire Line
 	7200 2900 7300 2800
 Text Label 7150 3000 2    50   ~ 0
-ALUResult12
+F12
 Wire Wire Line
 	7200 3000 6600 3000
 Entry Wire Line
 	7200 3000 7300 2900
 Text Label 7150 3100 2    50   ~ 0
-ALUResult13
+F13
 Wire Wire Line
 	7200 3100 6600 3100
 Entry Wire Line
 	7200 3100 7300 3000
 Text Label 7150 3200 2    50   ~ 0
-ALUResult14
+F14
 Wire Wire Line
 	7200 3200 6600 3200
 Entry Wire Line
 	7200 3200 7300 3100
 Text Label 7150 3300 2    50   ~ 0
-ALUResult15
+F15
 Wire Wire Line
 	7200 3300 6600 3300
 Entry Wire Line
 	7200 3300 7300 3200
 Text Label 7150 2400 2    50   ~ 0
-ALUResult6
+F6
 $Comp
 L power:GND #PWR078
 U 1 1 5FC11898
@@ -726,20 +726,9 @@ F 3 "" H 4400 5900 50  0001 C CNN
 	1    4400 5900
 	0    1    -1   0   
 $EndComp
-$Comp
-L power:GND #PWR077
-U 1 1 5FC2D747
-P 6600 3550
-F 0 "#PWR077" H 6600 3300 50  0001 C CNN
-F 1 "GND" V 6605 3422 50  0000 R CNN
-F 2 "" H 6600 3550 50  0001 C CNN
-F 3 "" H 6600 3550 50  0001 C CNN
-	1    6600 3550
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
-	8650 4000 8950 4000
-Text HLabel 8950 4000 2    50   Output ~ 0
+	9450 4000 9800 4000
+Text HLabel 9800 4000 2    50   Output ~ 0
 OVF
 Wire Wire Line
 	2550 1250 2550 5800
@@ -760,25 +749,23 @@ Wire Bus Line
 Wire Bus Line
 	3600 1050 1200 1050
 Wire Wire Line
-	6600 3800 7650 3800
+	6600 3800 8450 3800
 Wire Wire Line
 	6600 4100 7100 4100
 Wire Wire Line
 	7100 4100 7100 3900
 Wire Wire Line
-	7100 3900 7650 3900
+	7100 3900 8450 3900
 Wire Wire Line
 	6600 4200 7200 4200
 Wire Wire Line
 	7200 4200 7200 4000
 Wire Wire Line
-	7200 4000 7650 4000
+	7200 4000 8450 4000
 Wire Wire Line
 	3300 5300 4400 5300
 Wire Wire Line
 	3300 1250 3300 5300
-Wire Bus Line
-	9800 1600 7300 1600
 Wire Wire Line
 	4400 5400 3150 5400
 Wire Wire Line
@@ -790,7 +777,7 @@ Wire Wire Line
 Wire Wire Line
 	4400 5800 2550 5800
 Wire Wire Line
-	7650 4800 7500 4800
+	8450 4800 7500 4800
 Wire Wire Line
 	7500 4800 7500 6700
 Wire Wire Line
@@ -802,14 +789,14 @@ Wire Wire Line
 Wire Wire Line
 	7350 4700 7350 6600
 Wire Wire Line
-	7350 4700 7650 4700
+	7350 4700 8450 4700
 Connection ~ 2250 6600
 Wire Wire Line
 	2250 6600 7350 6600
 Wire Wire Line
 	1200 6600 2250 6600
 $Sheet
-S 7950 750  1550 600 
+S 7950 750  1550 700 
 U 5FDD0EB1
 F0 "sheet5FDD0EA7" 50
 F1 "EX_MEM.sch" 50
@@ -821,6 +808,8 @@ F6 "SelC[0..2]" O R 9500 1150 50
 F7 "Ctl[13..19]" O R 9500 1250 50 
 F8 "CtlIn[12..19]" I L 7950 1250 50 
 F9 "~J" O R 9500 950 50 
+F10 "ALUResult[0..15]" O R 9500 1350 50 
+F11 "F[0..15]" I L 7950 1350 50 
 $EndSheet
 Wire Bus Line
 	9800 1250 9500 1250
@@ -860,6 +849,21 @@ Wire Bus Line
 	7500 1150 7500 800 
 Wire Bus Line
 	7500 800  6550 800 
+$Comp
+L power:VCC #PWR?
+U 1 1 5FB8F169
+P 6600 3550
+F 0 "#PWR?" H 6600 3400 50  0001 C CNN
+F 1 "VCC" V 6615 3678 50  0000 L CNN
+F 2 "" H 6600 3550 50  0001 C CNN
+F 3 "" H 6600 3550 50  0001 C CNN
+	1    6600 3550
+	0    1    1    0   
+$EndComp
+Wire Bus Line
+	9500 1350 9800 1350
+Wire Bus Line
+	7950 1350 7300 1350
 Wire Bus Line
 	1200 1150 6700 1150
 Wire Bus Line
@@ -867,5 +871,5 @@ Wire Bus Line
 Wire Bus Line
 	3700 3350 3700 4900
 Wire Bus Line
-	7300 1600 7300 3200
+	7300 1350 7300 3200
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 31
+Sheet 1 32
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -249,8 +249,6 @@ Wire Bus Line
 	10150 4400 10000 4400
 Wire Bus Line
 	10100 4300 10000 4300
-Wire Wire Line
-	10400 5600 10000 5600
 Wire Bus Line
 	5400 1650 3800 1650
 Wire Wire Line
@@ -322,14 +320,10 @@ F9 "SystemBus[0..7]" T R 3100 4050 50
 $EndSheet
 Wire Wire Line
 	1150 750  1350 750 
-Connection ~ 1350 750 
-Wire Wire Line
-	1350 750  10400 750 
 Wire Wire Line
 	1350 750  1350 2750
 Wire Wire Line
 	1550 2750 1350 2750
-Connection ~ 1350 2750
 Wire Wire Line
 	1550 2850 1250 2850
 Wire Bus Line
@@ -437,15 +431,14 @@ F3 "~WRL" I L 8800 5500 50
 F4 "RightOp[0..15]" O L 8800 4550 50 
 F5 "StoreOp[0..15]" O L 8800 4250 50 
 F6 "PC[0..15]" I R 10000 4500 50 
-F7 "Phi2" I R 10000 5600 50 
-F8 "C[0..15]" I L 8800 5300 50 
-F9 "SelCIn[0..2]" I L 8800 5600 50 
-F10 "Ins[0..10]" I R 10000 4400 50 
-F11 "CtlIn[1..19]" I R 10000 4300 50 
-F12 "Ctl[5..19]" O L 8800 4450 50 
-F13 "LeftOp[0..15]" O L 8800 4650 50 
-F14 "Phi1" I L 8800 4150 50 
-F15 "SelC[0..2]" O L 8800 4350 50 
+F7 "C[0..15]" I L 8800 5300 50 
+F8 "SelCIn[0..2]" I L 8800 5600 50 
+F9 "Ins[0..10]" I R 10000 4400 50 
+F10 "CtlIn[1..19]" I R 10000 4300 50 
+F11 "Ctl[5..19]" O L 8800 4450 50 
+F12 "LeftOp[0..15]" O L 8800 4650 50 
+F13 "Phi1" I L 8800 4150 50 
+F14 "SelC[0..2]" O L 8800 4350 50 
 $EndSheet
 Wire Wire Line
 	5700 3850 5650 3850
@@ -479,10 +472,6 @@ Wire Bus Line
 	3100 4450 5700 4450
 Wire Bus Line
 	3800 4550 5700 4550
-Wire Wire Line
-	1350 2750 1350 5400
-Wire Wire Line
-	1350 5400 4150 5400
 $Sheet
 S 4150 5100 1900 700 
 U 60B264DC
@@ -492,12 +481,11 @@ F2 "C[0..15]" O R 6050 5300 50
 F3 "ALUResultIn[0..15]" I L 4150 5300 50 
 F4 "~WRH" O R 6050 5400 50 
 F5 "~WRL" O R 6050 5500 50 
-F6 "Phi2" I L 4150 5400 50 
-F7 "StoreOp[0..15]" I L 4150 5700 50 
-F8 "CtlIn[15..19]" I L 4150 5600 50 
-F9 "Phi1" I L 4150 5500 50 
-F10 "SelC[0..2]" O R 6050 5600 50 
-F11 "SelCIn[0..2]" I L 4150 5200 50 
+F6 "StoreOp[0..15]" I L 4150 5700 50 
+F7 "CtlIn[15..19]" I L 4150 5600 50 
+F8 "Phi1" I L 4150 5500 50 
+F9 "SelC[0..2]" O R 6050 5600 50 
+F10 "SelCIn[0..2]" I L 4150 5200 50 
 $EndSheet
 Wire Bus Line
 	1050 5600 4150 5600
@@ -562,8 +550,6 @@ Wire Wire Line
 	5200 950  1250 950 
 Wire Wire Line
 	1250 950  1250 2850
-Wire Wire Line
-	10400 750  10400 5600
 Wire Wire Line
 	9900 1250 10450 1250
 Wire Wire Line

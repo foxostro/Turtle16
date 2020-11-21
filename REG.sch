@@ -1,9 +1,9 @@
 EESchema Schematic File Version 4
 EELAYER 30 0
 EELAYER END
-$Descr A3 16535 11693
+$Descr USLetter 11000 8500
 encoding utf-8
-Sheet 17 31
+Sheet 18 32
 Title "REG"
 Date ""
 Rev ""
@@ -13,288 +13,263 @@ Comment2 "program counter value. The WB stage feeds back into the register file 
 Comment3 "right operand can either be taken from the register file or the immediate value, or the"
 Comment4 "It takes an entire clock cycle to retrieve operands from the register file. The left and"
 $EndDescr
-Text HLabel 3900 4450 0    50   Input ~ 0
+Text HLabel 2450 4550 0    50   Input ~ 0
 ~WRH
-Text HLabel 3900 4550 0    50   Input ~ 0
+Text HLabel 2450 4650 0    50   Input ~ 0
 ~WRL
-Text HLabel 3750 850  0    50   Input ~ 0
+Text HLabel 2300 2350 0    50   Input ~ 0
 CtlIn[1..19]
-Text HLabel 13550 8850 2    50   Output ~ 0
-RightOp[0..15]
-Text HLabel 12250 4150 2    50   Output ~ 0
-LeftOp[0..15]
-Text HLabel 15200 7300 2    50   Output ~ 0
+Text HLabel 8900 4200 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 6350 7600 0    50   Input ~ 0
+Text HLabel 2450 5700 0    50   Input ~ 0
 PC[0..15]
-Text HLabel 3850 2350 0    50   Input ~ 0
+Text HLabel 2400 2450 0    50   Input ~ 0
 Ins[0..10]
-Text HLabel 15200 7500 2    50   Output ~ 0
+Text HLabel 8900 4400 2    50   Output ~ 0
 Ctl[5..19]
-Text HLabel 3900 4650 0    50   Input ~ 0
+Text HLabel 2450 4750 0    50   Input ~ 0
 C[0..15]
-Text HLabel 3900 4350 0    50   Input ~ 0
+Text HLabel 2450 4450 0    50   Input ~ 0
 SelCIn[0..2]
 $Sheet
-S 4200 4250 1200 600 
+S 2750 4350 1200 600 
 U 5FAA7AE7
 F0 "Register File" 50
 F1 "RegisterFile.sch" 50
-F2 "~WRH" I L 4200 4450 50 
-F3 "~WRL" I L 4200 4550 50 
-F4 "C[0..15]" I L 4200 4650 50 
-F5 "SelC[0..2]" I L 4200 4350 50 
-F6 "SelA[0..2]" I R 5400 4450 50 
-F7 "SelB[0..2]" I R 5400 4650 50 
-F8 "B[0..15]" O R 5400 4750 50 
-F9 "A[0..15]" O R 5400 4350 50 
+F2 "~WRH" I L 2750 4550 50 
+F3 "~WRL" I L 2750 4650 50 
+F4 "C[0..15]" I L 2750 4750 50 
+F5 "SelC[0..2]" I L 2750 4450 50 
+F6 "SelA[0..2]" I R 3950 4550 50 
+F7 "SelB[0..2]" I R 3950 4750 50 
+F8 "B[0..15]" O R 3950 4850 50 
+F9 "A[0..15]" O R 3950 4450 50 
 $EndSheet
 Wire Bus Line
-	4200 4650 3900 4650
+	2750 4750 2450 4750
 Wire Bus Line
-	3900 4350 4200 4350
+	2450 4450 2750 4450
 Wire Wire Line
-	4200 4450 3900 4450
+	2750 4550 2450 4550
 Wire Wire Line
-	3900 4550 4200 4550
+	2450 4650 2750 4650
 Wire Bus Line
-	5400 4450 5500 4450
+	3950 4550 4050 4550
 Wire Bus Line
-	3850 2350 4100 2350
+	2400 2450 2650 2450
 Wire Bus Line
-	5400 4350 5700 4350
+	3950 4450 4250 4450
 Wire Bus Line
-	10050 4250 8450 4250
+	3950 4750 4150 4750
 Wire Bus Line
-	5400 4650 5600 4650
-Wire Bus Line
-	5400 4750 5600 4750
-Wire Bus Line
-	5600 4750 5600 9050
-Text HLabel 4200 6250 0    50   Input ~ 0
-Phi2
-Wire Bus Line
-	6350 7600 9150 7600
-Wire Bus Line
-	9150 7600 9150 8950
-Wire Bus Line
-	9150 8950 11600 8950
-Wire Bus Line
-	11150 4150 12250 4150
-Wire Bus Line
-	13550 8850 12800 8850
-Connection ~ 5700 4350
+	3950 4850 4150 4850
 Entry Wire Line
-	9350 850  9450 950 
-Wire Wire Line
-	9550 4150 10050 4150
+	4550 2350 4650 2450
 Entry Wire Line
-	9250 850  9350 950 
+	4450 2350 4550 2450
 Entry Wire Line
-	9150 850  9250 950 
+	4350 2350 4450 2450
 Wire Wire Line
-	9350 950  9350 7400
-Wire Wire Line
-	9250 8850 11600 8850
-Text Label 9550 1050 3    50   ~ 0
+	4550 2450 4550 4250
+Text Label 4750 2450 3    50   ~ 0
 CtlIn1
-Text Label 9450 1050 3    50   ~ 0
+Text Label 4650 2450 3    50   ~ 0
 CtlIn2
-Text Label 9250 1050 3    50   ~ 0
+Text Label 4450 2450 3    50   ~ 0
 CtlIn4
 Entry Bus Bus
-	9850 850  9950 950 
+	8400 2350 8500 2450
 Wire Bus Line
-	9950 950  10450 950 
-Text Label 10000 950  0    50   ~ 0
+	8500 2450 9050 2450
+Text Label 8550 2450 0    50   ~ 0
 CtlIn[5..19]
-Text Label 9600 4150 0    50   ~ 0
-SelLeftOp
-Text Label 9550 7400 0    50   ~ 0
-SelStoreOpB
-Text Label 10900 8850 0    50   ~ 0
-SelRightOp
-Text Label 9550 7300 0    50   ~ 0
-SelStoreOpA
 Entry Wire Line
-	9450 850  9550 950 
+	4650 2350 4750 2450
 Wire Wire Line
-	9450 950  9450 7300
+	4650 2450 4650 4150
 Wire Wire Line
-	9550 950  9550 4150
+	4750 2450 4750 2800
 Wire Bus Line
-	13550 7300 12850 7300
-Text Label 9350 1050 3    50   ~ 0
+	7300 4200 6500 4200
+Text Label 4550 2450 3    50   ~ 0
 CtlIn3
-Wire Wire Line
-	9450 7300 11600 7300
-Wire Wire Line
-	11600 7400 9350 7400
-Wire Bus Line
-	9150 7600 11600 7600
-Connection ~ 9150 7600
-Wire Bus Line
-	5700 7700 11600 7700
-Wire Bus Line
-	5700 4350 5700 7700
-Text Notes 11600 9400 0    50   ~ 0
-SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Program Counter
-Text Notes 11600 8150 0    50   ~ 0
+Text Notes 5250 5050 0    50   ~ 0
 SelStoreOp=0  —> Select Register A\nSelStoreOp=1  —> Select Program Counter\nSelStoreOp=2  —> Select 8-bit Immediate Value
-Wire Wire Line
-	4200 6250 6400 6250
 $Sheet
-S 10050 3950 1100 500 
-U 5FDE580B
-F0 "Select Left Operand" 50
-F1 "SelectLeftOperand.sch" 50
-F2 "Ins[0..10]" I L 10050 4250 50 
-F3 "A[0..15]" I L 10050 4350 50 
-F4 "LeftOp[0..15]" O R 11150 4150 50 
-F5 "SelLeftOp" I L 10050 4150 50 
-F6 "Phi2" I L 10050 4050 50 
-$EndSheet
-Text Notes 10050 4700 0    50   ~ 0
-SelLeftOp=0  —> Select Register A\nSelLeftOp=1  —> Select 5-bit Immediate Value
-$Sheet
-S 11600 8650 1200 500 
-U 5FE695DA
-F0 "Select Right Operand" 50
-F1 "SelectRightOperand.sch" 50
-F2 "PC[0..15]" I L 11600 8950 50 
-F3 "B[0..15]" I L 11600 9050 50 
-F4 "RightOp[0..15]" O R 12800 8850 50 
-F5 "SelRightOp" I L 11600 8850 50 
-F6 "Phi2" I L 11600 8750 50 
-$EndSheet
-$Sheet
-S 11600 5650 1250 200 
+S 5250 3500 1250 200 
 U 606410B1
 F0 "Split Out SelC" 50
 F1 "SplitOutSelC.sch" 50
-F2 "Ins[0..10]" I L 11600 5750 50 
-F3 "SelCOut[0..2]" O R 12850 5750 50 
+F2 "Ins[0..10]" I L 5250 3600 50 
+F3 "SelCOut[0..2]" O R 6500 3600 50 
 $EndSheet
 $Sheet
-S 4200 3550 1150 200 
+S 2750 3650 1150 200 
 U 606889E4
 F0 "Split Out SelA" 50
 F1 "SplitOutSelA.sch" 50
-F2 "Ins[0..10]" I L 4200 3650 50 
-F3 "SelAOut[0..2]" O R 5350 3650 50 
+F2 "Ins[0..10]" I L 2750 3750 50 
+F3 "SelAOut[0..2]" O R 3900 3750 50 
 $EndSheet
 Wire Bus Line
-	5350 3650 5500 3650
+	3900 3750 4050 3750
 Wire Bus Line
-	5500 3650 5500 4450
+	4050 3750 4050 4550
 Wire Bus Line
-	4200 3650 4100 3650
+	2750 3750 2650 3750
 Wire Bus Line
-	4100 3650 4100 3250
-Connection ~ 4100 2350
+	2650 3750 2650 3350
+Connection ~ 2650 2450
 Wire Bus Line
-	8450 2350 8450 4250
+	4350 2450 4350 2900
 $Sheet
-S 4200 3150 1050 200 
+S 2750 3250 1050 200 
 U 60691E71
 F0 "Split Out SelB" 50
 F1 "SplitOutSelB.sch" 50
-F2 "Ins[0..10]" I L 4200 3250 50 
-F3 "SelBOut[0..2]" O R 5250 3250 50 
+F2 "Ins[0..10]" I L 2750 3350 50 
+F3 "SelBOut[0..2]" O R 3800 3350 50 
 $EndSheet
 Wire Bus Line
-	5250 3250 5600 3250
+	3800 3350 4150 3350
 Wire Bus Line
-	5600 3250 5600 4650
+	4150 3350 4150 4750
 Wire Bus Line
-	4200 3250 4100 3250
-Connection ~ 4100 3250
+	2750 3350 2650 3350
+Connection ~ 2650 3350
 Wire Bus Line
-	8450 4250 8450 7500
-Connection ~ 8450 4250
-Wire Bus Line
-	8450 7500 11600 7500
-Wire Bus Line
-	4100 2350 8450 2350
-Connection ~ 6400 6250
-Wire Wire Line
-	6400 6250 6400 8750
-Wire Wire Line
-	10050 4050 6400 4050
-Wire Wire Line
-	6400 4050 6400 6250
-Wire Bus Line
-	5700 4350 10050 4350
-Wire Wire Line
-	11600 8750 6400 8750
-Wire Bus Line
-	5600 9050 11600 9050
+	2650 2450 4350 2450
 $Sheet
-S 11600 7100 1250 700 
+S 5250 4000 1250 700 
 U 5FF2BBCA
 F0 "Select Store Operand" 50
 F1 "SelectStoreOp.sch" 50
-F2 "StoreOp[0..15]" O R 12850 7300 50 
-F3 "SelStoreOpA" I L 11600 7300 50 
-F4 "SelStoreOpB" I L 11600 7400 50 
-F5 "Ins[0..10]" I L 11600 7500 50 
-F6 "A[0..15]" I L 11600 7700 50 
-F7 "Phi2" I L 11600 7200 50 
-F8 "PC[0..15]" I L 11600 7600 50 
+F2 "StoreOp[0..15]" O R 6500 4200 50 
+F3 "SelStoreOpA" I L 5250 4150 50 
+F4 "SelStoreOpB" I L 5250 4250 50 
+F5 "Ins[0..10]" I L 5250 4350 50 
+F6 "A[0..15]" I L 5250 4450 50 
+F7 "PC[0..15]" I L 5250 4550 50 
 $EndSheet
-Wire Wire Line
-	9250 950  9250 8850
-Wire Wire Line
-	6400 6250 11500 6250
-Wire Wire Line
-	11500 6250 11500 7200
-Wire Wire Line
-	11500 7200 11600 7200
 $Sheet
-S 13550 7100 1400 700 
+S 7300 4000 1400 700 
 U 5FD9B0CB
 F0 "sheet5FD9B0C2" 50
 F1 "REG_EX.sch" 50
-F2 "StoreOp[0..15]" O R 14950 7300 50 
-F3 "StoreOpIn[0..15]" I L 13550 7300 50 
-F4 "Phi1" I L 13550 7200 50 
-F5 "SelCIn[0..2]" I L 13550 7400 50 
-F6 "SelC[0..2]" O R 14950 7400 50 
-F7 "CtlIn[5..19]" I L 13550 7500 50 
-F8 "Ctl[5..19]" O R 14950 7500 50 
+F2 "StoreOp[0..15]" O R 8700 4200 50 
+F3 "StoreOpIn[0..15]" I L 7300 4200 50 
+F4 "Phi1" I L 7300 4100 50 
+F5 "SelCIn[0..2]" I L 7300 4300 50 
+F6 "SelC[0..2]" O R 8700 4300 50 
+F7 "CtlIn[5..19]" I L 7300 4400 50 
+F8 "Ctl[5..19]" O R 8700 4400 50 
 $EndSheet
-Text HLabel 13300 7200 0    50   Input ~ 0
+Text HLabel 6950 4100 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	13300 7200 13550 7200
+	6950 4100 7300 4100
 Wire Bus Line
-	14950 7300 15200 7300
+	8700 4200 8900 4200
 Wire Bus Line
-	14950 7500 15200 7500
+	8700 4400 8900 4400
 Wire Bus Line
-	13450 7400 13550 7400
-Text HLabel 15200 7400 2    50   Output ~ 0
+	7150 4300 7300 4300
+Text HLabel 8900 4300 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
-	15200 7400 14950 7400
+	8900 4300 8700 4300
 Wire Bus Line
-	12950 7550 13450 7550
-Text Label 13000 7550 0    50   ~ 0
+	6600 4450 7150 4450
+Text Label 6650 4450 0    50   ~ 0
 CtlIn[5..19]
 Wire Bus Line
-	13550 7500 13450 7500
+	7300 4400 7150 4400
 Wire Bus Line
-	13450 7500 13450 7550
-Text HLabel 11350 5750 0    50   Input ~ 0
-Ins[0..10]
+	7150 4400 7150 4450
 Wire Bus Line
-	11350 5750 11600 5750
+	2650 2450 2650 3350
 Wire Bus Line
-	4100 2350 4100 3250
+	7150 4300 7150 3600
 Wire Bus Line
-	13450 7400 13450 5750
+	7150 3600 6500 3600
+Text HLabel 8150 5500 2    50   Output ~ 0
+RightOp[0..15]
 Wire Bus Line
-	13450 5750 12850 5750
+	8150 5500 6450 5500
+Text Notes 5250 6050 0    50   ~ 0
+SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Program Counter
+$Sheet
+S 5250 5300 1200 500 
+U 5FE695DA
+F0 "Select Right Operand" 50
+F1 "SelectRightOperand.sch" 50
+F2 "PC[0..15]" I L 5250 5700 50 
+F3 "B[0..15]" I L 5250 5600 50 
+F4 "RightOp[0..15]" O R 6450 5500 50 
+F5 "SelRightOp" I L 5250 5500 50 
+$EndSheet
+Text Notes 7600 5400 0    50   ~ 0
+The latch for RightOp is at the\nbeginning of the EX stage.
+Wire Wire Line
+	4450 2450 4450 5500
+Text Notes 5250 3350 0    50   ~ 0
+SelLeftOp=0  —> Select Register A\nSelLeftOp=1  —> Select 5-bit Immediate Value
 Wire Bus Line
-	3750 850  9850 850 
+	4250 3000 5250 3000
+$Sheet
+S 5250 2600 1100 500 
+U 5FDE580B
+F0 "Select Left Operand" 50
+F1 "SelectLeftOperand.sch" 50
+F2 "Ins[0..10]" I L 5250 2900 50 
+F3 "A[0..15]" I L 5250 3000 50 
+F4 "LeftOp[0..15]" O R 6350 2800 50 
+F5 "SelLeftOp" I L 5250 2800 50 
+$EndSheet
+Wire Bus Line
+	6350 2800 8250 2800
+Text HLabel 8250 2800 2    50   Output ~ 0
+LeftOp[0..15]
+Text Notes 7650 2700 0    50   ~ 0
+The latch for LeftOp is at the\nbeginning of the EX stage.
+Wire Wire Line
+	4750 2800 5250 2800
+Wire Wire Line
+	4450 5500 5250 5500
+Connection ~ 4350 2900
+Wire Bus Line
+	4350 2900 4350 3600
+Wire Bus Line
+	4250 3000 4250 4450
+Connection ~ 4250 4450
+Wire Bus Line
+	4350 3600 5250 3600
+Wire Bus Line
+	4350 2900 5250 2900
+Connection ~ 4350 3600
+Wire Bus Line
+	4350 3600 4350 4350
+Wire Wire Line
+	5250 4150 4650 4150
+Wire Wire Line
+	5250 4250 4550 4250
+Wire Bus Line
+	5250 5600 4150 5600
+Wire Bus Line
+	4150 5600 4150 4850
+Wire Bus Line
+	2450 5700 5150 5700
+Connection ~ 5150 5700
+Wire Bus Line
+	5150 5700 5250 5700
+Wire Bus Line
+	5250 4550 5150 4550
+Wire Bus Line
+	5150 4550 5150 5700
+Wire Bus Line
+	4250 4450 5250 4450
+Wire Bus Line
+	5250 4350 4350 4350
+Wire Bus Line
+	2300 2350 8400 2350
 $EndSCHEMATC

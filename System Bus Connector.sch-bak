@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 13 32
+Sheet 15 32
 Title "System Bus Connector"
 Date ""
 Rev ""
@@ -420,35 +420,7 @@ F 3 "" H 5650 2300 50  0001 C CNN
 	1    5650 2300
 	0    -1   -1   0   
 $EndComp
-Text HLabel 2750 6050 0    50   Input ~ 0
-ALUResult[0..15]
-$Comp
-L power:GND #PWR?
-U 1 1 5FDF1191
-P 3050 5950
-AR Path="/60AF64DE/5FDF1191" Ref="#PWR?"  Part="1" 
-AR Path="/5FAED671/5FDF1191" Ref="#PWR0137"  Part="1" 
-F 0 "#PWR0137" H 3050 5700 50  0001 C CNN
-F 1 "GND" V 3055 5822 50  0000 R CNN
-F 2 "" H 3050 5950 50  0001 C CNN
-F 3 "" H 3050 5950 50  0001 C CNN
-	1    3050 5950
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3050 5950 3350 5950
-$Sheet
-S 3350 5850 1250 300 
-U 5FDF1199
-F0 "sheet5FDF1189" 50
-F1 "BufferALUResultAsAddr.sch" 50
-F2 "~OE" I L 3350 5950 50 
-F3 "Q[0..15]" T R 4600 6050 50 
-F4 "D[0..15]" I L 3350 6050 50 
-$EndSheet
-Wire Bus Line
-	2750 6050 3350 6050
-Text Label 4950 6050 0    50   ~ 0
+Text HLabel 2750 6050 0    50   3State ~ 0
 Addr[0..15]
 Wire Bus Line
 	6950 5100 4950 5100
@@ -456,10 +428,6 @@ Wire Bus Line
 	4850 5200 7050 5200
 Wire Bus Line
 	2750 5700 6950 5700
-Wire Bus Line
-	4600 6050 7050 6050
-Text Notes 3050 6400 0    50   ~ 0
-Buffer the ALUResult before it leaves the main board.
 Wire Wire Line
 	6200 2500 7700 2500
 Wire Wire Line
@@ -526,6 +494,10 @@ Wire Wire Line
 	6250 4500 6200 4500
 Wire Wire Line
 	6250 4700 6200 4700
+Text Notes 5600 5000 0    50   ~ 0
+I have three pins remaining\nto use for a bank select signal.
+Wire Bus Line
+	2750 6050 7050 6050
 Wire Bus Line
 	6950 4000 6950 5100
 Wire Bus Line
@@ -534,6 +506,4 @@ Wire Bus Line
 	7050 2800 7050 5200
 Wire Bus Line
 	4850 2900 4850 5200
-Text Notes 5600 5000 0    50   ~ 0
-I have three pins remaining\nto use for a bank select signal.
 $EndSCHEMATC

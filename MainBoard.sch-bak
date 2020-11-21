@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 32
+Sheet 1 33
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -314,8 +314,8 @@ F3 "StoreOp[0..15]" O L 1550 4550 50
 F4 "ALUResult[0..15]" I R 3100 4550 50 
 F5 "CtlIn[13..19]" I R 3100 4450 50 
 F6 "Ctl[15..19]" O L 1550 4650 50 
-F7 "~MemStore" O R 3100 3850 50 
-F8 "~MemLoad" O R 3100 3950 50 
+F7 "~MemStore" T R 3100 3850 50 
+F8 "~MemLoad" T R 3100 3950 50 
 F9 "SystemBus[0..7]" T R 3100 4050 50 
 F10 "Addr[0..15]" T R 3100 4150 50 
 $EndSheet
@@ -358,10 +358,10 @@ F0 "System Bus Connector" 50
 F1 "System Bus Connector.sch" 50
 F2 "Phi2" I L 1550 2750 50 
 F3 "~RST" I L 1550 2850 50 
-F4 "~MemLoad" I R 3100 2950 50 
-F5 "~MemStore" I R 3100 3050 50 
-F6 "IO[0..7]" T R 3100 2850 50 
-F7 "Addr[0..15]" T R 3100 2750 50 
+F4 "IO[0..7]" T R 3100 2850 50 
+F5 "Addr[0..15]" T R 3100 2750 50 
+F6 "~MemLoad" T R 3100 2950 50 
+F7 "~MemStore" T R 3100 3050 50 
 $EndSheet
 Wire Wire Line
 	10350 850  10350 3650

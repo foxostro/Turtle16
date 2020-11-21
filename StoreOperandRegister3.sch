@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 18 31
+Sheet 18 32
 Title "MEM/WB: Store Operand Register"
 Date ""
 Rev ""

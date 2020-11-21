@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 11 32
+Sheet 11 33
 Title "MEM"
 Date ""
 Rev ""
@@ -13,13 +13,13 @@ Comment2 ""
 Comment3 "These devices connect to the main board via a 40-pin IDC connector."
 Comment4 "The MEM stage interfaces with memory and memory-mapped peripherals."
 $EndDescr
-Text HLabel 2300 2900 0    50   Input ~ 0
+Text HLabel 2300 2250 0    50   Input ~ 0
 StoreOpIn[0..15]
 Text HLabel 2300 1150 0    50   Input ~ 0
 CtlIn[13..19]
 Text HLabel 8800 1250 2    50   Output ~ 0
 Ctl[15..19]
-Text HLabel 8800 2900 2    50   Output ~ 0
+Text HLabel 8800 2250 2    50   Output ~ 0
 StoreOp[0..15]
 Entry Wire Line
 	2500 1150 2600 1250
@@ -31,106 +31,132 @@ Wire Bus Line
 	6350 1250 8800 1250
 Text Label 6450 1250 0    50   ~ 0
 CtlIn[15..19]
-Text Label 2950 1600 0    50   ~ 0
-~MemLoad
-Text Label 2950 1700 0    50   ~ 0
-~MemStore
 Text Label 2700 1250 3    50   ~ 0
 CtlIn13
 Text Label 2600 1250 3    50   ~ 0
 CtlIn14
 Wire Bus Line
-	2300 2900 3950 2900
-Wire Wire Line
-	8800 1700 2600 1700
-Text HLabel 8800 1700 2    50   Output ~ 0
+	2300 2250 3950 2250
+Text HLabel 8800 1700 2    50   3State ~ 0
 ~MemStore
-Text HLabel 8800 1600 2    50   Output ~ 0
+Text HLabel 8800 1600 2    50   3State ~ 0
 ~MemLoad
 Wire Wire Line
-	2600 2800 3950 2800
+	2600 2150 3950 2150
 Entry Bus Bus
-	6950 2750 7050 2650
+	6950 2100 7050 2000
 Wire Bus Line
-	7050 2650 8800 2650
+	7050 2000 8800 2000
 Wire Bus Line
-	6950 2750 6950 2900
-Connection ~ 6950 2900
+	6950 2100 6950 2250
+Connection ~ 6950 2250
 Wire Bus Line
-	6950 2900 8800 2900
-Text Label 7600 2650 2    50   ~ 0
+	6950 2250 8800 2250
+Text Label 7600 2000 2    50   ~ 0
 StoreOp[0..7]
-Text HLabel 8800 2650 2    50   3State ~ 0
+Text HLabel 8800 2000 2    50   3State ~ 0
 SystemBus[0..7]
 $Sheet
-S 3950 2700 1250 300 
+S 3950 2050 1250 300 
 U 5FF1115C
 F0 "Buffer StoreOp As Bus I/O" 50
 F1 "BufferStoreOpAsBusIO.sch" 50
-F2 "~OE" I L 3950 2800 50 
-F3 "Q[0..15]" T R 5200 2900 50 
-F4 "D[0..15]" I L 3950 2900 50 
+F2 "~OE" I L 3950 2150 50 
+F3 "Q[0..15]" T R 5200 2250 50 
+F4 "D[0..15]" I L 3950 2250 50 
 $EndSheet
 $Sheet
-S 7700 3050 1150 200 
+S 7700 2400 1150 200 
 U 5FAF68C1
 F0 "System Bus Pull-down" 50
 F1 "SystemBusPulldown.sch" 50
-F2 "StoreOp[0..15]" I L 7700 3150 50 
+F2 "StoreOp[0..15]" I L 7700 2500 50 
 $EndSheet
 Wire Bus Line
-	6950 2900 6950 3150
+	6950 2250 6950 2500
 Wire Bus Line
-	6950 3150 7700 3150
-Wire Wire Line
-	2700 1600 8800 1600
-Wire Wire Line
-	2600 1250 2600 1700
-Wire Wire Line
-	2700 1250 2700 1600
-Wire Wire Line
-	2600 1700 2600 2800
-Text HLabel 2300 3550 0    50   Input ~ 0
+	6950 2500 7700 2500
+Text HLabel 2300 2900 0    50   Input ~ 0
 ALUResult[0..15]
 Wire Bus Line
-	5200 2900 6950 2900
-Text Label 7550 2900 2    50   ~ 0
+	5200 2250 6950 2250
+Text Label 7550 2250 2    50   ~ 0
 StoreOp[0..15]
-Text Label 6700 2900 2    50   ~ 0
+Text Label 6700 2250 2    50   ~ 0
 StoreOp[0..15]
-Text Label 7550 3150 2    50   ~ 0
+Text Label 7550 2500 2    50   ~ 0
 StoreOp[0..15]
 $Comp
-L power:GND #PWR0109
+L power:GND #PWR0117
 U 1 1 5FB92C4F
-P 3650 3450
-AR Path="/60AF64DE/5FB92C4F" Ref="#PWR0109"  Part="1" 
+P 3650 2800
+AR Path="/60AF64DE/5FB92C4F" Ref="#PWR0117"  Part="1" 
 AR Path="/5FAED671/5FB92C4F" Ref="#PWR?"  Part="1" 
-F 0 "#PWR0109" H 3650 3200 50  0001 C CNN
-F 1 "GND" V 3655 3322 50  0000 R CNN
-F 2 "" H 3650 3450 50  0001 C CNN
-F 3 "" H 3650 3450 50  0001 C CNN
-	1    3650 3450
+F 0 "#PWR0117" H 3650 2550 50  0001 C CNN
+F 1 "GND" V 3655 2672 50  0000 R CNN
+F 2 "" H 3650 2800 50  0001 C CNN
+F 3 "" H 3650 2800 50  0001 C CNN
+	1    3650 2800
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	3650 3450 3950 3450
+	3650 2800 3950 2800
 $Sheet
-S 3950 3350 1250 300 
+S 3950 2700 1250 300 
 U 5FB92C55
 F0 "sheet5FB92C48" 50
 F1 "BufferALUResultAsAddr.sch" 50
-F2 "~OE" I L 3950 3450 50 
-F3 "Addr[0..15]" T R 5200 3550 50 
-F4 "ALUResult[0..15]" I L 3950 3550 50 
+F2 "~OE" I L 3950 2800 50 
+F3 "Addr[0..15]" T R 5200 2900 50 
+F4 "ALUResult[0..15]" I L 3950 2900 50 
 $EndSheet
 Wire Bus Line
-	5200 3550 8800 3550
-Text HLabel 8800 3550 2    50   3State ~ 0
+	5200 2900 8800 2900
+Text HLabel 8800 2900 2    50   3State ~ 0
 Addr[0..15]
-Connection ~ 2600 1700
 Wire Bus Line
-	2300 3550 3950 3550
+	2300 2900 3950 2900
+$Sheet
+S 3950 1400 1250 400 
+U 5FB90806
+F0 "Buffer Memory Control Signals" 50
+F1 "BufferMemoryControlSignals.sch" 50
+F2 "~OE" I L 3950 1500 50 
+F3 "~MemLoadIn" I L 3950 1600 50 
+F4 "~MemStoreIn" I L 3950 1700 50 
+F5 "~MemLoad" T R 5200 1600 50 
+F6 "~MemStore" T R 5200 1700 50 
+$EndSheet
+Wire Wire Line
+	3950 1700 2600 1700
+Wire Wire Line
+	3950 1600 2700 1600
+Wire Wire Line
+	2700 1250 2700 1600
+Wire Wire Line
+	5200 1600 8800 1600
+Wire Wire Line
+	8800 1700 5200 1700
+Wire Wire Line
+	2600 1700 2600 2150
+Wire Wire Line
+	2600 1250 2600 1700
+Connection ~ 2600 1700
+$Comp
+L power:GND #PWR0431
+U 1 1 5FB8F175
+P 3650 1500
+AR Path="/60AF64DE/5FB8F175" Ref="#PWR0431"  Part="1" 
+AR Path="/5FAED671/5FB8F175" Ref="#PWR?"  Part="1" 
+F 0 "#PWR0431" H 3650 1250 50  0001 C CNN
+F 1 "GND" V 3655 1372 50  0000 R CNN
+F 2 "" H 3650 1500 50  0001 C CNN
+F 3 "" H 3650 1500 50  0001 C CNN
+	1    3650 1500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3650 1500 3950 1500
 Wire Bus Line
 	2300 1150 6250 1150
 $EndSCHEMATC

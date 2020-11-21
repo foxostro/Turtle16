@@ -1,9 +1,9 @@
 EESchema Schematic File Version 4
 EELAYER 30 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr USLetter 11000 8500
 encoding utf-8
-Sheet 41 32
+Sheet 14 32
 Title "MEM: Buffer ALUResult"
 Date ""
 Rev ""
@@ -50,7 +50,8 @@ AR Path="/60AF64DE/600D2600/5FF007E0" Ref="C?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF007E0" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF007E0" Ref="C?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF007E0" Ref="C29"  Part="1" 
-F 0 "C29" H 1265 6846 50  0000 L CNN
+AR Path="/60AF64DE/5FB92C55/5FF007E0" Ref="C?"  Part="1" 
+F 0 "C?" H 1265 6846 50  0000 L CNN
 F 1 "100nF" H 1265 6755 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1188 6650 50  0001 C CNN
 F 3 "~" H 1150 6800 50  0001 C CNN
@@ -94,7 +95,8 @@ AR Path="/60AF64DE/600D2600/5FF007E6" Ref="C?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF007E6" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF007E6" Ref="C?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF007E6" Ref="C30"  Part="1" 
-F 0 "C30" H 1765 6846 50  0000 L CNN
+AR Path="/60AF64DE/5FB92C55/5FF007E6" Ref="C?"  Part="1" 
+F 0 "C?" H 1765 6846 50  0000 L CNN
 F 1 "100nF" H 1765 6755 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1688 6650 50  0001 C CNN
 F 3 "~" H 1650 6800 50  0001 C CNN
@@ -138,7 +140,8 @@ AR Path="/60AF64DE/600D2600/5FF007EC" Ref="#PWR?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF007EC" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF007EC" Ref="#PWR?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF007EC" Ref="#PWR0160"  Part="1" 
-F 0 "#PWR0160" H 1150 6500 50  0001 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF007EC" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 1150 6500 50  0001 C CNN
 F 1 "VCC" H 1167 6823 50  0000 C CNN
 F 2 "" H 1150 6650 50  0001 C CNN
 F 3 "" H 1150 6650 50  0001 C CNN
@@ -187,7 +190,8 @@ AR Path="/60AF64DE/600D2600/5FF007F5" Ref="#PWR?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF007F5" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF007F5" Ref="#PWR?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF007F5" Ref="#PWR0161"  Part="1" 
-F 0 "#PWR0161" H 1150 6800 50  0001 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF007F5" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 1150 6800 50  0001 C CNN
 F 1 "GND" H 1155 6877 50  0000 C CNN
 F 2 "" H 1150 7050 50  0001 C CNN
 F 3 "" H 1150 7050 50  0001 C CNN
@@ -206,7 +210,8 @@ AR Path="/60AF64DE/600D2600/5FF007FD" Ref="U?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF007FD" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF007FD" Ref="U?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF007FD" Ref="U28"  Part="1" 
-F 0 "U28" H 5800 3700 50  0000 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF007FD" Ref="U?"  Part="1" 
+F 0 "U?" H 5800 3700 50  0000 C CNN
 F 1 "74AHCT244" H 5750 3600 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 6050 2900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 6050 2900 50  0001 C CNN
@@ -222,7 +227,8 @@ AR Path="/60AF64DE/600D2600/5FF00803" Ref="#PWR?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF00803" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF00803" Ref="#PWR?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF00803" Ref="#PWR0163"  Part="1" 
-F 0 "#PWR0163" H 6050 3450 50  0001 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF00803" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 6050 3450 50  0001 C CNN
 F 1 "GND" H 6055 3527 50  0000 C CNN
 F 2 "" H 6050 3700 50  0001 C CNN
 F 3 "" H 6050 3700 50  0001 C CNN
@@ -238,7 +244,8 @@ AR Path="/60AF64DE/600D2600/5FF00809" Ref="#PWR?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF00809" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF00809" Ref="#PWR?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF00809" Ref="#PWR0162"  Part="1" 
-F 0 "#PWR0162" H 6050 1950 50  0001 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF00809" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 6050 1950 50  0001 C CNN
 F 1 "VCC" H 6067 2273 50  0000 C CNN
 F 2 "" H 6050 2100 50  0001 C CNN
 F 3 "" H 6050 2100 50  0001 C CNN
@@ -263,103 +270,103 @@ Entry Wire Line
 Wire Wire Line
 	7100 2400 6550 2400
 Text Label 6600 2400 0    50   ~ 0
-Q0
+Addr0
 Entry Wire Line
 	7100 2500 7200 2400
 Wire Wire Line
 	7100 2500 6550 2500
 Text Label 6600 2500 0    50   ~ 0
-Q1
+Addr1
 Entry Wire Line
 	7100 2600 7200 2500
 Wire Wire Line
 	7100 2600 6550 2600
 Text Label 6600 2600 0    50   ~ 0
-Q2
+Addr2
 Entry Wire Line
 	7100 2700 7200 2600
 Wire Wire Line
 	7100 2700 6550 2700
 Text Label 6600 2700 0    50   ~ 0
-Q3
+Addr3
 Entry Wire Line
 	7100 2800 7200 2700
 Wire Wire Line
 	7100 2800 6550 2800
 Text Label 6600 2800 0    50   ~ 0
-Q4
+Addr4
 Entry Wire Line
 	7100 2900 7200 2800
 Wire Wire Line
 	7100 2900 6550 2900
 Text Label 6600 2900 0    50   ~ 0
-Q5
+Addr5
 Entry Wire Line
 	7100 3000 7200 2900
 Wire Wire Line
 	7100 3000 6550 3000
 Text Label 6600 3000 0    50   ~ 0
-Q6
+Addr6
 Entry Wire Line
 	7100 3100 7200 3000
 Wire Wire Line
 	7100 3100 6550 3100
 Text Label 6600 3100 0    50   ~ 0
-Q7
+Addr7
 Entry Wire Line
 	5000 2400 4900 2300
 Wire Wire Line
 	5000 2400 5550 2400
 Text Label 5500 2400 2    50   ~ 0
-D0
+ALUResult0
 Entry Wire Line
 	5000 2500 4900 2400
 Wire Wire Line
 	5000 2500 5550 2500
 Text Label 5500 2500 2    50   ~ 0
-D1
+ALUResult1
 Entry Wire Line
 	5000 2600 4900 2500
 Wire Wire Line
 	5000 2600 5550 2600
 Text Label 5500 2600 2    50   ~ 0
-D2
+ALUResult2
 Entry Wire Line
 	5000 2700 4900 2600
 Wire Wire Line
 	5000 2700 5550 2700
 Text Label 5500 2700 2    50   ~ 0
-D3
+ALUResult3
 Entry Wire Line
 	5000 2800 4900 2700
 Wire Wire Line
 	5000 2800 5550 2800
 Text Label 5500 2800 2    50   ~ 0
-D4
+ALUResult4
 Entry Wire Line
 	5000 2900 4900 2800
 Wire Wire Line
 	5000 2900 5550 2900
 Text Label 5500 2900 2    50   ~ 0
-D5
+ALUResult5
 Entry Wire Line
 	5000 3000 4900 2900
 Wire Wire Line
 	5000 3000 5550 3000
 Text Label 5500 3000 2    50   ~ 0
-D6
+ALUResult6
 Entry Wire Line
 	5000 3100 4900 3000
 Wire Wire Line
 	5000 3100 5550 3100
 Text Label 5500 3100 2    50   ~ 0
-D7
+ALUResult7
 Wire Bus Line
 	7200 2150 7900 2150
 Text HLabel 7900 2150 2    50   3State ~ 0
-Q[0..15]
+Addr[0..15]
 Text HLabel 3850 2150 0    50   Input ~ 0
-D[0..15]
+ALUResult[0..15]
 Wire Bus Line
 	4900 2150 3850 2150
 $Comp
@@ -371,7 +378,8 @@ AR Path="/60AF64DE/600D2600/5FF0084A" Ref="U?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF0084A" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF0084A" Ref="U?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF0084A" Ref="U29"  Part="1" 
-F 0 "U29" H 5800 5800 50  0000 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF0084A" Ref="U?"  Part="1" 
+F 0 "U?" H 5800 5800 50  0000 C CNN
 F 1 "74AHCT244" H 5750 5700 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 6050 5000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 6050 5000 50  0001 C CNN
@@ -387,7 +395,8 @@ AR Path="/60AF64DE/600D2600/5FF00850" Ref="#PWR?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF00850" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF00850" Ref="#PWR?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF00850" Ref="#PWR0165"  Part="1" 
-F 0 "#PWR0165" H 6050 5550 50  0001 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF00850" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 6050 5550 50  0001 C CNN
 F 1 "GND" H 6055 5627 50  0000 C CNN
 F 2 "" H 6050 5800 50  0001 C CNN
 F 3 "" H 6050 5800 50  0001 C CNN
@@ -403,7 +412,8 @@ AR Path="/60AF64DE/600D2600/5FF00856" Ref="#PWR?"  Part="1"
 AR Path="/60AF64DE/600D275E/5FF00856" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FEF8718/5FF00856" Ref="#PWR?"  Part="1" 
 AR Path="/5FAED671/5FDF1199/5FF00856" Ref="#PWR0164"  Part="1" 
-F 0 "#PWR0164" H 6050 4050 50  0001 C CNN
+AR Path="/60AF64DE/5FB92C55/5FF00856" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 6050 4050 50  0001 C CNN
 F 1 "VCC" H 6067 4373 50  0000 C CNN
 F 2 "" H 6050 4200 50  0001 C CNN
 F 3 "" H 6050 4200 50  0001 C CNN
@@ -424,97 +434,97 @@ Entry Wire Line
 Wire Wire Line
 	7100 4500 6550 4500
 Text Label 6600 4500 0    50   ~ 0
-Q8
+Addr8
 Entry Wire Line
 	7100 4600 7200 4500
 Wire Wire Line
 	7100 4600 6550 4600
 Text Label 6600 4600 0    50   ~ 0
-Q9
+Addr9
 Entry Wire Line
 	7100 4700 7200 4600
 Wire Wire Line
 	7100 4700 6550 4700
 Text Label 6600 4700 0    50   ~ 0
-Q10
+Addr10
 Entry Wire Line
 	7100 4800 7200 4700
 Wire Wire Line
 	7100 4800 6550 4800
 Text Label 6600 4800 0    50   ~ 0
-Q11
+Addr11
 Entry Wire Line
 	7100 4900 7200 4800
 Wire Wire Line
 	7100 4900 6550 4900
 Text Label 6600 4900 0    50   ~ 0
-Q12
+Addr12
 Entry Wire Line
 	7100 5000 7200 4900
 Wire Wire Line
 	7100 5000 6550 5000
 Text Label 6600 5000 0    50   ~ 0
-Q13
+Addr13
 Entry Wire Line
 	7100 5100 7200 5000
 Wire Wire Line
 	7100 5100 6550 5100
 Text Label 6600 5100 0    50   ~ 0
-Q14
+Addr14
 Entry Wire Line
 	7100 5200 7200 5100
 Wire Wire Line
 	7100 5200 6550 5200
 Text Label 6600 5200 0    50   ~ 0
-Q15
+Addr15
 Entry Wire Line
 	5000 4500 4900 4400
 Wire Wire Line
 	5000 4500 5550 4500
 Text Label 5500 4500 2    50   ~ 0
-D8
+ALUResult8
 Entry Wire Line
 	5000 4600 4900 4500
 Wire Wire Line
 	5000 4600 5550 4600
 Text Label 5500 4600 2    50   ~ 0
-D9
+ALUResult9
 Entry Wire Line
 	5000 4700 4900 4600
 Wire Wire Line
 	5000 4700 5550 4700
 Text Label 5500 4700 2    50   ~ 0
-D10
+ALUResult10
 Entry Wire Line
 	5000 4800 4900 4700
 Wire Wire Line
 	5000 4800 5550 4800
 Text Label 5500 4800 2    50   ~ 0
-D11
+ALUResult11
 Entry Wire Line
 	5000 4900 4900 4800
 Wire Wire Line
 	5000 4900 5550 4900
 Text Label 5500 4900 2    50   ~ 0
-D12
+ALUResult12
 Entry Wire Line
 	5000 5000 4900 4900
 Wire Wire Line
 	5000 5000 5550 5000
 Text Label 5500 5000 2    50   ~ 0
-D13
+ALUResult13
 Entry Wire Line
 	5000 5100 4900 5000
 Wire Wire Line
 	5000 5100 5550 5100
 Text Label 5500 5100 2    50   ~ 0
-D14
+ALUResult14
 Entry Wire Line
 	5000 5200 4900 5100
 Wire Wire Line
 	5000 5200 5550 5200
 Text Label 5500 5200 2    50   ~ 0
-D15
+ALUResult15
 Wire Wire Line
 	4750 5450 4750 3350
 Wire Wire Line

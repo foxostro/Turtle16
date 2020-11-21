@@ -521,6 +521,39 @@ Text Label 6700 2900 2    50   ~ 0
 StoreOp[0..15]
 Text Label 7550 3150 2    50   ~ 0
 StoreOp[0..15]
+$Comp
+L power:GND #PWR?
+U 1 1 5FB92C4F
+P 3650 2250
+AR Path="/60AF64DE/5FB92C4F" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FB92C4F" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 3650 2000 50  0001 C CNN
+F 1 "GND" V 3655 2122 50  0000 R CNN
+F 2 "" H 3650 2250 50  0001 C CNN
+F 3 "" H 3650 2250 50  0001 C CNN
+	1    3650 2250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3650 2250 3950 2250
+$Sheet
+S 3950 2150 1250 300 
+U 5FB92C55
+F0 "sheet5FB92C48" 50
+F1 "BufferALUResultAsAddr.sch" 50
+F2 "~OE" I L 3950 2250 50 
+F3 "Addr[0..15]" T R 5200 2350 50 
+F4 "ALUResult[0..15]" I L 3950 2350 50 
+$EndSheet
+Wire Bus Line
+	3300 3450 3300 2350
+Wire Bus Line
+	3300 2350 3950 2350
+Connection ~ 3300 3450
+Wire Bus Line
+	5200 2350 8800 2350
+Text HLabel 8800 2350 2    50   3State ~ 0
+Addr[0..15]
 Wire Bus Line
 	2300 1150 6250 1150
 Wire Bus Line

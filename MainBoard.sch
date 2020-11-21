@@ -317,6 +317,7 @@ F6 "Ctl[15..19]" O L 1550 4650 50
 F7 "~MemStore" O R 3100 3850 50 
 F8 "~MemLoad" O R 3100 3950 50 
 F9 "SystemBus[0..7]" T R 3100 4050 50 
+F10 "Addr[0..15]" T R 3100 4150 50 
 $EndSheet
 Wire Wire Line
 	1150 750  1350 750 
@@ -346,8 +347,6 @@ Wire Bus Line
 	3450 2850 3450 4050
 Wire Bus Line
 	3450 4050 3100 4050
-Wire Bus Line
-	3100 2750 3800 2750
 Wire Wire Line
 	8800 4150 8750 4150
 Wire Wire Line
@@ -362,15 +361,12 @@ F3 "~RST" I L 1550 2850 50
 F4 "~MemLoad" I R 3100 2950 50 
 F5 "~MemStore" I R 3100 3050 50 
 F6 "IO[0..7]" T R 3100 2850 50 
-F7 "ALUResult[0..15]" I R 3100 2750 50 
+F7 "Addr[0..15]" T R 3100 2750 50 
 $EndSheet
-Wire Bus Line
-	3800 2750 3800 4550
 Wire Wire Line
 	10350 850  10350 3650
 Wire Wire Line
 	10350 3650 8750 3650
-Connection ~ 3800 2750
 Wire Wire Line
 	8800 5400 6050 5400
 Wire Wire Line
@@ -515,8 +511,6 @@ Connection ~ 7000 850
 Wire Wire Line
 	5250 1750 5250 4250
 Wire Bus Line
-	3800 1650 3800 2750
-Wire Bus Line
 	4150 5300 3800 5300
 Wire Wire Line
 	5300 1450 5300 850 
@@ -554,4 +548,12 @@ Wire Wire Line
 	9900 1250 10450 1250
 Wire Wire Line
 	10450 1250 10450 550 
+Wire Bus Line
+	3800 1650 3800 4550
+Wire Bus Line
+	3100 2750 3550 2750
+Wire Bus Line
+	3550 2750 3550 4150
+Wire Bus Line
+	3550 4150 3100 4150
 $EndSCHEMATC

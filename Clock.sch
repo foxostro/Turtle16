@@ -8,280 +8,247 @@ Title "Clock"
 Date ""
 Rev ""
 Comp ""
-Comment1 "On reset, pulse the control clock quickly to clear the pipeline."
-Comment2 "The enable pin permits us to use a control signal to halt the clock."
-Comment3 "Create the inverted clock with a 74x138 decoder."
-Comment4 "Use a simple crystal oscillator for the clock."
+Comment1 ""
+Comment2 ""
+Comment3 "On reset, pulse the control clock quickly to clear the pipeline."
+Comment4 "The clock can be halted and resumed via the /HLT and /RDY signals"
 $EndDescr
-$Comp
-L Power_Supervisor:MCP100-450D U?
-U 1 1 5DEC3D1A
-P 2600 1950
-AR Path="/5D2C0761/5DEC3D1A" Ref="U?"  Part="1" 
-AR Path="/5D2C0720/5DEC3D1A" Ref="U9"  Part="1" 
-F 0 "U9" H 2371 1996 50  0000 R CNN
-F 1 "MCP100-450D" H 2371 1905 50  0000 R CNN
-F 2 "Package_TO_SOT_THT:TO-92" H 2200 2100 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/11187f.pdf" H 2300 2200 50  0001 C CNN
-	1    2600 1950
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5DEC3D20
-P 1450 800
+P 7550 4950
 AR Path="/5D2C0761/5DEC3D20" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5DEC3D20" Ref="#PWR031"  Part="1" 
-F 0 "#PWR031" H 1450 650 50  0001 C CNN
-F 1 "VCC" H 1467 973 50  0000 C CNN
-F 2 "" H 1450 800 50  0001 C CNN
-F 3 "" H 1450 800 50  0001 C CNN
-	1    1450 800 
+AR Path="/5D2C0720/5DEC3D20" Ref="#PWR044"  Part="1" 
+F 0 "#PWR044" H 7550 4800 50  0001 C CNN
+F 1 "VCC" H 7567 5123 50  0000 C CNN
+F 2 "" H 7550 4950 50  0001 C CNN
+F 3 "" H 7550 4950 50  0001 C CNN
+	1    7550 4950
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R1
 U 1 1 5DEC3D32
-P 1450 1050
+P 7550 5100
 AR Path="/5D2C0720/5DEC3D32" Ref="R1"  Part="1" 
 AR Path="/5D2C0761/5DEC3D32" Ref="R?"  Part="1" 
-F 0 "R1" H 1518 1096 50  0000 L CNN
-F 1 "1kΩ" H 1518 1005 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1450 1050 50  0001 C CNN
-F 3 "~" H 1450 1050 50  0001 C CNN
-	1    1450 1050
+F 0 "R1" H 7618 5146 50  0000 L CNN
+F 1 "1kΩ" H 7618 5055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7550 5100 50  0001 C CNN
+F 3 "~" H 7550 5100 50  0001 C CNN
+	1    7550 5100
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R R2
+L Device:R_Small R2
 U 1 1 5DEC3D7D
-P 3750 2850
+P 9850 5900
 AR Path="/5D2C0720/5DEC3D7D" Ref="R2"  Part="1" 
 AR Path="/5D2C0761/5DEC3D7D" Ref="R?"  Part="1" 
-F 0 "R2" H 3818 2896 50  0000 L CNN
-F 1 "220Ω" H 3818 2805 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3790 2840 50  0001 C CNN
-F 3 "~" H 3750 2850 50  0001 C CNN
-	1    3750 2850
-	1    0    0    -1  
+F 0 "R2" V 9950 5850 50  0000 L CNN
+F 1 "220Ω" V 10050 5800 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 9890 5890 50  0001 C CNN
+F 3 "~" H 9850 5900 50  0001 C CNN
+	1    9850 5900
+	0    -1   1    0   
 $EndComp
 $Comp
 L Device:LED D1
 U 1 1 5DEC3D83
-P 3750 2500
+P 9500 5900
 AR Path="/5D2C0720/5DEC3D83" Ref="D1"  Part="1" 
 AR Path="/5D2C0761/5DEC3D83" Ref="D?"  Part="1" 
-F 0 "D1" V 3789 2383 50  0000 R CNN
-F 1 "Reset" V 3698 2383 50  0000 R CNN
-F 2 "LED_THT:LED_D5.0mm" H 3750 2500 50  0001 C CNN
-F 3 "~" H 3750 2500 50  0001 C CNN
-	1    3750 2500
-	0    -1   -1   0   
+F 0 "D1" H 9550 5800 50  0000 R CNN
+F 1 "Reset" H 9600 5700 50  0000 R CNN
+F 2 "LED_THT:LED_D5.0mm" H 9500 5900 50  0001 C CNN
+F 3 "~" H 9500 5900 50  0001 C CNN
+	1    9500 5900
+	-1   0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5DEC3D90
-P 6350 2450
+P 7900 1550
 AR Path="/5D2C0761/5DEC3D90" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5DEC3D90" Ref="#PWR041"  Part="1" 
-F 0 "#PWR041" H 6350 2300 50  0001 C CNN
-F 1 "VCC" H 6367 2623 50  0000 C CNN
-F 2 "" H 6350 2450 50  0001 C CNN
-F 3 "" H 6350 2450 50  0001 C CNN
-	1    6350 2450
+AR Path="/5D2C0720/5DEC3D90" Ref="#PWR046"  Part="1" 
+F 0 "#PWR046" H 7900 1400 50  0001 C CNN
+F 1 "VCC" H 7917 1723 50  0000 C CNN
+F 2 "" H 7900 1550 50  0001 C CNN
+F 3 "" H 7900 1550 50  0001 C CNN
+	1    7900 1550
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6350 2450 6350 2500
+	7900 1550 7900 1600
 $Comp
-L power:GND #PWR042
+L power:GND #PWR047
 U 1 1 5DEC3D97
-P 6350 4500
-AR Path="/5D2C0720/5DEC3D97" Ref="#PWR042"  Part="1" 
+P 7900 3500
+AR Path="/5D2C0720/5DEC3D97" Ref="#PWR047"  Part="1" 
 AR Path="/5D2C0761/5DEC3D97" Ref="#PWR?"  Part="1" 
-F 0 "#PWR042" H 6350 4250 50  0001 C CNN
-F 1 "GND" H 6355 4327 50  0000 C CNN
-F 2 "" H 6350 4500 50  0001 C CNN
-F 3 "" H 6350 4500 50  0001 C CNN
-	1    6350 4500
+F 0 "#PWR047" H 7900 3250 50  0001 C CNN
+F 1 "GND" H 7905 3327 50  0000 C CNN
+F 2 "" H 7900 3500 50  0001 C CNN
+F 3 "" H 7900 3500 50  0001 C CNN
+	1    7900 3500
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6350 4400 6350 4450
-Wire Wire Line
-	5850 4100 5750 4100
-Wire Wire Line
-	5750 4100 5750 4450
-Wire Wire Line
-	5750 4450 6350 4450
-Connection ~ 6350 4450
-Wire Wire Line
-	6350 4450 6350 4500
-Wire Wire Line
-	5100 2800 5850 2800
-Wire Wire Line
-	5850 2900 5150 2900
-Wire Wire Line
-	6850 2800 7650 2800
-Wire Wire Line
-	3750 3150 3750 3250
+	7550 6400 7550 6500
 $Comp
 L power:GND #PWR?
 U 1 1 5DEC3DB4
-P 3750 3250
+P 7550 6500
 AR Path="/5D2C0761/5DEC3DB4" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5DEC3DB4" Ref="#PWR036"  Part="1" 
-F 0 "#PWR036" H 3750 3000 50  0001 C CNN
-F 1 "GND" H 3755 3077 50  0000 C CNN
-F 2 "" H 3750 3250 50  0001 C CNN
-F 3 "" H 3750 3250 50  0001 C CNN
-	1    3750 3250
+AR Path="/5D2C0720/5DEC3DB4" Ref="#PWR045"  Part="1" 
+F 0 "#PWR045" H 7550 6250 50  0001 C CNN
+F 1 "GND" H 7555 6327 50  0000 C CNN
+F 2 "" H 7550 6500 50  0001 C CNN
+F 3 "" H 7550 6500 50  0001 C CNN
+	1    7550 6500
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5DEC3DBA
-P 5300 1000
+P 700 7600
 AR Path="/5D2C0761/5DEC3DBA" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DBA" Ref="C8"  Part="1" 
-F 0 "C8" H 5415 1046 50  0000 L CNN
-F 1 "100nF" H 5415 955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 5338 850 50  0001 C CNN
-F 3 "~" H 5300 1000 50  0001 C CNN
-	1    5300 1000
+F 0 "C8" H 815 7646 50  0000 L CNN
+F 1 "100nF" H 815 7555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 738 7450 50  0001 C CNN
+F 3 "~" H 700 7600 50  0001 C CNN
+	1    700  7600
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5DEC3DC0
-P 5800 1000
+P 1200 7600
 AR Path="/5D2C0761/5DEC3DC0" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DC0" Ref="C9"  Part="1" 
-F 0 "C9" H 5915 1046 50  0000 L CNN
-F 1 "100nF" H 5915 955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 5838 850 50  0001 C CNN
-F 3 "~" H 5800 1000 50  0001 C CNN
-	1    5800 1000
+F 0 "C9" H 1315 7646 50  0000 L CNN
+F 1 "100nF" H 1315 7555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1238 7450 50  0001 C CNN
+F 3 "~" H 1200 7600 50  0001 C CNN
+	1    1200 7600
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5DEC3DC6
-P 6300 1000
+P 1700 7600
 AR Path="/5D2C0761/5DEC3DC6" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DC6" Ref="C10"  Part="1" 
-F 0 "C10" H 6415 1046 50  0000 L CNN
-F 1 "100nF" H 6415 955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 6338 850 50  0001 C CNN
-F 3 "~" H 6300 1000 50  0001 C CNN
-	1    6300 1000
+F 0 "C10" H 1815 7646 50  0000 L CNN
+F 1 "100nF" H 1815 7555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1738 7450 50  0001 C CNN
+F 3 "~" H 1700 7600 50  0001 C CNN
+	1    1700 7600
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5DEC3DCC
-P 6800 1000
+P 2200 7600
 AR Path="/5D2C0761/5DEC3DCC" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DCC" Ref="C11"  Part="1" 
-F 0 "C11" H 6915 1046 50  0000 L CNN
-F 1 "100nF" H 6915 955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 6838 850 50  0001 C CNN
-F 3 "~" H 6800 1000 50  0001 C CNN
-	1    6800 1000
+F 0 "C11" H 2315 7646 50  0000 L CNN
+F 1 "100nF" H 2315 7555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2238 7450 50  0001 C CNN
+F 3 "~" H 2200 7600 50  0001 C CNN
+	1    2200 7600
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5DEC3DD2
-P 5300 1150
+P 700 7750
 AR Path="/5D2C0761/5DEC3DD2" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5DEC3DD2" Ref="#PWR038"  Part="1" 
-F 0 "#PWR038" H 5300 900 50  0001 C CNN
-F 1 "GND" H 5305 977 50  0000 C CNN
-F 2 "" H 5300 1150 50  0001 C CNN
-F 3 "" H 5300 1150 50  0001 C CNN
-	1    5300 1150
+AR Path="/5D2C0720/5DEC3DD2" Ref="#PWR030"  Part="1" 
+F 0 "#PWR030" H 700 7500 50  0001 C CNN
+F 1 "GND" H 705 7577 50  0000 C CNN
+F 2 "" H 700 7750 50  0001 C CNN
+F 3 "" H 700 7750 50  0001 C CNN
+	1    700  7750
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5DEC3DD8
-P 5300 850
+P 700 7450
 AR Path="/5D2C0761/5DEC3DD8" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5DEC3DD8" Ref="#PWR037"  Part="1" 
-F 0 "#PWR037" H 5300 700 50  0001 C CNN
-F 1 "VCC" H 5317 1023 50  0000 C CNN
-F 2 "" H 5300 850 50  0001 C CNN
-F 3 "" H 5300 850 50  0001 C CNN
-	1    5300 850 
+AR Path="/5D2C0720/5DEC3DD8" Ref="#PWR029"  Part="1" 
+F 0 "#PWR029" H 700 7300 50  0001 C CNN
+F 1 "VCC" H 717 7623 50  0000 C CNN
+F 2 "" H 700 7450 50  0001 C CNN
+F 3 "" H 700 7450 50  0001 C CNN
+	1    700  7450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5300 850  5800 850 
-Connection ~ 5300 850 
+	700  7450 1200 7450
+Connection ~ 700  7450
 Wire Wire Line
-	5800 850  6300 850 
-Connection ~ 5800 850 
+	1200 7450 1700 7450
+Connection ~ 1200 7450
 Wire Wire Line
-	6300 850  6800 850 
-Connection ~ 6300 850 
+	1700 7450 2200 7450
+Connection ~ 1700 7450
 Wire Wire Line
-	6800 1150 6300 1150
+	2200 7750 1700 7750
 Wire Wire Line
-	6300 1150 5800 1150
-Connection ~ 6300 1150
+	1700 7750 1200 7750
+Connection ~ 1700 7750
 Wire Wire Line
-	5800 1150 5300 1150
-Connection ~ 5800 1150
-Connection ~ 5300 1150
+	1200 7750 700  7750
+Connection ~ 1200 7750
+Connection ~ 700  7750
 $Comp
 L 74xx:74LS157 U?
 U 1 1 5DEC3DF0
-P 6350 3400
+P 7900 2500
 AR Path="/5D2C0761/5DEC3DF0" Ref="U?"  Part="1" 
-AR Path="/5D2C0720/5DEC3DF0" Ref="U10"  Part="1" 
-F 0 "U10" H 6550 4300 50  0000 C CNN
-F 1 "74AHCT157" H 6550 4200 50  0000 C CNN
-F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 6350 3400 50  0001 C CNN
-F 3 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT157DR?qs=UGVLDq%2F29ui8OtPpHyHWiQ%3D%3D" H 6350 3400 50  0001 C CNN
-	1    6350 3400
+AR Path="/5D2C0720/5DEC3DF0" Ref="U11"  Part="1" 
+F 0 "U11" H 7550 3400 50  0000 C CNN
+F 1 "74AHCT157" H 7550 3300 50  0000 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 7900 2500 50  0001 C CNN
+F 3 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT157DR?qs=UGVLDq%2F29ui8OtPpHyHWiQ%3D%3D" H 7900 2500 50  0001 C CNN
+	1    7900 2500
 	1    0    0    -1  
 $EndComp
-NoConn ~ 6850 3400
-NoConn ~ 6850 3700
+NoConn ~ 8400 2500
+NoConn ~ 8400 2800
 Wire Wire Line
-	5650 3600 5750 3600
+	7200 2500 7300 2500
 Wire Wire Line
-	5850 3800 5750 3800
+	7400 2900 7300 2900
 Wire Wire Line
-	5750 3800 5750 3700
-Connection ~ 5750 3700
+	7300 2900 7300 2800
+Connection ~ 7300 2800
 Wire Wire Line
-	5850 3700 5750 3700
+	7400 2800 7300 2800
+Connection ~ 7300 2600
 Wire Wire Line
-	5750 3700 5750 3600
-Connection ~ 5750 3500
+	7400 2600 7300 2600
 Wire Wire Line
-	5850 3500 5750 3500
+	7300 2600 7300 2500
 Wire Wire Line
-	5750 3500 5750 3400
-Wire Wire Line
-	5850 3400 5750 3400
-Connection ~ 7650 2800
-NoConn ~ -500 4000
-NoConn ~ -500 4500
+	7400 2500 7300 2500
+NoConn ~ -500 4100
+NoConn ~ -500 4600
 $Comp
 L 74xx:74LS04 U?
 U 1 1 5DFDD475
-P 3350 2350
+P 8950 5900
 AR Path="/5D2C0761/5DFDD475" Ref="U?"  Part="3" 
 AR Path="/5D2C0720/5DFDD475" Ref="U7"  Part="1" 
-F 0 "U7" H 3350 2667 50  0000 C CNN
-F 1 "74AHCT04" H 3350 2576 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3350 2350 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3350 2350 50  0001 C CNN
-	1    3350 2350
-	1    0    0    -1  
+F 0 "U7" H 8950 6100 50  0000 C CNN
+F 1 "74AHCT04" H 8950 6200 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8950 5900 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 8950 5900 50  0001 C CNN
+	1    8950 5900
+	1    0    0    1   
 $EndComp
 $Comp
 L 74xx:74LS04 U?
@@ -299,392 +266,186 @@ $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 6 1 5E326F07
-P -800 4500
+P -800 4600
 AR Path="/5D8005AF/5D800744/5E326F07" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E326F07" Ref="U7"  Part="6" 
-F 0 "U7" H -800 4817 50  0000 C CNN
-F 1 "74AHCT04" H -800 4726 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4500 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4500 50  0001 C CNN
-	6    -800 4500
+F 0 "U7" H -800 4917 50  0000 C CNN
+F 1 "74AHCT04" H -800 4826 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4600 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4600 50  0001 C CNN
+	6    -800 4600
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 5 1 5E3CD911
-P -800 4000
+P -800 4100
 AR Path="/5D8005AF/5D800744/5E3CD911" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E3CD911" Ref="U7"  Part="5" 
-F 0 "U7" H -800 4317 50  0000 C CNN
-F 1 "74AHCT04" H -800 4226 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4000 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4000 50  0001 C CNN
-	5    -800 4000
+F 0 "U7" H -800 4417 50  0000 C CNN
+F 1 "74AHCT04" H -800 4326 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4100 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4100 50  0001 C CNN
+	5    -800 4100
 	1    0    0    -1  
 $EndComp
 $Comp
 L Switch:SW_Push SW?
 U 1 1 5DEC3DEA
-P 1450 1950
+P 7450 5900
 AR Path="/5D2C0761/5DEC3DEA" Ref="SW?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DEA" Ref="SW1"  Part="1" 
-F 0 "SW1" V 1500 2250 50  0000 R CNN
-F 1 "Reset" V 1400 2300 50  0000 R CNN
-F 2 "Button_Switch_THT:SW_PUSH_6mm_H5mm" H 1450 2150 50  0001 C CNN
-F 3 "~" H 1450 2150 50  0001 C CNN
-	1    1450 1950
+F 0 "SW1" V 7500 6200 50  0000 R CNN
+F 1 "Reset" V 7400 6250 50  0000 R CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H5mm" H 7450 6100 50  0001 C CNN
+F 3 "~" H 7450 6100 50  0001 C CNN
+	1    7450 5900
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	1450 800  1450 950 
-Wire Wire Line
-	1450 1150 1450 1350
-Wire Wire Line
-	1450 1350 2200 1350
-Connection ~ 1450 1350
-Wire Wire Line
-	1450 1350 1450 1750
-Wire Wire Line
-	4350 4000 4350 1950
-Connection ~ 4350 1950
-Wire Wire Line
-	4350 4000 5850 4000
+	7550 4950 7550 5000
 $Comp
 L Device:C C?
 U 1 1 5E2B93B8
-P 7300 1000
+P 2700 7600
 AR Path="/5D2C0761/5E2B93B8" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/5E2B93B8" Ref="C12"  Part="1" 
-F 0 "C12" H 7415 1046 50  0000 L CNN
-F 1 "100nF" H 7415 955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 7338 850 50  0001 C CNN
-F 3 "~" H 7300 1000 50  0001 C CNN
-	1    7300 1000
+F 0 "C12" H 2815 7646 50  0000 L CNN
+F 1 "100nF" H 2815 7555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2738 7450 50  0001 C CNN
+F 3 "~" H 2700 7600 50  0001 C CNN
+	1    2700 7600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6800 850  7300 850 
+	2200 7450 2700 7450
 Wire Wire Line
-	7300 1150 6800 1150
-Connection ~ 6800 850 
-Connection ~ 6800 1150
-Wire Wire Line
-	7650 5500 8400 5500
-Wire Wire Line
-	5150 2900 5150 4250
-Wire Wire Line
-	5150 4250 3150 4250
-Text Label 7700 5400 0    50   ~ 0
+	2700 7750 2200 7750
+Connection ~ 2200 7450
+Connection ~ 2200 7750
+Text Label 9350 1200 0    50   ~ 0
 RawClockSignal
 $Comp
-L power:GND #PWR044
+L power:GND #PWR049
 U 1 1 5E07A6CE
-P 8250 5950
-F 0 "#PWR044" H 8250 5700 50  0001 C CNN
-F 1 "GND" H 8255 5777 50  0000 C CNN
-F 2 "" H 8250 5950 50  0001 C CNN
-F 3 "" H 8250 5950 50  0001 C CNN
-	1    8250 5950
+P 9800 1650
+F 0 "#PWR049" H 9800 1400 50  0001 C CNN
+F 1 "GND" H 9805 1477 50  0000 C CNN
+F 2 "" H 9800 1650 50  0001 C CNN
+F 3 "" H 9800 1650 50  0001 C CNN
+	1    9800 1650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8400 5800 8250 5800
+	9950 1600 9800 1600
 Wire Wire Line
-	8250 5800 8250 5950
+	9800 1600 9800 1650
 $Comp
-L power:VCC #PWR043
+L power:VCC #PWR048
 U 1 1 5E080807
-P 8150 5700
-F 0 "#PWR043" H 8150 5550 50  0001 C CNN
-F 1 "VCC" V 8168 5827 50  0000 L CNN
-F 2 "" H 8150 5700 50  0001 C CNN
-F 3 "" H 8150 5700 50  0001 C CNN
-	1    8150 5700
+P 9700 1500
+F 0 "#PWR048" H 9700 1350 50  0001 C CNN
+F 1 "VCC" V 9718 1627 50  0000 L CNN
+F 2 "" H 9700 1500 50  0001 C CNN
+F 3 "" H 9700 1500 50  0001 C CNN
+	1    9700 1500
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	8150 5700 8400 5700
+	9700 1500 9950 1500
 $Comp
 L Connector:Conn_01x05_Female J2
 U 1 1 5E00A594
-P 8600 5600
-F 0 "J2" H 8492 5175 50  0000 C CNN
-F 1 "External Clock" H 8492 5266 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical" H 8600 5600 50  0001 C CNN
-F 3 "~" H 8600 5600 50  0001 C CNN
-	1    8600 5600
+P 10150 1400
+F 0 "J2" H 10042 975 50  0000 C CNN
+F 1 "External Clock" H 10042 1066 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical" H 10150 1400 50  0001 C CNN
+F 3 "~" H 10150 1400 50  0001 C CNN
+	1    10150 1400
 	1    0    0    1   
 $EndComp
-Connection ~ 5750 3600
-Wire Wire Line
-	5750 3600 5750 3500
 $Comp
 L power:VCC #PWR?
 U 1 1 5DEC3E01
-P 5650 3600
+P 7200 2500
 AR Path="/5D2C0761/5DEC3E01" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5DEC3E01" Ref="#PWR039"  Part="1" 
-F 0 "#PWR039" H 5650 3450 50  0001 C CNN
-F 1 "VCC" V 5650 3800 50  0000 C CNN
-F 2 "" H 5650 3600 50  0001 C CNN
-F 3 "" H 5650 3600 50  0001 C CNN
-	1    5650 3600
+AR Path="/5D2C0720/5DEC3E01" Ref="#PWR041"  Part="1" 
+F 0 "#PWR041" H 7200 2350 50  0001 C CNN
+F 1 "VCC" V 7200 2700 50  0000 C CNN
+F 2 "" H 7200 2500 50  0001 C CNN
+F 3 "" H 7200 2500 50  0001 C CNN
+	1    7200 2500
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	5850 3100 5750 3100
+	7400 2200 7300 2200
 Wire Wire Line
-	3200 4300 5200 4300
+	7450 6400 7550 6400
 Wire Wire Line
-	5200 4300 5200 3200
-Text Notes 4500 2550 0    50   ~ 0
-Pass register clock through the 157 too,\nto reduce skew between the two clocks.
+	7650 6300 7650 6400
 Wire Wire Line
-	2900 1950 3000 1950
-Wire Wire Line
-	1450 3150 2500 3150
-Connection ~ 2500 3150
-Wire Wire Line
-	2500 3150 3750 3150
-Wire Wire Line
-	2500 2350 2500 3150
-Wire Wire Line
-	1450 2150 1450 3150
-Wire Wire Line
-	3750 2350 3650 2350
-Wire Wire Line
-	3750 2650 3750 2700
-Connection ~ 3750 3150
-Wire Wire Line
-	3750 3150 3750 3000
-Wire Wire Line
-	3050 2350 3000 2350
-Wire Wire Line
-	3000 2350 3000 1950
-Connection ~ 3000 1950
-Wire Wire Line
-	3000 1950 4350 1950
-Text Notes 2950 1900 0    50   ~ 0
-An inverter is necessary as a buffer,\nto avoid pulling too much current\nfrom the MCP100.
-Wire Wire Line
-	2500 1350 2500 1550
-Wire Wire Line
-	5200 3200 5850 3200
+	7450 6100 7450 6400
 $Comp
-L power:GND #PWR040
+L power:GND #PWR042
 U 1 1 5F533C17
-P 5750 3100
-F 0 "#PWR040" H 5750 2850 50  0001 C CNN
-F 1 "GND" V 5755 2972 50  0000 R CNN
-F 2 "" H 5750 3100 50  0001 C CNN
-F 3 "" H 5750 3100 50  0001 C CNN
-	1    5750 3100
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4350 1950 10250 1950
-Wire Wire Line
-	7550 5600 8400 5600
-Wire Wire Line
-	6850 3100 7550 3100
-$Comp
-L 74xx:74LS04 U?
-U 4 1 5E3CC9AE
-P -800 3500
-AR Path="/5D8005AF/5D800744/5E3CC9AE" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5E3CC9AE" Ref="U7"  Part="4" 
-F 0 "U7" H -800 3817 50  0000 C CNN
-F 1 "74AHCT04" H -800 3726 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3500 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3500 50  0001 C CNN
-	4    -800 3500
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 3 1 5E3CB33D
-P -800 3000
-AR Path="/5D8005AF/5D800744/5E3CB33D" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5E3CB33D" Ref="U7"  Part="3" 
-F 0 "U7" H -800 3317 50  0000 C CNN
-F 1 "74AHCT04" H -800 3226 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3000 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3000 50  0001 C CNN
-	3    -800 3000
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7550 3100 7550 3200
-Wire Wire Line
-	7650 2800 8850 2800
-Wire Wire Line
-	7650 2800 7650 5500
-Wire Wire Line
-	5100 5400 8400 5400
-Wire Wire Line
-	5100 5400 5100 4900
-Wire Wire Line
-	5100 2800 5100 4900
-Connection ~ 5100 4900
-Wire Wire Line
-	1700 4900 5100 4900
-Wire Wire Line
-	3200 5600 3200 4300
-Wire Wire Line
-	3050 5600 3200 5600
-Wire Wire Line
-	1700 4900 1700 5500
-Wire Wire Line
-	3150 4250 3150 5500
-Wire Wire Line
-	1700 5500 2050 5500
-Connection ~ 1700 5500
-Wire Wire Line
-	1450 5500 1700 5500
-Wire Wire Line
-	1700 6000 2050 6000
-$Comp
-L power:GND #PWR?
-U 1 1 5E153BBE
-P 2550 6600
-AR Path="/5D2C0CA7/5E153BBE" Ref="#PWR?"  Part="1" 
-AR Path="/5D29E36D/5E153BBE" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5E153BBE" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5E153BBE" Ref="#PWR035"  Part="1" 
-F 0 "#PWR035" H 2550 6350 50  0001 C CNN
-F 1 "GND" H 2555 6427 50  0000 C CNN
-F 2 "" H 2550 6600 50  0001 C CNN
-F 3 "" H 2550 6600 50  0001 C CNN
-	1    2550 6600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5E153BC4
-P 2550 5150
-AR Path="/5D29E36D/5E153BC4" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5E153BC4" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5E153BC4" Ref="#PWR034"  Part="1" 
-F 0 "#PWR034" H 2550 5000 50  0001 C CNN
-F 1 "VCC" H 2567 5323 50  0000 C CNN
-F 2 "" H 2550 5150 50  0001 C CNN
-F 3 "" H 2550 5150 50  0001 C CNN
-	1    2550 5150
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS138 U?
-U 1 1 5E153BCA
-P 2550 5800
-AR Path="/5D29E36D/5E153BCA" Ref="U?"  Part="1" 
-AR Path="/5DAA13E6/5E153BCA" Ref="U?"  Part="1" 
-AR Path="/5D2C0720/5E153BCA" Ref="U8"  Part="1" 
-F 0 "U8" H 2250 6400 50  0000 C CNN
-F 1 "74AHCT138" H 2250 6300 50  0000 C CNN
-F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 2550 5800 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct138" H 2550 5800 50  0001 C CNN
-	1    2550 5800
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2550 6500 2550 6600
-Wire Wire Line
-	2000 5700 2050 5700
-Wire Wire Line
-	2050 5600 2000 5600
-NoConn ~ 3050 5700
-NoConn ~ 3050 5800
-NoConn ~ 3050 5900
-NoConn ~ 3050 6000
-NoConn ~ 3050 6100
-NoConn ~ 3050 6200
-Wire Wire Line
-	2550 5150 2550 5200
-Wire Wire Line
-	3050 5500 3150 5500
-Wire Wire Line
-	2000 5650 2000 5700
-Connection ~ 2000 5650
-Wire Wire Line
-	2000 5600 2000 5650
-Wire Wire Line
-	1950 5650 2000 5650
-$Comp
-L power:GND #PWR?
-U 1 1 5E153BDF
-P 1950 5650
-AR Path="/5D2C0CA7/5E153BDF" Ref="#PWR?"  Part="1" 
-AR Path="/5D29E36D/5E153BDF" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5E153BDF" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5E153BDF" Ref="#PWR032"  Part="1" 
-F 0 "#PWR032" H 1950 5400 50  0001 C CNN
-F 1 "GND" V 1950 5450 50  0000 C CNN
-F 2 "" H 1950 5650 50  0001 C CNN
-F 3 "" H 1950 5650 50  0001 C CNN
-	1    1950 5650
+P 7300 2200
+F 0 "#PWR042" H 7300 1950 50  0001 C CNN
+F 1 "GND" V 7305 2072 50  0000 R CNN
+F 2 "" H 7300 2200 50  0001 C CNN
+F 3 "" H 7300 2200 50  0001 C CNN
+	1    7300 2200
 	0    1    1    0   
 $EndComp
 $Comp
 L Oscillator:ACO-xxxMHz OSC1
 U 1 1 5D387BCA
-P 1150 5500
-F 0 "OSC1" H 807 5546 50  0000 R CNN
-F 1 "16MHz" H 807 5455 50  0000 R CNN
-F 2 "Oscillator:Oscillator_DIP-14" H 1600 5150 50  0001 C CNN
-F 3 "http://www.conwin.com/datasheets/cx/cx030.pdf" H 1050 5500 50  0001 C CNN
-	1    1150 5500
+P 1350 1200
+F 0 "OSC1" H 1100 1300 50  0000 R CNN
+F 1 "16MHz" H 1100 1200 50  0000 R CNN
+F 2 "Oscillator:Oscillator_DIP-14" H 1800 850 50  0001 C CNN
+F 3 "http://www.conwin.com/datasheets/cx/cx030.pdf" H 1250 1200 50  0001 C CNN
+	1    1350 1200
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1150 5150 1150 5200
+	1350 850  1350 900 
 $Comp
-L power:VCC #PWR029
+L power:VCC #PWR031
 U 1 1 5E0F85C8
-P 1150 5150
-F 0 "#PWR029" H 1150 5000 50  0001 C CNN
-F 1 "VCC" H 1167 5323 50  0000 C CNN
-F 2 "" H 1150 5150 50  0001 C CNN
-F 3 "" H 1150 5150 50  0001 C CNN
-	1    1150 5150
+P 1350 850
+F 0 "#PWR031" H 1350 700 50  0001 C CNN
+F 1 "VCC" H 1367 1023 50  0000 C CNN
+F 2 "" H 1350 850 50  0001 C CNN
+F 3 "" H 1350 850 50  0001 C CNN
+	1    1350 850 
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR030
+L power:GND #PWR032
 U 1 1 5D888695
-P 1150 5850
-F 0 "#PWR030" H 1150 5600 50  0001 C CNN
-F 1 "GND" H 1155 5677 50  0000 C CNN
-F 2 "" H 1150 5850 50  0001 C CNN
-F 3 "" H 1150 5850 50  0001 C CNN
-	1    1150 5850
+P 1350 1550
+F 0 "#PWR032" H 1350 1300 50  0001 C CNN
+F 1 "GND" H 1355 1377 50  0000 C CNN
+F 2 "" H 1350 1550 50  0001 C CNN
+F 3 "" H 1350 1550 50  0001 C CNN
+	1    1350 1550
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1150 5800 1150 5850
-NoConn ~ -500 3000
-NoConn ~ -500 3500
+	1350 1500 1350 1550
 $Comp
 L power:VCC #PWR?
 U 1 1 5FCD1869
-P -1100 1950
+P -1100 2700
 AR Path="/5D2C0761/5FCD1869" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FCD1869" Ref="#PWR027"  Part="1" 
-F 0 "#PWR027" H -1100 1800 50  0001 C CNN
-F 1 "VCC" H -1083 2123 50  0000 C CNN
-F 2 "" H -1100 1950 50  0001 C CNN
-F 3 "" H -1100 1950 50  0001 C CNN
-	1    -1100 1950
+F 0 "#PWR027" H -1100 2550 50  0001 C CNN
+F 1 "VCC" H -1083 2873 50  0000 C CNN
+F 2 "" H -1100 2700 50  0001 C CNN
+F 3 "" H -1100 2700 50  0001 C CNN
+	1    -1100 2700
 	1    0    0    -1  
 $EndComp
-Connection ~ -1100 3000
-Wire Wire Line
-	-1100 3000 -1100 3500
-Connection ~ -1100 3500
-Wire Wire Line
-	-1100 3500 -1100 4000
-Connection ~ -1100 4000
-Wire Wire Line
-	-1100 4000 -1100 4500
 $Comp
 L power:GND #PWR028
 U 1 1 5FD35768
@@ -700,242 +461,459 @@ F 3 "" H -1100 5950 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	-1100 5800 -1100 5950
-Wire Wire Line
-	-1100 4500 -1100 4800
-Connection ~ -1100 4500
-Text HLabel 10250 1950 2    50   Output ~ 0
+Text HLabel 9700 4250 2    50   Output ~ 0
 ~RST
-Text HLabel 10250 3200 2    50   Output ~ 0
-Phi2
-Text HLabel 1700 6000 0    50   Input ~ 0
+Text HLabel 3400 1850 0    50   Input ~ 0
 ~HLT
-Text HLabel 10250 2800 2    50   Output ~ 0
-Phi1
+$Comp
+L Device:C C?
+U 1 1 5FCE8935
+P 3200 7600
+AR Path="/5D2C0761/5FCE8935" Ref="C?"  Part="1" 
+AR Path="/5D2C0720/5FCE8935" Ref="C13"  Part="1" 
+F 0 "C13" H 3315 7646 50  0000 L CNN
+F 1 "100nF" H 3315 7555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3238 7450 50  0001 C CNN
+F 3 "~" H 3200 7600 50  0001 C CNN
+	1    3200 7600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7450 5300 7450 5700
+Wire Wire Line
+	7550 5200 7550 5300
+Wire Wire Line
+	7650 5300 7650 5500
 $Comp
 L power:PWR_FLAG #FLG03
 U 1 1 5FC2FB0D
-P 2200 1350
-F 0 "#FLG03" H 2200 1425 50  0001 C CNN
-F 1 "PWR_FLAG" H 2200 1523 50  0000 C CNN
-F 2 "" H 2200 1350 50  0001 C CNN
-F 3 "~" H 2200 1350 50  0001 C CNN
-	1    2200 1350
-	1    0    0    -1  
-$EndComp
-Connection ~ 2200 1350
-Wire Wire Line
-	2200 1350 2500 1350
-$Comp
-L power:GND #PWR?
-U 1 1 5E153BD2
-P 1900 6150
-AR Path="/5D2C0CA7/5E153BD2" Ref="#PWR?"  Part="1" 
-AR Path="/5D29E36D/5E153BD2" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5E153BD2" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5E153BD2" Ref="#PWR033"  Part="1" 
-F 0 "#PWR033" H 1900 5900 50  0001 C CNN
-F 1 "GND" V 1900 5950 50  0000 C CNN
-F 2 "" H 1900 6150 50  0001 C CNN
-F 3 "" H 1900 6150 50  0001 C CNN
-	1    1900 6150
+P 7650 5300
+F 0 "#FLG03" H 7650 5375 50  0001 C CNN
+F 1 "PWR_FLAG" V 7650 5600 50  0000 C CNN
+F 2 "" H 7650 5300 50  0001 C CNN
+F 3 "~" H 7650 5300 50  0001 C CNN
+	1    7650 5300
 	0    1    1    0   
 $EndComp
+Connection ~ 7650 5300
 Wire Wire Line
-	2050 6100 2000 6100
-Connection ~ -1100 2500
+	7450 5300 7550 5300
 Wire Wire Line
-	-1100 2500 -1100 3000
+	9250 5900 9350 5900
+$Comp
+L Power_Supervisor:MCP100-450D U?
+U 1 1 5DEC3D1A
+P 7750 5900
+AR Path="/5D2C0761/5DEC3D1A" Ref="U?"  Part="1" 
+AR Path="/5D2C0720/5DEC3D1A" Ref="U10"  Part="1" 
+F 0 "U10" H 8000 6350 50  0000 R CNN
+F 1 "MCP100-450D" H 8250 6250 50  0000 R CNN
+F 2 "Package_TO_SOT_THT:TO-92" H 7350 6050 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/11187f.pdf" H 7450 6150 50  0001 C CNN
+	1    7750 5900
+	1    0    0    -1  
+$EndComp
+Text HLabel 10100 1900 2    50   Output ~ 0
+Phi1
+Text HLabel 10100 2200 2    50   Output ~ 0
+Phi2
 Wire Wire Line
-	-1100 1950 -1100 2500
+	9200 1300 9950 1300
+Wire Wire Line
+	9100 1400 9950 1400
+Wire Wire Line
+	10100 2200 9100 2200
+Wire Wire Line
+	8400 2200 9100 2200
+Connection ~ 9100 2200
+Wire Wire Line
+	9100 2200 9100 1400
+Wire Wire Line
+	9200 1900 10100 1900
+Wire Wire Line
+	8400 1900 9200 1900
+Connection ~ 9200 1900
+Wire Wire Line
+	9200 1900 9200 1300
+Wire Wire Line
+	9750 5900 9650 5900
+Wire Wire Line
+	10100 5900 9950 5900
 $Comp
 L 74xx:74LS04 U?
 U 2 1 5E338851
-P -800 2500
+P 6050 3700
 AR Path="/5D8005AF/5D800744/5E338851" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E338851" Ref="U7"  Part="2" 
-F 0 "U7" H -800 2817 50  0000 C CNN
-F 1 "74AHCT04" H -800 2726 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 2500 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 2500 50  0001 C CNN
-	2    -800 2500
-	1    0    0    -1  
-$EndComp
-NoConn ~ -500 2500
-Text Notes 7900 4500 0    50   ~ 0
-If the ~RDY~ signal goes high\nthen the Phi1 clock drops to\nzero and stops.\n\nThe Phi2 clock is unaffected\nand only stops during reset.
-Wire Wire Line
-	2000 6100 2000 6150
-Wire Wire Line
-	2000 6200 2050 6200
-Wire Wire Line
-	1900 6150 2000 6150
-Connection ~ 2000 6150
-Wire Wire Line
-	2000 6150 2000 6200
-$Comp
-L 74xx:74LS244 U?
-U 1 1 5FC6C8D2
-P 9400 3300
-AR Path="/60AF64DE/600805C3/5FC6C8D2" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FC6C8D2" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FC6C8D2" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FC6C8D2" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FB90806/5FC6C8D2" Ref="U?"  Part="1" 
-AR Path="/5D2C0720/5FC6C8D2" Ref="U74"  Part="1" 
-F 0 "U74" H 9150 4100 50  0000 C CNN
-F 1 "74AHCT244" H 9100 4000 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 9400 3300 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 9400 3300 50  0001 C CNN
-	1    9400 3300
+F 0 "U7" H 6050 4017 50  0000 C CNN
+F 1 "74AHCT04" H 6050 3926 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 6050 3700 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 6050 3700 50  0001 C CNN
+	2    6050 3700
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR?
-U 1 1 5FC6C8D8
-P 9400 4100
-AR Path="/60AF64DE/600805C3/5FC6C8D8" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FC6C8D8" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FC6C8D8" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FC6C8D8" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/5FB90806/5FC6C8D8" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FC6C8D8" Ref="#PWR0157"  Part="1" 
-F 0 "#PWR0157" H 9400 3850 50  0001 C CNN
-F 1 "GND" H 9405 3927 50  0000 C CNN
-F 2 "" H 9400 4100 50  0001 C CNN
-F 3 "" H 9400 4100 50  0001 C CNN
-	1    9400 4100
+L 74xx:74LS04 U?
+U 3 1 5E3CB33D
+P -800 3100
+AR Path="/5D8005AF/5D800744/5E3CB33D" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5E3CB33D" Ref="U7"  Part="3" 
+F 0 "U7" H -800 3417 50  0000 C CNN
+F 1 "74AHCT04" H -800 3326 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3100 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3100 50  0001 C CNN
+	3    -800 3100
+	1    0    0    -1  
+$EndComp
+Text Notes 8450 3200 0    50   ~ 0
+During the reset cycle, the\nPhi1 clock runs freely and\nthe Phi2 clock is stopped.
+$Comp
+L 74xx:74LS161 U?
+U 1 1 6005583E
+P 4350 3150
+AR Path="/5D2C07CD/6005583E" Ref="U?"  Part="1" 
+AR Path="/5D2C0720/6005583E" Ref="U8"  Part="1" 
+F 0 "U8" H 4100 3950 50  0000 C CNN
+F 1 "74F161" H 4100 3850 50  0000 C CNN
+F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 4350 3150 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74f161a" H 4350 3150 50  0001 C CNN
+	1    4350 3150
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
-U 1 1 5FC6C8DE
-P 9400 2500
-AR Path="/60AF64DE/600805C3/5FC6C8DE" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FC6C8DE" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FC6C8DE" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FC6C8DE" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/5FB90806/5FC6C8DE" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FC6C8DE" Ref="#PWR0156"  Part="1" 
-F 0 "#PWR0156" H 9400 2350 50  0001 C CNN
-F 1 "VCC" H 9417 2673 50  0000 C CNN
-F 2 "" H 9400 2500 50  0001 C CNN
-F 3 "" H 9400 2500 50  0001 C CNN
-	1    9400 2500
+U 1 1 60055844
+P 4350 2350
+AR Path="/5D2C07CD/60055844" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/60055844" Ref="#PWR035"  Part="1" 
+F 0 "#PWR035" H 4350 2200 50  0001 C CNN
+F 1 "VCC" H 4367 2523 50  0000 C CNN
+F 2 "" H 4350 2350 50  0001 C CNN
+F 3 "" H 4350 2350 50  0001 C CNN
+	1    4350 2350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8900 3200 8850 3200
-Connection ~ 7550 3200
-Wire Wire Line
-	7550 3200 7550 5600
-Wire Wire Line
-	10250 2800 9950 2800
-Wire Wire Line
-	10250 3200 9950 3200
-Wire Wire Line
-	9950 2800 9950 2900
-Wire Wire Line
-	9950 3100 9900 3100
-Connection ~ 9950 2800
-Wire Wire Line
-	9950 2800 9900 2800
-Wire Wire Line
-	9900 2900 9950 2900
-Connection ~ 9950 2900
-Wire Wire Line
-	9950 2900 9950 3000
-Wire Wire Line
-	9900 3000 9950 3000
-Connection ~ 9950 3000
-Wire Wire Line
-	9950 3000 9950 3100
-Wire Wire Line
-	9950 3200 9950 3300
-Wire Wire Line
-	9950 3500 9900 3500
-Connection ~ 9950 3200
-Wire Wire Line
-	9950 3200 9900 3200
-Wire Wire Line
-	9900 3400 9950 3400
-Connection ~ 9950 3400
-Wire Wire Line
-	9950 3400 9950 3500
-Wire Wire Line
-	9900 3300 9950 3300
-Connection ~ 9950 3300
-Wire Wire Line
-	9950 3300 9950 3400
-Wire Wire Line
-	8850 2800 8850 2900
-Wire Wire Line
-	8850 3100 8900 3100
-Connection ~ 8850 2800
-Wire Wire Line
-	8850 2800 8900 2800
-Wire Wire Line
-	8850 2900 8900 2900
-Connection ~ 8850 2900
-Wire Wire Line
-	8850 2900 8850 3000
-Wire Wire Line
-	8900 3000 8850 3000
-Connection ~ 8850 3000
-Wire Wire Line
-	8850 3000 8850 3100
-Wire Wire Line
-	8850 3200 8850 3300
-Wire Wire Line
-	8850 3500 8900 3500
-Connection ~ 8850 3200
-Wire Wire Line
-	8850 3200 7550 3200
-Wire Wire Line
-	8900 3400 8850 3400
-Connection ~ 8850 3400
-Wire Wire Line
-	8850 3400 8850 3500
-Wire Wire Line
-	8850 3300 8900 3300
-Connection ~ 8850 3300
-Wire Wire Line
-	8850 3300 8850 3400
 $Comp
 L power:GND #PWR?
-U 1 1 5FCC7C3B
-P 8800 3800
-AR Path="/5D2C0CA7/5FCC7C3B" Ref="#PWR?"  Part="1" 
-AR Path="/5D29E36D/5FCC7C3B" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5FCC7C3B" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FCC7C3B" Ref="#PWR0117"  Part="1" 
-F 0 "#PWR0117" H 8800 3550 50  0001 C CNN
-F 1 "GND" V 8800 3600 50  0000 C CNN
-F 2 "" H 8800 3800 50  0001 C CNN
-F 3 "" H 8800 3800 50  0001 C CNN
-	1    8800 3800
+U 1 1 6005584A
+P 4350 3950
+AR Path="/5D2C07CD/6005584A" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/6005584A" Ref="#PWR036"  Part="1" 
+F 0 "#PWR036" H 4350 3700 50  0001 C CNN
+F 1 "GND" H 4355 3777 50  0000 C CNN
+F 2 "" H 4350 3950 50  0001 C CNN
+F 3 "" H 4350 3950 50  0001 C CNN
+	1    4350 3950
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4850 3150
+NoConn ~ 4850 2950
+NoConn ~ 4850 2850
+NoConn ~ 4850 2750
+Wire Wire Line
+	3750 2850 3800 2850
+$Comp
+L power:GND #PWR?
+U 1 1 600C3337
+P 3750 2850
+AR Path="/5D2C0CA7/600C3337" Ref="#PWR?"  Part="1" 
+AR Path="/5D29E36D/600C3337" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/600C3337" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/600C3337" Ref="#PWR033"  Part="1" 
+F 0 "#PWR033" H 3750 2600 50  0001 C CNN
+F 1 "GND" V 3750 2650 50  0000 C CNN
+F 2 "" H 3750 2850 50  0001 C CNN
+F 3 "" H 3750 2850 50  0001 C CNN
+	1    3750 2850
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	8800 3800 8900 3800
+	3850 2750 3800 2750
+Wire Wire Line
+	3800 2750 3800 2850
+Connection ~ 3800 2850
+Wire Wire Line
+	3800 2850 3850 2850
+Wire Wire Line
+	3800 2850 3800 2950
+Wire Wire Line
+	3800 2950 3850 2950
+Wire Wire Line
+	3750 3250 3800 3250
 $Comp
-L Device:C C?
-U 1 1 5FCE8935
-P 7800 1000
-AR Path="/5D2C0761/5FCE8935" Ref="C?"  Part="1" 
-AR Path="/5D2C0720/5FCE8935" Ref="C78"  Part="1" 
-F 0 "C78" H 7915 1046 50  0000 L CNN
-F 1 "100nF" H 7915 955 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 7838 850 50  0001 C CNN
-F 3 "~" H 7800 1000 50  0001 C CNN
-	1    7800 1000
+L power:GND #PWR?
+U 1 1 60364329
+P 3750 3250
+AR Path="/5D2C0CA7/60364329" Ref="#PWR?"  Part="1" 
+AR Path="/5D29E36D/60364329" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/60364329" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/60364329" Ref="#PWR034"  Part="1" 
+F 0 "#PWR034" H 3750 3000 50  0001 C CNN
+F 1 "GND" V 3750 3050 50  0000 C CNN
+F 2 "" H 3750 3250 50  0001 C CNN
+F 3 "" H 3750 3250 50  0001 C CNN
+	1    3750 3250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3850 3150 3800 3150
+Wire Wire Line
+	3800 3150 3800 3250
+Connection ~ 3800 3250
+Wire Wire Line
+	3800 3250 3850 3250
+Wire Wire Line
+	3800 3250 3800 3350
+Wire Wire Line
+	3800 3350 3850 3350
+Wire Wire Line
+	8050 5900 8550 5900
+Wire Wire Line
+	7400 3200 7300 3200
+$Comp
+L power:GND #PWR043
+U 1 1 604169C5
+P 7300 3200
+F 0 "#PWR043" H 7300 2950 50  0001 C CNN
+F 1 "GND" V 7305 3072 50  0000 R CNN
+F 2 "" H 7300 3200 50  0001 C CNN
+F 3 "" H 7300 3200 50  0001 C CNN
+	1    7300 3200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7400 3100 6950 3100
+Wire Wire Line
+	7400 1900 7300 1900
+Wire Wire Line
+	7300 2000 7400 2000
+Connection ~ 7300 2500
+Wire Wire Line
+	7300 2600 7300 2800
+Wire Wire Line
+	7300 1900 7300 1950
+Wire Wire Line
+	10100 5900 10100 6000
+$Comp
+L power:GND #PWR?
+U 1 1 604A0C28
+P 10100 6000
+AR Path="/5D2C0761/604A0C28" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/604A0C28" Ref="#PWR050"  Part="1" 
+F 0 "#PWR050" H 10100 5750 50  0001 C CNN
+F 1 "GND" H 10105 5827 50  0000 C CNN
+F 2 "" H 10100 6000 50  0001 C CNN
+F 3 "" H 10100 6000 50  0001 C CNN
+	1    10100 6000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7300 850  7800 850 
+	8650 5900 8550 5900
+Connection ~ 7550 6400
 Wire Wire Line
-	7800 1150 7300 1150
-Text HLabel 8750 3700 0    50   Input ~ 0
+	7550 6400 7650 6400
+Text Notes 1500 3150 0    50   ~ 0
+U8 loads a new value synchronously\non the rising edge of the raw clock,\nexcept on ~RST~ when it immediately\nresets to zero. The output Q0 controls\nwhether the Phi1 clock is enabled.
+$Comp
+L 74xx:74LS04 U?
+U 4 1 5E3CC9AE
+P -800 3600
+AR Path="/5D8005AF/5D800744/5E3CC9AE" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5E3CC9AE" Ref="U7"  Part="4" 
+F 0 "U7" H -800 3917 50  0000 C CNN
+F 1 "74AHCT04" H -800 3826 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3600 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3600 50  0001 C CNN
+	4    -800 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2700 7450 3200 7450
+Connection ~ 2700 7450
+Connection ~ 2700 7750
+Wire Wire Line
+	3200 7750 2700 7750
+Connection ~ 7550 5300
+Wire Wire Line
+	7550 5300 7650 5300
+Connection ~ 8550 5900
+Wire Wire Line
+	8550 4250 9700 4250
+Connection ~ -1100 4100
+Connection ~ -1100 4600
+Wire Wire Line
+	-1100 4600 -1100 4800
+Wire Wire Line
+	-1100 4100 -1100 4600
+NoConn ~ -500 3100
+$Comp
+L power:GND #PWR?
+U 1 1 5FBC417A
+P 6000 3050
+AR Path="/5D2C0CA7/5FBC417A" Ref="#PWR?"  Part="1" 
+AR Path="/5D29E36D/5FBC417A" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/5FBC417A" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FBC417A" Ref="#PWR040"  Part="1" 
+AR Path="/60906BCD/5FDE580B/5FBC417A" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FE695DA/5FBC417A" Ref="#PWR?"  Part="1" 
+F 0 "#PWR040" H 6000 2800 50  0001 C CNN
+F 1 "GND" H 6005 2877 50  0000 C CNN
+F 2 "" H 6000 3050 50  0001 C CNN
+F 3 "" H 6000 3050 50  0001 C CNN
+	1    6000 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FBC4180
+P 6000 1600
+AR Path="/5D29E36D/5FBC4180" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/5FBC4180" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FBC4180" Ref="#PWR039"  Part="1" 
+AR Path="/60906BCD/5FDE580B/5FBC4180" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FE695DA/5FBC4180" Ref="#PWR?"  Part="1" 
+F 0 "#PWR039" H 6000 1450 50  0001 C CNN
+F 1 "VCC" H 6017 1773 50  0000 C CNN
+F 2 "" H 6000 1600 50  0001 C CNN
+F 3 "" H 6000 1600 50  0001 C CNN
+	1    6000 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS138 U?
+U 1 1 5FBC4186
+P 6000 2250
+AR Path="/5D29E36D/5FBC4186" Ref="U?"  Part="1" 
+AR Path="/5DAA13E6/5FBC4186" Ref="U?"  Part="1" 
+AR Path="/5D2C0720/5FBC4186" Ref="U9"  Part="1" 
+AR Path="/60906BCD/5FDE580B/5FBC4186" Ref="U?"  Part="1" 
+AR Path="/60906BCD/5FE695DA/5FBC4186" Ref="U?"  Part="1" 
+F 0 "U9" H 5700 2850 50  0000 C CNN
+F 1 "74AHCT138" H 5700 2750 50  0000 C CNN
+F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 6000 2250 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct138" H 6000 2250 50  0001 C CNN
+	1    6000 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6000 2950 6000 3050
+Wire Wire Line
+	5450 2150 5500 2150
+Wire Wire Line
+	5500 2050 5450 2050
+NoConn ~ 6500 2150
+NoConn ~ 6500 2250
+NoConn ~ 6500 2350
+NoConn ~ 6500 2450
+NoConn ~ 6500 2550
+NoConn ~ 6500 2650
+Wire Wire Line
+	6000 1600 6000 1650
+Wire Wire Line
+	5450 2100 5450 2150
+Connection ~ 5450 2100
+Wire Wire Line
+	5450 2050 5450 2100
+Wire Wire Line
+	5400 2100 5450 2100
+$Comp
+L power:GND #PWR?
+U 1 1 5FBC419A
+P 5400 2100
+AR Path="/5D2C0CA7/5FBC419A" Ref="#PWR?"  Part="1" 
+AR Path="/5D29E36D/5FBC419A" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/5FBC419A" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FBC419A" Ref="#PWR037"  Part="1" 
+AR Path="/60906BCD/5FDE580B/5FBC419A" Ref="#PWR?"  Part="1" 
+AR Path="/60906BCD/5FE695DA/5FBC419A" Ref="#PWR?"  Part="1" 
+F 0 "#PWR037" H 5400 1850 50  0001 C CNN
+F 1 "GND" V 5400 1900 50  0000 C CNN
+F 2 "" H 5400 2100 50  0001 C CNN
+F 3 "" H 5400 2100 50  0001 C CNN
+	1    5400 2100
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1650 1200 3050 1200
+Wire Wire Line
+	5500 1950 5000 1950
+Wire Wire Line
+	5000 1950 5000 1200
+Connection ~ 5000 1200
+Wire Wire Line
+	5000 1200 9950 1200
+Wire Wire Line
+	6500 1950 7300 1950
+Connection ~ 7300 1950
+Wire Wire Line
+	7300 1950 7300 2000
+Wire Wire Line
+	3400 2650 3850 2650
+Text HLabel 3400 2650 0    50   Input ~ 0
 ~RDY
 Wire Wire Line
-	8750 3700 8900 3700
+	4850 2650 5500 2650
+Wire Wire Line
+	5500 2550 5400 2550
+$Comp
+L power:GND #PWR038
+U 1 1 5FC72428
+P 5400 2550
+F 0 "#PWR038" H 5400 2300 50  0001 C CNN
+F 1 "GND" V 5405 2422 50  0000 R CNN
+F 2 "" H 5400 2550 50  0001 C CNN
+F 3 "" H 5400 2550 50  0001 C CNN
+	1    5400 2550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4850 2450 4850 1850
+Wire Wire Line
+	4850 1850 3400 1850
+Wire Wire Line
+	4850 2450 5500 2450
+Connection ~ -1100 3600
+Wire Wire Line
+	-1100 3600 -1100 4100
+Connection ~ -1100 3100
+Wire Wire Line
+	-1100 3100 -1100 3600
+NoConn ~ -500 3600
+Wire Wire Line
+	3050 3450 3050 1200
+Wire Wire Line
+	3050 3450 3850 3450
+Connection ~ 3050 1200
+Wire Wire Line
+	3050 1200 5000 1200
+Wire Wire Line
+	-1100 2700 -1100 3100
+Wire Wire Line
+	5000 1950 5000 3700
+Wire Wire Line
+	5000 3700 5750 3700
+Connection ~ 5000 1950
+NoConn ~ 6500 2050
+Wire Wire Line
+	6700 2300 6700 3700
+Wire Wire Line
+	6700 3700 6350 3700
+Wire Wire Line
+	6700 2300 7400 2300
+Text Notes 5500 3950 0    50   ~ 0
+This inverter generates Phi2.
+Wire Wire Line
+	3850 3650 3700 3650
+Wire Wire Line
+	3700 3650 3700 4250
+Wire Wire Line
+	3700 4250 6950 4250
+Connection ~ 8550 4250
+Wire Wire Line
+	8550 4250 8550 5900
+Connection ~ 6950 4250
+Wire Wire Line
+	6950 4250 8550 4250
+Wire Wire Line
+	6950 3100 6950 4250
 $EndSCHEMATC

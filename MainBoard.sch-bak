@@ -22,7 +22,7 @@ F2 "ALUResult[0..15]" I L 5400 1650 50
 F3 "Phi1" I L 5400 1450 50 
 F4 "~RST" I L 5400 1550 50 
 F5 "~J" I L 5400 1750 50 
-F6 "PC_IF[0..15]" O R 6850 1600 50 
+F6 "PC[0..15]" O R 6850 1600 50 
 $EndSheet
 $Comp
 L Mechanical:MountingHole_Pad H1

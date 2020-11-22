@@ -138,10 +138,10 @@ Wire Wire Line
 	3650 2150 3950 2150
 Text HLabel 3650 2150 0    50   Input ~ 0
 ~RDY
-Wire Bus Line
-	2300 1150 6250 1150
 Text HLabel 3650 2800 0    50   Input ~ 0
 ~RDY
 Text Notes 3050 3750 0    50   ~ 0
 The ~RDY~ signal is an open-collector signal shared between all bus\ndevices. When a bus device takes this signal high, the CPU releases the\nsystem bus I/O lines, address lines, and control signals, putting them\ninto a high-Z state. This allows peripheral devices to drive the bus\nwhen needed.
+Wire Bus Line
+	2300 1150 6250 1150
 $EndSCHEMATC

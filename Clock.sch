@@ -882,34 +882,6 @@ Wire Wire Line
 	4250 5200 4250 5300
 Wire Wire Line
 	4250 5300 4300 5300
-Wire Wire Line
-	4250 5700 4300 5700
-Wire Wire Line
-	4300 5600 4250 5600
-Wire Wire Line
-	4250 5650 4250 5700
-Connection ~ 4250 5650
-Wire Wire Line
-	4250 5600 4250 5650
-Wire Wire Line
-	4200 5650 4250 5650
-$Comp
-L power:GND #PWR?
-U 1 1 5FBBF4A6
-P 4200 5650
-AR Path="/5D2C0CA7/5FBBF4A6" Ref="#PWR?"  Part="1" 
-AR Path="/5D29E36D/5FBBF4A6" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5FBBF4A6" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FBBF4A6" Ref="#PWR042"  Part="1" 
-AR Path="/60906BCD/5FDE580B/5FBBF4A6" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FE695DA/5FBBF4A6" Ref="#PWR?"  Part="1" 
-F 0 "#PWR042" H 4200 5400 50  0001 C CNN
-F 1 "GND" V 4200 5450 50  0000 C CNN
-F 2 "" H 4200 5650 50  0001 C CNN
-F 3 "" H 4200 5650 50  0001 C CNN
-	1    4200 5650
-	0    1    1    0   
-$EndComp
 $Comp
 L power:VCC #PWR040
 U 1 1 5FBDB7F6
@@ -1425,4 +1397,34 @@ Text Notes 3150 1100 0    50   ~ 0
 The Phi1 clock halts while The ~HLT~ signal\nis low AND the signal from the Resume\ncircuit is low. So, the resume button can be\nused to ignore the ~HLT~ signal for exactly\none clock cycle. 
 Text Notes 6150 1500 0    50   ~ 0
 U12 is used to generate Phi1 and\nhas convenient enable inputs.
+Wire Wire Line
+	4200 5600 4250 5600
+$Comp
+L power:GND #PWR?
+U 1 1 5FD996F8
+P 4200 5600
+AR Path="/5D2C0CA7/5FD996F8" Ref="#PWR?"  Part="1" 
+AR Path="/5D29E36D/5FD996F8" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/5FD996F8" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FD996F8" Ref="#PWR0482"  Part="1" 
+F 0 "#PWR0482" H 4200 5350 50  0001 C CNN
+F 1 "GND" V 4200 5400 50  0000 C CNN
+F 2 "" H 4200 5600 50  0001 C CNN
+F 3 "" H 4200 5600 50  0001 C CNN
+	1    4200 5600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4300 5500 4250 5500
+Wire Wire Line
+	4250 5500 4250 5600
+Connection ~ 4250 5600
+Wire Wire Line
+	4250 5600 4300 5600
+Wire Wire Line
+	4250 5600 4250 5700
+Wire Wire Line
+	4250 5700 4300 5700
+NoConn ~ 4250 2750
+NoConn ~ -500 3100
 $EndSCHEMATC

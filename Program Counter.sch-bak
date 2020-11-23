@@ -857,10 +857,10 @@ Text Label 4400 3600 0    50   ~ 0
 ALUResult1
 Text Label 4400 3500 0    50   ~ 0
 ALUResult0
+Text Notes 900  2450 0    50   ~ 0
+Configure the ALU for FTAB=1 and FTF=0. This allows the A and B registers\nto be transparent and the F register to update on the clock. (with the new\nvalue appearing 13ns after the clock)\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in F on the rising edge of the clock. This resets\nthe program counter to zero.\n\nWhen incrementing (normal operation), set the ALU to RS1=0, RS0=0, I2=0,\nI1=1, I0=1. The value in RS has the ALU use operands A and F. The value in I\nhas the ALU perform addition. The input port A is hard wired to provide a\none. So, whatever is in the output register is incremented on the clock.\n\nWhen jumping, set the ALU to RS1=1, RS0=0, I2=0, I1=1, I0=1. This has the\nALU compute B+0 and latch it in F on the clock. The B input of the ALU\ngets its value from the sixteen-bit ALUResult computed in EX.
 Wire Bus Line
 	4250 3300 4250 4900
 Wire Bus Line
 	7850 1350 7850 3200
-Text Notes 900  2450 0    50   ~ 0
-Configure the ALU for FTAB=1 and FTF=0. This allows the A and B registers\nto be transparent and the F register to update on the clock. (with the new\nvalue appearing 13ns after the clock)\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in F on the rising edge of the clock. This resets\nthe program counter to zero.\n\nWhen incrementing (normal operation), set the ALU to RS1=0, RS0=0, I2=0,\nI1=1, I0=1. The value in RS has the ALU use operands A and F. The value in I\nhas the ALU perform addition. The input port A should be hard wired to\nprovide a one. So, whatever is in the output register is incremented on the\nclock.\n\nWhen jumping, set the ALU to RS1=1, RS0=0, I2=0, I1=1, I0=1. This has the\nALU compute B+0 and latch it in F on the clock. The B input of the ALU\ngets its value from the sixteen-bit ALUResult computed in EX.
 $EndSCHEMATC

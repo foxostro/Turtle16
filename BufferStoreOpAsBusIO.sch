@@ -767,10 +767,10 @@ Wire Wire Line
 	1450 6700 1950 6700
 Wire Wire Line
 	1950 7000 1450 7000
+Text Notes 2150 4900 0    50   ~ 0
+Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
 Wire Bus Line
 	4700 2200 4700 5150
 Wire Bus Line
 	7000 2200 7000 5150
-Text Notes 2150 4900 0    50   ~ 0
-Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
 $EndSCHEMATC

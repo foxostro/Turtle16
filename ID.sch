@@ -1894,6 +1894,12 @@ Wire Wire Line
 	9200 6100 9700 6100
 Wire Wire Line
 	9200 6400 9700 6400
+Wire Wire Line
+	950  6250 1600 6250
+Wire Wire Line
+	950  6150 1500 6150
+Wire Wire Line
+	950  6050 1400 6050
 Wire Bus Line
 	5550 800  6050 800 
 Wire Bus Line
@@ -1908,10 +1914,4 @@ Wire Bus Line
 	5550 800  5550 2150
 Wire Bus Line
 	7900 2150 7900 3750
-Wire Wire Line
-	950  6250 1600 6250
-Wire Wire Line
-	950  6150 1500 6150
-Wire Wire Line
-	950  6050 1400 6050
 $EndSCHEMATC

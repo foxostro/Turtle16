@@ -1501,10 +1501,6 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 $EndComp
 Text HLabel 7400 1850 2    50   Output ~ 0
 ALUResult[0..15]
-Wire Bus Line
-	4550 1900 4550 4800
-Wire Bus Line
-	6550 1850 6550 4800
 Text Label 6450 2250 2    50   ~ 0
 ALUResult1
 Text Label 6450 2350 2    50   ~ 0
@@ -1535,4 +1531,8 @@ Text Label 6450 4800 2    50   ~ 0
 ALUResult14
 Text Label 6450 4900 2    50   ~ 0
 ALUResult15
+Wire Bus Line
+	4550 1900 4550 4800
+Wire Bus Line
+	6550 1850 6550 4800
 $EndSCHEMATC

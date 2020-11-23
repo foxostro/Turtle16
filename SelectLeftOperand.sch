@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 28 33
+Sheet 29 33
 Title "Select Left Operand"
 Date ""
 Rev ""
@@ -1284,14 +1284,14 @@ Wire Wire Line
 	5950 5350 5950 3400
 Wire Wire Line
 	5950 5350 7700 5350
+Connection ~ 7700 5350
+Connection ~ 5950 3400
+Wire Wire Line
+	5950 3400 4100 3400
 Wire Bus Line
 	6900 6300 6900 6800
 Wire Bus Line
 	7250 2150 7250 5050
 Wire Bus Line
 	9250 2100 9250 9150
-Connection ~ 7700 5350
-Connection ~ 5950 3400
-Wire Wire Line
-	5950 3400 4100 3400
 $EndSCHEMATC

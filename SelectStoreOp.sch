@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 25 33
+Sheet 24 33
 Title "Select Store Operand"
 Date ""
 Rev ""
@@ -1706,6 +1706,9 @@ Wire Wire Line
 	5400 5600 5350 5600
 Wire Wire Line
 	5350 5600 5350 5700
+Connection ~ 5350 5700
+Wire Wire Line
+	5350 5700 5400 5700
 Wire Bus Line
 	11500 5650 11500 6450
 Wire Bus Line
@@ -1718,7 +1721,4 @@ Wire Bus Line
 	10350 2350 10350 6950
 Wire Bus Line
 	13850 2350 13850 8500
-Connection ~ 5350 5700
-Wire Wire Line
-	5350 5700 5400 5700
 $EndSCHEMATC

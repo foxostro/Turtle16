@@ -468,9 +468,6 @@ Wire Bus Line
 	4950 5700 6950 5700
 Text HLabel 7000 1350 2    50   Output ~ 0
 ~RDY
-NoConn ~ 6200 2700
-NoConn ~ 6200 2800
-NoConn ~ 5700 2800
 $Comp
 L power:VCC #PWR?
 U 1 1 5FBB7C05
@@ -667,6 +664,36 @@ Wire Wire Line
 Connection ~ 4100 1350
 Text Notes 1300 2300 0    50   ~ 0
 The bus connector has a shared open-drain active-high RDY signal.\nIf all bus devices are ready then they allow the line to remain high.\nIf any bus device is not ready then it drives the line low.\nWhen RDY is driven low, the CPU Phi1 clock stops and the CPU\ndisconnects from the bus, placing the lines in a high-Z mode.\n\nIf no bus devices are connected then the CPU is always ready.
+Text Label 5000 2700 0    50   ~ 0
+RDY
+Wire Wire Line
+	4950 2800 5700 2800
+Text Label 6950 2700 2    50   ~ 0
+Bank1
+Wire Wire Line
+	6950 2700 6200 2700
+Text Label 6950 2800 2    50   ~ 0
+Bank2
+Wire Wire Line
+	6950 2800 6200 2800
+Entry Wire Line
+	6950 2700 7050 2800
+Entry Wire Line
+	6950 2800 7050 2900
+Entry Wire Line
+	4950 2800 4850 2900
+Text Label 4950 2800 0    50   ~ 0
+Bank0
+Wire Bus Line
+	7050 2800 7050 2900
+Wire Bus Line
+	7050 2900 7500 2900
+Text HLabel 7500 2900 2    50   Output ~ 0
+Bank[0..2]
+Wire Bus Line
+	4850 2900 4400 2900
+Text HLabel 4400 2900 0    50   Output ~ 0
+Bank[0..2]
 Wire Bus Line
 	4950 4300 4950 5700
 Wire Bus Line
@@ -675,6 +702,4 @@ Wire Bus Line
 	4850 3100 4850 6050
 Wire Bus Line
 	7050 3100 7050 6050
-Text Label 5000 2700 0    50   ~ 0
-RDY
 $EndSCHEMATC

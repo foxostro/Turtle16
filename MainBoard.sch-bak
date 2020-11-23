@@ -14,15 +14,15 @@ Comment3 ""
 Comment4 "Microcomputer built from 74xx series logic chips."
 $EndDescr
 $Sheet
-S 5400 1350 1450 500 
+S 4050 1350 1450 500 
 U 5D2C07CD
 F0 "Program Counter" 50
 F1 "Program Counter.sch" 50
-F2 "ALUResult[0..15]" I L 5400 1650 50 
-F3 "Phi1" I L 5400 1450 50 
-F4 "~RST" I L 5400 1550 50 
-F5 "~J" I L 5400 1750 50 
-F6 "PC[0..15]" O R 6850 1600 50 
+F2 "ALUResult[0..15]" I L 4050 1650 50 
+F3 "Phi1" I L 4050 1450 50 
+F4 "~RST" I L 4050 1550 50 
+F5 "~J" I L 4050 1750 50 
+F6 "PC[0..15]" O R 5500 1450 50 
 $EndSheet
 $Comp
 L Mechanical:MountingHole_Pad H1
@@ -124,7 +124,7 @@ F5 "~HLT" I L 600 750 50
 F6 "~RDY" I L 600 1000 50 
 $EndSheet
 Wire Wire Line
-	5400 1450 5300 1450
+	4050 1450 3900 1450
 Wire Wire Line
 	1150 950  1250 950 
 Wire Wire Line
@@ -251,9 +251,9 @@ Wire Bus Line
 Wire Bus Line
 	10100 4300 10000 4300
 Wire Bus Line
-	5400 1650 3800 1650
+	4050 1650 3800 1650
 Wire Wire Line
-	5400 1750 5250 1750
+	4050 1750 3900 1750
 Wire Bus Line
 	6050 5300 8800 5300
 Wire Wire Line
@@ -261,13 +261,13 @@ Wire Wire Line
 Wire Bus Line
 	1550 4450 1000 4450
 Wire Wire Line
-	8450 2200 8450 1750
+	8450 3000 8450 1750
 Wire Wire Line
 	8450 1750 8600 1750
 Wire Wire Line
 	8600 1650 8400 1650
 Wire Wire Line
-	8400 1650 8400 2150
+	8400 1650 8400 2950
 $Sheet
 S 5700 3750 1350 1100
 U 60A71BBF
@@ -354,7 +354,7 @@ Wire Wire Line
 Wire Wire Line
 	8750 4150 8750 3650
 $Sheet
-S 1550 2650 1550 600 
+S 1550 2550 1550 700 
 U 5FAED671
 F0 "System Bus Connector" 50
 F1 "System Bus Connector.sch" 50
@@ -365,6 +365,7 @@ F5 "Addr[0..15]" T R 3100 2750 50
 F6 "~MemLoad" T R 3100 2950 50 
 F7 "~MemStore" T R 3100 3050 50 
 F8 "~RDY" O R 3100 3150 50 
+F9 "Bank[0..2]" O R 3100 2650 50 
 $EndSheet
 Wire Wire Line
 	10350 850  10350 3650
@@ -373,22 +374,22 @@ Wire Wire Line
 Wire Wire Line
 	8800 5400 6050 5400
 Wire Wire Line
-	5300 2150 8400 2150
+	5300 2950 8400 2950
 Wire Wire Line
-	5350 2200 8450 2200
+	5350 3000 8450 3000
 Wire Wire Line
 	8600 1850 8500 1850
 Wire Wire Line
-	8500 1850 8500 2250
+	8500 1850 8500 3050
 Wire Wire Line
-	8500 2250 5400 2250
+	8500 3050 5400 3050
 Wire Wire Line
-	5400 2250 5400 3950
+	5400 3050 5400 3950
 Wire Bus Line
 	3100 4550 3800 4550
 Connection ~ 3800 4550
 Wire Bus Line
-	6850 1600 7100 1600
+	5500 1450 7100 1450
 Wire Wire Line
 	7100 1350 7000 1350
 $Sheet
@@ -396,10 +397,13 @@ S 7100 1250 1200 600
 U 5FE35007
 F0 "IF" 50
 F1 "IF.sch" 50
-F2 "PC_IF[0..15]" I L 7100 1600 50 
+F2 "PC[0..15]" I L 7100 1450 50 
 F3 "InsOut[0..15]" O R 8300 1550 50 
 F4 "PCOut[0..15]" O R 8300 1450 50 
 F5 "Phi1" I L 7100 1350 50 
+F6 "IO[0..7]" T L 7100 1750 50 
+F7 "Addr[0..15]" T L 7100 1650 50 
+F8 "Bank[0..2]" T L 7100 1550 50 
 $EndSheet
 Wire Bus Line
 	8300 1550 8600 1550
@@ -448,13 +452,13 @@ Wire Wire Line
 Wire Wire Line
 	5700 4050 5350 4050
 Wire Wire Line
-	5350 4050 5350 2200
+	5350 4050 5350 3000
 Wire Wire Line
 	5700 4150 5300 4150
 Wire Wire Line
-	5300 4150 5300 2150
+	5300 4150 5300 2950
 Wire Wire Line
-	5700 4250 5250 4250
+	5700 4250 3900 4250
 Wire Bus Line
 	8800 4650 7050 4650
 Wire Bus Line
@@ -507,19 +511,19 @@ Wire Bus Line
 Wire Bus Line
 	3900 5200 4150 5200
 Wire Wire Line
-	1300 850  5300 850 
+	1300 850  3900 850 
 Wire Wire Line
 	7000 1350 7000 850 
 Connection ~ 7000 850 
 Wire Wire Line
-	5250 1750 5250 4250
+	3900 1750 3900 4250
 Wire Bus Line
 	4150 5300 3800 5300
 Wire Wire Line
-	5300 1450 5300 850 
-Connection ~ 5300 850 
+	3900 1450 3900 850 
+Connection ~ 3900 850 
 Wire Wire Line
-	5300 850  7000 850 
+	3900 850  7000 850 
 Wire Wire Line
 	1300 850  1300 5500
 Wire Wire Line
@@ -536,15 +540,15 @@ Wire Wire Line
 Wire Wire Line
 	8400 1350 8400 950 
 Wire Wire Line
-	8400 950  5200 950 
+	8400 950  3800 950 
 Connection ~ 1250 950 
 Wire Wire Line
-	5200 1550 5200 950 
+	3800 1550 3800 950 
 Wire Wire Line
-	5200 1550 5400 1550
-Connection ~ 5200 950 
+	3800 1550 4050 1550
+Connection ~ 3800 950 
 Wire Wire Line
-	5200 950  1250 950 
+	3800 950  1250 950 
 Wire Wire Line
 	1250 950  1250 2850
 Wire Wire Line
@@ -578,4 +582,24 @@ Wire Wire Line
 Connection ~ 3250 3400
 Wire Wire Line
 	3250 3400 3250 3150
+Connection ~ 3550 2850
+Wire Bus Line
+	7100 1750 7000 1750
+Wire Bus Line
+	3550 2850 7000 2850
+Wire Bus Line
+	7000 1750 7000 2850
+Wire Bus Line
+	7100 1650 6900 1650
+Wire Bus Line
+	6900 1650 6900 2750
+Wire Bus Line
+	6900 2750 3650 2750
+Connection ~ 3650 2750
+Wire Bus Line
+	3100 2650 6800 2650
+Wire Bus Line
+	6800 2650 6800 1550
+Wire Bus Line
+	6800 1550 7100 1550
 $EndSCHEMATC

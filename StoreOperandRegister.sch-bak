@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 15 33
+Sheet 26 33
 Title "REG/EX: Store Operand Register"
 Date ""
 Rev ""

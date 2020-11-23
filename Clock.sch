@@ -555,14 +555,14 @@ $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 3 1 5E3CB33D
-P -800 3100
+P 1150 2550
 AR Path="/5D8005AF/5D800744/5E3CB33D" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E3CB33D" Ref="U4"  Part="3" 
-F 0 "U4" H -800 3417 50  0000 C CNN
-F 1 "74AHCT04" H -800 3326 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3100 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3100 50  0001 C CNN
-	3    -800 3100
+F 0 "U4" H 1150 2867 50  0000 C CNN
+F 1 "74AHCT04" H 1150 2776 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1150 2550 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1150 2550 50  0001 C CNN
+	3    1150 2550
 	1    0    0    -1  
 $EndComp
 Text Notes 8450 3200 0    50   ~ 0
@@ -850,8 +850,6 @@ Text Label 9800 1400 0    50   ~ 0
 Phi2
 Text Label 9800 1300 0    50   ~ 0
 Phi1
-Wire Wire Line
-	-1100 2700 -1100 3100
 Text Label 3900 5800 0    50   ~ 0
 Phi1
 Wire Wire Line
@@ -1261,9 +1259,6 @@ Wire Wire Line
 Connection ~ 6950 4250
 Wire Wire Line
 	6950 4250 8550 4250
-Connection ~ -1100 3100
-Wire Wire Line
-	-1100 3100 -1100 3600
 Wire Wire Line
 	4300 6000 3100 6000
 Wire Wire Line
@@ -1426,5 +1421,55 @@ Wire Wire Line
 Wire Wire Line
 	4250 5700 4300 5700
 NoConn ~ 4250 2750
-NoConn ~ -500 3100
+$Comp
+L Device:R_Small R23
+U 1 1 5FBCBDB2
+P 1950 2550
+AR Path="/5D2C0720/5FBCBDB2" Ref="R23"  Part="1" 
+AR Path="/5D2C0761/5FBCBDB2" Ref="R?"  Part="1" 
+F 0 "R23" V 2050 2500 50  0000 L CNN
+F 1 "220Ω" V 2150 2450 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 1990 2540 50  0001 C CNN
+F 3 "~" H 1950 2550 50  0001 C CNN
+	1    1950 2550
+	0    -1   1    0   
+$EndComp
+$Comp
+L Device:LED D2
+U 1 1 5FBCBDB8
+P 1600 2550
+AR Path="/5D2C0720/5FBCBDB8" Ref="D2"  Part="1" 
+AR Path="/5D2C0761/5FBCBDB8" Ref="D?"  Part="1" 
+F 0 "D2" H 1650 2450 50  0000 R CNN
+F 1 "Halt" H 1700 2350 50  0000 R CNN
+F 2 "LED_THT:LED_D5.0mm" H 1600 2550 50  0001 C CNN
+F 3 "~" H 1600 2550 50  0001 C CNN
+	1    1600 2550
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1850 2550 1750 2550
+Wire Wire Line
+	2200 2550 2050 2550
+Wire Wire Line
+	2200 2550 2200 2650
+$Comp
+L power:GND #PWR?
+U 1 1 5FBCBDC1
+P 2200 2650
+AR Path="/5D2C0761/5FBCBDC1" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FBCBDC1" Ref="#PWR0473"  Part="1" 
+F 0 "#PWR0473" H 2200 2400 50  0001 C CNN
+F 1 "GND" H 2205 2477 50  0000 C CNN
+F 2 "" H 2200 2650 50  0001 C CNN
+F 3 "" H 2200 2650 50  0001 C CNN
+	1    2200 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	-1100 2700 -1100 3600
+Text HLabel 750  2550 0    50   Input ~ 0
+~HLT
+Wire Wire Line
+	750  2550 850  2550
 $EndSCHEMATC

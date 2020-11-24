@@ -398,8 +398,6 @@ Wire Wire Line
 	2450 3750 1700 3750
 Wire Wire Line
 	2450 3650 1700 3650
-Wire Bus Line
-	1500 2050 1600 2050
 Connection ~ 1600 1750
 Wire Bus Line
 	1600 1750 6600 1750
@@ -1431,8 +1429,6 @@ Text Label 2350 5650 2    50   ~ 0
 Ctl3
 Wire Wire Line
 	15250 2050 15250 2850
-Wire Bus Line
-	1600 1750 1600 2050
 Entry Wire Line
 	11200 5350 11100 5250
 Entry Wire Line
@@ -1987,9 +1983,6 @@ F 3 "" H 12050 5150 50  0001 C CNN
 	1    12050 5150
 	0    1    1    0   
 $EndComp
-Connection ~ 1600 2050
-Wire Bus Line
-	1600 2050 6500 2050
 Wire Bus Line
 	14500 6850 9900 6850
 Connection ~ 9900 6850
@@ -2679,8 +2672,6 @@ Wire Bus Line
 Wire Bus Line
 	6600 1750 6600 3950
 Wire Bus Line
-	1600 2050 1600 3950
-Wire Bus Line
 	3100 7450 3100 8150
 Wire Bus Line
 	14400 5450 14400 6750
@@ -2700,4 +2691,8 @@ Wire Bus Line
 	4900 3750 4900 6850
 Wire Bus Line
 	14500 3750 14500 6850
+Wire Bus Line
+	1500 2050 6500 2050
+Wire Bus Line
+	1600 1750 1600 3950
 $EndSCHEMATC

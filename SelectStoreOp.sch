@@ -1382,19 +1382,19 @@ Text Label 8100 4900 0    50   ~ 0
 PC6
 Entry Wire Line
 	8100 6750 8000 6650
-Text Label 8100 6750 0    50   ~ 0
+Text Label 8100 7050 0    50   ~ 0
 PC12
 Wire Wire Line
 	8100 6750 8850 6750
 Entry Wire Line
 	8100 6550 8000 6450
-Text Label 8100 6550 0    50   ~ 0
+Text Label 8100 6450 0    50   ~ 0
 PC10
 Wire Wire Line
 	8100 6550 8850 6550
 Entry Wire Line
 	8100 6350 8000 6250
-Text Label 8100 6350 0    50   ~ 0
+Text Label 8100 6650 0    50   ~ 0
 PC8
 Wire Wire Line
 	8100 6350 8850 6350
@@ -1402,9 +1402,9 @@ Entry Wire Line
 	8100 6650 8000 6550
 Wire Wire Line
 	8100 6650 8850 6650
-Text Label 8100 6650 0    50   ~ 0
+Text Label 8100 6350 0    50   ~ 0
 PC11
-Text Label 8100 6450 0    50   ~ 0
+Text Label 8100 6550 0    50   ~ 0
 PC9
 Wire Wire Line
 	8100 6450 8850 6450
@@ -1412,13 +1412,13 @@ Entry Wire Line
 	8100 6450 8000 6350
 Entry Wire Line
 	8100 7050 8000 6950
-Text Label 8100 7050 0    50   ~ 0
+Text Label 8100 6750 0    50   ~ 0
 PC15
 Wire Wire Line
 	8100 7050 8850 7050
 Entry Wire Line
 	8100 6850 8000 6750
-Text Label 8100 6850 0    50   ~ 0
+Text Label 8100 6950 0    50   ~ 0
 PC13
 Wire Wire Line
 	8100 6850 8850 6850
@@ -1426,7 +1426,7 @@ Entry Wire Line
 	8100 6950 8000 6850
 Wire Wire Line
 	8100 6950 8850 6950
-Text Label 8100 6950 0    50   ~ 0
+Text Label 8100 6850 0    50   ~ 0
 PC14
 Wire Wire Line
 	7900 5200 7900 7250
@@ -1527,21 +1527,21 @@ Text Label 10250 4900 2    50   ~ 0
 StoreOp6
 Text Label 10250 5000 2    50   ~ 0
 StoreOp7
-Text Label 10250 6350 2    50   ~ 0
-StoreOp8
-Text Label 10250 6450 2    50   ~ 0
-StoreOp9
-Text Label 10250 6550 2    50   ~ 0
-StoreOp10
 Text Label 10250 6650 2    50   ~ 0
+StoreOp8
+Text Label 10250 6550 2    50   ~ 0
+StoreOp9
+Text Label 10250 6450 2    50   ~ 0
+StoreOp10
+Text Label 10250 6350 2    50   ~ 0
 StoreOp11
-Text Label 10250 6750 2    50   ~ 0
-StoreOp12
-Text Label 10250 6850 2    50   ~ 0
-StoreOp13
-Text Label 10250 6950 2    50   ~ 0
-StoreOp14
 Text Label 10250 7050 2    50   ~ 0
+StoreOp12
+Text Label 10250 6950 2    50   ~ 0
+StoreOp13
+Text Label 10250 6850 2    50   ~ 0
+StoreOp14
+Text Label 10250 6750 2    50   ~ 0
 StoreOp15
 Wire Wire Line
 	13750 6550 13350 6550

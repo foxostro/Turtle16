@@ -961,67 +961,43 @@ IO6
 Text Label 9550 5200 2    50   ~ 0
 IO7
 Wire Wire Line
-	3900 2600 4900 2600
+	3900 2600 5000 2600
 Wire Wire Line
-	4900 2600 4900 6600
+	3900 2500 5100 2500
 Wire Wire Line
-	4900 6600 4350 6600
+	8900 2600 10000 2600
 Wire Wire Line
-	3900 2500 5000 2500
+	10000 2600 10000 6450
 Wire Wire Line
-	5000 2500 5000 6700
+	10000 6450 5300 6450
 Wire Wire Line
-	5000 6700 4350 6700
+	5400 6550 10100 6550
 Wire Wire Line
-	8900 2600 9900 2600
+	10100 6550 10100 2500
 Wire Wire Line
-	9900 2600 9900 6450
-Wire Wire Line
-	9900 6450 5100 6450
-Wire Wire Line
-	5100 6450 5100 6800
-Wire Wire Line
-	5100 6800 4350 6800
-Wire Wire Line
-	4350 6900 5200 6900
-Wire Wire Line
-	5200 6900 5200 6550
-Wire Wire Line
-	5200 6550 10000 6550
-Wire Wire Line
-	10000 6550 10000 2500
-Wire Wire Line
-	10000 2500 8900 2500
+	10100 2500 8900 2500
 Entry Wire Line
-	2950 6800 3050 6900
+	2950 6500 3050 6600
 Wire Wire Line
-	3050 6900 3350 6900
-Text Label 3050 6900 0    50   ~ 0
+	3050 6600 3350 6600
+Text Label 3050 6600 0    50   ~ 0
 Addr15
-Wire Bus Line
-	2950 6000 2950 6800
 Text HLabel 1200 6100 0    50   Input ~ 0
-Bank[0..2]
+Bank[0..7]
 Entry Wire Line
-	3050 6500 3150 6600
-Text Label 3150 6600 0    50   ~ 0
+	2950 6600 3050 6700
+Text Label 3050 6700 0    50   ~ 0
 Bank0
 Entry Wire Line
-	3050 6600 3150 6700
-Text Label 3150 6700 0    50   ~ 0
+	2950 6700 3050 6800
+Text Label 3050 6800 0    50   ~ 0
 Bank1
 Entry Wire Line
-	3050 6700 3150 6800
-Text Label 3150 6800 0    50   ~ 0
+	2950 6800 3050 6900
+Text Label 3050 6900 0    50   ~ 0
 Bank2
-Wire Wire Line
-	3150 6600 3350 6600
-Wire Wire Line
-	3150 6700 3350 6700
-Wire Wire Line
-	3150 6800 3350 6800
 Wire Bus Line
-	1200 6100 3050 6100
+	1200 6100 2850 6100
 Text Label 9650 4200 2    50   ~ 0
 Addr14
 Text Label 9650 4100 2    50   ~ 0
@@ -1203,50 +1179,14 @@ Wire Wire Line
 Entry Wire Line
 	4650 2800 4750 2900
 Text Notes 600  7050 0    50   ~ 0
-When bank zero is selected, the upper 32K of\nthe address space is mapped to first of the\ntwo Instruction RAMs.\n\nWhen bank one is selected, the upper 32K of\nthe address space is mapped to second of\nthe two Instruction RAMs.
+The Bank Select is an eight-bit value which controls the\nmapping of the upper 32KB of the address space. This\nGAL maps four banks to instruction RAM to allow the\nentire 64KB memory to be used.
 Wire Bus Line
 	1200 6000 2950 6000
 Connection ~ 2950 6000
 Wire Bus Line
 	2950 6000 4750 6000
-$Comp
-L MainBoard-rescue:ATF22V10C-Logic_Programmable U?
-U 1 1 5FCF9353
-P 3850 7050
-AR Path="/5FED3839/5FCF9353" Ref="U?"  Part="1" 
-AR Path="/5D2C07CD/5FCF9353" Ref="U?"  Part="1" 
-AR Path="/5FE35007/5FCF9353" Ref="U34"  Part="1" 
-F 0 "U34" H 3500 7700 50  0000 C CNN
-F 1 "ATF22V10C-7PX" H 3500 7600 50  0000 C CNN
-F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 4700 6350 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 3850 7100 50  0001 C CNN
-	1    3850 7050
-	1    0    0    -1  
-$EndComp
 Wire Bus Line
 	4750 6000 9750 6000
-$Comp
-L power:GND #PWR0250
-U 1 1 60055944
-P 3900 4300
-F 0 "#PWR0250" H 3900 4050 50  0001 C CNN
-F 1 "GND" V 3905 4172 50  0000 R CNN
-F 2 "" H 3900 4300 50  0001 C CNN
-F 3 "" H 3900 4300 50  0001 C CNN
-	1    3900 4300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0265
-U 1 1 60060AE9
-P 8900 4300
-F 0 "#PWR0265" H 8900 4050 50  0001 C CNN
-F 1 "GND" V 8905 4172 50  0000 R CNN
-F 2 "" H 8900 4300 50  0001 C CNN
-F 3 "" H 8900 4300 50  0001 C CNN
-	1    8900 4300
-	0    -1   1    0   
-$EndComp
 $Comp
 L power:GND #PWR0258
 U 1 1 60076696
@@ -1269,22 +1209,111 @@ F 3 "" H 2300 4300 50  0001 C CNN
 	1    2300 4300
 	0    1    -1   0   
 $EndComp
-NoConn ~ 4350 7000
-NoConn ~ 4350 7100
 NoConn ~ 4350 7200
 NoConn ~ 4350 7300
 NoConn ~ 4350 7400
 NoConn ~ 4350 7500
 NoConn ~ 4350 7600
-NoConn ~ 3350 7000
-NoConn ~ 3350 7100
-NoConn ~ 3350 7200
-NoConn ~ 3350 7300
-NoConn ~ 3350 7400
 NoConn ~ 3350 7500
 NoConn ~ 3350 7600
 Wire Bus Line
-	3050 6100 3050 6700
+	2950 6000 2950 6500
+Wire Wire Line
+	3050 6700 3350 6700
+Wire Wire Line
+	3050 6800 3350 6800
+Wire Wire Line
+	3050 6900 3350 6900
+Wire Bus Line
+	2950 6600 2850 6600
+Wire Bus Line
+	2850 6600 2850 6100
+$Comp
+L MainBoard-rescue:ATF22V10C-Logic_Programmable U?
+U 1 1 5FCF9353
+P 3850 7050
+AR Path="/5FED3839/5FCF9353" Ref="U?"  Part="1" 
+AR Path="/5D2C07CD/5FCF9353" Ref="U?"  Part="1" 
+AR Path="/5FE35007/5FCF9353" Ref="U34"  Part="1" 
+F 0 "U34" H 3500 7700 50  0000 C CNN
+F 1 "ATF22V10C-7PX" H 3500 7600 50  0000 C CNN
+F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 4700 6350 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 3850 7100 50  0001 C CNN
+	1    3850 7050
+	1    0    0    -1  
+$EndComp
+Entry Wire Line
+	2950 6900 3050 7000
+Text Label 3050 7000 0    50   ~ 0
+Bank3
+Entry Wire Line
+	2950 7000 3050 7100
+Text Label 3050 7100 0    50   ~ 0
+Bank4
+Entry Wire Line
+	2950 7100 3050 7200
+Text Label 3050 7200 0    50   ~ 0
+Bank5
+Wire Wire Line
+	3050 7000 3350 7000
+Wire Wire Line
+	3050 7100 3350 7100
+Wire Wire Line
+	3050 7200 3350 7200
+Entry Wire Line
+	2950 7200 3050 7300
+Text Label 3050 7300 0    50   ~ 0
+Bank6
+Entry Wire Line
+	2950 7300 3050 7400
+Text Label 3050 7400 0    50   ~ 0
+Bank7
+Wire Wire Line
+	3050 7300 3350 7300
+Wire Wire Line
+	3050 7400 3350 7400
+Wire Wire Line
+	4900 6600 4350 6600
+Wire Wire Line
+	4350 6700 5000 6700
+Wire Wire Line
+	5000 2600 5000 6700
+Wire Wire Line
+	4350 6800 5100 6800
+Wire Wire Line
+	5100 2500 5100 6800
+Wire Wire Line
+	4350 6900 5200 6900
+Wire Wire Line
+	4350 7000 5300 7000
+Wire Wire Line
+	4900 4400 4650 4400
+Wire Wire Line
+	4650 4400 4650 4300
+Wire Wire Line
+	3900 4300 4650 4300
+Wire Wire Line
+	4900 4400 4900 6600
+Wire Wire Line
+	8900 4300 9650 4300
+Wire Wire Line
+	9650 4300 9650 4400
+Wire Wire Line
+	9650 4400 9900 4400
+Wire Wire Line
+	9900 4400 9900 6350
+Wire Wire Line
+	9900 6350 5200 6350
+Wire Wire Line
+	4350 7100 5400 7100
+Wire Wire Line
+	5400 7100 5400 6550
+Wire Wire Line
+	5200 6350 5200 6900
+Wire Wire Line
+	5300 7000 5300 6450
+Wire Bus Line
+	2950 6600 2950 7300
 Wire Bus Line
 	9650 4600 9650 5900
 Wire Bus Line

@@ -2850,7 +2850,7 @@ ControlWord10
 Wire Wire Line
 	10200 7900 6750 7900
 Text HLabel 10100 2600 0    50   Input ~ 0
-Ctl[0..15]
+Ctl[0..23]
 Text Label 10450 5650 0    50   ~ 0
 Ctl15
 Text Label 10450 5550 0    50   ~ 0

@@ -365,7 +365,7 @@ F5 "Addr[0..15]" T R 3100 2750 50
 F6 "~MemLoad" T R 3100 2950 50 
 F7 "~MemStore" T R 3100 3050 50 
 F8 "~RDY" O R 3100 3150 50 
-F9 "Bank[0..2]" O R 3100 2650 50 
+F9 "Bank[0..7]" O R 3100 2650 50 
 $EndSheet
 Wire Wire Line
 	10350 850  10350 3650
@@ -403,7 +403,7 @@ F4 "PCOut[0..15]" O R 8300 1450 50
 F5 "Phi1" I L 7100 1350 50 
 F6 "IO[0..7]" T L 7100 1750 50 
 F7 "Addr[0..15]" T L 7100 1650 50 
-F8 "Bank[0..2]" T L 7100 1550 50 
+F8 "Bank[0..7]" T L 7100 1550 50 
 $EndSheet
 Wire Bus Line
 	8300 1550 8600 1550

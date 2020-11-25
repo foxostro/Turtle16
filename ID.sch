@@ -19,7 +19,7 @@ Text HLabel 2300 4250 0    50   Input ~ 0
 Z
 Text HLabel 950  1750 0    50   Input ~ 0
 Ins[0..15]
-Text HLabel 15250 1950 2    50   Output ~ 0
+Text HLabel 15050 2800 2    50   Output ~ 0
 ControlWord[1..19]
 Text Notes 750  7550 0    50   ~ 0
 Decode the instruction opcode into an array of control\nsignals. These signals are carried forward through each\npipeline stage until the stage where they are used. This\nkeeps stages synchronized with the corresponding\ninstruction.
@@ -34,22 +34,22 @@ F0 "sheet5FD3D810" 50
 F1 "ID_REG.sch" 50
 F2 "PCIn[0..15]" I L 13950 1850 50 
 F3 "Phi1" I L 13950 1650 50 
-F4 "InsIn[0..15]" I L 13950 1750 50 
+F4 "InsIn[0..10]" I L 13950 1750 50 
 F5 "PCOut[0..15]" O R 15100 1850 50 
-F6 "InsOut[0..15]" O R 15100 1750 50 
+F6 "InsOut[0..10]" O R 15100 1750 50 
 F7 "Ctl[0..23]" I L 13950 2050 50 
-F8 "ControlWord[0..23]" O R 15100 1950 50 
+F8 "ControlWord[0..19]" O R 15100 1950 50 
 $EndSheet
 Wire Bus Line
 	13950 1850 13200 1850
 Text HLabel 13200 1850 0    50   Input ~ 0
 PCIn[0..15]
-Text HLabel 15250 2850 3    50   Output ~ 0
+Text HLabel 15850 2450 2    50   Output ~ 0
 ~HLT
-Text Label 15250 2300 3    50   ~ 0
+Text Label 15300 2450 0    50   ~ 0
 ControlWord0
 Entry Wire Line
-	15250 2050 15150 1950
+	15050 2450 14950 2550
 Text Notes 6800 10300 0    50   ~ 0
 Description\n————————\nHalt Clock\nSelect Left Operand\nSelect Right Operand\nSelect Store Operand 0\nSelect Store Operand 1\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1\nunused
 $Comp
@@ -219,8 +219,6 @@ F 3 "https://www.mouser.com/datasheet/2/698/IDT_7008_DST_20190808-1711430.pdf" H
 	1    3250 4300
 	1    0    0    -1  
 $EndComp
-Wire Bus Line
-	950  1750 1600 1750
 $Comp
 L power:VCC #PWR?
 U 1 1 5FC2DBAD
@@ -398,9 +396,6 @@ Wire Wire Line
 	2450 3750 1700 3750
 Wire Wire Line
 	2450 3650 1700 3650
-Connection ~ 1600 1750
-Wire Bus Line
-	1600 1750 6600 1750
 $Comp
 L power:VCC #PWR?
 U 1 1 5FC2DC2E
@@ -1428,7 +1423,7 @@ Connection ~ 1200 10900
 Text Label 2350 5650 2    50   ~ 0
 Ctl3
 Wire Wire Line
-	15250 2050 15250 2850
+	15050 2450 15850 2450
 Entry Wire Line
 	11200 5350 11100 5250
 Entry Wire Line
@@ -2668,13 +2663,36 @@ Wire Wire Line
 Wire Bus Line
 	1500 2050 6500 2050
 Wire Bus Line
-	15100 1950 15250 1950
+	15100 1950 15150 1950
+Wire Bus Line
+	15150 1950 15150 2300
+Wire Bus Line
+	15150 2300 13850 2300
+Wire Bus Line
+	13850 2300 13850 2550
+Text Label 14000 2550 0    50   ~ 0
+ControlWord[0..19]
+Wire Bus Line
+	13850 2550 14950 2550
+Entry Bus Bus
+	13850 2700 13950 2800
+Text Label 14000 2800 0    50   ~ 0
+ControlWord[1..19]
+Wire Bus Line
+	13950 2800 15050 2800
+Wire Bus Line
+	13850 2550 13850 2700
+Connection ~ 13850 2550
+Entry Bus Bus
+	1500 1750 1600 1850
+Wire Bus Line
+	950  1750 6600 1750
 Wire Bus Line
 	11200 1750 11200 3950
 Wire Bus Line
 	6600 1750 6600 3950
 Wire Bus Line
-	1600 1750 1600 3950
+	1600 1850 1600 3950
 Wire Bus Line
 	3100 7450 3100 8150
 Wire Bus Line
@@ -2695,4 +2713,8 @@ Wire Bus Line
 	4900 3750 4900 6850
 Wire Bus Line
 	14500 3750 14500 6850
+Text Label 1600 2900 1    50   ~ 0
+Ins[11..15]
+Text Label 2050 1750 2    50   ~ 0
+Ins[0..10]
 $EndSCHEMATC

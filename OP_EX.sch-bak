@@ -3,15 +3,15 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 25 33
-Title "REG/EX Interstage Registers"
+Sheet 31 33
+Title "OP/EX Interstage Registers"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "Interstage pipeline registers between REG and EX"
+Comment4 "Interstage pipeline registers between the OP and EX stages"
 $EndDescr
 Text HLabel 7000 4050 2    50   Output ~ 0
 StoreOp[0..15]

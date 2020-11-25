@@ -24,7 +24,8 @@ AR Path="/5FAED671/5FAF78E6" Ref="J3"  Part="1"
 F 0 "J3" H 5950 4850 50  0000 R CNN
 F 1 "71922-264LF" H 6150 4750 50  0000 R CNN
 F 2 "Connector_IDC:IDC-Header_2x32_P2.54mm_Horizontal" H 5900 3100 50  0001 C CNN
-F 3 "~" H 5900 3100 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/18/71922-1363266.pdf" H 5900 3100 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Amphenol-FCI/71922-264LF?qs=yJYkLTYh576qGOVYzS69eQ%3D%3D" H 5900 3100 50  0001 C CNN "Mouser"
 	1    5900 3100
 	1    0    0    -1  
 $EndComp

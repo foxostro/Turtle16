@@ -1959,39 +1959,9 @@ Connection ~ 3750 9350
 Connection ~ 4250 9050
 Connection ~ 4250 9350
 Text HLabel 6650 3700 0    50   Input ~ 0
-InsIn[0..15]
-Text Label 7000 6700 0    50   ~ 0
-InsIn15
-Text Label 7000 6600 0    50   ~ 0
-InsIn14
-Text Label 7000 6500 0    50   ~ 0
-InsIn13
-Text Label 7000 6400 0    50   ~ 0
-InsIn12
-Text Label 7000 6300 0    50   ~ 0
-InsIn11
-Entry Wire Line
-	6850 6200 6950 6300
-Wire Wire Line
-	6950 6300 7350 6300
-Entry Wire Line
-	6850 6300 6950 6400
-Wire Wire Line
-	6950 6400 7350 6400
-Entry Wire Line
-	6850 6400 6950 6500
-Wire Wire Line
-	6950 6500 7350 6500
-Entry Wire Line
-	6850 6500 6950 6600
-Wire Wire Line
-	6950 6600 7350 6600
-Entry Wire Line
-	6850 6600 6950 6700
-Wire Wire Line
-	6950 6700 7350 6700
+InsIn[0..10]
 Text HLabel 9000 3650 2    50   Output ~ 0
-InsOut[0..15]
+InsOut[0..10]
 Text HLabel 2400 7900 0    50   Input ~ 0
 Phi1
 Connection ~ 3300 7900
@@ -3338,38 +3308,8 @@ Connection ~ 10200 5850
 Connection ~ 10200 7900
 Wire Wire Line
 	10200 5850 10200 7900
-Text Label 12450 7700 2    50   ~ 0
-ControlWord23
-Text Label 12450 7600 2    50   ~ 0
-ControlWord22
-Wire Wire Line
-	12500 7600 11800 7600
-Entry Wire Line
-	12600 7500 12500 7600
-Entry Wire Line
-	12600 7600 12500 7700
-Wire Wire Line
-	12500 7700 11800 7700
-Text Label 12450 7500 2    50   ~ 0
-ControlWord21
-Text Label 12450 7400 2    50   ~ 0
-ControlWord20
-Text Label 12450 7300 2    50   ~ 0
-ControlWord19
-Wire Wire Line
-	12500 7400 11800 7400
-Entry Wire Line
-	12600 7200 12500 7300
-Wire Wire Line
-	12500 7300 11800 7300
-Entry Wire Line
-	12600 7300 12500 7400
-Entry Wire Line
-	12600 7400 12500 7500
-Wire Wire Line
-	12500 7500 11800 7500
 Text HLabel 12850 2600 2    50   Output ~ 0
-ControlWord[0..23]
+ControlWord[0..19]
 Wire Wire Line
 	10200 3800 10200 5850
 $Comp
@@ -3463,36 +3403,6 @@ F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3
 	1    7850 6500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8750 6500 8350 6500
-Entry Wire Line
-	8850 6400 8750 6500
-Entry Wire Line
-	8850 6300 8750 6400
-Wire Wire Line
-	8750 6300 8350 6300
-Entry Wire Line
-	8850 6200 8750 6300
-Wire Wire Line
-	8750 6400 8350 6400
-Text Label 8650 6300 2    50   ~ 0
-InsOut11
-Text Label 8650 6400 2    50   ~ 0
-InsOut12
-Text Label 8650 6500 2    50   ~ 0
-InsOut13
-Wire Wire Line
-	8750 6700 8350 6700
-Entry Wire Line
-	8850 6600 8750 6700
-Entry Wire Line
-	8850 6500 8750 6600
-Wire Wire Line
-	8750 6600 8350 6600
-Text Label 8650 6600 2    50   ~ 0
-InsOut14
-Text Label 8650 6700 2    50   ~ 0
-InsOut15
 $Comp
 L Device:C C?
 U 1 1 5FF3A769
@@ -3632,16 +3542,65 @@ Connection ~ 5750 9350
 Connection ~ 6750 7900
 Connection ~ 4750 9050
 Connection ~ 4750 9350
+Wire Wire Line
+	12500 7300 11800 7300
+Entry Wire Line
+	12600 7200 12500 7300
+Text Label 12450 7300 2    50   ~ 0
+ControlWord19
+NoConn ~ 11800 7400
+NoConn ~ 11800 7500
+NoConn ~ 11800 7600
+NoConn ~ 11800 7700
+NoConn ~ 8350 6300
+NoConn ~ 8350 6400
+NoConn ~ 8350 6500
+NoConn ~ 8350 6600
+NoConn ~ 8350 6700
+$Comp
+L power:VCC #PWR0557
+U 1 1 5FEAA40B
+P 7200 6500
+F 0 "#PWR0557" H 7200 6350 50  0001 C CNN
+F 1 "VCC" V 7215 6627 50  0000 L CNN
+F 2 "" H 7200 6500 50  0001 C CNN
+F 3 "" H 7200 6500 50  0001 C CNN
+	1    7200 6500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7350 6300 7250 6300
+Wire Wire Line
+	7250 6300 7250 6400
+Wire Wire Line
+	7250 6500 7200 6500
+Wire Wire Line
+	7250 6500 7250 6600
+Wire Wire Line
+	7250 6700 7350 6700
+Connection ~ 7250 6500
+Wire Wire Line
+	7350 6600 7250 6600
+Connection ~ 7250 6600
+Wire Wire Line
+	7250 6600 7250 6700
+Wire Wire Line
+	7350 6400 7250 6400
+Connection ~ 7250 6400
+Wire Wire Line
+	7250 6400 7250 6500
+Wire Wire Line
+	7350 6500 7250 6500
 Wire Bus Line
 	3400 3700 3400 6650
 Wire Bus Line
 	5400 3700 5400 6650
 Wire Bus Line
-	8850 3650 8850 6600
+	6850 3700 6850 6100
 Wire Bus Line
-	6850 3700 6850 6600
+	8850 3650 8850 6100
+Wire Bus Line
+	12600 2600 12600 7200
 Wire Bus Line
 	10300 2600 10300 7600
-Wire Bus Line
-	12600 2600 12600 7600
 $EndSCHEMATC

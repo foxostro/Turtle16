@@ -4,7 +4,7 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 26 33
-Title "REG"
+Title "OP"
 Date ""
 Rev ""
 Comp ""
@@ -78,19 +78,6 @@ F4 "SelStoreOpB" I L 5250 4250 50
 F5 "Ins[0..10]" I L 5250 4350 50 
 F6 "A[0..15]" I L 5250 4450 50 
 F7 "PC[0..15]" I L 5250 4550 50 
-$EndSheet
-$Sheet
-S 7300 4000 1400 700 
-U 5FD9B0CB
-F0 "sheet5FD9B0C2" 50
-F1 "REG_EX.sch" 50
-F2 "StoreOp[0..15]" O R 8700 4200 50 
-F3 "StoreOpIn[0..15]" I L 7300 4200 50 
-F4 "Phi1" I L 7300 4100 50 
-F5 "SelCIn[0..2]" I L 7300 4300 50 
-F6 "SelC[0..2]" O R 8700 4300 50 
-F7 "CtlIn[5..19]" I L 7300 4400 50 
-F8 "Ctl[5..19]" O R 8700 4400 50 
 $EndSheet
 Text HLabel 6950 4100 0    50   Input ~ 0
 Phi1
@@ -204,4 +191,17 @@ Wire Bus Line
 	4250 3750 4250 4450
 Wire Bus Line
 	2450 2350 8400 2350
+$Sheet
+S 7300 4000 1400 700 
+U 5FD9B0CB
+F0 "OP/EX" 50
+F1 "OP_EX.sch" 50
+F2 "StoreOp[0..15]" O R 8700 4200 50 
+F3 "StoreOpIn[0..15]" I L 7300 4200 50 
+F4 "Phi1" I L 7300 4100 50 
+F5 "SelCIn[0..2]" I L 7300 4300 50 
+F6 "SelC[0..2]" O R 8700 4300 50 
+F7 "CtlIn[5..19]" I L 7300 4400 50 
+F8 "Ctl[5..19]" O R 8700 4400 50 
+$EndSheet
 $EndSCHEMATC

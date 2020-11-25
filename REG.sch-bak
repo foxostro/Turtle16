@@ -3,66 +3,28 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 19 33
+Sheet 26 33
 Title "REG"
 Date ""
 Rev ""
 Comp ""
-Comment1 "write new values into registers when an instruction is retired."
-Comment2 "program counter value. The WB stage feeds back into the register file in this stage to"
-Comment3 "right operand can either be taken from the register file or the immediate value, or the"
-Comment4 "It takes an entire clock cycle to retrieve operands from the register file. The left and"
+Comment1 ""
+Comment2 ""
+Comment3 "program counter, values form the register file, and immediate values."
+Comment4 "Marshal ALU operands by selecting between a palette of available values such as the"
 $EndDescr
-Text HLabel 2450 4550 0    50   Input ~ 0
-~WRH
-Text HLabel 2450 4650 0    50   Input ~ 0
-~WRL
-Text HLabel 2300 2350 0    50   Input ~ 0
+Text HLabel 2450 2350 0    50   Input ~ 0
 CtlIn[1..19]
 Text HLabel 8900 4200 2    50   Output ~ 0
 StoreOp[0..15]
 Text HLabel 2450 5700 0    50   Input ~ 0
 PC[0..15]
-Text HLabel 2400 2450 0    50   Input ~ 0
+Text HLabel 2450 2450 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 8900 4400 2    50   Output ~ 0
 Ctl[5..19]
-Text HLabel 2450 4750 0    50   Input ~ 0
-C[0..15]
-Text HLabel 2450 4450 0    50   Input ~ 0
-SelCIn[0..2]
-$Sheet
-S 2750 4350 1200 600 
-U 5FAA7AE7
-F0 "Register File" 50
-F1 "RegisterFile.sch" 50
-F2 "~WRH" I L 2750 4550 50 
-F3 "~WRL" I L 2750 4650 50 
-F4 "C[0..15]" I L 2750 4750 50 
-F5 "SelC[0..2]" I L 2750 4450 50 
-F6 "SelA[0..2]" I R 3950 4550 50 
-F7 "SelB[0..2]" I R 3950 4750 50 
-F8 "B[0..15]" O R 3950 4850 50 
-F9 "A[0..15]" O R 3950 4450 50 
-$EndSheet
 Wire Bus Line
-	2750 4750 2450 4750
-Wire Bus Line
-	2450 4450 2750 4450
-Wire Wire Line
-	2750 4550 2450 4550
-Wire Wire Line
-	2450 4650 2750 4650
-Wire Bus Line
-	3950 4550 4050 4550
-Wire Bus Line
-	2400 2450 2650 2450
-Wire Bus Line
-	3950 4450 4250 4450
-Wire Bus Line
-	3950 4750 4150 4750
-Wire Bus Line
-	3950 4850 4150 4850
+	2450 3750 4250 3750
 Entry Wire Line
 	4550 2350 4650 2450
 Entry Wire Line
@@ -103,42 +65,8 @@ F1 "SplitOutSelC.sch" 50
 F2 "Ins[0..10]" I L 5250 3600 50 
 F3 "SelCOut[0..2]" O R 6500 3600 50 
 $EndSheet
-$Sheet
-S 2750 3650 1150 200 
-U 606889E4
-F0 "Split Out SelA" 50
-F1 "SplitOutSelA.sch" 50
-F2 "Ins[0..10]" I L 2750 3750 50 
-F3 "SelAOut[0..2]" O R 3900 3750 50 
-$EndSheet
-Wire Bus Line
-	3900 3750 4050 3750
-Wire Bus Line
-	4050 3750 4050 4550
-Wire Bus Line
-	2750 3750 2650 3750
-Wire Bus Line
-	2650 3750 2650 3350
-Connection ~ 2650 2450
 Wire Bus Line
 	4350 2450 4350 2900
-$Sheet
-S 2750 3250 1050 200 
-U 60691E71
-F0 "Split Out SelB" 50
-F1 "SplitOutSelB.sch" 50
-F2 "Ins[0..10]" I L 2750 3350 50 
-F3 "SelBOut[0..2]" O R 3800 3350 50 
-$EndSheet
-Wire Bus Line
-	3800 3350 4150 3350
-Wire Bus Line
-	4150 3350 4150 4750
-Wire Bus Line
-	2750 3350 2650 3350
-Connection ~ 2650 3350
-Wire Bus Line
-	2650 2450 4350 2450
 $Sheet
 S 5250 4000 1250 700 
 U 5FF2BBCA
@@ -186,8 +114,6 @@ Wire Bus Line
 	7300 4400 7150 4400
 Wire Bus Line
 	7150 4400 7150 4450
-Wire Bus Line
-	2650 2450 2650 3350
 Wire Bus Line
 	7150 4300 7150 3600
 Wire Bus Line
@@ -240,8 +166,7 @@ Connection ~ 4350 2900
 Wire Bus Line
 	4350 2900 4350 3600
 Wire Bus Line
-	4250 3000 4250 4450
-Connection ~ 4250 4450
+	4250 3000 4250 3750
 Wire Bus Line
 	4350 3600 5250 3600
 Wire Bus Line
@@ -253,10 +178,6 @@ Wire Wire Line
 	5250 4150 4650 4150
 Wire Wire Line
 	5250 4250 4550 4250
-Wire Bus Line
-	5250 5600 4150 5600
-Wire Bus Line
-	4150 5600 4150 4850
 Wire Bus Line
 	2450 5700 5150 5700
 Connection ~ 5150 5700
@@ -270,6 +191,17 @@ Wire Bus Line
 	4250 4450 5250 4450
 Wire Bus Line
 	5250 4350 4350 4350
+Text HLabel 2450 3750 0    50   Input ~ 0
+A[0..15]
+Text HLabel 2450 5600 0    50   Input ~ 0
+B[0..15]
 Wire Bus Line
-	2300 2350 8400 2350
+	2450 2450 4350 2450
+Wire Bus Line
+	2450 5600 5250 5600
+Connection ~ 4250 3750
+Wire Bus Line
+	4250 3750 4250 4450
+Wire Bus Line
+	2450 2350 8400 2350
 $EndSCHEMATC

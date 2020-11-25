@@ -1959,9 +1959,9 @@ Connection ~ 3750 9350
 Connection ~ 4250 9050
 Connection ~ 4250 9350
 Text HLabel 6650 3700 0    50   Input ~ 0
-InsIn[0..15]
+InsIn[0..10]
 Text HLabel 9000 3650 2    50   Output ~ 0
-InsOut[0..15]
+InsOut[0..10]
 Text HLabel 2400 7900 0    50   Input ~ 0
 Phi1
 Connection ~ 3300 7900
@@ -3309,7 +3309,7 @@ Connection ~ 10200 7900
 Wire Wire Line
 	10200 5850 10200 7900
 Text HLabel 12850 2600 2    50   Output ~ 0
-ControlWord[0..23]
+ControlWord[0..19]
 Wire Wire Line
 	10200 3800 10200 5850
 $Comp
@@ -3558,10 +3558,10 @@ NoConn ~ 8350 6500
 NoConn ~ 8350 6600
 NoConn ~ 8350 6700
 $Comp
-L power:VCC #PWR?
+L power:VCC #PWR0557
 U 1 1 5FEAA40B
 P 7200 6500
-F 0 "#PWR?" H 7200 6350 50  0001 C CNN
+F 0 "#PWR0557" H 7200 6350 50  0001 C CNN
 F 1 "VCC" V 7215 6627 50  0000 L CNN
 F 2 "" H 7200 6500 50  0001 C CNN
 F 3 "" H 7200 6500 50  0001 C CNN

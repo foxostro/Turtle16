@@ -8,7 +8,7 @@ Title "ID"
 Date ""
 Rev ""
 Comp ""
-Comment1 ""
+Comment1 "Simultaneously, read the register file using indices extracted from the instruction word."
 Comment2 "effect conditional instructions."
 Comment3 "The decoder takes the condition code from the flags register into account to"
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
@@ -2685,6 +2685,81 @@ Wire Bus Line
 Connection ~ 13850 2550
 Entry Bus Bus
 	1500 1750 1600 1850
+Text Label 1600 2900 1    50   ~ 0
+Ins[11..15]
+Text Label 2050 1750 2    50   ~ 0
+Ins[0..10]
+Text HLabel 11950 9100 0    50   Input ~ 0
+~WRH
+Text HLabel 11950 9200 0    50   Input ~ 0
+~WRL
+Text HLabel 11950 9300 0    50   Input ~ 0
+C[0..15]
+Text HLabel 11950 9000 0    50   Input ~ 0
+SelC[0..2]
+$Sheet
+S 13700 8200 1200 1250
+U 5FC16AA6
+F0 "sheet5FC16A8C" 50
+F1 "RegisterFile.sch" 50
+F2 "~WRH" I L 13700 9100 50 
+F3 "~WRL" I L 13700 9200 50 
+F4 "C[0..15]" I L 13700 9300 50 
+F5 "SelC[0..2]" I L 13700 9000 50 
+F6 "SelA[0..2]" I L 13700 8300 50 
+F7 "SelB[0..2]" I L 13700 8700 50 
+F8 "B[0..15]" O R 14900 8700 50 
+F9 "A[0..15]" O R 14900 8300 50 
+$EndSheet
+Wire Bus Line
+	13700 9300 11950 9300
+Wire Bus Line
+	11950 9000 13700 9000
+Wire Wire Line
+	13700 9100 11950 9100
+Wire Wire Line
+	11950 9200 13700 9200
+$Sheet
+S 12300 8200 1150 200 
+U 5FC16AC7
+F0 "sheet5FC16A8E" 50
+F1 "SplitOutSelA.sch" 50
+F2 "Ins[0..15]" I L 12300 8300 50 
+F3 "SelA[0..2]" O R 13450 8300 50 
+$EndSheet
+Wire Bus Line
+	12300 8700 12200 8700
+$Sheet
+S 12300 8600 1150 200 
+U 5FC16AD1
+F0 "sheet5FC16A8F" 50
+F1 "SplitOutSelB.sch" 50
+F2 "Ins[0..15]" I L 12300 8700 50 
+F3 "SelB[0..2]" O R 13450 8700 50 
+$EndSheet
+Wire Bus Line
+	12300 8300 12200 8300
+Wire Bus Line
+	13450 8300 13700 8300
+Wire Bus Line
+	13700 8700 13450 8700
+Text HLabel 15400 8300 2    50   Output ~ 0
+A[0..15]
+Wire Bus Line
+	15400 8300 14900 8300
+Text HLabel 15400 8700 2    50   Output ~ 0
+B[0..15]
+Wire Bus Line
+	15400 8700 14900 8700
+Text HLabel 11950 8500 0    50   Input ~ 0
+Ins[0..15]
+Wire Bus Line
+	11950 8500 12200 8500
+Wire Bus Line
+	12200 8300 12200 8500
+Connection ~ 12200 8500
+Wire Bus Line
+	12200 8500 12200 8700
 Wire Bus Line
 	950  1750 6600 1750
 Wire Bus Line
@@ -2713,8 +2788,4 @@ Wire Bus Line
 	4900 3750 4900 6850
 Wire Bus Line
 	14500 3750 14500 6850
-Text Label 1600 2900 1    50   ~ 0
-Ins[11..15]
-Text Label 2050 1750 2    50   ~ 0
-Ins[0..10]
 $EndSCHEMATC

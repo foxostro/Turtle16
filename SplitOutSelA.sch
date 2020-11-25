@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 30 33
+Sheet 7 33
 Title ""
 Date ""
 Rev ""
@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text HLabel 4450 3500 0    50   Input ~ 0
-Ins[0..10]
+Ins[0..15]
 Text Label 5100 3800 0    50   ~ 0
 Ins4
 Wire Bus Line
@@ -44,13 +44,13 @@ Entry Wire Line
 Wire Bus Line
 	6950 3500 6400 3500
 Text Label 6300 3600 2    50   ~ 0
-SelAOut0
+SelA0
 Text Label 6300 3700 2    50   ~ 0
-SelAOut1
+SelA1
 Text Label 6300 3800 2    50   ~ 0
-SelAOut2
+SelA2
 Text HLabel 6950 3500 2    50   Output ~ 0
-SelAOut[0..2]
+SelA[0..2]
 Wire Bus Line
 	5000 3500 5000 3700
 Wire Bus Line

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 16 33
+Sheet 19 33
 Title "System Bus Connector"
 Date ""
 Rev ""
@@ -30,47 +30,47 @@ F 4 "https://www.mouser.com/ProductDetail/Amphenol-FCI/71922-264LF?qs=yJYkLTYh57
 	1    0    0    -1  
 $EndComp
 Entry Wire Line
-	4950 3300 4850 3400
-Text Label 5200 3300 2    50   ~ 0
+	5050 3300 4950 3400
+Text Label 5300 3300 2    50   ~ 0
 Addr4
 Entry Wire Line
-	4950 3400 4850 3500
-Text Label 5200 3400 2    50   ~ 0
+	5050 3400 4950 3500
+Text Label 5300 3400 2    50   ~ 0
 Addr6
 Entry Wire Line
-	4950 3600 4850 3700
-Text Label 5200 3600 2    50   ~ 0
+	5050 3600 4950 3700
+Text Label 5300 3600 2    50   ~ 0
 Addr8
 Entry Wire Line
-	4950 3700 4850 3800
-Text Label 5250 3700 2    50   ~ 0
+	5050 3700 4950 3800
+Text Label 5350 3700 2    50   ~ 0
 Addr10
 Entry Wire Line
-	4950 3900 4850 4000
-Text Label 5250 3900 2    50   ~ 0
+	5050 3900 4950 4000
+Text Label 5350 3900 2    50   ~ 0
 Addr12
 Entry Wire Line
-	4950 4000 4850 4100
-Text Label 5250 4000 2    50   ~ 0
+	5050 4000 4950 4100
+Text Label 5350 4000 2    50   ~ 0
 Addr14
 Entry Wire Line
-	7050 4100 6950 4000
-Text Label 6650 4000 0    50   ~ 0
+	6950 4100 6850 4000
+Text Label 6800 4000 2    50   ~ 0
 Addr15
 Entry Wire Line
-	7050 4000 6950 3900
+	6950 4000 6850 3900
 Entry Wire Line
-	7050 3800 6950 3700
+	6950 3800 6850 3700
 Entry Wire Line
-	7050 3700 6950 3600
+	6950 3700 6850 3600
 Entry Wire Line
-	7050 3500 6950 3400
+	6950 3500 6850 3400
 Entry Wire Line
-	7050 3400 6950 3300
+	6950 3400 6850 3300
 Entry Wire Line
-	7050 3200 6950 3100
+	6950 3200 6850 3100
 Entry Wire Line
-	7050 3100 6950 3000
+	6950 3100 6850 3000
 $Comp
 L power:GND #PWR?
 U 1 1 5FAF792A
@@ -85,17 +85,17 @@ F 3 "" H 6250 2900 50  0001 C CNN
 	0    -1   1    0   
 $EndComp
 Entry Wire Line
-	5050 4200 4950 4300
+	5050 2400 4950 2500
 Entry Wire Line
-	5050 4300 4950 4400
+	5050 2500 4950 2600
 Entry Wire Line
-	5050 4500 4950 4600
+	5050 2700 4950 2800
 Entry Wire Line
-	5050 4600 4950 4700
+	5050 2800 4950 2900
 Entry Wire Line
-	6850 4500 6950 4600
+	6850 2700 6950 2800
 Entry Wire Line
-	6850 4600 6950 4700
+	6850 2800 6950 2900
 $Comp
 L power:GND #PWR?
 U 1 1 5FAF794C
@@ -127,25 +127,25 @@ F 3 "" H 5650 4700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	4950 3400 5700 3400
+	5050 3400 5700 3400
 Wire Wire Line
-	4950 3900 5700 3900
+	5050 3900 5700 3900
 Wire Wire Line
-	6950 4000 6200 4000
+	6850 4000 6200 4000
 Wire Wire Line
-	5700 4000 4950 4000
+	5700 4000 5050 4000
 Wire Wire Line
-	4950 3700 5700 3700
+	5050 3700 5700 3700
 Wire Wire Line
-	5700 3600 4950 3600
+	5700 3600 5050 3600
 Wire Wire Line
-	4950 3300 5700 3300
+	5050 3300 5700 3300
 Wire Wire Line
-	5050 4200 5700 4200
+	5050 2400 5700 2400
 Wire Wire Line
-	5050 4300 5700 4300
+	5050 2500 5700 2500
 Wire Wire Line
-	5050 4500 5700 4500
+	5050 2700 5700 2700
 Wire Wire Line
 	7000 1800 6200 1800
 Wire Wire Line
@@ -154,19 +154,19 @@ Text HLabel 7000 1800 2    50   3State ~ 0
 ~MemLoad
 Text HLabel 4900 1800 0    50   3State ~ 0
 ~MemStore
-Text HLabel 2750 5700 0    50   3State ~ 0
+Text HLabel 4700 2500 0    50   3State ~ 0
 IO[0..7]
-Text Label 5100 4200 0    50   ~ 0
+Text Label 5100 2400 0    50   ~ 0
 IO0
-Text Label 5100 4300 0    50   ~ 0
+Text Label 5100 2500 0    50   ~ 0
 IO2
-Text Label 5100 4500 0    50   ~ 0
+Text Label 5100 2700 0    50   ~ 0
 IO4
-Text Label 5100 4600 0    50   ~ 0
+Text Label 5100 2800 0    50   ~ 0
 IO6
-Text Label 6800 4600 2    50   ~ 0
+Text Label 6800 2800 2    50   ~ 0
 IO7
-Text Label 6800 4500 2    50   ~ 0
+Text Label 6800 2700 2    50   ~ 0
 IO5
 $Comp
 L power:GND #PWR?
@@ -213,51 +213,51 @@ F 3 "" H 5650 3200 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5650 3200 5700 3200
-Text Label 6800 4200 2    50   ~ 0
+Text Label 6800 2400 2    50   ~ 0
 IO1
-Text Label 6800 4300 2    50   ~ 0
+Text Label 6800 2500 2    50   ~ 0
 IO3
 Wire Wire Line
-	6850 4300 6200 4300
+	6850 2500 6200 2500
 Wire Wire Line
-	6850 4200 6200 4200
+	6850 2400 6200 2400
 Entry Wire Line
-	6850 4300 6950 4400
+	6850 2500 6950 2600
 Entry Wire Line
-	6850 4200 6950 4300
+	6850 2400 6950 2500
 Wire Wire Line
-	6200 4500 6850 4500
+	6200 2700 6850 2700
 Wire Wire Line
-	6200 4600 6850 4600
+	6200 2800 6850 2800
 Text HLabel 4950 2000 0    50   Input ~ 0
 Phi2
 Wire Wire Line
-	6200 3700 6950 3700
+	6200 3700 6850 3700
 Wire Wire Line
-	6950 3600 6200 3600
+	6850 3600 6200 3600
 Wire Wire Line
-	6200 3300 6950 3300
+	6200 3300 6850 3300
 Wire Wire Line
-	6950 3100 6200 3100
+	6850 3100 6200 3100
 Wire Wire Line
-	6950 3000 6200 3000
+	6850 3000 6200 3000
 Wire Wire Line
-	6950 3400 6200 3400
+	6850 3400 6200 3400
 Wire Wire Line
-	6950 3900 6200 3900
-Text Label 6650 3000 0    50   ~ 0
+	6850 3900 6200 3900
+Text Label 6800 3000 2    50   ~ 0
 Addr1
-Text Label 6650 3100 0    50   ~ 0
+Text Label 6800 3100 2    50   ~ 0
 Addr3
-Text Label 6650 3300 0    50   ~ 0
+Text Label 6800 3300 2    50   ~ 0
 Addr5
-Text Label 6650 3400 0    50   ~ 0
+Text Label 6800 3400 2    50   ~ 0
 Addr7
-Text Label 6650 3600 0    50   ~ 0
+Text Label 6800 3600 2    50   ~ 0
 Addr9
-Text Label 6650 3700 0    50   ~ 0
+Text Label 6800 3700 2    50   ~ 0
 Addr11
-Text Label 6650 3900 0    50   ~ 0
+Text Label 6800 3900 2    50   ~ 0
 Addr13
 $Comp
 L power:GND #PWR?
@@ -384,24 +384,22 @@ F 3 "" H 6250 4100 50  0001 C CNN
 	1    6250 4100
 	0    -1   1    0   
 $EndComp
-Text HLabel 2750 6050 0    50   3State ~ 0
+Text HLabel 4700 3100 0    50   3State ~ 0
 Addr[0..15]
-Wire Bus Line
-	2750 5700 4950 5700
 Entry Wire Line
-	4950 3000 4850 3100
-Text Label 5200 3000 2    50   ~ 0
+	5050 3000 4950 3100
+Text Label 5300 3000 2    50   ~ 0
 Addr0
 Wire Wire Line
-	4950 3000 5700 3000
+	5050 3000 5700 3000
 Wire Wire Line
-	5700 3100 4950 3100
-Text Label 5200 3100 2    50   ~ 0
+	5700 3100 5050 3100
+Text Label 5300 3100 2    50   ~ 0
 Addr2
 Entry Wire Line
-	4950 3100 4850 3200
+	5050 3100 4950 3200
 Wire Wire Line
-	5050 4600 5700 4600
+	5050 2800 5700 2800
 Wire Wire Line
 	4950 2000 5700 2000
 Wire Wire Line
@@ -420,8 +418,6 @@ Wire Wire Line
 	6250 4400 6200 4400
 Wire Wire Line
 	6250 4700 6200 4700
-Wire Bus Line
-	2750 6050 4850 6050
 Wire Wire Line
 	6250 3500 6200 3500
 $Comp
@@ -459,12 +455,6 @@ F 3 "" H 5650 1600 50  0001 C CNN
 	1    5650 1600
 	0    -1   1    0   
 $EndComp
-Connection ~ 4850 6050
-Wire Bus Line
-	4850 6050 7050 6050
-Connection ~ 4950 5700
-Wire Bus Line
-	4950 5700 6950 5700
 Text HLabel 7000 1050 2    50   Output ~ 0
 ~RDY
 $Comp
@@ -661,57 +651,57 @@ Text Notes 1300 2300 0    50   ~ 0
 The bus connector has a shared open-drain active-high RDY signal.\nIf all bus devices are ready then they allow the line to remain high.\nIf any bus device is not ready then it drives the line low.\nWhen RDY is driven low, the CPU Phi1 clock stops and the CPU\ndisconnects from the bus, placing the lines in a high-Z mode.\n\nIf no bus devices are connected then the CPU is always ready.
 Text Label 5200 2200 2    50   ~ 0
 RDY
-Text HLabel 2750 6350 0    50   Output ~ 0
+Text HLabel 4700 4300 0    50   Output ~ 0
 Bank[0..7]
 Entry Wire Line
-	7150 2900 7050 2800
+	6950 4700 6850 4600
 Entry Wire Line
-	7150 2800 7050 2700
+	6950 4600 6850 4500
 Entry Wire Line
-	7150 2600 7050 2500
+	6950 4400 6850 4300
 Entry Wire Line
-	7150 2500 7050 2400
+	6950 4300 6850 4200
 Wire Wire Line
-	6200 2700 7050 2700
+	6200 4500 6850 4500
 Wire Wire Line
-	7050 2500 6200 2500
+	6850 4300 6200 4300
 Wire Wire Line
-	7050 2400 6200 2400
+	6850 4200 6200 4200
 Wire Wire Line
-	7050 2800 6200 2800
-Text Label 6650 2400 0    50   ~ 0
+	6850 4600 6200 4600
+Text Label 6800 4200 2    50   ~ 0
 Bank1
-Text Label 6650 2500 0    50   ~ 0
+Text Label 6800 4300 2    50   ~ 0
 Bank3
-Text Label 6650 2700 0    50   ~ 0
+Text Label 6800 4500 2    50   ~ 0
 Bank5
-Text Label 6650 2800 0    50   ~ 0
+Text Label 6800 4600 2    50   ~ 0
 Bank7
 Wire Wire Line
 	6200 2000 7000 2000
 Entry Wire Line
-	4700 2900 4800 2800
+	4950 4700 5050 4600
 Entry Wire Line
-	4700 2800 4800 2700
+	4950 4600 5050 4500
 Entry Wire Line
-	4700 2600 4800 2500
+	4950 4400 5050 4300
 Entry Wire Line
-	4700 2500 4800 2400
+	4950 4300 5050 4200
 Wire Wire Line
-	5700 2700 4800 2700
+	5700 4500 5050 4500
 Wire Wire Line
-	4800 2500 5700 2500
+	5050 4300 5700 4300
 Wire Wire Line
-	4800 2400 5700 2400
+	5050 4200 5700 4200
 Wire Wire Line
-	4800 2800 5700 2800
-Text Label 5250 2400 2    50   ~ 0
+	5050 4600 5700 4600
+Text Label 5100 4200 0    50   ~ 0
 Bank0
-Text Label 5250 2500 2    50   ~ 0
+Text Label 5100 4300 0    50   ~ 0
 Bank2
-Text Label 5250 2700 2    50   ~ 0
+Text Label 5100 4500 0    50   ~ 0
 Bank4
-Text Label 5250 2800 2    50   ~ 0
+Text Label 5100 4600 0    50   ~ 0
 Bank6
 $Comp
 L power:GND #PWR?
@@ -773,11 +763,6 @@ F 3 "" H 5650 1900 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5650 1900 5700 1900
-Wire Bus Line
-	7150 6350 4700 6350
-Connection ~ 4700 6350
-Wire Bus Line
-	4700 6350 2750 6350
 $Comp
 L power:GND #PWR?
 U 1 1 5FC39243
@@ -844,15 +829,35 @@ NoConn ~ 6200 2200
 Wire Wire Line
 	4100 1050 4100 2200
 Wire Bus Line
-	4700 2500 4700 6350
+	4700 3100 4950 3100
+Text HLabel 7200 3100 2    50   3State ~ 0
+Addr[0..15]
 Wire Bus Line
-	7150 2500 7150 6350
+	7200 3100 6950 3100
 Wire Bus Line
-	4950 4300 4950 5700
+	4700 2500 4950 2500
+Text HLabel 7200 2500 2    50   3State ~ 0
+IO[0..7]
 Wire Bus Line
-	6950 4300 6950 5700
+	7200 2500 6950 2500
 Wire Bus Line
-	4850 3100 4850 6050
+	4700 4300 4950 4300
+Text HLabel 7200 4300 2    50   Output ~ 0
+Bank[0..7]
 Wire Bus Line
-	7050 3100 7050 6050
+	7200 4300 6950 4300
+Wire Bus Line
+	4950 2500 4950 2900
+Wire Bus Line
+	6950 2500 6950 2900
+Wire Bus Line
+	6950 4300 6950 4700
+Wire Bus Line
+	4950 4300 4950 4700
+Wire Bus Line
+	4950 3100 4950 4100
+Wire Bus Line
+	6950 3100 6950 4100
+Text Notes 5350 5300 0    50   ~ 0
+TODO: Add pull-down resistors so these\ntristate lines settle to Low when they are\nnot being actively driven.
 $EndSCHEMATC

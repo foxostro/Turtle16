@@ -846,6 +846,8 @@ Text HLabel 7200 4300 2    50   Output ~ 0
 Bank[0..7]
 Wire Bus Line
 	7200 4300 6950 4300
+Text Notes 5350 5300 0    50   ~ 0
+TODO: Add pull-down resistors so these\ntristate lines settle to Low when they are\nnot being actively driven.
 Wire Bus Line
 	4950 2500 4950 2900
 Wire Bus Line
@@ -858,6 +860,4 @@ Wire Bus Line
 	4950 3100 4950 4100
 Wire Bus Line
 	6950 3100 6950 4100
-Text Notes 5350 5300 0    50   ~ 0
-TODO: Add pull-down resistors so these\ntristate lines settle to Low when they are\nnot being actively driven.
 $EndSCHEMATC

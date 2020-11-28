@@ -596,4 +596,48 @@ F10 "SelC[0..2]" O L 5800 4350 50
 F11 "A[0..15]" I R 7000 4350 50 
 F12 "B[0..15]" I R 7000 4250 50 
 $EndSheet
+$Comp
+L Mechanical:MountingHole_Pad H5
+U 1 1 5FDA3B36
+P 5000 6650
+F 0 "H5" H 5100 6699 50  0000 L CNN
+F 1 "MountingHole_Pad" H 5100 6608 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 5000 6650 50  0001 C CNN
+F 3 "~" H 5000 6650 50  0001 C CNN
+	1    5000 6650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0558
+U 1 1 5FDA3B3C
+P 5000 6750
+F 0 "#PWR0558" H 5000 6500 50  0001 C CNN
+F 1 "GND" H 5005 6577 50  0000 C CNN
+F 2 "" H 5000 6750 50  0001 C CNN
+F 3 "" H 5000 6750 50  0001 C CNN
+	1    5000 6750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H6
+U 1 1 5FDA3B42
+P 5000 7150
+F 0 "H6" H 5100 7199 50  0000 L CNN
+F 1 "MountingHole_Pad" H 5100 7108 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_Pad" H 5000 7150 50  0001 C CNN
+F 3 "~" H 5000 7150 50  0001 C CNN
+	1    5000 7150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0559
+U 1 1 5FDA3B48
+P 5000 7250
+F 0 "#PWR0559" H 5000 7000 50  0001 C CNN
+F 1 "GND" H 5005 7077 50  0000 C CNN
+F 2 "" H 5000 7250 50  0001 C CNN
+F 3 "" H 5000 7250 50  0001 C CNN
+	1    5000 7250
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

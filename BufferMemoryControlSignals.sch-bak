@@ -198,9 +198,9 @@ $EndComp
 Text HLabel 3650 4450 0    50   Input ~ 0
 ~RDY
 Wire Wire Line
-	6850 3500 6300 3500
+	8450 3500 7050 3500
 Wire Wire Line
-	6850 3600 6300 3600
+	8450 3600 7450 3600
 Wire Wire Line
 	3650 3500 5300 3500
 Wire Wire Line
@@ -209,9 +209,9 @@ Text HLabel 3650 3500 0    50   Input ~ 0
 ~MemLoadIn
 Text HLabel 3650 3600 0    50   Input ~ 0
 ~MemStoreIn
-Text HLabel 6850 3500 2    50   3State ~ 0
+Text HLabel 8450 3500 2    50   3State ~ 0
 ~MemLoad
-Text HLabel 6850 3600 2    50   3State ~ 0
+Text HLabel 8450 3600 2    50   3State ~ 0
 ~MemStore
 NoConn ~ 6300 3700
 NoConn ~ 6300 3800
@@ -296,4 +296,70 @@ Wire Wire Line
 	5200 4400 5200 4450
 Wire Wire Line
 	5300 4400 5200 4400
+$Comp
+L Device:R_Small R?
+U 1 1 5FC1E0DA
+P 7050 3850
+AR Path="/60AF64DE/5FC1E0DA" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FC1E0DA" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB90806/5FC1E0DA" Ref="R64"  Part="1" 
+F 0 "R64" H 7109 3896 50  0000 L CNN
+F 1 "10kΩ" H 7109 3805 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7050 3850 50  0001 C CNN
+F 3 "~" H 7050 3850 50  0001 C CNN
+	1    7050 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FC1E0E0
+P 7050 3950
+AR Path="/60AF64DE/5FC1E0E0" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FC1E0E0" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FB90806/5FC1E0E0" Ref="#PWR0576"  Part="1" 
+F 0 "#PWR0576" H 7050 3700 50  0001 C CNN
+F 1 "GND" H 7055 3777 50  0000 C CNN
+F 2 "" H 7050 3950 50  0001 C CNN
+F 3 "" H 7050 3950 50  0001 C CNN
+	1    7050 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FC1E98A
+P 7450 3850
+AR Path="/60AF64DE/5FC1E98A" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FC1E98A" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB90806/5FC1E98A" Ref="R65"  Part="1" 
+F 0 "R65" H 7509 3896 50  0000 L CNN
+F 1 "10kΩ" H 7509 3805 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7450 3850 50  0001 C CNN
+F 3 "~" H 7450 3850 50  0001 C CNN
+	1    7450 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FC1E990
+P 7450 3950
+AR Path="/60AF64DE/5FC1E990" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FC1E990" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FB90806/5FC1E990" Ref="#PWR0577"  Part="1" 
+F 0 "#PWR0577" H 7450 3700 50  0001 C CNN
+F 1 "GND" H 7455 3777 50  0000 C CNN
+F 2 "" H 7450 3950 50  0001 C CNN
+F 3 "" H 7450 3950 50  0001 C CNN
+	1    7450 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7050 3750 7050 3500
+Connection ~ 7050 3500
+Wire Wire Line
+	7050 3500 6300 3500
+Wire Wire Line
+	7450 3750 7450 3600
+Connection ~ 7450 3600
+Wire Wire Line
+	7450 3600 6300 3600
 $EndSCHEMATC

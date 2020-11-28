@@ -351,7 +351,7 @@ Text HLabel 4050 2400 0    50   Input ~ 0
 A[0..15]
 Entry Wire Line
 	11600 6250 11500 6150
-Text Label 11600 6250 0    50   ~ 0
+Text Label 11600 5950 0    50   ~ 0
 Ins4
 Wire Wire Line
 	11600 6250 12350 6250
@@ -363,7 +363,7 @@ Wire Wire Line
 	11600 6050 12350 6050
 Entry Wire Line
 	11600 5850 11500 5750
-Text Label 11600 5850 0    50   ~ 0
+Text Label 11600 6150 0    50   ~ 0
 Ins0
 Wire Wire Line
 	11600 5850 12350 5850
@@ -371,51 +371,51 @@ Entry Wire Line
 	11600 6150 11500 6050
 Wire Wire Line
 	11600 6150 12350 6150
-Text Label 11600 6150 0    50   ~ 0
+Text Label 11600 6350 0    50   ~ 0
 Ins3
-Text Label 5200 3350 2    50   ~ 0
+Text Label 5000 3350 0    50   ~ 0
 A7
 Wire Wire Line
 	5000 3350 5400 3350
 Entry Wire Line
 	4900 3250 5000 3350
-Text Label 5200 3250 2    50   ~ 0
+Text Label 5000 2650 0    50   ~ 0
 A6
 Wire Wire Line
 	5000 3250 5400 3250
 Entry Wire Line
 	4900 3150 5000 3250
-Text Label 5200 3150 2    50   ~ 0
+Text Label 5000 3250 0    50   ~ 0
 A5
 Wire Wire Line
 	5000 3150 5400 3150
 Entry Wire Line
 	4900 3050 5000 3150
-Text Label 5200 3050 2    50   ~ 0
+Text Label 5000 2750 0    50   ~ 0
 A4
 Wire Wire Line
 	5000 3050 5400 3050
 Entry Wire Line
 	4900 2950 5000 3050
-Text Label 5200 2950 2    50   ~ 0
+Text Label 5000 3150 0    50   ~ 0
 A3
 Wire Wire Line
 	5000 2950 5400 2950
 Entry Wire Line
 	4900 2850 5000 2950
-Text Label 5200 2850 2    50   ~ 0
+Text Label 5000 2850 0    50   ~ 0
 A2
 Wire Wire Line
 	5000 2850 5400 2850
 Entry Wire Line
 	4900 2750 5000 2850
-Text Label 5200 2750 2    50   ~ 0
+Text Label 5000 3050 0    50   ~ 0
 A1
 Wire Wire Line
 	5000 2750 5400 2750
 Entry Wire Line
 	4900 2650 5000 2750
-Text Label 5200 2650 2    50   ~ 0
+Text Label 5000 2950 0    50   ~ 0
 A0
 Wire Wire Line
 	5000 2650 5400 2650
@@ -629,7 +629,7 @@ Wire Wire Line
 	6800 2750 6400 2750
 Entry Wire Line
 	6900 2650 6800 2750
-Text Label 6800 2650 2    50   ~ 0
+Text Label 6800 2950 2    50   ~ 0
 StoreOp0
 Wire Wire Line
 	6800 2650 6400 2650
@@ -643,25 +643,25 @@ Wire Wire Line
 	5000 5400 5400 5400
 Entry Wire Line
 	4900 5300 5000 5400
-Text Label 5000 5300 0    50   ~ 0
+Text Label 5000 4700 0    50   ~ 0
 A14
 Wire Wire Line
 	5000 5300 5400 5300
 Entry Wire Line
 	4900 5200 5000 5300
-Text Label 5000 5200 0    50   ~ 0
+Text Label 5000 5300 0    50   ~ 0
 A13
 Wire Wire Line
 	5000 5200 5400 5200
 Entry Wire Line
 	4900 5100 5000 5200
-Text Label 5000 5100 0    50   ~ 0
+Text Label 5000 4800 0    50   ~ 0
 A12
 Wire Wire Line
 	5000 5100 5400 5100
 Entry Wire Line
 	4900 5000 5000 5100
-Text Label 5000 5000 0    50   ~ 0
+Text Label 5000 5200 0    50   ~ 0
 A11
 Wire Wire Line
 	5000 5000 5400 5000
@@ -673,13 +673,13 @@ Wire Wire Line
 	5000 4900 5400 4900
 Entry Wire Line
 	4900 4800 5000 4900
-Text Label 5000 4800 0    50   ~ 0
+Text Label 5000 5100 0    50   ~ 0
 A9
 Wire Wire Line
 	5000 4800 5400 4800
 Entry Wire Line
 	4900 4700 5000 4800
-Text Label 5000 4700 0    50   ~ 0
+Text Label 5000 5000 0    50   ~ 0
 A8
 Wire Wire Line
 	5000 4700 5400 4700
@@ -1019,33 +1019,33 @@ F 3 "" H 2650 8850 50  0001 C CNN
 	1    2650 8850
 	0    -1   -1   0   
 $EndComp
-Text Label 6800 2750 2    50   ~ 0
+Text Label 6800 3050 2    50   ~ 0
 StoreOp1
 Text Label 6800 2850 2    50   ~ 0
 StoreOp2
-Text Label 6800 2950 2    50   ~ 0
-StoreOp3
-Text Label 6800 3050 2    50   ~ 0
-StoreOp4
 Text Label 6800 3150 2    50   ~ 0
-StoreOp5
+StoreOp3
+Text Label 6800 2750 2    50   ~ 0
+StoreOp4
 Text Label 6800 3250 2    50   ~ 0
+StoreOp5
+Text Label 6800 2650 2    50   ~ 0
 StoreOp6
 Text Label 6800 3350 2    50   ~ 0
 StoreOp7
-Text Label 6800 4700 2    50   ~ 0
+Text Label 6800 5000 2    50   ~ 0
 StoreOp8
-Text Label 6800 4800 2    50   ~ 0
+Text Label 6800 5100 2    50   ~ 0
 StoreOp9
 Text Label 6800 4900 2    50   ~ 0
 StoreOp10
-Text Label 6800 5000 2    50   ~ 0
-StoreOp11
-Text Label 6800 5100 2    50   ~ 0
-StoreOp12
 Text Label 6800 5200 2    50   ~ 0
-StoreOp13
+StoreOp11
+Text Label 6800 4800 2    50   ~ 0
+StoreOp12
 Text Label 6800 5300 2    50   ~ 0
+StoreOp13
+Text Label 6800 4700 2    50   ~ 0
 StoreOp14
 Text Label 6800 5400 2    50   ~ 0
 StoreOp15
@@ -1159,7 +1159,7 @@ Wire Wire Line
 	12300 8800 12300 8900
 Wire Wire Line
 	12300 8900 12350 8900
-Text Label 11600 5950 0    50   ~ 0
+Text Label 11600 6250 0    50   ~ 0
 Ins1
 Wire Wire Line
 	11600 5950 12350 5950
@@ -1244,7 +1244,7 @@ Text HLabel 7600 4100 0    50   Input ~ 0
 PC[0..15]
 Entry Wire Line
 	8100 4700 8000 4600
-Text Label 8100 4700 0    50   ~ 0
+Text Label 8100 4400 0    50   ~ 0
 PC4
 Wire Wire Line
 	8100 4700 8850 4700
@@ -1256,7 +1256,7 @@ Wire Wire Line
 	8100 4500 8850 4500
 Entry Wire Line
 	8100 4300 8000 4200
-Text Label 8100 4300 0    50   ~ 0
+Text Label 8100 4600 0    50   ~ 0
 PC0
 Wire Wire Line
 	8100 4300 8850 4300
@@ -1264,7 +1264,7 @@ Entry Wire Line
 	8100 4600 8000 4500
 Wire Wire Line
 	8100 4600 8850 4600
-Text Label 8100 4600 0    50   ~ 0
+Text Label 8100 4800 0    50   ~ 0
 PC3
 $Comp
 L 74xx:74LS244 U?
@@ -1382,7 +1382,7 @@ Wire Wire Line
 	8800 7250 8800 7350
 Wire Wire Line
 	8800 7350 8850 7350
-Text Label 8100 4400 0    50   ~ 0
+Text Label 8100 4700 0    50   ~ 0
 PC1
 Wire Wire Line
 	8100 4400 8850 4400
@@ -1402,7 +1402,7 @@ Wire Wire Line
 	8100 5000 8850 5000
 Entry Wire Line
 	8100 4800 8000 4700
-Text Label 8100 4800 0    50   ~ 0
+Text Label 8100 4900 0    50   ~ 0
 PC5
 Wire Wire Line
 	8100 4800 8850 4800
@@ -1410,17 +1410,17 @@ Entry Wire Line
 	8100 4900 8000 4800
 Wire Wire Line
 	8100 4900 8850 4900
-Text Label 8100 4900 0    50   ~ 0
+Text Label 8100 4300 0    50   ~ 0
 PC6
 Entry Wire Line
 	8100 6750 8000 6650
-Text Label 8100 7050 0    50   ~ 0
+Text Label 8100 6450 0    50   ~ 0
 PC12
 Wire Wire Line
 	8100 6750 8850 6750
 Entry Wire Line
 	8100 6550 8000 6450
-Text Label 8100 6450 0    50   ~ 0
+Text Label 8100 6550 0    50   ~ 0
 PC10
 Wire Wire Line
 	8100 6550 8850 6550
@@ -1434,9 +1434,9 @@ Entry Wire Line
 	8100 6650 8000 6550
 Wire Wire Line
 	8100 6650 8850 6650
-Text Label 8100 6350 0    50   ~ 0
+Text Label 8100 6850 0    50   ~ 0
 PC11
-Text Label 8100 6550 0    50   ~ 0
+Text Label 8100 6750 0    50   ~ 0
 PC9
 Wire Wire Line
 	8100 6450 8850 6450
@@ -1444,7 +1444,7 @@ Entry Wire Line
 	8100 6450 8000 6350
 Entry Wire Line
 	8100 7050 8000 6950
-Text Label 8100 6750 0    50   ~ 0
+Text Label 8100 7050 0    50   ~ 0
 PC15
 Wire Wire Line
 	8100 7050 8850 7050
@@ -1458,7 +1458,7 @@ Entry Wire Line
 	8100 6950 8000 6850
 Wire Wire Line
 	8100 6950 8850 6950
-Text Label 8100 6850 0    50   ~ 0
+Text Label 8100 6350 0    50   ~ 0
 PC14
 Wire Wire Line
 	7900 5200 7900 7250
@@ -1507,7 +1507,7 @@ Wire Wire Line
 	10250 4400 9850 4400
 Entry Wire Line
 	10350 4300 10250 4400
-Text Label 10250 4300 2    50   ~ 0
+Text Label 10250 4600 2    50   ~ 0
 StoreOp0
 Wire Wire Line
 	10250 4300 9850 4300
@@ -1545,35 +1545,35 @@ Wire Wire Line
 	10250 6350 9850 6350
 Entry Wire Line
 	10350 6250 10250 6350
-Text Label 10250 4400 2    50   ~ 0
+Text Label 10250 4700 2    50   ~ 0
 StoreOp1
 Text Label 10250 4500 2    50   ~ 0
 StoreOp2
-Text Label 10250 4600 2    50   ~ 0
-StoreOp3
-Text Label 10250 4700 2    50   ~ 0
-StoreOp4
 Text Label 10250 4800 2    50   ~ 0
-StoreOp5
+StoreOp3
+Text Label 10250 4400 2    50   ~ 0
+StoreOp4
 Text Label 10250 4900 2    50   ~ 0
+StoreOp5
+Text Label 10250 4300 2    50   ~ 0
 StoreOp6
 Text Label 10250 5000 2    50   ~ 0
 StoreOp7
 Text Label 10250 6650 2    50   ~ 0
 StoreOp8
-Text Label 10250 6550 2    50   ~ 0
+Text Label 10250 6750 2    50   ~ 0
 StoreOp9
-Text Label 10250 6450 2    50   ~ 0
+Text Label 10250 6550 2    50   ~ 0
 StoreOp10
-Text Label 10250 6350 2    50   ~ 0
+Text Label 10250 6850 2    50   ~ 0
 StoreOp11
-Text Label 10250 7050 2    50   ~ 0
+Text Label 10250 6450 2    50   ~ 0
 StoreOp12
 Text Label 10250 6950 2    50   ~ 0
 StoreOp13
-Text Label 10250 6850 2    50   ~ 0
+Text Label 10250 6350 2    50   ~ 0
 StoreOp14
-Text Label 10250 6750 2    50   ~ 0
+Text Label 10250 7050 2    50   ~ 0
 StoreOp15
 Wire Wire Line
 	13750 6550 13350 6550
@@ -1603,7 +1603,7 @@ Wire Wire Line
 	13750 5950 13350 5950
 Entry Wire Line
 	13850 5850 13750 5950
-Text Label 13750 5850 2    50   ~ 0
+Text Label 13750 6150 2    50   ~ 0
 StoreOp0
 Wire Wire Line
 	13750 5850 13350 5850
@@ -1641,33 +1641,33 @@ Wire Wire Line
 	13750 7900 13350 7900
 Entry Wire Line
 	13850 7800 13750 7900
-Text Label 13750 5950 2    50   ~ 0
+Text Label 13750 6250 2    50   ~ 0
 StoreOp1
 Text Label 13750 6050 2    50   ~ 0
 StoreOp2
-Text Label 13750 6150 2    50   ~ 0
-StoreOp3
-Text Label 13750 6250 2    50   ~ 0
-StoreOp4
 Text Label 13750 6350 2    50   ~ 0
-StoreOp5
+StoreOp3
+Text Label 13750 5950 2    50   ~ 0
+StoreOp4
 Text Label 13750 6450 2    50   ~ 0
+StoreOp5
+Text Label 13750 5850 2    50   ~ 0
 StoreOp6
 Text Label 13750 6550 2    50   ~ 0
 StoreOp7
-Text Label 13750 7900 2    50   ~ 0
+Text Label 13750 8200 2    50   ~ 0
 StoreOp8
-Text Label 13750 8000 2    50   ~ 0
+Text Label 13750 8300 2    50   ~ 0
 StoreOp9
 Text Label 13750 8100 2    50   ~ 0
 StoreOp10
-Text Label 13750 8200 2    50   ~ 0
-StoreOp11
-Text Label 13750 8300 2    50   ~ 0
-StoreOp12
 Text Label 13750 8400 2    50   ~ 0
-StoreOp13
+StoreOp11
+Text Label 13750 8000 2    50   ~ 0
+StoreOp12
 Text Label 13750 8500 2    50   ~ 0
+StoreOp13
+Text Label 13750 7900 2    50   ~ 0
 StoreOp14
 Text Label 13750 8600 2    50   ~ 0
 StoreOp15
@@ -1689,15 +1689,13 @@ Wire Wire Line
 	11600 6550 12350 6550
 Entry Wire Line
 	11600 6350 11500 6250
-Text Label 11600 6350 0    50   ~ 0
-Ins5
 Wire Wire Line
 	11600 6350 12350 6350
 Entry Wire Line
 	11600 6450 11500 6350
 Wire Wire Line
 	11600 6450 12350 6450
-Text Label 11600 6450 0    50   ~ 0
+Text Label 11600 5850 0    50   ~ 0
 Ins6
 $Comp
 L 74xx:74LS244 U?
@@ -1743,6 +1741,8 @@ Wire Wire Line
 Connection ~ 5350 5700
 Wire Wire Line
 	5350 5700 5400 5700
+Text Label 11600 6450 0    50   ~ 0
+Ins5
 Wire Bus Line
 	11500 5650 11500 6450
 Wire Bus Line

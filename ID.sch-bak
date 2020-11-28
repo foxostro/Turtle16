@@ -2750,20 +2750,20 @@ Wire Wire Line
 Wire Wire Line
 	5650 7650 5650 7500
 Wire Wire Line
-	4500 7550 4850 7550
-Wire Wire Line
-	4850 7550 4850 8150
-Wire Wire Line
 	5850 8150 5850 7700
 Wire Wire Line
 	4850 8150 5850 8150
 Wire Wire Line
-	4950 7600 4950 7450
-Wire Wire Line
-	4950 7450 4500 7450
+	4950 7600 4950 7550
 Wire Wire Line
 	4950 7600 14750 7600
 NoConn ~ 4500 7750
+Wire Wire Line
+	4500 7450 4850 7450
+Wire Wire Line
+	4850 7450 4850 8150
+Wire Wire Line
+	4500 7550 4950 7550
 Wire Bus Line
 	950  1750 6600 1750
 Wire Bus Line

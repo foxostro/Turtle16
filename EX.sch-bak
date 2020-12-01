@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 9 34
+Sheet 10 30
 Title "EX"
 Date ""
 Rev ""
@@ -13,175 +13,119 @@ Comment2 "ID stage of the CPU pipeline. The 7381 contains internal registers"
 Comment3 "The ALU condition codes may be latched in a flags register which feeds back into the"
 Comment4 "The EX stage is built around the IDT 7381 sixteen-bit ALU IC."
 $EndDescr
-Text HLabel 1200 1050 0    50   Input ~ 0
-RightOp[0..15]
-Text HLabel 1200 950  0    50   Input ~ 0
-LeftOp[0..15]
-Text HLabel 9800 1350 2    50   Output ~ 0
-ALUResult[0..15]
-Text HLabel 1200 1150 0    50   Input ~ 0
-CtlIn[5..19]
-Text HLabel 9800 1250 2    50   Output ~ 0
-Ctl[13..19]
-Text HLabel 1200 6600 0    50   Input ~ 0
+Text HLabel 7800 5350 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	9450 3900 9800 3900
+	8950 4550 9300 4550
 Wire Wire Line
-	9800 3800 9450 3800
-NoConn ~ 9450 4500
-NoConn ~ 9450 4400
-NoConn ~ 9450 4300
-NoConn ~ 9450 4200
-NoConn ~ 9450 4100
+	9300 4450 8950 4450
+NoConn ~ 8950 5150
+NoConn ~ 8950 5050
+NoConn ~ 8950 4950
+NoConn ~ 8950 4850
+NoConn ~ 8950 4750
 $Comp
 L power:GND #PWR?
 U 1 1 5FE1BD7A
-P 8950 5100
+P 8450 5750
 AR Path="/5D2C0CE4/5FE1BD7A" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FE1BD7A" Ref="#PWR0175"  Part="1" 
-F 0 "#PWR0175" H 8950 4850 50  0001 C CNN
-F 1 "GND" H 8955 4927 50  0000 C CNN
-F 2 "" H 8950 5100 50  0001 C CNN
-F 3 "" H 8950 5100 50  0001 C CNN
-	1    8950 5100
+F 0 "#PWR0175" H 8450 5500 50  0001 C CNN
+F 1 "GND" H 8455 5577 50  0000 C CNN
+F 2 "" H 8450 5750 50  0001 C CNN
+F 3 "" H 8450 5750 50  0001 C CNN
+	1    8450 5750
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5FE1B681
-P 8950 3500
+P 8450 4150
 AR Path="/5D2C0CE4/5FE1B681" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FE1B681" Ref="#PWR0174"  Part="1" 
-F 0 "#PWR0174" H 8950 3350 50  0001 C CNN
-F 1 "VCC" H 8967 3673 50  0000 C CNN
-F 2 "" H 8950 3500 50  0001 C CNN
-F 3 "" H 8950 3500 50  0001 C CNN
-	1    8950 3500
+F 0 "#PWR0174" H 8450 4000 50  0001 C CNN
+F 1 "VCC" H 8467 4323 50  0000 C CNN
+F 2 "" H 8450 4150 50  0001 C CNN
+F 3 "" H 8450 4150 50  0001 C CNN
+	1    8450 4150
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS377 U23
 U 1 1 5FE1ACC2
-P 8950 4300
-F 0 "U23" H 8650 5100 50  0000 C CNN
-F 1 "74ABT377" H 8650 5000 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 8950 4300 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt377a" H 8950 4300 50  0001 C CNN
-	1    8950 4300
+P 8450 4950
+F 0 "U23" H 8150 5750 50  0000 C CNN
+F 1 "74ABT377" H 8150 5650 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 8450 4950 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt377a" H 8450 4950 50  0001 C CNN
+	1    8450 4950
 	1    0    0    -1  
 $EndComp
-Text HLabel 9800 3900 2    50   Output ~ 0
+Text HLabel 9300 4550 2    50   Output ~ 0
 Z
-Text HLabel 9800 3800 2    50   Output ~ 0
+Text HLabel 9300 4450 2    50   Output ~ 0
 Carry
 $Comp
 L power:GND #PWR0169
 U 1 1 5FE21D5C
-P 8450 4100
-F 0 "#PWR0169" H 8450 3850 50  0001 C CNN
-F 1 "GND" V 8455 3972 50  0000 R CNN
-F 2 "" H 8450 4100 50  0001 C CNN
-F 3 "" H 8450 4100 50  0001 C CNN
-	1    8450 4100
+P 7950 4750
+F 0 "#PWR0169" H 7950 4500 50  0001 C CNN
+F 1 "GND" V 7955 4622 50  0000 R CNN
+F 2 "" H 7950 4750 50  0001 C CNN
+F 3 "" H 7950 4750 50  0001 C CNN
+	1    7950 4750
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR0170
 U 1 1 5FE21F4C
-P 8450 4200
-F 0 "#PWR0170" H 8450 3950 50  0001 C CNN
-F 1 "GND" V 8455 4072 50  0000 R CNN
-F 2 "" H 8450 4200 50  0001 C CNN
-F 3 "" H 8450 4200 50  0001 C CNN
-	1    8450 4200
+P 7950 4850
+F 0 "#PWR0170" H 7950 4600 50  0001 C CNN
+F 1 "GND" V 7955 4722 50  0000 R CNN
+F 2 "" H 7950 4850 50  0001 C CNN
+F 3 "" H 7950 4850 50  0001 C CNN
+	1    7950 4850
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR0171
 U 1 1 5FE2214D
-P 8450 4300
-F 0 "#PWR0171" H 8450 4050 50  0001 C CNN
-F 1 "GND" V 8455 4172 50  0000 R CNN
-F 2 "" H 8450 4300 50  0001 C CNN
-F 3 "" H 8450 4300 50  0001 C CNN
-	1    8450 4300
+P 7950 4950
+F 0 "#PWR0171" H 7950 4700 50  0001 C CNN
+F 1 "GND" V 7955 4822 50  0000 R CNN
+F 2 "" H 7950 4950 50  0001 C CNN
+F 3 "" H 7950 4950 50  0001 C CNN
+	1    7950 4950
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR0172
 U 1 1 5FE222C6
-P 8450 4400
-F 0 "#PWR0172" H 8450 4150 50  0001 C CNN
-F 1 "GND" V 8455 4272 50  0000 R CNN
-F 2 "" H 8450 4400 50  0001 C CNN
-F 3 "" H 8450 4400 50  0001 C CNN
-	1    8450 4400
+P 7950 5050
+F 0 "#PWR0172" H 7950 4800 50  0001 C CNN
+F 1 "GND" V 7955 4922 50  0000 R CNN
+F 2 "" H 7950 5050 50  0001 C CNN
+F 3 "" H 7950 5050 50  0001 C CNN
+	1    7950 5050
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR0173
 U 1 1 5FE2243F
-P 8450 4500
-F 0 "#PWR0173" H 8450 4250 50  0001 C CNN
-F 1 "GND" V 8455 4372 50  0000 R CNN
-F 2 "" H 8450 4500 50  0001 C CNN
-F 3 "" H 8450 4500 50  0001 C CNN
-	1    8450 4500
+P 7950 5150
+F 0 "#PWR0173" H 7950 4900 50  0001 C CNN
+F 1 "GND" V 7955 5022 50  0000 R CNN
+F 2 "" H 7950 5150 50  0001 C CNN
+F 3 "" H 7950 5150 50  0001 C CNN
+	1    7950 5150
 	0    1    1    0   
 $EndComp
-Text Label 2400 2000 3    50   ~ 0
-~FI
-Wire Wire Line
-	2400 1250 2400 6700
-Text Label 2400 1300 3    50   ~ 0
-CtlIn5
-Entry Wire Line
-	3200 1150 3300 1250
-Text Label 3300 1300 3    50   ~ 0
-CtlIn6
-Text Label 3300 2000 3    50   ~ 0
-~CarryIn
-Entry Wire Line
-	2600 1150 2700 1250
-Text Label 3150 1300 3    50   ~ 0
-CtlIn7
-Text Label 2700 2000 3    50   ~ 0
-RS0
-Entry Wire Line
-	2750 1150 2850 1250
-Text Label 3000 1300 3    50   ~ 0
-CtlIn8
-Text Label 2850 2000 3    50   ~ 0
-I2
-Entry Wire Line
-	2900 1150 3000 1250
-Text Label 2850 1300 3    50   ~ 0
-CtlIn9
-Text Label 3000 2000 3    50   ~ 0
-I1
-Entry Wire Line
-	3050 1150 3150 1250
-Text Label 2700 1300 3    50   ~ 0
-CtlIn10
-Text Label 3150 2000 3    50   ~ 0
-I0
-Text Label 2550 1300 3    50   ~ 0
-CtlIn11
-Entry Wire Line
-	2450 1150 2550 1250
-Text Label 2550 2000 3    50   ~ 0
-RS1
-Entry Bus Bus
-	6700 1150 6800 1250
-Wire Bus Line
-	6800 1250 7950 1250
-Text Label 6900 1250 0    50   ~ 0
+Text Label 5300 1650 0    50   ~ 0
 CtlIn[12..19]
 $Comp
 L Device:C C?
 U 1 1 600839BF
-P 9550 6200
+P 950 7400
 AR Path="/5D8005AF/5D833E4B/600839BF" Ref="C?"  Part="1" 
 AR Path="/5FE21410/600839BF" Ref="C?"  Part="1" 
 AR Path="/5FE8EB3D/600839BF" Ref="C?"  Part="1" 
@@ -210,56 +154,17 @@ AR Path="/5FF41DF6/6005FCFB/600839BF" Ref="C?"  Part="1"
 AR Path="/5FF41DF6/6005FD06/600839BF" Ref="C?"  Part="1" 
 AR Path="/5FF41DF6/6005FD11/600839BF" Ref="C?"  Part="1" 
 AR Path="/60A71BBF/600839BF" Ref="C27"  Part="1" 
-F 0 "C27" H 9665 6246 50  0000 L CNN
-F 1 "100nF" H 9665 6155 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 9588 6050 50  0001 C CNN
-F 3 "~" H 9550 6200 50  0001 C CNN
-	1    9550 6200
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C?
-U 1 1 600839C5
-P 10050 6200
-AR Path="/5D8005AF/5D833E4B/600839C5" Ref="C?"  Part="1" 
-AR Path="/5FE21410/600839C5" Ref="C?"  Part="1" 
-AR Path="/5FE8EB3D/600839C5" Ref="C?"  Part="1" 
-AR Path="/60153F0B/600839C5" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/600839C5" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/600839C5" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC56568/600839C5" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/600839C5" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/600839C5" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/600839C5" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD447EB/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45108/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45557/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45834/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040306/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040791/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60044374/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/600839C5" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/600839C5" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/600839C5" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/600839C5" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/600839C5" Ref="C?"  Part="1" 
-AR Path="/60A71BBF/600839C5" Ref="C28"  Part="1" 
-F 0 "C28" H 10165 6246 50  0000 L CNN
-F 1 "100nF" H 10165 6155 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 10088 6050 50  0001 C CNN
-F 3 "~" H 10050 6200 50  0001 C CNN
-	1    10050 6200
+F 0 "C27" H 1065 7446 50  0000 L CNN
+F 1 "100nF" H 1065 7355 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 988 7250 50  0001 C CNN
+F 3 "~" H 950 7400 50  0001 C CNN
+	1    950  7400
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 600839CB
-P 9550 6050
+P 950 7250
 AR Path="/5D8005AF/5D833E4B/600839CB" Ref="#PWR?"  Part="1" 
 AR Path="/5FE21410/600839CB" Ref="#PWR?"  Part="1" 
 AR Path="/5FE8EB3D/600839CB" Ref="#PWR?"  Part="1" 
@@ -288,22 +193,17 @@ AR Path="/5FF41DF6/6005FCFB/600839CB" Ref="#PWR?"  Part="1"
 AR Path="/5FF41DF6/6005FD06/600839CB" Ref="#PWR?"  Part="1" 
 AR Path="/5FF41DF6/6005FD11/600839CB" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/600839CB" Ref="#PWR0176"  Part="1" 
-F 0 "#PWR0176" H 9550 5900 50  0001 C CNN
-F 1 "VCC" H 9567 6223 50  0000 C CNN
-F 2 "" H 9550 6050 50  0001 C CNN
-F 3 "" H 9550 6050 50  0001 C CNN
-	1    9550 6050
+F 0 "#PWR0176" H 950 7100 50  0001 C CNN
+F 1 "VCC" H 967 7423 50  0000 C CNN
+F 2 "" H 950 7250 50  0001 C CNN
+F 3 "" H 950 7250 50  0001 C CNN
+	1    950  7250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9550 6050 10050 6050
-Connection ~ 9550 6050
-Wire Wire Line
-	10050 6350 9550 6350
 $Comp
 L power:GND #PWR?
 U 1 1 600839D4
-P 9550 6450
+P 950 7650
 AR Path="/5D8005AF/5D833E4B/600839D4" Ref="#PWR?"  Part="1" 
 AR Path="/5FE21410/600839D4" Ref="#PWR?"  Part="1" 
 AR Path="/5FE8EB3D/600839D4" Ref="#PWR?"  Part="1" 
@@ -332,546 +232,339 @@ AR Path="/5FF41DF6/6005FCFB/600839D4" Ref="#PWR?"  Part="1"
 AR Path="/5FF41DF6/6005FD06/600839D4" Ref="#PWR?"  Part="1" 
 AR Path="/5FF41DF6/6005FD11/600839D4" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/600839D4" Ref="#PWR0177"  Part="1" 
-F 0 "#PWR0177" H 9550 6200 50  0001 C CNN
-F 1 "GND" H 9555 6277 50  0000 C CNN
-F 2 "" H 9550 6450 50  0001 C CNN
-F 3 "" H 9550 6450 50  0001 C CNN
-	1    9550 6450
+F 0 "#PWR0177" H 950 7400 50  0001 C CNN
+F 1 "GND" H 955 7477 50  0000 C CNN
+F 2 "" H 950 7650 50  0001 C CNN
+F 3 "" H 950 7650 50  0001 C CNN
+	1    950  7650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9550 6450 9550 6350
-Connection ~ 9550 6350
-Entry Wire Line
-	2300 1150 2400 1250
-$Comp
-L CPU:IDT7381 U22
-U 1 1 5FB9CA90
-P 5500 3950
-F 0 "U22" H 5500 4000 50  0000 C CNN
-F 1 "IDT7381" H 5500 3900 50  0000 C CNN
-F 2 "Package_LCC:PLCC-68_SMD-Socket" H 5500 5200 50  0001 C CNN
-F 3 "https://www.digchip.com/datasheets/download_datasheet.php?id=419696&part-number=IDT7381" H 5500 5200 50  0001 C CNN
-	1    5500 3950
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5FDDF6AB
-P 5500 1600
-AR Path="/5D2C0CE4/5FDDF6AB" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FDDF6AB" Ref="#PWR0164"  Part="1" 
-F 0 "#PWR0164" H 5500 1450 50  0001 C CNN
-F 1 "VCC" H 5517 1773 50  0000 C CNN
-F 2 "" H 5500 1600 50  0001 C CNN
-F 3 "" H 5500 1600 50  0001 C CNN
-	1    5500 1600
-	1    0    0    -1  
-$EndComp
-Text Label 3850 2100 0    50   ~ 0
-LeftOp3
+	950  7650 950  7550
 Wire Wire Line
-	3800 2100 4400 2100
-Entry Wire Line
-	3800 2100 3700 2000
-Text Label 3850 2000 0    50   ~ 0
-LeftOp2
-Wire Wire Line
-	3800 2000 4400 2000
-Entry Wire Line
-	3800 2000 3700 1900
-Text Label 3850 1900 0    50   ~ 0
-LeftOp1
-Wire Wire Line
-	3800 1900 4400 1900
-Entry Wire Line
-	3800 1900 3700 1800
-Text Label 3850 1800 0    50   ~ 0
-LeftOp0
-Wire Wire Line
-	3800 1800 4400 1800
-Entry Wire Line
-	3800 1800 3700 1700
-Text Label 3850 2200 0    50   ~ 0
-LeftOp4
-Wire Wire Line
-	3800 2200 4400 2200
-Entry Wire Line
-	3800 2200 3700 2100
-Text Label 3850 2300 0    50   ~ 0
-LeftOp5
-Wire Wire Line
-	3800 2300 4400 2300
-Entry Wire Line
-	3800 2300 3700 2200
-$Comp
-L power:GND #PWR?
-U 1 1 5FBC6BF5
-P 5500 6300
-AR Path="/5D2C0CE4/5FBC6BF5" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FBC6BF5" Ref="#PWR0165"  Part="1" 
-F 0 "#PWR0165" H 5500 6050 50  0001 C CNN
-F 1 "GND" H 5505 6127 50  0000 C CNN
-F 2 "" H 5500 6300 50  0001 C CNN
-F 3 "" H 5500 6300 50  0001 C CNN
-	1    5500 6300
-	1    0    0    -1  
-$EndComp
-Text Label 3850 2400 0    50   ~ 0
-LeftOp6
-Wire Wire Line
-	3800 2400 4400 2400
-Entry Wire Line
-	3800 2400 3700 2300
-Text Label 3850 2500 0    50   ~ 0
-LeftOp7
-Wire Wire Line
-	3800 2500 4400 2500
-Entry Wire Line
-	3800 2500 3700 2400
-Text Label 3850 2600 0    50   ~ 0
-LeftOp8
-Wire Wire Line
-	3800 2600 4400 2600
-Entry Wire Line
-	3800 2600 3700 2500
-Text Label 3850 2700 0    50   ~ 0
-LeftOp9
-Wire Wire Line
-	3800 2700 4400 2700
-Entry Wire Line
-	3800 2700 3700 2600
-Text Label 3850 2800 0    50   ~ 0
-LeftOp10
-Wire Wire Line
-	3800 2800 4400 2800
-Entry Wire Line
-	3800 2800 3700 2700
-Text Label 3850 2900 0    50   ~ 0
-LeftOp11
-Wire Wire Line
-	3800 2900 4400 2900
-Entry Wire Line
-	3800 2900 3700 2800
-Text Label 3850 3000 0    50   ~ 0
-LeftOp12
-Wire Wire Line
-	3800 3000 4400 3000
-Entry Wire Line
-	3800 3000 3700 2900
-Text Label 3850 3100 0    50   ~ 0
-LeftOp13
-Wire Wire Line
-	3800 3100 4400 3100
-Entry Wire Line
-	3800 3100 3700 3000
-Text Label 3850 3200 0    50   ~ 0
-LeftOp14
-Wire Wire Line
-	3800 3200 4400 3200
-Entry Wire Line
-	3800 3200 3700 3100
-Text Label 3850 3300 0    50   ~ 0
-LeftOp15
-Wire Wire Line
-	3800 3300 4400 3300
-Entry Wire Line
-	3800 3300 3700 3200
-Text Label 3850 3800 0    50   ~ 0
-RightOp3
-Wire Wire Line
-	3800 3800 4400 3800
-Entry Wire Line
-	3800 3800 3700 3700
-Text Label 3850 3700 0    50   ~ 0
-RightOp2
-Wire Wire Line
-	3800 3700 4400 3700
-Entry Wire Line
-	3800 3700 3700 3600
-Text Label 3850 3600 0    50   ~ 0
-RightOp1
-Wire Wire Line
-	3800 3600 4400 3600
-Entry Wire Line
-	3800 3600 3700 3500
-Text Label 3850 3500 0    50   ~ 0
-RightOp0
-Wire Wire Line
-	3800 3500 4400 3500
-Entry Wire Line
-	3800 3500 3700 3400
-Text Label 3850 3900 0    50   ~ 0
-RightOp4
-Wire Wire Line
-	3800 3900 4400 3900
-Entry Wire Line
-	3800 3900 3700 3800
-Text Label 3850 4000 0    50   ~ 0
-RightOp5
-Wire Wire Line
-	3800 4000 4400 4000
-Entry Wire Line
-	3800 4000 3700 3900
-Text Label 3850 4100 0    50   ~ 0
-RightOp6
-Wire Wire Line
-	3800 4100 4400 4100
-Entry Wire Line
-	3800 4100 3700 4000
-Text Label 3850 4200 0    50   ~ 0
-RightOp7
-Wire Wire Line
-	3800 4200 4400 4200
-Entry Wire Line
-	3800 4200 3700 4100
-Text Label 3850 4300 0    50   ~ 0
-RightOp8
-Wire Wire Line
-	3800 4300 4400 4300
-Entry Wire Line
-	3800 4300 3700 4200
-Text Label 3850 4400 0    50   ~ 0
-RightOp9
-Wire Wire Line
-	3800 4400 4400 4400
-Entry Wire Line
-	3800 4400 3700 4300
-Text Label 3850 4500 0    50   ~ 0
-RightOp10
-Wire Wire Line
-	3800 4500 4400 4500
-Entry Wire Line
-	3800 4500 3700 4400
-Text Label 3850 4600 0    50   ~ 0
-RightOp11
-Wire Wire Line
-	3800 4600 4400 4600
-Entry Wire Line
-	3800 4600 3700 4500
-Text Label 3850 4700 0    50   ~ 0
-RightOp12
-Wire Wire Line
-	3800 4700 4400 4700
-Entry Wire Line
-	3800 4700 3700 4600
-Text Label 3850 4800 0    50   ~ 0
-RightOp13
-Wire Wire Line
-	3800 4800 4400 4800
-Entry Wire Line
-	3800 4800 3700 4700
-Text Label 3850 4900 0    50   ~ 0
-RightOp14
-Wire Wire Line
-	3800 4900 4400 4900
-Entry Wire Line
-	3800 4900 3700 4800
-Text Label 3850 5000 0    50   ~ 0
-RightOp15
-Wire Wire Line
-	3800 5000 4400 5000
-Entry Wire Line
-	3800 5000 3700 4900
-Text Label 7150 2100 2    50   ~ 0
-F3
-Wire Wire Line
-	7200 2100 6600 2100
-Entry Wire Line
-	7200 2100 7300 2000
-Text Label 7150 2000 2    50   ~ 0
-F2
-Wire Wire Line
-	7200 2000 6600 2000
-Entry Wire Line
-	7200 2000 7300 1900
-Text Label 7150 1900 2    50   ~ 0
-F1
-Wire Wire Line
-	7200 1900 6600 1900
-Entry Wire Line
-	7200 1900 7300 1800
-Text Label 7150 1800 2    50   ~ 0
-F0
-Wire Wire Line
-	7200 1800 6600 1800
-Entry Wire Line
-	7200 1800 7300 1700
-Text Label 7150 2200 2    50   ~ 0
-F4
-Wire Wire Line
-	7200 2200 6600 2200
-Entry Wire Line
-	7200 2200 7300 2100
-Text Label 7150 2300 2    50   ~ 0
-F5
-Wire Wire Line
-	7200 2300 6600 2300
-Entry Wire Line
-	7200 2300 7300 2200
-Wire Wire Line
-	7200 2400 6600 2400
-Entry Wire Line
-	7200 2400 7300 2300
-Text Label 7150 2500 2    50   ~ 0
-F7
-Wire Wire Line
-	7200 2500 6600 2500
-Entry Wire Line
-	7200 2500 7300 2400
-Text Label 7150 2600 2    50   ~ 0
-F8
-Wire Wire Line
-	7200 2600 6600 2600
-Entry Wire Line
-	7200 2600 7300 2500
-Text Label 7150 2700 2    50   ~ 0
-F9
-Wire Wire Line
-	7200 2700 6600 2700
-Entry Wire Line
-	7200 2700 7300 2600
-Text Label 7150 2800 2    50   ~ 0
-F10
-Wire Wire Line
-	7200 2800 6600 2800
-Entry Wire Line
-	7200 2800 7300 2700
-Text Label 7150 2900 2    50   ~ 0
-F11
-Wire Wire Line
-	7200 2900 6600 2900
-Entry Wire Line
-	7200 2900 7300 2800
-Text Label 7150 3000 2    50   ~ 0
-F12
-Wire Wire Line
-	7200 3000 6600 3000
-Entry Wire Line
-	7200 3000 7300 2900
-Text Label 7150 3100 2    50   ~ 0
-F13
-Wire Wire Line
-	7200 3100 6600 3100
-Entry Wire Line
-	7200 3100 7300 3000
-Text Label 7150 3200 2    50   ~ 0
-F14
-Wire Wire Line
-	7200 3200 6600 3200
-Entry Wire Line
-	7200 3200 7300 3100
-Text Label 7150 3300 2    50   ~ 0
-F15
-Wire Wire Line
-	7200 3300 6600 3300
-Entry Wire Line
-	7200 3300 7300 3200
-Text Label 7150 2400 2    50   ~ 0
-F6
-$Comp
-L power:GND #PWR0168
-U 1 1 5FC11898
-P 6600 3650
-F 0 "#PWR0168" H 6600 3400 50  0001 C CNN
-F 1 "GND" V 6605 3522 50  0000 R CNN
-F 2 "" H 6600 3650 50  0001 C CNN
-F 3 "" H 6600 3650 50  0001 C CNN
-	1    6600 3650
-	0    -1   -1   0   
-$EndComp
-NoConn ~ 6600 3900
-NoConn ~ 6600 4000
-$Comp
-L power:GND #PWR0166
-U 1 1 5FC2C218
-P 6600 3450
-F 0 "#PWR0166" H 6600 3200 50  0001 C CNN
-F 1 "GND" V 6605 3322 50  0000 R CNN
-F 2 "" H 6600 3450 50  0001 C CNN
-F 3 "" H 6600 3450 50  0001 C CNN
-	1    6600 3450
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0162
-U 1 1 5FC2C5E8
-P 4400 6000
-F 0 "#PWR0162" H 4400 5750 50  0001 C CNN
-F 1 "GND" V 4405 5872 50  0000 R CNN
-F 2 "" H 4400 6000 50  0001 C CNN
-F 3 "" H 4400 6000 50  0001 C CNN
-	1    4400 6000
-	0    1    -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0163
-U 1 1 5FC2D12E
-P 4400 6100
-F 0 "#PWR0163" H 4400 5850 50  0001 C CNN
-F 1 "GND" V 4405 5972 50  0000 R CNN
-F 2 "" H 4400 6100 50  0001 C CNN
-F 3 "" H 4400 6100 50  0001 C CNN
-	1    4400 6100
-	0    1    -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0161
-U 1 1 5FC2D3CC
-P 4400 5900
-F 0 "#PWR0161" H 4400 5650 50  0001 C CNN
-F 1 "GND" V 4405 5772 50  0000 R CNN
-F 2 "" H 4400 5900 50  0001 C CNN
-F 3 "" H 4400 5900 50  0001 C CNN
-	1    4400 5900
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	9450 4000 9800 4000
-Text HLabel 9800 4000 2    50   Output ~ 0
+	8950 4650 9300 4650
+Text HLabel 9300 4650 2    50   Output ~ 0
 OVF
-Wire Wire Line
-	2550 1250 2550 5800
-Wire Wire Line
-	2700 1250 2700 5700
-Wire Wire Line
-	2850 1250 2850 5600
-Wire Wire Line
-	3000 1250 3000 5500
-Wire Wire Line
-	3150 1250 3150 5400
-Wire Bus Line
-	3700 950  1200 950 
-Wire Bus Line
-	3600 1050 3600 3350
-Wire Bus Line
-	3600 3350 3700 3350
-Wire Bus Line
-	3600 1050 1200 1050
-Wire Wire Line
-	6600 3800 8450 3800
-Wire Wire Line
-	6600 4100 7100 4100
-Wire Wire Line
-	7100 4100 7100 3900
-Wire Wire Line
-	7100 3900 8450 3900
-Wire Wire Line
-	6600 4200 7200 4200
-Wire Wire Line
-	7200 4200 7200 4000
-Wire Wire Line
-	7200 4000 8450 4000
-Wire Wire Line
-	3300 5300 4400 5300
-Wire Wire Line
-	3300 1250 3300 5300
-Wire Wire Line
-	4400 5400 3150 5400
-Wire Wire Line
-	4400 5500 3000 5500
-Wire Wire Line
-	4400 5600 2850 5600
-Wire Wire Line
-	4400 5700 2700 5700
-Wire Wire Line
-	4400 5800 2550 5800
-Wire Wire Line
-	8450 4800 7500 4800
-Wire Wire Line
-	7500 4800 7500 6700
-Wire Wire Line
-	7500 6700 2400 6700
-Wire Wire Line
-	2250 5200 2250 6600
-Wire Wire Line
-	2250 5200 4400 5200
-Wire Wire Line
-	7350 4700 7350 6600
-Wire Wire Line
-	7350 4700 8450 4700
-Connection ~ 2250 6600
-Wire Wire Line
-	2250 6600 7350 6600
-Wire Wire Line
-	1200 6600 2250 6600
+Text HLabel 7550 1550 0    50   Input ~ 0
+Phi1
 $Sheet
-S 7950 750  1550 700 
-U 5FDD0EB1
-F0 "sheet5FDD0EA7" 50
-F1 "EX_MEM.sch" 50
-F2 "Phi1" I L 7950 850 50 
-F3 "StoreOp[0..15]" O R 9500 1050 50 
-F4 "StoreOpIn[0..15]" I L 7950 1050 50 
-F5 "SelCIn[0..2]" I L 7950 1150 50 
-F6 "SelC[0..2]" O R 9500 1150 50 
-F7 "Ctl[13..19]" O R 9500 1250 50 
-F8 "CtlIn[12..19]" I L 7950 1250 50 
-F9 "~J" O R 9500 950 50 
-F10 "ALUResult[0..15]" O R 9500 1350 50 
-F11 "F[0..15]" I L 7950 1350 50 
+S 5800 5100 1050 1000
+U 5FC6FE4B
+F0 "ALU" 50
+F1 "ALU.sch" 50
+F2 "RightOp[0..15]" I L 5800 5300 50 
+F3 "LeftOp[0..15]" I L 5800 5200 50 
+F4 "Z" O R 6850 5400 50 
+F5 "C16" O R 6850 5300 50 
+F6 "OVF" O R 6850 5500 50 
+F7 "C0" I L 5800 5400 50 
+F8 "I0" I L 5800 5500 50 
+F9 "I1" I L 5800 5600 50 
+F10 "I2" I L 5800 5700 50 
+F11 "RS0" I L 5800 5800 50 
+F12 "RS1" I L 5800 5900 50 
+F13 "F[0..15]" T R 6850 5200 50 
+F14 "~OE" I L 5800 6000 50 
 $EndSheet
-Wire Bus Line
-	9800 1250 9500 1250
-Text HLabel 9800 950  2    50   Output ~ 0
-~J
 Wire Wire Line
-	9500 950  9800 950 
-Text HLabel 9800 1050 2    50   Output ~ 0
+	7800 5350 7950 5350
+Text HLabel 9750 2600 2    50   Output ~ 0
 StoreOp[0..15]
-Text HLabel 9800 1150 2    50   Output ~ 0
+Wire Bus Line
+	9750 2600 9000 2600
+Wire Bus Line
+	7550 1750 7850 1750
+Wire Bus Line
+	9000 1650 9750 1650
+Text HLabel 9750 1750 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
-	9800 1150 9500 1150
+	9000 1750 9750 1750
+$Sheet
+S 7850 2400 1150 450 
+U 5FD8D6FE
+F0 "sheet5FD8D6EA" 50
+F1 "StoreOperandRegister2.sch" 50
+F2 "CP" I L 7850 2500 50 
+F3 "D[0..15]" I L 7850 2600 50 
+F4 "Q[0..15]" O R 9000 2600 50 
+$EndSheet
+Text HLabel 9750 1650 2    50   Output ~ 0
+Ctl[13..19]
+$Sheet
+S 7850 1450 1150 400 
+U 5FD8D70A
+F0 "sheet5FD8D6EB" 50
+F1 "Ctl_13_23_Register.sch" 50
+F2 "CP" I L 7850 1550 50 
+F3 "Ctl[13..19]" O R 9000 1650 50 
+F4 "CtlIn[12..19]" I L 7850 1650 50 
+F5 "SelCIn[0..2]" I L 7850 1750 50 
+F6 "SelC[0..2]" O R 9000 1750 50 
+F7 "~J" O R 9000 1550 50 
+$EndSheet
+Text HLabel 9750 1550 2    50   Output ~ 0
+~J
+Wire Wire Line
+	9750 1550 9000 1550
+$Sheet
+S 7850 3350 1150 450 
+U 5FD8D713
+F0 "sheet5FD8D6EC" 50
+F1 "ALUResultRegister.sch" 50
+F2 "CP" I L 7850 3450 50 
+F3 "F[0..15]" I L 7850 3600 50 
+F4 "ALUResult[0..15]" O R 9000 3600 50 
+$EndSheet
+Text HLabel 9750 3600 2    50   Output ~ 0
+ALUResult[0..15]
 Wire Bus Line
-	9500 1050 9800 1050
-Text HLabel 6550 600  0    50   Input ~ 0
+	9750 3600 9000 3600
+Wire Wire Line
+	7550 1550 7850 1550
+Text HLabel 7550 3450 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	7600 850  7950 850 
-Text HLabel 6550 700  0    50   Input ~ 0
-StoreOpIn[0..15]
-Text HLabel 6550 800  0    50   Input ~ 0
-SelCIn[0..2]
+	7550 3450 7850 3450
+Text HLabel 7550 2500 0    50   Input ~ 0
+Phi1
+Text HLabel 1050 1550 0    50   Input ~ 0
+CtlIn[1..19]
+Text HLabel 1050 4900 0    50   Input ~ 0
+PC[0..15]
+Text HLabel 1050 3900 0    50   Input ~ 0
+Ins[0..10]
+Entry Wire Line
+	3150 1550 3250 1650
+Entry Wire Line
+	3050 1550 3150 1650
+Entry Wire Line
+	2950 1550 3050 1650
+Text Label 3350 1650 3    50   ~ 0
+CtlIn1
+Text Label 3250 1650 3    50   ~ 0
+CtlIn2
+Text Label 3050 1650 3    50   ~ 0
+CtlIn4
+Entry Bus Bus
+	5100 1550 5200 1650
+Entry Wire Line
+	3250 1550 3350 1650
 Wire Wire Line
-	6550 600  7600 600 
+	3250 1650 3250 2650
+Text Label 3150 1650 3    50   ~ 0
+CtlIn3
+Text Notes 3850 3450 0    50   ~ 0
+SelStoreOp=0  —> Select Register A\nSelStoreOp=1  —> Select Program Counter\nSelStoreOp=2  —> Select 8-bit Immediate Value
+$Sheet
+S 3850 1900 1250 200 
+U 5FDDE44F
+F0 "sheet5FDDE431" 50
+F1 "SplitOutSelC.sch" 50
+F2 "Ins[0..10]" I L 3850 2000 50 
+F3 "SelCOut[0..2]" O R 5100 2000 50 
+$EndSheet
+$Sheet
+S 3850 2400 1250 700 
+U 5FDDE458
+F0 "sheet5FDDE432" 50
+F1 "SelectStoreOp.sch" 50
+F2 "StoreOp[0..15]" O R 5100 2600 50 
+F3 "SelStoreOpA" I L 3850 2550 50 
+F4 "SelStoreOpB" I L 3850 2650 50 
+F5 "Ins[0..10]" I L 3850 2750 50 
+F6 "A[0..15]" I L 3850 2850 50 
+F7 "PC[0..15]" I L 3850 2950 50 
+$EndSheet
+Text Notes 3850 5250 0    50   ~ 0
+SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Program Counter
+$Sheet
+S 3850 4500 1200 500 
+U 5FDDE46E
+F0 "sheet5FDDE433" 50
+F1 "SelectRightOperand.sch" 50
+F2 "PC[0..15]" I L 3850 4900 50 
+F3 "B[0..15]" I L 3850 4800 50 
+F4 "RightOp[0..15]" O R 5050 4700 50 
+F5 "SelRightOp" I L 3850 4700 50 
+$EndSheet
 Wire Wire Line
-	7600 600  7600 850 
+	3050 1650 3050 4700
+Text Notes 3850 4350 0    50   ~ 0
+SelLeftOp=0  —> Select Register A\nSelLeftOp=1  —> Select 5-bit Immediate Value
+$Sheet
+S 3850 3600 1100 500 
+U 5FDDE478
+F0 "sheet5FDDE434" 50
+F1 "SelectLeftOperand.sch" 50
+F2 "Ins[0..10]" I L 3850 3900 50 
+F3 "A[0..15]" I L 3850 4000 50 
+F4 "LeftOp[0..15]" O R 4950 3800 50 
+F5 "SelLeftOp" I L 3850 3800 50 
+$EndSheet
+Wire Wire Line
+	3050 4700 3850 4700
+Text HLabel 1050 4000 0    50   Input ~ 0
+A[0..15]
+Text HLabel 1050 4800 0    50   Input ~ 0
+B[0..15]
 Wire Bus Line
-	6550 700  7550 700 
+	1050 4800 3850 4800
 Wire Bus Line
-	7550 700  7550 1050
+	5700 3800 4950 3800
+Text Label 2950 1650 3    50   ~ 0
+CtlIn5
+Entry Wire Line
+	2750 1550 2850 1650
+Text Label 2850 1650 3    50   ~ 0
+CtlIn6
+Entry Wire Line
+	2350 1550 2450 1650
+Text Label 2750 1650 3    50   ~ 0
+CtlIn7
+Entry Wire Line
+	2450 1550 2550 1650
+Text Label 2650 1650 3    50   ~ 0
+CtlIn8
+Entry Wire Line
+	2550 1550 2650 1650
+Text Label 2550 1650 3    50   ~ 0
+CtlIn9
+Entry Wire Line
+	2650 1550 2750 1650
+Text Label 2450 1650 3    50   ~ 0
+CtlIn10
+Text Label 2350 1650 3    50   ~ 0
+CtlIn11
+Entry Wire Line
+	2250 1550 2350 1650
+Entry Wire Line
+	2850 1550 2950 1650
 Wire Bus Line
-	7550 1050 7950 1050
+	5800 5300 5600 5300
+Wire Wire Line
+	2850 1650 2850 5400
+Wire Wire Line
+	2750 1650 2750 5500
+Wire Wire Line
+	2650 1650 2650 5600
+Wire Wire Line
+	2550 1650 2550 5700
+Wire Wire Line
+	2450 1650 2450 5800
+Wire Wire Line
+	2350 1650 2350 5900
 Wire Bus Line
-	7950 1150 7500 1150
+	1050 4900 3850 4900
 Wire Bus Line
-	7500 1150 7500 800 
+	1050 4000 3850 4000
 Wire Bus Line
-	7500 800  6550 800 
+	5700 5200 5800 5200
+Wire Bus Line
+	5600 5300 5600 4700
+Wire Bus Line
+	5050 4700 5600 4700
+Wire Wire Line
+	5800 5400 2850 5400
+Wire Wire Line
+	5800 5500 2750 5500
+Wire Wire Line
+	5800 5600 2650 5600
+Wire Wire Line
+	5800 5700 2550 5700
+Wire Wire Line
+	5800 5800 2450 5800
+Wire Wire Line
+	5800 5900 2350 5900
+Text Notes 3600 6050 0    50   ~ 0
+TODO: Add a shifter in parallel to the ALU
+Wire Wire Line
+	5700 6000 5800 6000
 $Comp
-L power:VCC #PWR0167
-U 1 1 5FB8F169
-P 6600 3550
-F 0 "#PWR0167" H 6600 3400 50  0001 C CNN
-F 1 "VCC" V 6615 3678 50  0000 L CNN
-F 2 "" H 6600 3550 50  0001 C CNN
-F 3 "" H 6600 3550 50  0001 C CNN
-	1    6600 3550
+L power:GND #PWR?
+U 1 1 5FD7B079
+P 5700 6000
+F 0 "#PWR?" H 5700 5750 50  0001 C CNN
+F 1 "GND" V 5705 5872 50  0000 R CNN
+F 2 "" H 5700 6000 50  0001 C CNN
+F 3 "" H 5700 6000 50  0001 C CNN
+	1    5700 6000
 	0    1    1    0   
 $EndComp
 Wire Bus Line
-	9500 1350 9800 1350
+	5700 3800 5700 5200
 Wire Bus Line
-	7950 1350 7300 1350
-Text Label 7350 1350 0    50   ~ 0
-F[0..15]
+	1050 3900 3850 3900
+Text HLabel 1050 2000 0    50   Input ~ 0
+Ins[0..10]
 Wire Bus Line
-	1200 1150 6700 1150
+	1050 2000 3850 2000
+Wire Wire Line
+	7550 2500 7850 2500
 Wire Bus Line
-	3700 950  3700 3200
+	7550 1750 7550 2000
 Wire Bus Line
-	3700 3350 3700 4900
+	5100 2600 7850 2600
 Wire Bus Line
-	7300 1350 7300 3200
+	5100 2000 7550 2000
+Wire Bus Line
+	5200 1650 7850 1650
+Wire Bus Line
+	7850 3600 7000 3600
+Wire Bus Line
+	7000 3600 7000 5200
+Wire Bus Line
+	7000 5200 6850 5200
+Wire Wire Line
+	7950 4450 7100 4450
+Wire Wire Line
+	7100 4450 7100 5300
+Wire Wire Line
+	7100 5300 6850 5300
+Wire Wire Line
+	7950 4550 7200 4550
+Wire Wire Line
+	7200 4550 7200 5400
+Wire Wire Line
+	7200 5400 6850 5400
+Wire Wire Line
+	7950 4650 7300 4650
+Wire Wire Line
+	7300 4650 7300 5500
+Wire Wire Line
+	7300 5500 6850 5500
+Wire Wire Line
+	2950 6250 7650 6250
+Wire Wire Line
+	7650 6250 7650 5450
+Wire Wire Line
+	7650 5450 7950 5450
+Wire Wire Line
+	2950 1650 2950 6250
+Wire Wire Line
+	3850 2550 3350 2550
+Wire Wire Line
+	3350 1650 3350 2550
+Wire Wire Line
+	3850 2650 3250 2650
+Wire Wire Line
+	3150 3800 3850 3800
+Wire Wire Line
+	3150 1650 3150 3800
+Text HLabel 1050 2750 0    50   Input ~ 0
+Ins[0..10]
+Text HLabel 1050 2850 0    50   Input ~ 0
+A[0..15]
+Wire Bus Line
+	1050 2850 3850 2850
+Wire Bus Line
+	1050 2750 3850 2750
+Text HLabel 1050 2950 0    50   Input ~ 0
+PC[0..15]
+Wire Bus Line
+	1050 2950 3850 2950
+Wire Bus Line
+	1050 1550 5100 1550
+Text Notes 6100 3250 0    50   ~ 0
+TODO: The program counter should load a new\nvalue from F, here, not ALUResult
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 33
+Sheet 1 34
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -146,15 +146,12 @@ F9 "InsOut[0..10]" O L 8600 4550 50
 F10 "Phi1" I L 8600 1250 50 
 F11 "~RST" I L 8600 1350 50 
 F12 "~HLT" O R 9950 1250 50 
-F13 "IO[0..7]" T L 8600 2850 50 
-F14 "Addr[0..15]" T L 8600 2750 50 
-F15 "Bank[0..7]" I L 8600 2650 50 
-F16 "~WRH" I L 8600 5400 50 
-F17 "~WRL" I L 8600 5500 50 
-F18 "C[0..15]" I L 8600 5300 50 
-F19 "SelC[0..2]" I L 8600 5600 50 
-F20 "A[0..15]" O L 8600 4350 50 
-F21 "B[0..15]" O L 8600 4250 50 
+F13 "~WRH" I L 8600 5400 50 
+F14 "~WRL" I L 8600 5500 50 
+F15 "C[0..15]" I L 8600 5300 50 
+F16 "SelC[0..2]" I L 8600 5600 50 
+F17 "A[0..15]" O L 8600 4350 50 
+F18 "B[0..15]" O L 8600 4250 50 
 $EndSheet
 $Comp
 L power:VCC #PWR?
@@ -536,15 +533,6 @@ F6 "IO[0..7]" T L 7100 1750 50
 F7 "Addr[0..15]" T L 7100 1650 50 
 F8 "Bank[0..7]" T L 7100 1550 50 
 $EndSheet
-Wire Bus Line
-	8600 2850 7000 2850
-Connection ~ 7000 2850
-Wire Bus Line
-	8600 2750 6900 2750
-Connection ~ 6900 2750
-Wire Bus Line
-	6800 2650 8600 2650
-Connection ~ 6800 2650
 Wire Wire Line
 	5650 3650 5650 850 
 Connection ~ 5650 3650

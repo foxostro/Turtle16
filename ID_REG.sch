@@ -3603,4 +3603,6 @@ Wire Bus Line
 	12600 2600 12600 7200
 Wire Bus Line
 	10300 2600 10300 7600
+Text Notes 12950 3150 0    50   ~ 0
+TODO: Considering the short rise time of a 74ABT574 device, the trace\nlength of the outputs of U19 is maybe a bit too long. The fast propagation\ntime is not necessary to meet timing deadlines. So, maybe replace this with\n74AHCT574.
 $EndSCHEMATC

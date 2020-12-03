@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 22 32
+Sheet 33 34
 Title "Instruction RAM"
 Date ""
 Rev ""
@@ -1340,6 +1340,10 @@ Wire Wire Line
 	7350 4050 6600 4050
 Wire Bus Line
 	6400 950  8650 950 
+Text Notes 4300 1600 0    50   ~ 0
+TODO: Per AN-91, these dual port SRAMs should\nbe configured as Slave devices to disable the on-\nboard contention arbitration.
+Text Notes 4300 1900 0    50   ~ 0
+TODO: Consider replacing these two dual port SRAMs\nwith one 7028L20PFGI 64Kx16 dual port SRAM.
 Wire Bus Line
 	3000 6350 3000 7050
 Wire Bus Line
@@ -1358,8 +1362,4 @@ Wire Bus Line
 	6500 650  6500 3950
 Wire Bus Line
 	1500 650  1500 3950
-Text Notes 4300 1600 0    50   ~ 0
-TODO: Per AN-91, these dual port SRAMs should\nbe configured as Slave devices to disable the on-\nboard contention arbitration.
-Text Notes 4300 1900 0    50   ~ 0
-TODO: Consider replacing these two dual port SRAMs\nwith one 7028L20PFGI 64Kx16 dual port SRAM.
 $EndSCHEMATC

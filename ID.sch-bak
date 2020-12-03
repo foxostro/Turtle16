@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 3 32
+Sheet 3 34
 Title "ID"
 Date ""
 Rev ""
@@ -63,7 +63,7 @@ F4 "C[0..15]" I L 4950 5250 50
 F5 "SelC[0..2]" I L 4950 4950 50 
 F6 "SelA[0..2]" I L 4950 4250 50 
 F7 "SelB[0..2]" I L 4950 4650 50 
-F8 "B[0..15]" O R 6150 4650 50 
+F8 "B[0..15]" O R 6150 4750 50 
 F9 "A[0..15]" O R 6150 4250 50 
 $EndSheet
 Wire Bus Line
@@ -98,14 +98,14 @@ Wire Bus Line
 	4700 4250 4950 4250
 Wire Bus Line
 	4950 4650 4700 4650
-Text HLabel 6650 4250 2    50   Output ~ 0
+Text HLabel 8050 4250 2    50   Output ~ 0
 A[0..15]
 Wire Bus Line
-	6650 4250 6150 4250
-Text HLabel 6650 4650 2    50   Output ~ 0
+	8050 4250 7550 4250
+Text HLabel 8050 4750 2    50   Output ~ 0
 B[0..15]
 Wire Bus Line
-	6650 4650 6150 4650
+	8050 4750 7550 4750
 Text HLabel 3200 4450 0    50   Input ~ 0
 Ins[0..15]
 Wire Bus Line
@@ -163,8 +163,6 @@ Wire Wire Line
 	3000 3150 2900 3150
 Wire Bus Line
 	6600 2650 7150 2650
-Text Notes 6450 5050 0    50   ~ 0
-TODO: Need to latch register values A and B at the end of the pipeline stage.
 Wire Bus Line
 	6600 2150 8300 2150
 $Sheet
@@ -185,10 +183,36 @@ F2 "InsIn[0..10]" I L 5200 2150 50
 F3 "InsOut[0..10]" O R 6600 2150 50 
 F4 "Phi1" I L 5200 2050 50 
 $EndSheet
-Text HLabel 5100 2050 0    50   Input ~ 0
+$Sheet
+S 6650 4050 900  300 
+U 5FE081C3
+F0 "ID/EX A" 50
+F1 "ID_EX_A.sch" 50
+F2 "AIn[0..15]" I L 6650 4250 50 
+F3 "A[0..15]" O R 7550 4250 50 
+F4 "Phi1" I L 6650 4150 50 
+$EndSheet
+Text HLabel 6550 4150 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	5200 2050 5100 2050
+	6650 4150 6550 4150
+Wire Bus Line
+	6150 4250 6650 4250
+$Sheet
+S 6650 4550 900  300 
+U 5FE24A39
+F0 "ID/EX B" 50
+F1 "ID_EX_B.sch" 50
+F2 "BIn[0..15]" I L 6650 4750 50 
+F3 "B[0..15]" O R 7550 4750 50 
+F4 "Phi1" I L 6650 4650 50 
+$EndSheet
+Text HLabel 6550 4650 0    50   Input ~ 0
+Phi1
+Wire Wire Line
+	6650 4650 6550 4650
+Wire Bus Line
+	6150 4750 6650 4750
 Wire Bus Line
 	2200 2150 5200 2150
 $EndSCHEMATC

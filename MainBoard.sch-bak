@@ -344,7 +344,7 @@ Wire Bus Line
 Wire Bus Line
 	1150 4750 1150 6000
 Wire Wire Line
-	1450 5800 4300 5800
+	1500 5800 4300 5800
 Wire Bus Line
 	6050 4950 4050 4950
 Wire Bus Line
@@ -540,7 +540,7 @@ Wire Wire Line
 Wire Wire Line
 	700  1300 700  3700
 Wire Wire Line
-	1500 3800 1450 5800
+	1500 3800 1500 5800
 Wire Wire Line
 	1500 3800 5900 3800
 Wire Wire Line

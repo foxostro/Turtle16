@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 17 30
+Sheet 13 30
 Title "MEM: Buffer ALUResult"
 Date ""
 Rev ""
@@ -1080,12 +1080,12 @@ Text Label 7300 2150 0    50   ~ 0
 Addr[0..15]
 Wire Bus Line
 	950  6850 950  6250
+Text Label 950  6650 1    50   ~ 0
+Addr[0..15]
 Wire Bus Line
 	950  6850 5450 6850
 Wire Bus Line
 	4900 2150 4900 5100
 Wire Bus Line
 	7200 2150 7200 5100
-Text Label 950  6650 1    50   ~ 0
-Addr[0..15]
 $EndSCHEMATC

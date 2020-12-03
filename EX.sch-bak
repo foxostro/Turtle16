@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 10 30
+Sheet 22 30
 Title "EX"
 Date ""
 Rev ""
@@ -481,10 +481,10 @@ TODO: Add a shifter in parallel to the ALU
 Wire Wire Line
 	5700 6000 5800 6000
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0112
 U 1 1 5FD7B079
 P 5700 6000
-F 0 "#PWR?" H 5700 5750 50  0001 C CNN
+F 0 "#PWR0112" H 5700 5750 50  0001 C CNN
 F 1 "GND" V 5705 5872 50  0000 R CNN
 F 2 "" H 5700 6000 50  0001 C CNN
 F 3 "" H 5700 6000 50  0001 C CNN
@@ -563,8 +563,8 @@ Text HLabel 1050 2950 0    50   Input ~ 0
 PC[0..15]
 Wire Bus Line
 	1050 2950 3850 2950
-Wire Bus Line
-	1050 1550 5100 1550
 Text Notes 6100 3250 0    50   ~ 0
 TODO: The program counter should load a new\nvalue from F, here, not ALUResult
+Wire Bus Line
+	1050 1550 5100 1550
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 31
+Sheet 1 32
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -108,7 +108,7 @@ F0 "Clock" 50
 F1 "Clock.sch" 50
 F2 "~RST" O R 1300 1250 50 
 F3 "Phi1" O R 1300 1150 50 
-F4 "Phi2" O R 1300 1350 50 
+F4 "Phi2" O R 1300 1050 50 
 F5 "~HLT" I L 750 1050 50 
 F6 "~RDY" I L 750 1300 50 
 $EndSheet
@@ -124,18 +124,16 @@ F3 "Carry" I L 8750 3700 50
 F4 "Ins[0..15]" I L 8750 1850 50 
 F5 "ControlWord[1..19]" O L 8750 4150 50 
 F6 "OVF" I L 8750 3500 50 
-F7 "PCIn[0..15]" I L 8750 1750 50 
-F8 "PCOut[0..15]" O L 8750 4550 50 
-F9 "InsOut[0..10]" O L 8750 4450 50 
-F10 "Phi1" I L 8750 1550 50 
-F11 "~RST" I L 8750 1650 50 
-F12 "~HLT" O R 10100 1550 50 
-F13 "~WRH" I L 8750 5700 50 
-F14 "~WRL" I L 8750 5800 50 
-F15 "C[0..15]" I L 8750 5600 50 
-F16 "SelC[0..2]" I L 8750 5900 50 
-F17 "A[0..15]" O L 8750 4250 50 
-F18 "B[0..15]" O L 8750 4350 50 
+F7 "InsOut[0..10]" O L 8750 4450 50 
+F8 "Phi1" I L 8750 1550 50 
+F9 "~RST" I L 8750 1650 50 
+F10 "~HLT" O R 10100 1550 50 
+F11 "~WRH" I L 8750 5700 50 
+F12 "~WRL" I L 8750 5800 50 
+F13 "C[0..15]" I L 8750 5600 50 
+F14 "SelC[0..2]" I L 8750 5900 50 
+F15 "A[0..15]" O L 8750 4250 50 
+F16 "B[0..15]" O L 8750 4350 50 
 $EndSheet
 $Comp
 L power:VCC #PWR?
@@ -315,8 +313,6 @@ Wire Wire Line
 Wire Bus Line
 	7350 1850 8750 1850
 Wire Bus Line
-	7350 1750 8750 1750
-Wire Bus Line
 	3250 4650 6050 4650
 Wire Bus Line
 	3250 4750 6050 4750
@@ -461,8 +457,6 @@ Wire Bus Line
 	8750 4350 7400 4350
 Wire Bus Line
 	7400 4450 8750 4450
-Wire Bus Line
-	8750 4550 7400 4550
 Wire Wire Line
 	6050 4050 5900 4050
 Wire Wire Line
@@ -496,7 +490,7 @@ F8 "~J" O L 6050 4450 50
 F9 "StoreOp[0..15]" O L 6050 4650 50 
 F10 "SelC[0..2]" O L 6050 4950 50 
 F11 "CtlIn[1..19]" I R 7400 4150 50 
-F12 "PC[0..15]" I R 7400 4550 50 
+F12 "PC[0..15]" I R 7400 4050 50 
 F13 "Ins[0..10]" I R 7400 4450 50 
 F14 "A[0..15]" I R 7400 4250 50 
 F15 "B[0..15]" I R 7400 4350 50 
@@ -520,7 +514,7 @@ U 5FE35007
 F0 "IF" 50
 F1 "IF.sch" 50
 F2 "InsOut[0..15]" O R 7350 1850 50 
-F3 "PCOut[0..15]" O R 7350 1750 50 
+F3 "PCOut[0..15]" O R 7350 1950 50 
 F4 "Phi1" I L 6050 1650 50 
 F5 "IO[0..7]" T L 6050 3150 50 
 F6 "Addr[0..15]" T L 6050 3050 50 
@@ -563,4 +557,12 @@ Wire Wire Line
 	1300 1050 1600 1050
 Wire Wire Line
 	1600 1050 1600 3050
+Wire Bus Line
+	7350 1950 7500 1950
+Wire Bus Line
+	7500 1950 7500 4050
+Wire Bus Line
+	7500 4050 7400 4050
+Text Notes 7550 2550 0    50   ~ 0
+The program counter value\nPC skips ahead a pipeline\nstage so EX can work with\nPC+1.
 $EndSCHEMATC

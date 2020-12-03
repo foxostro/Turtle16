@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 33 33
+Sheet 32 33
 Title "Instruction RAM"
 Date ""
 Rev ""
@@ -254,8 +254,6 @@ Wire Wire Line
 Connection ~ 3400 5250
 Wire Wire Line
 	3400 5250 3500 5250
-NoConn ~ 3950 1750
-NoConn ~ 2350 1750
 $Comp
 L power:VCC #PWR?
 U 1 1 5FD47195
@@ -430,19 +428,6 @@ Connection ~ 1500 650
 Wire Bus Line
 	1500 650  6500 650 
 $Comp
-L power:VCC #PWR?
-U 1 1 5FD471E9
-P 2350 1550
-AR Path="/5FE35007/5FD471E9" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FD0D8DC/5FD471E9" Ref="#PWR0286"  Part="1" 
-F 0 "#PWR0286" H 2350 1400 50  0001 C CNN
-F 1 "VCC" V 2365 1677 50  0000 L CNN
-F 2 "" H 2350 1550 50  0001 C CNN
-F 3 "" H 2350 1550 50  0001 C CNN
-	1    2350 1550
-	0    -1   -1   0   
-$EndComp
-$Comp
 L Memory_RAM:IDT7008L15JG U?
 U 1 1 5FD471EF
 P 8150 3200
@@ -535,8 +520,6 @@ Wire Wire Line
 Connection ~ 8400 5250
 Wire Wire Line
 	8400 5250 8500 5250
-NoConn ~ 8950 1750
-NoConn ~ 7350 1750
 $Comp
 L power:VCC #PWR?
 U 1 1 5FD47222
@@ -705,19 +688,6 @@ Wire Wire Line
 	7350 2550 6600 2550
 Wire Wire Line
 	7350 3950 6600 3950
-$Comp
-L power:VCC #PWR?
-U 1 1 5FD47273
-P 7350 1550
-AR Path="/5FE35007/5FD47273" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FD0D8DC/5FD47273" Ref="#PWR0295"  Part="1" 
-F 0 "#PWR0295" H 7350 1400 50  0001 C CNN
-F 1 "VCC" V 7365 1677 50  0000 L CNN
-F 2 "" H 7350 1550 50  0001 C CNN
-F 3 "" H 7350 1550 50  0001 C CNN
-	1    7350 1550
-	0    -1   -1   0   
-$EndComp
 Connection ~ 6400 950 
 Wire Wire Line
 	6500 4250 7350 4250
@@ -1340,8 +1310,6 @@ Wire Wire Line
 	7350 4050 6600 4050
 Wire Bus Line
 	6400 950  8650 950 
-Text Notes 4300 1600 0    50   ~ 0
-TODO: Per AN-91, these dual port SRAMs should\nbe configured as Slave devices to disable the on-\nboard contention arbitration.
 Text Notes 4300 1900 0    50   ~ 0
 TODO: Consider replacing these two dual port SRAMs\nwith one 7028L20PFGI 64Kx16 dual port SRAM.
 Wire Bus Line
@@ -1362,4 +1330,82 @@ Wire Bus Line
 	6500 650  6500 3950
 Wire Bus Line
 	1500 650  1500 3950
+$Comp
+L power:GND #PWR?
+U 1 1 5FCA5180
+P 2350 1550
+AR Path="/5FE35007/5FCA5180" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FD0D8DC/5FCA5180" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2350 1300 50  0001 C CNN
+F 1 "GND" V 2355 1422 50  0000 R CNN
+F 2 "" H 2350 1550 50  0001 C CNN
+F 3 "" H 2350 1550 50  0001 C CNN
+	1    2350 1550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCA55ED
+P 7350 1550
+AR Path="/5FE35007/5FCA55ED" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FD0D8DC/5FCA55ED" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7350 1300 50  0001 C CNN
+F 1 "GND" V 7355 1422 50  0000 R CNN
+F 2 "" H 7350 1550 50  0001 C CNN
+F 3 "" H 7350 1550 50  0001 C CNN
+	1    7350 1550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FCA773B
+P 2350 1750
+AR Path="/5FE35007/5FCA773B" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FD0D8DC/5FCA773B" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2350 1600 50  0001 C CNN
+F 1 "VCC" V 2365 1877 50  0000 L CNN
+F 2 "" H 2350 1750 50  0001 C CNN
+F 3 "" H 2350 1750 50  0001 C CNN
+	1    2350 1750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FCA7B10
+P 7350 1750
+AR Path="/5FE35007/5FCA7B10" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FD0D8DC/5FCA7B10" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7350 1600 50  0001 C CNN
+F 1 "VCC" V 7365 1877 50  0000 L CNN
+F 2 "" H 7350 1750 50  0001 C CNN
+F 3 "" H 7350 1750 50  0001 C CNN
+	1    7350 1750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FCA8368
+P 3950 1750
+AR Path="/5FE35007/5FCA8368" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FD0D8DC/5FCA8368" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 3950 1600 50  0001 C CNN
+F 1 "VCC" V 3965 1877 50  0000 L CNN
+F 2 "" H 3950 1750 50  0001 C CNN
+F 3 "" H 3950 1750 50  0001 C CNN
+	1    3950 1750
+	0    1    -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FCA866B
+P 8950 1750
+AR Path="/5FE35007/5FCA866B" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FD0D8DC/5FCA866B" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 8950 1600 50  0001 C CNN
+F 1 "VCC" V 8965 1877 50  0000 L CNN
+F 2 "" H 8950 1750 50  0001 C CNN
+F 3 "" H 8950 1750 50  0001 C CNN
+	1    8950 1750
+	0    1    -1   0   
+$EndComp
 $EndSCHEMATC

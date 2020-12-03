@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 23 33
+Sheet 33 33
 Title "Program Counter"
 Date ""
 Rev ""
@@ -724,11 +724,11 @@ Text Label 4400 2400 0    50   ~ 0
 PC6
 Wire Bus Line
 	4250 1350 7850 1350
+Connection ~ 7850 1350
 Wire Bus Line
 	7850 1350 7850 3200
 Wire Bus Line
-	4250 3300 4250 4900
-Wire Bus Line
 	4250 1350 4250 3200
-Connection ~ 7850 1350
+Wire Bus Line
+	4250 3300 4250 4900
 $EndSCHEMATC

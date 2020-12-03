@@ -2301,8 +2301,6 @@ Text Label 12200 7200 0    50   ~ 0
 C14
 Text Label 12200 7300 0    50   ~ 0
 C15
-Text Notes 10200 4050 0    50   ~ 0
-TODO: Per AN-91, these dual port SRAMs should\nbe configured as Slave devices to disable the on-\nboard contention arbitration.
 Text Notes 10200 4350 0    50   ~ 0
 TODO: Consider replacing these four dual port SRAMs\nwith two 7024L15PFG 4Kx16 dual port SRAMs.
 Wire Bus Line

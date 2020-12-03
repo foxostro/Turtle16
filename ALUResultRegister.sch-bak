@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 26 31
+Sheet 26 32
 Title "EX/MEM: ALUResult Register"
 Date ""
 Rev ""

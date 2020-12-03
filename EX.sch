@@ -121,7 +121,7 @@ F 3 "" H 7950 5150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text Label 5300 1650 0    50   ~ 0
-CtlIn[12..19]
+CtlIn[13..19]
 $Comp
 L Device:C C?
 U 1 1 600839BF
@@ -273,13 +273,11 @@ StoreOp[0..15]
 Wire Bus Line
 	9750 2600 9000 2600
 Wire Bus Line
-	7550 1750 7850 1750
-Wire Bus Line
 	9000 1650 9750 1650
-Text HLabel 9750 1750 2    50   Output ~ 0
+Text HLabel 9750 2000 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
-	9000 1750 9750 1750
+	9000 2000 9750 2000
 $Sheet
 S 7850 2400 1150 450 
 U 5FD8D6FE
@@ -292,21 +290,16 @@ $EndSheet
 Text HLabel 9750 1650 2    50   Output ~ 0
 Ctl[13..19]
 $Sheet
-S 7850 1450 1150 400 
+S 7850 1450 1150 650 
 U 5FD8D70A
 F0 "sheet5FD8D6EB" 50
 F1 "Ctl_13_23_Register.sch" 50
-F2 "CP" I L 7850 1550 50 
-F3 "Ctl[13..19]" O R 9000 1650 50 
-F4 "CtlIn[12..19]" I L 7850 1650 50 
-F5 "SelCIn[0..2]" I L 7850 1750 50 
-F6 "SelC[0..2]" O R 9000 1750 50 
-F7 "~J" O R 9000 1550 50 
+F2 "Ctl[13..19]" O R 9000 1650 50 
+F3 "CtlIn[13..19]" I L 7850 1650 50 
+F4 "SelCIn[0..2]" I L 7850 2000 50 
+F5 "SelC[0..2]" O R 9000 2000 50 
+F6 "Phi1" I L 7850 1550 50 
 $EndSheet
-Text HLabel 9750 1550 2    50   Output ~ 0
-~J
-Wire Wire Line
-	9750 1550 9000 1550
 $Sheet
 S 7850 3350 1150 450 
 U 5FD8D713
@@ -476,11 +469,7 @@ Wire Bus Line
 Wire Wire Line
 	7550 2500 7850 2500
 Wire Bus Line
-	7550 1750 7550 2000
-Wire Bus Line
 	5100 2600 7850 2600
-Wire Bus Line
-	5100 2000 7550 2000
 Wire Bus Line
 	5200 1650 7850 1650
 Wire Bus Line
@@ -551,8 +540,18 @@ Connection ~ 7000 3600
 NoConn ~ 3050 1900
 Wire Bus Line
 	1050 5300 5800 5300
-Wire Bus Line
-	1050 1550 5100 1550
 Text Notes 650  3300 0    50   ~ 0
 On a JALR instruction, the StoreOp can\nbe set to the return address in PC.
+Entry Wire Line
+	2150 1550 2250 1650
+Text Label 2250 1650 3    50   ~ 0
+CtlIn12
+Wire Wire Line
+	2250 1650 2250 2150
+Text HLabel 2250 2150 3    50   Output ~ 0
+~J
+Wire Bus Line
+	5100 2000 7850 2000
+Wire Bus Line
+	1050 1550 5100 1550
 $EndSCHEMATC

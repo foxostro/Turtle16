@@ -553,4 +553,6 @@ Wire Bus Line
 	1050 5300 5800 5300
 Wire Bus Line
 	1050 1550 5100 1550
+Text Notes 650  3300 0    50   ~ 0
+On a JALR instruction, the StoreOp can\nbe set to the return address in PC.
 $EndSCHEMATC

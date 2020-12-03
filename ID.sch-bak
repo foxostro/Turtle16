@@ -13,16 +13,16 @@ Comment2 "effect conditional instructions."
 Comment3 "The decoder takes the condition code from the flags register into account to"
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
-Text HLabel 7200 3000 2    50   Output ~ 0
+Text HLabel 9000 2650 2    50   Output ~ 0
 ControlWord[1..19]
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelLeftOp\n2   SelRightOp\n3   SelStoreOpA\n4   SelStoreOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB
-Text HLabel 8000 2650 2    50   Output ~ 0
+Text HLabel 9800 2300 2    50   Output ~ 0
 ~HLT
-Text Label 7450 2650 0    50   ~ 0
+Text Label 9250 2300 0    50   ~ 0
 ControlWord0
 Entry Wire Line
-	7200 2650 7100 2750
+	9000 2300 8900 2400
 Text Notes 1700 7900 0    50   ~ 0
 Description\n————————\nHalt Clock\nSelect Left Operand\nSelect Right Operand\nSelect Store Operand 0\nSelect Store Operand 1\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1
 Text HLabel 7400 1950 2    50   Output ~ 0
@@ -30,20 +30,20 @@ InsOut[0..10]
 Text HLabel 7400 2050 2    50   Output ~ 0
 PCOut[0..15]
 Wire Wire Line
-	7200 2650 8000 2650
-Text Label 6150 2750 0    50   ~ 0
+	9000 2300 9800 2300
+Text Label 7950 2400 0    50   ~ 0
 ControlWord[0..19]
 Wire Bus Line
-	6000 2750 7100 2750
+	7800 2400 8900 2400
 Entry Bus Bus
-	6000 2900 6100 3000
-Text Label 6150 3000 0    50   ~ 0
+	7800 2550 7900 2650
+Text Label 7950 2650 0    50   ~ 0
 ControlWord[1..19]
 Wire Bus Line
-	6100 3000 7200 3000
+	7900 2650 9000 2650
 Wire Bus Line
-	6000 2750 6000 2900
-Connection ~ 6000 2750
+	7800 2400 7800 2550
+Connection ~ 7800 2400
 Text Label 3850 2550 2    50   ~ 0
 Ins[11..15]
 Text HLabel 4100 4850 0    50   Input ~ 0
@@ -130,17 +130,11 @@ F6 "~RST" I L 3900 2950 50
 F7 "Ctl[0..23]" O R 5000 2550 50 
 $EndSheet
 Wire Bus Line
-	6000 2500 6000 2750
-Wire Bus Line
-	7300 2500 6000 2500
-Wire Bus Line
-	7300 2150 7300 2500
+	7800 2150 7800 2400
 Text HLabel 6000 1850 0    50   Input ~ 0
 Phi1
 Text HLabel 6000 2050 0    50   Input ~ 0
 PCIn[0..15]
-Wire Bus Line
-	7250 2150 7300 2150
 Wire Bus Line
 	7400 1950 7250 1950
 Wire Bus Line
@@ -196,4 +190,8 @@ Wire Wire Line
 	3900 2950 3800 2950
 Wire Bus Line
 	3100 1950 6100 1950
+Wire Bus Line
+	7250 2150 7800 2150
+Text Notes 7350 4850 0    50   ~ 0
+TODO: Need to latch register values A and B at the end of the pipeline stage.
 $EndSCHEMATC

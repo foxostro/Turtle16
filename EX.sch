@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 10 30
+Sheet 22 30
 Title "EX"
 Date ""
 Rev ""
@@ -563,8 +563,10 @@ Text HLabel 1050 2950 0    50   Input ~ 0
 PC[0..15]
 Wire Bus Line
 	1050 2950 3850 2950
-Wire Bus Line
-	1050 1550 5100 1550
 Text Notes 6100 3250 0    50   ~ 0
 TODO: The program counter should load a new\nvalue from F, here, not ALUResult
+Wire Bus Line
+	1050 1550 5100 1550
+Text Notes 8100 6300 0    50   ~ 0
+TODO: Does the flags register need to be a 74ABT device?\nI don’t think it does. If it doesn’t require it then switch to\n74AHCT377.
 $EndSCHEMATC

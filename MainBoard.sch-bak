@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 32
+Sheet 1 34
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -108,7 +108,7 @@ F0 "Clock" 50
 F1 "Clock.sch" 50
 F2 "~RST" O R 1300 1250 50 
 F3 "Phi1" O R 1300 1150 50 
-F4 "Phi2" O R 1300 1350 50 
+F4 "Phi2" O R 1300 1050 50 
 F5 "~HLT" I L 750 1050 50 
 F6 "~RDY" I L 750 1300 50 
 $EndSheet

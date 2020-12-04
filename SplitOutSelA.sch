@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 7 33
+Sheet 5 33
 Title ""
 Date ""
 Rev ""
@@ -15,8 +15,6 @@ Comment4 ""
 $EndDescr
 Text HLabel 4450 3500 0    50   Input ~ 0
 Ins[0..15]
-Text Label 5100 3800 0    50   ~ 0
-Ins4
 Wire Bus Line
 	4450 3500 5000 3500
 Entry Wire Line
@@ -31,10 +29,6 @@ Wire Wire Line
 	5100 3700 6300 3700
 Wire Wire Line
 	5100 3600 6300 3600
-Text Label 5100 3700 0    50   ~ 0
-Ins3
-Text Label 5100 3600 0    50   ~ 0
-Ins2
 Entry Wire Line
 	6300 3800 6400 3700
 Entry Wire Line
@@ -55,4 +49,10 @@ Wire Bus Line
 	5000 3500 5000 3700
 Wire Bus Line
 	6400 3500 6400 3700
+Text Label 5100 3800 0    50   ~ 0
+Ins4
+Text Label 5100 3700 0    50   ~ 0
+Ins3
+Text Label 5100 3600 0    50   ~ 0
+Ins2
 $EndSCHEMATC

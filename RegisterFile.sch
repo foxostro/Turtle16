@@ -360,13 +360,9 @@ F 4 "https://www.mouser.com/ProductDetail/Renesas-IDT/7024L15PFG?qs=GVScuG1d83hV
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3350 1650 3350 1600
-Wire Wire Line
-	3350 1600 3550 1600
+	3350 1600 3450 1600
 Wire Wire Line
 	3550 1600 3550 1650
-Wire Wire Line
-	3450 1650 3450 1550
 $Comp
 L power:VCC #PWR062
 U 1 1 5FD322E0
@@ -1025,13 +1021,9 @@ F 4 "https://www.mouser.com/ProductDetail/Renesas-IDT/7024L15PFG?qs=GVScuG1d83hV
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7400 1650 7400 1600
-Wire Wire Line
-	7400 1600 7600 1600
+	7400 1600 7500 1600
 Wire Wire Line
 	7600 1600 7600 1650
-Wire Wire Line
-	7500 1650 7500 1550
 $Comp
 L power:VCC #PWR095
 U 1 1 5FDF354B
@@ -1425,6 +1417,26 @@ F 3 "" H 8400 2800 50  0001 C CNN
 	1    8400 2800
 	0    -1   1    0   
 $EndComp
+Text Notes 2550 7250 0    50   ~ 0
+Both dual port SRAMs are configured in Slave mode. This disables the\non board contention arbitration logic. Per application note, AN-91, a\nsimultaneous read and write to the same cell will flow through from one\nport to another after a short delay.
+Wire Wire Line
+	3350 1650 3350 1600
+Wire Wire Line
+	7400 1650 7400 1600
+Wire Wire Line
+	7500 1550 7500 1600
+Connection ~ 7500 1600
+Wire Wire Line
+	7500 1600 7600 1600
+Wire Wire Line
+	7500 1600 7500 1650
+Wire Wire Line
+	3450 1550 3450 1600
+Connection ~ 3450 1600
+Wire Wire Line
+	3450 1600 3550 1600
+Wire Wire Line
+	3450 1600 3450 1650
 Wire Bus Line
 	2150 2900 2150 3100
 Wire Bus Line
@@ -1441,6 +1453,4 @@ Wire Bus Line
 	6200 4200 6200 5700
 Wire Bus Line
 	8800 4200 8800 5700
-Text Notes 2550 7250 0    50   ~ 0
-Both dual port SRAMs are configured in Slave mode. This disables the\non board contention arbitration logic. Per application note, AN-91, a\nsimultaneous read and write to the same cell will flow through from one\nport to another after a short delay.
 $EndSCHEMATC

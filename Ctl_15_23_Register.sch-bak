@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 23 33
+Sheet 21 33
 Title "MEM/WB: Control Word Register"
 Date ""
 Rev ""
@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text HLabel 5100 3400 0    50   Input ~ 0
-CP
+Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 605495DF
@@ -1018,7 +1018,7 @@ Wire Wire Line
 Text HLabel 7600 2200 2    50   Output ~ 0
 Ctl[15..19]
 Text HLabel 5100 5450 0    50   Input ~ 0
-CP
+Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 60549642

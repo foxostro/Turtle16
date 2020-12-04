@@ -45,14 +45,14 @@ Text Label 6300 3800 2    50   ~ 0
 SelA2
 Text HLabel 6950 3500 2    50   Output ~ 0
 SelA[0..2]
+Text Label 5100 3800 0    50   ~ 0
+Ins7
+Text Label 5100 3700 0    50   ~ 0
+Ins6
+Text Label 5100 3600 0    50   ~ 0
+Ins5
 Wire Bus Line
 	5000 3500 5000 3700
 Wire Bus Line
 	6400 3500 6400 3700
-Text Label 5100 3800 0    50   ~ 0
-Ins4
-Text Label 5100 3700 0    50   ~ 0
-Ins3
-Text Label 5100 3600 0    50   ~ 0
-Ins2
 $EndSCHEMATC

@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text HLabel 4900 3050 0    50   Input ~ 0
-CP
+Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604AA63A
@@ -1078,7 +1078,7 @@ $EndComp
 Wire Wire Line
 	1450 7450 1450 7350
 Text HLabel 4900 5100 0    50   Input ~ 0
-CP
+Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604AA6AD

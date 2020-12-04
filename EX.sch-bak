@@ -252,8 +252,8 @@ S 5800 5100 1050 1000
 U 5FC6FE4B
 F0 "ALU" 50
 F1 "ALU.sch" 50
-F2 "RightOp[0..15]" I L 5800 5300 50 
-F3 "LeftOp[0..15]" I L 5800 5200 50 
+F2 "RightOp[0..15]" I L 5800 5200 50 
+F3 "LeftOp[0..15]" I L 5800 5300 50 
 F4 "Z" O R 6850 5400 50 
 F5 "C16" O R 6850 5300 50 
 F6 "OVF" O R 6850 5500 50 
@@ -283,7 +283,7 @@ S 7850 2400 1150 450
 U 5FD8D6FE
 F0 "sheet5FD8D6EA" 50
 F1 "StoreOperandRegister2.sch" 50
-F2 "CP" I L 7850 2500 50 
+F2 "Phi1" I L 7850 2500 50 
 F3 "D[0..15]" I L 7850 2600 50 
 F4 "Q[0..15]" O R 9000 2600 50 
 $EndSheet
@@ -305,7 +305,7 @@ S 7850 3350 1150 450
 U 5FD8D713
 F0 "sheet5FD8D6EC" 50
 F1 "ALUResultRegister.sch" 50
-F2 "CP" I L 7850 3450 50 
+F2 "Phi1" I L 7850 3450 50 
 F3 "F[0..15]" I L 7850 3600 50 
 F4 "ALUResult[0..15]" O R 9000 3600 50 
 $EndSheet
@@ -346,7 +346,7 @@ Wire Wire Line
 Text Label 3150 1650 3    50   ~ 0
 CtlIn3
 Text Notes 3850 3450 0    50   ~ 0
-SelStoreOp=0  —> Select Register A\nSelStoreOp=1  —> Select Program Counter\nSelStoreOp=2  —> Select 8-bit Immediate Value
+SelStoreOp=0  —> Select Register B\nSelStoreOp=1  —> Select Program Counter\nSelStoreOp=2  —> Select 8-bit Immediate Value
 $Sheet
 S 3850 1900 1250 200 
 U 5FDDE44F
@@ -364,29 +364,19 @@ F2 "StoreOp[0..15]" O R 5100 2600 50
 F3 "SelStoreOpA" I L 3850 2550 50 
 F4 "SelStoreOpB" I L 3850 2650 50 
 F5 "Ins[0..10]" I L 3850 2750 50 
-F6 "A[0..15]" I L 3850 2850 50 
+F6 "B[0..15]" I L 3850 2850 50 
 F7 "PC[0..15]" I L 3850 2950 50 
 $EndSheet
 Wire Wire Line
 	3050 1650 3050 1900
 Text Notes 3600 5200 0    50   ~ 0
-SelLeftOp=0  —> Select Register A\nSelLeftOp=1  —> Select 5-bit Immediate Value
-$Sheet
-S 3600 4550 1100 400 
-U 5FDDE478
-F0 "sheet5FDDE434" 50
-F1 "SelectLeftOperand.sch" 50
-F2 "Ins[0..10]" I L 3600 4750 50 
-F3 "A[0..15]" I L 3600 4850 50 
-F4 "LeftOp[0..15]" O R 4700 4650 50 
-F5 "SelLeftOp" I L 3600 4650 50 
-$EndSheet
+SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select 5-bit Immediate Value
 Text HLabel 1050 4850 0    50   Input ~ 0
-A[0..15]
-Text HLabel 1050 5300 0    50   Input ~ 0
 B[0..15]
+Text HLabel 1050 5300 0    50   Input ~ 0
+A[0..15]
 Wire Bus Line
-	5600 4650 4700 4650
+	5600 4650 5000 4650
 Text Label 2950 1650 3    50   ~ 0
 CtlIn5
 Entry Wire Line
@@ -517,7 +507,7 @@ Wire Wire Line
 Text HLabel 1050 2750 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 1050 2850 0    50   Input ~ 0
-A[0..15]
+B[0..15]
 Wire Bus Line
 	1050 2850 3850 2850
 Wire Bus Line
@@ -552,6 +542,18 @@ Text HLabel 2250 2150 3    50   Output ~ 0
 ~J
 Wire Bus Line
 	5100 2000 7850 2000
+$Sheet
+S 3600 4550 1400 400 
+U 5FDDE478
+F0 "Select Right Operand" 50
+F1 "SelectRightOperand.sch" 50
+F2 "Ins[0..10]" I L 3600 4750 50 
+F3 "B[0..15]" I L 3600 4850 50 
+F4 "SelRightOp" I L 3600 4650 50 
+F5 "RightOp[0..15]" O R 5000 4650 50 
+$EndSheet
 Wire Bus Line
 	1050 1550 5100 1550
+Text Notes 2700 7150 0    50   ~ 0
+TODO: does the timing work out for Jump?
 $EndSCHEMATC

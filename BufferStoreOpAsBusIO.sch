@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 11 33
+Sheet 13 33
 Title "MEM: Buffer StoreOp"
 Date ""
 Rev ""
@@ -53,6 +53,7 @@ F 0 "C28" H 1065 6896 50  0000 L CNN
 F 1 "100nF" H 1065 6805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 988 6700 50  0001 C CNN
 F 3 "~" H 950 6850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 950 6850 50  0001 C CNN "Mouser"
 	1    950  6850
 	1    0    0    -1  
 $EndComp
@@ -96,6 +97,7 @@ F 0 "C29" H 1565 6896 50  0000 L CNN
 F 1 "100nF" H 1565 6805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1488 6700 50  0001 C CNN
 F 3 "~" H 1450 6850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1450 6850 50  0001 C CNN "Mouser"
 	1    1450 6850
 	1    0    0    -1  
 $EndComp
@@ -341,6 +343,7 @@ F 0 "U25" H 5600 5850 50  0000 C CNN
 F 1 "74AHCT244" H 5550 5750 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5850 5050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5850 5050 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 5850 5050 50  0001 C CNN "Mouser"
 	1    5850 5050
 	1    0    0    -1  
 $EndComp
@@ -484,6 +487,7 @@ F 0 "U24" H 5600 3750 50  0000 C CNN
 F 1 "74AHCT244" H 5550 3650 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5850 2950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5850 2950 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 5850 2950 50  0001 C CNN "Mouser"
 	1    5850 2950
 	1    0    0    -1  
 $EndComp
@@ -519,6 +523,7 @@ F 0 "U23" H 3400 4625 50  0000 C CNN
 F 1 "74AHCT02" H 3400 4534 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3400 4300 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 3400 4300 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 3400 4300 50  0001 C CNN "Mouser"
 	1    3400 4300
 	1    0    0    -1  
 $EndComp
@@ -535,6 +540,7 @@ F 0 "U23" H -900 4675 50  0000 C CNN
 F 1 "74AHCT02" H -900 4584 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -900 4350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -900 4350 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H -900 4350 50  0001 C CNN "Mouser"
 	2    -900 4350
 	1    0    0    -1  
 $EndComp
@@ -546,6 +552,7 @@ F 0 "U23" H -900 5225 50  0000 C CNN
 F 1 "74AHCT02" H -900 5134 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -900 4900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -900 4900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H -900 4900 50  0001 C CNN "Mouser"
 	3    -900 4900
 	1    0    0    -1  
 $EndComp
@@ -557,6 +564,7 @@ F 0 "U23" H -900 5775 50  0000 C CNN
 F 1 "74AHCT02" H -900 5684 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -900 5450 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -900 5450 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H -900 5450 50  0001 C CNN "Mouser"
 	4    -900 5450
 	1    0    0    -1  
 $EndComp
@@ -568,6 +576,7 @@ F 0 "U23" H -1642 4996 50  0000 L CNN
 F 1 "74AHCT02" H -1642 4905 50  0000 L CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1700 4950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -1700 4950 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H -1700 4950 50  0001 C CNN "Mouser"
 	5    -1700 4950
 	1    0    0    -1  
 $EndComp
@@ -760,6 +769,7 @@ F 0 "C30" H 2065 6896 50  0000 L CNN
 F 1 "100nF" H 2065 6805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1988 6700 50  0001 C CNN
 F 3 "~" H 1950 6850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1950 6850 50  0001 C CNN "Mouser"
 	1    1950 6850
 	1    0    0    -1  
 $EndComp

@@ -226,6 +226,7 @@ F 0 "C15" H 1365 7496 50  0000 L CNN
 F 1 "100nF" H 1365 7405 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1288 7300 50  0001 C CNN
 F 3 "~" H 1250 7450 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1250 7450 50  0001 C CNN "Mouser"
 	1    1250 7450
 	1    0    0    -1  
 $EndComp
@@ -243,6 +244,7 @@ F 0 "C14" H 865 7496 50  0000 L CNN
 F 1 "100nF" H 865 7405 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 788 7300 50  0001 C CNN
 F 3 "~" H 750 7450 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 750 7450 50  0001 C CNN "Mouser"
 	1    750  7450
 	1    0    0    -1  
 $EndComp

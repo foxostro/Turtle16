@@ -36,6 +36,7 @@ F 0 "R5" H 7618 5146 50  0000 L CNN
 F 1 "1kΩ" H 7618 5055 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7550 5100 50  0001 C CNN
 F 3 "~" H 7550 5100 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1001ELF" H 7550 5100 50  0001 C CNN "Mouser"
 	1    7550 5100
 	1    0    0    -1  
 $EndComp
@@ -49,6 +50,7 @@ F 0 "R6" V 9950 5850 50  0000 L CNN
 F 1 "220Ω" V 10050 5800 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 9890 5890 50  0001 C CNN
 F 3 "~" H 9850 5900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 9850 5900 50  0001 C CNN "Mouser"
 	1    9850 5900
 	0    -1   1    0   
 $EndComp
@@ -118,6 +120,7 @@ F 0 "C7" H 3465 7696 50  0000 L CNN
 F 1 "100nF" H 3465 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3388 7500 50  0001 C CNN
 F 3 "~" H 3350 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 3350 7650 50  0001 C CNN "Mouser"
 	1    3350 7650
 	1    0    0    -1  
 $EndComp
@@ -131,6 +134,7 @@ F 0 "C9" H 3965 7696 50  0000 L CNN
 F 1 "100nF" H 3965 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3888 7500 50  0001 C CNN
 F 3 "~" H 3850 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 3850 7650 50  0001 C CNN "Mouser"
 	1    3850 7650
 	1    0    0    -1  
 $EndComp
@@ -144,6 +148,7 @@ F 0 "C10" H 4465 7696 50  0000 L CNN
 F 1 "100nF" H 4465 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 4388 7500 50  0001 C CNN
 F 3 "~" H 4350 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 4350 7650 50  0001 C CNN "Mouser"
 	1    4350 7650
 	1    0    0    -1  
 $EndComp
@@ -157,6 +162,7 @@ F 0 "C11" H 4965 7696 50  0000 L CNN
 F 1 "100nF" H 4965 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 4888 7500 50  0001 C CNN
 F 3 "~" H 4850 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 4850 7650 50  0001 C CNN "Mouser"
 	1    4850 7650
 	1    0    0    -1  
 $EndComp
@@ -214,6 +220,7 @@ F 0 "U8" H 7550 3400 50  0000 C CNN
 F 1 "74AHCT157" H 7550 3300 50  0000 C CNN
 F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 7900 2500 50  0001 C CNN
 F 3 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT157DR?qs=UGVLDq%2F29ui8OtPpHyHWiQ%3D%3D" H 7900 2500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT157PWR?qs=j%2FZo4ajzVJKBNU66X5S%252BZw%3D%3D" H 7900 2500 50  0001 C CNN "Mouser"
 	1    7900 2500
 	1    0    0    -1  
 $EndComp
@@ -247,6 +254,7 @@ F 0 "U2" H 8950 6100 50  0000 C CNN
 F 1 "74AHCT04" H 8950 6200 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8950 5900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 8950 5900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 8950 5900 50  0001 C CNN "Mouser"
 	1    8950 5900
 	1    0    0    1   
 $EndComp
@@ -260,6 +268,7 @@ F 0 "U2" H -1100 5350 50  0000 C CNN
 F 1 "74AHCT04" H -1100 5250 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1100 5300 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1100 5300 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -1100 5300 50  0001 C CNN "Mouser"
 	7    -1100 5300
 	1    0    0    -1  
 $EndComp
@@ -273,6 +282,7 @@ F 0 "U2" H -800 4917 50  0000 C CNN
 F 1 "74AHCT04" H -800 4826 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4600 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 4600 50  0001 C CNN "Mouser"
 	6    -800 4600
 	1    0    0    -1  
 $EndComp
@@ -286,6 +296,7 @@ F 0 "U2" H -800 4417 50  0000 C CNN
 F 1 "74AHCT04" H -800 4326 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4100 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4100 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 4100 50  0001 C CNN "Mouser"
 	5    -800 4100
 	1    0    0    -1  
 $EndComp
@@ -314,6 +325,7 @@ F 0 "C12" H 5465 7696 50  0000 L CNN
 F 1 "100nF" H 5465 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 5388 7500 50  0001 C CNN
 F 3 "~" H 5350 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 5350 7650 50  0001 C CNN "Mouser"
 	1    5350 7650
 	1    0    0    -1  
 $EndComp
@@ -404,6 +416,7 @@ F 0 "OSC1" H 750 1300 50  0000 R CNN
 F 1 "16MHz" H 750 1200 50  0000 R CNN
 F 2 "Oscillator:Oscillator_DIP-14" H 1450 850 50  0001 C CNN
 F 3 "http://www.conwin.com/datasheets/cx/cx030.pdf" H 900 1200 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/ECS/ECS-100AX-160?qs=GxOUx7aO6nxPyxaB%252BrVtIQ%3D%3D" H 1000 1200 50  0001 C CNN "Mouser"
 	1    1000 1200
 	1    0    0    -1  
 $EndComp
@@ -475,6 +488,7 @@ F 0 "C13" H 5965 7696 50  0000 L CNN
 F 1 "100nF" H 5965 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 5888 7500 50  0001 C CNN
 F 3 "~" H 5850 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 5850 7650 50  0001 C CNN "Mouser"
 	1    5850 7650
 	1    0    0    -1  
 $EndComp
@@ -510,6 +524,7 @@ F 0 "U7" H 8000 6350 50  0000 R CNN
 F 1 "MCP100-450D" H 8250 6250 50  0000 R CNN
 F 2 "Package_TO_SOT_THT:TO-92" H 7350 6050 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/11187f.pdf" H 7450 6150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/MCP100-450DI-TO?qs=wJ05WdDZ4qSqHToh7J2ZpQ%3D%3D" H 7750 5900 50  0001 C CNN "Mouser"
 	1    7750 5900
 	1    0    0    -1  
 $EndComp
@@ -549,6 +564,7 @@ F 0 "U2" H 6050 4017 50  0000 C CNN
 F 1 "74AHCT04" H 6050 3926 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 6050 3700 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 6050 3700 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 6050 3700 50  0001 C CNN "Mouser"
 	2    6050 3700
 	1    0    0    -1  
 $EndComp
@@ -562,6 +578,7 @@ F 0 "U2" H 1150 2867 50  0000 C CNN
 F 1 "74AHCT04" H 1150 2776 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1150 2550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1150 2550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 1150 2550 50  0001 C CNN "Mouser"
 	3    1150 2550
 	1    0    0    -1  
 $EndComp
@@ -577,6 +594,7 @@ F 0 "U4" H 3500 3950 50  0000 C CNN
 F 1 "74F161" H 3500 3850 50  0000 C CNN
 F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 3750 3150 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74f161a" H 3750 3150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74F161ADR?qs=KaAwwOlwapseShn0GR2UYw%3D%3D" H 3750 3150 50  0001 C CNN "Mouser"
 	1    3750 3150
 	1    0    0    -1  
 $EndComp
@@ -667,6 +685,7 @@ F 0 "U2" H -800 3917 50  0000 C CNN
 F 1 "74AHCT04" H -800 3826 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3600 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 3600 50  0001 C CNN "Mouser"
 	4    -800 3600
 	1    0    0    -1  
 $EndComp
@@ -734,6 +753,7 @@ F 0 "U6" H 5700 2850 50  0000 C CNN
 F 1 "74AHCT138" H 5700 2750 50  0000 C CNN
 F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 6000 2250 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct138" H 6000 2250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT138PWR?qs=X1HXWTtiZ0Qe%252BapR8HivMQ%3D%3D" H 6000 2250 50  0001 C CNN "Mouser"
 	1    6000 2250
 	1    0    0    -1  
 $EndComp
@@ -843,6 +863,7 @@ F 0 "U5" H 4550 6300 50  0000 C CNN
 F 1 "74F161" H 4550 6200 50  0000 C CNN
 F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 4800 5500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74f161a" H 4800 5500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74F161ADR?qs=KaAwwOlwapseShn0GR2UYw%3D%3D" H 4800 5500 50  0001 C CNN "Mouser"
 	1    4800 5500
 	1    0    0    -1  
 $EndComp
@@ -935,6 +956,7 @@ F 0 "U1" H 4050 1925 50  0000 C CNN
 F 1 "74AHCT32" H 4050 1834 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4050 1600 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H 4050 1600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H 4050 1600 50  0001 C CNN "Mouser"
 	1    4050 1600
 	1    0    0    -1  
 $EndComp
@@ -1001,6 +1023,7 @@ F 0 "U3" H 2300 6700 50  0000 C CNN
 F 1 "LM555" H 2300 6600 50  0000 C CNN
 F 2 "Package_SO:VSSOP-8_3.0x3.0mm_P0.65mm" H 3250 5800 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Flm555" H 3450 5800 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/LM555CMMX-NOPB?qs=QbsRYf82W3FVBYo9S%2FC8bw%3D%3D" H 2600 6200 50  0001 C CNN "Mouser"
 	1    2600 6200
 	1    0    0    -1  
 $EndComp
@@ -1012,6 +1035,7 @@ F 0 "R2" H 1359 5746 50  0000 L CNN
 F 1 "10kΩ" H 1359 5655 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1300 5700 50  0001 C CNN
 F 3 "~" H 1300 5700 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1300 5700 50  0001 C CNN "Mouser"
 	1    1300 5700
 	1    0    0    -1  
 $EndComp
@@ -1039,6 +1063,7 @@ F 0 "C3" H 1615 6546 50  0000 L CNN
 F 1 "0.01uF" H 1615 6455 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1538 6350 50  0001 C CNN
 F 3 "~" H 1500 6500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1500 6500 50  0001 C CNN "Mouser"
 	1    1500 6500
 	1    0    0    -1  
 $EndComp
@@ -1059,6 +1084,7 @@ F 0 "R4" H 3509 5746 50  0000 L CNN
 F 1 "1kΩ" H 3509 5655 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3450 5700 50  0001 C CNN
 F 3 "~" H 3450 5700 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1001ELF" H 3450 5700 50  0001 C CNN "Mouser"
 	1    3450 5700
 	1    0    0    -1  
 $EndComp
@@ -1078,6 +1104,7 @@ F 0 "C6" H 2965 7696 50  0000 L CNN
 F 1 "100nF" H 2965 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2888 7500 50  0001 C CNN
 F 3 "~" H 2850 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2850 7650 50  0001 C CNN "Mouser"
 	1    2850 7650
 	1    0    0    -1  
 $EndComp
@@ -1095,6 +1122,7 @@ F 0 "C5" H 2465 7696 50  0000 L CNN
 F 1 "100nF" H 2465 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2388 7500 50  0001 C CNN
 F 3 "~" H 2350 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2350 7650 50  0001 C CNN "Mouser"
 	1    2350 7650
 	1    0    0    -1  
 $EndComp
@@ -1114,6 +1142,7 @@ F 0 "C4" H 1965 7696 50  0000 L CNN
 F 1 "100nF" H 1965 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1888 7500 50  0001 C CNN
 F 3 "~" H 1850 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1850 7650 50  0001 C CNN "Mouser"
 	1    1850 7650
 	1    0    0    -1  
 $EndComp
@@ -1131,6 +1160,7 @@ F 0 "C8" H 3565 6546 50  0000 L CNN
 F 1 "22pF" H 3565 6455 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3488 6350 50  0001 C CNN
 F 3 "~" H 3450 6500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Walsin/0603N220F500CT?qs=ZrPdAQfJ6DPO1aiYBnCCBw%3D%3D" H 3450 6500 50  0001 C CNN "Mouser"
 	1    3450 6500
 	1    0    0    -1  
 $EndComp
@@ -1160,6 +1190,7 @@ F 0 "U1" H -1800 3925 50  0000 C CNN
 F 1 "74AHCT32" H -1800 3834 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 3600 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 3600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 3600 50  0001 C CNN "Mouser"
 	2    -1800 3600
 	1    0    0    -1  
 $EndComp
@@ -1171,6 +1202,7 @@ F 0 "U1" H -1800 4475 50  0000 C CNN
 F 1 "74AHCT32" H -1800 4384 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 4150 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 4150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 4150 50  0001 C CNN "Mouser"
 	3    -1800 4150
 	1    0    0    -1  
 $EndComp
@@ -1182,6 +1214,7 @@ F 0 "U1" H -1800 5025 50  0000 C CNN
 F 1 "74AHCT32" H -1800 4934 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 4700 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 4700 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 4700 50  0001 C CNN "Mouser"
 	4    -1800 4700
 	1    0    0    -1  
 $EndComp
@@ -1193,6 +1226,7 @@ F 0 "U1" H -1870 5496 50  0000 L CNN
 F 1 "74AHCT32" H -1870 5405 50  0000 L CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2100 5450 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -2100 5450 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -2100 5450 50  0001 C CNN "Mouser"
 	5    -2100 5450
 	1    0    0    -1  
 $EndComp
@@ -1274,6 +1308,7 @@ F 0 "C2" H 1415 6546 50  0000 L CNN
 F 1 "10uF" H 1415 6455 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1338 6350 50  0001 C CNN
 F 3 "~" H 1300 6500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Walsin/0603X106K100CT?qs=ZrPdAQfJ6DPmkZ8840O9Sg%3D%3D" H 1300 6500 50  0001 C CNN "Mouser"
 	1    1300 6500
 	-1   0    0    -1  
 $EndComp
@@ -1296,6 +1331,7 @@ F 0 "R1" V 854 6000 50  0000 C CNN
 F 1 "1kΩ" V 945 6000 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1050 6000 50  0001 C CNN
 F 3 "~" H 1050 6000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1001ELF" V 1050 6000 50  0001 C CNN "Mouser"
 	1    1050 6000
 	0    1    1    0   
 $EndComp
@@ -1431,6 +1467,7 @@ F 0 "R3" V 2050 2500 50  0000 L CNN
 F 1 "220Ω" V 2150 2450 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 1990 2540 50  0001 C CNN
 F 3 "~" H 1950 2550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 1950 2550 50  0001 C CNN "Mouser"
 	1    1950 2550
 	0    -1   1    0   
 $EndComp

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 14 33
+Sheet 16 33
 Title ""
 Date ""
 Rev ""
@@ -54,6 +54,7 @@ F 0 "C33" H 1165 7146 50  0000 L CNN
 F 1 "100nF" H 1165 7055 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1088 6950 50  0001 C CNN
 F 3 "~" H 1050 7100 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1050 7100 50  0001 C CNN "Mouser"
 	1    1050 7100
 	1    0    0    -1  
 $EndComp
@@ -160,6 +161,7 @@ F 0 "U28" H 5550 4800 50  0000 C CNN
 F 1 "74AHCT244" H 5500 4700 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5800 4000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5800 4000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 5800 4000 50  0001 C CNN "Mouser"
 	1    5800 4000
 	1    0    0    -1  
 $EndComp
@@ -307,6 +309,7 @@ F 0 "R39" H 7109 3896 50  0000 L CNN
 F 1 "10kΩ" H 7109 3805 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7050 3850 50  0001 C CNN
 F 3 "~" H 7050 3850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 7050 3850 50  0001 C CNN "Mouser"
 	1    7050 3850
 	1    0    0    -1  
 $EndComp
@@ -335,6 +338,7 @@ F 0 "R40" H 7509 3896 50  0000 L CNN
 F 1 "10kΩ" H 7509 3805 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7450 3850 50  0001 C CNN
 F 3 "~" H 7450 3850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 7450 3850 50  0001 C CNN "Mouser"
 	1    7450 3850
 	1    0    0    -1  
 $EndComp

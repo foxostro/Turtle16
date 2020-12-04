@@ -357,7 +357,7 @@ SelStoreOpB
 Text HLabel 11100 5650 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 4050 2400 0    50   Input ~ 0
-A[0..15]
+B[0..15]
 Entry Wire Line
 	11600 6250 11500 6150
 Text Label 11600 5950 0    50   ~ 0
@@ -383,7 +383,7 @@ Wire Wire Line
 Text Label 11600 6350 0    50   ~ 0
 Ins5
 Text Label 5000 3350 0    50   ~ 0
-A7
+B7
 Wire Wire Line
 	5000 3350 5400 3350
 Entry Wire Line
@@ -393,37 +393,37 @@ Wire Wire Line
 Entry Wire Line
 	4900 3150 5000 3250
 Text Label 5000 3250 0    50   ~ 0
-A6
+B6
 Wire Wire Line
 	5000 3150 5400 3150
 Entry Wire Line
 	4900 3050 5000 3150
 Text Label 5000 2750 0    50   ~ 0
-A1
+B1
 Wire Wire Line
 	5000 3050 5400 3050
 Entry Wire Line
 	4900 2950 5000 3050
 Text Label 5000 3150 0    50   ~ 0
-A5
+B5
 Wire Wire Line
 	5000 2950 5400 2950
 Entry Wire Line
 	4900 2850 5000 2950
 Text Label 5000 2850 0    50   ~ 0
-A2
+B2
 Wire Wire Line
 	5000 2850 5400 2850
 Entry Wire Line
 	4900 2750 5000 2850
 Text Label 5000 3050 0    50   ~ 0
-A4
+B4
 Wire Wire Line
 	5000 2750 5400 2750
 Entry Wire Line
 	4900 2650 5000 2750
 Text Label 5000 2950 0    50   ~ 0
-A3
+B3
 Wire Wire Line
 	5000 2650 5400 2650
 Entry Wire Line
@@ -647,25 +647,25 @@ Entry Wire Line
 Wire Bus Line
 	14750 2350 13850 2350
 Text Label 5000 5400 0    50   ~ 0
-A15
+B15
 Wire Wire Line
 	5000 5400 5400 5400
 Entry Wire Line
 	4900 5300 5000 5400
 Text Label 5000 4700 0    50   ~ 0
-A8
+B8
 Wire Wire Line
 	5000 5300 5400 5300
 Entry Wire Line
 	4900 5200 5000 5300
 Text Label 5000 5300 0    50   ~ 0
-A14
+B14
 Wire Wire Line
 	5000 5200 5400 5200
 Entry Wire Line
 	4900 5100 5000 5200
 Text Label 5000 4800 0    50   ~ 0
-A9
+B9
 Wire Wire Line
 	5000 5100 5400 5100
 Entry Wire Line
@@ -675,19 +675,19 @@ Wire Wire Line
 Entry Wire Line
 	4900 4900 5000 5000
 Text Label 5000 4900 0    50   ~ 0
-A10
+B10
 Wire Wire Line
 	5000 4900 5400 4900
 Entry Wire Line
 	4900 4800 5000 4900
 Text Label 5000 5100 0    50   ~ 0
-A12
+B12
 Wire Wire Line
 	5000 4800 5400 4800
 Entry Wire Line
 	4900 4700 5000 4800
 Text Label 5000 5000 0    50   ~ 0
-A11
+B11
 Wire Wire Line
 	5000 4700 5400 4700
 Entry Wire Line
@@ -1773,6 +1773,10 @@ Wire Wire Line
 	5350 5700 5400 5700
 Text Label 11600 6450 0    50   ~ 0
 Ins6
+Text Label 5000 2650 0    50   ~ 0
+B0
+Text Label 5000 5200 0    50   ~ 0
+B13
 Wire Bus Line
 	11500 5650 11500 6450
 Wire Bus Line
@@ -1785,8 +1789,4 @@ Wire Bus Line
 	10350 2350 10350 6950
 Wire Bus Line
 	13850 2350 13850 8500
-Text Label 5000 2650 0    50   ~ 0
-A0
-Text Label 5000 5200 0    50   ~ 0
-A13
 $EndSCHEMATC

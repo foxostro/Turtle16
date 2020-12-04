@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 11 33
+Sheet 24 33
 Title "EX/MEM: Store Operand Register"
 Date ""
 Rev ""
@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text HLabel 5050 2900 0    50   Input ~ 0
-CP
+Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604C2470
@@ -1092,7 +1092,7 @@ $EndComp
 Wire Wire Line
 	1600 7300 1600 7200
 Text HLabel 5050 4950 0    50   Input ~ 0
-CP
+Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604C24E3

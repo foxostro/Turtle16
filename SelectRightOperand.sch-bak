@@ -3,15 +3,15 @@ EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 30 33
-Title "Select Left Operand"
+Sheet 29 33
+Title "Select Right Operand"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
-Comment2 "the immediate value from the instruction."
-Comment3 "The left operand can either take the value from the A port of the register file, or"
-Comment4 "Select the left operand to the ALU"
+Comment2 "from a five bit immediate value in the instruction word."
+Comment3 "The right operand can either take the value from the B port of the register file, or"
+Comment4 "Select the right operand to the ALU"
 $EndDescr
 $Comp
 L Device:C C?
@@ -214,7 +214,7 @@ Wire Wire Line
 Text HLabel 6500 6300 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 6400 2150 0    50   Input ~ 0
-A[0..15]
+B[0..15]
 Entry Wire Line
 	7000 6900 6900 6800
 Text Label 7000 6900 0    50   ~ 0
@@ -247,50 +247,50 @@ Connection ~ 1650 10850
 Connection ~ 1150 10850
 Text Label 7000 6800 0    50   ~ 0
 Ins3
-Text Label 7550 3100 2    50   ~ 0
-A7
+Text Label 7350 3100 0    50   ~ 0
+B7
 Wire Wire Line
 	7350 3100 7750 3100
 Entry Wire Line
 	7250 3000 7350 3100
-Text Label 7550 3000 2    50   ~ 0
-A6
+Text Label 7350 3000 0    50   ~ 0
+B6
 Wire Wire Line
 	7350 3000 7750 3000
 Entry Wire Line
 	7250 2900 7350 3000
-Text Label 7550 2900 2    50   ~ 0
-A5
+Text Label 7350 2900 0    50   ~ 0
+B5
 Wire Wire Line
 	7350 2900 7750 2900
 Entry Wire Line
 	7250 2800 7350 2900
-Text Label 7550 2800 2    50   ~ 0
-A4
+Text Label 7350 2800 0    50   ~ 0
+B4
 Wire Wire Line
 	7350 2800 7750 2800
 Entry Wire Line
 	7250 2700 7350 2800
-Text Label 7550 2700 2    50   ~ 0
-A3
+Text Label 7350 2700 0    50   ~ 0
+B3
 Wire Wire Line
 	7350 2700 7750 2700
 Entry Wire Line
 	7250 2600 7350 2700
-Text Label 7550 2600 2    50   ~ 0
-A2
+Text Label 7350 2600 0    50   ~ 0
+B2
 Wire Wire Line
 	7350 2600 7750 2600
 Entry Wire Line
 	7250 2500 7350 2600
-Text Label 7550 2500 2    50   ~ 0
-A1
+Text Label 7350 2500 0    50   ~ 0
+B1
 Wire Wire Line
 	7350 2500 7750 2500
 Entry Wire Line
 	7250 2400 7350 2500
-Text Label 7550 2400 2    50   ~ 0
-A0
+Text Label 7350 2400 0    50   ~ 0
+B0
 Wire Wire Line
 	7350 2400 7750 2400
 Entry Wire Line
@@ -504,7 +504,7 @@ Wire Wire Line
 Entry Wire Line
 	9250 2400 9150 2500
 Text Label 9150 2400 2    50   ~ 0
-LeftOp0
+RightOp0
 Wire Wire Line
 	9150 2400 8750 2400
 Entry Wire Line
@@ -512,49 +512,49 @@ Entry Wire Line
 Wire Bus Line
 	10100 2100 9250 2100
 Text Label 7350 5150 0    50   ~ 0
-A15
+B15
 Wire Wire Line
 	7350 5150 7750 5150
 Entry Wire Line
 	7250 5050 7350 5150
 Text Label 7350 5050 0    50   ~ 0
-A14
+B14
 Wire Wire Line
 	7350 5050 7750 5050
 Entry Wire Line
 	7250 4950 7350 5050
 Text Label 7350 4950 0    50   ~ 0
-A13
+B13
 Wire Wire Line
 	7350 4950 7750 4950
 Entry Wire Line
 	7250 4850 7350 4950
 Text Label 7350 4850 0    50   ~ 0
-A12
+B12
 Wire Wire Line
 	7350 4850 7750 4850
 Entry Wire Line
 	7250 4750 7350 4850
 Text Label 7350 4750 0    50   ~ 0
-A11
+B11
 Wire Wire Line
 	7350 4750 7750 4750
 Entry Wire Line
 	7250 4650 7350 4750
 Text Label 7350 4650 0    50   ~ 0
-A10
+B10
 Wire Wire Line
 	7350 4650 7750 4650
 Entry Wire Line
 	7250 4550 7350 4650
 Text Label 7350 4550 0    50   ~ 0
-A9
+B9
 Wire Wire Line
 	7350 4550 7750 4550
 Entry Wire Line
 	7250 4450 7350 4550
 Text Label 7350 4450 0    50   ~ 0
-A8
+B8
 Wire Wire Line
 	7350 4450 7750 4450
 Entry Wire Line
@@ -769,8 +769,6 @@ Wire Wire Line
 	9150 4450 8750 4450
 Entry Wire Line
 	9250 4350 9150 4450
-Text HLabel 10100 2100 2    50   Output ~ 0
-LeftOp[0..15]
 Wire Wire Line
 	3000 3900 3100 3900
 Wire Wire Line
@@ -908,35 +906,35 @@ F 3 "" H 3000 3900 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Text Label 9150 2500 2    50   ~ 0
-LeftOp1
+RightOp1
 Text Label 9150 2600 2    50   ~ 0
-LeftOp2
+RightOp2
 Text Label 9150 2700 2    50   ~ 0
-LeftOp3
+RightOp3
 Text Label 9150 2800 2    50   ~ 0
-LeftOp4
+RightOp4
 Text Label 9150 2900 2    50   ~ 0
-LeftOp5
+RightOp5
 Text Label 9150 3000 2    50   ~ 0
-LeftOp6
+RightOp6
 Text Label 9150 3100 2    50   ~ 0
-LeftOp7
+RightOp7
 Text Label 9150 4450 2    50   ~ 0
-LeftOp8
+RightOp8
 Text Label 9150 4550 2    50   ~ 0
-LeftOp9
+RightOp9
 Text Label 9150 4650 2    50   ~ 0
-LeftOp10
+RightOp10
 Text Label 9150 4750 2    50   ~ 0
-LeftOp11
+RightOp11
 Text Label 9150 4850 2    50   ~ 0
-LeftOp12
+RightOp12
 Text Label 9150 4950 2    50   ~ 0
-LeftOp13
+RightOp13
 Text Label 9150 5050 2    50   ~ 0
-LeftOp14
+RightOp14
 Text Label 9150 5150 2    50   ~ 0
-LeftOp15
+RightOp15
 $Comp
 L 74xx:74LS244 U?
 U 1 1 5FC28560
@@ -1173,7 +1171,7 @@ Wire Wire Line
 Entry Wire Line
 	9250 6500 9150 6600
 Text Label 9150 6500 2    50   ~ 0
-LeftOp0
+RightOp0
 Wire Wire Line
 	9150 6500 8750 6500
 Entry Wire Line
@@ -1211,35 +1209,33 @@ Wire Wire Line
 Entry Wire Line
 	9250 8450 9150 8550
 Text Label 9150 6600 2    50   ~ 0
-LeftOp1
+RightOp1
 Text Label 9150 6700 2    50   ~ 0
-LeftOp2
-Text Label 9150 6800 2    50   ~ 0
-LeftOp3
+RightOp2
 Text Label 9150 6900 2    50   ~ 0
-LeftOp4
+RightOp4
 Text Label 9150 7000 2    50   ~ 0
-LeftOp5
+RightOp5
 Text Label 9150 7100 2    50   ~ 0
-LeftOp6
+RightOp6
 Text Label 9150 7200 2    50   ~ 0
-LeftOp7
+RightOp7
 Text Label 9150 8550 2    50   ~ 0
-LeftOp8
+RightOp8
 Text Label 9150 8650 2    50   ~ 0
-LeftOp9
+RightOp9
 Text Label 9150 8750 2    50   ~ 0
-LeftOp10
+RightOp10
 Text Label 9150 8850 2    50   ~ 0
-LeftOp11
+RightOp11
 Text Label 9150 8950 2    50   ~ 0
-LeftOp12
+RightOp12
 Text Label 9150 9050 2    50   ~ 0
-LeftOp13
+RightOp13
 Text Label 9150 9150 2    50   ~ 0
-LeftOp14
+RightOp14
 Text Label 9150 9250 2    50   ~ 0
-LeftOp15
+RightOp15
 $Comp
 L Device:C C?
 U 1 1 5FD2A6C2
@@ -1293,7 +1289,7 @@ Connection ~ 7300 7400
 Wire Wire Line
 	4100 3500 5800 3500
 Text HLabel 2650 3400 0    50   Input ~ 0
-SelLeftOp
+SelRightOp
 Wire Wire Line
 	2650 3400 3100 3400
 $Comp
@@ -1353,4 +1349,8 @@ Wire Bus Line
 	7250 2150 7250 5050
 Wire Bus Line
 	9250 2100 9250 9150
+Text HLabel 10100 2100 2    50   Output ~ 0
+RightOp[0..15]
+Text Label 9150 6800 2    50   ~ 0
+RightOp3
 $EndSCHEMATC

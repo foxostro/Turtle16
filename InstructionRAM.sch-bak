@@ -1258,8 +1258,6 @@ Wire Wire Line
 	7350 4050 6600 4050
 Wire Bus Line
 	6400 950  8650 950 
-Text Notes 4300 1900 0    50   ~ 0
-TODO: Consider replacing these two dual port SRAMs\nwith one 7028L20PFGI 64Kx16 dual port SRAM.
 $Comp
 L power:GND #PWR?
 U 1 1 5FCA5180

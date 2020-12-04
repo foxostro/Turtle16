@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 15 33
+Sheet 17 33
 Title "System Bus Connector"
 Date ""
 Rev ""
@@ -485,6 +485,7 @@ F 0 "R41" H 4159 946 50  0000 L CNN
 F 1 "10kΩ" H 4159 855 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4100 900 50  0001 C CNN
 F 3 "~" H 4100 900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 4100 900 50  0001 C CNN "Mouser"
 	1    4100 900 
 	1    0    0    -1  
 $EndComp
@@ -501,6 +502,7 @@ F 0 "U29" H -1250 6250 50  0000 C CNN
 F 1 "74AHCT04" H -1250 6150 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1250 6200 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1250 6200 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -1250 6200 50  0001 C CNN "Mouser"
 	7    -1250 6200
 	1    0    0    -1  
 $EndComp
@@ -515,6 +517,7 @@ F 0 "U29" H -950 5717 50  0000 C CNN
 F 1 "74AHCT04" H -950 5626 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -950 5400 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -950 5400 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -950 5400 50  0001 C CNN "Mouser"
 	6    -950 5400
 	1    0    0    -1  
 $EndComp
@@ -529,6 +532,7 @@ F 0 "U29" H -950 5217 50  0000 C CNN
 F 1 "74AHCT04" H -950 5126 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -950 4900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -950 4900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -950 4900 50  0001 C CNN "Mouser"
 	5    -950 4900
 	1    0    0    -1  
 $EndComp
@@ -543,6 +547,7 @@ F 0 "U29" H -950 4717 50  0000 C CNN
 F 1 "74AHCT04" H -950 4626 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -950 4400 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -950 4400 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -950 4400 50  0001 C CNN "Mouser"
 	4    -950 4400
 	1    0    0    -1  
 $EndComp
@@ -557,6 +562,7 @@ F 0 "U29" H -950 4217 50  0000 C CNN
 F 1 "74AHCT04" H -950 4126 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -950 3900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -950 3900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -950 3900 50  0001 C CNN "Mouser"
 	3    -950 3900
 	1    0    0    -1  
 $EndComp
@@ -620,6 +626,7 @@ F 0 "U29" H -950 3717 50  0000 C CNN
 F 1 "74AHCT04" H -950 3626 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -950 3400 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -950 3400 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -950 3400 50  0001 C CNN "Mouser"
 	2    -950 3400
 	1    0    0    -1  
 $EndComp
@@ -635,6 +642,7 @@ F 0 "U29" H 4750 1367 50  0000 C CNN
 F 1 "74AHCT04" H 4750 1276 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4750 1050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4750 1050 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 4750 1050 50  0001 C CNN "Mouser"
 	1    4750 1050
 	1    0    0    -1  
 $EndComp

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 13 33
+Sheet 15 33
 Title "MEM: Buffer ALUResult"
 Date ""
 Rev ""
@@ -55,6 +55,7 @@ F 0 "C31" H 9565 6046 50  0000 L CNN
 F 1 "100nF" H 9565 5955 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 9488 5850 50  0001 C CNN
 F 3 "~" H 9450 6000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 9450 6000 50  0001 C CNN "Mouser"
 	1    9450 6000
 	1    0    0    -1  
 $EndComp
@@ -100,6 +101,7 @@ F 0 "C32" H 10065 6046 50  0000 L CNN
 F 1 "100nF" H 10065 5955 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 9988 5850 50  0001 C CNN
 F 3 "~" H 9950 6000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 9950 6000 50  0001 C CNN "Mouser"
 	1    9950 6000
 	1    0    0    -1  
 $EndComp
@@ -215,6 +217,7 @@ F 0 "U26" H 5800 3700 50  0000 C CNN
 F 1 "74AHCT244" H 5750 3600 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 6050 2900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 6050 2900 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 6050 2900 50  0001 C CNN "Mouser"
 	1    6050 2900
 	1    0    0    -1  
 $EndComp
@@ -383,6 +386,7 @@ F 0 "U27" H 5800 5800 50  0000 C CNN
 F 1 "74AHCT244" H 5750 5700 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 6050 5000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 6050 5000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 6050 5000 50  0001 C CNN "Mouser"
 	1    6050 5000
 	1    0    0    -1  
 $EndComp
@@ -533,118 +537,6 @@ Connection ~ 4750 3350
 Wire Wire Line
 	4750 3350 5450 3350
 $Comp
-L Device:R_Small R?
-U 1 1 5FC40B9B
-P 4650 7550
-AR Path="/60AF64DE/5FC40B9B" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40B9B" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40B9B" Ref="R35"  Part="1" 
-F 0 "R35" H 4709 7596 50  0000 L CNN
-F 1 "10kΩ" H 4709 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4650 7550 50  0001 C CNN
-F 3 "~" H 4650 7550 50  0001 C CNN
-	1    4650 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BA1
-P 4950 7550
-AR Path="/60AF64DE/5FC40BA1" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BA1" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BA1" Ref="R36"  Part="1" 
-F 0 "R36" H 5009 7596 50  0000 L CNN
-F 1 "10kΩ" H 5009 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4950 7550 50  0001 C CNN
-F 3 "~" H 4950 7550 50  0001 C CNN
-	1    4950 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BA7
-P 5250 7550
-AR Path="/60AF64DE/5FC40BA7" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BA7" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BA7" Ref="R37"  Part="1" 
-F 0 "R37" H 5309 7596 50  0000 L CNN
-F 1 "10kΩ" H 5309 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5250 7550 50  0001 C CNN
-F 3 "~" H 5250 7550 50  0001 C CNN
-	1    5250 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BAD
-P 5550 7550
-AR Path="/60AF64DE/5FC40BAD" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BAD" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BAD" Ref="R38"  Part="1" 
-F 0 "R38" H 5609 7596 50  0000 L CNN
-F 1 "10kΩ" H 5609 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5550 7550 50  0001 C CNN
-F 3 "~" H 5550 7550 50  0001 C CNN
-	1    5550 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BB3
-P 3450 7550
-AR Path="/60AF64DE/5FC40BB3" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BB3" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BB3" Ref="R31"  Part="1" 
-F 0 "R31" H 3509 7596 50  0000 L CNN
-F 1 "10kΩ" H 3509 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3450 7550 50  0001 C CNN
-F 3 "~" H 3450 7550 50  0001 C CNN
-	1    3450 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BB9
-P 3750 7550
-AR Path="/60AF64DE/5FC40BB9" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BB9" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BB9" Ref="R32"  Part="1" 
-F 0 "R32" H 3809 7596 50  0000 L CNN
-F 1 "10kΩ" H 3809 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3750 7550 50  0001 C CNN
-F 3 "~" H 3750 7550 50  0001 C CNN
-	1    3750 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BBF
-P 4050 7550
-AR Path="/60AF64DE/5FC40BBF" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BBF" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BBF" Ref="R33"  Part="1" 
-F 0 "R33" H 4109 7596 50  0000 L CNN
-F 1 "10kΩ" H 4109 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4050 7550 50  0001 C CNN
-F 3 "~" H 4050 7550 50  0001 C CNN
-	1    4050 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40BC5
-P 4350 7550
-AR Path="/60AF64DE/5FC40BC5" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BC5" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BC5" Ref="R34"  Part="1" 
-F 0 "R34" H 4409 7596 50  0000 L CNN
-F 1 "10kΩ" H 4409 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4350 7550 50  0001 C CNN
-F 3 "~" H 4350 7550 50  0001 C CNN
-	1    4350 7550
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5FC40BCB
 P 4650 7650
@@ -758,62 +650,6 @@ F 3 "" H 4350 7650 50  0001 C CNN
 $EndComp
 $Comp
 L Device:R_Small R?
-U 1 1 5FC40BFB
-P 2250 7550
-AR Path="/60AF64DE/5FC40BFB" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40BFB" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40BFB" Ref="R27"  Part="1" 
-F 0 "R27" H 2309 7596 50  0000 L CNN
-F 1 "10kΩ" H 2309 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2250 7550 50  0001 C CNN
-F 3 "~" H 2250 7550 50  0001 C CNN
-	1    2250 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40C01
-P 2550 7550
-AR Path="/60AF64DE/5FC40C01" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40C01" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40C01" Ref="R28"  Part="1" 
-F 0 "R28" H 2609 7596 50  0000 L CNN
-F 1 "10kΩ" H 2609 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2550 7550 50  0001 C CNN
-F 3 "~" H 2550 7550 50  0001 C CNN
-	1    2550 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40C07
-P 2850 7550
-AR Path="/60AF64DE/5FC40C07" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40C07" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40C07" Ref="R29"  Part="1" 
-F 0 "R29" H 2909 7596 50  0000 L CNN
-F 1 "10kΩ" H 2909 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2850 7550 50  0001 C CNN
-F 3 "~" H 2850 7550 50  0001 C CNN
-	1    2850 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40C0D
-P 3150 7550
-AR Path="/60AF64DE/5FC40C0D" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40C0D" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40C0D" Ref="R30"  Part="1" 
-F 0 "R30" H 3209 7596 50  0000 L CNN
-F 1 "10kΩ" H 3209 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3150 7550 50  0001 C CNN
-F 3 "~" H 3150 7550 50  0001 C CNN
-	1    3150 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
 U 1 1 5FC40C13
 P 1050 7550
 AR Path="/60AF64DE/5FC40C13" Ref="R?"  Part="1" 
@@ -823,49 +659,8 @@ F 0 "R23" H 1109 7596 50  0000 L CNN
 F 1 "10kΩ" H 1109 7505 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1050 7550 50  0001 C CNN
 F 3 "~" H 1050 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1050 7550 50  0001 C CNN "Mouser"
 	1    1050 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40C19
-P 1350 7550
-AR Path="/60AF64DE/5FC40C19" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40C19" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40C19" Ref="R24"  Part="1" 
-F 0 "R24" H 1409 7596 50  0000 L CNN
-F 1 "10kΩ" H 1409 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1350 7550 50  0001 C CNN
-F 3 "~" H 1350 7550 50  0001 C CNN
-	1    1350 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40C1F
-P 1650 7550
-AR Path="/60AF64DE/5FC40C1F" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40C1F" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40C1F" Ref="R25"  Part="1" 
-F 0 "R25" H 1709 7596 50  0000 L CNN
-F 1 "10kΩ" H 1709 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1650 7550 50  0001 C CNN
-F 3 "~" H 1650 7550 50  0001 C CNN
-	1    1650 7550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R?
-U 1 1 5FC40C25
-P 1950 7550
-AR Path="/60AF64DE/5FC40C25" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FAF68C1/5FC40C25" Ref="R?"  Part="1" 
-AR Path="/60AF64DE/5FB92C55/5FC40C25" Ref="R26"  Part="1" 
-F 0 "R26" H 2009 7596 50  0000 L CNN
-F 1 "10kΩ" H 2009 7505 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1950 7550 50  0001 C CNN
-F 3 "~" H 1950 7550 50  0001 C CNN
-	1    1950 7550
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1082,6 +877,231 @@ Wire Bus Line
 	950  6850 950  6250
 Text Label 950  6650 1    50   ~ 0
 Addr[0..15]
+$Comp
+L Device:R_Small R?
+U 1 1 5FD02095
+P 1350 7550
+AR Path="/60AF64DE/5FD02095" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD02095" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD02095" Ref="R24"  Part="1" 
+F 0 "R24" H 1409 7596 50  0000 L CNN
+F 1 "10kΩ" H 1409 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1350 7550 50  0001 C CNN
+F 3 "~" H 1350 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1350 7550 50  0001 C CNN "Mouser"
+	1    1350 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD03432
+P 1650 7550
+AR Path="/60AF64DE/5FD03432" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD03432" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD03432" Ref="R25"  Part="1" 
+F 0 "R25" H 1709 7596 50  0000 L CNN
+F 1 "10kΩ" H 1709 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1650 7550 50  0001 C CNN
+F 3 "~" H 1650 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1650 7550 50  0001 C CNN "Mouser"
+	1    1650 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD03439
+P 1950 7550
+AR Path="/60AF64DE/5FD03439" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD03439" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD03439" Ref="R26"  Part="1" 
+F 0 "R26" H 2009 7596 50  0000 L CNN
+F 1 "10kΩ" H 2009 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1950 7550 50  0001 C CNN
+F 3 "~" H 1950 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1950 7550 50  0001 C CNN "Mouser"
+	1    1950 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD07F00
+P 2250 7550
+AR Path="/60AF64DE/5FD07F00" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD07F00" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD07F00" Ref="R27"  Part="1" 
+F 0 "R27" H 2309 7596 50  0000 L CNN
+F 1 "10kΩ" H 2309 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2250 7550 50  0001 C CNN
+F 3 "~" H 2250 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 2250 7550 50  0001 C CNN "Mouser"
+	1    2250 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD07F07
+P 2550 7550
+AR Path="/60AF64DE/5FD07F07" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD07F07" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD07F07" Ref="R28"  Part="1" 
+F 0 "R28" H 2609 7596 50  0000 L CNN
+F 1 "10kΩ" H 2609 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2550 7550 50  0001 C CNN
+F 3 "~" H 2550 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 2550 7550 50  0001 C CNN "Mouser"
+	1    2550 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD07F0E
+P 2850 7550
+AR Path="/60AF64DE/5FD07F0E" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD07F0E" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD07F0E" Ref="R29"  Part="1" 
+F 0 "R29" H 2909 7596 50  0000 L CNN
+F 1 "10kΩ" H 2909 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2850 7550 50  0001 C CNN
+F 3 "~" H 2850 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 2850 7550 50  0001 C CNN "Mouser"
+	1    2850 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD07F15
+P 3150 7550
+AR Path="/60AF64DE/5FD07F15" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD07F15" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD07F15" Ref="R30"  Part="1" 
+F 0 "R30" H 3209 7596 50  0000 L CNN
+F 1 "10kΩ" H 3209 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3150 7550 50  0001 C CNN
+F 3 "~" H 3150 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 3150 7550 50  0001 C CNN "Mouser"
+	1    3150 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F395
+P 3450 7550
+AR Path="/60AF64DE/5FD0F395" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F395" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F395" Ref="R31"  Part="1" 
+F 0 "R31" H 3509 7596 50  0000 L CNN
+F 1 "10kΩ" H 3509 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3450 7550 50  0001 C CNN
+F 3 "~" H 3450 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 3450 7550 50  0001 C CNN "Mouser"
+	1    3450 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F39C
+P 3750 7550
+AR Path="/60AF64DE/5FD0F39C" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F39C" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F39C" Ref="R32"  Part="1" 
+F 0 "R32" H 3809 7596 50  0000 L CNN
+F 1 "10kΩ" H 3809 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3750 7550 50  0001 C CNN
+F 3 "~" H 3750 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 3750 7550 50  0001 C CNN "Mouser"
+	1    3750 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F3A3
+P 4050 7550
+AR Path="/60AF64DE/5FD0F3A3" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F3A3" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F3A3" Ref="R33"  Part="1" 
+F 0 "R33" H 4109 7596 50  0000 L CNN
+F 1 "10kΩ" H 4109 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4050 7550 50  0001 C CNN
+F 3 "~" H 4050 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 4050 7550 50  0001 C CNN "Mouser"
+	1    4050 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F3AA
+P 4350 7550
+AR Path="/60AF64DE/5FD0F3AA" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F3AA" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F3AA" Ref="R34"  Part="1" 
+F 0 "R34" H 4409 7596 50  0000 L CNN
+F 1 "10kΩ" H 4409 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4350 7550 50  0001 C CNN
+F 3 "~" H 4350 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 4350 7550 50  0001 C CNN "Mouser"
+	1    4350 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F3B1
+P 4650 7550
+AR Path="/60AF64DE/5FD0F3B1" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F3B1" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F3B1" Ref="R35"  Part="1" 
+F 0 "R35" H 4709 7596 50  0000 L CNN
+F 1 "10kΩ" H 4709 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4650 7550 50  0001 C CNN
+F 3 "~" H 4650 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 4650 7550 50  0001 C CNN "Mouser"
+	1    4650 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F3B8
+P 4950 7550
+AR Path="/60AF64DE/5FD0F3B8" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F3B8" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F3B8" Ref="R36"  Part="1" 
+F 0 "R36" H 5009 7596 50  0000 L CNN
+F 1 "10kΩ" H 5009 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 4950 7550 50  0001 C CNN
+F 3 "~" H 4950 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 4950 7550 50  0001 C CNN "Mouser"
+	1    4950 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F3BF
+P 5250 7550
+AR Path="/60AF64DE/5FD0F3BF" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F3BF" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F3BF" Ref="R37"  Part="1" 
+F 0 "R37" H 5309 7596 50  0000 L CNN
+F 1 "10kΩ" H 5309 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5250 7550 50  0001 C CNN
+F 3 "~" H 5250 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 5250 7550 50  0001 C CNN "Mouser"
+	1    5250 7550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FD0F3C6
+P 5550 7550
+AR Path="/60AF64DE/5FD0F3C6" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FD0F3C6" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FB92C55/5FD0F3C6" Ref="R38"  Part="1" 
+F 0 "R38" H 5609 7596 50  0000 L CNN
+F 1 "10kΩ" H 5609 7505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 5550 7550 50  0001 C CNN
+F 3 "~" H 5550 7550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 5550 7550 50  0001 C CNN "Mouser"
+	1    5550 7550
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	950  6850 5450 6850
 Wire Bus Line

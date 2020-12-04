@@ -484,6 +484,7 @@ F 0 "U37" H 5150 3400 50  0000 C CNN
 F 1 "74ABT574" H 5150 3300 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5400 2600 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5400 2600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0OT4q4QBUTK6FyQPmQhDOg%3D%3D" H 5400 2600 50  0001 C CNN "Mouser"
 	1    5400 2600
 	1    0    0    -1  
 $EndComp
@@ -579,6 +580,7 @@ F 0 "C41" H 965 7196 50  0000 L CNN
 F 1 "100nF" H 965 7105 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 888 7000 50  0001 C CNN
 F 3 "~" H 850 7150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 850 7150 50  0001 C CNN "Mouser"
 	1    850  7150
 	1    0    0    -1  
 $EndComp
@@ -866,6 +868,7 @@ F 0 "C42" H 1415 7196 50  0000 L CNN
 F 1 "100nF" H 1415 7105 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1338 7000 50  0001 C CNN
 F 3 "~" H 1300 7150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1300 7150 50  0001 C CNN "Mouser"
 	1    1300 7150
 	1    0    0    -1  
 $EndComp
@@ -1526,6 +1529,7 @@ F 0 "U38" H 5150 5450 50  0000 C CNN
 F 1 "74ABT574" H 5150 5350 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5400 4650 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5400 4650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0OT4q4QBUTK6FyQPmQhDOg%3D%3D" H 5400 4650 50  0001 C CNN "Mouser"
 	1    5400 4650
 	1    0    0    -1  
 $EndComp

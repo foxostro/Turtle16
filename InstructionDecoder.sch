@@ -33,6 +33,7 @@ F 0 "C16" H 865 7696 50  0000 L CNN
 F 1 "100nF" H 865 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 788 7500 50  0001 C CNN
 F 3 "~" H 750 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 750 7650 50  0001 C CNN "Mouser"
 	1    750  7650
 	1    0    0    -1  
 $EndComp
@@ -48,6 +49,7 @@ F 0 "C17" H 1365 7696 50  0000 L CNN
 F 1 "100nF" H 1365 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1288 7500 50  0001 C CNN
 F 3 "~" H 1250 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1250 7650 50  0001 C CNN "Mouser"
 	1    1250 7650
 	1    0    0    -1  
 $EndComp
@@ -213,6 +215,7 @@ F 0 "C18" H 1865 7696 50  0000 L CNN
 F 1 "100nF" H 1865 7605 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1788 7500 50  0001 C CNN
 F 3 "~" H 1750 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1750 7650 50  0001 C CNN "Mouser"
 	1    1750 7650
 	1    0    0    -1  
 $EndComp
@@ -342,6 +345,8 @@ F 0 "U11" H 2500 4650 50  0000 C CNN
 F 1 "SST39SF010A-45-4I-NHE" H 2550 4550 50  0000 C CNN
 F 2 "Package_LCC:PLCC-32_SMD-Socket" H 3150 3550 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 3150 3550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 3150 3250 50  0001 C CNN "Mouser"
+F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 3150 3250 50  0001 C CNN "Mouser2"
 	1    3150 3250
 	1    0    0    -1  
 $EndComp
@@ -619,6 +624,8 @@ F 0 "U12" H 5300 4650 50  0000 C CNN
 F 1 "SST39SF010A-45-4I-NHE" H 5350 4550 50  0000 C CNN
 F 2 "Package_LCC:PLCC-32_SMD-Socket" H 5950 3550 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 5950 3550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 5950 3250 50  0001 C CNN "Mouser"
+F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 5950 3250 50  0001 C CNN "Mouser2"
 	1    5950 3250
 	1    0    0    -1  
 $EndComp
@@ -894,6 +901,8 @@ F 0 "U13" H 8100 4650 50  0000 C CNN
 F 1 "SST39SF010A-45-4I-NHE" H 8150 4550 50  0000 C CNN
 F 2 "Package_LCC:PLCC-32_SMD-Socket" H 8750 3550 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 8750 3550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 8750 3250 50  0001 C CNN "Mouser"
+F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 8750 3250 50  0001 C CNN "Mouser2"
 	1    8750 3250
 	1    0    0    -1  
 $EndComp

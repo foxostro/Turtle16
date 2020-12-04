@@ -42,6 +42,7 @@ F 0 "C34" H 965 10596 50  0000 L CNN
 F 1 "100nF" H 965 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 888 10400 50  0001 C CNN
 F 3 "~" H 850 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 850 10550 50  0001 C CNN "Mouser"
 	1    850  10550
 	1    0    0    -1  
 $EndComp
@@ -74,6 +75,7 @@ F 0 "C35" H 1465 10596 50  0000 L CNN
 F 1 "100nF" H 1465 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1388 10400 50  0001 C CNN
 F 3 "~" H 1350 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1350 10550 50  0001 C CNN "Mouser"
 	1    1350 10550
 	1    0    0    -1  
 $EndComp
@@ -176,6 +178,7 @@ F 0 "C36" H 1915 10596 50  0000 L CNN
 F 1 "100nF" H 1915 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1838 10400 50  0001 C CNN
 F 3 "~" H 1800 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1800 10550 50  0001 C CNN "Mouser"
 	1    1800 10550
 	1    0    0    -1  
 $EndComp
@@ -208,6 +211,7 @@ F 0 "C37" H 2415 10596 50  0000 L CNN
 F 1 "100nF" H 2415 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2338 10400 50  0001 C CNN
 F 3 "~" H 2300 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2300 10550 50  0001 C CNN "Mouser"
 	1    2300 10550
 	1    0    0    -1  
 $EndComp
@@ -248,6 +252,7 @@ F 0 "C38" H 2865 10596 50  0000 L CNN
 F 1 "100nF" H 2865 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2788 10400 50  0001 C CNN
 F 3 "~" H 2750 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2750 10550 50  0001 C CNN "Mouser"
 	1    2750 10550
 	1    0    0    -1  
 $EndComp
@@ -280,6 +285,7 @@ F 0 "C39" H 3365 10596 50  0000 L CNN
 F 1 "100nF" H 3365 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3288 10400 50  0001 C CNN
 F 3 "~" H 3250 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 3250 10550 50  0001 C CNN "Mouser"
 	1    3250 10550
 	1    0    0    -1  
 $EndComp
@@ -318,6 +324,7 @@ F 0 "C40" H 3815 10596 50  0000 L CNN
 F 1 "100nF" H 3815 10505 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3738 10400 50  0001 C CNN
 F 3 "~" H 3700 10550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 3700 10550 50  0001 C CNN "Mouser"
 	1    3700 10550
 	1    0    0    -1  
 $EndComp
@@ -691,6 +698,7 @@ F 0 "U31" H 5700 3800 50  0000 C CNN
 F 1 "74ABT574" H 5700 3700 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5950 3000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5950 3000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0OT4q4QBUTK6FyQPmQhDOg%3D%3D" H 5950 3000 50  0001 C CNN "Mouser"
 	1    5950 3000
 	1    0    0    -1  
 $EndComp
@@ -1030,6 +1038,7 @@ F 0 "U32" H 5700 5850 50  0000 C CNN
 F 1 "74ABT574" H 5700 5750 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5950 5050 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5950 5050 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0OT4q4QBUTK6FyQPmQhDOg%3D%3D" H 5950 5050 50  0001 C CNN "Mouser"
 	1    5950 5050
 	1    0    0    -1  
 $EndComp
@@ -1088,6 +1097,7 @@ F 0 "U30" H 3000 9100 50  0000 C CNN
 F 1 "74AHCT138" H 3000 9000 50  0000 C CNN
 F 2 "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" H 3300 8500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct138" H 3300 8500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT138PWR?qs=X1HXWTtiZ0Qe%252BapR8HivMQ%3D%3D" H 3300 8500 50  0001 C CNN "Mouser"
 	1    3300 8500
 	1    0    0    -1  
 $EndComp
@@ -1233,6 +1243,7 @@ F 0 "U33" H 9150 5400 50  0000 C CNN
 F 1 "74ABT244" H 9150 5300 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 9400 4650 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 9400 4650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 9400 4650 50  0001 C CNN "Mouser"
 	1    9400 4650
 	1    0    0    -1  
 $EndComp
@@ -1291,6 +1302,7 @@ F 0 "U34" H 9150 7450 50  0000 C CNN
 F 1 "74ABT244" H 9150 7350 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 9400 6700 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 9400 6700 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 9400 6700 50  0001 C CNN "Mouser"
 	1    9400 6700
 	1    0    0    -1  
 $EndComp
@@ -1603,6 +1615,7 @@ F 0 "U35" H 12650 6950 50  0000 C CNN
 F 1 "74ABT244" H 12650 6850 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 12900 6200 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 12900 6200 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 12900 6200 50  0001 C CNN "Mouser"
 	1    12900 6200
 	1    0    0    -1  
 $EndComp
@@ -1661,6 +1674,7 @@ F 0 "U36" H 12650 9000 50  0000 C CNN
 F 1 "74ABT244" H 12650 8900 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 12900 8250 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 12900 8250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 12900 8250 50  0001 C CNN "Mouser"
 	1    12900 8250
 	1    0    0    -1  
 $EndComp
@@ -1892,6 +1906,8 @@ Wire Wire Line
 	11450 8400 11450 8650
 Text Notes 5200 1850 0    50   ~ 0
 ALUResult is latched at the same time as\nthe other registers in MEM/WB.
+Text Notes 6300 10000 0    50   ~ 0
+TODO: I’m uncertain whether I want to build\na mux from tristate buffers here or use an\narray of 74AHCT157.
 Wire Bus Line
 	4950 2250 4950 5150
 Wire Bus Line

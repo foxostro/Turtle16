@@ -175,6 +175,7 @@ F 0 "C1" H 1792 7046 50  0000 L CNN
 F 1 "100µF" H 1792 6955 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder" H 1700 7000 50  0001 C CNN
 F 3 "~" H 1700 7000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-AMK316ABJ107ML-T" H 1700 7000 50  0001 C CNN "Mouser"
 	1    1700 7000
 	1    0    0    -1  
 $EndComp
@@ -250,6 +251,7 @@ F 0 "J1" H 1050 7250 50  0000 C CNN
 F 1 "Power Connector" H 1050 7150 50  0000 C CNN
 F 2 "Connector_Molex:Molex_Mini-Fit_Jr_5569-02A2_2x01_P4.20mm_Horizontal" H 1150 6950 50  0001 C CNN
 F 3 "~" H 1150 6950 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/538-172448-0002" H 1150 6950 50  0001 C CNN "Mouser"
 	1    1150 6950
 	1    0    0    -1  
 $EndComp

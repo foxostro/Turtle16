@@ -337,8 +337,6 @@ Text HLabel 3600 2950 0    50   Input ~ 0
 StoreOp[0..15]
 Wire Bus Line
 	3600 2950 3750 2950
-Wire Bus Line
-	3750 3500 8250 3500
 $Comp
 L Device:R_Small R?
 U 1 1 5FCF7F02
@@ -549,4 +547,6 @@ F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 8350 4200 50  
 	1    8350 4200
 	1    0    0    -1  
 $EndComp
+Wire Bus Line
+	3750 3500 8250 3500
 $EndSCHEMATC

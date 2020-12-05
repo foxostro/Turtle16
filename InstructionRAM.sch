@@ -16,67 +16,67 @@ $EndDescr
 $Comp
 L Device:C C?
 U 1 1 5FD4710E
-P 700 7350
+P 600 7650
 AR Path="/5D8005AF/5D800742/5FD4710E" Ref="C?"  Part="1" 
 AR Path="/5FE35007/5FD4710E" Ref="C?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/5FD4710E" Ref="C74"  Part="1" 
-F 0 "C74" H 815 7396 50  0000 L CNN
-F 1 "100nF" H 815 7305 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 738 7200 50  0001 C CNN
-F 3 "~" H 700 7350 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 700 7350 50  0001 C CNN "Mouser"
-	1    700  7350
+F 0 "C74" H 715 7696 50  0000 L CNN
+F 1 "100nF" H 715 7605 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 638 7500 50  0001 C CNN
+F 3 "~" H 600 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 600 7650 50  0001 C CNN "Mouser"
+	1    600  7650
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5FD47114
-P 1200 7350
+P 1100 7650
 AR Path="/5D8005AF/5D800742/5FD47114" Ref="C?"  Part="1" 
 AR Path="/5FE35007/5FD47114" Ref="C?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/5FD47114" Ref="C75"  Part="1" 
-F 0 "C75" H 1315 7396 50  0000 L CNN
-F 1 "100nF" H 1315 7305 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1238 7200 50  0001 C CNN
-F 3 "~" H 1200 7350 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1200 7350 50  0001 C CNN "Mouser"
-	1    1200 7350
+F 0 "C75" H 1215 7696 50  0000 L CNN
+F 1 "100nF" H 1215 7605 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1138 7500 50  0001 C CNN
+F 3 "~" H 1100 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1100 7650 50  0001 C CNN "Mouser"
+	1    1100 7650
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5FD4711A
-P 700 7500
+P 600 7800
 AR Path="/5D8005AF/5D800742/5FD4711A" Ref="#PWR?"  Part="1" 
 AR Path="/5FE35007/5FD4711A" Ref="#PWR?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/5FD4711A" Ref="#PWR0450"  Part="1" 
-F 0 "#PWR0450" H 700 7250 50  0001 C CNN
-F 1 "GND" H 705 7327 50  0000 C CNN
-F 2 "" H 700 7500 50  0001 C CNN
-F 3 "" H 700 7500 50  0001 C CNN
-	1    700  7500
+F 0 "#PWR0450" H 600 7550 50  0001 C CNN
+F 1 "GND" H 605 7627 50  0000 C CNN
+F 2 "" H 600 7800 50  0001 C CNN
+F 3 "" H 600 7800 50  0001 C CNN
+	1    600  7800
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5FD47120
-P 700 7200
+P 600 7500
 AR Path="/5D8005AF/5D800742/5FD47120" Ref="#PWR?"  Part="1" 
 AR Path="/5FE35007/5FD47120" Ref="#PWR?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/5FD47120" Ref="#PWR0449"  Part="1" 
-F 0 "#PWR0449" H 700 7050 50  0001 C CNN
-F 1 "VCC" H 717 7373 50  0000 C CNN
-F 2 "" H 700 7200 50  0001 C CNN
-F 3 "" H 700 7200 50  0001 C CNN
-	1    700  7200
+F 0 "#PWR0449" H 600 7350 50  0001 C CNN
+F 1 "VCC" H 617 7673 50  0000 C CNN
+F 2 "" H 600 7500 50  0001 C CNN
+F 3 "" H 600 7500 50  0001 C CNN
+	1    600  7500
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	700  7200 1200 7200
-Connection ~ 700  7200
+	600  7500 1100 7500
+Connection ~ 600  7500
 Wire Wire Line
-	1200 7500 700  7500
-Connection ~ 700  7500
+	1100 7800 600  7800
+Connection ~ 600  7800
 Entry Wire Line
 	6500 4250 6400 4150
 Entry Wire Line
@@ -830,25 +830,25 @@ $EndComp
 $Comp
 L Device:C C?
 U 1 1 5FD472D1
-P 1700 7350
+P 1600 7650
 AR Path="/5D8005AF/5D800742/5FD472D1" Ref="C?"  Part="1" 
 AR Path="/5FE35007/5FD472D1" Ref="C?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/5FD472D1" Ref="C76"  Part="1" 
-F 0 "C76" H 1815 7396 50  0000 L CNN
-F 1 "100nF" H 1815 7305 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1738 7200 50  0001 C CNN
-F 3 "~" H 1700 7350 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1700 7350 50  0001 C CNN "Mouser"
-	1    1700 7350
+F 0 "C76" H 1715 7696 50  0000 L CNN
+F 1 "100nF" H 1715 7605 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1638 7500 50  0001 C CNN
+F 3 "~" H 1600 7650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1600 7650 50  0001 C CNN "Mouser"
+	1    1600 7650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1200 7200 1700 7200
+	1100 7500 1600 7500
 Wire Wire Line
-	1700 7500 1200 7500
+	1600 7800 1100 7800
 Text HLabel 1250 5650 0    50   3State ~ 0
 IO[0..7]
-Text HLabel 1250 5750 0    50   3State ~ 0
+Text HLabel 1250 5750 0    50   Input ~ 0
 Addr[0..15]
 Wire Bus Line
 	1250 5650 4700 5650
@@ -936,28 +936,18 @@ Wire Wire Line
 	10150 6300 10150 2250
 Wire Wire Line
 	10150 2250 8950 2250
-Entry Wire Line
-	3000 6250 3100 6350
-Wire Wire Line
-	3100 6350 3400 6350
-Text Label 3100 6350 0    50   ~ 0
-Addr15
-Text HLabel 1250 5850 0    50   Input ~ 0
+Text HLabel 2650 7450 0    50   Input ~ 0
 Bank[0..7]
-Entry Wire Line
-	3000 6350 3100 6450
-Text Label 3100 6450 0    50   ~ 0
+Text Label 3100 6650 0    50   ~ 0
 Bank0
 Entry Wire Line
-	3000 6450 3100 6550
-Text Label 3100 6550 0    50   ~ 0
+	3100 6750 3000 6850
+Text Label 3100 6750 0    50   ~ 0
 Bank1
 Entry Wire Line
-	3000 6550 3100 6650
-Text Label 3100 6650 0    50   ~ 0
+	3100 6850 3000 6950
+Text Label 3100 6850 0    50   ~ 0
 Bank2
-Wire Bus Line
-	1250 5850 2900 5850
 Text Label 9700 3950 2    50   ~ 0
 Addr14
 Text Label 9700 3850 2    50   ~ 0
@@ -1138,34 +1128,19 @@ Wire Wire Line
 	4700 2550 3950 2550
 Entry Wire Line
 	4700 2550 4800 2650
-Text Notes 650  6800 0    50   ~ 0
+Text Notes 700  7050 0    50   ~ 0
 The Bank Select is an eight-bit value which controls the\nmapping of the upper 32KB of the address space. This\nGAL maps four banks to instruction RAM to allow the\nentire 64KB memory to be used.
-Wire Bus Line
-	1250 5750 3000 5750
-Connection ~ 3000 5750
-Wire Bus Line
-	3000 5750 4800 5750
 Wire Bus Line
 	4800 5750 9800 5750
 NoConn ~ 4400 6950
 NoConn ~ 4400 7050
-NoConn ~ 4400 7150
 NoConn ~ 4400 7250
-NoConn ~ 4400 7350
-NoConn ~ 3400 7250
-NoConn ~ 3400 7350
-Wire Bus Line
-	3000 5750 3000 6250
-Wire Wire Line
-	3100 6450 3400 6450
-Wire Wire Line
-	3100 6550 3400 6550
 Wire Wire Line
 	3100 6650 3400 6650
-Wire Bus Line
-	3000 6350 2900 6350
-Wire Bus Line
-	2900 6350 2900 5850
+Wire Wire Line
+	3100 6750 3400 6750
+Wire Wire Line
+	3100 6850 3400 6850
 $Comp
 L MainBoard-rescue:ATF22V10C-Logic_Programmable U?
 U 1 1 5FD4737E
@@ -1184,35 +1159,35 @@ F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 3900 6800 50  0001 C CN
 	1    0    0    -1  
 $EndComp
 Entry Wire Line
-	3000 6650 3100 6750
-Text Label 3100 6750 0    50   ~ 0
+	3100 6950 3000 7050
+Text Label 3100 6950 0    50   ~ 0
 Bank3
 Entry Wire Line
-	3000 6750 3100 6850
-Text Label 3100 6850 0    50   ~ 0
+	3100 7050 3000 7150
+Text Label 3100 7050 0    50   ~ 0
 Bank4
 Entry Wire Line
-	3000 6850 3100 6950
-Text Label 3100 6950 0    50   ~ 0
+	3100 7150 3000 7250
+Text Label 3100 7150 0    50   ~ 0
 Bank5
 Wire Wire Line
-	3100 6750 3400 6750
-Wire Wire Line
-	3100 6850 3400 6850
-Wire Wire Line
 	3100 6950 3400 6950
-Entry Wire Line
-	3000 6950 3100 7050
-Text Label 3100 7050 0    50   ~ 0
-Bank6
-Entry Wire Line
-	3000 7050 3100 7150
-Text Label 3100 7150 0    50   ~ 0
-Bank7
 Wire Wire Line
 	3100 7050 3400 7050
 Wire Wire Line
 	3100 7150 3400 7150
+Entry Wire Line
+	3100 7250 3000 7350
+Text Label 3100 7250 0    50   ~ 0
+Bank6
+Entry Wire Line
+	3100 7350 3000 7450
+Text Label 3100 7350 0    50   ~ 0
+Bank7
+Wire Wire Line
+	3100 7250 3400 7250
+Wire Wire Line
+	3100 7350 3400 7350
 Wire Wire Line
 	4950 6350 4400 6350
 Wire Wire Line
@@ -1349,8 +1324,37 @@ NoConn ~ 8950 1850
 NoConn ~ 7350 1850
 NoConn ~ 2350 1850
 NoConn ~ 3950 1850
+Text HLabel 1250 6450 0    50   Input ~ 0
+~MemLoad
+Text HLabel 1250 6550 0    50   Input ~ 0
+~MemStore
+Text HLabel 1250 6350 0    50   Input ~ 0
+~Phi2
+Connection ~ 1100 7500
+Connection ~ 1100 7800
+Entry Wire Line
+	3100 6650 3000 6750
+Text Label 4700 7350 2    50   ~ 0
+Addr15
+Wire Wire Line
+	4700 7350 4400 7350
+Entry Wire Line
+	4800 7250 4700 7350
 Wire Bus Line
-	3000 6350 3000 7050
+	4800 5750 4800 7250
+Wire Bus Line
+	1250 5750 4800 5750
+Wire Bus Line
+	2650 7450 3000 7450
+Wire Wire Line
+	1250 6550 3400 6550
+Wire Wire Line
+	1250 6450 3400 6450
+Wire Wire Line
+	1250 6350 3400 6350
+NoConn ~ 4400 7150
+Wire Bus Line
+	3000 6750 3000 7450
 Wire Bus Line
 	9700 4350 9700 5650
 Wire Bus Line
@@ -1367,6 +1371,4 @@ Wire Bus Line
 	6500 650  6500 3950
 Wire Bus Line
 	1500 650  1500 3950
-Text Notes 3100 7900 0    50   ~ 0
-TODO: The ATF22V10 data sheet suggests connecting pin 15
 $EndSCHEMATC

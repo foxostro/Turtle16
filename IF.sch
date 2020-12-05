@@ -34,20 +34,23 @@ Wire Bus Line
 	7700 3700 8000 3700
 Text HLabel 2700 4300 0    50   3State ~ 0
 IO[0..7]
-Text HLabel 2700 4400 0    50   3State ~ 0
+Text HLabel 2700 4400 0    50   Input ~ 0
 Addr[0..15]
 Text HLabel 2700 4500 0    50   Input ~ 0
 Bank[0..7]
 $Sheet
-S 4850 3900 1450 700 
+S 4850 3900 1450 1000
 U 5FD0D8DC
 F0 "Instruction RAM" 50
 F1 "InstructionRAM.sch" 50
 F2 "PC[0..15]" I L 4850 4000 50 
 F3 "InstructionWord[0..15]" O R 6300 4000 50 
 F4 "IO[0..7]" T L 4850 4300 50 
-F5 "Addr[0..15]" T L 4850 4400 50 
+F5 "Addr[0..15]" I L 4850 4400 50 
 F6 "Bank[0..7]" I L 4850 4500 50 
+F7 "~MemLoad" I L 4850 4600 50 
+F8 "~MemStore" I L 4850 4700 50 
+F9 "~Phi2" I L 4850 4800 50 
 $EndSheet
 Wire Bus Line
 	4500 3700 4750 3700
@@ -104,4 +107,16 @@ Wire Wire Line
 Connection ~ 2950 3450
 Wire Bus Line
 	2700 3900 3050 3900
+Text HLabel 2700 4600 0    50   Input ~ 0
+~MemLoad
+Text HLabel 2700 4700 0    50   Input ~ 0
+~MemStore
+Text HLabel 2700 4800 0    50   Input ~ 0
+Phi2
+Wire Wire Line
+	2700 4600 4850 4600
+Wire Wire Line
+	4850 4700 2700 4700
+Wire Wire Line
+	2700 4800 4850 4800
 $EndSCHEMATC

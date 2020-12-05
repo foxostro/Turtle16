@@ -29,8 +29,8 @@ L power:GND #PWR?
 U 1 1 5FE1BD7A
 P 8450 5750
 AR Path="/5D2C0CE4/5FE1BD7A" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FE1BD7A" Ref="#PWR0320"  Part="1" 
-F 0 "#PWR0320" H 8450 5500 50  0001 C CNN
+AR Path="/60A71BBF/5FE1BD7A" Ref="#PWR0319"  Part="1" 
+F 0 "#PWR0319" H 8450 5500 50  0001 C CNN
 F 1 "GND" H 8455 5577 50  0000 C CNN
 F 2 "" H 8450 5750 50  0001 C CNN
 F 3 "" H 8450 5750 50  0001 C CNN
@@ -42,8 +42,8 @@ L power:VCC #PWR?
 U 1 1 5FE1B681
 P 8450 4150
 AR Path="/5D2C0CE4/5FE1B681" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FE1B681" Ref="#PWR0319"  Part="1" 
-F 0 "#PWR0319" H 8450 4000 50  0001 C CNN
+AR Path="/60A71BBF/5FE1B681" Ref="#PWR0318"  Part="1" 
+F 0 "#PWR0318" H 8450 4000 50  0001 C CNN
 F 1 "VCC" H 8467 4323 50  0000 C CNN
 F 2 "" H 8450 4150 50  0001 C CNN
 F 3 "" H 8450 4150 50  0001 C CNN
@@ -67,10 +67,10 @@ Z
 Text HLabel 9300 4450 2    50   Output ~ 0
 Carry
 $Comp
-L power:GND #PWR0314
+L power:GND #PWR0313
 U 1 1 5FE21D5C
 P 7950 4750
-F 0 "#PWR0314" H 7950 4500 50  0001 C CNN
+F 0 "#PWR0313" H 7950 4500 50  0001 C CNN
 F 1 "GND" V 7955 4622 50  0000 R CNN
 F 2 "" H 7950 4750 50  0001 C CNN
 F 3 "" H 7950 4750 50  0001 C CNN
@@ -78,10 +78,10 @@ F 3 "" H 7950 4750 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0315
+L power:GND #PWR0314
 U 1 1 5FE21F4C
 P 7950 4850
-F 0 "#PWR0315" H 7950 4600 50  0001 C CNN
+F 0 "#PWR0314" H 7950 4600 50  0001 C CNN
 F 1 "GND" V 7955 4722 50  0000 R CNN
 F 2 "" H 7950 4850 50  0001 C CNN
 F 3 "" H 7950 4850 50  0001 C CNN
@@ -89,10 +89,10 @@ F 3 "" H 7950 4850 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0316
+L power:GND #PWR0315
 U 1 1 5FE2214D
 P 7950 4950
-F 0 "#PWR0316" H 7950 4700 50  0001 C CNN
+F 0 "#PWR0315" H 7950 4700 50  0001 C CNN
 F 1 "GND" V 7955 4822 50  0000 R CNN
 F 2 "" H 7950 4950 50  0001 C CNN
 F 3 "" H 7950 4950 50  0001 C CNN
@@ -100,10 +100,10 @@ F 3 "" H 7950 4950 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0317
+L power:GND #PWR0316
 U 1 1 5FE222C6
 P 7950 5050
-F 0 "#PWR0317" H 7950 4800 50  0001 C CNN
+F 0 "#PWR0316" H 7950 4800 50  0001 C CNN
 F 1 "GND" V 7955 4922 50  0000 R CNN
 F 2 "" H 7950 5050 50  0001 C CNN
 F 3 "" H 7950 5050 50  0001 C CNN
@@ -111,10 +111,10 @@ F 3 "" H 7950 5050 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR0318
+L power:GND #PWR0317
 U 1 1 5FE2243F
 P 7950 5150
-F 0 "#PWR0318" H 7950 4900 50  0001 C CNN
+F 0 "#PWR0317" H 7950 4900 50  0001 C CNN
 F 1 "GND" V 7955 5022 50  0000 R CNN
 F 2 "" H 7950 5150 50  0001 C CNN
 F 3 "" H 7950 5150 50  0001 C CNN
@@ -250,23 +250,22 @@ OVF
 Text HLabel 7550 1550 0    50   Input ~ 0
 Phi1
 $Sheet
-S 5800 5100 1050 1000
+S 5800 4250 1100 1750
 U 5FC6FE4B
 F0 "ALU" 50
 F1 "ALU.sch" 50
-F2 "RightOp[0..15]" I L 5800 5200 50 
+F2 "RightOp[0..15]" I L 5800 4400 50 
 F3 "LeftOp[0..15]" I L 5800 5300 50 
-F4 "Z" O R 6850 5400 50 
-F5 "C16" O R 6850 5300 50 
-F6 "OVF" O R 6850 5500 50 
+F4 "Z" O R 6900 4550 50 
+F5 "C16" O R 6900 4450 50 
+F6 "OVF" O R 6900 4650 50 
 F7 "C0" I L 5800 5400 50 
 F8 "I0" I L 5800 5500 50 
 F9 "I1" I L 5800 5600 50 
 F10 "I2" I L 5800 5700 50 
 F11 "RS0" I L 5800 5800 50 
 F12 "RS1" I L 5800 5900 50 
-F13 "F[0..15]" T R 6850 5200 50 
-F14 "~OE" I L 5800 6000 50 
+F13 "F[0..15]" O R 6900 4350 50 
 $EndSheet
 Wire Wire Line
 	7800 5350 7950 5350
@@ -325,7 +324,7 @@ Text HLabel 7550 2500 0    50   Input ~ 0
 Phi1
 Text HLabel 1050 1550 0    50   Input ~ 0
 CtlIn[1..19]
-Text HLabel 1050 4750 0    50   Input ~ 0
+Text HLabel 1050 4600 0    50   Input ~ 0
 Ins[0..10]
 Entry Wire Line
 	3150 1550 3250 1650
@@ -348,7 +347,7 @@ Wire Wire Line
 Text Label 3150 1650 3    50   ~ 0
 CtlIn3
 Text Notes 3850 3450 0    50   ~ 0
-SelStoreOp=0  —> Select Register B\nSelStoreOp=1  —> Select Program Counter\nSelStoreOp=2  —> Select 8-bit Immediate Value
+SelStoreOp=0  —> Select Register B\nSelStoreOp=1  —> Select PC+1 (return address)\nSelStoreOp=2  —> Select 8-bit Immediate Value
 $Sheet
 S 3850 1900 1250 200 
 U 5FDDE44F
@@ -369,16 +368,12 @@ F5 "Ins[0..10]" I L 3850 2750 50
 F6 "B[0..15]" I L 3850 2850 50 
 F7 "PC[0..15]" I L 3850 2950 50 
 $EndSheet
-Wire Wire Line
-	3050 1650 3050 1900
 Text Notes 3600 5200 0    50   ~ 0
-SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select 5-bit Immediate Value
-Text HLabel 1050 4850 0    50   Input ~ 0
+SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:8, 4:0]
+Text HLabel 1050 4700 0    50   Input ~ 0
 B[0..15]
 Text HLabel 1050 5300 0    50   Input ~ 0
 A[0..15]
-Wire Bus Line
-	5600 4650 5000 4650
 Text Label 2950 1650 3    50   ~ 0
 CtlIn5
 Entry Wire Line
@@ -419,10 +414,6 @@ Wire Wire Line
 	2450 1650 2450 5800
 Wire Wire Line
 	2350 1650 2350 5900
-Wire Bus Line
-	1050 4850 3600 4850
-Wire Bus Line
-	5600 5200 5800 5200
 Wire Wire Line
 	5800 5400 2850 5400
 Wire Wire Line
@@ -435,25 +426,6 @@ Wire Wire Line
 	5800 5800 2450 5800
 Wire Wire Line
 	5800 5900 2350 5900
-Text Notes 3600 6050 0    50   ~ 0
-TODO: Add a shifter in parallel to the ALU
-Wire Wire Line
-	5700 6000 5800 6000
-$Comp
-L power:GND #PWR0313
-U 1 1 5FD7B079
-P 5700 6000
-F 0 "#PWR0313" H 5700 5750 50  0001 C CNN
-F 1 "GND" V 5705 5872 50  0000 R CNN
-F 2 "" H 5700 6000 50  0001 C CNN
-F 3 "" H 5700 6000 50  0001 C CNN
-	1    5700 6000
-	0    1    1    0   
-$EndComp
-Wire Bus Line
-	5600 4650 5600 5200
-Wire Bus Line
-	1050 4750 3600 4750
 Text HLabel 1050 2000 0    50   Input ~ 0
 Ins[0..10]
 Wire Bus Line
@@ -467,27 +439,9 @@ Wire Bus Line
 Wire Bus Line
 	7850 3600 7000 3600
 Wire Bus Line
-	7000 3600 7000 5200
+	7000 3600 7000 4350
 Wire Bus Line
-	7000 5200 6850 5200
-Wire Wire Line
-	7950 4450 7100 4450
-Wire Wire Line
-	7100 4450 7100 5300
-Wire Wire Line
-	7100 5300 6850 5300
-Wire Wire Line
-	7950 4550 7200 4550
-Wire Wire Line
-	7200 4550 7200 5400
-Wire Wire Line
-	7200 5400 6850 5400
-Wire Wire Line
-	7950 4650 7300 4650
-Wire Wire Line
-	7300 4650 7300 5500
-Wire Wire Line
-	7300 5500 6850 5500
+	7000 4350 6900 4350
 Wire Wire Line
 	2950 6250 7650 6250
 Wire Wire Line
@@ -503,9 +457,7 @@ Wire Wire Line
 Wire Wire Line
 	3850 2650 3250 2650
 Wire Wire Line
-	3150 4650 3600 4650
-Wire Wire Line
-	3150 1650 3150 4650
+	3150 1650 3150 4400
 Text HLabel 1050 2750 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 1050 2850 0    50   Input ~ 0
@@ -529,11 +481,8 @@ Wire Bus Line
 Wire Bus Line
 	7000 3100 7000 3600
 Connection ~ 7000 3600
-NoConn ~ 3050 1900
 Wire Bus Line
 	1050 5300 5800 5300
-Text Notes 650  3300 0    50   ~ 0
-On a JALR instruction, the StoreOp can\nbe set to the return address in PC.
 Entry Wire Line
 	2150 1550 2250 1650
 Text Label 2250 1650 3    50   ~ 0
@@ -545,17 +494,36 @@ Text HLabel 2250 2150 3    50   Output ~ 0
 Wire Bus Line
 	5100 2000 7850 2000
 $Sheet
-S 3600 4550 1400 400 
+S 3600 4300 1400 500 
 U 5FDDE478
 F0 "Select Right Operand" 50
 F1 "SelectRightOperand.sch" 50
-F2 "Ins[0..10]" I L 3600 4750 50 
-F3 "B[0..15]" I L 3600 4850 50 
-F4 "SelRightOp" I L 3600 4650 50 
-F5 "RightOp[0..15]" O R 5000 4650 50 
+F2 "Ins[0..10]" I L 3600 4600 50 
+F3 "B[0..15]" I L 3600 4700 50 
+F4 "SelRightOpA" I L 3600 4400 50 
+F5 "RightOp[0..15]" O R 5000 4400 50 
+F6 "SelRightOpB" I L 3600 4500 50 
 $EndSheet
 Text Notes 2700 7150 0    50   ~ 0
 TODO: does the timing work out for Jump?
+Wire Wire Line
+	3600 4400 3150 4400
+Wire Wire Line
+	3050 1650 3050 4500
+Wire Bus Line
+	3600 4600 1050 4600
+Wire Bus Line
+	3600 4700 1050 4700
+Wire Wire Line
+	3050 4500 3600 4500
+Wire Bus Line
+	5000 4400 5800 4400
+Wire Wire Line
+	6900 4450 7950 4450
+Wire Wire Line
+	6900 4550 7950 4550
+Wire Wire Line
+	6900 4650 7950 4650
 Wire Bus Line
 	1050 1550 5100 1550
 $EndSCHEMATC

@@ -234,7 +234,7 @@ Wire Wire Line
 	1450 7150 1700 7150
 Connection ~ 1700 7150
 Wire Wire Line
-	6050 1950 5500 1950
+	6050 2050 5500 2050
 Wire Bus Line
 	1700 4750 1150 4750
 Wire Wire Line
@@ -470,13 +470,13 @@ Wire Wire Line
 Wire Wire Line
 	6050 4450 5500 4450
 Wire Bus Line
-	6050 1850 5400 1850
+	6050 1950 5400 1950
 Wire Bus Line
-	5400 1850 5400 4550
+	5400 1950 5400 4550
 Wire Bus Line
 	5400 4550 6050 4550
 Wire Wire Line
-	5500 1950 5500 4450
+	5500 2050 5500 4450
 $Sheet
 S 6050 3950 1350 1100
 U 60A71BBF
@@ -511,34 +511,35 @@ Wire Wire Line
 Wire Wire Line
 	5600 3500 8750 3500
 $Sheet
-S 6050 1550 1300 1700
+S 6050 1550 1300 1850
 U 5FE35007
 F0 "IF" 50
 F1 "IF.sch" 50
 F2 "InsOut[0..15]" O R 7350 1850 50 
 F3 "PCOut[0..15]" O R 7350 1950 50 
 F4 "Phi1" I L 6050 1650 50 
-F5 "IO[0..7]" T L 6050 3150 50 
-F6 "Addr[0..15]" T L 6050 3050 50 
-F7 "Bank[0..7]" T L 6050 2950 50 
-F8 "~RST" I L 6050 1750 50 
-F9 "Offset[0..15]" I L 6050 1850 50 
-F10 "~J" I L 6050 1950 50 
+F5 "~RST" I L 6050 1850 50 
+F6 "Offset[0..15]" I L 6050 1950 50 
+F7 "~J" I L 6050 2050 50 
+F8 "~MemLoad" I L 6050 3250 50 
+F9 "~MemStore" I L 6050 3350 50 
+F10 "Bank[0..7]" I L 6050 2950 50 
+F11 "Phi2" I L 6050 1750 50 
+F12 "Addr[0..15]" I L 6050 3050 50 
+F13 "IO[0..7]" T L 6050 3150 50 
 $EndSheet
 Wire Wire Line
-	6050 1750 5850 1750
+	6050 1850 5750 1850
 Wire Wire Line
-	5850 1750 5850 1250
+	5750 1850 5750 1250
 Wire Wire Line
 	5900 3800 5900 4050
-Connection ~ 5850 1250
-Wire Wire Line
-	5850 1250 8550 1250
+Connection ~ 5750 1250
 Connection ~ 5950 1150
 Wire Wire Line
 	5950 1150 8650 1150
 Wire Wire Line
-	1400 1250 5850 1250
+	1400 1250 5750 1250
 Wire Wire Line
 	700  1300 700  3700
 Wire Wire Line
@@ -567,4 +568,19 @@ Wire Bus Line
 	7500 4050 7400 4050
 Text Notes 7550 2550 0    50   ~ 0
 The program counter value\nPC skips ahead a pipeline\nstage so EX can work with\nPC+1.
+Wire Wire Line
+	3600 3250 6050 3250
+Connection ~ 3600 3250
+Wire Wire Line
+	3500 3350 6050 3350
+Connection ~ 3500 3350
+Wire Wire Line
+	5750 1250 8550 1250
+Wire Wire Line
+	6050 1750 5850 1750
+Wire Wire Line
+	5850 1750 5850 1050
+Wire Wire Line
+	5850 1050 1600 1050
+Connection ~ 1600 1050
 $EndSCHEMATC

@@ -1232,22 +1232,6 @@ Wire Wire Line
 Text Label 8150 4450 0    50   ~ 0
 StoreOp3
 $Comp
-L 74xx:74LS244 U?
-U 1 1 601EACA0
-P 9400 4650
-AR Path="/60906BCD/5FDE580B/601EACA0" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FE695DA/601EACA0" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FF2BBCA/601EACA0" Ref="U?"  Part="1" 
-AR Path="/60B264DC/6025930D/601EACA0" Ref="U33"  Part="1" 
-F 0 "U33" H 9150 5400 50  0000 C CNN
-F 1 "74ABT244" H 9150 5300 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 9400 4650 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 9400 4650 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 9400 4650 50  0001 C CNN "Mouser"
-	1    9400 4650
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:VCC #PWR?
 U 1 1 601EACA6
 P 9400 3850
@@ -1282,28 +1266,6 @@ F 1 "GND" H 9405 5277 50  0000 C CNN
 F 2 "" H 9400 5450 50  0001 C CNN
 F 3 "" H 9400 5450 50  0001 C CNN
 	1    9400 5450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8900 5050 8850 5050
-Wire Wire Line
-	8850 5050 8850 5150
-Wire Wire Line
-	8850 5150 8900 5150
-$Comp
-L 74xx:74LS244 U?
-U 1 1 601EACB5
-P 9400 6700
-AR Path="/60906BCD/5FDE580B/601EACB5" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FE695DA/601EACB5" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FF2BBCA/601EACB5" Ref="U?"  Part="1" 
-AR Path="/60B264DC/6025930D/601EACB5" Ref="U34"  Part="1" 
-F 0 "U34" H 9150 7450 50  0000 C CNN
-F 1 "74ABT244" H 9150 7350 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 9400 6700 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 9400 6700 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 9400 6700 50  0001 C CNN "Mouser"
-	1    9400 6700
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1343,12 +1305,6 @@ F 3 "" H 9400 7500 50  0001 C CNN
 	1    9400 7500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8900 7100 8850 7100
-Wire Wire Line
-	8850 7100 8850 7200
-Wire Wire Line
-	8850 7200 8900 7200
 Text Label 8150 4250 0    50   ~ 0
 StoreOp1
 Wire Wire Line
@@ -1357,10 +1313,6 @@ Entry Wire Line
 	8150 4250 8050 4150
 Wire Bus Line
 	8050 3950 7650 3950
-Wire Wire Line
-	8850 7100 7950 7100
-Connection ~ 8850 7100
-Connection ~ 8850 5050
 Entry Wire Line
 	8150 4850 8050 4750
 Text Label 8150 4850 0    50   ~ 0
@@ -1427,10 +1379,6 @@ Wire Wire Line
 	8150 6800 8900 6800
 Text Label 8150 6800 0    50   ~ 0
 StoreOp14
-Wire Wire Line
-	7950 5050 7950 7100
-Wire Wire Line
-	7950 5050 8850 5050
 Wire Wire Line
 	2700 8400 2800 8400
 Wire Wire Line
@@ -1544,9 +1492,6 @@ Text Label 10300 6900 2    50   ~ 0
 C15
 Wire Wire Line
 	3800 8300 7950 8300
-Wire Wire Line
-	7950 8300 7950 7100
-Connection ~ 7950 7100
 Text Label 5050 2600 0    50   ~ 0
 ALUResult1
 Text Label 5050 2700 0    50   ~ 0
@@ -1604,22 +1549,6 @@ Wire Wire Line
 Text Label 11650 8050 0    50   ~ 0
 StoreOp3
 $Comp
-L 74xx:74LS244 U?
-U 1 1 603E9E0D
-P 12900 6200
-AR Path="/60906BCD/5FDE580B/603E9E0D" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FE695DA/603E9E0D" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FF2BBCA/603E9E0D" Ref="U?"  Part="1" 
-AR Path="/60B264DC/6025930D/603E9E0D" Ref="U35"  Part="1" 
-F 0 "U35" H 12650 6950 50  0000 C CNN
-F 1 "74ABT244" H 12650 6850 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 12900 6200 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 12900 6200 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 12900 6200 50  0001 C CNN "Mouser"
-	1    12900 6200
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:VCC #PWR?
 U 1 1 603E9E13
 P 12900 5400
@@ -1654,28 +1583,6 @@ F 1 "GND" H 12905 6827 50  0000 C CNN
 F 2 "" H 12900 7000 50  0001 C CNN
 F 3 "" H 12900 7000 50  0001 C CNN
 	1    12900 7000
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	12400 6600 12350 6600
-Wire Wire Line
-	12350 6600 12350 6700
-Wire Wire Line
-	12350 6700 12400 6700
-$Comp
-L 74xx:74LS244 U?
-U 1 1 603E9E22
-P 12900 8250
-AR Path="/60906BCD/5FDE580B/603E9E22" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FE695DA/603E9E22" Ref="U?"  Part="1" 
-AR Path="/60906BCD/5FF2BBCA/603E9E22" Ref="U?"  Part="1" 
-AR Path="/60B264DC/6025930D/603E9E22" Ref="U36"  Part="1" 
-F 0 "U36" H 12650 9000 50  0000 C CNN
-F 1 "74ABT244" H 12650 8900 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 12900 8250 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74ABT244-1597325.pdf" H 12900 8250 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT244PW112?qs=P62ublwmbi8OcDZRnY4Yhg%3D%3D" H 12900 8250 50  0001 C CNN "Mouser"
-	1    12900 8250
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1715,12 +1622,6 @@ F 3 "" H 12900 9050 50  0001 C CNN
 	1    12900 9050
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	12400 8650 12350 8650
-Wire Wire Line
-	12350 8650 12350 8750
-Wire Wire Line
-	12350 8750 12400 8750
 Text Label 11650 7850 0    50   ~ 0
 StoreOp1
 Wire Wire Line
@@ -1729,10 +1630,6 @@ Entry Wire Line
 	11650 7850 11550 7750
 Wire Bus Line
 	11550 5500 11150 5500
-Wire Wire Line
-	12350 8650 11450 8650
-Connection ~ 12350 8650
-Connection ~ 12350 6600
 Entry Wire Line
 	11650 8450 11550 8350
 Text Label 11650 8450 0    50   ~ 0
@@ -1799,10 +1696,6 @@ Wire Wire Line
 	11650 6300 12400 6300
 Text Label 11650 6300 0    50   ~ 0
 StoreOp14
-Wire Wire Line
-	11450 6600 11450 8400
-Wire Wire Line
-	11450 6600 12350 6600
 Wire Wire Line
 	13800 6400 13400 6400
 Entry Wire Line
@@ -1902,12 +1795,82 @@ C15
 Wire Wire Line
 	3800 8400 11450 8400
 Connection ~ 11450 8400
-Wire Wire Line
-	11450 8400 11450 8650
 Text Notes 5200 1850 0    50   ~ 0
 ALUResult is latched at the same time as\nthe other registers in MEM/WB.
-Text Notes 6300 10000 0    50   ~ 0
-TODO: I’m uncertain whether I want to build\na mux from tristate buffers here or use an\narray of 74AHCT157.
+$Comp
+L 74xx:74LS245 U?
+U 1 1 5FCD346B
+P 9400 4650
+AR Path="/60A71BBF/5FDDE478/5FCD346B" Ref="U?"  Part="1" 
+AR Path="/60A71BBF/5FDDE458/5FCD346B" Ref="U?"  Part="1" 
+AR Path="/60B264DC/6025930D/5FCD346B" Ref="U?"  Part="1" 
+F 0 "U?" H 9100 5450 50  0000 C CNN
+F 1 "74ABT245" H 9100 5350 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 9400 4650 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74ABT245-1597381.pdf" H 9400 4650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT245PW112?qs=%2Fha2pyFaduiF9qlrmw%252BdqKTlhVHZVtEHCC3xLhc3tQs%3D" H 9400 4650 50  0001 C CNN "Mouser"
+	1    9400 4650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7950 5150 8900 5150
+Wire Wire Line
+	7950 5150 7950 7200
+$Comp
+L 74xx:74LS245 U?
+U 1 1 5FD0DFC5
+P 9400 6700
+AR Path="/60A71BBF/5FDDE478/5FD0DFC5" Ref="U?"  Part="1" 
+AR Path="/60A71BBF/5FDDE458/5FD0DFC5" Ref="U?"  Part="1" 
+AR Path="/60B264DC/6025930D/5FD0DFC5" Ref="U?"  Part="1" 
+F 0 "U?" H 9100 7500 50  0000 C CNN
+F 1 "74ABT245" H 9100 7400 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 9400 6700 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74ABT245-1597381.pdf" H 9400 6700 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT245PW112?qs=%2Fha2pyFaduiF9qlrmw%252BdqKTlhVHZVtEHCC3xLhc3tQs%3D" H 9400 6700 50  0001 C CNN "Mouser"
+	1    9400 6700
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS245 U?
+U 1 1 5FD0EFB2
+P 12900 6200
+AR Path="/60A71BBF/5FDDE478/5FD0EFB2" Ref="U?"  Part="1" 
+AR Path="/60A71BBF/5FDDE458/5FD0EFB2" Ref="U?"  Part="1" 
+AR Path="/60B264DC/6025930D/5FD0EFB2" Ref="U?"  Part="1" 
+F 0 "U?" H 12600 7000 50  0000 C CNN
+F 1 "74ABT245" H 12600 6900 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 12900 6200 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74ABT245-1597381.pdf" H 12900 6200 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT245PW112?qs=%2Fha2pyFaduiF9qlrmw%252BdqKTlhVHZVtEHCC3xLhc3tQs%3D" H 12900 6200 50  0001 C CNN "Mouser"
+	1    12900 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS245 U?
+U 1 1 5FD104DF
+P 12900 8250
+AR Path="/60A71BBF/5FDDE478/5FD104DF" Ref="U?"  Part="1" 
+AR Path="/60A71BBF/5FDDE458/5FD104DF" Ref="U?"  Part="1" 
+AR Path="/60B264DC/6025930D/5FD104DF" Ref="U?"  Part="1" 
+F 0 "U?" H 12600 9050 50  0000 C CNN
+F 1 "74ABT245" H 12600 8950 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 12900 8250 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74ABT245-1597381.pdf" H 12900 8250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74ABT245PW112?qs=%2Fha2pyFaduiF9qlrmw%252BdqKTlhVHZVtEHCC3xLhc3tQs%3D" H 12900 8250 50  0001 C CNN "Mouser"
+	1    12900 8250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	12400 8750 11450 8750
+Wire Wire Line
+	11450 8400 11450 8750
+Wire Wire Line
+	12400 6700 11450 6700
+Wire Wire Line
+	11450 6700 11450 8400
+Wire Wire Line
+	8900 7200 7950 7200
 Wire Bus Line
 	4950 2250 4950 5150
 Wire Bus Line
@@ -1920,4 +1883,51 @@ Wire Bus Line
 	11550 5500 11550 8350
 Wire Bus Line
 	13900 2200 13900 8350
+Connection ~ 7950 7200
+Wire Wire Line
+	7950 7200 7950 8300
+$Comp
+L power:VCC #PWR?
+U 1 1 5FD2AF9A
+P 8900 5050
+F 0 "#PWR?" H 8900 4900 50  0001 C CNN
+F 1 "VCC" V 8915 5177 50  0000 L CNN
+F 2 "" H 8900 5050 50  0001 C CNN
+F 3 "" H 8900 5050 50  0001 C CNN
+	1    8900 5050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FD2B45B
+P 8900 7100
+F 0 "#PWR?" H 8900 6950 50  0001 C CNN
+F 1 "VCC" V 8915 7227 50  0000 L CNN
+F 2 "" H 8900 7100 50  0001 C CNN
+F 3 "" H 8900 7100 50  0001 C CNN
+	1    8900 7100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FD2B8DC
+P 12400 6600
+F 0 "#PWR?" H 12400 6450 50  0001 C CNN
+F 1 "VCC" V 12415 6727 50  0000 L CNN
+F 2 "" H 12400 6600 50  0001 C CNN
+F 3 "" H 12400 6600 50  0001 C CNN
+	1    12400 6600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5FD2C07B
+P 12400 8650
+F 0 "#PWR?" H 12400 8500 50  0001 C CNN
+F 1 "VCC" V 12415 8777 50  0000 L CNN
+F 2 "" H 12400 8650 50  0001 C CNN
+F 3 "" H 12400 8650 50  0001 C CNN
+	1    12400 8650
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

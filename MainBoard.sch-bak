@@ -305,7 +305,6 @@ F5 "Addr[0..15]" T R 3250 3050 50
 F6 "~MemLoad" T R 3250 3250 50 
 F7 "~MemStore" T R 3250 3350 50 
 F8 "~RDY" O R 3250 3450 50 
-F9 "Bank[0..7]" O R 3250 2950 50 
 $EndSheet
 Wire Bus Line
 	3250 4850 3950 4850
@@ -391,14 +390,6 @@ Wire Wire Line
 Connection ~ 3400 3700
 Wire Wire Line
 	3400 3700 3400 3450
-Connection ~ 3700 3150
-Wire Bus Line
-	3700 3150 6050 3150
-Wire Bus Line
-	6050 3050 3800 3050
-Connection ~ 3800 3050
-Wire Bus Line
-	3250 2950 6050 2950
 Wire Bus Line
 	6200 5900 8750 5900
 Wire Bus Line
@@ -511,35 +502,29 @@ Wire Wire Line
 Wire Wire Line
 	5600 3500 8750 3500
 $Sheet
-S 6050 1550 1300 1850
+S 6050 1550 1300 650 
 U 5FE35007
 F0 "IF" 50
 F1 "IF.sch" 50
 F2 "InsOut[0..15]" O R 7350 1850 50 
 F3 "PCOut[0..15]" O R 7350 1950 50 
 F4 "Phi1" I L 6050 1650 50 
-F5 "~RST" I L 6050 1850 50 
+F5 "~RST" I L 6050 1750 50 
 F6 "Offset[0..15]" I L 6050 1950 50 
 F7 "~J" I L 6050 2050 50 
-F8 "~MemLoad" I L 6050 3250 50 
-F9 "~MemStore" I L 6050 3350 50 
-F10 "Bank[0..7]" I L 6050 2950 50 
-F11 "Phi2" I L 6050 1750 50 
-F12 "Addr[0..15]" I L 6050 3050 50 
-F13 "IO[0..7]" T L 6050 3150 50 
 $EndSheet
 Wire Wire Line
-	6050 1850 5750 1850
+	6050 1750 5850 1750
 Wire Wire Line
-	5750 1850 5750 1250
+	5850 1750 5850 1250
 Wire Wire Line
 	5900 3800 5900 4050
-Connection ~ 5750 1250
+Connection ~ 5850 1250
 Connection ~ 5950 1150
 Wire Wire Line
 	5950 1150 8650 1150
 Wire Wire Line
-	1400 1250 5750 1250
+	1400 1250 5850 1250
 Wire Wire Line
 	700  1300 700  3700
 Wire Wire Line
@@ -569,18 +554,5 @@ Wire Bus Line
 Text Notes 7550 2550 0    50   ~ 0
 The program counter value\nPC skips ahead a pipeline\nstage so EX can work with\nPC+1.
 Wire Wire Line
-	3600 3250 6050 3250
-Connection ~ 3600 3250
-Wire Wire Line
-	3500 3350 6050 3350
-Connection ~ 3500 3350
-Wire Wire Line
-	5750 1250 8550 1250
-Wire Wire Line
-	6050 1750 5850 1750
-Wire Wire Line
-	5850 1750 5850 1050
-Wire Wire Line
-	5850 1050 1600 1050
-Connection ~ 1600 1050
+	5850 1250 8550 1250
 $EndSCHEMATC

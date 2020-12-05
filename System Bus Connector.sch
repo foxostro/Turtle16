@@ -659,24 +659,14 @@ Text Notes 1300 2300 0    50   ~ 0
 The bus connector has a shared open-drain active-high RDY signal.\nIf all bus devices are ready then they allow the line to remain high.\nIf any bus device is not ready then it drives the line low.\nWhen RDY is driven low, the CPU Phi1 clock stops and the CPU\ndisconnects from the bus, placing the lines in a high-Z mode.\n\nIf no bus devices are connected then the CPU is always ready.
 Text Label 5200 2200 2    50   ~ 0
 RDY
-Text HLabel 4700 4300 0    50   Output ~ 0
-Bank[0..7]
-Entry Wire Line
-	6950 4700 6850 4600
-Entry Wire Line
-	6950 4600 6850 4500
-Entry Wire Line
-	6950 4400 6850 4300
-Entry Wire Line
-	6950 4300 6850 4200
 Wire Wire Line
-	6200 4500 6850 4500
+	6200 4500 6800 4500
 Wire Wire Line
-	6850 4300 6200 4300
+	6800 4300 6200 4300
 Wire Wire Line
-	6850 4200 6200 4200
+	6800 4200 6200 4200
 Wire Wire Line
-	6850 4600 6200 4600
+	6800 4600 6200 4600
 Text Label 6800 4200 2    50   ~ 0
 Bank1
 Text Label 6800 4300 2    50   ~ 0
@@ -687,22 +677,14 @@ Text Label 6800 4600 2    50   ~ 0
 Bank7
 Wire Wire Line
 	6200 2000 7000 2000
-Entry Wire Line
-	4950 4700 5050 4600
-Entry Wire Line
-	4950 4600 5050 4500
-Entry Wire Line
-	4950 4400 5050 4300
-Entry Wire Line
-	4950 4300 5050 4200
 Wire Wire Line
-	5700 4500 5050 4500
+	5700 4500 5100 4500
 Wire Wire Line
-	5050 4300 5700 4300
+	5100 4300 5700 4300
 Wire Wire Line
-	5050 4200 5700 4200
+	5100 4200 5700 4200
 Wire Wire Line
-	5050 4600 5700 4600
+	5100 4600 5700 4600
 Text Label 5100 4200 0    50   ~ 0
 Bank0
 Text Label 5100 4300 0    50   ~ 0
@@ -848,22 +830,274 @@ Text HLabel 7200 2500 2    50   3State ~ 0
 IO[0..7]
 Wire Bus Line
 	7200 2500 6950 2500
-Wire Bus Line
-	4700 4300 4950 4300
-Text HLabel 7200 4300 2    50   Output ~ 0
-Bank[0..7]
-Wire Bus Line
-	7200 4300 6950 4300
-Text Notes 5350 5300 0    50   ~ 0
-TODO: Add pull-down resistors so these\ntristate lines settle to Low when they are\nnot being actively driven.
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA92B
+P 2450 7350
+AR Path="/60AF64DE/5FCEA92B" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA92B" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA92B" Ref="#PWR0476"  Part="1" 
+F 0 "#PWR0476" H 2450 7100 50  0001 C CNN
+F 1 "GND" H 2455 7177 50  0000 C CNN
+F 2 "" H 2450 7350 50  0001 C CNN
+F 3 "" H 2450 7350 50  0001 C CNN
+	1    2450 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA931
+P 2750 7350
+AR Path="/60AF64DE/5FCEA931" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA931" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA931" Ref="#PWR0477"  Part="1" 
+F 0 "#PWR0477" H 2750 7100 50  0001 C CNN
+F 1 "GND" H 2755 7177 50  0000 C CNN
+F 2 "" H 2750 7350 50  0001 C CNN
+F 3 "" H 2750 7350 50  0001 C CNN
+	1    2750 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA937
+P 3050 7350
+AR Path="/60AF64DE/5FCEA937" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA937" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA937" Ref="#PWR0478"  Part="1" 
+F 0 "#PWR0478" H 3050 7100 50  0001 C CNN
+F 1 "GND" H 3055 7177 50  0000 C CNN
+F 2 "" H 3050 7350 50  0001 C CNN
+F 3 "" H 3050 7350 50  0001 C CNN
+	1    3050 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA93D
+P 3350 7350
+AR Path="/60AF64DE/5FCEA93D" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA93D" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA93D" Ref="#PWR0479"  Part="1" 
+F 0 "#PWR0479" H 3350 7100 50  0001 C CNN
+F 1 "GND" H 3355 7177 50  0000 C CNN
+F 2 "" H 3350 7350 50  0001 C CNN
+F 3 "" H 3350 7350 50  0001 C CNN
+	1    3350 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA943
+P 1250 7350
+AR Path="/60AF64DE/5FCEA943" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA943" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA943" Ref="#PWR0480"  Part="1" 
+F 0 "#PWR0480" H 1250 7100 50  0001 C CNN
+F 1 "GND" H 1255 7177 50  0000 C CNN
+F 2 "" H 1250 7350 50  0001 C CNN
+F 3 "" H 1250 7350 50  0001 C CNN
+	1    1250 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA949
+P 1550 7350
+AR Path="/60AF64DE/5FCEA949" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA949" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA949" Ref="#PWR0481"  Part="1" 
+F 0 "#PWR0481" H 1550 7100 50  0001 C CNN
+F 1 "GND" H 1555 7177 50  0000 C CNN
+F 2 "" H 1550 7350 50  0001 C CNN
+F 3 "" H 1550 7350 50  0001 C CNN
+	1    1550 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA94F
+P 1850 7350
+AR Path="/60AF64DE/5FCEA94F" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA94F" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA94F" Ref="#PWR0482"  Part="1" 
+F 0 "#PWR0482" H 1850 7100 50  0001 C CNN
+F 1 "GND" H 1855 7177 50  0000 C CNN
+F 2 "" H 1850 7350 50  0001 C CNN
+F 3 "" H 1850 7350 50  0001 C CNN
+	1    1850 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCEA955
+P 2150 7350
+AR Path="/60AF64DE/5FCEA955" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA955" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/5FCEA955" Ref="#PWR0483"  Part="1" 
+F 0 "#PWR0483" H 2150 7100 50  0001 C CNN
+F 1 "GND" H 2155 7177 50  0000 C CNN
+F 2 "" H 2150 7350 50  0001 C CNN
+F 3 "" H 2150 7350 50  0001 C CNN
+	1    2150 7350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1250 6650 1250 7150
+Text Label 1250 6650 3    50   ~ 0
+Bank0
+Wire Wire Line
+	1550 6650 1550 7150
+Text Label 1550 6650 3    50   ~ 0
+Bank1
+Wire Wire Line
+	1850 6650 1850 7150
+Text Label 1850 6650 3    50   ~ 0
+Bank2
+Wire Wire Line
+	2150 6650 2150 7150
+Text Label 2150 6650 3    50   ~ 0
+Bank3
+Wire Wire Line
+	2450 6650 2450 7150
+Text Label 2450 6650 3    50   ~ 0
+Bank4
+Wire Wire Line
+	2750 6650 2750 7150
+Text Label 2750 6650 3    50   ~ 0
+Bank5
+Wire Wire Line
+	3050 6650 3050 7150
+Text Label 3050 6650 3    50   ~ 0
+Bank6
+Wire Wire Line
+	3350 6650 3350 7150
+Text Label 3350 6650 3    50   ~ 0
+Bank7
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA96C
+P 1250 7250
+AR Path="/60AF64DE/5FCEA96C" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA96C" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA96C" Ref="R42"  Part="1" 
+F 0 "R42" H 1309 7296 50  0000 L CNN
+F 1 "10kΩ" H 1309 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1250 7250 50  0001 C CNN
+F 3 "~" H 1250 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1250 7250 50  0001 C CNN "Mouser"
+	1    1250 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA973
+P 1550 7250
+AR Path="/60AF64DE/5FCEA973" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA973" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA973" Ref="R43"  Part="1" 
+F 0 "R43" H 1609 7296 50  0000 L CNN
+F 1 "10kΩ" H 1609 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1550 7250 50  0001 C CNN
+F 3 "~" H 1550 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1550 7250 50  0001 C CNN "Mouser"
+	1    1550 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA97A
+P 1850 7250
+AR Path="/60AF64DE/5FCEA97A" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA97A" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA97A" Ref="R44"  Part="1" 
+F 0 "R44" H 1909 7296 50  0000 L CNN
+F 1 "10kΩ" H 1909 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1850 7250 50  0001 C CNN
+F 3 "~" H 1850 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1850 7250 50  0001 C CNN "Mouser"
+	1    1850 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA981
+P 2150 7250
+AR Path="/60AF64DE/5FCEA981" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA981" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA981" Ref="R45"  Part="1" 
+F 0 "R45" H 2209 7296 50  0000 L CNN
+F 1 "10kΩ" H 2209 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2150 7250 50  0001 C CNN
+F 3 "~" H 2150 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 2150 7250 50  0001 C CNN "Mouser"
+	1    2150 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA988
+P 2450 7250
+AR Path="/60AF64DE/5FCEA988" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA988" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA988" Ref="R46"  Part="1" 
+F 0 "R46" H 2509 7296 50  0000 L CNN
+F 1 "10kΩ" H 2509 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2450 7250 50  0001 C CNN
+F 3 "~" H 2450 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 2450 7250 50  0001 C CNN "Mouser"
+	1    2450 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA98F
+P 2750 7250
+AR Path="/60AF64DE/5FCEA98F" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA98F" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA98F" Ref="R47"  Part="1" 
+F 0 "R47" H 2809 7296 50  0000 L CNN
+F 1 "10kΩ" H 2809 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 2750 7250 50  0001 C CNN
+F 3 "~" H 2750 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 2750 7250 50  0001 C CNN "Mouser"
+	1    2750 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA996
+P 3050 7250
+AR Path="/60AF64DE/5FCEA996" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA996" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA996" Ref="R48"  Part="1" 
+F 0 "R48" H 3109 7296 50  0000 L CNN
+F 1 "10kΩ" H 3109 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3050 7250 50  0001 C CNN
+F 3 "~" H 3050 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 3050 7250 50  0001 C CNN "Mouser"
+	1    3050 7250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FCEA99D
+P 3350 7250
+AR Path="/60AF64DE/5FCEA99D" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/5FCEA99D" Ref="R?"  Part="1" 
+AR Path="/5FAED671/5FCEA99D" Ref="R49"  Part="1" 
+F 0 "R49" H 3409 7296 50  0000 L CNN
+F 1 "10kΩ" H 3409 7205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3350 7250 50  0001 C CNN
+F 3 "~" H 3350 7250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 3350 7250 50  0001 C CNN "Mouser"
+	1    3350 7250
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	4950 2500 4950 2900
 Wire Bus Line
 	6950 2500 6950 2900
-Wire Bus Line
-	6950 4300 6950 4700
-Wire Bus Line
-	4950 4300 4950 4700
 Wire Bus Line
 	4950 3100 4950 4100
 Wire Bus Line

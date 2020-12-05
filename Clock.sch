@@ -413,10 +413,10 @@ L Oscillator:ACO-xxxMHz OSC1
 U 1 1 5D387BCA
 P 1000 1200
 F 0 "OSC1" H 750 1300 50  0000 R CNN
-F 1 "16MHz" H 750 1200 50  0000 R CNN
+F 1 "12MHz" H 750 1200 50  0000 R CNN
 F 2 "Oscillator:Oscillator_DIP-14" H 1450 850 50  0001 C CNN
-F 3 "http://www.conwin.com/datasheets/cx/cx030.pdf" H 900 1200 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/ECS/ECS-100AX-160?qs=GxOUx7aO6nxPyxaB%252BrVtIQ%3D%3D" H 1000 1200 50  0001 C CNN "Mouser"
+F 3 "https://www.mouser.com/datasheet/2/3/ACO-514121.pdf" H 900 1200 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/ABRACON/ACO-12000MHZ-EK?qs=2xLVn2jvFuvTNNmW6JUIaw%3D%3D" H 1000 1200 50  0001 C CNN "Mouser"
 	1    1000 1200
 	1    0    0    -1  
 $EndComp

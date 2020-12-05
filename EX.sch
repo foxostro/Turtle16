@@ -328,8 +328,8 @@ Wire Wire Line
 	3250 1650 3250 2650
 Text Label 3150 1650 3    50   ~ 0
 CtlIn3
-Text Notes 3850 3450 0    50   ~ 0
-SelStoreOp=0  —> Select Register B\nSelStoreOp=1  —> Select PC+1 (return address)\nSelStoreOp=2  —> Select 8-bit Immediate Value
+Text Notes 3850 3500 0    50   ~ 0
+SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B, byte swapped\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
 $Sheet
 S 3850 1900 1250 200 
 U 5FDDE44F
@@ -343,12 +343,12 @@ S 3850 2400 1250 700
 U 5FDDE458
 F0 "sheet5FDDE432" 50
 F1 "SelectStoreOp.sch" 50
-F2 "StoreOp[0..15]" O R 5100 2600 50 
-F3 "SelStoreOpA" I L 3850 2550 50 
-F4 "SelStoreOpB" I L 3850 2650 50 
-F5 "Ins[0..10]" I L 3850 2750 50 
-F6 "B[0..15]" I L 3850 2850 50 
-F7 "PC[0..15]" I L 3850 2950 50 
+F2 "SelStoreOpA" I L 3850 2550 50 
+F3 "SelStoreOpB" I L 3850 2650 50 
+F4 "Ins[0..10]" I L 3850 2750 50 
+F5 "B[0..15]" I L 3850 2850 50 
+F6 "PC[0..15]" I L 3850 2950 50 
+F7 "StoreOp[0..15]" O R 5100 2600 50 
 $EndSheet
 Text Notes 3600 5200 0    50   ~ 0
 SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:8, 4:0]
@@ -494,8 +494,6 @@ Wire Wire Line
 Wire Wire Line
 	6900 4650 7950 4650
 Wire Bus Line
-	1050 1550 5100 1550
-Wire Bus Line
 	5000 4700 5800 4700
 $Sheet
 S 5800 4250 1100 1750
@@ -526,4 +524,6 @@ F4 "SelRightOpA" I L 3600 4400 50
 F5 "RightOp[0..15]" O R 5000 4700 50 
 F6 "SelRightOpB" I L 3600 4500 50 
 $EndSheet
+Wire Bus Line
+	1050 1550 5100 1550
 $EndSCHEMATC

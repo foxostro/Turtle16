@@ -613,7 +613,7 @@ NoConn ~ 4250 3150
 NoConn ~ 4250 2950
 NoConn ~ 4250 2850
 Wire Wire Line
-	6450 5900 6950 5900
+	6450 5900 6650 5900
 Wire Wire Line
 	7400 3200 7300 3200
 $Comp
@@ -1508,7 +1508,7 @@ $EndComp
 Wire Wire Line
 	8500 5900 8400 5900
 Wire Wire Line
-	7400 5900 6950 5900
+	7400 5900 7350 5900
 Wire Wire Line
 	7300 6150 7350 6150
 Wire Wire Line
@@ -1552,9 +1552,8 @@ $EndComp
 Connection ~ 7350 6150
 Wire Wire Line
 	7350 6150 7350 6200
-Connection ~ 6950 5900
 Wire Wire Line
-	6950 4250 6950 5900
+	6950 4250 6950 5850
 Wire Wire Line
 	8500 6450 8500 6500
 $Comp
@@ -1578,7 +1577,7 @@ Text GLabel 10100 5400 2    50   Output ~ 0
 Phi1c
 Text GLabel 10100 5500 2    50   Output ~ 0
 Phi1d
-Text GLabel 10100 5800 2    50   Output ~ 0
+Text GLabel 10100 5700 2    50   Output ~ 0
 Phi2
 Connection ~ 8500 2200
 Wire Wire Line
@@ -1586,22 +1585,16 @@ Wire Wire Line
 Wire Wire Line
 	8500 3750 7050 3750
 Wire Wire Line
-	7050 3750 7050 5800
+	7050 3750 7050 5700
 Wire Wire Line
-	7050 5800 7400 5800
-Wire Wire Line
-	8400 5800 10100 5800
-Text GLabel 10100 5950 2    50   Output ~ 0
+	8400 5700 10100 5700
+Text GLabel 10100 5850 2    50   Output ~ 0
 ~RST
 Wire Wire Line
-	8650 5950 8650 5900
+	8650 5850 8650 5800
 Wire Wire Line
-	8650 5900 8500 5900
-Wire Wire Line
-	8650 5950 10100 5950
-Connection ~ 8500 5900
+	8650 5850 10100 5850
 NoConn ~ 8400 5600
-NoConn ~ 8400 5700
 Wire Wire Line
 	8400 5200 10100 5200
 Wire Wire Line
@@ -1610,26 +1603,8 @@ Wire Wire Line
 	8400 5400 10100 5400
 Wire Wire Line
 	8400 5500 10100 5500
-$Comp
-L power:VCC #PWR040
-U 1 1 5FEFCEE4
-P 7350 5650
-F 0 "#PWR040" H 7350 5500 50  0001 C CNN
-F 1 "VCC" V 7365 5777 50  0000 L CNN
-F 2 "" H 7350 5650 50  0001 C CNN
-F 3 "" H 7350 5650 50  0001 C CNN
-	1    7350 5650
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
 	7400 5600 7350 5600
-Wire Wire Line
-	7350 5600 7350 5650
-Wire Wire Line
-	7350 5700 7400 5700
-Connection ~ 7350 5650
-Wire Wire Line
-	7350 5650 7350 5700
 Wire Wire Line
 	8600 1900 8600 3850
 Wire Wire Line
@@ -1675,4 +1650,33 @@ Wire Wire Line
 	1350 7500 1850 7500
 Wire Wire Line
 	1850 7800 1350 7800
+Wire Wire Line
+	8400 5800 8650 5800
+$Comp
+L power:VCC #PWR040
+U 1 1 5FEFCEE4
+P 7350 5600
+F 0 "#PWR040" H 7350 5450 50  0001 C CNN
+F 1 "VCC" V 7365 5727 50  0000 L CNN
+F 2 "" H 7350 5600 50  0001 C CNN
+F 3 "" H 7350 5600 50  0001 C CNN
+	1    7350 5600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7400 5700 7050 5700
+Wire Wire Line
+	7400 5800 7350 5800
+Wire Wire Line
+	7350 5800 7350 5850
+Wire Wire Line
+	6950 5850 7350 5850
+Connection ~ 7350 5850
+Wire Wire Line
+	7350 5850 7350 5900
+Connection ~ 6950 5850
+Wire Wire Line
+	6950 5850 6650 5850
+Wire Wire Line
+	6650 5850 6650 5900
 $EndSCHEMATC

@@ -16,7 +16,7 @@ $EndDescr
 Text HLabel 8350 3150 2    50   Output ~ 0
 ControlWord[1..19]
 Text Notes 800  7900 0    50   ~ 0
-#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOp\n4   unused\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB
+#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /WRL\n16  /WRH\n17  WriteBackSrcA\n18  WriteBackSrcB
 Text HLabel 9150 2800 2    50   Output ~ 0
 ~HLT
 Text Label 8600 2800 0    50   ~ 0
@@ -24,7 +24,7 @@ ControlWord0
 Entry Wire Line
 	8350 2800 8250 2900
 Text Notes 1700 7900 0    50   ~ 0
-Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand\nunused\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1
+Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nWrite back low byte\nWrite back high byte\nSource of write back 0\nSource of write back 1
 Text HLabel 8300 2150 2    50   Output ~ 0
 InsOut[0..10]
 Wire Wire Line
@@ -129,8 +129,6 @@ F7 "Ctl[0..23]" O R 4100 2750 50
 $EndSheet
 Wire Bus Line
 	7150 2650 7150 2900
-Text HLabel 5100 2650 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	5200 2650 5100 2650
 Text Label 2900 2150 2    50   ~ 0
@@ -157,8 +155,6 @@ Text HLabel 2900 3050 0    50   Input ~ 0
 OVF
 Wire Wire Line
 	3000 3050 2900 3050
-Text HLabel 2900 3150 0    50   Input ~ 0
-~RST
 Wire Wire Line
 	3000 3150 2900 3150
 Wire Bus Line
@@ -192,8 +188,6 @@ F2 "AIn[0..15]" I L 6650 4250 50
 F3 "A[0..15]" O R 7550 4250 50 
 F4 "Phi1" I L 6650 4150 50 
 $EndSheet
-Text HLabel 6550 4150 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	6650 4150 6550 4150
 Wire Bus Line
@@ -207,14 +201,10 @@ F2 "BIn[0..15]" I L 6650 4750 50
 F3 "B[0..15]" O R 7550 4750 50 
 F4 "Phi1" I L 6650 4650 50 
 $EndSheet
-Text HLabel 6550 4650 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	6650 4650 6550 4650
 Wire Bus Line
 	6150 4750 6650 4750
-Text HLabel 5100 2050 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	5200 2050 5100 2050
 Text Notes 7600 4150 0    50   ~ 0
@@ -223,4 +213,14 @@ Text Notes 7600 4650 0    50   ~ 0
 The B port supplies the Right operand.
 Wire Bus Line
 	2200 2150 5200 2150
+Text GLabel 2900 3150 0    50   Input ~ 0
+~RST
+Text GLabel 6550 4150 0    50   Input ~ 0
+Phi1b
+Text GLabel 6550 4650 0    50   Input ~ 0
+Phi1b
+Text GLabel 5100 2650 0    50   Input ~ 0
+Phi1a
+Text GLabel 5100 2050 0    50   Input ~ 0
+Phi1b
 $EndSCHEMATC

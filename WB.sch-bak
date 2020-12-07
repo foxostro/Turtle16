@@ -80,8 +80,6 @@ Text HLabel 9150 3150 2    50   Output ~ 0
 ~WRH
 Wire Bus Line
 	6550 4850 9150 4850
-Text HLabel 5050 4500 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	5150 4750 5300 4750
 Wire Wire Line
@@ -90,8 +88,6 @@ Wire Wire Line
 	5150 4500 5050 4500
 Text HLabel 1400 3550 0    50   Input ~ 0
 CtlIn[15..19]
-Text HLabel 2750 5350 0    50   Input ~ 0
-Phi1
 Wire Bus Line
 	1400 3550 1850 3550
 Text HLabel 3200 3650 2    50   Output ~ 0
@@ -124,8 +120,6 @@ Wire Bus Line
 	1850 3650 1400 3650
 Wire Wire Line
 	2750 5350 2850 5350
-Text HLabel 1400 3450 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	1400 3450 1850 3450
 Wire Bus Line
@@ -148,4 +142,10 @@ Text HLabel 9150 3050 2    50   Output ~ 0
 ~WRL
 Wire Bus Line
 	3200 2600 4100 2600
+Text GLabel 5050 4500 0    50   Input ~ 0
+Phi1d
+Text GLabel 2750 5350 0    50   Input ~ 0
+Phi1d
+Text GLabel 1400 3450 0    50   Input ~ 0
+Phi1d
 $EndSCHEMATC

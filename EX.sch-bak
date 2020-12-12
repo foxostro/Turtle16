@@ -337,7 +337,7 @@ F2 "SelStoreOpA" I L 3850 2550 50
 F3 "SelStoreOpB" I L 3850 2650 50 
 F4 "Ins_EX[0..10]" I L 3850 2750 50 
 F5 "B[0..15]" I L 3850 2850 50 
-F6 "PC[0..15]" I L 3850 2950 50 
+F6 "PC_EX[0..15]" I L 3850 2950 50 
 F7 "StoreOp[0..15]" O R 5100 2600 50 
 $EndSheet
 Text Notes 3600 5200 0    50   ~ 0
@@ -419,7 +419,7 @@ Wire Bus Line
 Wire Bus Line
 	1250 2750 3850 2750
 Text HLabel 1250 2950 0    50   Input ~ 0
-PC[0..15]
+PC_EX[0..15]
 Wire Bus Line
 	1250 2950 3850 2950
 Text Notes 6250 3050 0    50   ~ 0

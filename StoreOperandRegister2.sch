@@ -1,9 +1,9 @@
 EESchema Schematic File Version 4
 EELAYER 30 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr USLetter 11000 8500
 encoding utf-8
-Sheet 23 33
+Sheet 27 33
 Title "EX/MEM: Store Operand Register"
 Date ""
 Rev ""

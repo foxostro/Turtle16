@@ -46,23 +46,23 @@ Wire Wire Line
 Entry Wire Line
 	8100 1600 8000 1500
 Text HLabel 5700 1250 1    50   Input ~ 0
-PC[0..15]
+PC_EX[0..15]
 Entry Wire Line
 	5800 1900 5700 1800
 Text Label 5800 1600 0    50   ~ 0
-PC1
+PC_EX1
 Wire Wire Line
 	5800 1900 6200 1900
 Entry Wire Line
 	5800 1700 5700 1600
 Text Label 5800 1700 0    50   ~ 0
-PC2
+PC_EX2
 Wire Wire Line
 	5800 1700 6200 1700
 Entry Wire Line
 	5800 1500 5700 1400
 Text Label 5800 1800 0    50   ~ 0
-PC3
+PC_EX3
 Wire Wire Line
 	5800 1500 6200 1500
 Entry Wire Line
@@ -70,9 +70,9 @@ Entry Wire Line
 Wire Wire Line
 	5800 1800 6200 1800
 Text Label 5800 2000 0    50   ~ 0
-PC5
+PC_EX5
 Text Label 5800 1900 0    50   ~ 0
-PC4
+PC_EX4
 Wire Wire Line
 	5800 1600 6200 1600
 Entry Wire Line
@@ -80,13 +80,13 @@ Entry Wire Line
 Entry Wire Line
 	5800 2200 5700 2100
 Text Label 5800 2200 0    50   ~ 0
-PC7
+PC_EX7
 Wire Wire Line
 	5800 2200 6200 2200
 Entry Wire Line
 	5800 2000 5700 1900
 Text Label 5800 2100 0    50   ~ 0
-PC6
+PC_EX6
 Wire Wire Line
 	5800 2000 6200 2000
 Entry Wire Line
@@ -94,23 +94,23 @@ Entry Wire Line
 Wire Wire Line
 	5800 2100 6200 2100
 Text Label 5800 1500 0    50   ~ 0
-PC0
+PC_EX0
 Entry Wire Line
 	5800 3950 5700 3850
 Text Label 5800 3650 0    50   ~ 0
-PC9
+PC_EX9
 Wire Wire Line
 	5800 3950 6200 3950
 Entry Wire Line
 	5800 3750 5700 3650
 Text Label 5800 3750 0    50   ~ 0
-PC10
+PC_EX10
 Wire Wire Line
 	5800 3750 6200 3750
 Entry Wire Line
 	5800 3550 5700 3450
 Text Label 5800 3850 0    50   ~ 0
-PC11
+PC_EX11
 Wire Wire Line
 	5800 3550 6200 3550
 Entry Wire Line
@@ -118,9 +118,9 @@ Entry Wire Line
 Wire Wire Line
 	5800 3850 6200 3850
 Text Label 5800 4050 0    50   ~ 0
-PC13
+PC_EX13
 Text Label 5800 3950 0    50   ~ 0
-PC12
+PC_EX12
 Wire Wire Line
 	5800 3650 6200 3650
 Entry Wire Line
@@ -128,13 +128,13 @@ Entry Wire Line
 Entry Wire Line
 	5800 4250 5700 4150
 Text Label 5800 4250 0    50   ~ 0
-PC15
+PC_EX15
 Wire Wire Line
 	5800 4250 6200 4250
 Entry Wire Line
 	5800 4050 5700 3950
 Text Label 5800 4150 0    50   ~ 0
-PC14
+PC_EX14
 Wire Wire Line
 	5800 4050 6200 4050
 Entry Wire Line
@@ -142,7 +142,7 @@ Entry Wire Line
 Wire Wire Line
 	5800 4150 6200 4150
 Text Label 5800 3550 0    50   ~ 0
-PC8
+PC_EX8
 Entry Wire Line
 	8100 2200 8000 2100
 Text Label 8100 2200 0    50   ~ 0

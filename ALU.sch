@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 23 33
+Sheet 32 33
 Title "ALU"
 Date ""
 Rev ""
@@ -598,12 +598,6 @@ F 3 "" H 4500 6000 50  0001 C CNN
 $EndComp
 Text HLabel 8050 1450 2    50   Output ~ 0
 F[0..15]
-Wire Bus Line
-	3800 1050 3800 3300
-Wire Bus Line
-	3800 3450 3800 5000
-Wire Bus Line
-	7400 1450 7400 3300
 $Comp
 L power:GND #PWR?
 U 1 1 601A1AF7
@@ -617,4 +611,10 @@ F 3 "" H 6700 3750 50  0001 C CNN
 	1    6700 3750
 	0    -1   -1   0   
 $EndComp
+Wire Bus Line
+	3800 1050 3800 3300
+Wire Bus Line
+	3800 3450 3800 5000
+Wire Bus Line
+	7400 1450 7400 3300
 $EndSCHEMATC

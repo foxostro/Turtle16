@@ -1832,7 +1832,7 @@ Ins_EX4
 Entry Wire Line
 	8300 1950 8200 1850
 Text HLabel 8200 1300 1    50   Input ~ 0
-Ins[0..10]
+Ins_EX[0..10]
 $Comp
 L power:VCC #PWR0437
 U 1 1 5FF70225

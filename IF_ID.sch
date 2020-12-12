@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 18 33
+Sheet 20 33
 Title "IF/ID"
 Date ""
 Rev ""
@@ -131,7 +131,7 @@ Wire Wire Line
 Entry Wire Line
 	2000 2000 2100 2100
 Text Label 2150 2000 0    50   ~ 0
-PCIn0
+PC0
 Wire Wire Line
 	2100 2000 2500 2000
 Entry Wire Line
@@ -317,7 +317,7 @@ F 3 "" H 3000 1700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text HLabel 1150 1750 0    50   Input ~ 0
-PCIn[0..15]
+PC[0..15]
 Wire Wire Line
 	3900 2700 3500 2700
 Entry Wire Line
@@ -347,7 +347,7 @@ Wire Wire Line
 Entry Wire Line
 	4000 2000 3900 2100
 Text Label 3850 2000 2    50   ~ 0
-PCOut0
+PC_EX0
 Wire Wire Line
 	3900 2000 3500 2000
 Entry Wire Line
@@ -688,69 +688,69 @@ Wire Wire Line
 Entry Wire Line
 	4000 3950 3900 4050
 Text HLabel 4850 1700 2    50   Output ~ 0
-PCOut[0..15]
+PC_EX[0..15]
 Text Label 2150 2100 0    50   ~ 0
-PCIn1
+PC1
 Text Label 2150 2200 0    50   ~ 0
-PCIn2
+PC2
 Text Label 2150 2300 0    50   ~ 0
-PCIn3
+PC3
 Text Label 2150 2400 0    50   ~ 0
-PCIn4
+PC4
 Text Label 2150 2500 0    50   ~ 0
-PCIn5
+PC5
 Text Label 2150 2600 0    50   ~ 0
-PCIn6
+PC6
 Text Label 2150 2700 0    50   ~ 0
-PCIn7
+PC7
 Text Label 2150 4050 0    50   ~ 0
-PCIn8
+PC8
 Text Label 2150 4150 0    50   ~ 0
-PCIn9
+PC9
 Text Label 2150 4250 0    50   ~ 0
-PCIn10
+PC10
 Text Label 2150 4350 0    50   ~ 0
-PCIn11
+PC11
 Text Label 2150 4450 0    50   ~ 0
-PCIn12
+PC12
 Text Label 2150 4550 0    50   ~ 0
-PCIn13
+PC13
 Text Label 2150 4650 0    50   ~ 0
-PCIn14
+PC14
 Text Label 2150 4750 0    50   ~ 0
-PCIn15
+PC15
 Wire Wire Line
 	3900 4150 3500 4150
 Text Label 3850 2100 2    50   ~ 0
-PCOut1
+PC_EX1
 Text Label 3850 2200 2    50   ~ 0
-PCOut2
+PC_EX2
 Text Label 3850 2300 2    50   ~ 0
-PCOut3
+PC_EX3
 Text Label 3850 2400 2    50   ~ 0
-PCOut4
+PC_EX4
 Text Label 3850 2500 2    50   ~ 0
-PCOut5
+PC_EX5
 Text Label 3850 2600 2    50   ~ 0
-PCOut6
+PC_EX6
 Text Label 3850 2700 2    50   ~ 0
-PCOut7
+PC_EX7
 Text Label 3800 4050 2    50   ~ 0
-PCOut8
+PC_EX8
 Text Label 3800 4150 2    50   ~ 0
-PCOut9
+PC_EX9
 Text Label 3800 4250 2    50   ~ 0
-PCOut10
+PC_EX10
 Text Label 3800 4350 2    50   ~ 0
-PCOut11
+PC_EX11
 Text Label 3800 4450 2    50   ~ 0
-PCOut12
+PC_EX12
 Text Label 3800 4550 2    50   ~ 0
-PCOut13
+PC_EX13
 Text Label 3800 4650 2    50   ~ 0
-PCOut14
+PC_EX14
 Text Label 3800 4750 2    50   ~ 0
-PCOut15
+PC_EX15
 $Comp
 L power:GND #PWR?
 U 1 1 5FB0CDBD

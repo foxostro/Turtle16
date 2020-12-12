@@ -297,7 +297,7 @@ Wire Wire Line
 Wire Wire Line
 	7550 3450 7850 3450
 Text HLabel 1050 1550 0    50   Input ~ 0
-CtlIn[1..20]
+CtlIn[0..20]
 Text HLabel 1050 4600 0    50   Input ~ 0
 Ins[0..10]
 Entry Wire Line
@@ -524,6 +524,14 @@ Text GLabel 7800 5350 0    50   Input ~ 0
 Phi1a
 Wire Wire Line
 	3600 4300 3150 4300
+Entry Wire Line
+	3350 1550 3450 1650
+Text Label 3450 1650 3    50   ~ 0
+CtlIn0
+Wire Wire Line
+	3450 1650 3450 2150
 Wire Bus Line
 	1050 1550 5100 1550
+Text HLabel 3450 2150 3    50   Output ~ 0
+~HLT
 $EndSCHEMATC

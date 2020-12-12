@@ -13,35 +13,14 @@ Comment2 "effect conditional instructions."
 Comment3 "The decoder takes the condition code from the flags register into account to"
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
-Text HLabel 8350 3150 2    50   Output ~ 0
-ControlWord[1..20]
+Text HLabel 8300 2650 2    50   Output ~ 0
+ControlWord[0..20]
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrcA\n17  WriteBackSrcB\n18  /WRL\n19  /WRH\n20  /WBEN
-Text HLabel 9150 2800 2    50   Output ~ 0
-~HLT
-Text Label 8600 2800 0    50   ~ 0
-ControlWord0
-Entry Wire Line
-	8350 2800 8250 2900
 Text Notes 1700 7900 0    50   ~ 0
 Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nDrive the Store operand onto the bus I/O lines\nSource of write back 0\nSource of write back 1\nWrite back low byte\nWrite back high byte\nEnable write back to register file
 Text HLabel 8300 2150 2    50   Output ~ 0
 InsOut[0..10]
-Wire Wire Line
-	8350 2800 9150 2800
-Text Label 7300 2900 0    50   ~ 0
-ControlWord[0..20]
-Wire Bus Line
-	7150 2900 8250 2900
-Entry Bus Bus
-	7150 3050 7250 3150
-Text Label 7300 3150 0    50   ~ 0
-ControlWord[1..20]
-Wire Bus Line
-	7250 3150 8350 3150
-Wire Bus Line
-	7150 2900 7150 3050
-Connection ~ 7150 2900
 Text Label 2950 2750 2    50   ~ 0
 Ins[11..15]
 Text HLabel 3200 5050 0    50   Input ~ 0
@@ -128,8 +107,6 @@ F5 "OVF" I L 3000 3050 50
 F6 "~RST" I L 3000 3150 50 
 F7 "Ctl[0..23]" O R 4100 2750 50 
 $EndSheet
-Wire Bus Line
-	7150 2650 7150 2900
 Wire Wire Line
 	5200 2650 5100 2650
 Text Label 2900 2150 2    50   ~ 0
@@ -159,7 +136,7 @@ Wire Wire Line
 Wire Wire Line
 	3000 3150 2900 3150
 Wire Bus Line
-	6600 2650 7150 2650
+	6600 2650 8300 2650
 Wire Bus Line
 	6600 2150 8300 2150
 $Sheet

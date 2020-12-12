@@ -577,7 +577,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 1400 6600 1500
 Text Label 6550 1400 2    50   ~ 0
-Ctl_ID_EX0
+Ctl_EX0
 Wire Wire Line
 	6600 1400 5900 1400
 Entry Wire Line
@@ -903,25 +903,25 @@ Wire Wire Line
 Wire Wire Line
 	6600 3550 5900 3550
 Text Label 6550 1500 2    50   ~ 0
-Ctl_ID_EX1
+Ctl_EX1
 Text Label 6550 1600 2    50   ~ 0
-Ctl_ID_EX2
+Ctl_EX2
 Text Label 6550 1700 2    50   ~ 0
-Ctl_ID_EX3
+Ctl_EX3
 Text Label 6550 1800 2    50   ~ 0
-Ctl_ID_EX4
+Ctl_EX4
 Text Label 6550 1900 2    50   ~ 0
-Ctl_ID_EX5
+Ctl_EX5
 Text Label 6550 2000 2    50   ~ 0
-Ctl_ID_EX6
+Ctl_EX6
 Text Label 6550 2100 2    50   ~ 0
-Ctl_ID_EX7
+Ctl_EX7
 Text Label 6550 3450 2    50   ~ 0
-Ctl_ID_EX8
+Ctl_EX8
 Text Label 6550 3550 2    50   ~ 0
-Ctl_ID_EX9
+Ctl_EX9
 Text Label 6550 3650 2    50   ~ 0
-Ctl_ID_EX10
+Ctl_EX10
 Text HLabel 4200 1100 0    50   Input ~ 0
 Ctl_ID[0..23]
 Text Label 4550 4150 0    50   ~ 0
@@ -967,11 +967,11 @@ Entry Wire Line
 Wire Wire Line
 	6600 3850 5900 3850
 Text Label 6550 3750 2    50   ~ 0
-Ctl_ID_EX11
+Ctl_EX11
 Text Label 6550 3850 2    50   ~ 0
-Ctl_ID_EX12
+Ctl_EX12
 Text Label 6550 3950 2    50   ~ 0
-Ctl_ID_EX13
+Ctl_EX13
 Wire Wire Line
 	6600 4150 5900 4150
 Entry Wire Line
@@ -981,9 +981,9 @@ Entry Wire Line
 Wire Wire Line
 	6600 4050 5900 4050
 Text Label 6550 4050 2    50   ~ 0
-Ctl_ID_EX14
+Ctl_EX14
 Text Label 6550 4150 2    50   ~ 0
-Ctl_ID_EX15
+Ctl_EX15
 $Comp
 L power:GND #PWR?
 U 1 1 5FD1EF9C
@@ -1287,11 +1287,11 @@ Wire Wire Line
 Wire Wire Line
 	6600 5600 5900 5600
 Text Label 6550 5500 2    50   ~ 0
-Ctl_ID_EX16
+Ctl_EX16
 Text Label 6550 5600 2    50   ~ 0
-Ctl_ID_EX17
+Ctl_EX17
 Text Label 6550 5700 2    50   ~ 0
-Ctl_ID_EX18
+Ctl_EX18
 Text Label 4550 6200 0    50   ~ 0
 Ctl_ID23
 Text Label 4550 6100 0    50   ~ 0
@@ -1327,7 +1327,7 @@ Connection ~ 4300 6400
 Wire Wire Line
 	4300 4350 4300 6400
 Text HLabel 6950 1100 2    50   Output ~ 0
-Ctl_ID_EX[0..20]
+Ctl_EX[0..20]
 Wire Wire Line
 	4300 2300 4300 4350
 Wire Wire Line
@@ -1335,7 +1335,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 5700 6600 5800
 Text Label 6550 5800 2    50   ~ 0
-Ctl_ID_EX19
+Ctl_EX19
 NoConn ~ 5900 6000
 NoConn ~ 5900 6100
 NoConn ~ 5900 6200
@@ -1628,7 +1628,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 5800 6600 5900
 Text Label 6550 5900 2    50   ~ 0
-Ctl_ID_EX20
+Ctl_EX20
 Wire Bus Line
 	6700 1100 6700 5800
 Wire Bus Line

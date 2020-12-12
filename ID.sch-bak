@@ -14,7 +14,7 @@ Comment3 "The decoder takes the condition code from the flags register into acco
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
 Text HLabel 8300 2650 2    50   Output ~ 0
-Ctl_ID_EX[0..20]
+Ctl_EX[0..20]
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrcA\n17  WriteBackSrcB\n18  /WRL\n19  /WRH\n20  /WBEN
 Text Notes 1700 7900 0    50   ~ 0
@@ -30,7 +30,7 @@ Text HLabel 3200 5150 0    50   Input ~ 0
 Text HLabel 3200 5350 0    50   Input ~ 0
 C[0..15]
 Text HLabel 3200 4950 0    50   Input ~ 0
-SelC[0..2]
+SelC_WB[0..2]
 $Sheet
 S 4950 4150 1200 1300
 U 5FC16AA6
@@ -39,7 +39,7 @@ F1 "RegisterFile.sch" 50
 F2 "~WRH" I L 4950 5050 50 
 F3 "~WRL" I L 4950 5150 50 
 F4 "C[0..15]" I L 4950 5350 50 
-F5 "SelC[0..2]" I L 4950 4950 50 
+F5 "SelC_WB[0..2]" I L 4950 4950 50 
 F6 "SelA[0..2]" I L 4950 4250 50 
 F7 "SelB[0..2]" I L 4950 4650 50 
 F8 "B[0..15]" O R 6150 4750 50 
@@ -146,7 +146,7 @@ F0 "ID/EX ControlWord" 50
 F1 "ID_EX_ControlWord.sch" 50
 F2 "Phi1" I L 5200 2650 50 
 F3 "Ctl_ID[0..23]" I L 5200 2750 50 
-F4 "Ctl_ID_EX[0..20]" O R 6600 2650 50 
+F4 "Ctl_EX[0..20]" O R 6600 2650 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 

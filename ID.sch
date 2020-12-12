@@ -30,7 +30,7 @@ Text HLabel 3200 5150 0    50   Input ~ 0
 Text HLabel 3200 5350 0    50   Input ~ 0
 C[0..15]
 Text HLabel 3200 4950 0    50   Input ~ 0
-SelC[0..2]
+SelC_WB[0..2]
 $Sheet
 S 4950 4150 1200 1300
 U 5FC16AA6
@@ -39,7 +39,7 @@ F1 "RegisterFile.sch" 50
 F2 "~WRH" I L 4950 5050 50 
 F3 "~WRL" I L 4950 5150 50 
 F4 "C[0..15]" I L 4950 5350 50 
-F5 "SelC[0..2]" I L 4950 4950 50 
+F5 "SelC_WB[0..2]" I L 4950 4950 50 
 F6 "SelA[0..2]" I L 4950 4250 50 
 F7 "SelB[0..2]" I L 4950 4650 50 
 F8 "B[0..15]" O R 6150 4750 50 

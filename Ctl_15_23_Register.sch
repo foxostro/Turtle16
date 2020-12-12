@@ -733,28 +733,28 @@ Wire Wire Line
 	6650 3950 6050 3950
 Entry Wire Line
 	6750 3850 6650 3950
-Text Label 6450 3850 2    50   ~ 0
-SelC0
+Text Label 6650 3850 2    50   ~ 0
+SelC_WB0
 Wire Wire Line
 	6650 3850 6050 3850
 Text HLabel 3700 3100 0    50   Input ~ 0
 Ctl_MEM[16..20]
 Text Label 4350 3850 0    50   ~ 0
-SelCIn0
+SelC_MEM0
 Text HLabel 3700 3750 0    50   Input ~ 0
-SelCIn[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	3700 3750 4250 3750
 Text Label 4350 3950 0    50   ~ 0
-SelCIn1
+SelC_MEM1
 Text Label 4350 4050 0    50   ~ 0
-SelCIn2
-Text Label 6450 3950 2    50   ~ 0
-SelC1
-Text Label 6450 4050 2    50   ~ 0
-SelC2
+SelC_MEM2
+Text Label 6650 3950 2    50   ~ 0
+SelC_WB1
+Text Label 6650 4050 2    50   ~ 0
+SelC_WB2
 Text HLabel 7400 3750 2    50   Output ~ 0
-SelC[0..2]
+SelC_WB[0..2]
 Wire Bus Line
 	7400 3750 6750 3750
 Text Label 6650 3450 2    50   ~ 0

@@ -64,7 +64,7 @@ Ctl_MEM[16..20]
 Wire Bus Line
 	1400 3550 1850 3550
 Text HLabel 3800 3650 2    50   Output ~ 0
-SelC[0..2]
+SelC_WB[0..2]
 Wire Bus Line
 	3600 3650 3800 3650
 $Sheet
@@ -82,13 +82,13 @@ U 5FE6C11D
 F0 "sheet5FE6C102" 50
 F1 "Ctl_15_23_Register.sch" 50
 F2 "Phi1" I L 1850 3450 50 
-F3 "SelCIn[0..2]" I L 1850 3650 50 
-F4 "SelC[0..2]" O R 3600 3650 50 
+F3 "SelC_MEM[0..2]" I L 1850 3650 50 
+F4 "SelC_WB[0..2]" O R 3600 3650 50 
 F5 "Ctl_WB[16..20]" O R 3600 3550 50 
 F6 "Ctl_MEM[16..20]" I L 1850 3550 50 
 $EndSheet
 Text HLabel 1400 3650 0    50   Input ~ 0
-SelCIn[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	1850 3650 1400 3650
 Wire Wire Line

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 22 33
+Sheet 26 33
 Title "EX"
 Date ""
 Rev ""
@@ -120,7 +120,7 @@ F 3 "" H 7950 5150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text Label 5300 1100 0    50   ~ 0
-Ctl_ID_EX[13..20]
+Ctl_EX[13..20]
 $Comp
 L Device:C C?
 U 1 1 600839BF
@@ -254,7 +254,7 @@ Wire Bus Line
 Wire Bus Line
 	9500 1100 9750 1100
 Text HLabel 9750 2000 2    50   Output ~ 0
-SelC[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	9500 2000 9750 2000
 $Sheet
@@ -267,16 +267,16 @@ F3 "D[0..15]" I L 7850 2600 50
 F4 "Q[0..15]" O R 9000 2600 50 
 $EndSheet
 Text HLabel 9750 1100 2    50   Output ~ 0
-Ctl_EX_MEM[13..20]
+Ctl_MEM[13..20]
 $Sheet
 S 7850 900  1650 1250
 U 5FD8D70A
 F0 "sheet5FD8D6EB" 50
 F1 "Ctl_13_23_Register.sch" 50
-F2 "Ctl_EX_MEM[13..20]" O R 9500 1100 50 
-F3 "Ctl_ID_EX[13..20]" I L 7850 1100 50 
-F4 "SelCIn[0..2]" I L 7850 2000 50 
-F5 "SelC[0..2]" O R 9500 2000 50 
+F2 "Ctl_MEM[13..20]" O R 9500 1100 50 
+F3 "Ctl_EX[13..20]" I L 7850 1100 50 
+F4 "SelC_EX[0..2]" I L 7850 2000 50 
+F5 "SelC_MEM[0..2]" O R 9500 2000 50 
 F6 "Phi1" I L 7850 1000 50 
 $EndSheet
 $Sheet
@@ -296,8 +296,8 @@ Wire Wire Line
 	7550 1000 7850 1000
 Wire Wire Line
 	7550 3450 7850 3450
-Text HLabel 1050 1000 0    50   Input ~ 0
-Ctl_ID_EX[0..20]
+Text HLabel 1250 1000 0    50   Input ~ 0
+Ctl_EX[0..20]
 Text HLabel 1050 4600 0    50   Input ~ 0
 Ins[0..10]
 Entry Wire Line
@@ -307,17 +307,17 @@ Entry Wire Line
 Entry Wire Line
 	2950 1000 3050 1100
 Text Label 3350 1100 3    50   ~ 0
-Ctl_ID_EX1
+Ctl_EX1
 Text Label 3250 1100 3    50   ~ 0
-Ctl_ID_EX2
+Ctl_EX2
 Text Label 3050 1100 3    50   ~ 0
-Ctl_ID_EX4
+Ctl_EX4
 Entry Bus Bus
 	5100 1000 5200 1100
 Entry Wire Line
 	3250 1000 3350 1100
 Text Label 3150 1100 3    50   ~ 0
-Ctl_ID_EX3
+Ctl_EX3
 Text Notes 3850 3500 0    50   ~ 0
 SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B, byte swapped\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
 $Sheet
@@ -326,7 +326,7 @@ U 5FDDE44F
 F0 "sheet5FDDE431" 50
 F1 "SplitOutSelC.sch" 50
 F2 "Ins[0..10]" I L 3850 2000 50 
-F3 "SelCOut[0..2]" O R 5100 2000 50 
+F3 "SelC_EX[0..2]" O R 5100 2000 50 
 $EndSheet
 $Sheet
 S 3850 2400 1250 700 
@@ -347,29 +347,29 @@ B[0..15]
 Text HLabel 1050 5300 0    50   Input ~ 0
 A[0..15]
 Text Label 2950 1100 3    50   ~ 0
-Ctl_ID_EX5
+Ctl_EX5
 Entry Wire Line
 	2750 1000 2850 1100
 Text Label 2850 1100 3    50   ~ 0
-Ctl_ID_EX6
+Ctl_EX6
 Entry Wire Line
 	2350 1000 2450 1100
 Text Label 2750 1100 3    50   ~ 0
-Ctl_ID_EX7
+Ctl_EX7
 Entry Wire Line
 	2450 1000 2550 1100
 Text Label 2650 1100 3    50   ~ 0
-Ctl_ID_EX8
+Ctl_EX8
 Entry Wire Line
 	2550 1000 2650 1100
 Text Label 2550 1100 3    50   ~ 0
-Ctl_ID_EX9
+Ctl_EX9
 Entry Wire Line
 	2650 1000 2750 1100
 Text Label 2450 1100 3    50   ~ 0
-Ctl_ID_EX10
+Ctl_EX10
 Text Label 2350 1100 3    50   ~ 0
-Ctl_ID_EX11
+Ctl_EX11
 Entry Wire Line
 	2250 1000 2350 1100
 Entry Wire Line
@@ -438,7 +438,7 @@ Wire Bus Line
 Entry Wire Line
 	2150 1000 2250 1100
 Text Label 2250 1100 3    50   ~ 0
-Ctl_ID_EX12
+Ctl_EX12
 Wire Wire Line
 	2250 1100 2250 1600
 Text HLabel 2250 1600 3    50   Output ~ 0
@@ -503,7 +503,7 @@ Wire Wire Line
 Entry Wire Line
 	3350 1000 3450 1100
 Text Label 3450 1100 3    50   ~ 0
-Ctl_ID_EX0
+Ctl_EX0
 Wire Wire Line
 	3450 1100 3450 1600
 Text HLabel 3450 1600 3    50   Output ~ 0
@@ -533,5 +533,5 @@ Wire Wire Line
 Wire Wire Line
 	2350 1100 2350 5900
 Wire Bus Line
-	1050 1000 5100 1000
+	1250 1000 5100 1000
 $EndSCHEMATC

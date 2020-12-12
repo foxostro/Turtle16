@@ -254,7 +254,7 @@ Wire Bus Line
 Wire Bus Line
 	9500 1100 9750 1100
 Text HLabel 9750 2000 2    50   Output ~ 0
-SelC[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	9500 2000 9750 2000
 $Sheet
@@ -275,8 +275,8 @@ F0 "sheet5FD8D6EB" 50
 F1 "Ctl_13_23_Register.sch" 50
 F2 "Ctl_MEM[13..20]" O R 9500 1100 50 
 F3 "Ctl_EX[13..20]" I L 7850 1100 50 
-F4 "SelCIn[0..2]" I L 7850 2000 50 
-F5 "SelC[0..2]" O R 9500 2000 50 
+F4 "SelC_EX[0..2]" I L 7850 2000 50 
+F5 "SelC_MEM[0..2]" O R 9500 2000 50 
 F6 "Phi1" I L 7850 1000 50 
 $EndSheet
 $Sheet
@@ -326,7 +326,7 @@ U 5FDDE44F
 F0 "sheet5FDDE431" 50
 F1 "SplitOutSelC.sch" 50
 F2 "Ins[0..10]" I L 3850 2000 50 
-F3 "SelCOut[0..2]" O R 5100 2000 50 
+F3 "SelC_EX[0..2]" O R 5100 2000 50 
 $EndSheet
 $Sheet
 S 3850 2400 1250 700 
@@ -445,8 +445,6 @@ Text HLabel 2250 1600 3    50   Output ~ 0
 ~J
 Wire Bus Line
 	5100 2000 7850 2000
-Text Notes 2700 7150 0    50   ~ 0
-TODO: does the timing work out for Jump?
 Wire Bus Line
 	3600 4600 1050 4600
 Wire Bus Line

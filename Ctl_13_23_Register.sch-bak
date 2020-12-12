@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 24 33
+Sheet 28 33
 Title "EX/MEM: Control Word Register"
 Date ""
 Rev ""
@@ -961,7 +961,7 @@ $EndComp
 Wire Wire Line
 	1350 7400 1350 7300
 Text HLabel 7550 2050 2    50   Output ~ 0
-Ctl_EX_MEM[13..20]
+Ctl_MEM[13..20]
 Text HLabel 5050 5400 0    50   Input ~ 0
 Phi1
 $Comp
@@ -1278,7 +1278,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 4400 6600 4500
 Text HLabel 3850 2100 0    50   Input ~ 0
-Ctl_ID_EX[13..20]
+Ctl_EX[13..20]
 Wire Wire Line
 	4800 2950 5200 2950
 Text Label 4800 4500 0    50   ~ 0
@@ -1301,33 +1301,33 @@ SelC[0..2]
 Wire Bus Line
 	8100 4400 6700 4400
 Text Label 6800 2450 2    50   ~ 0
-Ctl_EX_MEM13
+Ctl_MEM13
 Text Label 6800 2550 2    50   ~ 0
-Ctl_EX_MEM14
+Ctl_MEM14
 Text Label 6800 2650 2    50   ~ 0
-Ctl_EX_MEM15
+Ctl_MEM15
 Text Label 6800 2750 2    50   ~ 0
-Ctl_EX_MEM16
+Ctl_MEM16
 Text Label 6800 2850 2    50   ~ 0
-Ctl_EX_MEM17
+Ctl_MEM17
 Text Label 6800 2950 2    50   ~ 0
-Ctl_EX_MEM18
+Ctl_MEM18
 Text Label 6800 3050 2    50   ~ 0
-Ctl_EX_MEM19
+Ctl_MEM19
 Text Label 4800 3050 0    50   ~ 0
-Ctl_ID_EX19
+Ctl_EX19
 Text Label 4800 2950 0    50   ~ 0
-Ctl_ID_EX18
+Ctl_EX18
 Text Label 4800 2850 0    50   ~ 0
-Ctl_ID_EX17
+Ctl_EX17
 Text Label 4800 2750 0    50   ~ 0
-Ctl_ID_EX16
+Ctl_EX16
 Text Label 4800 2650 0    50   ~ 0
-Ctl_ID_EX15
+Ctl_EX15
 Text Label 4800 2550 0    50   ~ 0
-Ctl_ID_EX14
+Ctl_EX14
 Text Label 4800 2450 0    50   ~ 0
-Ctl_ID_EX13
+Ctl_EX13
 NoConn ~ 6200 4800
 NoConn ~ 6200 4900
 NoConn ~ 6200 5000
@@ -1572,13 +1572,13 @@ Wire Wire Line
 Entry Wire Line
 	6900 3050 6800 3150
 Text Label 6800 3150 2    50   ~ 0
-Ctl_EX_MEM20
+Ctl_MEM20
 Wire Wire Line
 	4800 3150 5200 3150
 Entry Wire Line
 	4700 3050 4800 3150
 Text Label 4800 3150 0    50   ~ 0
-Ctl_ID_EX20
+Ctl_EX20
 Wire Bus Line
 	4700 4400 4700 4600
 Wire Bus Line

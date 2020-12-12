@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 29 33
+Sheet 21 33
 Title "MEM"
 Date ""
 Rev ""
@@ -16,9 +16,9 @@ $EndDescr
 Text HLabel 2300 3900 0    50   Input ~ 0
 StoreOpIn[0..15]
 Text HLabel 2300 2300 0    50   Input ~ 0
-Ctl_EX_MEM[13..20]
+Ctl_MEM[13..20]
 Text HLabel 8800 2400 2    50   Output ~ 0
-Ctl_EX_MEM[16..20]
+Ctl_MEM[16..20]
 Text HLabel 8800 3800 2    50   Output ~ 0
 StoreOp[0..15]
 Entry Wire Line
@@ -30,11 +30,11 @@ Entry Bus Bus
 Wire Bus Line
 	6350 2400 8800 2400
 Text Label 6450 2400 0    50   ~ 0
-Ctl_EX_MEM[16..20]
+Ctl_MEM[16..20]
 Text Label 2950 2400 3    50   ~ 0
-Ctl_EX_MEM13
+Ctl_MEM13
 Text Label 2850 2400 3    50   ~ 0
-Ctl_EX_MEM14
+Ctl_MEM14
 Wire Bus Line
 	2300 3900 3950 3900
 Text HLabel 8800 3250 2    50   3State ~ 0
@@ -140,7 +140,7 @@ Wire Wire Line
 Entry Wire Line
 	2650 2300 2750 2400
 Text Label 2750 2400 3    50   ~ 0
-Ctl_EX_MEM15
+Ctl_MEM15
 Wire Wire Line
 	2750 2400 2750 3800
 Wire Wire Line

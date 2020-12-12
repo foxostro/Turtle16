@@ -1272,7 +1272,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 4500 6600 4600
 Text Label 6600 4500 2    50   ~ 0
-SelC0
+SelC_MEM0
 Wire Wire Line
 	6600 4500 6200 4500
 Entry Wire Line
@@ -1282,22 +1282,22 @@ Ctl_EX[13..20]
 Wire Wire Line
 	4800 2950 5200 2950
 Text Label 4800 4500 0    50   ~ 0
-SelCIn0
+SelC_EX0
 Text HLabel 3300 4400 0    50   Input ~ 0
-SelCIn[0..2]
+SelC_EX[0..2]
 Wire Bus Line
 	3300 4400 4700 4400
 Text Label 4800 4600 0    50   ~ 0
-SelCIn1
+SelC_EX1
 Text Label 4800 4700 0    50   ~ 0
-SelCIn2
+SelC_EX2
 NoConn ~ 6200 5200
 Text Label 6600 4600 2    50   ~ 0
-SelC1
+SelC_MEM1
 Text Label 6600 4700 2    50   ~ 0
-SelC2
+SelC_MEM2
 Text HLabel 8100 4400 2    50   Output ~ 0
-SelC[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	8100 4400 6700 4400
 Text Label 6800 2450 2    50   ~ 0

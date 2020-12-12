@@ -32,13 +32,13 @@ Entry Wire Line
 Entry Wire Line
 	4600 3550 4700 3650
 Text Label 5150 3700 3    50   ~ 0
-Ctl_MEM_WB18
+Ctl_WB18
 Text Label 5000 3700 3    50   ~ 0
-Ctl_MEM_WB19
+Ctl_WB19
 Text Label 4700 3700 3    50   ~ 0
-Ctl_MEM_WB16
+Ctl_WB16
 Text Label 4550 3700 3    50   ~ 0
-Ctl_MEM_WB17
+Ctl_WB17
 Wire Wire Line
 	5150 3650 5150 4300
 Wire Wire Line
@@ -60,11 +60,11 @@ Text HLabel 9150 4400 2    50   Output ~ 0
 Wire Bus Line
 	7650 4850 9150 4850
 Text HLabel 1400 3550 0    50   Input ~ 0
-Ctl_EX_MEM[16..20]
+Ctl_MEM[16..20]
 Wire Bus Line
 	1400 3550 1850 3550
 Text HLabel 3800 3650 2    50   Output ~ 0
-SelC[0..2]
+SelC_WB[0..2]
 Wire Bus Line
 	3600 3650 3800 3650
 $Sheet
@@ -82,13 +82,13 @@ U 5FE6C11D
 F0 "sheet5FE6C102" 50
 F1 "Ctl_15_23_Register.sch" 50
 F2 "Phi1" I L 1850 3450 50 
-F3 "SelCIn[0..2]" I L 1850 3650 50 
-F4 "SelC[0..2]" O R 3600 3650 50 
-F5 "Ctl_MEM_WB[16..20]" O R 3600 3550 50 
-F6 "Ctl_EX_MEM[16..20]" I L 1850 3550 50 
+F3 "SelC_MEM[0..2]" I L 1850 3650 50 
+F4 "SelC_WB[0..2]" O R 3600 3650 50 
+F5 "Ctl_WB[16..20]" O R 3600 3550 50 
+F6 "Ctl_MEM[16..20]" I L 1850 3550 50 
 $EndSheet
 Text HLabel 1400 3650 0    50   Input ~ 0
-SelCIn[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	1850 3650 1400 3650
 Wire Wire Line
@@ -122,11 +122,11 @@ Wire Wire Line
 Wire Wire Line
 	6300 4750 6400 4750
 Text Label 3850 3550 0    50   ~ 0
-Ctl_MEM_WB[16..20]
+Ctl_WB[16..20]
 Entry Wire Line
 	4750 3550 4850 3650
 Text Label 4850 3700 3    50   ~ 0
-Ctl_MEM_WB20
+Ctl_WB20
 Wire Wire Line
 	4700 4850 6400 4850
 Wire Wire Line

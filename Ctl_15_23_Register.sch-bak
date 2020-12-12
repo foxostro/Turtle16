@@ -324,7 +324,7 @@ Wire Wire Line
 Entry Wire Line
 	6750 3350 6650 3450
 Text Label 6650 3350 2    50   ~ 0
-Ctl_MEM_WB16
+Ctl_WB16
 Wire Wire Line
 	6650 3350 6050 3350
 Entry Wire Line
@@ -720,7 +720,7 @@ $EndComp
 Wire Wire Line
 	850  7450 850  7350
 Text HLabel 7400 3050 2    50   Output ~ 0
-Ctl_MEM_WB[16..20]
+Ctl_WB[16..20]
 Entry Wire Line
 	4250 3950 4350 4050
 Entry Wire Line
@@ -733,44 +733,44 @@ Wire Wire Line
 	6650 3950 6050 3950
 Entry Wire Line
 	6750 3850 6650 3950
-Text Label 6450 3850 2    50   ~ 0
-SelC0
+Text Label 6650 3850 2    50   ~ 0
+SelC_WB0
 Wire Wire Line
 	6650 3850 6050 3850
 Text HLabel 3700 3100 0    50   Input ~ 0
-Ctl_EX_MEM[16..20]
+Ctl_MEM[16..20]
 Text Label 4350 3850 0    50   ~ 0
-SelCIn0
+SelC_MEM0
 Text HLabel 3700 3750 0    50   Input ~ 0
-SelCIn[0..2]
+SelC_MEM[0..2]
 Wire Bus Line
 	3700 3750 4250 3750
 Text Label 4350 3950 0    50   ~ 0
-SelCIn1
+SelC_MEM1
 Text Label 4350 4050 0    50   ~ 0
-SelCIn2
-Text Label 6450 3950 2    50   ~ 0
-SelC1
-Text Label 6450 4050 2    50   ~ 0
-SelC2
+SelC_MEM2
+Text Label 6650 3950 2    50   ~ 0
+SelC_WB1
+Text Label 6650 4050 2    50   ~ 0
+SelC_WB2
 Text HLabel 7400 3750 2    50   Output ~ 0
-SelC[0..2]
+SelC_WB[0..2]
 Wire Bus Line
 	7400 3750 6750 3750
 Text Label 6650 3450 2    50   ~ 0
-Ctl_MEM_WB17
+Ctl_WB17
 Text Label 6650 3550 2    50   ~ 0
-Ctl_MEM_WB18
+Ctl_WB18
 Text Label 6650 3650 2    50   ~ 0
-Ctl_MEM_WB19
+Ctl_WB19
 Text Label 4350 3650 0    50   ~ 0
-Ctl_EX_MEM19
+Ctl_MEM19
 Text Label 4350 3550 0    50   ~ 0
-Ctl_EX_MEM18
+Ctl_MEM18
 Text Label 4350 3450 0    50   ~ 0
-Ctl_EX_MEM17
+Ctl_MEM17
 Text Label 4350 3350 0    50   ~ 0
-Ctl_EX_MEM16
+Ctl_MEM16
 Entry Wire Line
 	4250 3750 4350 3850
 Wire Wire Line
@@ -786,13 +786,13 @@ Wire Wire Line
 Entry Wire Line
 	4250 3650 4350 3750
 Text Label 4350 3750 0    50   ~ 0
-Ctl_EX_MEM20
+Ctl_MEM20
 Wire Wire Line
 	6650 3750 6050 3750
 Entry Wire Line
 	6750 3650 6650 3750
 Text Label 6650 3750 2    50   ~ 0
-Ctl_MEM_WB20
+Ctl_WB20
 Wire Bus Line
 	6750 3750 6750 3950
 Wire Bus Line

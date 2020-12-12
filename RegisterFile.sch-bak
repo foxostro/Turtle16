@@ -17,8 +17,8 @@ Text HLabel 2000 2800 0    50   Input ~ 0
 ~WRH
 Text HLabel 2000 2700 0    50   Input ~ 0
 ~WRL
-Text HLabel 2000 2900 0    50   Input ~ 0
-SelC[0..2]
+Text HLabel 1850 2900 0    50   Input ~ 0
+SelC_WB[0..2]
 Entry Wire Line
 	2150 5000 2250 5100
 Entry Wire Line
@@ -54,25 +54,19 @@ Wire Wire Line
 Wire Wire Line
 	2550 2800 2000 2800
 Entry Wire Line
-	2150 2900 2250 3000
-Wire Wire Line
-	2250 3000 2550 3000
-Text Label 2250 3000 0    50   ~ 0
-SelC0
+	2000 2900 2100 3000
+Text Label 2100 3000 0    50   ~ 0
+SelC_WB0
 Entry Wire Line
-	2150 3000 2250 3100
-Text Label 2250 3100 0    50   ~ 0
-SelC1
+	2000 3000 2100 3100
+Text Label 2100 3100 0    50   ~ 0
+SelC_WB1
 Wire Bus Line
-	2000 2900 2150 2900
+	1850 2900 2000 2900
 Entry Wire Line
-	2150 3100 2250 3200
-Wire Wire Line
-	2550 3100 2250 3100
-Wire Wire Line
-	2250 3200 2550 3200
-Text Label 2250 3200 0    50   ~ 0
-SelC2
+	2000 3100 2100 3200
+Text Label 2100 3200 0    50   ~ 0
+SelC_WB2
 Text HLabel 4900 4200 2    50   Output ~ 0
 A[0..15]
 Entry Wire Line
@@ -171,7 +165,7 @@ Wire Wire Line
 	4650 5000 4350 5000
 Text Label 4650 5000 2    50   ~ 0
 A7
-Text HLabel 4900 2900 2    50   Input ~ 0
+Text HLabel 4900 2750 2    50   Input ~ 0
 SelA[0..2]
 Entry Wire Line
 	4750 2900 4650 3000
@@ -184,7 +178,7 @@ Entry Wire Line
 Text Label 4650 3100 2    50   ~ 0
 SelA1
 Wire Bus Line
-	4900 2900 4750 2900
+	4900 2750 4750 2750
 Entry Wire Line
 	4750 3100 4650 3200
 Wire Wire Line
@@ -751,8 +745,6 @@ Text HLabel 6050 2800 0    50   Input ~ 0
 ~WRH
 Text HLabel 6050 2700 0    50   Input ~ 0
 ~WRL
-Text HLabel 6050 2900 0    50   Input ~ 0
-SelC[0..2]
 Entry Wire Line
 	6200 5000 6300 5100
 Entry Wire Line
@@ -787,26 +779,6 @@ Wire Wire Line
 	6600 2700 6050 2700
 Wire Wire Line
 	6600 2800 6050 2800
-Entry Wire Line
-	6200 2900 6300 3000
-Wire Wire Line
-	6300 3000 6600 3000
-Text Label 6300 3000 0    50   ~ 0
-SelC0
-Entry Wire Line
-	6200 3000 6300 3100
-Text Label 6300 3100 0    50   ~ 0
-SelC1
-Wire Bus Line
-	6050 2900 6200 2900
-Entry Wire Line
-	6200 3100 6300 3200
-Wire Wire Line
-	6600 3100 6300 3100
-Wire Wire Line
-	6300 3200 6600 3200
-Text Label 6300 3200 0    50   ~ 0
-SelC2
 Text HLabel 8950 4200 2    50   Output ~ 0
 B[0..15]
 Entry Wire Line
@@ -1425,14 +1397,42 @@ Text HLabel 6050 2500 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
 	6600 2500 6050 2500
+Wire Wire Line
+	2100 3000 2550 3000
+Wire Wire Line
+	2100 3100 2550 3100
+Wire Wire Line
+	2100 3200 2550 3200
+Text HLabel 5900 2900 0    50   Input ~ 0
+SelC_WB[0..2]
+Entry Wire Line
+	6050 2900 6150 3000
+Text Label 6150 3000 0    50   ~ 0
+SelC_WB0
+Entry Wire Line
+	6050 3000 6150 3100
+Text Label 6150 3100 0    50   ~ 0
+SelC_WB1
 Wire Bus Line
-	2150 2900 2150 3100
+	5900 2900 6050 2900
+Entry Wire Line
+	6050 3100 6150 3200
+Text Label 6150 3200 0    50   ~ 0
+SelC_WB2
+Wire Wire Line
+	6150 3000 6600 3000
+Wire Wire Line
+	6150 3100 6600 3100
+Wire Wire Line
+	6150 3200 6600 3200
 Wire Bus Line
-	4750 2900 4750 3100
-Wire Bus Line
-	6200 2900 6200 3100
+	2000 2900 2000 3100
 Wire Bus Line
 	8800 2900 8800 3100
+Wire Bus Line
+	6050 2900 6050 3100
+Wire Bus Line
+	4750 2750 4750 3100
 Wire Bus Line
 	2150 4200 2150 5700
 Wire Bus Line

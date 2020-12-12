@@ -295,7 +295,7 @@ F0 "IF" 50
 F1 "IF.sch" 50
 F2 "Ins_ID[0..15]" O R 7350 1750 50 
 F3 "PC_EX[0..15]" O R 7350 1850 50 
-F4 "Offset[0..15]" I L 6050 1750 50 
+F4 "Y_EX[0..15]" I L 6050 1750 50 
 F5 "~J" I L 6050 1850 50 
 $EndSheet
 Wire Bus Line

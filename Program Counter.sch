@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 19 34
+Sheet 17 34
 Title "Program Counter"
 Date ""
 Rev ""
@@ -514,13 +514,13 @@ NoConn ~ 2550 6100
 NoConn ~ 2550 6200
 NoConn ~ 2550 6300
 Text HLabel 1750 3300 0    50   Input ~ 0
-Offset[0..15]
+Y_EX[0..15]
 Text Notes 900  2450 0    50   ~ 0
 Configure the ALU for FTAB=0 and FTF=1. This causes the A and B registers\nto update on the clock.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in F on the rising edge of the clock regardless\nof then contents of the A and B registers. This resets the program counter to\nzero.\n\nWhen incrementing (normal operation), set the ALU to RS1=0, RS0=1, I2=0,\nI1=1, I0=1, C0=1. The ALU computes F = A + 0 + C0. Since A is hardwired to\nthe output of F, this computes PC = PC + 1.\n\nWhen jumping, set the ALU to RS1=1, RS0=1, I2=0, I1=1, I0=1, C0=0. The ALU\ncomputes F = A + B. Since the B port gets its value from the EX result of the\nthe EX stage, this computes PC = PC + offset.
 Text Label 4400 3500 0    50   ~ 0
-Offset0
+Y_EX0
 Text Label 4400 3600 0    50   ~ 0
-Offset1
+Y_EX1
 Wire Bus Line
 	4250 3300 1750 3300
 Entry Wire Line
@@ -528,73 +528,73 @@ Entry Wire Line
 Wire Wire Line
 	4350 5000 4950 5000
 Text Label 4400 5000 0    50   ~ 0
-Offset15
+Y_EX15
 Entry Wire Line
 	4350 4900 4250 4800
 Wire Wire Line
 	4350 4900 4950 4900
 Text Label 4400 4900 0    50   ~ 0
-Offset14
+Y_EX14
 Entry Wire Line
 	4350 4800 4250 4700
 Wire Wire Line
 	4350 4800 4950 4800
 Text Label 4400 4800 0    50   ~ 0
-Offset13
+Y_EX13
 Entry Wire Line
 	4350 4700 4250 4600
 Wire Wire Line
 	4350 4700 4950 4700
 Text Label 4400 4700 0    50   ~ 0
-Offset12
+Y_EX12
 Entry Wire Line
 	4350 4600 4250 4500
 Wire Wire Line
 	4350 4600 4950 4600
 Text Label 4400 4600 0    50   ~ 0
-Offset11
+Y_EX11
 Entry Wire Line
 	4350 4500 4250 4400
 Wire Wire Line
 	4350 4500 4950 4500
 Text Label 4400 4500 0    50   ~ 0
-Offset10
+Y_EX10
 Entry Wire Line
 	4350 4400 4250 4300
 Wire Wire Line
 	4350 4400 4950 4400
 Text Label 4400 4400 0    50   ~ 0
-Offset9
+Y_EX9
 Entry Wire Line
 	4350 4300 4250 4200
 Wire Wire Line
 	4350 4300 4950 4300
 Text Label 4400 4300 0    50   ~ 0
-Offset8
+Y_EX8
 Entry Wire Line
 	4350 4200 4250 4100
 Wire Wire Line
 	4350 4200 4950 4200
 Text Label 4400 4200 0    50   ~ 0
-Offset7
+Y_EX7
 Entry Wire Line
 	4350 4100 4250 4000
 Wire Wire Line
 	4350 4100 4950 4100
 Text Label 4400 4100 0    50   ~ 0
-Offset6
+Y_EX6
 Entry Wire Line
 	4350 4000 4250 3900
 Wire Wire Line
 	4350 4000 4950 4000
 Text Label 4400 4000 0    50   ~ 0
-Offset5
+Y_EX5
 Entry Wire Line
 	4350 3900 4250 3800
 Wire Wire Line
 	4350 3900 4950 3900
 Text Label 4400 3900 0    50   ~ 0
-Offset4
+Y_EX4
 Entry Wire Line
 	4350 3500 4250 3400
 Wire Wire Line
@@ -608,13 +608,13 @@ Entry Wire Line
 Wire Wire Line
 	4350 3700 4950 3700
 Text Label 4400 3700 0    50   ~ 0
-Offset2
+Y_EX2
 Entry Wire Line
 	4350 3800 4250 3700
 Wire Wire Line
 	4350 3800 4950 3800
 Text Label 4400 3800 0    50   ~ 0
-Offset3
+Y_EX3
 Text Label 4400 2100 0    50   ~ 0
 PC3
 Wire Wire Line
@@ -740,4 +740,6 @@ Wire Bus Line
 	4250 1350 4250 3200
 Wire Bus Line
 	4250 3300 4250 4900
+Text Notes 900  2800 0    50   ~ 0
+TODO: We absolutely need an absolute jump for returning from a procedure.
 $EndSCHEMATC

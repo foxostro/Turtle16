@@ -143,9 +143,9 @@ Text HLabel 9150 3050 2    50   Output ~ 0
 Wire Bus Line
 	3200 2600 4100 2600
 Text GLabel 5050 4500 0    50   Input ~ 0
-Phi1d
+Phi1c
 Text GLabel 2750 5350 0    50   Input ~ 0
-Phi1d
+Phi1c
 Text GLabel 1400 3450 0    50   Input ~ 0
-Phi1d
+Phi1c
 $EndSCHEMATC

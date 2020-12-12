@@ -211,8 +211,6 @@ Text Notes 7600 4150 0    50   ~ 0
 The A port supplies the Left operand.
 Text Notes 7600 4650 0    50   ~ 0
 The B port supplies the Right operand.
-Wire Bus Line
-	2200 2150 5200 2150
 Text GLabel 2900 3150 0    50   Input ~ 0
 ~RST
 Text GLabel 6550 4150 0    50   Input ~ 0
@@ -223,4 +221,6 @@ Text GLabel 5100 2650 0    50   Input ~ 0
 Phi1a
 Text GLabel 5100 2050 0    50   Input ~ 0
 Phi1b
+Wire Bus Line
+	2200 2150 5200 2150
 $EndSCHEMATC

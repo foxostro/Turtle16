@@ -829,8 +829,6 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74F161ADR?qs=KaAww
 	1    4800 5500
 	1    0    0    -1  
 $EndComp
-Text Label 9800 1400 0    50   ~ 0
-Phi2
 Text Label 9800 1300 0    50   ~ 0
 Phi1
 Text Label 3900 5800 0    50   ~ 0
@@ -1573,10 +1571,6 @@ Text GLabel 10100 5200 2    50   Output ~ 0
 Phi1a
 Text GLabel 10100 5300 2    50   Output ~ 0
 Phi1b
-Text GLabel 10100 5400 2    50   Output ~ 0
-Phi1c
-Text GLabel 10100 5500 2    50   Output ~ 0
-Phi1d
 Text GLabel 10100 5700 2    50   Output ~ 0
 Phi2
 Connection ~ 8500 2200
@@ -1601,8 +1595,6 @@ Wire Wire Line
 	8400 5300 10100 5300
 Wire Wire Line
 	8400 5400 10100 5400
-Wire Wire Line
-	8400 5500 10100 5500
 Wire Wire Line
 	7400 5600 7350 5600
 Wire Wire Line
@@ -1679,4 +1671,7 @@ Wire Wire Line
 	6950 5850 6650 5850
 Wire Wire Line
 	6650 5850 6650 5900
+Text GLabel 10100 5400 2    50   Output ~ 0
+Phi1c
+NoConn ~ 8400 5500
 $EndSCHEMATC

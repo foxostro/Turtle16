@@ -108,56 +108,56 @@ F 3 "" H 4900 3100 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4750 3000 4900 3000
-Text Label 4700 2800 2    50   ~ 0
-D7
+Text Label 4400 2800 0    50   ~ 0
+SystemBus7
 Wire Wire Line
-	4500 2800 4900 2800
+	4400 2800 4900 2800
 Entry Wire Line
-	4400 2700 4500 2800
-Text Label 4700 2700 2    50   ~ 0
-D6
+	4300 2700 4400 2800
+Text Label 4400 2700 0    50   ~ 0
+SystemBus6
 Wire Wire Line
-	4500 2700 4900 2700
+	4400 2700 4900 2700
 Entry Wire Line
-	4400 2600 4500 2700
-Text Label 4700 2600 2    50   ~ 0
-D5
+	4300 2600 4400 2700
+Text Label 4400 2600 0    50   ~ 0
+SystemBus5
 Wire Wire Line
-	4500 2600 4900 2600
+	4400 2600 4900 2600
 Entry Wire Line
-	4400 2500 4500 2600
-Text Label 4700 2500 2    50   ~ 0
-D4
+	4300 2500 4400 2600
+Text Label 4400 2500 0    50   ~ 0
+SystemBus4
 Wire Wire Line
-	4500 2500 4900 2500
+	4400 2500 4900 2500
 Entry Wire Line
-	4400 2400 4500 2500
-Text Label 4700 2400 2    50   ~ 0
-D3
+	4300 2400 4400 2500
+Text Label 4400 2400 0    50   ~ 0
+SystemBus3
 Wire Wire Line
-	4500 2400 4900 2400
+	4400 2400 4900 2400
 Entry Wire Line
-	4400 2300 4500 2400
-Text Label 4700 2300 2    50   ~ 0
-D2
+	4300 2300 4400 2400
+Text Label 4400 2300 0    50   ~ 0
+SystemBus2
 Wire Wire Line
-	4500 2300 4900 2300
+	4400 2300 4900 2300
 Entry Wire Line
-	4400 2200 4500 2300
-Text Label 4700 2200 2    50   ~ 0
-D1
+	4300 2200 4400 2300
+Text Label 4400 2200 0    50   ~ 0
+SystemBus1
 Wire Wire Line
-	4500 2200 4900 2200
+	4400 2200 4900 2200
 Entry Wire Line
-	4400 2100 4500 2200
-Text Label 4700 2100 2    50   ~ 0
-D0
+	4300 2100 4400 2200
+Text Label 4400 2100 0    50   ~ 0
+SystemBus0
 Wire Wire Line
-	4500 2100 4900 2100
+	4400 2100 4900 2100
 Entry Wire Line
-	4400 2000 4500 2100
+	4300 2000 4400 2100
 Wire Bus Line
-	3550 1850 4400 1850
+	3550 1850 4300 1850
 $Comp
 L power:GND #PWR?
 U 1 1 60531250
@@ -341,57 +341,57 @@ F 3 "" H 5400 1800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text HLabel 3550 1850 0    50   Input ~ 0
-D[0..15]
-Text Label 6100 2800 0    50   ~ 0
-Q7
+SystemBus[0..15]
+Text Label 6450 2800 2    50   ~ 0
+StoreOp_WB7
 Wire Wire Line
-	6300 2800 5900 2800
+	6450 2800 5900 2800
 Entry Wire Line
-	6400 2700 6300 2800
-Text Label 6100 2700 0    50   ~ 0
-Q6
+	6550 2700 6450 2800
+Text Label 6450 2700 2    50   ~ 0
+StoreOp_WB6
 Wire Wire Line
-	6300 2700 5900 2700
+	6450 2700 5900 2700
 Entry Wire Line
-	6400 2600 6300 2700
-Text Label 6100 2600 0    50   ~ 0
-Q5
+	6550 2600 6450 2700
+Text Label 6450 2600 2    50   ~ 0
+StoreOp_WB5
 Wire Wire Line
-	6300 2600 5900 2600
+	6450 2600 5900 2600
 Entry Wire Line
-	6400 2500 6300 2600
-Text Label 6100 2500 0    50   ~ 0
-Q4
+	6550 2500 6450 2600
+Text Label 6450 2500 2    50   ~ 0
+StoreOp_WB4
 Wire Wire Line
-	6300 2500 5900 2500
+	6450 2500 5900 2500
 Entry Wire Line
-	6400 2400 6300 2500
-Text Label 6100 2400 0    50   ~ 0
-Q3
+	6550 2400 6450 2500
+Text Label 6450 2400 2    50   ~ 0
+StoreOp_WB3
 Wire Wire Line
-	6300 2400 5900 2400
+	6450 2400 5900 2400
 Entry Wire Line
-	6400 2300 6300 2400
-Text Label 6100 2300 0    50   ~ 0
-Q2
+	6550 2300 6450 2400
+Text Label 6450 2300 2    50   ~ 0
+StoreOp_WB2
 Wire Wire Line
-	6300 2300 5900 2300
+	6450 2300 5900 2300
 Entry Wire Line
-	6400 2200 6300 2300
-Text Label 6100 2200 0    50   ~ 0
-Q1
+	6550 2200 6450 2300
+Text Label 6450 2200 2    50   ~ 0
+StoreOp_WB1
 Wire Wire Line
-	6300 2200 5900 2200
+	6450 2200 5900 2200
 Entry Wire Line
-	6400 2100 6300 2200
-Text Label 6100 2100 0    50   ~ 0
-Q0
+	6550 2100 6450 2200
+Text Label 6450 2100 2    50   ~ 0
+StoreOp_WB0
 Wire Wire Line
-	6300 2100 5900 2100
+	6450 2100 5900 2100
 Entry Wire Line
-	6400 2000 6300 2100
+	6550 2000 6450 2100
 Wire Bus Line
-	7250 1800 6400 1800
+	7250 1800 6550 1800
 $Comp
 L 74xx:74LS574 U?
 U 1 1 60531276
@@ -1159,54 +1159,54 @@ F 3 "" H 4900 5150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4750 5050 4900 5050
-Text Label 4700 4850 2    50   ~ 0
-D15
+Text Label 4400 4850 0    50   ~ 0
+SystemBus15
 Wire Wire Line
-	4500 4850 4900 4850
+	4400 4850 4900 4850
 Entry Wire Line
-	4400 4750 4500 4850
-Text Label 4700 4750 2    50   ~ 0
-D14
+	4300 4750 4400 4850
+Text Label 4400 4750 0    50   ~ 0
+SystemBus14
 Wire Wire Line
-	4500 4750 4900 4750
+	4400 4750 4900 4750
 Entry Wire Line
-	4400 4650 4500 4750
-Text Label 4700 4650 2    50   ~ 0
-D13
+	4300 4650 4400 4750
+Text Label 4400 4650 0    50   ~ 0
+SystemBus13
 Wire Wire Line
-	4500 4650 4900 4650
+	4400 4650 4900 4650
 Entry Wire Line
-	4400 4550 4500 4650
-Text Label 4700 4550 2    50   ~ 0
-D12
+	4300 4550 4400 4650
+Text Label 4400 4550 0    50   ~ 0
+SystemBus12
 Wire Wire Line
-	4500 4550 4900 4550
+	4400 4550 4900 4550
 Entry Wire Line
-	4400 4450 4500 4550
-Text Label 4700 4450 2    50   ~ 0
-D11
+	4300 4450 4400 4550
+Text Label 4400 4450 0    50   ~ 0
+SystemBus11
 Wire Wire Line
-	4500 4450 4900 4450
+	4400 4450 4900 4450
 Entry Wire Line
-	4400 4350 4500 4450
-Text Label 4700 4350 2    50   ~ 0
-D10
+	4300 4350 4400 4450
+Text Label 4400 4350 0    50   ~ 0
+SystemBus10
 Wire Wire Line
-	4500 4350 4900 4350
+	4400 4350 4900 4350
 Entry Wire Line
-	4400 4250 4500 4350
-Text Label 4700 4250 2    50   ~ 0
-D9
+	4300 4250 4400 4350
+Text Label 4400 4250 0    50   ~ 0
+SystemBus9
 Wire Wire Line
-	4500 4250 4900 4250
+	4400 4250 4900 4250
 Entry Wire Line
-	4400 4150 4500 4250
-Text Label 4700 4150 2    50   ~ 0
-D8
+	4300 4150 4400 4250
+Text Label 4400 4150 0    50   ~ 0
+SystemBus8
 Wire Wire Line
-	4500 4150 4900 4150
+	4400 4150 4900 4150
 Entry Wire Line
-	4400 4050 4500 4150
+	4300 4050 4400 4150
 $Comp
 L power:GND #PWR?
 U 1 1 605312C2
@@ -1389,54 +1389,54 @@ F 3 "" H 5400 3850 50  0001 C CNN
 	1    5400 3850
 	1    0    0    -1  
 $EndComp
-Text Label 6100 4850 0    50   ~ 0
-Q15
+Text Label 6450 4850 2    50   ~ 0
+StoreOp_WB15
 Wire Wire Line
-	6300 4850 5900 4850
+	6450 4850 5900 4850
 Entry Wire Line
-	6400 4750 6300 4850
-Text Label 6100 4750 0    50   ~ 0
-Q14
+	6550 4750 6450 4850
+Text Label 6450 4750 2    50   ~ 0
+StoreOp_WB14
 Wire Wire Line
-	6300 4750 5900 4750
+	6450 4750 5900 4750
 Entry Wire Line
-	6400 4650 6300 4750
-Text Label 6100 4650 0    50   ~ 0
-Q13
+	6550 4650 6450 4750
+Text Label 6450 4650 2    50   ~ 0
+StoreOp_WB13
 Wire Wire Line
-	6300 4650 5900 4650
+	6450 4650 5900 4650
 Entry Wire Line
-	6400 4550 6300 4650
-Text Label 6100 4550 0    50   ~ 0
-Q12
+	6550 4550 6450 4650
+Text Label 6450 4550 2    50   ~ 0
+StoreOp_WB12
 Wire Wire Line
-	6300 4550 5900 4550
+	6450 4550 5900 4550
 Entry Wire Line
-	6400 4450 6300 4550
-Text Label 6100 4450 0    50   ~ 0
-Q11
+	6550 4450 6450 4550
+Text Label 6450 4450 2    50   ~ 0
+StoreOp_WB11
 Wire Wire Line
-	6300 4450 5900 4450
+	6450 4450 5900 4450
 Entry Wire Line
-	6400 4350 6300 4450
-Text Label 6100 4350 0    50   ~ 0
-Q10
+	6550 4350 6450 4450
+Text Label 6450 4350 2    50   ~ 0
+StoreOp_WB10
 Wire Wire Line
-	6300 4350 5900 4350
+	6450 4350 5900 4350
 Entry Wire Line
-	6400 4250 6300 4350
-Text Label 6100 4250 0    50   ~ 0
-Q9
+	6550 4250 6450 4350
+Text Label 6450 4250 2    50   ~ 0
+StoreOp_WB9
 Wire Wire Line
-	6300 4250 5900 4250
+	6450 4250 5900 4250
 Entry Wire Line
-	6400 4150 6300 4250
-Text Label 6100 4150 0    50   ~ 0
-Q8
+	6550 4150 6450 4250
+Text Label 6450 4150 2    50   ~ 0
+StoreOp_WB8
 Wire Wire Line
-	6300 4150 5900 4150
+	6450 4150 5900 4150
 Entry Wire Line
-	6400 4050 6300 4150
+	6550 4050 6450 4150
 $Comp
 L 74xx:74LS574 U?
 U 1 1 605312E6
@@ -1534,9 +1534,9 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0O
 	1    0    0    -1  
 $EndComp
 Text HLabel 7250 1800 2    50   Output ~ 0
-Q[0..15]
+StoreOp_WB[0..15]
 Wire Bus Line
-	4400 1850 4400 4750
+	4300 1850 4300 4750
 Wire Bus Line
-	6400 1800 6400 4750
+	6550 1800 6550 4750
 $EndSCHEMATC

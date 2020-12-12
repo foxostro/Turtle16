@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 31 33
+Sheet 30 33
 Title "Select Store Operand"
 Date ""
 Rev ""
@@ -1891,103 +1891,101 @@ F 3 "" H 6200 4450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	9900 2200 9500 2200
+	10000 2200 9500 2200
 Entry Wire Line
-	10000 3650 9900 3550
+	10100 3650 10000 3550
 Wire Wire Line
-	9900 2100 9500 2100
+	10000 2100 9500 2100
 Entry Wire Line
-	10000 3750 9900 3650
+	10100 3750 10000 3650
 Wire Wire Line
-	9900 2000 9500 2000
+	10000 2000 9500 2000
 Entry Wire Line
-	10000 3850 9900 3750
+	10100 3850 10000 3750
 Wire Wire Line
-	9900 1900 9500 1900
+	10000 1900 9500 1900
 Entry Wire Line
-	10000 3950 9900 3850
+	10100 3950 10000 3850
 Wire Wire Line
-	9900 1800 9500 1800
+	10000 1800 9500 1800
 Entry Wire Line
-	10000 4050 9900 3950
+	10100 4050 10000 3950
 Wire Wire Line
-	9900 1700 9500 1700
+	10000 1700 9500 1700
 Entry Wire Line
-	10000 4150 9900 4050
+	10100 4150 10000 4050
 Wire Wire Line
-	9900 1600 9500 1600
+	10000 1600 9500 1600
 Entry Wire Line
-	10000 4250 9900 4150
-Text Label 9900 1500 2    50   ~ 0
-StoreOp0
+	10100 4250 10000 4150
+Text Label 10000 1500 2    50   ~ 0
+StoreOp_EX0
 Wire Wire Line
-	9900 1500 9500 1500
+	10000 1500 9500 1500
 Entry Wire Line
-	10000 4350 9900 4250
+	10100 4350 10000 4250
 Wire Wire Line
-	9900 4250 9500 4250
+	10000 4250 9500 4250
 Entry Wire Line
-	10000 1600 9900 1500
+	10100 1600 10000 1500
 Wire Wire Line
-	9900 4150 9500 4150
+	10000 4150 9500 4150
 Entry Wire Line
-	10000 1700 9900 1600
+	10100 1700 10000 1600
 Wire Wire Line
-	9900 4050 9500 4050
+	10000 4050 9500 4050
 Entry Wire Line
-	10000 1800 9900 1700
+	10100 1800 10000 1700
 Wire Wire Line
-	9900 3950 9500 3950
+	10000 3950 9500 3950
 Entry Wire Line
-	10000 1900 9900 1800
+	10100 1900 10000 1800
 Wire Wire Line
-	9900 3850 9500 3850
+	10000 3850 9500 3850
 Entry Wire Line
-	10000 2000 9900 1900
+	10100 2000 10000 1900
 Wire Wire Line
-	9900 3750 9500 3750
+	10000 3750 9500 3750
 Entry Wire Line
-	10000 2100 9900 2000
+	10100 2100 10000 2000
 Wire Wire Line
-	9900 3650 9500 3650
+	10000 3650 9500 3650
 Entry Wire Line
-	10000 2200 9900 2100
+	10100 2200 10000 2100
 Wire Wire Line
-	9900 3550 9500 3550
+	10000 3550 9500 3550
 Entry Wire Line
-	10000 2300 9900 2200
-Text Label 9900 1600 2    50   ~ 0
-StoreOp1
-Text Label 9900 1700 2    50   ~ 0
-StoreOp2
-Text Label 9900 1800 2    50   ~ 0
-StoreOp3
-Text Label 9900 1900 2    50   ~ 0
-StoreOp4
-Text Label 9900 2000 2    50   ~ 0
-StoreOp5
-Text Label 9900 2100 2    50   ~ 0
-StoreOp6
-Text Label 9900 2200 2    50   ~ 0
-StoreOp7
-Text Label 9900 3550 2    50   ~ 0
-StoreOp8
-Text Label 9900 3650 2    50   ~ 0
-StoreOp9
-Text Label 9900 3750 2    50   ~ 0
-StoreOp10
-Text Label 9900 3850 2    50   ~ 0
-StoreOp11
-Text Label 9900 3950 2    50   ~ 0
-StoreOp12
-Text Label 9900 4050 2    50   ~ 0
-StoreOp13
-Text Label 9900 4150 2    50   ~ 0
-StoreOp14
-Text Label 9900 4250 2    50   ~ 0
-StoreOp15
-Text HLabel 10000 4500 3    50   Output ~ 0
-StoreOp[0..15]
+	10100 2300 10000 2200
+Text Label 10000 1600 2    50   ~ 0
+StoreOp_EX1
+Text Label 10000 1700 2    50   ~ 0
+StoreOp_EX2
+Text Label 10000 1800 2    50   ~ 0
+StoreOp_EX3
+Text Label 10000 1900 2    50   ~ 0
+StoreOp_EX4
+Text Label 10000 2000 2    50   ~ 0
+StoreOp_EX5
+Text Label 10000 2100 2    50   ~ 0
+StoreOp_EX6
+Text Label 10000 2200 2    50   ~ 0
+StoreOp_EX7
+Text Label 10000 3650 2    50   ~ 0
+StoreOp_EX9
+Text Label 10000 3750 2    50   ~ 0
+StoreOp_EX10
+Text Label 10000 3850 2    50   ~ 0
+StoreOp_EX11
+Text Label 10000 3950 2    50   ~ 0
+StoreOp_EX12
+Text Label 10000 4050 2    50   ~ 0
+StoreOp_EX13
+Text Label 10000 4150 2    50   ~ 0
+StoreOp_EX14
+Text Label 10000 4250 2    50   ~ 0
+StoreOp_EX15
+Text HLabel 10100 4500 3    50   Output ~ 0
+StoreOp_EX[0..15]
 $Comp
 L 74xx:74LS245 U?
 U 1 1 5FCE3546
@@ -2584,7 +2582,7 @@ Wire Wire Line
 Connection ~ 3300 4550
 Connection ~ 5600 4550
 Wire Wire Line
-	7900 5250 7900 4550
+	7900 5400 7900 4550
 Connection ~ 7900 4550
 Connection ~ 8150 6200
 Connection ~ 8150 6500
@@ -2747,300 +2745,6 @@ Ins_EX7
 Wire Wire Line
 	8100 4250 8500 4250
 Wire Wire Line
-	7600 2200 7200 2200
-Entry Wire Line
-	7700 3650 7600 3550
-Wire Wire Line
-	7600 2100 7200 2100
-Entry Wire Line
-	7700 3750 7600 3650
-Wire Wire Line
-	7600 2000 7200 2000
-Entry Wire Line
-	7700 3850 7600 3750
-Wire Wire Line
-	7600 1900 7200 1900
-Entry Wire Line
-	7700 3950 7600 3850
-Wire Wire Line
-	7600 1800 7200 1800
-Entry Wire Line
-	7700 4050 7600 3950
-Wire Wire Line
-	7600 1700 7200 1700
-Entry Wire Line
-	7700 4150 7600 4050
-Wire Wire Line
-	7600 1600 7200 1600
-Entry Wire Line
-	7700 4250 7600 4150
-Text Label 7600 1500 2    50   ~ 0
-StoreOp0
-Wire Wire Line
-	7600 1500 7200 1500
-Entry Wire Line
-	7700 4350 7600 4250
-Wire Wire Line
-	7600 4250 7200 4250
-Entry Wire Line
-	7700 1600 7600 1500
-Wire Wire Line
-	7600 4150 7200 4150
-Entry Wire Line
-	7700 1700 7600 1600
-Wire Wire Line
-	7600 4050 7200 4050
-Entry Wire Line
-	7700 1800 7600 1700
-Wire Wire Line
-	7600 3950 7200 3950
-Entry Wire Line
-	7700 1900 7600 1800
-Wire Wire Line
-	7600 3850 7200 3850
-Entry Wire Line
-	7700 2000 7600 1900
-Wire Wire Line
-	7600 3750 7200 3750
-Entry Wire Line
-	7700 2100 7600 2000
-Wire Wire Line
-	7600 3650 7200 3650
-Entry Wire Line
-	7700 2200 7600 2100
-Wire Wire Line
-	7600 3550 7200 3550
-Entry Wire Line
-	7700 2300 7600 2200
-Text Label 7600 1600 2    50   ~ 0
-StoreOp1
-Text Label 7600 1700 2    50   ~ 0
-StoreOp2
-Text Label 7600 1800 2    50   ~ 0
-StoreOp3
-Text Label 7600 1900 2    50   ~ 0
-StoreOp4
-Text Label 7600 2000 2    50   ~ 0
-StoreOp5
-Text Label 7600 2100 2    50   ~ 0
-StoreOp6
-Text Label 7600 2200 2    50   ~ 0
-StoreOp7
-Text Label 7600 3550 2    50   ~ 0
-StoreOp8
-Text Label 7600 3650 2    50   ~ 0
-StoreOp9
-Text Label 7600 3750 2    50   ~ 0
-StoreOp10
-Text Label 7600 3850 2    50   ~ 0
-StoreOp11
-Text Label 7600 3950 2    50   ~ 0
-StoreOp12
-Text Label 7600 4050 2    50   ~ 0
-StoreOp13
-Text Label 7600 4150 2    50   ~ 0
-StoreOp14
-Text Label 7600 4250 2    50   ~ 0
-StoreOp15
-Text HLabel 7700 4500 3    50   Output ~ 0
-StoreOp[0..15]
-Wire Wire Line
-	5300 2200 4900 2200
-Entry Wire Line
-	5400 3650 5300 3550
-Wire Wire Line
-	5300 2100 4900 2100
-Entry Wire Line
-	5400 3750 5300 3650
-Wire Wire Line
-	5300 2000 4900 2000
-Entry Wire Line
-	5400 3850 5300 3750
-Wire Wire Line
-	5300 1900 4900 1900
-Entry Wire Line
-	5400 3950 5300 3850
-Wire Wire Line
-	5300 1800 4900 1800
-Entry Wire Line
-	5400 4050 5300 3950
-Wire Wire Line
-	5300 1700 4900 1700
-Entry Wire Line
-	5400 4150 5300 4050
-Wire Wire Line
-	5300 1600 4900 1600
-Entry Wire Line
-	5400 4250 5300 4150
-Text Label 5300 1500 2    50   ~ 0
-StoreOp0
-Wire Wire Line
-	5300 1500 4900 1500
-Entry Wire Line
-	5400 4350 5300 4250
-Wire Wire Line
-	5300 4250 4900 4250
-Entry Wire Line
-	5400 1600 5300 1500
-Wire Wire Line
-	5300 4150 4900 4150
-Entry Wire Line
-	5400 1700 5300 1600
-Wire Wire Line
-	5300 4050 4900 4050
-Entry Wire Line
-	5400 1800 5300 1700
-Wire Wire Line
-	5300 3950 4900 3950
-Entry Wire Line
-	5400 1900 5300 1800
-Wire Wire Line
-	5300 3850 4900 3850
-Entry Wire Line
-	5400 2000 5300 1900
-Wire Wire Line
-	5300 3750 4900 3750
-Entry Wire Line
-	5400 2100 5300 2000
-Wire Wire Line
-	5300 3650 4900 3650
-Entry Wire Line
-	5400 2200 5300 2100
-Wire Wire Line
-	5300 3550 4900 3550
-Entry Wire Line
-	5400 2300 5300 2200
-Text Label 5300 1600 2    50   ~ 0
-StoreOp1
-Text Label 5300 1700 2    50   ~ 0
-StoreOp2
-Text Label 5300 1800 2    50   ~ 0
-StoreOp3
-Text Label 5300 1900 2    50   ~ 0
-StoreOp4
-Text Label 5300 2000 2    50   ~ 0
-StoreOp5
-Text Label 5300 2100 2    50   ~ 0
-StoreOp6
-Text Label 5300 2200 2    50   ~ 0
-StoreOp7
-Text Label 5300 3550 2    50   ~ 0
-StoreOp8
-Text Label 5300 3650 2    50   ~ 0
-StoreOp9
-Text Label 5300 3750 2    50   ~ 0
-StoreOp10
-Text Label 5300 3850 2    50   ~ 0
-StoreOp11
-Text Label 5300 3950 2    50   ~ 0
-StoreOp12
-Text Label 5300 4050 2    50   ~ 0
-StoreOp13
-Text Label 5300 4150 2    50   ~ 0
-StoreOp14
-Text Label 5300 4250 2    50   ~ 0
-StoreOp15
-Text HLabel 5400 4500 3    50   Output ~ 0
-StoreOp[0..15]
-Wire Wire Line
-	3000 2200 2600 2200
-Entry Wire Line
-	3100 3650 3000 3550
-Wire Wire Line
-	3000 2100 2600 2100
-Entry Wire Line
-	3100 3750 3000 3650
-Wire Wire Line
-	3000 2000 2600 2000
-Entry Wire Line
-	3100 3850 3000 3750
-Wire Wire Line
-	3000 1900 2600 1900
-Entry Wire Line
-	3100 3950 3000 3850
-Wire Wire Line
-	3000 1800 2600 1800
-Entry Wire Line
-	3100 4050 3000 3950
-Wire Wire Line
-	3000 1700 2600 1700
-Entry Wire Line
-	3100 4150 3000 4050
-Wire Wire Line
-	3000 1600 2600 1600
-Entry Wire Line
-	3100 4250 3000 4150
-Text Label 3000 1500 2    50   ~ 0
-StoreOp0
-Wire Wire Line
-	3000 1500 2600 1500
-Entry Wire Line
-	3100 4350 3000 4250
-Wire Wire Line
-	3000 4250 2600 4250
-Entry Wire Line
-	3100 1600 3000 1500
-Wire Wire Line
-	3000 4150 2600 4150
-Entry Wire Line
-	3100 1700 3000 1600
-Wire Wire Line
-	3000 4050 2600 4050
-Entry Wire Line
-	3100 1800 3000 1700
-Wire Wire Line
-	3000 3950 2600 3950
-Entry Wire Line
-	3100 1900 3000 1800
-Wire Wire Line
-	3000 3850 2600 3850
-Entry Wire Line
-	3100 2000 3000 1900
-Wire Wire Line
-	3000 3750 2600 3750
-Entry Wire Line
-	3100 2100 3000 2000
-Wire Wire Line
-	3000 3650 2600 3650
-Entry Wire Line
-	3100 2200 3000 2100
-Wire Wire Line
-	3000 3550 2600 3550
-Entry Wire Line
-	3100 2300 3000 2200
-Text Label 3000 1600 2    50   ~ 0
-StoreOp1
-Text Label 3000 1700 2    50   ~ 0
-StoreOp2
-Text Label 3000 1800 2    50   ~ 0
-StoreOp3
-Text Label 3000 1900 2    50   ~ 0
-StoreOp4
-Text Label 3000 2000 2    50   ~ 0
-StoreOp5
-Text Label 3000 2100 2    50   ~ 0
-StoreOp6
-Text Label 3000 2200 2    50   ~ 0
-StoreOp7
-Text Label 3000 3550 2    50   ~ 0
-StoreOp8
-Text Label 3000 3650 2    50   ~ 0
-StoreOp9
-Text Label 3000 3750 2    50   ~ 0
-StoreOp10
-Text Label 3000 3850 2    50   ~ 0
-StoreOp11
-Text Label 3000 3950 2    50   ~ 0
-StoreOp12
-Text Label 3000 4050 2    50   ~ 0
-StoreOp13
-Text Label 3000 4150 2    50   ~ 0
-StoreOp14
-Text Label 3000 4250 2    50   ~ 0
-StoreOp15
-Text HLabel 3100 4500 3    50   Output ~ 0
-StoreOp[0..15]
-Wire Wire Line
 	3300 5300 5550 5300
 Wire Wire Line
 	5550 5300 5550 6750
@@ -3051,9 +2755,9 @@ Wire Wire Line
 Wire Wire Line
 	5600 4550 5600 6850
 Wire Wire Line
-	5650 6950 5650 5250
+	5650 6950 5650 5400
 Wire Wire Line
-	5650 5250 7900 5250
+	5650 5400 7900 5400
 Wire Wire Line
 	4500 6950 5650 6950
 Wire Wire Line
@@ -3062,6 +2766,302 @@ Wire Wire Line
 	1000 4550 1000 5350
 Wire Wire Line
 	1000 5350 5500 5350
+Text Label 10000 3550 2    50   ~ 0
+StoreOp_EX8
+Wire Wire Line
+	7700 2200 7200 2200
+Entry Wire Line
+	7800 3650 7700 3550
+Wire Wire Line
+	7700 2100 7200 2100
+Entry Wire Line
+	7800 3750 7700 3650
+Wire Wire Line
+	7700 2000 7200 2000
+Entry Wire Line
+	7800 3850 7700 3750
+Wire Wire Line
+	7700 1900 7200 1900
+Entry Wire Line
+	7800 3950 7700 3850
+Wire Wire Line
+	7700 1800 7200 1800
+Entry Wire Line
+	7800 4050 7700 3950
+Wire Wire Line
+	7700 1700 7200 1700
+Entry Wire Line
+	7800 4150 7700 4050
+Wire Wire Line
+	7700 1600 7200 1600
+Entry Wire Line
+	7800 4250 7700 4150
+Text Label 7700 1500 2    50   ~ 0
+StoreOp_EX0
+Wire Wire Line
+	7700 1500 7200 1500
+Entry Wire Line
+	7800 4350 7700 4250
+Wire Wire Line
+	7700 4250 7200 4250
+Entry Wire Line
+	7800 1600 7700 1500
+Wire Wire Line
+	7700 4150 7200 4150
+Entry Wire Line
+	7800 1700 7700 1600
+Wire Wire Line
+	7700 4050 7200 4050
+Entry Wire Line
+	7800 1800 7700 1700
+Wire Wire Line
+	7700 3950 7200 3950
+Entry Wire Line
+	7800 1900 7700 1800
+Wire Wire Line
+	7700 3850 7200 3850
+Entry Wire Line
+	7800 2000 7700 1900
+Wire Wire Line
+	7700 3750 7200 3750
+Entry Wire Line
+	7800 2100 7700 2000
+Wire Wire Line
+	7700 3650 7200 3650
+Entry Wire Line
+	7800 2200 7700 2100
+Wire Wire Line
+	7700 3550 7200 3550
+Entry Wire Line
+	7800 2300 7700 2200
+Text Label 7700 1600 2    50   ~ 0
+StoreOp_EX1
+Text Label 7700 1700 2    50   ~ 0
+StoreOp_EX2
+Text Label 7700 1800 2    50   ~ 0
+StoreOp_EX3
+Text Label 7700 1900 2    50   ~ 0
+StoreOp_EX4
+Text Label 7700 2000 2    50   ~ 0
+StoreOp_EX5
+Text Label 7700 2100 2    50   ~ 0
+StoreOp_EX6
+Text Label 7700 2200 2    50   ~ 0
+StoreOp_EX7
+Text Label 7700 3650 2    50   ~ 0
+StoreOp_EX9
+Text Label 7700 3750 2    50   ~ 0
+StoreOp_EX10
+Text Label 7700 3850 2    50   ~ 0
+StoreOp_EX11
+Text Label 7700 3950 2    50   ~ 0
+StoreOp_EX12
+Text Label 7700 4050 2    50   ~ 0
+StoreOp_EX13
+Text Label 7700 4150 2    50   ~ 0
+StoreOp_EX14
+Text Label 7700 4250 2    50   ~ 0
+StoreOp_EX15
+Text HLabel 7800 4500 3    50   Output ~ 0
+StoreOp_EX[0..15]
+Text Label 7700 3550 2    50   ~ 0
+StoreOp_EX8
+Wire Wire Line
+	5400 2200 4900 2200
+Entry Wire Line
+	5500 3650 5400 3550
+Wire Wire Line
+	5400 2100 4900 2100
+Entry Wire Line
+	5500 3750 5400 3650
+Wire Wire Line
+	5400 2000 4900 2000
+Entry Wire Line
+	5500 3850 5400 3750
+Wire Wire Line
+	5400 1900 4900 1900
+Entry Wire Line
+	5500 3950 5400 3850
+Wire Wire Line
+	5400 1800 4900 1800
+Entry Wire Line
+	5500 4050 5400 3950
+Wire Wire Line
+	5400 1700 4900 1700
+Entry Wire Line
+	5500 4150 5400 4050
+Wire Wire Line
+	5400 1600 4900 1600
+Entry Wire Line
+	5500 4250 5400 4150
+Text Label 5400 1500 2    50   ~ 0
+StoreOp_EX0
+Wire Wire Line
+	5400 1500 4900 1500
+Entry Wire Line
+	5500 4350 5400 4250
+Wire Wire Line
+	5400 4250 4900 4250
+Entry Wire Line
+	5500 1600 5400 1500
+Wire Wire Line
+	5400 4150 4900 4150
+Entry Wire Line
+	5500 1700 5400 1600
+Wire Wire Line
+	5400 4050 4900 4050
+Entry Wire Line
+	5500 1800 5400 1700
+Wire Wire Line
+	5400 3950 4900 3950
+Entry Wire Line
+	5500 1900 5400 1800
+Wire Wire Line
+	5400 3850 4900 3850
+Entry Wire Line
+	5500 2000 5400 1900
+Wire Wire Line
+	5400 3750 4900 3750
+Entry Wire Line
+	5500 2100 5400 2000
+Wire Wire Line
+	5400 3650 4900 3650
+Entry Wire Line
+	5500 2200 5400 2100
+Wire Wire Line
+	5400 3550 4900 3550
+Entry Wire Line
+	5500 2300 5400 2200
+Text Label 5400 1600 2    50   ~ 0
+StoreOp_EX1
+Text Label 5400 1700 2    50   ~ 0
+StoreOp_EX2
+Text Label 5400 1800 2    50   ~ 0
+StoreOp_EX3
+Text Label 5400 1900 2    50   ~ 0
+StoreOp_EX4
+Text Label 5400 2000 2    50   ~ 0
+StoreOp_EX5
+Text Label 5400 2100 2    50   ~ 0
+StoreOp_EX6
+Text Label 5400 2200 2    50   ~ 0
+StoreOp_EX7
+Text Label 5400 3650 2    50   ~ 0
+StoreOp_EX9
+Text Label 5400 3750 2    50   ~ 0
+StoreOp_EX10
+Text Label 5400 3850 2    50   ~ 0
+StoreOp_EX11
+Text Label 5400 3950 2    50   ~ 0
+StoreOp_EX12
+Text Label 5400 4050 2    50   ~ 0
+StoreOp_EX13
+Text Label 5400 4150 2    50   ~ 0
+StoreOp_EX14
+Text Label 5400 4250 2    50   ~ 0
+StoreOp_EX15
+Text HLabel 5500 4500 3    50   Output ~ 0
+StoreOp_EX[0..15]
+Text Label 5400 3550 2    50   ~ 0
+StoreOp_EX8
+Wire Wire Line
+	3100 2200 2600 2200
+Entry Wire Line
+	3200 3650 3100 3550
+Wire Wire Line
+	3100 2100 2600 2100
+Entry Wire Line
+	3200 3750 3100 3650
+Wire Wire Line
+	3100 2000 2600 2000
+Entry Wire Line
+	3200 3850 3100 3750
+Wire Wire Line
+	3100 1900 2600 1900
+Entry Wire Line
+	3200 3950 3100 3850
+Wire Wire Line
+	3100 1800 2600 1800
+Entry Wire Line
+	3200 4050 3100 3950
+Wire Wire Line
+	3100 1700 2600 1700
+Entry Wire Line
+	3200 4150 3100 4050
+Wire Wire Line
+	3100 1600 2600 1600
+Entry Wire Line
+	3200 4250 3100 4150
+Text Label 3100 1500 2    50   ~ 0
+StoreOp_EX0
+Wire Wire Line
+	3100 1500 2600 1500
+Entry Wire Line
+	3200 4350 3100 4250
+Wire Wire Line
+	3100 4250 2600 4250
+Entry Wire Line
+	3200 1600 3100 1500
+Wire Wire Line
+	3100 4150 2600 4150
+Entry Wire Line
+	3200 1700 3100 1600
+Wire Wire Line
+	3100 4050 2600 4050
+Entry Wire Line
+	3200 1800 3100 1700
+Wire Wire Line
+	3100 3950 2600 3950
+Entry Wire Line
+	3200 1900 3100 1800
+Wire Wire Line
+	3100 3850 2600 3850
+Entry Wire Line
+	3200 2000 3100 1900
+Wire Wire Line
+	3100 3750 2600 3750
+Entry Wire Line
+	3200 2100 3100 2000
+Wire Wire Line
+	3100 3650 2600 3650
+Entry Wire Line
+	3200 2200 3100 2100
+Wire Wire Line
+	3100 3550 2600 3550
+Entry Wire Line
+	3200 2300 3100 2200
+Text Label 3100 1600 2    50   ~ 0
+StoreOp_EX1
+Text Label 3100 1700 2    50   ~ 0
+StoreOp_EX2
+Text Label 3100 1800 2    50   ~ 0
+StoreOp_EX3
+Text Label 3100 1900 2    50   ~ 0
+StoreOp_EX4
+Text Label 3100 2000 2    50   ~ 0
+StoreOp_EX5
+Text Label 3100 2100 2    50   ~ 0
+StoreOp_EX6
+Text Label 3100 2200 2    50   ~ 0
+StoreOp_EX7
+Text Label 3100 3650 2    50   ~ 0
+StoreOp_EX9
+Text Label 3100 3750 2    50   ~ 0
+StoreOp_EX10
+Text Label 3100 3850 2    50   ~ 0
+StoreOp_EX11
+Text Label 3100 3950 2    50   ~ 0
+StoreOp_EX12
+Text Label 3100 4050 2    50   ~ 0
+StoreOp_EX13
+Text Label 3100 4150 2    50   ~ 0
+StoreOp_EX14
+Text Label 3100 4250 2    50   ~ 0
+StoreOp_EX15
+Text HLabel 3200 4500 3    50   Output ~ 0
+StoreOp_EX[0..15]
+Text Label 3100 3550 2    50   ~ 0
+StoreOp_EX8
 Wire Bus Line
 	5700 1250 5700 4150
 Wire Bus Line
@@ -3069,13 +3069,13 @@ Wire Bus Line
 Wire Bus Line
 	8000 1250 8000 4150
 Wire Bus Line
-	3100 1600 3100 4500
-Wire Bus Line
-	5400 1600 5400 4500
-Wire Bus Line
-	7700 1600 7700 4500
-Wire Bus Line
 	3400 1250 3400 4150
 Wire Bus Line
-	10000 1600 10000 4500
+	10100 1600 10100 4500
+Wire Bus Line
+	7800 1600 7800 4500
+Wire Bus Line
+	5500 1600 5500 4500
+Wire Bus Line
+	3200 1600 3200 4500
 $EndSCHEMATC

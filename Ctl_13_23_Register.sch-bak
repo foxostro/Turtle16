@@ -961,7 +961,7 @@ $EndComp
 Wire Wire Line
 	1350 7400 1350 7300
 Text HLabel 7550 2050 2    50   Output ~ 0
-Ctl[13..19]
+Ctl[13..20]
 Text HLabel 5050 5400 0    50   Input ~ 0
 Phi1
 $Comp
@@ -1278,7 +1278,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 4400 6600 4500
 Text HLabel 3850 2100 0    50   Input ~ 0
-CtlIn[13..19]
+CtlIn[13..20]
 Wire Wire Line
 	4800 2950 5200 2950
 Text Label 4800 4500 0    50   ~ 0
@@ -1356,7 +1356,6 @@ Wire Wire Line
 Connection ~ 5150 5100
 Wire Wire Line
 	5150 5100 5150 5200
-NoConn ~ 6200 3150
 $Comp
 L power:VCC #PWR0352
 U 1 1 5FC9DC34
@@ -1368,19 +1367,6 @@ F 3 "" H 5050 4800 50  0001 C CNN
 	1    5050 4800
 	0    -1   -1   0   
 $EndComp
-$Comp
-L power:VCC #PWR0353
-U 1 1 5FC9E4CB
-P 5100 3150
-F 0 "#PWR0353" H 5100 3000 50  0001 C CNN
-F 1 "VCC" V 5115 3277 50  0000 L CNN
-F 2 "" H 5100 3150 50  0001 C CNN
-F 3 "" H 5100 3150 50  0001 C CNN
-	1    5100 3150
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	5100 3150 5200 3150
 $Comp
 L 74xx:74LS574 U?
 U 1 1 5FD675C6
@@ -1581,12 +1567,24 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5700 5000
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	6600 3150 6200 3150
+Entry Wire Line
+	6700 3050 6600 3150
+Text Label 6600 3150 2    50   ~ 0
+Ctl20
+Wire Wire Line
+	4800 3150 5200 3150
+Entry Wire Line
+	4700 3050 4800 3150
+Text Label 4800 3150 0    50   ~ 0
+CtlIn20
 Wire Bus Line
 	4700 4400 4700 4600
 Wire Bus Line
 	6700 4400 6700 4600
 Wire Bus Line
-	4700 2100 4700 2950
+	4700 2100 4700 3050
 Wire Bus Line
-	6700 2050 6700 2950
+	6700 2050 6700 3050
 $EndSCHEMATC

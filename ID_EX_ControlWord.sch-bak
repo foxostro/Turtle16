@@ -1327,7 +1327,7 @@ Connection ~ 4300 6400
 Wire Wire Line
 	4300 4350 4300 6400
 Text HLabel 6950 1100 2    50   Output ~ 0
-ControlWord[0..19]
+ControlWord[0..20]
 Wire Wire Line
 	4300 2300 4300 4350
 Wire Wire Line
@@ -1336,7 +1336,6 @@ Entry Wire Line
 	6700 5700 6600 5800
 Text Label 6550 5800 2    50   ~ 0
 ControlWord19
-NoConn ~ 5900 5900
 NoConn ~ 5900 6000
 NoConn ~ 5900 6100
 NoConn ~ 5900 6200
@@ -1624,8 +1623,14 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5400 6000
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	6600 5900 5900 5900
+Entry Wire Line
+	6700 5800 6600 5900
+Text Label 6550 5900 2    50   ~ 0
+ControlWord20
 Wire Bus Line
-	6700 1100 6700 5700
+	6700 1100 6700 5800
 Wire Bus Line
 	4400 1100 4400 6100
 $EndSCHEMATC

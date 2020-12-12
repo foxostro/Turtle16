@@ -473,17 +473,6 @@ F 3 "" H 2550 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR054
-U 1 1 5FD4CB2D
-P 2550 2500
-F 0 "#PWR054" H 2550 2250 50  0001 C CNN
-F 1 "GND" V 2555 2372 50  0000 R CNN
-F 2 "" H 2550 2500 50  0001 C CNN
-F 3 "" H 2550 2500 50  0001 C CNN
-	1    2550 2500
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR067
 U 1 1 5FD4CDD8
 P 4350 2100
@@ -1134,17 +1123,6 @@ F 3 "" H 6600 2600 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:GND #PWR087
-U 1 1 5FDF3587
-P 6600 2500
-F 0 "#PWR087" H 6600 2250 50  0001 C CNN
-F 1 "GND" V 6605 2372 50  0000 R CNN
-F 2 "" H 6600 2500 50  0001 C CNN
-F 3 "" H 6600 2500 50  0001 C CNN
-	1    6600 2500
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR0100
 U 1 1 5FDF358D
 P 8400 2100
@@ -1439,6 +1417,14 @@ Wire Wire Line
 	3450 1600 3550 1600
 Wire Wire Line
 	3450 1600 3450 1650
+Text HLabel 2000 2500 0    50   Input ~ 0
+~WBEN
+Wire Wire Line
+	2550 2500 2000 2500
+Text HLabel 6050 2500 0    50   Input ~ 0
+~WBEN
+Wire Wire Line
+	6600 2500 6050 2500
 Wire Bus Line
 	2150 2900 2150 3100
 Wire Bus Line

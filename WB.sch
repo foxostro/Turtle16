@@ -28,16 +28,16 @@ Entry Wire Line
 Entry Wire Line
 	5050 3550 5150 3650
 Entry Wire Line
-	4600 3550 4700 3650
+	4450 3550 4550 3650
 Entry Wire Line
-	4750 3550 4850 3650
+	4600 3550 4700 3650
 Text Label 5150 3700 3    50   ~ 0
 Ctl18
 Text Label 5000 3700 3    50   ~ 0
 Ctl19
-Text Label 4850 3700 3    50   ~ 0
-Ctl16
 Text Label 4700 3700 3    50   ~ 0
+Ctl16
+Text Label 4550 3700 3    50   ~ 0
 Ctl17
 Wire Wire Line
 	5150 3650 5150 4000
@@ -60,7 +60,7 @@ Text HLabel 9150 4100 2    50   Output ~ 0
 Wire Bus Line
 	7650 4850 9150 4850
 Text HLabel 1400 3550 0    50   Input ~ 0
-CtlIn[16..19]
+CtlIn[16..20]
 Wire Bus Line
 	1400 3550 1850 3550
 Text HLabel 3200 3650 2    50   Output ~ 0
@@ -84,8 +84,8 @@ F1 "Ctl_15_23_Register.sch" 50
 F2 "Phi1" I L 1850 3450 50 
 F3 "SelCIn[0..2]" I L 1850 3650 50 
 F4 "SelC[0..2]" O R 3000 3650 50 
-F5 "Ctl[16..19]" O R 3000 3550 50 
-F6 "CtlIn[16..19]" I L 1850 3550 50 
+F5 "Ctl[16..20]" O R 3000 3550 50 
+F6 "CtlIn[16..20]" I L 1850 3550 50 
 $EndSheet
 Text HLabel 1400 3650 0    50   Input ~ 0
 SelCIn[0..2]
@@ -112,21 +112,31 @@ Phi1c
 Text GLabel 1400 3450 0    50   Input ~ 0
 Phi1c
 Wire Wire Line
-	4850 3650 4850 4850
+	4700 3650 4700 4850
 Wire Wire Line
-	4850 4850 6400 4850
-Wire Wire Line
-	4700 3650 4700 4950
-Wire Wire Line
-	4700 4950 6400 4950
+	4550 3650 4550 4950
 Wire Wire Line
 	5150 4000 9150 4000
 Wire Wire Line
 	5000 4100 9150 4100
 Wire Wire Line
 	6300 4750 6400 4750
+Text Label 3850 3550 0    50   ~ 0
+Ctl[16..20]
+Entry Wire Line
+	4750 3550 4850 3650
+Text Label 4850 3700 3    50   ~ 0
+Ctl20
+Wire Wire Line
+	4700 4850 6400 4850
+Wire Wire Line
+	4550 4950 6400 4950
+Text HLabel 9150 4200 2    50   Output ~ 0
+~WBEN
+Wire Wire Line
+	4850 3650 4850 4200
+Wire Wire Line
+	4850 4200 9150 4200
 Wire Bus Line
 	3000 3550 5050 3550
-Text Label 3850 3550 0    50   ~ 0
-Ctl[16..19]
 $EndSCHEMATC

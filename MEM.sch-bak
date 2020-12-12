@@ -16,9 +16,9 @@ $EndDescr
 Text HLabel 2300 2350 0    50   Input ~ 0
 StoreOpIn[0..15]
 Text HLabel 2300 1150 0    50   Input ~ 0
-CtlIn[13..19]
+CtlIn[13..20]
 Text HLabel 8800 1250 2    50   Output ~ 0
-Ctl[16..19]
+Ctl[16..20]
 Text HLabel 8800 2250 2    50   Output ~ 0
 StoreOp[0..15]
 Entry Wire Line
@@ -30,7 +30,7 @@ Entry Bus Bus
 Wire Bus Line
 	6350 1250 8800 1250
 Text Label 6450 1250 0    50   ~ 0
-CtlIn[16..19]
+CtlIn[16..20]
 Text Label 2950 1250 3    50   ~ 0
 CtlIn13
 Text Label 2850 1250 3    50   ~ 0
@@ -143,8 +143,8 @@ Text Label 2750 1250 3    50   ~ 0
 CtlIn15
 Wire Wire Line
 	2750 1250 2750 2250
-Wire Bus Line
-	2300 1150 6250 1150
 Wire Wire Line
 	2750 2250 3950 2250
+Wire Bus Line
+	2300 1150 6250 1150
 $EndSCHEMATC

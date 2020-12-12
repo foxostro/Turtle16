@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 30 33
+Sheet 17 33
 Title "IF"
 Date ""
 Rev ""
@@ -20,12 +20,12 @@ F0 "sheet5FCE207B" 50
 F1 "IF_ID.sch" 50
 F2 "PCIn[0..15]" I L 6550 3700 50 
 F3 "PCOut[0..15]" O R 7700 3600 50 
-F4 "InsIn[0..15]" I L 6550 4000 50 
-F5 "InsOut[0..15]" O R 7700 3700 50 
+F4 "Ins_IF[0..15]" I L 6550 4000 50 
+F5 "Ins_ID[0..15]" O R 7700 3700 50 
 F6 "Phi1" I L 6550 3600 50 
 $EndSheet
 Text HLabel 8000 3700 2    50   Output ~ 0
-InsOut[0..15]
+Ins_ID[0..15]
 Text HLabel 8000 3600 2    50   Output ~ 0
 PCOut[0..15]
 Wire Bus Line
@@ -72,7 +72,7 @@ U 5FD0D8DC
 F0 "Instruction Memory" 50
 F1 "InstructionRAM.sch" 50
 F2 "PC[0..15]" I L 4850 4000 50 
-F3 "InstructionWord[0..15]" O R 6300 4000 50 
+F3 "Ins_IF[0..15]" O R 6300 4000 50 
 $EndSheet
 Text GLabel 2700 3850 0    50   Input ~ 0
 ~RST

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 29 33
+Sheet 33 33
 Title "Select Right Operand"
 Date ""
 Rev ""
@@ -1165,181 +1165,181 @@ Wire Wire Line
 Wire Wire Line
 	3600 4300 3850 4300
 Text Label 3600 4300 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 4300 3500 4200
 Wire Wire Line
 	3600 4200 3850 4200
 Text Label 3600 4200 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 4200 3500 4100
 Wire Wire Line
 	3600 4100 3850 4100
 Text Label 3600 4100 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 4100 3500 4000
 Wire Wire Line
 	3600 4000 3850 4000
 Text Label 3600 4000 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 4000 3500 3900
 Wire Wire Line
 	3600 3900 3850 3900
 Text Label 3600 3900 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 3900 3500 3800
 Wire Wire Line
 	3600 3800 3850 3800
 Text Label 3600 3800 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 3800 3500 3700
 Wire Wire Line
 	3600 3700 3850 3700
 Text Label 3600 3700 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 3700 3500 3600
 Wire Wire Line
 	3600 3600 3850 3600
 Text Label 3600 3600 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 3600 3500 3500
 Wire Wire Line
 	3600 2250 3850 2250
 Text Label 3600 2250 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 2250 3500 2150
 Wire Wire Line
 	3600 2150 3850 2150
 Text Label 3600 2150 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 2150 3500 2050
 Wire Wire Line
 	3600 2050 3850 2050
 Text Label 3600 2050 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 2050 3500 1950
 Wire Wire Line
 	5950 2250 6200 2250
 Text Label 5950 2250 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 2250 5850 2150
 Wire Wire Line
 	5950 2150 6200 2150
 Text Label 5950 2150 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 2150 5850 2050
 Wire Wire Line
 	5950 2050 6200 2050
 Text Label 5950 2050 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 2050 5850 1950
 Wire Wire Line
 	5950 4300 6200 4300
 Text Label 5950 4300 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 4300 5850 4200
 Wire Wire Line
 	5950 4200 6200 4200
 Text Label 5950 4200 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 4200 5850 4100
 Wire Wire Line
 	5950 4100 6200 4100
 Text Label 5950 4100 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 4100 5850 4000
 Wire Wire Line
 	5950 4000 6200 4000
 Text Label 5950 4000 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 4000 5850 3900
 Wire Wire Line
 	5950 3900 6200 3900
 Text Label 5950 3900 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 3900 5850 3800
 Wire Wire Line
 	5950 3800 6200 3800
 Text Label 5950 3800 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 3800 5850 3700
 Wire Wire Line
 	5950 3700 6200 3700
 Text Label 5950 3700 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 3700 5850 3600
 Wire Wire Line
 	5950 3600 6200 3600
 Text Label 5950 3600 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 3600 5850 3500
 Wire Wire Line
 	8300 4300 8550 4300
 Text Label 8300 4300 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 4300 8200 4200
 Wire Wire Line
 	8300 4200 8550 4200
 Text Label 8300 4200 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 4200 8200 4100
 Wire Wire Line
 	8300 4100 8550 4100
 Text Label 8300 4100 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 4100 8200 4000
 Wire Wire Line
 	8300 4000 8550 4000
 Text Label 8300 4000 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 4000 8200 3900
 Wire Wire Line
 	8300 3900 8550 3900
 Text Label 8300 3900 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 3900 8200 3800
 Wire Wire Line
 	8300 3800 8550 3800
 Text Label 8300 3800 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 3800 8200 3700
 Wire Wire Line
 	8300 3700 8550 3700
 Text Label 8300 3700 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 3700 8200 3600
 Wire Wire Line
 	8300 3600 8550 3600
 Text Label 8300 3600 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 3600 8200 3500
 Connection ~ 7950 4600
@@ -1364,7 +1364,7 @@ Wire Wire Line
 Wire Wire Line
 	3850 2550 3250 2550
 Text Label 8300 2150 0    50   ~ 0
-Ins9
+Ins_EX9
 Wire Wire Line
 	8300 2150 8550 2150
 Entry Wire Line
@@ -1372,17 +1372,17 @@ Entry Wire Line
 Wire Wire Line
 	8300 2050 8550 2050
 Text Label 8300 2050 0    50   ~ 0
-Ins8
+Ins_EX8
 Entry Wire Line
 	8300 2050 8200 1950
 Wire Wire Line
 	8300 2250 8550 2250
 Text Label 8300 2250 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	8300 2250 8200 2150
 Text Label 5950 1850 0    50   ~ 0
-Ins9
+Ins_EX9
 Wire Wire Line
 	5950 1850 6200 1850
 Entry Wire Line
@@ -1390,13 +1390,13 @@ Entry Wire Line
 Wire Wire Line
 	5950 1750 6200 1750
 Text Label 5950 1750 0    50   ~ 0
-Ins8
+Ins_EX8
 Entry Wire Line
 	5950 1750 5850 1650
 Wire Wire Line
 	5950 1950 6200 1950
 Text Label 5950 1950 0    50   ~ 0
-Ins10
+Ins_EX10
 Entry Wire Line
 	5950 1950 5850 1850
 $Comp
@@ -1806,9 +1806,9 @@ Entry Wire Line
 Wire Wire Line
 	8300 1650 8550 1650
 Text Label 8300 1650 0    50   ~ 0
-Ins1
+Ins_EX1
 Text Label 8300 1850 0    50   ~ 0
-Ins3
+Ins_EX3
 Wire Wire Line
 	8300 1850 8550 1850
 Entry Wire Line
@@ -1816,23 +1816,23 @@ Entry Wire Line
 Wire Wire Line
 	8300 1550 8550 1550
 Text Label 8300 1550 0    50   ~ 0
-Ins0
+Ins_EX0
 Entry Wire Line
 	8300 1550 8200 1450
 Wire Wire Line
 	8300 1750 8550 1750
 Text Label 8300 1750 0    50   ~ 0
-Ins2
+Ins_EX2
 Entry Wire Line
 	8300 1750 8200 1650
 Wire Wire Line
 	8300 1950 8550 1950
 Text Label 8300 1950 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	8300 1950 8200 1850
 Text HLabel 8200 1300 1    50   Input ~ 0
-Ins[0..10]
+Ins_EX[0..10]
 $Comp
 L power:VCC #PWR0437
 U 1 1 5FF70225
@@ -2240,15 +2240,15 @@ Entry Wire Line
 Wire Wire Line
 	5950 1650 6200 1650
 Text Label 5950 1650 0    50   ~ 0
-Ins1
+Ins_EX1
 Wire Wire Line
 	5950 1550 6200 1550
 Text Label 5950 1550 0    50   ~ 0
-Ins0
+Ins_EX0
 Entry Wire Line
 	5950 1550 5850 1450
 Text HLabel 5850 1300 1    50   Input ~ 0
-Ins[0..10]
+Ins_EX[0..10]
 $Comp
 L power:VCC #PWR0427
 U 1 1 5FE5F65F
@@ -2656,9 +2656,9 @@ Entry Wire Line
 Wire Wire Line
 	3600 1650 3850 1650
 Text Label 3600 1650 0    50   ~ 0
-Ins1
+Ins_EX1
 Text Label 3600 1850 0    50   ~ 0
-Ins3
+Ins_EX3
 Wire Wire Line
 	3600 1850 3850 1850
 Entry Wire Line
@@ -2666,23 +2666,23 @@ Entry Wire Line
 Wire Wire Line
 	3600 1550 3850 1550
 Text Label 3600 1550 0    50   ~ 0
-Ins0
+Ins_EX0
 Entry Wire Line
 	3600 1550 3500 1450
 Wire Wire Line
 	3600 1750 3850 1750
 Text Label 3600 1750 0    50   ~ 0
-Ins2
+Ins_EX2
 Entry Wire Line
 	3600 1750 3500 1650
 Wire Wire Line
 	3600 1950 3850 1950
 Text Label 3600 1950 0    50   ~ 0
-Ins4
+Ins_EX4
 Entry Wire Line
 	3600 1950 3500 1850
 Text HLabel 3500 1300 1    50   Input ~ 0
-Ins[0..10]
+Ins_EX[0..10]
 Wire Wire Line
 	5250 2250 4850 2250
 Entry Wire Line

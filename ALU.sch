@@ -379,37 +379,37 @@ Wire Wire Line
 Entry Wire Line
 	3900 5100 3800 5000
 Text Label 7250 2200 2    50   ~ 0
-F3
+Y_EX3
 Wire Wire Line
 	7300 2200 6700 2200
 Entry Wire Line
 	7300 2200 7400 2100
 Text Label 7250 2100 2    50   ~ 0
-F2
+Y_EX2
 Wire Wire Line
 	7300 2100 6700 2100
 Entry Wire Line
 	7300 2100 7400 2000
 Text Label 7250 2000 2    50   ~ 0
-F1
+Y_EX1
 Wire Wire Line
 	7300 2000 6700 2000
 Entry Wire Line
 	7300 2000 7400 1900
 Text Label 7250 1900 2    50   ~ 0
-F0
+Y_EX0
 Wire Wire Line
 	7300 1900 6700 1900
 Entry Wire Line
 	7300 1900 7400 1800
 Text Label 7250 2300 2    50   ~ 0
-F4
+Y_EX4
 Wire Wire Line
 	7300 2300 6700 2300
 Entry Wire Line
 	7300 2300 7400 2200
 Text Label 7250 2400 2    50   ~ 0
-F5
+Y_EX5
 Wire Wire Line
 	7300 2400 6700 2400
 Entry Wire Line
@@ -419,61 +419,61 @@ Wire Wire Line
 Entry Wire Line
 	7300 2500 7400 2400
 Text Label 7250 2600 2    50   ~ 0
-F7
+Y_EX7
 Wire Wire Line
 	7300 2600 6700 2600
 Entry Wire Line
 	7300 2600 7400 2500
 Text Label 7250 2700 2    50   ~ 0
-F8
+Y_EX8
 Wire Wire Line
 	7300 2700 6700 2700
 Entry Wire Line
 	7300 2700 7400 2600
 Text Label 7250 2800 2    50   ~ 0
-F9
+Y_EX9
 Wire Wire Line
 	7300 2800 6700 2800
 Entry Wire Line
 	7300 2800 7400 2700
 Text Label 7250 2900 2    50   ~ 0
-F10
+Y_EX10
 Wire Wire Line
 	7300 2900 6700 2900
 Entry Wire Line
 	7300 2900 7400 2800
 Text Label 7250 3000 2    50   ~ 0
-F11
+Y_EX11
 Wire Wire Line
 	7300 3000 6700 3000
 Entry Wire Line
 	7300 3000 7400 2900
 Text Label 7250 3100 2    50   ~ 0
-F12
+Y_EX12
 Wire Wire Line
 	7300 3100 6700 3100
 Entry Wire Line
 	7300 3100 7400 3000
 Text Label 7250 3200 2    50   ~ 0
-F13
+Y_EX13
 Wire Wire Line
 	7300 3200 6700 3200
 Entry Wire Line
 	7300 3200 7400 3100
 Text Label 7250 3300 2    50   ~ 0
-F14
+Y_EX14
 Wire Wire Line
 	7300 3300 6700 3300
 Entry Wire Line
 	7300 3300 7400 3200
 Text Label 7250 3400 2    50   ~ 0
-F15
+Y_EX15
 Wire Wire Line
 	7300 3400 6700 3400
 Entry Wire Line
 	7300 3400 7400 3300
 Text Label 7250 2500 2    50   ~ 0
-F6
+Y_EX6
 NoConn ~ 6700 4000
 NoConn ~ 6700 4100
 $Comp
@@ -597,7 +597,7 @@ F 3 "" H 4500 6000 50  0001 C CNN
 	0    -1   1    0   
 $EndComp
 Text HLabel 8050 1450 2    50   Output ~ 0
-F[0..15]
+Y_EX[0..15]
 $Comp
 L power:GND #PWR?
 U 1 1 601A1AF7

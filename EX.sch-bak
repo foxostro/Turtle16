@@ -285,11 +285,11 @@ U 5FD8D713
 F0 "sheet5FD8D6EC" 50
 F1 "ALUResultRegister.sch" 50
 F2 "Phi1" I L 7850 3450 50 
-F3 "F[0..15]" I L 7850 3600 50 
-F4 "ALUResult[0..15]" O R 9000 3600 50 
+F3 "Y_EX[0..15]" I L 7850 3600 50 
+F4 "Y_MEM[0..15]" O R 9000 3600 50 
 $EndSheet
 Text HLabel 9750 3600 2    50   Output ~ 0
-ALUResult[0..15]
+Y_MEM[0..15]
 Wire Bus Line
 	9750 3600 9000 3600
 Wire Wire Line
@@ -427,7 +427,7 @@ The program counter uses the result\nfrom this point as a jump offset.
 Text Notes 8850 5900 0    50   ~ 0
 This doesn’t have to be a 74ABT device,\nbut Mouser doesn’t normally stock the\n74AHCT377 we would otherwise use.
 Text HLabel 9750 3100 2    50   Output ~ 0
-Offset[0..15]
+Y_EX[0..15]
 Wire Bus Line
 	9750 3100 7000 3100
 Wire Bus Line
@@ -475,7 +475,7 @@ F9 "I1" I L 5800 5600 50
 F10 "I2" I L 5800 5700 50 
 F11 "RS0" I L 5800 5800 50 
 F12 "RS1" I L 5800 5900 50 
-F13 "F[0..15]" O R 6900 4350 50 
+F13 "Y_EX[0..15]" O R 6900 4350 50 
 $EndSheet
 $Sheet
 S 3600 4200 1400 600 

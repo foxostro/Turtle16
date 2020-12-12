@@ -16,7 +16,7 @@ $EndDescr
 Text HLabel 9150 4850 2    50   Output ~ 0
 C[0..15]
 Text HLabel 2800 5050 0    50   Input ~ 0
-ALUResultIn[0..15]
+Y_MEM[0..15]
 Text Notes 5300 5700 0    50   ~ 0
 Src=0  —> Select ALU Result\nSrc=1  —> Select Store Operand\nSrc=2  —> Select Store Operand (byte swapped)
 Wire Bus Line
@@ -51,7 +51,7 @@ F1 "SelectWriteBackSource.sch" 50
 F2 "C[0..15]" O R 7650 4850 50 
 F3 "WriteBackSrcB" I L 6400 4950 50 
 F4 "StoreOp[0..15]" I L 6400 5150 50 
-F5 "ALUResult[0..15]" I L 6400 5050 50 
+F5 "Y_MEM[0..15]" I L 6400 5050 50 
 F6 "WriteBackSrcA" I L 6400 4850 50 
 F7 "Phi1" I L 6400 4750 50 
 $EndSheet

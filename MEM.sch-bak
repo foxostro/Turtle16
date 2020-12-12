@@ -76,7 +76,7 @@ Wire Bus Line
 Wire Bus Line
 	6950 4050 7700 4050
 Text HLabel 2300 4450 0    50   Input ~ 0
-ALUResult[0..15]
+Y_MEM[0..15]
 Wire Bus Line
 	5200 3800 6950 3800
 Text Label 7550 3800 2    50   ~ 0
@@ -90,11 +90,11 @@ Wire Wire Line
 $Sheet
 S 3950 4250 1250 300 
 U 5FB92C55
-F0 "sheet5FB92C48" 50
+F0 "Buffer Addr" 50
 F1 "BufferALUResultAsAddr.sch" 50
 F2 "~RDY" I L 3950 4350 50 
 F3 "Addr[0..15]" T R 5200 4450 50 
-F4 "ALUResult[0..15]" I L 3950 4450 50 
+F4 "Y_MEM[0..15]" I L 3950 4450 50 
 $EndSheet
 Wire Bus Line
 	5200 4450 8800 4450

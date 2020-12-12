@@ -247,25 +247,16 @@ Text HLabel 9300 4650 2    50   Output ~ 0
 OVF
 Wire Wire Line
 	7800 5350 7950 5350
-Text HLabel 9750 2600 2    50   Output ~ 0
-StoreOp[0..15]
+Text HLabel 9700 2600 2    50   Output ~ 0
+StoreOp_MEM[0..15]
 Wire Bus Line
-	9750 2600 9000 2600
+	9700 2600 9500 2600
 Wire Bus Line
 	9500 1100 9750 1100
 Text HLabel 9750 2000 2    50   Output ~ 0
 SelC_MEM[0..2]
 Wire Bus Line
 	9500 2000 9750 2000
-$Sheet
-S 7850 2400 1150 450 
-U 5FD8D6FE
-F0 "sheet5FD8D6EA" 50
-F1 "StoreOperandRegister2.sch" 50
-F2 "Phi1" I L 7850 2500 50 
-F3 "D[0..15]" I L 7850 2600 50 
-F4 "Q[0..15]" O R 9000 2600 50 
-$EndSheet
 Text HLabel 9750 1100 2    50   Output ~ 0
 Ctl_MEM[13..20]
 $Sheet
@@ -321,15 +312,15 @@ Ctl_EX3
 Text Notes 3850 3500 0    50   ~ 0
 SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B, byte swapped\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
 $Sheet
-S 3850 1900 1250 200 
+S 3850 1900 1450 200 
 U 5FDDE44F
 F0 "sheet5FDDE431" 50
 F1 "SplitOutSelC.sch" 50
 F2 "Ins_EX[0..10]" I L 3850 2000 50 
-F3 "SelC_EX[0..2]" O R 5100 2000 50 
+F3 "SelC_EX[0..2]" O R 5300 2000 50 
 $EndSheet
 $Sheet
-S 3850 2400 1250 700 
+S 3850 2400 1450 700 
 U 5FDDE458
 F0 "sheet5FDDE432" 50
 F1 "SelectStoreOp.sch" 50
@@ -338,7 +329,7 @@ F3 "SelStoreOpB" I L 3850 2650 50
 F4 "Ins_EX[0..10]" I L 3850 2750 50 
 F5 "B[0..15]" I L 3850 2850 50 
 F6 "PC_EX[0..15]" I L 3850 2950 50 
-F7 "StoreOp[0..15]" O R 5100 2600 50 
+F7 "StoreOp_EX[0..15]" O R 5300 2600 50 
 $EndSheet
 Text Notes 3600 5200 0    50   ~ 0
 SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:8, 4:0]
@@ -391,7 +382,7 @@ Wire Bus Line
 Wire Wire Line
 	7550 2500 7850 2500
 Wire Bus Line
-	5100 2600 7850 2600
+	5300 2600 7850 2600
 Wire Bus Line
 	5200 1100 7850 1100
 Wire Bus Line
@@ -444,7 +435,7 @@ Wire Wire Line
 Text HLabel 2250 1600 3    50   Output ~ 0
 ~J
 Wire Bus Line
-	5100 2000 7850 2000
+	5300 2000 7850 2000
 Wire Bus Line
 	3600 4600 1250 4600
 Wire Bus Line
@@ -530,6 +521,15 @@ Wire Wire Line
 	2450 1100 2450 5800
 Wire Wire Line
 	2350 1100 2350 5900
+$Sheet
+S 7850 2400 1650 450 
+U 5FD8D6FE
+F0 "sheet5FD8D6EA" 50
+F1 "StoreOperandRegister2.sch" 50
+F2 "Phi1" I L 7850 2500 50 
+F3 "StoreOp_EX[0..15]" I L 7850 2600 50 
+F4 "StoreOp_MEM[0..15]" O R 9500 2600 50 
+$EndSheet
 Wire Bus Line
 	1250 1000 5100 1000
 $EndSCHEMATC

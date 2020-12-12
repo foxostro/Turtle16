@@ -22,7 +22,7 @@ Src=0  —> Select ALU Result\nSrc=1  —> Select Store Operand\nSrc=2  —> Sel
 Wire Bus Line
 	6400 5050 2800 5050
 Text HLabel 2750 5450 0    50   Input ~ 0
-StoreOp[0..15]
+SystemBus[0..15]
 Entry Wire Line
 	4900 3550 5000 3650
 Entry Wire Line
@@ -68,13 +68,13 @@ SelC_WB[0..2]
 Wire Bus Line
 	3600 3650 3800 3650
 $Sheet
-S 2850 5250 1150 400 
+S 2850 5250 1600 400 
 U 5FE6C116
 F0 "sheet5FE6C101" 50
 F1 "StoreOperandRegister3.sch" 50
 F2 "Phi1" I L 2850 5350 50 
-F3 "D[0..15]" I L 2850 5450 50 
-F4 "Q[0..15]" O R 4000 5450 50 
+F3 "SystemBus[0..15]" I L 2850 5450 50 
+F4 "StoreOp_WB[0..15]" O R 4450 5450 50 
 $EndSheet
 $Sheet
 S 1850 3350 1750 400 
@@ -102,7 +102,7 @@ Wire Bus Line
 Wire Bus Line
 	4600 5150 4600 5450
 Wire Bus Line
-	4600 5450 4000 5450
+	4600 5450 4450 5450
 Text HLabel 9150 4300 2    50   Output ~ 0
 ~WRL
 Text GLabel 6300 4750 0    50   Input ~ 0

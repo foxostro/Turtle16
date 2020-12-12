@@ -231,104 +231,104 @@ Entry Wire Line
 	6900 2450 7000 2350
 Wire Wire Line
 	6900 2450 6350 2450
-Text Label 6400 2450 0    50   ~ 0
-Q0
+Text Label 6900 2450 2    50   ~ 0
+SystemBus0
 Entry Wire Line
 	6900 2550 7000 2450
 Wire Wire Line
 	6900 2550 6350 2550
-Text Label 6400 2550 0    50   ~ 0
-Q1
+Text Label 6900 2550 2    50   ~ 0
+SystemBus1
 Entry Wire Line
 	6900 2650 7000 2550
 Wire Wire Line
 	6900 2650 6350 2650
-Text Label 6400 2650 0    50   ~ 0
-Q2
+Text Label 6900 2650 2    50   ~ 0
+SystemBus2
 Entry Wire Line
 	6900 2750 7000 2650
 Wire Wire Line
 	6900 2750 6350 2750
-Text Label 6400 2750 0    50   ~ 0
-Q3
+Text Label 6900 2750 2    50   ~ 0
+SystemBus3
 Entry Wire Line
 	6900 2850 7000 2750
 Wire Wire Line
 	6900 2850 6350 2850
-Text Label 6400 2850 0    50   ~ 0
-Q4
+Text Label 6900 2850 2    50   ~ 0
+SystemBus4
 Entry Wire Line
 	6900 2950 7000 2850
 Wire Wire Line
 	6900 2950 6350 2950
-Text Label 6400 2950 0    50   ~ 0
-Q5
+Text Label 6900 2950 2    50   ~ 0
+SystemBus5
 Entry Wire Line
 	6900 3050 7000 2950
 Wire Wire Line
 	6900 3050 6350 3050
-Text Label 6400 3050 0    50   ~ 0
-Q6
+Text Label 6900 3050 2    50   ~ 0
+SystemBus6
 Entry Wire Line
 	6900 3150 7000 3050
 Wire Wire Line
 	6900 3150 6350 3150
-Text Label 6400 3150 0    50   ~ 0
-Q7
+Text Label 6900 3150 2    50   ~ 0
+SystemBus7
 Entry Wire Line
 	4800 2450 4700 2350
 Wire Wire Line
 	4800 2450 5350 2450
-Text Label 5300 2450 2    50   ~ 0
-D0
+Text Label 4800 2450 0    50   ~ 0
+StoreOp_MEM0
 Entry Wire Line
 	4800 2550 4700 2450
 Wire Wire Line
 	4800 2550 5350 2550
-Text Label 5300 2550 2    50   ~ 0
-D1
+Text Label 4800 2550 0    50   ~ 0
+StoreOp_MEM1
 Entry Wire Line
 	4800 2650 4700 2550
 Wire Wire Line
 	4800 2650 5350 2650
-Text Label 5300 2650 2    50   ~ 0
-D2
+Text Label 4800 2650 0    50   ~ 0
+StoreOp_MEM2
 Entry Wire Line
 	4800 2750 4700 2650
 Wire Wire Line
 	4800 2750 5350 2750
-Text Label 5300 2750 2    50   ~ 0
-D3
+Text Label 4800 2750 0    50   ~ 0
+StoreOp_MEM3
 Entry Wire Line
 	4800 2850 4700 2750
 Wire Wire Line
 	4800 2850 5350 2850
-Text Label 5300 2850 2    50   ~ 0
-D4
+Text Label 4800 2850 0    50   ~ 0
+StoreOp_MEM4
 Entry Wire Line
 	4800 2950 4700 2850
 Wire Wire Line
 	4800 2950 5350 2950
-Text Label 5300 2950 2    50   ~ 0
-D5
+Text Label 4800 2950 0    50   ~ 0
+StoreOp_MEM5
 Entry Wire Line
 	4800 3050 4700 2950
 Wire Wire Line
 	4800 3050 5350 3050
-Text Label 5300 3050 2    50   ~ 0
-D6
+Text Label 4800 3050 0    50   ~ 0
+StoreOp_MEM6
 Entry Wire Line
 	4800 3150 4700 3050
 Wire Wire Line
 	4800 3150 5350 3150
-Text Label 5300 3150 2    50   ~ 0
-D7
+Text Label 4800 3150 0    50   ~ 0
+StoreOp_MEM7
 Wire Bus Line
 	7000 2200 7700 2200
 Text HLabel 7700 2200 2    50   3State ~ 0
-Q[0..15]
+SystemBus[0..15]
 Text HLabel 3650 2200 0    50   Input ~ 0
-D[0..15]
+StoreOp_MEM[0..15]
 Wire Bus Line
 	4700 2200 3650 2200
 $Comp
@@ -365,90 +365,90 @@ Entry Wire Line
 	6900 4550 7000 4450
 Wire Wire Line
 	6900 4550 6350 4550
-Text Label 6400 4550 0    50   ~ 0
-Q8
+Text Label 6900 4550 2    50   ~ 0
+SystemBus8
 Entry Wire Line
 	6900 4650 7000 4550
 Wire Wire Line
 	6900 4650 6350 4650
-Text Label 6400 4650 0    50   ~ 0
-Q9
+Text Label 6900 4650 2    50   ~ 0
+SystemBus9
 Entry Wire Line
 	6900 4750 7000 4650
 Wire Wire Line
 	6900 4750 6350 4750
-Text Label 6400 4750 0    50   ~ 0
-Q10
+Text Label 6900 4750 2    50   ~ 0
+SystemBus10
 Entry Wire Line
 	6900 4850 7000 4750
 Wire Wire Line
 	6900 4850 6350 4850
-Text Label 6400 4850 0    50   ~ 0
-Q11
+Text Label 6900 4850 2    50   ~ 0
+SystemBus11
 Entry Wire Line
 	6900 4950 7000 4850
 Wire Wire Line
 	6900 4950 6350 4950
-Text Label 6400 4950 0    50   ~ 0
-Q12
+Text Label 6900 4950 2    50   ~ 0
+SystemBus12
 Entry Wire Line
 	6900 5050 7000 4950
 Wire Wire Line
 	6900 5050 6350 5050
-Text Label 6400 5050 0    50   ~ 0
-Q13
+Text Label 6900 5050 2    50   ~ 0
+SystemBus13
 Entry Wire Line
 	6900 5150 7000 5050
 Wire Wire Line
 	6900 5150 6350 5150
-Text Label 6400 5150 0    50   ~ 0
-Q14
+Text Label 6900 5150 2    50   ~ 0
+SystemBus14
 Entry Wire Line
 	6900 5250 7000 5150
 Wire Wire Line
 	6900 5250 6350 5250
-Text Label 6400 5250 0    50   ~ 0
-Q15
+Text Label 6900 5250 2    50   ~ 0
+SystemBus15
 Wire Wire Line
 	4800 4550 5350 4550
-Text Label 5300 4550 2    50   ~ 0
-D8
+Text Label 4800 4550 0    50   ~ 0
+StoreOp_MEM8
 Wire Wire Line
 	4800 4650 5350 4650
-Text Label 5300 4650 2    50   ~ 0
-D9
+Text Label 4800 4650 0    50   ~ 0
+StoreOp_MEM9
 Wire Wire Line
 	4800 4750 5350 4750
-Text Label 5300 4750 2    50   ~ 0
-D10
+Text Label 4800 4750 0    50   ~ 0
+StoreOp_MEM10
 Wire Wire Line
 	4800 4850 5350 4850
-Text Label 5300 4850 2    50   ~ 0
-D11
+Text Label 4800 4850 0    50   ~ 0
+StoreOp_MEM11
 Entry Wire Line
 	4800 4950 4700 4850
 Wire Wire Line
 	4800 4950 5350 4950
-Text Label 5300 4950 2    50   ~ 0
-D12
+Text Label 4800 4950 0    50   ~ 0
+StoreOp_MEM12
 Entry Wire Line
 	4800 5050 4700 4950
 Wire Wire Line
 	4800 5050 5350 5050
-Text Label 5300 5050 2    50   ~ 0
-D13
+Text Label 4800 5050 0    50   ~ 0
+StoreOp_MEM13
 Entry Wire Line
 	4800 5150 4700 5050
 Wire Wire Line
 	4800 5150 5350 5150
-Text Label 5300 5150 2    50   ~ 0
-D14
+Text Label 4800 5150 0    50   ~ 0
+StoreOp_MEM14
 Entry Wire Line
 	4800 5250 4700 5150
 Wire Wire Line
 	4800 5250 5350 5250
-Text Label 5300 5250 2    50   ~ 0
-D15
+Text Label 4800 5250 0    50   ~ 0
+StoreOp_MEM15
 Text HLabel 8200 4600 2    50   Input ~ 0
 ~RDY
 $Comp

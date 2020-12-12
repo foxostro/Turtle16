@@ -385,7 +385,7 @@ Wire Wire Line
 Entry Wire Line
 	1750 1800 1850 1900
 Text Label 1850 1800 0    50   ~ 0
-ALUResult0
+Y_MEM0
 Wire Wire Line
 	1850 1800 2250 1800
 Entry Wire Line
@@ -1376,35 +1376,35 @@ Wire Wire Line
 Wire Wire Line
 	1250 6350 1700 6350
 Text Label 1850 1900 0    50   ~ 0
-ALUResult1
+Y_MEM1
 Text Label 1850 2000 0    50   ~ 0
-ALUResult2
+Y_MEM2
 Text Label 1850 2100 0    50   ~ 0
-ALUResult3
+Y_MEM3
 Text Label 1850 2200 0    50   ~ 0
-ALUResult4
+Y_MEM4
 Text Label 1850 2300 0    50   ~ 0
-ALUResult5
+Y_MEM5
 Text Label 1850 2400 0    50   ~ 0
-ALUResult6
+Y_MEM6
 Text Label 1850 2500 0    50   ~ 0
-ALUResult7
+Y_MEM7
 Text Label 1850 3850 0    50   ~ 0
-ALUResult8
+Y_MEM8
 Text Label 1850 3950 0    50   ~ 0
-ALUResult9
+Y_MEM9
 Text Label 1850 4050 0    50   ~ 0
-ALUResult10
+Y_MEM10
 Text Label 1850 4150 0    50   ~ 0
-ALUResult11
+Y_MEM11
 Text Label 1850 4250 0    50   ~ 0
-ALUResult12
+Y_MEM12
 Text Label 1850 4350 0    50   ~ 0
-ALUResult13
+Y_MEM13
 Text Label 1850 4450 0    50   ~ 0
-ALUResult14
+Y_MEM14
 Text Label 1850 4550 0    50   ~ 0
-ALUResult15
+Y_MEM15
 Text HLabel 6800 1600 1    50   Input ~ 0
 StoreOp[0..15]
 Entry Wire Line

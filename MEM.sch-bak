@@ -14,13 +14,13 @@ Comment3 "These devices connect to the main board via a connector described in a
 Comment4 "The MEM stage interfaces with memory and memory-mapped peripherals."
 $EndDescr
 Text HLabel 2300 3900 0    50   Input ~ 0
-StoreOpIn[0..15]
+StoreOp_MEM[0..15]
 Text HLabel 2300 2300 0    50   Input ~ 0
 Ctl_MEM[13..20]
 Text HLabel 8800 2400 2    50   Output ~ 0
 Ctl_MEM[16..20]
 Text HLabel 8800 3800 2    50   Output ~ 0
-StoreOp[0..15]
+SystemBus[0..15]
 Entry Wire Line
 	2750 2300 2850 2400
 Entry Wire Line
@@ -50,18 +50,18 @@ Wire Bus Line
 Connection ~ 6950 3800
 Wire Bus Line
 	6950 3800 8800 3800
-Text Label 7600 3550 2    50   ~ 0
-StoreOp[0..7]
+Text Label 7100 3550 0    50   ~ 0
+SystemBus[0..7]
 Text HLabel 8800 3550 2    50   3State ~ 0
 SystemBus[0..7]
 $Sheet
-S 3950 3600 1250 400 
+S 3950 3600 1800 400 
 U 5FF1115C
 F0 "Buffer StoreOp As Bus I/O" 50
 F1 "BufferStoreOpAsBusIO.sch" 50
 F2 "~AssertStoreOp" I L 3950 3800 50 
-F3 "Q[0..15]" T R 5200 3800 50 
-F4 "D[0..15]" I L 3950 3900 50 
+F3 "SystemBus[0..15]" T R 5750 3800 50 
+F4 "StoreOp_MEM[0..15]" I L 3950 3900 50 
 F5 "~RDY" I L 3950 3700 50 
 $EndSheet
 $Sheet
@@ -69,7 +69,7 @@ S 7700 3950 1150 200
 U 5FAF68C1
 F0 "System Bus Pull-down" 50
 F1 "SystemBusPulldown.sch" 50
-F2 "StoreOp[0..15]" I L 7700 4050 50 
+F2 "SystemBus[0..15]" I L 7700 4050 50 
 $EndSheet
 Wire Bus Line
 	6950 3800 6950 4050
@@ -78,13 +78,13 @@ Wire Bus Line
 Text HLabel 2300 4450 0    50   Input ~ 0
 Y_MEM[0..15]
 Wire Bus Line
-	5200 3800 6950 3800
-Text Label 7550 3800 2    50   ~ 0
-StoreOp[0..15]
+	5750 3800 6950 3800
+Text Label 7000 3800 0    50   ~ 0
+SystemBus[0..15]
 Text Label 6700 3800 2    50   ~ 0
-StoreOp[0..15]
-Text Label 7550 4050 2    50   ~ 0
-StoreOp[0..15]
+SystemBus[0..15]
+Text Label 7000 4050 0    50   ~ 0
+SystemBus[0..15]
 Wire Wire Line
 	3650 4350 3950 4350
 $Sheet

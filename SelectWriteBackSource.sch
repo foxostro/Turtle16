@@ -1200,23 +1200,23 @@ Wire Wire Line
 Wire Wire Line
 	1250 6250 1700 6250
 Text HLabel 4100 1600 1    50   Input ~ 0
-StoreOp[0..15]
+StoreOp_WB[0..15]
 Entry Wire Line
 	4200 2200 4100 2100
 Text Label 4200 2200 0    50   ~ 0
-StoreOp4
+StoreOp_WB4
 Wire Wire Line
 	4200 2200 4950 2200
 Entry Wire Line
 	4200 2000 4100 1900
 Text Label 4200 2000 0    50   ~ 0
-StoreOp2
+StoreOp_WB2
 Wire Wire Line
 	4200 2000 4950 2000
 Entry Wire Line
 	4200 1800 4100 1700
 Text Label 4200 1800 0    50   ~ 0
-StoreOp0
+StoreOp_WB0
 Wire Wire Line
 	4200 1800 4950 1800
 Entry Wire Line
@@ -1224,7 +1224,7 @@ Entry Wire Line
 Wire Wire Line
 	4200 2100 4950 2100
 Text Label 4200 2100 0    50   ~ 0
-StoreOp3
+StoreOp_WB3
 $Comp
 L power:VCC #PWR?
 U 1 1 601EACA6
@@ -1300,7 +1300,7 @@ F 3 "" H 5450 5150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 4200 1900 0    50   ~ 0
-StoreOp1
+StoreOp_WB1
 Wire Wire Line
 	4200 1900 4950 1900
 Entry Wire Line
@@ -1308,13 +1308,13 @@ Entry Wire Line
 Entry Wire Line
 	4200 2500 4100 2400
 Text Label 4200 2500 0    50   ~ 0
-StoreOp7
+StoreOp_WB7
 Wire Wire Line
 	4200 2500 4950 2500
 Entry Wire Line
 	4200 2300 4100 2200
 Text Label 4200 2300 0    50   ~ 0
-StoreOp5
+StoreOp_WB5
 Wire Wire Line
 	4200 2300 4950 2300
 Entry Wire Line
@@ -1322,23 +1322,23 @@ Entry Wire Line
 Wire Wire Line
 	4200 2400 4950 2400
 Text Label 4200 2400 0    50   ~ 0
-StoreOp6
+StoreOp_WB6
 Entry Wire Line
 	4200 4250 4100 4150
 Text Label 4200 4250 0    50   ~ 0
-StoreOp12
+StoreOp_WB12
 Wire Wire Line
 	4200 4250 4950 4250
 Entry Wire Line
 	4200 4050 4100 3950
 Text Label 4200 4050 0    50   ~ 0
-StoreOp10
+StoreOp_WB10
 Wire Wire Line
 	4200 4050 4950 4050
 Entry Wire Line
 	4200 3850 4100 3750
 Text Label 4200 3850 0    50   ~ 0
-StoreOp8
+StoreOp_WB8
 Wire Wire Line
 	4200 3850 4950 3850
 Entry Wire Line
@@ -1346,9 +1346,9 @@ Entry Wire Line
 Wire Wire Line
 	4200 4150 4950 4150
 Text Label 4200 4150 0    50   ~ 0
-StoreOp11
+StoreOp_WB11
 Text Label 4200 3950 0    50   ~ 0
-StoreOp9
+StoreOp_WB9
 Wire Wire Line
 	4200 3950 4950 3950
 Entry Wire Line
@@ -1356,13 +1356,13 @@ Entry Wire Line
 Entry Wire Line
 	4200 4550 4100 4450
 Text Label 4200 4550 0    50   ~ 0
-StoreOp15
+StoreOp_WB15
 Wire Wire Line
 	4200 4550 4950 4550
 Entry Wire Line
 	4200 4350 4100 4250
 Text Label 4200 4350 0    50   ~ 0
-StoreOp13
+StoreOp_WB13
 Wire Wire Line
 	4200 4350 4950 4350
 Entry Wire Line
@@ -1370,7 +1370,7 @@ Entry Wire Line
 Wire Wire Line
 	4200 4450 4950 4450
 Text Label 4200 4450 0    50   ~ 0
-StoreOp14
+StoreOp_WB14
 Wire Wire Line
 	1600 6450 1700 6450
 Wire Wire Line
@@ -1406,23 +1406,23 @@ Y_MEM14
 Text Label 1850 4550 0    50   ~ 0
 Y_MEM15
 Text HLabel 6800 1600 1    50   Input ~ 0
-StoreOp[0..15]
+StoreOp_WB[0..15]
 Entry Wire Line
 	6900 4250 6800 4150
 Text Label 6900 4250 0    50   ~ 0
-StoreOp4
+StoreOp_WB4
 Wire Wire Line
 	6900 4250 7650 4250
 Entry Wire Line
 	6900 4050 6800 3950
 Text Label 6900 4050 0    50   ~ 0
-StoreOp2
+StoreOp_WB2
 Wire Wire Line
 	6900 4050 7650 4050
 Entry Wire Line
 	6900 3850 6800 3750
 Text Label 6900 3850 0    50   ~ 0
-StoreOp0
+StoreOp_WB0
 Wire Wire Line
 	6900 3850 7650 3850
 Entry Wire Line
@@ -1430,7 +1430,7 @@ Entry Wire Line
 Wire Wire Line
 	6900 4150 7650 4150
 Text Label 6900 4150 0    50   ~ 0
-StoreOp3
+StoreOp_WB3
 $Comp
 L power:VCC #PWR?
 U 1 1 603E9E13
@@ -1506,7 +1506,7 @@ F 3 "" H 8150 5150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 6900 3950 0    50   ~ 0
-StoreOp1
+StoreOp_WB1
 Wire Wire Line
 	6900 3950 7650 3950
 Entry Wire Line
@@ -1514,13 +1514,13 @@ Entry Wire Line
 Entry Wire Line
 	6900 4550 6800 4450
 Text Label 6900 4550 0    50   ~ 0
-StoreOp7
+StoreOp_WB7
 Wire Wire Line
 	6900 4550 7650 4550
 Entry Wire Line
 	6900 4350 6800 4250
 Text Label 6900 4350 0    50   ~ 0
-StoreOp5
+StoreOp_WB5
 Wire Wire Line
 	6900 4350 7650 4350
 Entry Wire Line
@@ -1528,23 +1528,23 @@ Entry Wire Line
 Wire Wire Line
 	6900 4450 7650 4450
 Text Label 6900 4450 0    50   ~ 0
-StoreOp6
+StoreOp_WB6
 Entry Wire Line
 	6900 2200 6800 2100
 Text Label 6900 2200 0    50   ~ 0
-StoreOp12
+StoreOp_WB12
 Wire Wire Line
 	6900 2200 7650 2200
 Entry Wire Line
 	6900 2000 6800 1900
 Text Label 6900 2000 0    50   ~ 0
-StoreOp10
+StoreOp_WB10
 Wire Wire Line
 	6900 2000 7650 2000
 Entry Wire Line
 	6900 1800 6800 1700
 Text Label 6900 1800 0    50   ~ 0
-StoreOp8
+StoreOp_WB8
 Wire Wire Line
 	6900 1800 7650 1800
 Entry Wire Line
@@ -1552,9 +1552,9 @@ Entry Wire Line
 Wire Wire Line
 	6900 2100 7650 2100
 Text Label 6900 2100 0    50   ~ 0
-StoreOp11
+StoreOp_WB11
 Text Label 6900 1900 0    50   ~ 0
-StoreOp9
+StoreOp_WB9
 Wire Wire Line
 	6900 1900 7650 1900
 Entry Wire Line
@@ -1562,13 +1562,13 @@ Entry Wire Line
 Entry Wire Line
 	6900 2500 6800 2400
 Text Label 6900 2500 0    50   ~ 0
-StoreOp15
+StoreOp_WB15
 Wire Wire Line
 	6900 2500 7650 2500
 Entry Wire Line
 	6900 2300 6800 2200
 Text Label 6900 2300 0    50   ~ 0
-StoreOp13
+StoreOp_WB13
 Wire Wire Line
 	6900 2300 7650 2300
 Entry Wire Line
@@ -1576,7 +1576,7 @@ Entry Wire Line
 Wire Wire Line
 	6900 2400 7650 2400
 Text Label 6900 2400 0    50   ~ 0
-StoreOp14
+StoreOp_WB14
 Text Notes 2000 1150 0    50   ~ 0
 Y_MEM is latched at the same time as\nthe other registers in MEM/WB.
 $Comp

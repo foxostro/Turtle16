@@ -239,102 +239,102 @@ Entry Wire Line
 	8350 3600 8250 3500
 Wire Wire Line
 	3850 3600 3850 4100
-Text Label 3850 3650 3    50   ~ 0
-StoreOp0
+Text Label 3850 3600 3    50   ~ 0
+SystemBus0
 Entry Wire Line
 	8050 3600 7950 3500
 Wire Wire Line
 	4150 3600 4150 4100
-Text Label 4150 3650 3    50   ~ 0
-StoreOp1
+Text Label 4150 3600 3    50   ~ 0
+SystemBus1
 Entry Wire Line
 	7750 3600 7650 3500
 Wire Wire Line
 	4450 3600 4450 4100
-Text Label 4450 3650 3    50   ~ 0
-StoreOp2
+Text Label 4450 3600 3    50   ~ 0
+SystemBus2
 Entry Wire Line
 	7450 3600 7350 3500
 Wire Wire Line
 	4750 3600 4750 4100
-Text Label 4750 3650 3    50   ~ 0
-StoreOp3
+Text Label 4750 3600 3    50   ~ 0
+SystemBus3
 Entry Wire Line
 	7150 3600 7050 3500
 Wire Wire Line
 	5050 3600 5050 4100
-Text Label 5050 3650 3    50   ~ 0
-StoreOp4
+Text Label 5050 3600 3    50   ~ 0
+SystemBus4
 Entry Wire Line
 	6850 3600 6750 3500
 Wire Wire Line
 	5350 3600 5350 4100
-Text Label 5350 3650 3    50   ~ 0
-StoreOp5
+Text Label 5350 3600 3    50   ~ 0
+SystemBus5
 Entry Wire Line
 	6550 3600 6450 3500
 Wire Wire Line
 	5650 3600 5650 4100
-Text Label 5650 3650 3    50   ~ 0
-StoreOp6
+Text Label 5650 3600 3    50   ~ 0
+SystemBus6
 Entry Wire Line
 	6250 3600 6150 3500
 Wire Wire Line
 	5950 3600 5950 4100
-Text Label 5950 3650 3    50   ~ 0
-StoreOp7
+Text Label 5950 3600 3    50   ~ 0
+SystemBus7
 Entry Wire Line
 	5950 3600 5850 3500
 Wire Wire Line
 	6250 3600 6250 4100
-Text Label 6250 3650 3    50   ~ 0
-StoreOp8
+Text Label 6250 3600 3    50   ~ 0
+SystemBus8
 Entry Wire Line
 	5650 3600 5550 3500
 Wire Wire Line
 	6550 3600 6550 4100
-Text Label 6550 3650 3    50   ~ 0
-StoreOp9
+Text Label 6550 3600 3    50   ~ 0
+SystemBus9
 Entry Wire Line
 	5350 3600 5250 3500
 Wire Wire Line
 	6850 3600 6850 4100
-Text Label 6850 3650 3    50   ~ 0
-StoreOp10
+Text Label 6850 3600 3    50   ~ 0
+SystemBus10
 Entry Wire Line
 	5050 3600 4950 3500
 Wire Wire Line
 	7150 3600 7150 4100
-Text Label 7150 3650 3    50   ~ 0
-StoreOp11
+Text Label 7150 3600 3    50   ~ 0
+SystemBus11
 Entry Wire Line
 	4750 3600 4650 3500
 Wire Wire Line
 	7450 3600 7450 4100
-Text Label 7450 3650 3    50   ~ 0
-StoreOp12
+Text Label 7450 3600 3    50   ~ 0
+SystemBus12
 Entry Wire Line
 	4450 3600 4350 3500
 Wire Wire Line
 	7750 3600 7750 4100
-Text Label 7750 3650 3    50   ~ 0
-StoreOp13
+Text Label 7750 3600 3    50   ~ 0
+SystemBus13
 Entry Wire Line
 	4150 3600 4050 3500
 Wire Wire Line
 	8050 3600 8050 4100
-Text Label 8050 3650 3    50   ~ 0
-StoreOp14
+Text Label 8050 3600 3    50   ~ 0
+SystemBus14
 Entry Wire Line
 	3850 3600 3750 3500
 Wire Wire Line
 	8350 3600 8350 4100
-Text Label 8350 3650 3    50   ~ 0
-StoreOp15
+Text Label 8350 3600 3    50   ~ 0
+SystemBus15
 Wire Bus Line
 	3750 3500 3750 2950
 Text HLabel 3600 2950 0    50   Input ~ 0
-StoreOp[0..15]
+SystemBus[0..15]
 Wire Bus Line
 	3600 2950 3750 2950
 $Comp

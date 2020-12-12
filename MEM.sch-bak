@@ -18,22 +18,22 @@ StoreOpIn[0..15]
 Text HLabel 2300 1150 0    50   Input ~ 0
 CtlIn[13..19]
 Text HLabel 8800 1250 2    50   Output ~ 0
-Ctl[15..19]
+Ctl[16..19]
 Text HLabel 8800 2250 2    50   Output ~ 0
 StoreOp[0..15]
 Entry Wire Line
-	2500 1150 2600 1250
+	2750 1150 2850 1250
 Entry Wire Line
-	2600 1150 2700 1250
+	2850 1150 2950 1250
 Entry Bus Bus
 	6250 1150 6350 1250
 Wire Bus Line
 	6350 1250 8800 1250
 Text Label 6450 1250 0    50   ~ 0
-CtlIn[15..19]
-Text Label 2700 1250 3    50   ~ 0
+CtlIn[16..19]
+Text Label 2950 1250 3    50   ~ 0
 CtlIn13
-Text Label 2600 1250 3    50   ~ 0
+Text Label 2850 1250 3    50   ~ 0
 CtlIn14
 Wire Bus Line
 	2300 2350 3950 2350
@@ -41,8 +41,6 @@ Text HLabel 8800 1700 2    50   3State ~ 0
 ~MemStore
 Text HLabel 8800 1600 2    50   3State ~ 0
 ~MemLoad
-Wire Wire Line
-	2600 2250 3950 2250
 Entry Bus Bus
 	6950 2100 7050 2000
 Wire Bus Line
@@ -61,7 +59,7 @@ S 3950 2050 1250 400
 U 5FF1115C
 F0 "Buffer StoreOp As Bus I/O" 50
 F1 "BufferStoreOpAsBusIO.sch" 50
-F2 "~MemStoreIn" I L 3950 2250 50 
+F2 "~AssertStoreOp" I L 3950 2250 50 
 F3 "Q[0..15]" T R 5200 2250 50 
 F4 "D[0..15]" I L 3950 2350 50 
 F5 "~RDY" I L 3950 2150 50 
@@ -116,24 +114,17 @@ F5 "~MemStore" T R 5200 1700 50
 F6 "~RDY" I L 3950 1500 50 
 $EndSheet
 Wire Wire Line
-	3950 1700 2600 1700
-Wire Wire Line
-	3950 1600 2700 1600
-Wire Wire Line
-	2700 1250 2700 1600
+	2950 1250 2950 1600
 Wire Wire Line
 	5200 1600 8800 1600
 Wire Wire Line
 	8800 1700 5200 1700
 Wire Wire Line
-	2600 1250 2600 1700
-Connection ~ 2600 1700
+	2850 1250 2850 1700
 Wire Wire Line
 	3650 1500 3950 1500
 Text HLabel 3650 1500 0    50   Input ~ 0
 ~RDY
-Wire Wire Line
-	2600 1700 2600 2250
 Wire Wire Line
 	3650 2150 3950 2150
 Text HLabel 3650 2150 0    50   Input ~ 0
@@ -142,6 +133,18 @@ Text HLabel 3650 2800 0    50   Input ~ 0
 ~RDY
 Text Notes 3050 3750 0    50   ~ 0
 The ~RDY~ signal is an open-collector signal shared between all bus\ndevices. When a bus device takes this signal high, the CPU releases the\nsystem bus I/O lines, address lines, and control signals, putting them\ninto a high-Z state. This allows peripheral devices to drive the bus\nwhen needed.
+Wire Wire Line
+	2950 1600 3950 1600
+Wire Wire Line
+	2850 1700 3950 1700
+Entry Wire Line
+	2650 1150 2750 1250
+Text Label 2750 1250 3    50   ~ 0
+CtlIn15
+Wire Wire Line
+	2750 1250 2750 2250
 Wire Bus Line
 	2300 1150 6250 1150
+Wire Wire Line
+	2750 2250 3950 2250
 $EndSCHEMATC

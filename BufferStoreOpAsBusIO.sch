@@ -226,7 +226,7 @@ F 3 "" H 5850 2150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text HLabel 8200 4400 2    50   Input ~ 0
-~MemStoreIn
+~AssertStoreOp
 Entry Wire Line
 	6900 2450 7000 2350
 Wire Wire Line

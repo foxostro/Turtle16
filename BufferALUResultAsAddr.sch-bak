@@ -294,55 +294,55 @@ Entry Wire Line
 Wire Wire Line
 	5000 2400 5550 2400
 Text Label 5500 2400 2    50   ~ 0
-ALUResult0
+Y_MEM0
 Entry Wire Line
 	5000 2500 4900 2400
 Wire Wire Line
 	5000 2500 5550 2500
 Text Label 5500 2500 2    50   ~ 0
-ALUResult1
+Y_MEM1
 Entry Wire Line
 	5000 2600 4900 2500
 Wire Wire Line
 	5000 2600 5550 2600
 Text Label 5500 2600 2    50   ~ 0
-ALUResult2
+Y_MEM2
 Entry Wire Line
 	5000 2700 4900 2600
 Wire Wire Line
 	5000 2700 5550 2700
 Text Label 5500 2700 2    50   ~ 0
-ALUResult3
+Y_MEM3
 Entry Wire Line
 	5000 2800 4900 2700
 Wire Wire Line
 	5000 2800 5550 2800
 Text Label 5500 2800 2    50   ~ 0
-ALUResult4
+Y_MEM4
 Entry Wire Line
 	5000 2900 4900 2800
 Wire Wire Line
 	5000 2900 5550 2900
 Text Label 5500 2900 2    50   ~ 0
-ALUResult5
+Y_MEM5
 Entry Wire Line
 	5000 3000 4900 2900
 Wire Wire Line
 	5000 3000 5550 3000
 Text Label 5500 3000 2    50   ~ 0
-ALUResult6
+Y_MEM6
 Entry Wire Line
 	5000 3100 4900 3000
 Wire Wire Line
 	5000 3100 5550 3100
 Text Label 5500 3100 2    50   ~ 0
-ALUResult7
+Y_MEM7
 Wire Bus Line
 	7200 2150 7900 2150
 Text HLabel 7900 2150 2    50   3State ~ 0
 Addr[0..15]
 Text HLabel 3850 2150 0    50   Input ~ 0
-ALUResult[0..15]
+Y_MEM[0..15]
 Wire Bus Line
 	4900 2150 3850 2150
 $Comp
@@ -432,49 +432,49 @@ Entry Wire Line
 Wire Wire Line
 	5000 4500 5550 4500
 Text Label 5500 4500 2    50   ~ 0
-ALUResult8
+Y_MEM8
 Entry Wire Line
 	5000 4600 4900 4500
 Wire Wire Line
 	5000 4600 5550 4600
 Text Label 5500 4600 2    50   ~ 0
-ALUResult9
+Y_MEM9
 Entry Wire Line
 	5000 4700 4900 4600
 Wire Wire Line
 	5000 4700 5550 4700
 Text Label 5500 4700 2    50   ~ 0
-ALUResult10
+Y_MEM10
 Entry Wire Line
 	5000 4800 4900 4700
 Wire Wire Line
 	5000 4800 5550 4800
 Text Label 5500 4800 2    50   ~ 0
-ALUResult11
+Y_MEM11
 Entry Wire Line
 	5000 4900 4900 4800
 Wire Wire Line
 	5000 4900 5550 4900
 Text Label 5500 4900 2    50   ~ 0
-ALUResult12
+Y_MEM12
 Entry Wire Line
 	5000 5000 4900 4900
 Wire Wire Line
 	5000 5000 5550 5000
 Text Label 5500 5000 2    50   ~ 0
-ALUResult13
+Y_MEM13
 Entry Wire Line
 	5000 5100 4900 5000
 Wire Wire Line
 	5000 5100 5550 5100
 Text Label 5500 5100 2    50   ~ 0
-ALUResult14
+Y_MEM14
 Entry Wire Line
 	5000 5200 4900 5100
 Wire Wire Line
 	5000 5200 5550 5200
 Text Label 5500 5200 2    50   ~ 0
-ALUResult15
+Y_MEM15
 $Comp
 L power:GND #PWR?
 U 1 1 5FC40BCB

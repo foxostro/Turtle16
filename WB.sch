@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 18 33
+Sheet 13 33
 Title "WB"
 Date ""
 Rev ""
@@ -32,17 +32,17 @@ Entry Wire Line
 Entry Wire Line
 	4600 3550 4700 3650
 Text Label 5150 3700 3    50   ~ 0
-Ctl18
+Ctl_WB18
 Text Label 5000 3700 3    50   ~ 0
-Ctl19
+Ctl_WB19
 Text Label 4700 3700 3    50   ~ 0
-Ctl16
+Ctl_WB16
 Text Label 4550 3700 3    50   ~ 0
-Ctl17
+Ctl_WB17
 Wire Wire Line
-	5150 3650 5150 4000
+	5150 3650 5150 4300
 Wire Wire Line
-	5000 3650 5000 4100
+	5000 3650 5000 4400
 $Sheet
 S 6400 4650 1250 600 
 U 6025930D
@@ -55,18 +55,18 @@ F5 "ALUResult[0..15]" I L 6400 5050 50
 F6 "WriteBackSrcA" I L 6400 4850 50 
 F7 "Phi1" I L 6400 4750 50 
 $EndSheet
-Text HLabel 9150 4100 2    50   Output ~ 0
+Text HLabel 9150 4400 2    50   Output ~ 0
 ~WRH
 Wire Bus Line
 	7650 4850 9150 4850
 Text HLabel 1400 3550 0    50   Input ~ 0
-CtlIn[16..20]
+Ctl_MEM[16..20]
 Wire Bus Line
 	1400 3550 1850 3550
-Text HLabel 3200 3650 2    50   Output ~ 0
+Text HLabel 3800 3650 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
-	3000 3650 3200 3650
+	3600 3650 3800 3650
 $Sheet
 S 2850 5250 1150 400 
 U 5FE6C116
@@ -77,15 +77,15 @@ F3 "D[0..15]" I L 2850 5450 50
 F4 "Q[0..15]" O R 4000 5450 50 
 $EndSheet
 $Sheet
-S 1850 3350 1150 400 
+S 1850 3350 1750 400 
 U 5FE6C11D
 F0 "sheet5FE6C102" 50
 F1 "Ctl_15_23_Register.sch" 50
 F2 "Phi1" I L 1850 3450 50 
 F3 "SelCIn[0..2]" I L 1850 3650 50 
-F4 "SelC[0..2]" O R 3000 3650 50 
-F5 "Ctl[16..20]" O R 3000 3550 50 
-F6 "CtlIn[16..20]" I L 1850 3550 50 
+F4 "SelC[0..2]" O R 3600 3650 50 
+F5 "Ctl_WB[16..20]" O R 3600 3550 50 
+F6 "Ctl_MEM[16..20]" I L 1850 3550 50 
 $EndSheet
 Text HLabel 1400 3650 0    50   Input ~ 0
 SelCIn[0..2]
@@ -103,7 +103,7 @@ Wire Bus Line
 	4600 5150 4600 5450
 Wire Bus Line
 	4600 5450 4000 5450
-Text HLabel 9150 4000 2    50   Output ~ 0
+Text HLabel 9150 4300 2    50   Output ~ 0
 ~WRL
 Text GLabel 6300 4750 0    50   Input ~ 0
 Phi1c
@@ -116,27 +116,27 @@ Wire Wire Line
 Wire Wire Line
 	4550 3650 4550 4950
 Wire Wire Line
-	5150 4000 9150 4000
+	5150 4300 9150 4300
 Wire Wire Line
-	5000 4100 9150 4100
+	5000 4400 9150 4400
 Wire Wire Line
 	6300 4750 6400 4750
 Text Label 3850 3550 0    50   ~ 0
-Ctl[16..20]
+Ctl_WB[16..20]
 Entry Wire Line
 	4750 3550 4850 3650
 Text Label 4850 3700 3    50   ~ 0
-Ctl20
+Ctl_WB20
 Wire Wire Line
 	4700 4850 6400 4850
 Wire Wire Line
 	4550 4950 6400 4950
-Text HLabel 9150 4200 2    50   Output ~ 0
+Text HLabel 9150 4500 2    50   Output ~ 0
 ~WBEN
 Wire Wire Line
-	4850 3650 4850 4200
+	4850 3650 4850 4500
 Wire Wire Line
-	4850 4200 9150 4200
+	4850 4500 9150 4500
 Wire Bus Line
-	3000 3550 5050 3550
+	3600 3550 5050 3550
 $EndSCHEMATC

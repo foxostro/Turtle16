@@ -14,7 +14,7 @@ Comment3 "The decoder takes the condition code from the flags register into acco
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
 Text HLabel 8300 2650 2    50   Output ~ 0
-ControlWord[0..20]
+Ctl_EX[0..20]
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrcA\n17  WriteBackSrcB\n18  /WRL\n19  /WRH\n20  /WBEN
 Text Notes 1700 7900 0    50   ~ 0
@@ -105,7 +105,7 @@ F3 "Z" I L 3000 2950 50
 F4 "Ins[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
 F6 "~RST" I L 3000 3150 50 
-F7 "Ctl[0..23]" O R 4100 2750 50 
+F7 "Ctl_ID[0..23]" O R 4100 2750 50 
 $EndSheet
 Wire Wire Line
 	5200 2650 5100 2650
@@ -145,8 +145,8 @@ U 5FCFC706
 F0 "ID/EX ControlWord" 50
 F1 "ID_EX_ControlWord.sch" 50
 F2 "Phi1" I L 5200 2650 50 
-F3 "Ctl[0..23]" I L 5200 2750 50 
-F4 "ControlWord[0..20]" O R 6600 2650 50 
+F3 "Ctl_ID[0..23]" I L 5200 2750 50 
+F4 "Ctl_EX[0..20]" O R 6600 2650 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 

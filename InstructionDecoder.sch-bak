@@ -89,34 +89,34 @@ Connection ~ 750  7500
 Wire Wire Line
 	1250 7800 750  7800
 Connection ~ 750  7800
-Text Label 4000 2450 2    50   ~ 0
-Ctl4
-Text Label 4000 2550 2    50   ~ 0
-Ctl5
-Text Label 4000 2650 2    50   ~ 0
-Ctl6
-Text Label 4000 2750 2    50   ~ 0
-Ctl7
-Text Label 4000 2250 2    50   ~ 0
-Ctl2
-Text Label 4000 2150 2    50   ~ 0
-Ctl1
-Text Label 4000 2050 2    50   ~ 0
-Ctl0
+Text Label 4100 2450 2    50   ~ 0
+Ctl_ID4
+Text Label 4100 2550 2    50   ~ 0
+Ctl_ID5
+Text Label 4100 2650 2    50   ~ 0
+Ctl_ID6
+Text Label 4100 2750 2    50   ~ 0
+Ctl_ID7
+Text Label 4100 2250 2    50   ~ 0
+Ctl_ID2
+Text Label 4100 2150 2    50   ~ 0
+Ctl_ID1
+Text Label 4100 2050 2    50   ~ 0
+Ctl_ID0
 Entry Wire Line
-	4100 2850 4000 2750
+	4200 2850 4100 2750
 Entry Wire Line
-	4100 2250 4000 2150
+	4200 2250 4100 2150
 Entry Wire Line
-	4100 2350 4000 2250
+	4200 2350 4100 2250
 Entry Wire Line
-	4100 2450 4000 2350
+	4200 2450 4100 2350
 Entry Wire Line
-	4100 2550 4000 2450
+	4200 2550 4100 2450
 Entry Wire Line
-	4100 2650 4000 2550
+	4200 2650 4100 2550
 Entry Wire Line
-	4100 2750 4000 2650
+	4200 2750 4100 2650
 $Comp
 L power:VCC #PWR?
 U 1 1 5FF02531
@@ -329,8 +329,6 @@ F 3 "" H 2550 3550 50  0001 C CNN
 $EndComp
 Connection ~ 1250 7500
 Connection ~ 1250 7800
-Text Label 4000 2350 2    50   ~ 0
-Ctl3
 Text HLabel 2400 2850 0    50   Input ~ 0
 ~RST
 Wire Wire Line
@@ -365,59 +363,59 @@ F 3 "" H 2550 4250 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	4000 2650 3750 2650
+	4100 2650 3750 2650
 Wire Wire Line
-	4000 2450 3750 2450
+	4100 2450 3750 2450
 Wire Wire Line
-	4000 2250 3750 2250
+	4100 2250 3750 2250
 Wire Wire Line
-	4000 2050 3750 2050
+	4100 2050 3750 2050
 Entry Wire Line
-	4100 2150 4000 2050
+	4200 2150 4100 2050
 Wire Wire Line
-	4000 2150 3750 2150
+	4100 2150 3750 2150
 Wire Wire Line
-	4000 2350 3750 2350
+	4100 2350 3750 2350
 Wire Wire Line
-	4000 2550 3750 2550
+	4100 2550 3750 2550
 Wire Wire Line
-	4000 2750 3750 2750
-Text HLabel 10050 5250 2    50   Output ~ 0
-Ctl[0..23]
+	4100 2750 3750 2750
+Text HLabel 9950 5250 2    50   Output ~ 0
+Ctl_ID[0..23]
 Text HLabel 5200 2550 0    50   Input ~ 0
 Carry
 Text HLabel 5200 2650 0    50   Input ~ 0
 Z
 Text HLabel 5200 2750 0    50   Input ~ 0
 OVF
-Text Label 6800 2450 2    50   ~ 0
-Ctl12
-Text Label 6800 2550 2    50   ~ 0
-Ctl13
-Text Label 6800 2650 2    50   ~ 0
-Ctl14
-Text Label 6800 2750 2    50   ~ 0
-Ctl15
-Text Label 6800 2250 2    50   ~ 0
-Ctl10
-Text Label 6800 2150 2    50   ~ 0
-Ctl9
-Text Label 6800 2050 2    50   ~ 0
-Ctl8
+Text Label 6900 2450 2    50   ~ 0
+Ctl_ID12
+Text Label 6900 2550 2    50   ~ 0
+Ctl_ID13
+Text Label 6900 2650 2    50   ~ 0
+Ctl_ID14
+Text Label 6900 2750 2    50   ~ 0
+Ctl_ID15
+Text Label 6900 2250 2    50   ~ 0
+Ctl_ID10
+Text Label 6900 2150 2    50   ~ 0
+Ctl_ID9
+Text Label 6900 2050 2    50   ~ 0
+Ctl_ID8
 Entry Wire Line
-	6900 2850 6800 2750
+	7000 2850 6900 2750
 Entry Wire Line
-	6900 2250 6800 2150
+	7000 2250 6900 2150
 Entry Wire Line
-	6900 2350 6800 2250
+	7000 2350 6900 2250
 Entry Wire Line
-	6900 2450 6800 2350
+	7000 2450 6900 2350
 Entry Wire Line
-	6900 2550 6800 2450
+	7000 2550 6900 2450
 Entry Wire Line
-	6900 2650 6800 2550
+	7000 2650 6900 2550
 Entry Wire Line
-	6900 2750 6800 2650
+	7000 2750 6900 2650
 $Comp
 L power:VCC #PWR?
 U 1 1 60132D26
@@ -608,8 +606,8 @@ F 3 "" H 5350 3550 50  0001 C CNN
 	1    5350 3550
 	0    1    1    0   
 $EndComp
-Text Label 6800 2350 2    50   ~ 0
-Ctl11
+Text Label 6900 2350 2    50   ~ 0
+Ctl_ID11
 Text HLabel 5200 2850 0    50   Input ~ 0
 ~RST
 Wire Wire Line
@@ -644,57 +642,57 @@ F 3 "" H 5350 4250 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	6800 2650 6550 2650
+	6900 2650 6550 2650
 Wire Wire Line
-	6800 2450 6550 2450
+	6900 2450 6550 2450
 Wire Wire Line
-	6800 2250 6550 2250
+	6900 2250 6550 2250
 Wire Wire Line
-	6800 2050 6550 2050
+	6900 2050 6550 2050
 Entry Wire Line
-	6900 2150 6800 2050
+	7000 2150 6900 2050
 Wire Wire Line
-	6800 2150 6550 2150
+	6900 2150 6550 2150
 Wire Wire Line
-	6800 2350 6550 2350
+	6900 2350 6550 2350
 Wire Wire Line
-	6800 2550 6550 2550
+	6900 2550 6550 2550
 Wire Wire Line
-	6800 2750 6550 2750
+	6900 2750 6550 2750
 Text HLabel 8000 2550 0    50   Input ~ 0
 Carry
 Text HLabel 8000 2650 0    50   Input ~ 0
 Z
 Text HLabel 8000 2750 0    50   Input ~ 0
 OVF
-Text Label 9600 2450 2    50   ~ 0
-Ctl20
-Text Label 9600 2550 2    50   ~ 0
-Ctl21
-Text Label 9600 2650 2    50   ~ 0
-Ctl22
-Text Label 9600 2750 2    50   ~ 0
-Ctl23
-Text Label 9600 2250 2    50   ~ 0
-Ctl18
-Text Label 9600 2150 2    50   ~ 0
-Ctl17
-Text Label 9600 2050 2    50   ~ 0
-Ctl16
+Text Label 9700 2450 2    50   ~ 0
+Ctl_ID20
+Text Label 9700 2550 2    50   ~ 0
+Ctl_ID21
+Text Label 9700 2650 2    50   ~ 0
+Ctl_ID22
+Text Label 9700 2750 2    50   ~ 0
+Ctl_ID23
+Text Label 9700 2250 2    50   ~ 0
+Ctl_ID18
+Text Label 9700 2150 2    50   ~ 0
+Ctl_ID17
+Text Label 9700 2050 2    50   ~ 0
+Ctl_ID16
 Entry Wire Line
-	9700 2850 9600 2750
+	9800 2850 9700 2750
 Entry Wire Line
-	9700 2250 9600 2150
+	9800 2250 9700 2150
 Entry Wire Line
-	9700 2350 9600 2250
+	9800 2350 9700 2250
 Entry Wire Line
-	9700 2450 9600 2350
+	9800 2450 9700 2350
 Entry Wire Line
-	9700 2550 9600 2450
+	9800 2550 9700 2450
 Entry Wire Line
-	9700 2650 9600 2550
+	9800 2650 9700 2550
 Entry Wire Line
-	9700 2750 9600 2650
+	9800 2750 9700 2650
 $Comp
 L power:VCC #PWR?
 U 1 1 6013D36A
@@ -885,8 +883,8 @@ F 3 "" H 8150 3550 50  0001 C CNN
 	1    8150 3550
 	0    1    1    0   
 $EndComp
-Text Label 9600 2350 2    50   ~ 0
-Ctl19
+Text Label 9700 2350 2    50   ~ 0
+Ctl_ID19
 Text HLabel 8000 2850 0    50   Input ~ 0
 ~RST
 Wire Wire Line
@@ -921,31 +919,31 @@ F 3 "" H 8150 4250 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	9600 2650 9350 2650
+	9700 2650 9350 2650
 Wire Wire Line
-	9600 2450 9350 2450
+	9700 2450 9350 2450
 Wire Wire Line
-	9600 2250 9350 2250
+	9700 2250 9350 2250
 Wire Wire Line
-	9600 2050 9350 2050
+	9700 2050 9350 2050
 Entry Wire Line
-	9700 2150 9600 2050
+	9800 2150 9700 2050
 Wire Wire Line
-	9600 2150 9350 2150
+	9700 2150 9350 2150
 Wire Wire Line
-	9600 2350 9350 2350
+	9700 2350 9350 2350
 Wire Wire Line
-	9600 2550 9350 2550
+	9700 2550 9350 2550
 Wire Wire Line
-	9600 2750 9350 2750
+	9700 2750 9350 2750
 Wire Bus Line
-	4100 5250 6900 5250
-Connection ~ 6900 5250
+	4200 5250 7000 5250
+Connection ~ 7000 5250
 Wire Bus Line
-	6900 5250 9700 5250
+	7000 5250 9800 5250
 Wire Bus Line
-	10050 5250 9700 5250
-Connection ~ 9700 5250
+	9950 5250 9800 5250
+Connection ~ 9800 5250
 NoConn ~ 8150 3750
 NoConn ~ 8150 3850
 NoConn ~ 5350 3750
@@ -1002,6 +1000,8 @@ Wire Bus Line
 Connection ~ 4500 1300
 Wire Bus Line
 	4500 1300 7300 1300
+Text Label 4100 2350 2    50   ~ 0
+Ctl_ID3
 Wire Bus Line
 	1700 1300 1700 2350
 Wire Bus Line
@@ -1009,9 +1009,9 @@ Wire Bus Line
 Wire Bus Line
 	7300 1300 7300 2350
 Wire Bus Line
-	4100 2150 4100 5250
+	4200 2150 4200 5250
 Wire Bus Line
-	9700 2150 9700 5250
+	9800 2150 9800 5250
 Wire Bus Line
-	6900 2150 6900 5250
+	7000 2150 7000 5250
 $EndSCHEMATC

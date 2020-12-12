@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 22 33
+Sheet 26 33
 Title "EX"
 Date ""
 Rev ""
@@ -119,8 +119,8 @@ F 3 "" H 7950 5150 50  0001 C CNN
 	1    7950 5150
 	0    1    1    0   
 $EndComp
-Text Label 5300 1650 0    50   ~ 0
-CtlIn[13..20]
+Text Label 5300 1100 0    50   ~ 0
+Ctl_EX[13..20]
 $Comp
 L Device:C C?
 U 1 1 600839BF
@@ -252,11 +252,11 @@ StoreOp[0..15]
 Wire Bus Line
 	9750 2600 9000 2600
 Wire Bus Line
-	9000 1650 9750 1650
+	9500 1100 9750 1100
 Text HLabel 9750 2000 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
-	9000 2000 9750 2000
+	9500 2000 9750 2000
 $Sheet
 S 7850 2400 1150 450 
 U 5FD8D6FE
@@ -266,18 +266,18 @@ F2 "Phi1" I L 7850 2500 50
 F3 "D[0..15]" I L 7850 2600 50 
 F4 "Q[0..15]" O R 9000 2600 50 
 $EndSheet
-Text HLabel 9750 1650 2    50   Output ~ 0
-Ctl[13..20]
+Text HLabel 9750 1100 2    50   Output ~ 0
+Ctl_MEM[13..20]
 $Sheet
-S 7850 1450 1150 650 
+S 7850 900  1650 1250
 U 5FD8D70A
 F0 "sheet5FD8D6EB" 50
 F1 "Ctl_13_23_Register.sch" 50
-F2 "Ctl[13..20]" O R 9000 1650 50 
-F3 "CtlIn[13..20]" I L 7850 1650 50 
+F2 "Ctl_MEM[13..20]" O R 9500 1100 50 
+F3 "Ctl_EX[13..20]" I L 7850 1100 50 
 F4 "SelCIn[0..2]" I L 7850 2000 50 
-F5 "SelC[0..2]" O R 9000 2000 50 
-F6 "Phi1" I L 7850 1550 50 
+F5 "SelC[0..2]" O R 9500 2000 50 
+F6 "Phi1" I L 7850 1000 50 
 $EndSheet
 $Sheet
 S 7850 3350 1150 450 
@@ -293,33 +293,31 @@ ALUResult[0..15]
 Wire Bus Line
 	9750 3600 9000 3600
 Wire Wire Line
-	7550 1550 7850 1550
+	7550 1000 7850 1000
 Wire Wire Line
 	7550 3450 7850 3450
-Text HLabel 1050 1550 0    50   Input ~ 0
-CtlIn[0..20]
+Text HLabel 1250 1000 0    50   Input ~ 0
+Ctl_EX[0..20]
 Text HLabel 1050 4600 0    50   Input ~ 0
 Ins[0..10]
 Entry Wire Line
-	3150 1550 3250 1650
+	3150 1000 3250 1100
 Entry Wire Line
-	3050 1550 3150 1650
+	3050 1000 3150 1100
 Entry Wire Line
-	2950 1550 3050 1650
-Text Label 3350 1650 3    50   ~ 0
-CtlIn1
-Text Label 3250 1650 3    50   ~ 0
-CtlIn2
-Text Label 3050 1650 3    50   ~ 0
-CtlIn4
+	2950 1000 3050 1100
+Text Label 3350 1100 3    50   ~ 0
+Ctl_EX1
+Text Label 3250 1100 3    50   ~ 0
+Ctl_EX2
+Text Label 3050 1100 3    50   ~ 0
+Ctl_EX4
 Entry Bus Bus
-	5100 1550 5200 1650
+	5100 1000 5200 1100
 Entry Wire Line
-	3250 1550 3350 1650
-Wire Wire Line
-	3250 1650 3250 2650
-Text Label 3150 1650 3    50   ~ 0
-CtlIn3
+	3250 1000 3350 1100
+Text Label 3150 1100 3    50   ~ 0
+Ctl_EX3
 Text Notes 3850 3500 0    50   ~ 0
 SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B, byte swapped\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
 $Sheet
@@ -348,54 +346,40 @@ Text HLabel 1050 4700 0    50   Input ~ 0
 B[0..15]
 Text HLabel 1050 5300 0    50   Input ~ 0
 A[0..15]
-Text Label 2950 1650 3    50   ~ 0
-CtlIn5
+Text Label 2950 1100 3    50   ~ 0
+Ctl_EX5
 Entry Wire Line
-	2750 1550 2850 1650
-Text Label 2850 1650 3    50   ~ 0
-CtlIn6
+	2750 1000 2850 1100
+Text Label 2850 1100 3    50   ~ 0
+Ctl_EX6
 Entry Wire Line
-	2350 1550 2450 1650
-Text Label 2750 1650 3    50   ~ 0
-CtlIn7
+	2350 1000 2450 1100
+Text Label 2750 1100 3    50   ~ 0
+Ctl_EX7
 Entry Wire Line
-	2450 1550 2550 1650
-Text Label 2650 1650 3    50   ~ 0
-CtlIn8
+	2450 1000 2550 1100
+Text Label 2650 1100 3    50   ~ 0
+Ctl_EX8
 Entry Wire Line
-	2550 1550 2650 1650
-Text Label 2550 1650 3    50   ~ 0
-CtlIn9
+	2550 1000 2650 1100
+Text Label 2550 1100 3    50   ~ 0
+Ctl_EX9
 Entry Wire Line
-	2650 1550 2750 1650
-Text Label 2450 1650 3    50   ~ 0
-CtlIn10
-Text Label 2350 1650 3    50   ~ 0
-CtlIn11
+	2650 1000 2750 1100
+Text Label 2450 1100 3    50   ~ 0
+Ctl_EX10
+Text Label 2350 1100 3    50   ~ 0
+Ctl_EX11
 Entry Wire Line
-	2250 1550 2350 1650
+	2250 1000 2350 1100
 Entry Wire Line
-	2850 1550 2950 1650
-Wire Wire Line
-	2850 1650 2850 5400
-Wire Wire Line
-	2750 1650 2750 5500
-Wire Wire Line
-	2650 1650 2650 5600
-Wire Wire Line
-	2550 1650 2550 5700
-Wire Wire Line
-	2450 1650 2450 5800
-Wire Wire Line
-	2350 1650 2350 5900
+	2850 1000 2950 1100
 Wire Wire Line
 	5800 5400 2850 5400
 Wire Wire Line
 	5800 5500 2750 5500
 Wire Wire Line
 	5800 5600 2650 5600
-Wire Wire Line
-	5800 5700 2550 5700
 Wire Wire Line
 	5800 5800 2450 5800
 Wire Wire Line
@@ -409,7 +393,7 @@ Wire Wire Line
 Wire Bus Line
 	5100 2600 7850 2600
 Wire Bus Line
-	5200 1650 7850 1650
+	5200 1100 7850 1100
 Wire Bus Line
 	7850 3600 7000 3600
 Wire Bus Line
@@ -423,15 +407,9 @@ Wire Wire Line
 Wire Wire Line
 	7650 5450 7950 5450
 Wire Wire Line
-	2950 1650 2950 6250
-Wire Wire Line
 	3850 2550 3350 2550
 Wire Wire Line
-	3350 1650 3350 2550
-Wire Wire Line
 	3850 2650 3250 2650
-Wire Wire Line
-	3150 1650 3150 4300
 Text HLabel 1050 2750 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 1050 2850 0    50   Input ~ 0
@@ -458,19 +436,17 @@ Connection ~ 7000 3600
 Wire Bus Line
 	1050 5300 5800 5300
 Entry Wire Line
-	2150 1550 2250 1650
-Text Label 2250 1650 3    50   ~ 0
-CtlIn12
+	2150 1000 2250 1100
+Text Label 2250 1100 3    50   ~ 0
+Ctl_EX12
 Wire Wire Line
-	2250 1650 2250 2150
-Text HLabel 2250 2150 3    50   Output ~ 0
+	2250 1100 2250 1600
+Text HLabel 2250 1600 3    50   Output ~ 0
 ~J
 Wire Bus Line
 	5100 2000 7850 2000
 Text Notes 2700 7150 0    50   ~ 0
 TODO: does the timing work out for Jump?
-Wire Wire Line
-	3050 1650 3050 4400
 Wire Bus Line
 	3600 4600 1050 4600
 Wire Bus Line
@@ -514,7 +490,7 @@ F4 "SelRightOpA" I L 3600 4300 50
 F5 "RightOp[0..15]" O R 5000 4700 50 
 F6 "SelRightOpB" I L 3600 4400 50 
 $EndSheet
-Text GLabel 7550 1550 0    50   Input ~ 0
+Text GLabel 7550 1000 0    50   Input ~ 0
 Phi1a
 Text GLabel 7550 2500 0    50   Input ~ 0
 Phi1a
@@ -525,13 +501,37 @@ Phi1a
 Wire Wire Line
 	3600 4300 3150 4300
 Entry Wire Line
-	3350 1550 3450 1650
-Text Label 3450 1650 3    50   ~ 0
-CtlIn0
+	3350 1000 3450 1100
+Text Label 3450 1100 3    50   ~ 0
+Ctl_EX0
 Wire Wire Line
-	3450 1650 3450 2150
-Wire Bus Line
-	1050 1550 5100 1550
-Text HLabel 3450 2150 3    50   Output ~ 0
+	3450 1100 3450 1600
+Text HLabel 3450 1600 3    50   Output ~ 0
 ~HLT
+Wire Wire Line
+	3350 1100 3350 2550
+Wire Wire Line
+	3250 1100 3250 2650
+Wire Wire Line
+	3150 1100 3150 4300
+Wire Wire Line
+	3050 1100 3050 4400
+Wire Wire Line
+	2550 5700 5800 5700
+Wire Wire Line
+	2950 6250 2950 1100
+Wire Wire Line
+	2850 1100 2850 5400
+Wire Wire Line
+	2750 1100 2750 5500
+Wire Wire Line
+	2650 1100 2650 5600
+Wire Wire Line
+	2550 1100 2550 5700
+Wire Wire Line
+	2450 1100 2450 5800
+Wire Wire Line
+	2350 1100 2350 5900
+Wire Bus Line
+	1250 1000 5100 1000
 $EndSCHEMATC

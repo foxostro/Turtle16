@@ -331,35 +331,35 @@ F 3 "" H 5700 2150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6600 3050 6200 3050
+	6800 3050 6200 3050
 Entry Wire Line
-	6700 2950 6600 3050
+	6900 2950 6800 3050
 Wire Wire Line
-	6600 2950 6200 2950
+	6800 2950 6200 2950
 Entry Wire Line
-	6700 2850 6600 2950
+	6900 2850 6800 2950
 Wire Wire Line
-	6600 2850 6200 2850
+	6800 2850 6200 2850
 Entry Wire Line
-	6700 2750 6600 2850
+	6900 2750 6800 2850
 Wire Wire Line
-	6600 2750 6200 2750
+	6800 2750 6200 2750
 Entry Wire Line
-	6700 2650 6600 2750
+	6900 2650 6800 2750
 Wire Wire Line
-	6600 2650 6200 2650
+	6800 2650 6200 2650
 Entry Wire Line
-	6700 2550 6600 2650
+	6900 2550 6800 2650
 Wire Wire Line
-	6600 2550 6200 2550
+	6800 2550 6200 2550
 Entry Wire Line
-	6700 2450 6600 2550
+	6900 2450 6800 2550
 Wire Wire Line
-	6600 2450 6200 2450
+	6800 2450 6200 2450
 Entry Wire Line
-	6700 2350 6600 2450
+	6900 2350 6800 2450
 Wire Bus Line
-	7550 2050 6700 2050
+	7550 2050 6900 2050
 $Comp
 L Device:C C?
 U 1 1 604E0D94
@@ -961,7 +961,7 @@ $EndComp
 Wire Wire Line
 	1350 7400 1350 7300
 Text HLabel 7550 2050 2    50   Output ~ 0
-Ctl[13..20]
+Ctl_EX_MEM[13..20]
 Text HLabel 5050 5400 0    50   Input ~ 0
 Phi1
 $Comp
@@ -1278,7 +1278,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 4400 6600 4500
 Text HLabel 3850 2100 0    50   Input ~ 0
-CtlIn[13..20]
+Ctl_ID_EX[13..20]
 Wire Wire Line
 	4800 2950 5200 2950
 Text Label 4800 4500 0    50   ~ 0
@@ -1300,34 +1300,34 @@ Text HLabel 8100 4400 2    50   Output ~ 0
 SelC[0..2]
 Wire Bus Line
 	8100 4400 6700 4400
-Text Label 6600 2450 2    50   ~ 0
-Ctl13
-Text Label 6600 2550 2    50   ~ 0
-Ctl14
-Text Label 6600 2650 2    50   ~ 0
-Ctl15
-Text Label 6600 2750 2    50   ~ 0
-Ctl16
-Text Label 6600 2850 2    50   ~ 0
-Ctl17
-Text Label 6600 2950 2    50   ~ 0
-Ctl18
-Text Label 6600 3050 2    50   ~ 0
-Ctl19
+Text Label 6800 2450 2    50   ~ 0
+Ctl_EX_MEM13
+Text Label 6800 2550 2    50   ~ 0
+Ctl_EX_MEM14
+Text Label 6800 2650 2    50   ~ 0
+Ctl_EX_MEM15
+Text Label 6800 2750 2    50   ~ 0
+Ctl_EX_MEM16
+Text Label 6800 2850 2    50   ~ 0
+Ctl_EX_MEM17
+Text Label 6800 2950 2    50   ~ 0
+Ctl_EX_MEM18
+Text Label 6800 3050 2    50   ~ 0
+Ctl_EX_MEM19
 Text Label 4800 3050 0    50   ~ 0
-CtlIn19
+Ctl_ID_EX19
 Text Label 4800 2950 0    50   ~ 0
-CtlIn18
+Ctl_ID_EX18
 Text Label 4800 2850 0    50   ~ 0
-CtlIn17
+Ctl_ID_EX17
 Text Label 4800 2750 0    50   ~ 0
-CtlIn16
+Ctl_ID_EX16
 Text Label 4800 2650 0    50   ~ 0
-CtlIn15
+Ctl_ID_EX15
 Text Label 4800 2550 0    50   ~ 0
-CtlIn14
+Ctl_ID_EX14
 Text Label 4800 2450 0    50   ~ 0
-CtlIn13
+Ctl_ID_EX13
 NoConn ~ 6200 4800
 NoConn ~ 6200 4900
 NoConn ~ 6200 5000
@@ -1568,17 +1568,17 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6600 3150 6200 3150
+	6800 3150 6200 3150
 Entry Wire Line
-	6700 3050 6600 3150
-Text Label 6600 3150 2    50   ~ 0
-Ctl20
+	6900 3050 6800 3150
+Text Label 6800 3150 2    50   ~ 0
+Ctl_EX_MEM20
 Wire Wire Line
 	4800 3150 5200 3150
 Entry Wire Line
 	4700 3050 4800 3150
 Text Label 4800 3150 0    50   ~ 0
-CtlIn20
+Ctl_ID_EX20
 Wire Bus Line
 	4700 4400 4700 4600
 Wire Bus Line
@@ -1586,5 +1586,5 @@ Wire Bus Line
 Wire Bus Line
 	4700 2100 4700 3050
 Wire Bus Line
-	6700 2050 6700 3050
+	6900 2050 6900 3050
 $EndSCHEMATC

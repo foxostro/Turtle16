@@ -361,7 +361,7 @@ Wire Wire Line
 Entry Wire Line
 	4400 1400 4500 1500
 Text Label 4550 1400 0    50   ~ 0
-Ctl0
+Ctl_ID0
 Wire Wire Line
 	4500 1400 4900 1400
 Entry Wire Line
@@ -577,7 +577,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 1400 6600 1500
 Text Label 6550 1400 2    50   ~ 0
-ControlWord0
+Ctl_ID_EX0
 Wire Wire Line
 	6600 1400 5900 1400
 Entry Wire Line
@@ -877,25 +877,25 @@ Wire Wire Line
 Entry Wire Line
 	6700 3350 6600 3450
 Text Label 4550 1500 0    50   ~ 0
-Ctl1
+Ctl_ID1
 Text Label 4550 1600 0    50   ~ 0
-Ctl2
+Ctl_ID2
 Text Label 4550 1700 0    50   ~ 0
-Ctl3
+Ctl_ID3
 Text Label 4550 1800 0    50   ~ 0
-Ctl4
+Ctl_ID4
 Text Label 4550 1900 0    50   ~ 0
-Ctl5
+Ctl_ID5
 Text Label 4550 2000 0    50   ~ 0
-Ctl6
+Ctl_ID6
 Text Label 4550 2100 0    50   ~ 0
-Ctl7
+Ctl_ID7
 Text Label 4550 3450 0    50   ~ 0
-Ctl8
+Ctl_ID8
 Text Label 4550 3550 0    50   ~ 0
-Ctl9
+Ctl_ID9
 Text Label 4550 3650 0    50   ~ 0
-Ctl10
+Ctl_ID10
 Wire Wire Line
 	4300 2300 4900 2300
 Wire Wire Line
@@ -903,37 +903,37 @@ Wire Wire Line
 Wire Wire Line
 	6600 3550 5900 3550
 Text Label 6550 1500 2    50   ~ 0
-ControlWord1
+Ctl_ID_EX1
 Text Label 6550 1600 2    50   ~ 0
-ControlWord2
+Ctl_ID_EX2
 Text Label 6550 1700 2    50   ~ 0
-ControlWord3
+Ctl_ID_EX3
 Text Label 6550 1800 2    50   ~ 0
-ControlWord4
+Ctl_ID_EX4
 Text Label 6550 1900 2    50   ~ 0
-ControlWord5
+Ctl_ID_EX5
 Text Label 6550 2000 2    50   ~ 0
-ControlWord6
+Ctl_ID_EX6
 Text Label 6550 2100 2    50   ~ 0
-ControlWord7
+Ctl_ID_EX7
 Text Label 6550 3450 2    50   ~ 0
-ControlWord8
+Ctl_ID_EX8
 Text Label 6550 3550 2    50   ~ 0
-ControlWord9
+Ctl_ID_EX9
 Text Label 6550 3650 2    50   ~ 0
-ControlWord10
+Ctl_ID_EX10
 Text HLabel 4200 1100 0    50   Input ~ 0
-Ctl[0..23]
+Ctl_ID[0..23]
 Text Label 4550 4150 0    50   ~ 0
-Ctl15
+Ctl_ID15
 Text Label 4550 4050 0    50   ~ 0
-Ctl14
+Ctl_ID14
 Text Label 4550 3950 0    50   ~ 0
-Ctl13
+Ctl_ID13
 Text Label 4550 3850 0    50   ~ 0
-Ctl12
+Ctl_ID12
 Text Label 4550 3750 0    50   ~ 0
-Ctl11
+Ctl_ID11
 Entry Wire Line
 	4400 3650 4500 3750
 Wire Wire Line
@@ -967,11 +967,11 @@ Entry Wire Line
 Wire Wire Line
 	6600 3850 5900 3850
 Text Label 6550 3750 2    50   ~ 0
-ControlWord11
+Ctl_ID_EX11
 Text Label 6550 3850 2    50   ~ 0
-ControlWord12
+Ctl_ID_EX12
 Text Label 6550 3950 2    50   ~ 0
-ControlWord13
+Ctl_ID_EX13
 Wire Wire Line
 	6600 4150 5900 4150
 Entry Wire Line
@@ -981,9 +981,9 @@ Entry Wire Line
 Wire Wire Line
 	6600 4050 5900 4050
 Text Label 6550 4050 2    50   ~ 0
-ControlWord14
+Ctl_ID_EX14
 Text Label 6550 4150 2    50   ~ 0
-ControlWord15
+Ctl_ID_EX15
 $Comp
 L power:GND #PWR?
 U 1 1 5FD1EF9C
@@ -1277,31 +1277,31 @@ Wire Wire Line
 Entry Wire Line
 	6700 5400 6600 5500
 Text Label 4550 5500 0    50   ~ 0
-Ctl16
+Ctl_ID16
 Text Label 4550 5600 0    50   ~ 0
-Ctl17
+Ctl_ID17
 Text Label 4550 5700 0    50   ~ 0
-Ctl18
+Ctl_ID18
 Wire Wire Line
 	4300 6400 4900 6400
 Wire Wire Line
 	6600 5600 5900 5600
 Text Label 6550 5500 2    50   ~ 0
-ControlWord16
+Ctl_ID_EX16
 Text Label 6550 5600 2    50   ~ 0
-ControlWord17
+Ctl_ID_EX17
 Text Label 6550 5700 2    50   ~ 0
-ControlWord18
+Ctl_ID_EX18
 Text Label 4550 6200 0    50   ~ 0
-Ctl23
+Ctl_ID23
 Text Label 4550 6100 0    50   ~ 0
-Ctl22
+Ctl_ID22
 Text Label 4550 6000 0    50   ~ 0
-Ctl21
+Ctl_ID21
 Text Label 4550 5900 0    50   ~ 0
-Ctl20
+Ctl_ID20
 Text Label 4550 5800 0    50   ~ 0
-Ctl19
+Ctl_ID19
 Entry Wire Line
 	4400 5700 4500 5800
 Wire Wire Line
@@ -1327,7 +1327,7 @@ Connection ~ 4300 6400
 Wire Wire Line
 	4300 4350 4300 6400
 Text HLabel 6950 1100 2    50   Output ~ 0
-ControlWord[0..20]
+Ctl_ID_EX[0..20]
 Wire Wire Line
 	4300 2300 4300 4350
 Wire Wire Line
@@ -1335,7 +1335,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 5700 6600 5800
 Text Label 6550 5800 2    50   ~ 0
-ControlWord19
+Ctl_ID_EX19
 NoConn ~ 5900 6000
 NoConn ~ 5900 6100
 NoConn ~ 5900 6200
@@ -1628,7 +1628,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 5800 6600 5900
 Text Label 6550 5900 2    50   ~ 0
-ControlWord20
+Ctl_ID_EX20
 Wire Bus Line
 	6700 1100 6700 5800
 Wire Bus Line

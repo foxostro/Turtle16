@@ -45,64 +45,6 @@ Wire Wire Line
 	11400 1250 11800 1250
 Entry Wire Line
 	11400 1250 11300 1150
-Wire Wire Line
-	11750 3300 11800 3300
-Wire Wire Line
-	11800 3200 11750 3200
-Wire Wire Line
-	11700 3200 11750 3200
-$Comp
-L power:GND #PWR?
-U 1 1 5FE8C2D0
-P 11700 3200
-AR Path="/5D2C0CA7/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/5D29E36D/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/5DAA13E6/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FDE580B/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/60906BCD/5FF2BBCA/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FC16ADE/5FE8C2D0" Ref="#PWR?"  Part="1" 
-AR Path="/60A71BBF/5FDDE458/5FE8C2D0" Ref="#PWR0395"  Part="1" 
-F 0 "#PWR0395" H 11700 2950 50  0001 C CNN
-F 1 "GND" V 11700 3000 50  0000 C CNN
-F 2 "" H 11700 3200 50  0001 C CNN
-F 3 "" H 11700 3200 50  0001 C CNN
-	1    11700 3200
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	11750 3300 11750 3400
-Wire Wire Line
-	11750 3400 11800 3400
-Connection ~ 11750 3300
-Connection ~ 11750 3200
-Wire Wire Line
-	11750 3200 11750 3300
-Wire Wire Line
-	11750 3400 11750 3500
-Wire Wire Line
-	11750 3900 11800 3900
-Connection ~ 11750 3400
-Wire Wire Line
-	11750 3500 11800 3500
-Connection ~ 11750 3500
-Wire Wire Line
-	11750 3500 11750 3600
-Wire Wire Line
-	11800 3600 11750 3600
-Connection ~ 11750 3600
-Wire Wire Line
-	11750 3600 11750 3700
-Wire Wire Line
-	11800 3700 11750 3700
-Connection ~ 11750 3700
-Wire Wire Line
-	11750 3700 11750 3800
-Wire Wire Line
-	11800 3800 11750 3800
-Connection ~ 11750 3800
-Wire Wire Line
-	11750 3800 11750 3900
 Wire Bus Line
 	11300 900  11250 900 
 Text HLabel 7900 900  0    50   Input ~ 0
@@ -3092,8 +3034,54 @@ Wire Wire Line
 	4750 1150 5150 1150
 Entry Wire Line
 	4650 1050 4750 1150
-Wire Bus Line
-	11300 900  11300 1750
+Entry Wire Line
+	11400 3200 11300 3100
+Text Label 11400 3200 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3200 11800 3200
+Entry Wire Line
+	11400 3300 11300 3200
+Text Label 11400 3300 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3300 11800 3300
+Entry Wire Line
+	11400 3400 11300 3300
+Text Label 11400 3400 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3400 11800 3400
+Entry Wire Line
+	11400 3500 11300 3400
+Text Label 11400 3500 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3500 11800 3500
+Entry Wire Line
+	11400 3600 11300 3500
+Text Label 11400 3600 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3600 11800 3600
+Entry Wire Line
+	11400 3700 11300 3600
+Text Label 11400 3700 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3700 11800 3700
+Entry Wire Line
+	11400 3800 11300 3700
+Text Label 11400 3800 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3800 11800 3800
+Entry Wire Line
+	11400 3900 11300 3800
+Text Label 11400 3900 0    50   ~ 0
+Ins7
+Wire Wire Line
+	11400 3900 11800 3900
 Wire Bus Line
 	7950 900  7950 3800
 Wire Bus Line
@@ -3106,6 +3094,8 @@ Wire Bus Line
 	9950 900  9950 3800
 Wire Bus Line
 	13300 900  13300 3800
+Wire Bus Line
+	11300 900  11300 3800
 Wire Bus Line
 	4650 900  4650 3800
 $EndSCHEMATC

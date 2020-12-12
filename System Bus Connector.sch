@@ -1133,6 +1133,10 @@ F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 4600 7150 50  0
 	1    4600 7150
 	1    0    0    -1  
 $EndComp
+Text GLabel 4950 2000 0    50   Input ~ 0
+Phi2
+Text GLabel 7000 2000 2    50   Input ~ 0
+~RST
 Wire Bus Line
 	4950 2500 4950 2900
 Wire Bus Line
@@ -1141,8 +1145,4 @@ Wire Bus Line
 	4950 3100 4950 4100
 Wire Bus Line
 	6950 3100 6950 4100
-Text GLabel 4950 2000 0    50   Input ~ 0
-Phi2
-Text GLabel 7000 2000 2    50   Input ~ 0
-~RST
 $EndSCHEMATC

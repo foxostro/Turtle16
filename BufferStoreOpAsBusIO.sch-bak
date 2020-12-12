@@ -225,7 +225,7 @@ F 3 "" H 5850 2150 50  0001 C CNN
 	1    5850 2150
 	1    0    0    -1  
 $EndComp
-Text HLabel 3100 4200 0    50   Input ~ 0
+Text HLabel 8200 4400 2    50   Input ~ 0
 ~MemStoreIn
 Entry Wire Line
 	6900 2450 7000 2350
@@ -332,22 +332,6 @@ D[0..15]
 Wire Bus Line
 	4700 2200 3650 2200
 $Comp
-L 74xx:74LS244 U?
-U 1 1 5FF198EB
-P 5850 5050
-AR Path="/60AF64DE/600805C3/5FF198EB" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FF198EB" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FF198EB" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FF198EB" Ref="U26"  Part="1" 
-F 0 "U26" H 5600 5850 50  0000 C CNN
-F 1 "74AHCT244" H 5550 5750 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5850 5050 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5850 5050 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 5850 5050 50  0001 C CNN "Mouser"
-	1    5850 5050
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5FF198F1
 P 5850 5850
@@ -425,26 +409,18 @@ Wire Wire Line
 	6900 5250 6350 5250
 Text Label 6400 5250 0    50   ~ 0
 Q15
-Entry Wire Line
-	4800 4550 4700 4450
 Wire Wire Line
 	4800 4550 5350 4550
 Text Label 5300 4550 2    50   ~ 0
 D8
-Entry Wire Line
-	4800 4650 4700 4550
 Wire Wire Line
 	4800 4650 5350 4650
 Text Label 5300 4650 2    50   ~ 0
 D9
-Entry Wire Line
-	4800 4750 4700 4650
 Wire Wire Line
 	4800 4750 5350 4750
 Text Label 5300 4750 2    50   ~ 0
 D10
-Entry Wire Line
-	4800 4850 4700 4750
 Wire Wire Line
 	4800 4850 5350 4850
 Text Label 5300 4850 2    50   ~ 0
@@ -473,65 +449,20 @@ Wire Wire Line
 	4800 5250 5350 5250
 Text Label 5300 5250 2    50   ~ 0
 D15
-Text HLabel 3100 4400 0    50   Input ~ 0
+Text HLabel 8200 4600 2    50   Input ~ 0
 ~RDY
-$Comp
-L 74xx:74LS244 U?
-U 1 1 5FF1989E
-P 5850 2950
-AR Path="/60AF64DE/600805C3/5FF1989E" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FF1989E" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FF1989E" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FF1989E" Ref="U25"  Part="1" 
-F 0 "U25" H 5600 3750 50  0000 C CNN
-F 1 "74AHCT244" H 5550 3650 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5850 2950 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5850 2950 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 5850 2950 50  0001 C CNN "Mouser"
-	1    5850 2950
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5350 3350 5250 3350
-Wire Wire Line
-	5250 3350 5250 3400
-Wire Wire Line
-	5250 3450 5350 3450
-Wire Wire Line
-	5350 5450 5250 5450
-Wire Wire Line
-	5250 5450 5250 5500
-Wire Wire Line
-	5250 5550 5350 5550
-Wire Wire Line
-	5250 5500 4600 5500
-Wire Wire Line
-	4600 5500 4600 4300
-Wire Wire Line
-	4600 3400 5250 3400
-Connection ~ 5250 5500
-Wire Wire Line
-	5250 5500 5250 5550
-Connection ~ 5250 3400
-Wire Wire Line
-	5250 3400 5250 3450
 $Comp
 L 74xx:74LS02 U24
 U 1 2 5FCF097E
-P 3400 4300
-F 0 "U24" H 3400 4625 50  0000 C CNN
-F 1 "74AHCT02" H 3400 4534 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3400 4300 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 3400 4300 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 3400 4300 50  0001 C CNN "Mouser"
-	1    3400 4300
-	1    0    0    -1  
+P 7900 4500
+F 0 "U24" H 7900 4825 50  0000 C CNN
+F 1 "74AHCT02" H 7900 4734 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7900 4500 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 7900 4500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 7900 4500 50  0001 C CNN "Mouser"
+	1    7900 4500
+	-1   0    0    -1  
 $EndComp
-Wire Wire Line
-	3700 4300 4600 4300
-Connection ~ 4600 4300
-Wire Wire Line
-	4600 4300 4600 3400
 $Comp
 L 74xx:74LS02 U24
 U 2 2 5FCFD79F
@@ -777,8 +708,81 @@ Wire Wire Line
 	1450 6700 1950 6700
 Wire Wire Line
 	1950 7000 1450 7000
-Text Notes 2150 4900 0    50   ~ 0
+Text Notes 9150 5100 2    50   ~ 0
 Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
+$Comp
+L 74xx:74LS245 U?
+U 1 1 5FE3C856
+P 5850 2950
+AR Path="/60A71BBF/5FDDE478/5FE3C856" Ref="U?"  Part="1" 
+AR Path="/60A71BBF/5FDDE458/5FE3C856" Ref="U?"  Part="1" 
+AR Path="/60AF64DE/5FB90806/5FE3C856" Ref="U?"  Part="1" 
+AR Path="/60AF64DE/5FF1115C/5FE3C856" Ref="U25"  Part="1" 
+F 0 "U25" H 5550 3750 50  0000 C CNN
+F 1 "74AHCT245" H 5550 3650 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 2950 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 5850 2950 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9Nfcswc3zVmFw%3D%3D" H 5850 2950 50  0001 C CNN "Mouser"
+	1    5850 2950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS245 U?
+U 1 1 5FE401BC
+P 5850 5050
+AR Path="/60A71BBF/5FDDE478/5FE401BC" Ref="U?"  Part="1" 
+AR Path="/60A71BBF/5FDDE458/5FE401BC" Ref="U?"  Part="1" 
+AR Path="/60AF64DE/5FB90806/5FE401BC" Ref="U?"  Part="1" 
+AR Path="/60AF64DE/5FF1115C/5FE401BC" Ref="U26"  Part="1" 
+F 0 "U26" H 5550 5850 50  0000 C CNN
+F 1 "74AHCT245" H 5550 5750 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 5050 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 5850 5050 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9Nfcswc3zVmFw%3D%3D" H 5850 5050 50  0001 C CNN "Mouser"
+	1    5850 5050
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0248
+U 1 1 5FE868E9
+P 6350 3350
+F 0 "#PWR0248" H 6350 3100 50  0001 C CNN
+F 1 "GND" V 6355 3222 50  0000 R CNN
+F 2 "" H 6350 3350 50  0001 C CNN
+F 3 "" H 6350 3350 50  0001 C CNN
+	1    6350 3350
+	0    -1   1    0   
+$EndComp
+$Comp
+L power:GND #PWR0249
+U 1 1 5FE86F8A
+P 6350 5450
+F 0 "#PWR0249" H 6350 5200 50  0001 C CNN
+F 1 "GND" V 6355 5322 50  0000 R CNN
+F 2 "" H 6350 5450 50  0001 C CNN
+F 3 "" H 6350 5450 50  0001 C CNN
+	1    6350 5450
+	0    -1   1    0   
+$EndComp
+Entry Wire Line
+	4800 4850 4700 4750
+Entry Wire Line
+	4800 4750 4700 4650
+Entry Wire Line
+	4800 4650 4700 4550
+Entry Wire Line
+	4800 4550 4700 4450
+Wire Wire Line
+	7100 4500 7600 4500
+Wire Wire Line
+	6350 3450 7100 3450
+Wire Wire Line
+	6350 5550 7100 5550
+Connection ~ 7100 4500
+Wire Wire Line
+	7100 4500 7100 5550
+Wire Wire Line
+	7100 3450 7100 4500
 Wire Bus Line
 	4700 2200 4700 5150
 Wire Bus Line

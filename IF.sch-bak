@@ -77,7 +77,7 @@ $EndSheet
 Text GLabel 2700 3850 0    50   Input ~ 0
 ~RST
 Text GLabel 2700 3700 0    50   Input ~ 0
-Phi1d
+Phi1c
 Wire Wire Line
 	6550 3600 6450 3600
 Text GLabel 6450 3600 0    50   Input ~ 0

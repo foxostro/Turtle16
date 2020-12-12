@@ -431,7 +431,7 @@ Wire Wire Line
 Wire Wire Line
 	3850 2650 3250 2650
 Wire Wire Line
-	3150 1650 3150 4400
+	3150 1650 3150 4300
 Text HLabel 1050 2750 0    50   Input ~ 0
 Ins[0..10]
 Text HLabel 1050 2850 0    50   Input ~ 0
@@ -470,15 +470,13 @@ Wire Bus Line
 Text Notes 2700 7150 0    50   ~ 0
 TODO: does the timing work out for Jump?
 Wire Wire Line
-	3600 4400 3150 4400
-Wire Wire Line
-	3050 1650 3050 4500
+	3050 1650 3050 4400
 Wire Bus Line
 	3600 4600 1050 4600
 Wire Bus Line
 	3600 4700 1050 4700
 Wire Wire Line
-	3050 4500 3600 4500
+	3050 4400 3600 4400
 Wire Wire Line
 	6900 4450 7950 4450
 Wire Wire Line
@@ -506,24 +504,26 @@ F12 "RS1" I L 5800 5900 50
 F13 "F[0..15]" O R 6900 4350 50 
 $EndSheet
 $Sheet
-S 3600 4300 1400 500 
+S 3600 4200 1400 600 
 U 5FDDE478
 F0 "Select Right Operand" 50
 F1 "SelectRightOperand.sch" 50
 F2 "Ins[0..10]" I L 3600 4600 50 
 F3 "B[0..15]" I L 3600 4700 50 
-F4 "SelRightOpA" I L 3600 4400 50 
+F4 "SelRightOpA" I L 3600 4300 50 
 F5 "RightOp[0..15]" O R 5000 4700 50 
-F6 "SelRightOpB" I L 3600 4500 50 
+F6 "SelRightOpB" I L 3600 4400 50 
 $EndSheet
-Wire Bus Line
-	1050 1550 5100 1550
 Text GLabel 7550 1550 0    50   Input ~ 0
 Phi1a
 Text GLabel 7550 2500 0    50   Input ~ 0
 Phi1a
 Text GLabel 7550 3450 0    50   Input ~ 0
-Phi1d
+Phi1c
 Text GLabel 7800 5350 0    50   Input ~ 0
 Phi1a
+Wire Wire Line
+	3600 4300 3150 4300
+Wire Bus Line
+	1050 1550 5100 1550
 $EndSCHEMATC

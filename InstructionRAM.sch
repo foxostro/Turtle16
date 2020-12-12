@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 33 33
+Sheet 20 33
 Title "Instruction RAM"
 Date ""
 Rev ""
@@ -94,37 +94,37 @@ Entry Wire Line
 Entry Wire Line
 	7800 3300 7700 3200
 Text Label 7700 3000 2    50   ~ 0
-InstructionWord8
+Ins_IF8
 Text Label 7700 3100 2    50   ~ 0
-InstructionWord9
+Ins_IF9
 Text Label 3700 3400 0    50   ~ 0
-InstructionWord4
+Ins_IF4
 Text Label 3700 3500 0    50   ~ 0
-InstructionWord5
+Ins_IF5
 Text Label 3700 3600 0    50   ~ 0
-InstructionWord6
+Ins_IF6
 Text Label 3700 3700 0    50   ~ 0
-InstructionWord7
+Ins_IF7
 Text Label 7700 3200 2    50   ~ 0
-InstructionWord10
+Ins_IF10
 Text Label 7700 3300 2    50   ~ 0
-InstructionWord11
+Ins_IF11
 Text Label 7700 3400 2    50   ~ 0
-InstructionWord12
+Ins_IF12
 Text Label 7700 3500 2    50   ~ 0
-InstructionWord13
+Ins_IF13
 Text Label 7700 3600 2    50   ~ 0
-InstructionWord14
+Ins_IF14
 Text Label 7700 3700 2    50   ~ 0
-InstructionWord15
+Ins_IF15
 Text Label 3700 3300 0    50   ~ 0
-InstructionWord3
+Ins_IF3
 Text Label 3700 3200 0    50   ~ 0
-InstructionWord2
+Ins_IF2
 Text Label 3700 3100 0    50   ~ 0
-InstructionWord1
+Ins_IF1
 Text Label 3700 3000 0    50   ~ 0
-InstructionWord0
+Ins_IF0
 Entry Wire Line
 	4450 3000 4550 3100
 Entry Wire Line
@@ -405,7 +405,7 @@ F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 6250 4200 50  0
 	1    0    0    -1  
 $EndComp
 Text HLabel 9500 6200 2    50   Output ~ 0
-InstructionWord[0..15]
+Ins_IF[0..15]
 Wire Bus Line
 	4550 6200 7800 6200
 Connection ~ 7800 6200

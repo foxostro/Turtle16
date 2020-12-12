@@ -17,8 +17,8 @@ Text HLabel 2400 2550 0    50   Input ~ 0
 Carry
 Text HLabel 2400 2650 0    50   Input ~ 0
 Z
-Text HLabel 1050 1300 0    50   Input ~ 0
-Ins[11..15]
+Text HLabel 1200 1300 0    50   Input ~ 0
+Ins_ID[11..15]
 Text HLabel 2400 2750 0    50   Input ~ 0
 OVF
 $Comp
@@ -170,15 +170,15 @@ Entry Wire Line
 Entry Wire Line
 	1800 2450 1700 2350
 Text Label 1800 2050 0    50   ~ 0
-Ins11
+Ins_ID11
 Text Label 1800 2150 0    50   ~ 0
-Ins12
+Ins_ID12
 Text Label 1800 2250 0    50   ~ 0
-Ins13
+Ins_ID13
 Text Label 1800 2350 0    50   ~ 0
-Ins14
+Ins_ID14
 Text Label 1800 2450 0    50   ~ 0
-Ins15
+Ins_ID15
 Wire Wire Line
 	2550 2450 1800 2450
 Wire Wire Line
@@ -469,15 +469,15 @@ Entry Wire Line
 Entry Wire Line
 	4600 2450 4500 2350
 Text Label 4600 2050 0    50   ~ 0
-Ins11
+Ins_ID11
 Text Label 4600 2150 0    50   ~ 0
-Ins12
+Ins_ID12
 Text Label 4600 2250 0    50   ~ 0
-Ins13
+Ins_ID13
 Text Label 4600 2350 0    50   ~ 0
-Ins14
+Ins_ID14
 Text Label 4600 2450 0    50   ~ 0
-Ins15
+Ins_ID15
 Wire Wire Line
 	5350 2450 4600 2450
 Wire Wire Line
@@ -746,15 +746,15 @@ Entry Wire Line
 Entry Wire Line
 	7400 2450 7300 2350
 Text Label 7400 2050 0    50   ~ 0
-Ins11
+Ins_ID11
 Text Label 7400 2150 0    50   ~ 0
-Ins12
+Ins_ID12
 Text Label 7400 2250 0    50   ~ 0
-Ins13
+Ins_ID13
 Text Label 7400 2350 0    50   ~ 0
-Ins14
+Ins_ID14
 Text Label 7400 2450 0    50   ~ 0
-Ins15
+Ins_ID15
 Wire Wire Line
 	8150 2450 7400 2450
 Wire Wire Line
@@ -993,7 +993,7 @@ F 3 "" H 8150 3650 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Bus Line
-	1050 1300 1700 1300
+	1200 1300 1700 1300
 Connection ~ 1700 1300
 Wire Bus Line
 	1700 1300 4500 1300

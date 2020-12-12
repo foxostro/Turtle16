@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 31 33
+Sheet 18 33
 Title "IF/ID"
 Date ""
 Rev ""
@@ -869,7 +869,7 @@ Wire Wire Line
 Entry Wire Line
 	6850 1950 6950 2050
 Text Label 7000 1950 0    50   ~ 0
-InsIn0
+Ins_IF0
 Wire Wire Line
 	6950 1950 7350 1950
 Entry Wire Line
@@ -1055,7 +1055,7 @@ F 3 "" H 7850 1650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text HLabel 6000 1700 0    50   Input ~ 0
-InsIn[0..15]
+Ins_IF[0..15]
 Wire Wire Line
 	8750 2650 8350 2650
 Entry Wire Line
@@ -1085,7 +1085,7 @@ Wire Wire Line
 Entry Wire Line
 	8850 1950 8750 2050
 Text Label 8700 1950 2    50   ~ 0
-InsOut0
+Ins_ID0
 Wire Wire Line
 	8750 1950 8350 1950
 Entry Wire Line
@@ -1422,69 +1422,69 @@ Wire Wire Line
 Entry Wire Line
 	8850 3900 8750 4000
 Text HLabel 9700 1650 2    50   Output ~ 0
-InsOut[0..15]
+Ins_ID[0..15]
 Text Label 7000 2050 0    50   ~ 0
-InsIn1
+Ins_IF1
 Text Label 7000 2150 0    50   ~ 0
-InsIn2
+Ins_IF2
 Text Label 7000 2250 0    50   ~ 0
-InsIn3
+Ins_IF3
 Text Label 7000 2350 0    50   ~ 0
-InsIn4
+Ins_IF4
 Text Label 7000 2450 0    50   ~ 0
-InsIn5
+Ins_IF5
 Text Label 7000 2550 0    50   ~ 0
-InsIn6
+Ins_IF6
 Text Label 7000 2650 0    50   ~ 0
-InsIn7
+Ins_IF7
 Text Label 7000 4000 0    50   ~ 0
-InsIn8
+Ins_IF8
 Text Label 7000 4100 0    50   ~ 0
-InsIn9
+Ins_IF9
 Text Label 7000 4200 0    50   ~ 0
-InsIn10
+Ins_IF10
 Text Label 7000 4300 0    50   ~ 0
-InsIn11
+Ins_IF11
 Text Label 7000 4400 0    50   ~ 0
-InsIn12
+Ins_IF12
 Text Label 7000 4500 0    50   ~ 0
-InsIn13
+Ins_IF13
 Text Label 7000 4600 0    50   ~ 0
-InsIn14
+Ins_IF14
 Text Label 7000 4700 0    50   ~ 0
-InsIn15
+Ins_IF15
 Wire Wire Line
 	8750 4100 8350 4100
 Text Label 8700 2050 2    50   ~ 0
-InsOut1
+Ins_ID1
 Text Label 8700 2150 2    50   ~ 0
-InsOut2
+Ins_ID2
 Text Label 8700 2250 2    50   ~ 0
-InsOut3
+Ins_ID3
 Text Label 8700 2350 2    50   ~ 0
-InsOut4
+Ins_ID4
 Text Label 8700 2450 2    50   ~ 0
-InsOut5
+Ins_ID5
 Text Label 8700 2550 2    50   ~ 0
-InsOut6
+Ins_ID6
 Text Label 8700 2650 2    50   ~ 0
-InsOut7
+Ins_ID7
 Text Label 8650 4000 2    50   ~ 0
-InsOut8
+Ins_ID8
 Text Label 8650 4100 2    50   ~ 0
-InsOut9
+Ins_ID9
 Text Label 8650 4200 2    50   ~ 0
-InsOut10
+Ins_ID10
 Text Label 8650 4300 2    50   ~ 0
-InsOut11
+Ins_ID11
 Text Label 8650 4400 2    50   ~ 0
-InsOut12
+Ins_ID12
 Text Label 8650 4500 2    50   ~ 0
-InsOut13
+Ins_ID13
 Text Label 8650 4600 2    50   ~ 0
-InsOut14
+Ins_ID14
 Text Label 8650 4700 2    50   ~ 0
-InsOut15
+Ins_ID15
 $Comp
 L Device:C C?
 U 1 1 5FB3A072

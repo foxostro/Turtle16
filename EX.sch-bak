@@ -298,8 +298,8 @@ Wire Wire Line
 	7550 3450 7850 3450
 Text HLabel 1250 1000 0    50   Input ~ 0
 Ctl_EX[0..20]
-Text HLabel 1050 4600 0    50   Input ~ 0
-Ins[0..10]
+Text HLabel 1250 4600 0    50   Input ~ 0
+Ins_EX[0..10]
 Entry Wire Line
 	3150 1000 3250 1100
 Entry Wire Line
@@ -325,7 +325,7 @@ S 3850 1900 1250 200
 U 5FDDE44F
 F0 "sheet5FDDE431" 50
 F1 "SplitOutSelC.sch" 50
-F2 "Ins[0..10]" I L 3850 2000 50 
+F2 "Ins_EX[0..10]" I L 3850 2000 50 
 F3 "SelC_EX[0..2]" O R 5100 2000 50 
 $EndSheet
 $Sheet
@@ -335,16 +335,16 @@ F0 "sheet5FDDE432" 50
 F1 "SelectStoreOp.sch" 50
 F2 "SelStoreOpA" I L 3850 2550 50 
 F3 "SelStoreOpB" I L 3850 2650 50 
-F4 "Ins[0..10]" I L 3850 2750 50 
+F4 "Ins_EX[0..10]" I L 3850 2750 50 
 F5 "B[0..15]" I L 3850 2850 50 
 F6 "PC[0..15]" I L 3850 2950 50 
 F7 "StoreOp[0..15]" O R 5100 2600 50 
 $EndSheet
 Text Notes 3600 5200 0    50   ~ 0
 SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:8, 4:0]
-Text HLabel 1050 4700 0    50   Input ~ 0
+Text HLabel 1250 4700 0    50   Input ~ 0
 B[0..15]
-Text HLabel 1050 5300 0    50   Input ~ 0
+Text HLabel 1250 5300 0    50   Input ~ 0
 A[0..15]
 Text Label 2950 1100 3    50   ~ 0
 Ctl_EX5
@@ -384,10 +384,10 @@ Wire Wire Line
 	5800 5800 2450 5800
 Wire Wire Line
 	5800 5900 2350 5900
-Text HLabel 1050 2000 0    50   Input ~ 0
-Ins[0..10]
+Text HLabel 1250 2000 0    50   Input ~ 0
+Ins_EX[0..10]
 Wire Bus Line
-	1050 2000 3850 2000
+	1250 2000 3850 2000
 Wire Wire Line
 	7550 2500 7850 2500
 Wire Bus Line
@@ -410,18 +410,18 @@ Wire Wire Line
 	3850 2550 3350 2550
 Wire Wire Line
 	3850 2650 3250 2650
-Text HLabel 1050 2750 0    50   Input ~ 0
-Ins[0..10]
-Text HLabel 1050 2850 0    50   Input ~ 0
+Text HLabel 1250 2750 0    50   Input ~ 0
+Ins_EX[0..10]
+Text HLabel 1250 2850 0    50   Input ~ 0
 B[0..15]
 Wire Bus Line
-	1050 2850 3850 2850
+	1250 2850 3850 2850
 Wire Bus Line
-	1050 2750 3850 2750
-Text HLabel 1050 2950 0    50   Input ~ 0
+	1250 2750 3850 2750
+Text HLabel 1250 2950 0    50   Input ~ 0
 PC[0..15]
 Wire Bus Line
-	1050 2950 3850 2950
+	1250 2950 3850 2950
 Text Notes 6250 3050 0    50   ~ 0
 The program counter uses the result\nfrom this point as a jump offset.
 Text Notes 8850 5900 0    50   ~ 0
@@ -434,7 +434,7 @@ Wire Bus Line
 	7000 3100 7000 3600
 Connection ~ 7000 3600
 Wire Bus Line
-	1050 5300 5800 5300
+	1250 5300 5800 5300
 Entry Wire Line
 	2150 1000 2250 1100
 Text Label 2250 1100 3    50   ~ 0
@@ -445,12 +445,10 @@ Text HLabel 2250 1600 3    50   Output ~ 0
 ~J
 Wire Bus Line
 	5100 2000 7850 2000
-Text Notes 2700 7150 0    50   ~ 0
-TODO: does the timing work out for Jump?
 Wire Bus Line
-	3600 4600 1050 4600
+	3600 4600 1250 4600
 Wire Bus Line
-	3600 4700 1050 4700
+	3600 4700 1250 4700
 Wire Wire Line
 	3050 4400 3600 4400
 Wire Wire Line
@@ -484,7 +482,7 @@ S 3600 4200 1400 600
 U 5FDDE478
 F0 "Select Right Operand" 50
 F1 "SelectRightOperand.sch" 50
-F2 "Ins[0..10]" I L 3600 4600 50 
+F2 "Ins_EX[0..10]" I L 3600 4600 50 
 F3 "B[0..15]" I L 3600 4700 50 
 F4 "SelRightOpA" I L 3600 4300 50 
 F5 "RightOp[0..15]" O R 5000 4700 50 

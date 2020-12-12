@@ -132,7 +132,7 @@ Wire Wire Line
 Entry Wire Line
 	4350 2400 4450 2500
 Text Label 4500 2400 0    50   ~ 0
-InsIn0
+Ins_ID0
 Wire Wire Line
 	4450 2400 4850 2400
 Entry Wire Line
@@ -348,7 +348,7 @@ Wire Wire Line
 Entry Wire Line
 	6350 2400 6250 2500
 Text Label 6200 2400 2    50   ~ 0
-InsOut0
+Ins_EX0
 Wire Wire Line
 	6250 2400 5850 2400
 Entry Wire Line
@@ -648,25 +648,25 @@ Wire Wire Line
 Entry Wire Line
 	6350 4350 6250 4450
 Text Label 4500 2500 0    50   ~ 0
-InsIn1
+Ins_ID1
 Text Label 4500 2600 0    50   ~ 0
-InsIn2
+Ins_ID2
 Text Label 4500 2700 0    50   ~ 0
-InsIn3
+Ins_ID3
 Text Label 4500 2800 0    50   ~ 0
-InsIn4
+Ins_ID4
 Text Label 4500 2900 0    50   ~ 0
-InsIn5
+Ins_ID5
 Text Label 4500 3000 0    50   ~ 0
-InsIn6
+Ins_ID6
 Text Label 4500 3100 0    50   ~ 0
-InsIn7
+Ins_ID7
 Text Label 4500 4450 0    50   ~ 0
-InsIn8
+Ins_ID8
 Text Label 4500 4550 0    50   ~ 0
-InsIn9
+Ins_ID9
 Text Label 4500 4650 0    50   ~ 0
-InsIn10
+Ins_ID10
 Wire Wire Line
 	4250 3300 4850 3300
 Wire Wire Line
@@ -676,25 +676,25 @@ Wire Wire Line
 Wire Wire Line
 	6250 4550 5850 4550
 Text Label 6200 2500 2    50   ~ 0
-InsOut1
+Ins_EX1
 Text Label 6200 2600 2    50   ~ 0
-InsOut2
+Ins_EX2
 Text Label 6200 2700 2    50   ~ 0
-InsOut3
+Ins_EX3
 Text Label 6200 2800 2    50   ~ 0
-InsOut4
+Ins_EX4
 Text Label 6200 2900 2    50   ~ 0
-InsOut5
+Ins_EX5
 Text Label 6200 3000 2    50   ~ 0
-InsOut6
+Ins_EX6
 Text Label 6200 3100 2    50   ~ 0
-InsOut7
+Ins_EX7
 Text Label 6150 4450 2    50   ~ 0
-InsOut8
+Ins_EX8
 Text Label 6150 4550 2    50   ~ 0
-InsOut9
+Ins_EX9
 Text Label 6150 4650 2    50   ~ 0
-InsOut10
+Ins_EX10
 Wire Wire Line
 	4250 5350 4250 6350
 Connection ~ 4250 5350
@@ -877,9 +877,9 @@ Wire Wire Line
 Connection ~ 1000 7350
 Connection ~ 1000 7650
 Text HLabel 4150 2150 0    50   Input ~ 0
-InsIn[0..10]
+Ins_ID[0..10]
 Text HLabel 6500 2100 2    50   Output ~ 0
-InsOut[0..10]
+Ins_EX[0..10]
 Text HLabel 4000 6350 0    50   Input ~ 0
 Phi1
 NoConn ~ 5850 4750

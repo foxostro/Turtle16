@@ -20,9 +20,9 @@ Text Notes 800  7900 0    50   ~ 0
 Text Notes 1700 7900 0    50   ~ 0
 Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nDrive the Store operand onto the bus I/O lines\nSource of write back 0\nSource of write back 1\nWrite back low byte\nWrite back high byte\nEnable write back to register file
 Text HLabel 8300 2150 2    50   Output ~ 0
-InsOut[0..10]
+Ins_EX[0..10]
 Text Label 2950 2750 2    50   ~ 0
-Ins[11..15]
+Ins_ID[11..15]
 Text HLabel 3200 5050 0    50   Input ~ 0
 ~WRH
 Text HLabel 3200 5150 0    50   Input ~ 0
@@ -59,7 +59,7 @@ S 3550 4150 1150 200
 U 5FC16AC7
 F0 "sheet5FC16A8E" 50
 F1 "SplitOutSelA.sch" 50
-F2 "Ins[0..15]" I L 3550 4250 50 
+F2 "Ins_ID[0..15]" I L 3550 4250 50 
 F3 "SelA[0..2]" O R 4700 4250 50 
 $EndSheet
 Wire Bus Line
@@ -69,7 +69,7 @@ S 3550 4550 1150 200
 U 5FC16AD1
 F0 "sheet5FC16A8F" 50
 F1 "SplitOutSelB.sch" 50
-F2 "Ins[0..15]" I L 3550 4650 50 
+F2 "Ins_ID[0..15]" I L 3550 4650 50 
 F3 "SelB[0..2]" O R 4700 4650 50 
 $EndSheet
 Wire Bus Line
@@ -87,7 +87,7 @@ B[0..15]
 Wire Bus Line
 	8050 4750 7550 4750
 Text HLabel 3200 4450 0    50   Input ~ 0
-Ins[0..15]
+Ins_ID[0..15]
 Wire Bus Line
 	3200 4450 3450 4450
 Wire Bus Line
@@ -96,31 +96,31 @@ Connection ~ 3450 4450
 Wire Bus Line
 	3450 4450 3450 4650
 $Sheet
-S 3000 2650 1100 600 
+S 3000 2650 1250 600 
 U 5FE73F43
 F0 "Instruction Decoder" 50
 F1 "InstructionDecoder.sch" 50
 F2 "Carry" I L 3000 2850 50 
 F3 "Z" I L 3000 2950 50 
-F4 "Ins[11..15]" I L 3000 2750 50 
+F4 "Ins_ID[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
 F6 "~RST" I L 3000 3150 50 
-F7 "Ctl_ID[0..23]" O R 4100 2750 50 
+F7 "Ctl_ID[0..23]" O R 4250 2750 50 
 $EndSheet
 Wire Wire Line
 	5200 2650 5100 2650
-Text Label 2900 2150 2    50   ~ 0
-Ins[0..10]
-Text HLabel 2200 2150 0    50   Input ~ 0
-Ins[0..15]
+Text Label 2750 2150 2    50   ~ 0
+Ins_ID[0..10]
+Text HLabel 2050 2150 0    50   Input ~ 0
+Ins_ID[0..15]
 Wire Bus Line
-	3000 2750 2500 2750
+	3000 2750 2350 2750
 Entry Bus Bus
-	2400 2150 2500 2250
+	2250 2150 2350 2250
 Wire Bus Line
-	2500 2250 2500 2750
+	2350 2250 2350 2750
 Wire Bus Line
-	5200 2750 4100 2750
+	5200 2750 4250 2750
 Text HLabel 2900 2850 0    50   Input ~ 0
 Carry
 Wire Wire Line
@@ -153,8 +153,8 @@ S 5200 1950 1400 300
 U 5FD8C8F4
 F0 "ID/EX InstructionWord" 50
 F1 "ID_EX_InstructionWord.sch" 50
-F2 "InsIn[0..10]" I L 5200 2150 50 
-F3 "InsOut[0..10]" O R 6600 2150 50 
+F2 "Ins_ID[0..10]" I L 5200 2150 50 
+F3 "Ins_EX[0..10]" O R 6600 2150 50 
 F4 "Phi1" I L 5200 2050 50 
 $EndSheet
 $Sheet
@@ -204,5 +204,5 @@ Text HLabel 3200 5250 0    50   Input ~ 0
 Wire Wire Line
 	3200 5250 4950 5250
 Wire Bus Line
-	2200 2150 5200 2150
+	2050 2150 5200 2150
 $EndSCHEMATC

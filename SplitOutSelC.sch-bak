@@ -14,11 +14,11 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text HLabel 4650 2900 0    50   Input ~ 0
-Ins[0..10]
+Ins_EX[0..10]
 Text HLabel 7150 2900 2    50   Output ~ 0
 SelC_EX[0..2]
 Text Label 5300 3200 0    50   ~ 0
-Ins10
+Ins_EX10
 Wire Bus Line
 	4650 2900 5200 2900
 Entry Wire Line
@@ -34,9 +34,9 @@ Wire Wire Line
 Wire Wire Line
 	5300 3000 6500 3000
 Text Label 5300 3100 0    50   ~ 0
-Ins9
+Ins_EX9
 Text Label 5300 3000 0    50   ~ 0
-Ins8
+Ins_EX8
 Entry Wire Line
 	6500 3200 6600 3100
 Entry Wire Line

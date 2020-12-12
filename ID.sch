@@ -14,9 +14,9 @@ Comment3 "The decoder takes the condition code from the flags register into acco
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
 Text HLabel 8350 3150 2    50   Output ~ 0
-ControlWord[1..19]
+ControlWord[1..20]
 Text Notes 800  7900 0    50   ~ 0
-#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrcA\n17  WriteBackSrcB\n18  /WRL\n19  /WRH
+#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrcA\n17  WriteBackSrcB\n18  /WRL\n19  /WRH\n20  /WBEN
 Text HLabel 9150 2800 2    50   Output ~ 0
 ~HLT
 Text Label 8600 2800 0    50   ~ 0
@@ -24,19 +24,19 @@ ControlWord0
 Entry Wire Line
 	8350 2800 8250 2900
 Text Notes 1700 7900 0    50   ~ 0
-Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nDrive the Store operand onto the bus I/O lines\nSource of write back 0\nSource of write back 1\nWrite back low byte\nWrite back high byte
+Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nDrive the Store operand onto the bus I/O lines\nSource of write back 0\nSource of write back 1\nWrite back low byte\nWrite back high byte\nEnable write back to register file
 Text HLabel 8300 2150 2    50   Output ~ 0
 InsOut[0..10]
 Wire Wire Line
 	8350 2800 9150 2800
 Text Label 7300 2900 0    50   ~ 0
-ControlWord[0..19]
+ControlWord[0..20]
 Wire Bus Line
 	7150 2900 8250 2900
 Entry Bus Bus
 	7150 3050 7250 3150
 Text Label 7300 3150 0    50   ~ 0
-ControlWord[1..19]
+ControlWord[1..20]
 Wire Bus Line
 	7250 3150 8350 3150
 Wire Bus Line
@@ -48,26 +48,27 @@ Text HLabel 3200 5050 0    50   Input ~ 0
 ~WRH
 Text HLabel 3200 5150 0    50   Input ~ 0
 ~WRL
-Text HLabel 3200 5250 0    50   Input ~ 0
+Text HLabel 3200 5350 0    50   Input ~ 0
 C[0..15]
 Text HLabel 3200 4950 0    50   Input ~ 0
 SelC[0..2]
 $Sheet
-S 4950 4150 1200 1250
+S 4950 4150 1200 1300
 U 5FC16AA6
 F0 "sheet5FC16A8C" 50
 F1 "RegisterFile.sch" 50
 F2 "~WRH" I L 4950 5050 50 
 F3 "~WRL" I L 4950 5150 50 
-F4 "C[0..15]" I L 4950 5250 50 
+F4 "C[0..15]" I L 4950 5350 50 
 F5 "SelC[0..2]" I L 4950 4950 50 
 F6 "SelA[0..2]" I L 4950 4250 50 
 F7 "SelB[0..2]" I L 4950 4650 50 
 F8 "B[0..15]" O R 6150 4750 50 
 F9 "A[0..15]" O R 6150 4250 50 
+F10 "~WBEN" I L 4950 5250 50 
 $EndSheet
 Wire Bus Line
-	4950 5250 3200 5250
+	4950 5350 3200 5350
 Wire Bus Line
 	3200 4950 4950 4950
 Wire Wire Line
@@ -168,7 +169,7 @@ F0 "ID/EX ControlWord" 50
 F1 "ID_EX_ControlWord.sch" 50
 F2 "Phi1" I L 5200 2650 50 
 F3 "Ctl[0..23]" I L 5200 2750 50 
-F4 "ControlWord[0..19]" O R 6600 2650 50 
+F4 "ControlWord[0..20]" O R 6600 2650 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 
@@ -221,6 +222,10 @@ Text GLabel 5100 2650 0    50   Input ~ 0
 Phi1a
 Text GLabel 5100 2050 0    50   Input ~ 0
 Phi1b
+Text HLabel 3200 5250 0    50   Input ~ 0
+~WBEN
+Wire Wire Line
+	3200 5250 4950 5250
 Wire Bus Line
 	2200 2150 5200 2150
 $EndSCHEMATC

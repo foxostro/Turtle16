@@ -720,7 +720,7 @@ $EndComp
 Wire Wire Line
 	850  7450 850  7350
 Text HLabel 7400 3050 2    50   Output ~ 0
-Ctl[16..19]
+Ctl[16..20]
 Entry Wire Line
 	4550 3950 4650 4050
 Entry Wire Line
@@ -738,7 +738,7 @@ SelC0
 Wire Wire Line
 	6450 3850 6050 3850
 Text HLabel 3700 3100 0    50   Input ~ 0
-CtlIn[16..19]
+CtlIn[16..20]
 Text Label 4650 3850 0    50   ~ 0
 SelCIn0
 Text HLabel 3700 3750 0    50   Input ~ 0
@@ -781,24 +781,24 @@ Wire Wire Line
 	5050 4050 4650 4050
 Entry Wire Line
 	6550 3750 6450 3850
-$Comp
-L power:VCC #PWR0395
-U 1 1 5FD61C4A
-P 5050 3750
-F 0 "#PWR0395" H 5050 3600 50  0001 C CNN
-F 1 "VCC" V 5065 3877 50  0000 L CNN
-F 2 "" H 5050 3750 50  0001 C CNN
-F 3 "" H 5050 3750 50  0001 C CNN
-	1    5050 3750
-	0    -1   -1   0   
-$EndComp
-NoConn ~ 6050 3750
+Wire Wire Line
+	4650 3750 5050 3750
+Entry Wire Line
+	4550 3650 4650 3750
+Text Label 4650 3750 0    50   ~ 0
+CtlIn20
+Wire Wire Line
+	6450 3750 6050 3750
+Entry Wire Line
+	6550 3650 6450 3750
+Text Label 6450 3750 2    50   ~ 0
+Ctl20
 Wire Bus Line
 	6550 3750 6550 3950
 Wire Bus Line
 	4550 3750 4550 3950
 Wire Bus Line
-	4550 3100 4550 3550
+	4550 3100 4550 3650
 Wire Bus Line
-	6550 3050 6550 3550
+	6550 3050 6550 3650
 $EndSCHEMATC

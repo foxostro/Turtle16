@@ -120,7 +120,7 @@ F 3 "" H 7950 5150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text Label 5300 1650 0    50   ~ 0
-CtlIn[13..19]
+CtlIn[13..20]
 $Comp
 L Device:C C?
 U 1 1 600839BF
@@ -267,14 +267,14 @@ F3 "D[0..15]" I L 7850 2600 50
 F4 "Q[0..15]" O R 9000 2600 50 
 $EndSheet
 Text HLabel 9750 1650 2    50   Output ~ 0
-Ctl[13..19]
+Ctl[13..20]
 $Sheet
 S 7850 1450 1150 650 
 U 5FD8D70A
 F0 "sheet5FD8D6EB" 50
 F1 "Ctl_13_23_Register.sch" 50
-F2 "Ctl[13..19]" O R 9000 1650 50 
-F3 "CtlIn[13..19]" I L 7850 1650 50 
+F2 "Ctl[13..20]" O R 9000 1650 50 
+F3 "CtlIn[13..20]" I L 7850 1650 50 
 F4 "SelCIn[0..2]" I L 7850 2000 50 
 F5 "SelC[0..2]" O R 9000 2000 50 
 F6 "Phi1" I L 7850 1550 50 
@@ -297,7 +297,7 @@ Wire Wire Line
 Wire Wire Line
 	7550 3450 7850 3450
 Text HLabel 1050 1550 0    50   Input ~ 0
-CtlIn[1..19]
+CtlIn[1..20]
 Text HLabel 1050 4600 0    50   Input ~ 0
 Ins[0..10]
 Entry Wire Line

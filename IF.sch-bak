@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 17 34
+Sheet 15 34
 Title "IF"
 Date ""
 Rev ""
@@ -37,7 +37,7 @@ Wire Wire Line
 Wire Wire Line
 	3050 3850 2700 3850
 Text HLabel 2700 4000 0    50   Input ~ 0
-Offset[0..15]
+Y_EX[0..15]
 Text HLabel 2700 4100 0    50   Input ~ 0
 ~J
 Wire Wire Line
@@ -69,7 +69,7 @@ F2 "Phi1" I L 3050 3700 50
 F3 "~RST" I L 3050 3850 50 
 F4 "~J" I L 3050 4100 50 
 F5 "PC[0..15]" O R 4500 3700 50 
-F6 "Offset[0..15]" I L 3050 4000 50 
+F6 "Y_EX[0..15]" I L 3050 4000 50 
 $EndSheet
 $Sheet
 S 6550 3500 1150 600 

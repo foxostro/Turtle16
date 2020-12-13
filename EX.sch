@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 26 34
+Sheet 27 34
 Title "EX"
 Date ""
 Rev ""
@@ -310,7 +310,7 @@ Entry Wire Line
 Text Label 3150 1100 3    50   ~ 0
 Ctl_EX3
 Text Notes 3850 3500 0    50   ~ 0
-SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B, byte swapped\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
+SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B << 8\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
 $Sheet
 S 3850 1900 1450 200 
 U 5FDDE44F

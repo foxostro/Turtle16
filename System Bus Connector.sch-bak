@@ -934,7 +934,7 @@ Wire Wire Line
 Text Label 4900 3850 0    50   ~ 0
 IO12
 Text Label 4900 3950 0    50   ~ 0
-IO114
+IO14
 Wire Wire Line
 	4850 3950 5500 3950
 Entry Wire Line

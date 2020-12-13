@@ -240,7 +240,7 @@ Connection ~ 900  7300
 Connection ~ 900  7600
 Connection ~ 1400 7300
 Connection ~ 1400 7600
-Text HLabel 3650 2300 0    50   Input ~ 0
+Text HLabel 3750 2300 0    50   Input ~ 0
 Phi1
 Wire Wire Line
 	3400 2100 3800 2100
@@ -1056,7 +1056,7 @@ NoConn ~ 4800 6000
 NoConn ~ 4800 6100
 NoConn ~ 4800 6200
 Wire Wire Line
-	3650 2300 3800 2300
+	3750 2300 3800 2300
 Wire Wire Line
 	6850 5900 6150 5900
 Entry Wire Line
@@ -1071,7 +1071,7 @@ AR Path="/5FE35007/5FCE2082/5FD64BA0" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FCFC706/5FD64BA0" Ref="U58"  Part="1" 
 F 0 "U58" H 3950 2700 50  0000 C CNN
 F 1 "74AHCT273" H 3950 2600 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4300 1900 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4300 1900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4300 1900 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8gP6vEF3PWfA%3D%3D" H 4300 1900 50  0001 C CNN "Mouser"
 	1    4300 1900
@@ -1085,7 +1085,7 @@ AR Path="/5FE35007/5FCE2082/5FD6AEDE" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FCFC706/5FD6AEDE" Ref="U59"  Part="1" 
 F 0 "U59" H 3950 4750 50  0000 C CNN
 F 1 "74AHCT273" H 3950 4650 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4300 3950 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4300 3950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4300 3950 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8gP6vEF3PWfA%3D%3D" H 4300 3950 50  0001 C CNN "Mouser"
 	1    4300 3950
@@ -1099,20 +1099,20 @@ AR Path="/5FE35007/5FCE2082/5FD6C0DF" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FCFC706/5FD6C0DF" Ref="U60"  Part="1" 
 F 0 "U60" H 3950 6800 50  0000 C CNN
 F 1 "74AHCT273" H 3950 6700 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4300 6000 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4300 6000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4300 6000 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8gP6vEF3PWfA%3D%3D" H 4300 6000 50  0001 C CNN "Mouser"
 	1    4300 6000
 	1    0    0    -1  
 $EndComp
-Text HLabel 3650 4350 0    50   Input ~ 0
+Text HLabel 3750 4350 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	3650 4350 3800 4350
-Text HLabel 3650 6400 0    50   Input ~ 0
+	3750 4350 3800 4350
+Text HLabel 3750 6400 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	3650 6400 3800 6400
+	3750 6400 3800 6400
 $Comp
 L 74xx:74LS240 U61
 U 1 1 5FDAFE0F
@@ -1799,38 +1799,6 @@ Wire Wire Line
 	5150 5500 4800 5500
 NoConn ~ 6150 6100
 NoConn ~ 6150 6000
-Wire Wire Line
-	5150 6200 4900 6200
-Text Label 4900 6200 0    50   ~ 0
-STALL
-Wire Wire Line
-	6150 6200 6400 6200
-Text Label 6400 6200 2    50   ~ 0
-~STALL
-Text Label 3450 2450 0    50   ~ 0
-~STALL
-Wire Wire Line
-	3450 2450 3700 2450
-Wire Wire Line
-	3700 2450 3700 2400
-Wire Wire Line
-	3700 2400 3800 2400
-Text Label 3450 4500 0    50   ~ 0
-~STALL
-Wire Wire Line
-	3450 4500 3700 4500
-Wire Wire Line
-	3700 4500 3700 4450
-Wire Wire Line
-	3700 4450 3800 4450
-Text Label 3450 6550 0    50   ~ 0
-~STALL
-Wire Wire Line
-	3450 6550 3700 6550
-Wire Wire Line
-	3700 6550 3700 6500
-Wire Wire Line
-	3700 6500 3800 6500
 $Comp
 L power:VCC #PWR0420
 U 1 1 5FE11D72
@@ -1998,12 +1966,30 @@ Wire Wire Line
 	3400 7600 2900 7600
 Text HLabel 3100 1100 0    50   Input ~ 0
 Ctl_ID[0..23]
-Text Label 1850 6350 2    50   ~ 0
-STALL
-Text HLabel 1450 6350 0    50   Input ~ 0
-STALL
+Text HLabel 3750 6500 0    50   Input ~ 0
+~STALL_ID
+$Comp
+L power:VCC #PWR0495
+U 1 1 5FDA7481
+P 5150 6200
+F 0 "#PWR0495" H 5150 6050 50  0001 C CNN
+F 1 "VCC" V 5165 6327 50  0000 L CNN
+F 2 "" H 5150 6200 50  0001 C CNN
+F 3 "" H 5150 6200 50  0001 C CNN
+	1    5150 6200
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 6150 6200
 Wire Wire Line
-	1450 6350 1850 6350
+	3750 6500 3800 6500
+Text HLabel 3750 4450 0    50   Input ~ 0
+~STALL_ID
+Wire Wire Line
+	3750 4450 3800 4450
+Text HLabel 3750 2400 0    50   Input ~ 0
+~STALL_ID
+Wire Wire Line
+	3750 2400 3800 2400
 Wire Bus Line
 	6950 1100 6950 5800
 Wire Bus Line

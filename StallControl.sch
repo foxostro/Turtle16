@@ -65,13 +65,10 @@ F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 5450 4000 50  0001 C CN
 	1    0    0    -1  
 $EndComp
 Text HLabel 6100 3550 2    50   Output ~ 0
-STALL
+~STALL_ID
 Wire Wire Line
 	5950 3550 6100 3550
-NoConn ~ 5950 3650
-NoConn ~ 5950 3750
 NoConn ~ 5950 3850
-NoConn ~ 5950 3950
 $Comp
 L Device:C C?
 U 1 1 5FDAF804
@@ -203,10 +200,10 @@ Wire Wire Line
 	800  7750 800  7650
 Wire Wire Line
 	800  7250 800  7350
-Text HLabel 4800 3550 0    50   Input ~ 0
-~WBEN
 Wire Wire Line
-	4950 3550 4800 3550
+	4950 3750 4300 3750
+Entry Wire Line
+	4300 3750 4200 3850
 Wire Wire Line
 	4950 3850 4300 3850
 Entry Wire Line
@@ -216,9 +213,9 @@ Wire Wire Line
 Entry Wire Line
 	4300 3950 4200 4050
 Wire Wire Line
-	4950 4050 4300 4050
+	4950 4050 4400 4050
 Entry Wire Line
-	4300 4050 4200 4150
+	4400 4050 4300 4150
 Wire Wire Line
 	4950 4150 4400 4150
 Entry Wire Line
@@ -227,10 +224,6 @@ Wire Wire Line
 	4950 4250 4400 4250
 Entry Wire Line
 	4400 4250 4300 4350
-Wire Wire Line
-	4950 4350 4400 4350
-Entry Wire Line
-	4400 4350 4300 4450
 NoConn ~ 4950 4550
 NoConn ~ 4950 4450
 Wire Wire Line
@@ -245,25 +238,25 @@ Wire Wire Line
 	5950 4550 6500 4550
 Entry Wire Line
 	6500 4550 6600 4650
-Text Label 4300 3850 0    50   ~ 0
+Text Label 4300 3750 0    50   ~ 0
 SelA0
-Text Label 4300 3950 0    50   ~ 0
+Text Label 4300 3850 0    50   ~ 0
 SelA1
-Text Label 4300 4050 0    50   ~ 0
+Text Label 4300 3950 0    50   ~ 0
 SelA2
-Text Label 4400 4150 0    50   ~ 0
+Text Label 4400 4050 0    50   ~ 0
 SelB0
-Text Label 4400 4250 0    50   ~ 0
+Text Label 4400 4150 0    50   ~ 0
 SelB1
-Text Label 4400 4350 0    50   ~ 0
+Text Label 4400 4250 0    50   ~ 0
 SelB2
 Wire Bus Line
-	4200 4150 3500 4150
-Text HLabel 3500 4150 0    50   Input ~ 0
+	4200 4050 3500 4050
+Text HLabel 3500 4050 0    50   Input ~ 0
 SelA[0..2]
 Wire Bus Line
-	4300 4450 3500 4450
-Text HLabel 3500 4450 0    50   Input ~ 0
+	4300 4350 3500 4350
+Text HLabel 3500 4350 0    50   Input ~ 0
 SelB[0..2]
 Text HLabel 8450 3950 2    50   Input ~ 0
 Ins_EX[0..10]
@@ -303,36 +296,49 @@ Wire Wire Line
 	5950 4150 7800 4150
 Wire Wire Line
 	5950 4250 7800 4250
-Text Label 3200 3750 0    50   ~ 0
-Ctl_MEM20
-Text HLabel 3000 3650 0    50   Input ~ 0
-Ctl_MEM[14..20]
-Wire Bus Line
-	3000 3650 3100 3650
-Entry Wire Line
-	3100 3650 3200 3750
-Wire Wire Line
-	3200 3750 4950 3750
 Text Label 3200 3650 0    50   ~ 0
-Ctl_EX20
+Ctl_MEM20
 Text HLabel 3000 3550 0    50   Input ~ 0
-Ctl_EX[14..20]
+Ctl_MEM[14..20]
 Wire Bus Line
 	3000 3550 3100 3550
 Entry Wire Line
 	3100 3550 3200 3650
 Wire Wire Line
 	3200 3650 4950 3650
-Text Notes 3900 3750 0    50   ~ 0
-WBEN_MEM
+Text Label 3200 3550 0    50   ~ 0
+Ctl_EX20
+Text HLabel 3000 3450 0    50   Input ~ 0
+Ctl_EX[14..20]
+Wire Bus Line
+	3000 3450 3100 3450
+Entry Wire Line
+	3100 3450 3200 3550
+Wire Wire Line
+	3200 3550 4950 3550
 Text Notes 3900 3650 0    50   ~ 0
+WBEN_MEM
+Text Notes 3900 3550 0    50   ~ 0
 WBEN_EX
-Text Notes 1000 1600 0    50   ~ 0
-The GAL can implement logic to detect several types of hazards.\n\nIf the Ra or Rb registers refer to the destination register in the EX or MEM\nthen there is a RAW error. In this case, stall the pipeline for a cycle.\n\nIf the instruction in EX wants to update the Flags register and the instruction\nin ID wants to make use of the flags then there is a Flags hazard. In this case,\nstall the pipeline for a cycle.
+Text Notes 950  2050 0    50   ~ 0
+The GAL can implement logic to detect several types of hazards.\n\nOn a jump, the ID and IF stages must both be flushed. The logic here can\nstall the ID stage to achieve that portion of this effect.\n\nIf the Ra or Rb registers refer to the destination register in the EX or MEM\nthen there is a RAW error. In this case, stall the pipeline for a cycle.\n\nTODO:\n\nIf the instruction in EX wants to update the Flags register and the instruction\nin ID wants to make use of the flags then there is a Flags hazard. In this case,\nstall the pipeline for a cycle.
+Text HLabel 6100 3750 2    50   Output ~ 0
+~FLUSH_IF
+Wire Wire Line
+	5950 3750 6100 3750
+NoConn ~ 4950 4350
+Text HLabel 6650 3950 2    50   Input ~ 0
+~J
+Wire Wire Line
+	6650 3950 5950 3950
+Text HLabel 6100 3650 2    50   Output ~ 0
+STALL_PC
+Wire Wire Line
+	5950 3650 6100 3650
 Wire Bus Line
-	4200 3950 4200 4150
+	4200 3850 4200 4050
 Wire Bus Line
-	4300 4250 4300 4450
+	4300 4150 4300 4350
 Wire Bus Line
 	6600 4450 6600 4650
 Wire Bus Line

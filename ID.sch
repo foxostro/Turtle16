@@ -94,7 +94,7 @@ Connection ~ 3300 5600
 Wire Bus Line
 	3300 5600 3300 5800
 $Sheet
-S 3000 2650 1250 750 
+S 3000 2650 1250 650 
 U 5FE73F43
 F0 "Instruction Decoder" 50
 F1 "InstructionDecoder.sch" 50
@@ -102,9 +102,8 @@ F2 "Carry" I L 3000 2850 50
 F3 "Z" I L 3000 2950 50 
 F4 "Ins_ID[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
-F6 "~RST" I L 3000 3300 50 
+F6 "~RST" I L 3000 3200 50 
 F7 "Ctl_ID[0..23]" O R 4250 2750 50 
-F8 "~J" I L 3000 3150 50 
 $EndSheet
 Wire Wire Line
 	5200 2650 5100 2650
@@ -131,7 +130,7 @@ OVF
 Wire Wire Line
 	3000 3050 2900 3050
 Wire Wire Line
-	3000 3300 2900 3300
+	3000 3200 2900 3200
 Wire Bus Line
 	6600 2650 8300 2650
 Wire Bus Line
@@ -144,7 +143,7 @@ F1 "ID_EX_ControlWord.sch" 50
 F2 "Phi1" I L 5200 2650 50 
 F3 "Ctl_ID[0..23]" I L 5200 2750 50 
 F4 "Ctl_EX[0..20]" O R 6600 2650 50 
-F5 "STALL" I L 5200 2850 50 
+F5 "~STALL_ID" I L 5200 2850 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 
@@ -187,7 +186,7 @@ Text Notes 8200 5300 0    50   ~ 0
 The A port supplies the Left operand.
 Text Notes 8200 5800 0    50   ~ 0
 The B port supplies the Right operand.
-Text GLabel 2900 3300 0    50   Input ~ 0
+Text GLabel 2900 3200 0    50   Input ~ 0
 ~RST
 Text GLabel 7150 5300 0    50   Input ~ 0
 Phi1b
@@ -201,78 +200,86 @@ Text HLabel 3800 6400 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
 	3800 6400 5550 6400
-Text HLabel 2900 3150 0    50   Input ~ 0
+Text HLabel 4700 4050 0    50   Input ~ 0
 ~J
 Wire Wire Line
-	3000 3150 2900 3150
+	5550 4050 4700 4050
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN
-Text HLabel 7250 4000 2    50   Output ~ 0
-STALL
-$Sheet
-S 5550 3850 1200 800 
-U 5FDA967F
-F0 "Stall Control" 50
-F1 "StallControl.sch" 50
-F2 "STALL" O R 6750 4000 50 
-F3 "~WBEN" I L 5550 3950 50 
-F4 "SelC_MEM[0..2]" I L 5550 4450 50 
-F5 "SelA[0..2]" I L 5550 4250 50 
-F6 "SelB[0..2]" I L 5550 4350 50 
-F7 "Ins_EX[0..10]" I L 5550 4550 50 
-F8 "Ctl_MEM[14..20]" I L 5550 4150 50 
-F9 "Ctl_EX[14..20]" I L 5550 4050 50 
-$EndSheet
+Text HLabel 7550 4400 2    50   Output ~ 0
+~FLUSH_IF
 Wire Wire Line
-	4850 2850 5200 2850
-Wire Wire Line
-	5550 3950 4900 3950
-Wire Bus Line
-	5550 4250 4900 4250
+	4750 2900 5100 2900
 Wire Bus Line
 	5550 4350 4900 4350
+Wire Bus Line
+	5550 4450 4900 4450
 Text Label 4850 5400 0    50   ~ 0
 SelA[0..2]
 Text Label 4850 5800 0    50   ~ 0
 SelB[0..2]
-Text Label 4900 4250 0    50   ~ 0
-SelA[0..2]
 Text Label 4900 4350 0    50   ~ 0
+SelA[0..2]
+Text Label 4900 4450 0    50   ~ 0
 SelB[0..2]
 Wire Wire Line
-	6750 4000 7250 4000
-Text Label 4850 2850 0    50   ~ 0
-STALL
-Text Label 4900 3950 0    50   ~ 0
-Ctl_ID20
+	6750 4100 7250 4100
+Text Label 4750 2900 0    50   ~ 0
+~STALL_ID
 Text Label 4300 2750 0    50   ~ 0
 Ctl_ID[0..23]
 Wire Bus Line
 	4250 2750 5200 2750
 Text Label 7250 2150 0    50   ~ 0
 Ins_EX[0..10]
-Text HLabel 4700 4450 0    50   Input ~ 0
+Text HLabel 4700 4550 0    50   Input ~ 0
 SelC_MEM[0..2]
 Wire Bus Line
-	4700 4450 5550 4450
-Text HLabel 4700 4550 0    50   Input ~ 0
+	4700 4550 5550 4550
+Text HLabel 4700 4650 0    50   Input ~ 0
 Ins_EX[0..10]
 Wire Bus Line
-	4700 4550 5550 4550
-Text HLabel 4700 4150 0    50   Input ~ 0
+	4700 4650 5550 4650
+Text HLabel 4700 4250 0    50   Input ~ 0
 Ctl_MEM[14..20]
 Wire Bus Line
-	4700 4150 5550 4150
+	4700 4250 5550 4250
 Wire Bus Line
-	5550 4050 4900 4050
-Text Label 4900 4050 0    50   ~ 0
+	5550 4150 4900 4150
+Text Label 4900 4150 0    50   ~ 0
 Ctl_EX[0..20]
 Text Label 7250 2650 0    50   ~ 0
 Ctl_EX[0..20]
-Text Notes 800  4350 0    50   ~ 0
-TODO: This is bad. If the instruction decoder depends on STALL and the\nstall logic depends on Ctl_ID then the CPU must decode twice each cycle.\nThis will not do. Instead, there needs to be some way to force Ctl_EX to a\nNOP immediately when a stall is needed.
+Text Label 7250 4100 2    50   ~ 0
+~STALL_ID
+Wire Wire Line
+	6750 4250 7550 4250
+Wire Wire Line
+	5200 2850 5100 2850
+Wire Wire Line
+	5100 2850 5100 2900
+$Sheet
+S 5550 3950 1200 800 
+U 5FDA967F
+F0 "Stall Control" 50
+F1 "StallControl.sch" 50
+F2 "~STALL_ID" O R 6750 4100 50 
+F3 "SelC_MEM[0..2]" I L 5550 4550 50 
+F4 "SelA[0..2]" I L 5550 4350 50 
+F5 "SelB[0..2]" I L 5550 4450 50 
+F6 "Ins_EX[0..10]" I L 5550 4650 50 
+F7 "Ctl_MEM[14..20]" I L 5550 4250 50 
+F8 "Ctl_EX[14..20]" I L 5550 4150 50 
+F9 "~FLUSH_IF" O R 6750 4400 50 
+F10 "~J" I L 5550 4050 50 
+F11 "STALL_PC" O R 6750 4250 50 
+$EndSheet
+Text HLabel 7550 4250 2    50   Output ~ 0
+STALL_PC
+Wire Wire Line
+	6750 4400 7550 4400
+Text Notes 3000 3750 0    50   ~ 0
+NOTE: control signals in Ctl_ID are inverted with respect\nto other pipeline stages. This allows us to represent a\nNOP as a zero control word here and also allow active-\nlow signals in the other pipeline stages.
 Wire Bus Line
 	2050 2150 5200 2150
-Text Label 6900 4000 0    50   ~ 0
-STALL
 $EndSCHEMATC

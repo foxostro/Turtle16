@@ -1598,12 +1598,8 @@ Text HLabel 2400 2900 0    50   Input ~ 0
 Phi1
 Wire Wire Line
 	2500 2900 2400 2900
-Text HLabel 7250 4900 0    50   Input ~ 0
-Phi1
 Wire Wire Line
-	7350 4900 7250 4900
-Wire Wire Line
-	7350 2850 7250 2850
+	7350 2850 7300 2850
 Wire Wire Line
 	2500 4950 2400 4950
 Text HLabel 2400 4950 0    50   Input ~ 0
@@ -1725,16 +1721,20 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8
 	1    7850 4500
 	1    0    0    -1  
 $EndComp
-Text HLabel 7250 2850 0    50   Input ~ 0
+Text HLabel 7300 2850 0    50   Input ~ 0
 Phi1
 Wire Wire Line
-	7350 2950 7250 2950
-Text HLabel 7250 2950 0    50   Input ~ 0
-~J
+	7350 2950 7300 2950
+Text HLabel 7300 2950 0    50   Input ~ 0
+~FLUSH_IF
 Wire Wire Line
-	7350 5000 7250 5000
-Text HLabel 7250 5000 0    50   Input ~ 0
-~J
+	7350 4900 7300 4900
+Text HLabel 7300 4900 0    50   Input ~ 0
+Phi1
+Wire Wire Line
+	7350 5000 7300 5000
+Text HLabel 7300 5000 0    50   Input ~ 0
+~FLUSH_IF
 Wire Bus Line
 	2000 1750 2000 4650
 Wire Bus Line

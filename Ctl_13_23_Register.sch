@@ -961,7 +961,7 @@ $EndComp
 Wire Wire Line
 	1350 7400 1350 7300
 Text HLabel 7550 2050 2    50   Output ~ 0
-Ctl_MEM[13..20]
+Ctl_MEM[14..20]
 Text HLabel 5050 5400 0    50   Input ~ 0
 Phi1
 $Comp
@@ -1278,7 +1278,7 @@ Wire Wire Line
 Entry Wire Line
 	6700 4400 6600 4500
 Text HLabel 3850 2100 0    50   Input ~ 0
-Ctl_EX[13..20]
+Ctl_EX[14..20]
 Wire Wire Line
 	4800 2950 5200 2950
 Text Label 4800 4500 0    50   ~ 0
@@ -1301,33 +1301,29 @@ SelC_MEM[0..2]
 Wire Bus Line
 	8100 4400 6700 4400
 Text Label 6800 2450 2    50   ~ 0
-Ctl_MEM13
-Text Label 6800 2550 2    50   ~ 0
 Ctl_MEM14
-Text Label 6800 2650 2    50   ~ 0
+Text Label 6800 2550 2    50   ~ 0
 Ctl_MEM15
-Text Label 6800 2750 2    50   ~ 0
+Text Label 6800 2650 2    50   ~ 0
 Ctl_MEM16
-Text Label 6800 2850 2    50   ~ 0
+Text Label 6800 2750 2    50   ~ 0
 Ctl_MEM17
-Text Label 6800 2950 2    50   ~ 0
+Text Label 6800 2850 2    50   ~ 0
 Ctl_MEM18
-Text Label 6800 3050 2    50   ~ 0
+Text Label 6800 2950 2    50   ~ 0
 Ctl_MEM19
-Text Label 4800 3050 0    50   ~ 0
-Ctl_EX19
 Text Label 4800 2950 0    50   ~ 0
-Ctl_EX18
+Ctl_EX19
 Text Label 4800 2850 0    50   ~ 0
-Ctl_EX17
+Ctl_EX18
 Text Label 4800 2750 0    50   ~ 0
-Ctl_EX16
+Ctl_EX17
 Text Label 4800 2650 0    50   ~ 0
-Ctl_EX15
+Ctl_EX16
 Text Label 4800 2550 0    50   ~ 0
-Ctl_EX14
+Ctl_EX15
 Text Label 4800 2450 0    50   ~ 0
-Ctl_EX13
+Ctl_EX14
 NoConn ~ 6200 4800
 NoConn ~ 6200 4900
 NoConn ~ 6200 5000
@@ -1567,24 +1563,28 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5700 5000
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6800 3150 6200 3150
-Entry Wire Line
-	6900 3050 6800 3150
-Text Label 6800 3150 2    50   ~ 0
+Text Label 6800 3050 2    50   ~ 0
 Ctl_MEM20
-Wire Wire Line
-	4800 3150 5200 3150
-Entry Wire Line
-	4700 3050 4800 3150
-Text Label 4800 3150 0    50   ~ 0
+Text Label 4800 3050 0    50   ~ 0
 Ctl_EX20
+$Comp
+L power:VCC #PWR0483
+U 1 1 5FD7318D
+P 5200 3150
+F 0 "#PWR0483" H 5200 3000 50  0001 C CNN
+F 1 "VCC" V 5215 3277 50  0000 L CNN
+F 2 "" H 5200 3150 50  0001 C CNN
+F 3 "" H 5200 3150 50  0001 C CNN
+	1    5200 3150
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 6200 3150
 Wire Bus Line
 	4700 4400 4700 4600
 Wire Bus Line
 	6700 4400 6700 4600
 Wire Bus Line
-	4700 2100 4700 3050
+	4700 2100 4700 2950
 Wire Bus Line
-	6900 2050 6900 3050
+	6900 2050 6900 2950
 $EndSCHEMATC

@@ -16,7 +16,7 @@ $EndDescr
 Text HLabel 1950 3900 0    50   Input ~ 0
 StoreOp_MEM[0..15]
 Text HLabel 1950 2300 0    50   Input ~ 0
-Ctl_MEM[13..20]
+Ctl_MEM[14..20]
 Entry Wire Line
 	2400 2300 2500 2400
 Entry Wire Line
@@ -26,11 +26,11 @@ Entry Bus Bus
 Wire Bus Line
 	6000 2400 7200 2400
 Text Label 6100 2400 0    50   ~ 0
-Ctl_MEM[16..20]
+Ctl_MEM[17..20]
 Text Label 2600 2400 3    50   ~ 0
-Ctl_MEM13
-Text Label 2500 2400 3    50   ~ 0
 Ctl_MEM14
+Text Label 2500 2400 3    50   ~ 0
+Ctl_MEM15
 Wire Bus Line
 	1950 3900 3600 3900
 Text HLabel 9250 3250 2    50   3State ~ 0
@@ -122,7 +122,7 @@ Wire Wire Line
 Entry Wire Line
 	2300 2300 2400 2400
 Text Label 2400 2400 3    50   ~ 0
-Ctl_MEM15
+Ctl_MEM16
 Wire Wire Line
 	2400 2400 2400 3800
 Wire Wire Line
@@ -160,8 +160,8 @@ F1 "Ctl_15_23_Register.sch" 50
 F2 "Phi1" I L 7200 2300 50 
 F3 "SelC_MEM[0..2]" I L 7200 2500 50 
 F4 "SelC_WB[0..2]" O R 8950 2500 50 
-F5 "Ctl_WB[16..20]" O R 8950 2400 50 
-F6 "Ctl_MEM[16..20]" I L 7200 2400 50 
+F5 "Ctl_WB[17..20]" O R 8950 2400 50 
+F6 "Ctl_MEM[17..20]" I L 7200 2400 50 
 $EndSheet
 Text HLabel 6750 2500 0    50   Input ~ 0
 SelC_MEM[0..2]
@@ -170,7 +170,7 @@ Wire Bus Line
 Text GLabel 7000 2150 0    50   Input ~ 0
 Phi1c
 Text HLabel 9250 2400 2    50   Output ~ 0
-Ctl_WB[16..20]
+Ctl_WB[17..20]
 Wire Bus Line
 	8950 2400 9250 2400
 Wire Wire Line

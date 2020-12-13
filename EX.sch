@@ -120,7 +120,7 @@ F 3 "" H 7950 5150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text Label 5300 1100 0    50   ~ 0
-Ctl_EX[13..20]
+Ctl_EX[14..20]
 $Comp
 L Device:C C?
 U 1 1 600839BF
@@ -258,14 +258,14 @@ SelC_MEM[0..2]
 Wire Bus Line
 	9500 2000 9750 2000
 Text HLabel 9750 1100 2    50   Output ~ 0
-Ctl_MEM[13..20]
+Ctl_MEM[14..20]
 $Sheet
 S 7850 900  1650 1250
 U 5FD8D70A
 F0 "sheet5FD8D6EB" 50
 F1 "Ctl_13_23_Register.sch" 50
-F2 "Ctl_MEM[13..20]" O R 9500 1100 50 
-F3 "Ctl_EX[13..20]" I L 7850 1100 50 
+F2 "Ctl_MEM[14..20]" O R 9500 1100 50 
+F3 "Ctl_EX[14..20]" I L 7850 1100 50 
 F4 "SelC_EX[0..2]" I L 7850 2000 50 
 F5 "SelC_MEM[0..2]" O R 9500 2000 50 
 F6 "Phi1" I L 7850 1000 50 
@@ -531,13 +531,13 @@ F3 "StoreOp_EX[0..15]" I L 7850 2600 50
 F4 "StoreOp_MEM[0..15]" O R 9500 2600 50 
 $EndSheet
 Text Label 2150 1100 3    50   ~ 0
-Ctl_EX17
+Ctl_EX13
 Wire Wire Line
 	2150 1100 2150 1600
 Text HLabel 2150 1600 3    50   Output ~ 0
 ~JABS
-Wire Bus Line
-	1250 1000 5100 1000
 Entry Wire Line
 	2050 1000 2150 1100
+Wire Bus Line
+	1250 1000 5100 1000
 $EndSCHEMATC

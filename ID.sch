@@ -16,9 +16,9 @@ $EndDescr
 Text HLabel 8300 2650 2    50   Output ~ 0
 Ctl_EX[0..20]
 Text Notes 800  7900 0    50   ~ 0
-#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrcA\n17  WriteBackSrcB\n18  /WRL\n19  /WRH\n20  /WBEN
+#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /MemLoad\n14  /MemStore\n15  /AssertStoreOp\n16  WriteBackSrc\n17  unused\n18  /WRL\n19  /WRH\n20  /WBEN
 Text Notes 1700 7900 0    50   ~ 0
-Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nDrive the Store operand onto the bus I/O lines\nSource of write back 0\nSource of write back 1\nWrite back low byte\nWrite back high byte\nEnable write back to register file
+Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nMemory Store\nMemory Load\nDrive the Store operand onto the bus I/O lines\nSource of write back 0\nunused\nWrite back low byte\nWrite back high byte\nEnable write back to register file
 Text HLabel 8300 2150 2    50   Output ~ 0
 Ins_EX[0..10]
 Text Label 2950 2750 2    50   ~ 0

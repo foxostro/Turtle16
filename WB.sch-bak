@@ -17,8 +17,8 @@ Text HLabel 9150 4850 2    50   Output ~ 0
 C[0..15]
 Text HLabel 1400 5050 0    50   Input ~ 0
 Y_WB[0..15]
-Text Notes 6400 5600 0    50   ~ 0
-Src=0  —> Select ALU Result\nSrc=1  —> Select Store Operand\nSrc=2  —> Select Store Operand (byte swapped)
+Text Notes 6400 5500 0    50   ~ 0
+Src=0  —> Select ALU Result\nSrc=1  —> Select Store Operand
 Wire Bus Line
 	6400 5050 1400 5050
 Text HLabel 1400 5150 0    50   Input ~ 0
@@ -49,10 +49,9 @@ U 6025930D
 F0 "Select Write Back Source" 50
 F1 "SelectWriteBackSource.sch" 50
 F2 "C[0..15]" O R 7650 4850 50 
-F3 "WriteBackSrcB" I L 6400 4950 50 
-F4 "StoreOp_WB[0..15]" I L 6400 5150 50 
-F5 "Y_WB[0..15]" I L 6400 5050 50 
-F6 "WriteBackSrcA" I L 6400 4850 50 
+F3 "StoreOp_WB[0..15]" I L 6400 5150 50 
+F4 "Y_WB[0..15]" I L 6400 5050 50 
+F5 "WriteBackSrc" I L 6400 4850 50 
 $EndSheet
 Text HLabel 9150 4400 2    50   Output ~ 0
 ~WRH
@@ -65,7 +64,7 @@ Text HLabel 9150 4300 2    50   Output ~ 0
 Wire Wire Line
 	4700 3650 4700 4850
 Wire Wire Line
-	4550 3650 4550 4950
+	4550 3650 4550 4100
 Wire Wire Line
 	5150 4300 9150 4300
 Wire Wire Line
@@ -76,8 +75,6 @@ Text Label 4850 3700 3    50   ~ 0
 Ctl_WB20
 Wire Wire Line
 	4700 4850 6400 4850
-Wire Wire Line
-	4550 4950 6400 4950
 Text HLabel 9150 4500 2    50   Output ~ 0
 ~WBEN
 Wire Wire Line
@@ -86,6 +83,7 @@ Wire Wire Line
 	4850 4500 9150 4500
 Wire Bus Line
 	1400 5150 6400 5150
+NoConn ~ 4550 4100
 Wire Bus Line
 	1400 3550 5050 3550
 $EndSCHEMATC

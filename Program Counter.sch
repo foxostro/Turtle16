@@ -52,8 +52,8 @@ AR Path="/5FF41DF6/6005FD06/5FBC5FD6" Ref="C?"  Part="1"
 AR Path="/5FF41DF6/6005FD11/5FBC5FD6" Ref="C?"  Part="1" 
 AR Path="/60A71BBF/5FBC5FD6" Ref="C?"  Part="1" 
 AR Path="/5D2C07CD/5FBC5FD6" Ref="C?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC5FD6" Ref="C40"  Part="1" 
-F 0 "C40" H 9665 6246 50  0000 L CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC5FD6" Ref="C39"  Part="1" 
+F 0 "C39" H 9665 6246 50  0000 L CNN
 F 1 "100nF" H 9665 6155 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 9588 6050 50  0001 C CNN
 F 3 "~" H 9550 6200 50  0001 C CNN
@@ -94,8 +94,8 @@ AR Path="/5FF41DF6/6005FD06/5FBC5FDC" Ref="C?"  Part="1"
 AR Path="/5FF41DF6/6005FD11/5FBC5FDC" Ref="C?"  Part="1" 
 AR Path="/60A71BBF/5FBC5FDC" Ref="C?"  Part="1" 
 AR Path="/5D2C07CD/5FBC5FDC" Ref="C?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC5FDC" Ref="C41"  Part="1" 
-F 0 "C41" H 10165 6246 50  0000 L CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC5FDC" Ref="C40"  Part="1" 
+F 0 "C40" H 10165 6246 50  0000 L CNN
 F 1 "100nF" H 10165 6155 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 10088 6050 50  0001 C CNN
 F 3 "~" H 10050 6200 50  0001 C CNN
@@ -136,8 +136,8 @@ AR Path="/5FF41DF6/6005FD06/5FBC5FE2" Ref="#PWR?"  Part="1"
 AR Path="/5FF41DF6/6005FD11/5FBC5FE2" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FBC5FE2" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC5FE2" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC5FE2" Ref="#PWR0285"  Part="1" 
-F 0 "#PWR0285" H 9550 5900 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC5FE2" Ref="#PWR0265"  Part="1" 
+F 0 "#PWR0265" H 9550 5900 50  0001 C CNN
 F 1 "VCC" H 9567 6223 50  0000 C CNN
 F 2 "" H 9550 6050 50  0001 C CNN
 F 3 "" H 9550 6050 50  0001 C CNN
@@ -182,8 +182,8 @@ AR Path="/5FF41DF6/6005FD06/5FBC5FEB" Ref="#PWR?"  Part="1"
 AR Path="/5FF41DF6/6005FD11/5FBC5FEB" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FBC5FEB" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC5FEB" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC5FEB" Ref="#PWR0286"  Part="1" 
-F 0 "#PWR0286" H 9550 6200 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC5FEB" Ref="#PWR0266"  Part="1" 
+F 0 "#PWR0266" H 9550 6200 50  0001 C CNN
 F 1 "GND" H 9555 6277 50  0000 C CNN
 F 2 "" H 9550 6450 50  0001 C CNN
 F 3 "" H 9550 6450 50  0001 C CNN
@@ -199,8 +199,8 @@ U 1 1 5FBC5FF4
 P 6050 3950
 AR Path="/60A71BBF/5FBC5FF4" Ref="U?"  Part="1" 
 AR Path="/5D2C07CD/5FBC5FF4" Ref="U?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC5FF4" Ref="U36"  Part="1" 
-F 0 "U36" H 6050 4000 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC5FF4" Ref="U33"  Part="1" 
+F 0 "U33" H 6050 4000 50  0000 C CNN
 F 1 "IDT7381" H 6050 3900 50  0000 C CNN
 F 2 "Package_LCC:PLCC-68_SMD-Socket" H 6050 5200 50  0001 C CNN
 F 3 "https://www.digchip.com/datasheets/download_datasheet.php?id=419696&part-number=IDT7381" H 6050 5200 50  0001 C CNN
@@ -215,8 +215,8 @@ P 6050 1600
 AR Path="/5D2C0CE4/5FBC5FFA" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FBC5FFA" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC5FFA" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC5FFA" Ref="#PWR0280"  Part="1" 
-F 0 "#PWR0280" H 6050 1450 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC5FFA" Ref="#PWR0260"  Part="1" 
+F 0 "#PWR0260" H 6050 1450 50  0001 C CNN
 F 1 "VCC" H 6067 1773 50  0000 C CNN
 F 2 "" H 6050 1600 50  0001 C CNN
 F 3 "" H 6050 1600 50  0001 C CNN
@@ -230,8 +230,8 @@ P 6050 6300
 AR Path="/5D2C0CE4/5FBC6012" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FBC6012" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC6012" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC6012" Ref="#PWR0281"  Part="1" 
-F 0 "#PWR0281" H 6050 6050 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC6012" Ref="#PWR0261"  Part="1" 
+F 0 "#PWR0261" H 6050 6050 50  0001 C CNN
 F 1 "GND" H 6055 6127 50  0000 C CNN
 F 2 "" H 6050 6300 50  0001 C CNN
 F 3 "" H 6050 6300 50  0001 C CNN
@@ -340,8 +340,8 @@ U 1 1 5FBC6096
 P 7150 3650
 AR Path="/60A71BBF/5FBC6096" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC6096" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC6096" Ref="#PWR0284"  Part="1" 
-F 0 "#PWR0284" H 7150 3400 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC6096" Ref="#PWR0264"  Part="1" 
+F 0 "#PWR0264" H 7150 3400 50  0001 C CNN
 F 1 "GND" V 7155 3522 50  0000 R CNN
 F 2 "" H 7150 3650 50  0001 C CNN
 F 3 "" H 7150 3650 50  0001 C CNN
@@ -356,8 +356,8 @@ U 1 1 5FBC609E
 P 7150 3450
 AR Path="/60A71BBF/5FBC609E" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC609E" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC609E" Ref="#PWR0282"  Part="1" 
-F 0 "#PWR0282" H 7150 3200 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC609E" Ref="#PWR0262"  Part="1" 
+F 0 "#PWR0262" H 7150 3200 50  0001 C CNN
 F 1 "GND" V 7155 3322 50  0000 R CNN
 F 2 "" H 7150 3450 50  0001 C CNN
 F 3 "" H 7150 3450 50  0001 C CNN
@@ -370,8 +370,8 @@ U 1 1 5FBC60A4
 P 4950 6000
 AR Path="/60A71BBF/5FBC60A4" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC60A4" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC60A4" Ref="#PWR0278"  Part="1" 
-F 0 "#PWR0278" H 4950 5750 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC60A4" Ref="#PWR0258"  Part="1" 
+F 0 "#PWR0258" H 4950 5750 50  0001 C CNN
 F 1 "GND" V 4955 5872 50  0000 R CNN
 F 2 "" H 4950 6000 50  0001 C CNN
 F 3 "" H 4950 6000 50  0001 C CNN
@@ -384,8 +384,8 @@ U 1 1 5FBC60AA
 P 4950 6100
 AR Path="/60A71BBF/5FBC60AA" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FBC60AA" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC60AA" Ref="#PWR0279"  Part="1" 
-F 0 "#PWR0279" H 4950 5850 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FBC60AA" Ref="#PWR0259"  Part="1" 
+F 0 "#PWR0259" H 4950 5850 50  0001 C CNN
 F 1 "GND" V 4955 5972 50  0000 R CNN
 F 2 "" H 4950 6100 50  0001 C CNN
 F 3 "" H 4950 6100 50  0001 C CNN
@@ -402,8 +402,8 @@ U 1 1 5FCE3FC1
 P 4950 5900
 AR Path="/60A71BBF/5FCE3FC1" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FCE3FC1" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FCE3FC1" Ref="#PWR0277"  Part="1" 
-F 0 "#PWR0277" H 4950 5650 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FCE3FC1" Ref="#PWR0257"  Part="1" 
+F 0 "#PWR0257" H 4950 5650 50  0001 C CNN
 F 1 "GND" V 4955 5772 50  0000 R CNN
 F 2 "" H 4950 5900 50  0001 C CNN
 F 3 "" H 4950 5900 50  0001 C CNN
@@ -420,8 +420,8 @@ P 3050 5100
 AR Path="/5D2C0B92/5FCF8BB3" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FCF8BB3" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FCF8BB3" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FCF8BB3" Ref="#PWR0274"  Part="1" 
-F 0 "#PWR0274" H 3050 4950 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FCF8BB3" Ref="#PWR0254"  Part="1" 
+F 0 "#PWR0254" H 3050 4950 50  0001 C CNN
 F 1 "VCC" H 3067 5273 50  0000 C CNN
 F 2 "" H 3050 5100 50  0001 C CNN
 F 3 "" H 3050 5100 50  0001 C CNN
@@ -435,8 +435,8 @@ P 3050 6500
 AR Path="/5D2C0B92/5FCF8BB9" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FCF8BB9" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/5FCF8BB9" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FCF8BB9" Ref="#PWR0275"  Part="1" 
-F 0 "#PWR0275" H 3050 6250 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FCF8BB9" Ref="#PWR0255"  Part="1" 
+F 0 "#PWR0255" H 3050 6250 50  0001 C CNN
 F 1 "GND" H 3055 6327 50  0000 C CNN
 F 2 "" H 3050 6500 50  0001 C CNN
 F 3 "" H 3050 6500 50  0001 C CNN
@@ -457,22 +457,7 @@ Wire Wire Line
 	4950 5800 3550 5800
 NoConn ~ 3550 5900
 NoConn ~ 3550 6000
-NoConn ~ 3550 6100
 NoConn ~ 3550 6200
-$Comp
-L power:GND #PWR?
-U 1 1 5FD205DD
-P 3550 6300
-AR Path="/60A71BBF/5FD205DD" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FD205DD" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FD205DD" Ref="#PWR0276"  Part="1" 
-F 0 "#PWR0276" H 3550 6050 50  0001 C CNN
-F 1 "GND" V 3555 6172 50  0000 R CNN
-F 2 "" H 3550 6300 50  0001 C CNN
-F 3 "" H 3550 6300 50  0001 C CNN
-	1    3550 6300
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
 	4950 5200 4000 5200
 Wire Wire Line
@@ -497,26 +482,24 @@ L power:VCC #PWR?
 U 1 1 5FD56A6C
 P 7150 3550
 AR Path="/5D2C07CD/5FD56A6C" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FD56A6C" Ref="#PWR0283"  Part="1" 
-F 0 "#PWR0283" H 7150 3400 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FD56A6C" Ref="#PWR0263"  Part="1" 
+F 0 "#PWR0263" H 7150 3400 50  0001 C CNN
 F 1 "VCC" V 7165 3677 50  0000 L CNN
 F 2 "" H 7150 3550 50  0001 C CNN
 F 3 "" H 7150 3550 50  0001 C CNN
 	1    7150 3550
 	0    1    -1   0   
 $EndComp
-NoConn ~ 2550 5600
 NoConn ~ 2550 5700
 NoConn ~ 2550 5800
 NoConn ~ 2550 5900
-NoConn ~ 2550 6000
 NoConn ~ 2550 6100
 NoConn ~ 2550 6200
 NoConn ~ 2550 6300
 Text HLabel 1750 3300 0    50   Input ~ 0
 Y_EX[0..15]
 Text Notes 900  2450 0    50   ~ 0
-Configure the ALU for FTAB=0 and FTF=1. This causes the A and B registers\nto update on the clock.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in F on the rising edge of the clock regardless\nof then contents of the A and B registers. This resets the program counter to\nzero.\n\nWhen incrementing (normal operation), set the ALU to RS1=0, RS0=1, I2=0,\nI1=1, I0=1, C0=1. The ALU computes F = A + 0 + C0. Since A is hardwired to\nthe output of F, this computes PC = PC + 1.\n\nWhen jumping, set the ALU to RS1=1, RS0=1, I2=0, I1=1, I0=1, C0=0. The ALU\ncomputes F = A + B. Since the B port gets its value from the EX result of the\nthe EX stage, this computes PC = PC + offset.
+Configure the ALU for FTAB=0 and FTF=1. This causes the A and B registers\nto update on the clock.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in F on the rising edge of the clock regardless\nof then contents of the A and B registers. This resets the program counter\nto zero.\n\nWhen incrementing, set the ALU to RS1=0, RS0=1, I2=0, I1=1, I0=1, C0=1. The\nALU computes F = A + 0 + C0. Since A is hardwired to the output of F, this\ncomputes PC = PC + 1.\n\nWhen performing a relative jump, set the ALU to RS1=1, RS0=1, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = A + B. Since the B port gets its value\nfrom the EX result of the the EX stage, this computes PC = PC + offset.\n\nWhen performing an absolute jump, set the ALU to RS1=1, RS0=0, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = 0 + B. Since the B port gets its value\nfrom the EX result of the the EX stage, this computes PC = target.
 Text Label 4400 3500 0    50   ~ 0
 Y_EX0
 Text Label 4400 3600 0    50   ~ 0
@@ -722,8 +705,8 @@ AR Path="/5FED3839/5FCC7BA1" Ref="U?"  Part="1"
 AR Path="/5D2C07CD/5FCC7BA1" Ref="U?"  Part="1" 
 AR Path="/5FE35007/5FCC7BA1" Ref="U?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/5FCC7BA1" Ref="U?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FCC7BA1" Ref="U35"  Part="1" 
-F 0 "U35" H 2700 6400 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/5FCC7BA1" Ref="U32"  Part="1" 
+F 0 "U32" H 2700 6400 50  0000 C CNN
 F 1 "ATF22V10C-7PX" H 2700 6300 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 3900 5050 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 3050 5800 50  0001 C CNN
@@ -733,13 +716,31 @@ F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 3050 5750 50  0001 C CN
 	1    0    0    -1  
 $EndComp
 Text Notes 1950 6950 0    50   ~ 0
-TODO: The ATF22V10 data sheet suggests connecting pin 15
+TODO: The ATF22V10 data sheet suggests connecting\npins 1, 8, 15, and 22 for superior performance.
+Text HLabel 1500 5600 0    50   Input ~ 0
+~JABS
+Wire Wire Line
+	2550 5600 1500 5600
+$Comp
+L power:GND #PWR?
+U 1 1 5FD205DD
+P 3550 6300
+AR Path="/60A71BBF/5FD205DD" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/5FD205DD" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/5FD205DD" Ref="#PWR0256"  Part="1" 
+F 0 "#PWR0256" H 3550 6050 50  0001 C CNN
+F 1 "GND" V 3555 6172 50  0000 R CNN
+F 2 "" H 3550 6300 50  0001 C CNN
+F 3 "" H 3550 6300 50  0001 C CNN
+	1    3550 6300
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 3550 6100
+NoConn ~ 2550 6000
 Wire Bus Line
 	7850 1350 7850 3200
 Wire Bus Line
 	4250 1350 4250 3200
 Wire Bus Line
 	4250 3300 4250 4900
-Text Notes 900  2800 0    50   ~ 0
-TODO: We absolutely need an absolute jump for returning from a procedure.
 $EndSCHEMATC

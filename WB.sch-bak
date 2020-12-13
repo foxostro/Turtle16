@@ -28,8 +28,6 @@ Entry Wire Line
 Entry Wire Line
 	5050 3550 5150 3650
 Entry Wire Line
-	4450 3550 4550 3650
-Entry Wire Line
 	4600 3550 4700 3650
 Text Label 5150 3700 3    50   ~ 0
 Ctl_WB18
@@ -37,8 +35,6 @@ Text Label 5000 3700 3    50   ~ 0
 Ctl_WB19
 Text Label 4700 3700 3    50   ~ 0
 Ctl_WB16
-Text Label 4550 3700 3    50   ~ 0
-Ctl_WB17
 Wire Wire Line
 	5150 3650 5150 4300
 Wire Wire Line
@@ -64,8 +60,6 @@ Text HLabel 9150 4300 2    50   Output ~ 0
 Wire Wire Line
 	4700 3650 4700 4850
 Wire Wire Line
-	4550 3650 4550 4100
-Wire Wire Line
 	5150 4300 9150 4300
 Wire Wire Line
 	5000 4400 9150 4400
@@ -83,7 +77,13 @@ Wire Wire Line
 	4850 4500 9150 4500
 Wire Bus Line
 	1400 5150 6400 5150
-NoConn ~ 4550 4100
+Entry Wire Line
+	4450 3550 4550 3650
 Wire Bus Line
 	1400 3550 5050 3550
+NoConn ~ 4550 4100
+Wire Wire Line
+	4550 3650 4550 4100
+Text Label 4550 3700 3    50   ~ 0
+Ctl_WB17
 $EndSCHEMATC

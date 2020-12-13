@@ -216,21 +216,17 @@ F0 "Stall Control" 50
 F1 "StallControl.sch" 50
 F2 "STALL" O R 6750 4000 50 
 F3 "~WBEN" I L 5550 3950 50 
-F4 "~WBEN_EX" I L 5550 4050 50 
-F5 "~WBEN_MEM" I L 5550 4150 50 
-F6 "SelC_MEM[0..2]" I L 5550 4450 50 
-F7 "SelA[0..2]" I L 5550 4250 50 
-F8 "SelB[0..2]" I L 5550 4350 50 
-F9 "Ins_EX[0..10]" I L 5550 4550 50 
+F4 "SelC_MEM[0..2]" I L 5550 4450 50 
+F5 "SelA[0..2]" I L 5550 4250 50 
+F6 "SelB[0..2]" I L 5550 4350 50 
+F7 "Ins_EX[0..10]" I L 5550 4550 50 
+F8 "Ctl_MEM[14..20]" I L 5550 4150 50 
+F9 "Ctl_EX[14..20]" I L 5550 4050 50 
 $EndSheet
 Wire Wire Line
 	2650 3250 3000 3250
 Wire Wire Line
 	5550 3950 4900 3950
-Wire Wire Line
-	5550 4050 4900 4050
-Wire Wire Line
-	5550 4150 4900 4150
 Wire Bus Line
 	5550 4250 4900 4250
 Wire Bus Line
@@ -247,22 +243,12 @@ Wire Wire Line
 	6750 4000 7250 4000
 Text Label 2650 3250 0    50   ~ 0
 STALL
-Text Label 4900 4050 0    50   ~ 0
-Ctl_EX20
-Text Label 4900 4150 0    50   ~ 0
-Ctl_MEM20
 Text Label 4900 3950 0    50   ~ 0
 Ctl_ID20
 Text Label 4300 2750 0    50   ~ 0
 Ctl_ID[0..23]
 Wire Bus Line
 	4250 2750 5200 2750
-Text HLabel 4700 4050 0    50   Input ~ 0
-Ctl_MEM[14..20]
-Wire Bus Line
-	4700 4050 4800 4050
-Entry Wire Line
-	4800 4050 4900 4150
 Text Label 7250 2150 0    50   ~ 0
 Ins_EX[0..10]
 Text HLabel 4700 4450 0    50   Input ~ 0
@@ -273,6 +259,18 @@ Text HLabel 4700 4550 0    50   Input ~ 0
 Ins_EX[0..10]
 Wire Bus Line
 	4700 4550 5550 4550
+Text HLabel 4700 4150 0    50   Input ~ 0
+Ctl_MEM[14..20]
+Wire Bus Line
+	4700 4150 5550 4150
+Wire Bus Line
+	5550 4050 4900 4050
+Text Label 4900 4050 0    50   ~ 0
+Ctl_EX[0..20]
 Wire Bus Line
 	2050 2150 5200 2150
+Text Label 7250 2650 0    50   ~ 0
+Ctl_EX[0..20]
+Text Notes 800  4350 0    50   ~ 0
+TODO: This is bad. If the instruction decoder depends on STALL and the\nstall logic depends on Ctl_ID then the CPU must decode twice each cycle.\nThis will not do. Instead, there needs to be some way to force Ctl_EX to a\nNOP immediately when a stall is needed.
 $EndSCHEMATC

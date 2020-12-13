@@ -207,30 +207,26 @@ Wire Wire Line
 	3000 3150 2900 3150
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN
-Text HLabel 6850 4000 2    50   Output ~ 0
+Text HLabel 7250 4000 2    50   Output ~ 0
 STALL
 $Sheet
-S 5550 3850 800  800 
+S 5550 3850 1200 800 
 U 5FDA967F
 F0 "Stall Control" 50
 F1 "StallControl.sch" 50
-F2 "STALL" O R 6350 4000 50 
+F2 "STALL" O R 6750 4000 50 
 F3 "~WBEN" I L 5550 3950 50 
-F4 "~WBEN_EX" I L 5550 4050 50 
-F5 "~WBEN_MEM" I L 5550 4150 50 
-F6 "SelC_MEM[0..2]" I L 5550 4450 50 
-F7 "SelA[0..2]" I L 5550 4250 50 
-F8 "SelB[0..2]" I L 5550 4350 50 
-F9 "Ins_EX[0..10]" I L 5550 4550 50 
+F4 "SelC_MEM[0..2]" I L 5550 4450 50 
+F5 "SelA[0..2]" I L 5550 4250 50 
+F6 "SelB[0..2]" I L 5550 4350 50 
+F7 "Ins_EX[0..10]" I L 5550 4550 50 
+F8 "Ctl_MEM[14..20]" I L 5550 4150 50 
+F9 "Ctl_EX[14..20]" I L 5550 4050 50 
 $EndSheet
 Wire Wire Line
 	2650 3250 3000 3250
 Wire Wire Line
 	5550 3950 4900 3950
-Wire Wire Line
-	5550 4050 4900 4050
-Wire Wire Line
-	5550 4150 4900 4150
 Wire Bus Line
 	5550 4250 4900 4250
 Wire Bus Line
@@ -244,27 +240,15 @@ SelA[0..2]
 Text Label 4900 4350 0    50   ~ 0
 SelB[0..2]
 Wire Wire Line
-	6350 4000 6850 4000
+	6750 4000 7250 4000
 Text Label 2650 3250 0    50   ~ 0
 STALL
-Text Label 6500 4000 0    50   ~ 0
-STALL
-Text Label 4900 4050 0    50   ~ 0
-Ctl_EX20
-Text Label 4900 4150 0    50   ~ 0
-Ctl_MEM20
 Text Label 4900 3950 0    50   ~ 0
 Ctl_ID20
 Text Label 4300 2750 0    50   ~ 0
 Ctl_ID[0..23]
 Wire Bus Line
 	4250 2750 5200 2750
-Text HLabel 4700 4050 0    50   Input ~ 0
-Ctl_MEM[14..20]
-Wire Bus Line
-	4700 4050 4800 4050
-Entry Wire Line
-	4800 4050 4900 4150
 Text Label 7250 2150 0    50   ~ 0
 Ins_EX[0..10]
 Text HLabel 4700 4450 0    50   Input ~ 0
@@ -275,6 +259,16 @@ Text HLabel 4700 4550 0    50   Input ~ 0
 Ins_EX[0..10]
 Wire Bus Line
 	4700 4550 5550 4550
+Text HLabel 4700 4150 0    50   Input ~ 0
+Ctl_MEM[14..20]
+Wire Bus Line
+	4700 4150 5550 4150
+Wire Bus Line
+	5550 4050 4900 4050
+Text Label 4900 4050 0    50   ~ 0
+Ctl_EX[0..20]
 Wire Bus Line
 	2050 2150 5200 2150
+Text Label 7250 2650 0    50   ~ 0
+Ctl_EX[0..20]
 $EndSCHEMATC

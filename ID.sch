@@ -96,7 +96,7 @@ Connection ~ 3450 4450
 Wire Bus Line
 	3450 4450 3450 4650
 $Sheet
-S 3000 2650 1250 600 
+S 3000 2650 1250 750 
 U 5FE73F43
 F0 "Instruction Decoder" 50
 F1 "InstructionDecoder.sch" 50
@@ -104,8 +104,9 @@ F2 "Carry" I L 3000 2850 50
 F3 "Z" I L 3000 2950 50 
 F4 "Ins_ID[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
-F6 "~RST" I L 3000 3150 50 
+F6 "~RST" I L 3000 3300 50 
 F7 "Ctl_ID[0..23]" O R 4250 2750 50 
+F8 "~J" I L 3000 3150 50 
 $EndSheet
 Wire Wire Line
 	5200 2650 5100 2650
@@ -134,7 +135,7 @@ OVF
 Wire Wire Line
 	3000 3050 2900 3050
 Wire Wire Line
-	3000 3150 2900 3150
+	3000 3300 2900 3300
 Wire Bus Line
 	6600 2650 8300 2650
 Wire Bus Line
@@ -189,7 +190,7 @@ Text Notes 7600 4150 0    50   ~ 0
 The A port supplies the Left operand.
 Text Notes 7600 4650 0    50   ~ 0
 The B port supplies the Right operand.
-Text GLabel 2900 3150 0    50   Input ~ 0
+Text GLabel 2900 3300 0    50   Input ~ 0
 ~RST
 Text GLabel 6550 4150 0    50   Input ~ 0
 Phi1b
@@ -203,6 +204,10 @@ Text HLabel 3200 5250 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
 	3200 5250 4950 5250
+Text HLabel 2900 3150 0    50   Input ~ 0
+~J
+Wire Wire Line
+	3000 3150 2900 3150
 Wire Bus Line
 	2050 2150 5200 2150
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 15 34
+Sheet 32 35
 Title "IF"
 Date ""
 Rev ""
@@ -38,10 +38,10 @@ Wire Wire Line
 	3050 3850 2700 3850
 Text HLabel 2700 4000 0    50   Input ~ 0
 Y_EX[0..15]
-Text HLabel 2700 4150 0    50   Input ~ 0
+Text HLabel 2700 4100 0    50   Input ~ 0
 ~J
 Wire Wire Line
-	3050 4150 2700 4150
+	3050 4100 2700 4100
 Wire Bus Line
 	2700 4000 3050 4000
 $Sheet
@@ -67,10 +67,11 @@ F0 "sheet5FE3DA15" 50
 F1 "Program Counter.sch" 50
 F2 "Phi1" I L 3050 3700 50 
 F3 "~RST" I L 3050 3850 50 
-F4 "~J" I L 3050 4150 50 
+F4 "~J" I L 3050 4100 50 
 F5 "PC[0..15]" O R 4500 3700 50 
 F6 "Y_EX[0..15]" I L 3050 4000 50 
-F7 "~JABS" I L 3050 4300 50 
+F7 "~JABS" I L 3050 4200 50 
+F8 "STALL" I L 3050 4300 50 
 $EndSheet
 $Sheet
 S 6550 3350 1150 750 
@@ -84,12 +85,16 @@ F5 "Ins_ID[0..15]" O R 7700 3450 50
 F6 "Phi1" I L 6550 3450 50 
 F7 "~J" I L 6550 3550 50 
 $EndSheet
-Text HLabel 2700 4300 0    50   Input ~ 0
+Text HLabel 2700 4200 0    50   Input ~ 0
 ~JABS
 Wire Wire Line
-	3050 4300 2700 4300
+	3050 4200 2700 4200
 Text HLabel 6300 3550 0    50   Input ~ 0
 ~J
 Wire Wire Line
 	6300 3550 6550 3550
+Text HLabel 2700 4300 0    50   Input ~ 0
+STALL
+Wire Wire Line
+	3050 4300 2700 4300
 $EndSCHEMATC

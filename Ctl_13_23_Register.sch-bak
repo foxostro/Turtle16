@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 28 34
+Sheet 28 35
 Title "EX/MEM: Control Word Register"
 Date ""
 Rev ""
@@ -1568,10 +1568,10 @@ Ctl_MEM20
 Text Label 4800 3050 0    50   ~ 0
 Ctl_EX20
 $Comp
-L power:VCC #PWR?
+L power:VCC #PWR0483
 U 1 1 5FD7318D
 P 5200 3150
-F 0 "#PWR?" H 5200 3000 50  0001 C CNN
+F 0 "#PWR0483" H 5200 3000 50  0001 C CNN
 F 1 "VCC" V 5215 3277 50  0000 L CNN
 F 2 "" H 5200 3150 50  0001 C CNN
 F 3 "" H 5200 3150 50  0001 C CNN

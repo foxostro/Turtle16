@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 3 34
+Sheet 22 35
 Title "ID"
 Date ""
 Rev ""
@@ -21,80 +21,80 @@ Text HLabel 8300 2150 2    50   Output ~ 0
 Ins_EX[0..10]
 Text Label 2950 2750 2    50   ~ 0
 Ins_ID[11..15]
-Text HLabel 3200 5050 0    50   Input ~ 0
+Text HLabel 3800 6200 0    50   Input ~ 0
 ~WRH
-Text HLabel 3200 5150 0    50   Input ~ 0
+Text HLabel 3800 6300 0    50   Input ~ 0
 ~WRL
-Text HLabel 3200 5350 0    50   Input ~ 0
+Text HLabel 3800 6500 0    50   Input ~ 0
 C[0..15]
-Text HLabel 3200 4950 0    50   Input ~ 0
+Text HLabel 3800 6100 0    50   Input ~ 0
 SelC_WB[0..2]
 $Sheet
-S 4950 4150 1200 1300
+S 5550 5300 1200 1300
 U 5FC16AA6
 F0 "sheet5FC16A8C" 50
 F1 "RegisterFile.sch" 50
-F2 "~WRH" I L 4950 5050 50 
-F3 "~WRL" I L 4950 5150 50 
-F4 "C[0..15]" I L 4950 5350 50 
-F5 "SelC_WB[0..2]" I L 4950 4950 50 
-F6 "SelA[0..2]" I L 4950 4250 50 
-F7 "SelB[0..2]" I L 4950 4650 50 
-F8 "B[0..15]" O R 6150 4750 50 
-F9 "A[0..15]" O R 6150 4250 50 
-F10 "~WBEN" I L 4950 5250 50 
+F2 "~WRH" I L 5550 6200 50 
+F3 "~WRL" I L 5550 6300 50 
+F4 "C[0..15]" I L 5550 6500 50 
+F5 "SelC_WB[0..2]" I L 5550 6100 50 
+F6 "SelA[0..2]" I L 5550 5400 50 
+F7 "SelB[0..2]" I L 5550 5800 50 
+F8 "B[0..15]" O R 6750 5900 50 
+F9 "A[0..15]" O R 6750 5400 50 
+F10 "~WBEN" I L 5550 6400 50 
 $EndSheet
 Wire Bus Line
-	4950 5350 3200 5350
+	5550 6500 3800 6500
 Wire Bus Line
-	3200 4950 4950 4950
+	3800 6100 5550 6100
 Wire Wire Line
-	4950 5050 3200 5050
+	5550 6200 3800 6200
 Wire Wire Line
-	3200 5150 4950 5150
+	3800 6300 5550 6300
 $Sheet
-S 3550 4150 1150 200 
+S 3450 5300 1150 200 
 U 5FC16AC7
 F0 "sheet5FC16A8E" 50
 F1 "SplitOutSelA.sch" 50
-F2 "Ins_ID[0..15]" I L 3550 4250 50 
-F3 "SelA[0..2]" O R 4700 4250 50 
+F2 "Ins_ID[0..15]" I L 3450 5400 50 
+F3 "SelA[0..2]" O R 4600 5400 50 
 $EndSheet
 Wire Bus Line
-	3550 4650 3450 4650
+	3450 5800 3300 5800
 $Sheet
-S 3550 4550 1150 200 
+S 3450 5700 1150 200 
 U 5FC16AD1
 F0 "sheet5FC16A8F" 50
 F1 "SplitOutSelB.sch" 50
-F2 "Ins_ID[0..15]" I L 3550 4650 50 
-F3 "SelB[0..2]" O R 4700 4650 50 
+F2 "Ins_ID[0..15]" I L 3450 5800 50 
+F3 "SelB[0..2]" O R 4600 5800 50 
 $EndSheet
 Wire Bus Line
-	3550 4250 3450 4250
+	3450 5400 3300 5400
 Wire Bus Line
-	4700 4250 4950 4250
+	4600 5400 5550 5400
 Wire Bus Line
-	4950 4650 4700 4650
-Text HLabel 8050 4250 2    50   Output ~ 0
+	5550 5800 4600 5800
+Text HLabel 8650 5400 2    50   Output ~ 0
 A[0..15]
 Wire Bus Line
-	8050 4250 7550 4250
-Text HLabel 8050 4750 2    50   Output ~ 0
+	8650 5400 8150 5400
+Text HLabel 8650 5900 2    50   Output ~ 0
 B[0..15]
 Wire Bus Line
-	8050 4750 7550 4750
-Text HLabel 3200 4450 0    50   Input ~ 0
+	8650 5900 8150 5900
+Text HLabel 3150 5600 0    50   Input ~ 0
 Ins_ID[0..15]
 Wire Bus Line
-	3200 4450 3450 4450
+	3150 5600 3300 5600
 Wire Bus Line
-	3450 4250 3450 4450
-Connection ~ 3450 4450
+	3300 5400 3300 5600
+Connection ~ 3300 5600
 Wire Bus Line
-	3450 4450 3450 4650
+	3300 5600 3300 5800
 $Sheet
-S 3000 2650 1250 750 
+S 3000 2650 1250 800 
 U 5FE73F43
 F0 "Instruction Decoder" 50
 F1 "InstructionDecoder.sch" 50
@@ -102,9 +102,10 @@ F2 "Carry" I L 3000 2850 50
 F3 "Z" I L 3000 2950 50 
 F4 "Ins_ID[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
-F6 "~RST" I L 3000 3300 50 
+F6 "~RST" I L 3000 3350 50 
 F7 "Ctl_ID[0..23]" O R 4250 2750 50 
 F8 "~J" I L 3000 3150 50 
+F9 "STALL" I L 3000 3250 50 
 $EndSheet
 Wire Wire Line
 	5200 2650 5100 2650
@@ -118,8 +119,6 @@ Entry Bus Bus
 	2250 2150 2350 2250
 Wire Bus Line
 	2350 2250 2350 2750
-Wire Bus Line
-	5200 2750 4250 2750
 Text HLabel 2900 2850 0    50   Input ~ 0
 Carry
 Wire Wire Line
@@ -133,7 +132,7 @@ OVF
 Wire Wire Line
 	3000 3050 2900 3050
 Wire Wire Line
-	3000 3300 2900 3300
+	3000 3350 2900 3350
 Wire Bus Line
 	6600 2650 8300 2650
 Wire Bus Line
@@ -157,57 +156,123 @@ F3 "Ins_EX[0..10]" O R 6600 2150 50
 F4 "Phi1" I L 5200 2050 50 
 $EndSheet
 $Sheet
-S 6650 4050 900  300 
+S 7250 5200 900  300 
 U 5FE081C3
 F0 "ID/EX A" 50
 F1 "ID_EX_A.sch" 50
-F2 "AIn[0..15]" I L 6650 4250 50 
-F3 "A[0..15]" O R 7550 4250 50 
-F4 "Phi1" I L 6650 4150 50 
+F2 "AIn[0..15]" I L 7250 5400 50 
+F3 "A[0..15]" O R 8150 5400 50 
+F4 "Phi1" I L 7250 5300 50 
 $EndSheet
 Wire Wire Line
-	6650 4150 6550 4150
+	7250 5300 7150 5300
 Wire Bus Line
-	6150 4250 6650 4250
+	6750 5400 7250 5400
 $Sheet
-S 6650 4550 900  300 
+S 7250 5700 900  300 
 U 5FE24A39
 F0 "ID/EX B" 50
 F1 "ID_EX_B.sch" 50
-F2 "BIn[0..15]" I L 6650 4750 50 
-F3 "B[0..15]" O R 7550 4750 50 
-F4 "Phi1" I L 6650 4650 50 
+F2 "BIn[0..15]" I L 7250 5900 50 
+F3 "B[0..15]" O R 8150 5900 50 
+F4 "Phi1" I L 7250 5800 50 
 $EndSheet
 Wire Wire Line
-	6650 4650 6550 4650
+	7250 5800 7150 5800
 Wire Bus Line
-	6150 4750 6650 4750
+	6750 5900 7250 5900
 Wire Wire Line
 	5200 2050 5100 2050
-Text Notes 7600 4150 0    50   ~ 0
+Text Notes 8200 5300 0    50   ~ 0
 The A port supplies the Left operand.
-Text Notes 7600 4650 0    50   ~ 0
+Text Notes 8200 5800 0    50   ~ 0
 The B port supplies the Right operand.
-Text GLabel 2900 3300 0    50   Input ~ 0
+Text GLabel 2900 3350 0    50   Input ~ 0
 ~RST
-Text GLabel 6550 4150 0    50   Input ~ 0
+Text GLabel 7150 5300 0    50   Input ~ 0
 Phi1b
-Text GLabel 6550 4650 0    50   Input ~ 0
+Text GLabel 7150 5800 0    50   Input ~ 0
 Phi1b
 Text GLabel 5100 2650 0    50   Input ~ 0
 Phi1a
 Text GLabel 5100 2050 0    50   Input ~ 0
 Phi1b
-Text HLabel 3200 5250 0    50   Input ~ 0
+Text HLabel 3800 6400 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
-	3200 5250 4950 5250
+	3800 6400 5550 6400
 Text HLabel 2900 3150 0    50   Input ~ 0
 ~J
 Wire Wire Line
 	3000 3150 2900 3150
-Wire Bus Line
-	2050 2150 5200 2150
 Text Notes 800  7900 0    50   ~ 0
 #   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN
+Text HLabel 7250 4000 2    50   Output ~ 0
+STALL
+$Sheet
+S 5550 3850 1200 800 
+U 5FDA967F
+F0 "Stall Control" 50
+F1 "StallControl.sch" 50
+F2 "STALL" O R 6750 4000 50 
+F3 "~WBEN" I L 5550 3950 50 
+F4 "~WBEN_EX" I L 5550 4050 50 
+F5 "~WBEN_MEM" I L 5550 4150 50 
+F6 "SelC_MEM[0..2]" I L 5550 4450 50 
+F7 "SelA[0..2]" I L 5550 4250 50 
+F8 "SelB[0..2]" I L 5550 4350 50 
+F9 "Ins_EX[0..10]" I L 5550 4550 50 
+$EndSheet
+Wire Wire Line
+	2650 3250 3000 3250
+Wire Wire Line
+	5550 3950 4900 3950
+Wire Wire Line
+	5550 4050 4900 4050
+Wire Wire Line
+	5550 4150 4900 4150
+Wire Bus Line
+	5550 4250 4900 4250
+Wire Bus Line
+	5550 4350 4900 4350
+Text Label 4850 5400 0    50   ~ 0
+SelA[0..2]
+Text Label 4850 5800 0    50   ~ 0
+SelB[0..2]
+Text Label 4900 4250 0    50   ~ 0
+SelA[0..2]
+Text Label 4900 4350 0    50   ~ 0
+SelB[0..2]
+Wire Wire Line
+	6750 4000 7250 4000
+Text Label 2650 3250 0    50   ~ 0
+STALL
+Text Label 4900 4050 0    50   ~ 0
+Ctl_EX20
+Text Label 4900 4150 0    50   ~ 0
+Ctl_MEM20
+Text Label 4900 3950 0    50   ~ 0
+Ctl_ID20
+Text Label 4300 2750 0    50   ~ 0
+Ctl_ID[0..23]
+Wire Bus Line
+	4250 2750 5200 2750
+Text HLabel 4700 4050 0    50   Input ~ 0
+Ctl_MEM[14..20]
+Wire Bus Line
+	4700 4050 4800 4050
+Entry Wire Line
+	4800 4050 4900 4150
+Text Label 7250 2150 0    50   ~ 0
+Ins_EX[0..10]
+Text HLabel 4700 4450 0    50   Input ~ 0
+SelC_MEM[0..2]
+Wire Bus Line
+	4700 4450 5550 4450
+Text HLabel 4700 4550 0    50   Input ~ 0
+Ins_EX[0..10]
+Wire Bus Line
+	4700 4550 5550 4550
+Wire Bus Line
+	2050 2150 5200 2150
 $EndSCHEMATC

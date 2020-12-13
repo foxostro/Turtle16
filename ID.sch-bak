@@ -94,7 +94,7 @@ Connection ~ 3300 5600
 Wire Bus Line
 	3300 5600 3300 5800
 $Sheet
-S 3000 2650 1250 800 
+S 3000 2650 1250 750 
 U 5FE73F43
 F0 "Instruction Decoder" 50
 F1 "InstructionDecoder.sch" 50
@@ -102,10 +102,9 @@ F2 "Carry" I L 3000 2850 50
 F3 "Z" I L 3000 2950 50 
 F4 "Ins_ID[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
-F6 "~RST" I L 3000 3350 50 
+F6 "~RST" I L 3000 3300 50 
 F7 "Ctl_ID[0..23]" O R 4250 2750 50 
 F8 "~J" I L 3000 3150 50 
-F9 "STALL" I L 3000 3250 50 
 $EndSheet
 Wire Wire Line
 	5200 2650 5100 2650
@@ -132,19 +131,20 @@ OVF
 Wire Wire Line
 	3000 3050 2900 3050
 Wire Wire Line
-	3000 3350 2900 3350
+	3000 3300 2900 3300
 Wire Bus Line
 	6600 2650 8300 2650
 Wire Bus Line
 	6600 2150 8300 2150
 $Sheet
-S 5200 2550 1400 300 
+S 5200 2550 1400 400 
 U 5FCFC706
 F0 "ID/EX ControlWord" 50
 F1 "ID_EX_ControlWord.sch" 50
 F2 "Phi1" I L 5200 2650 50 
 F3 "Ctl_ID[0..23]" I L 5200 2750 50 
 F4 "Ctl_EX[0..20]" O R 6600 2650 50 
+F5 "STALL" I L 5200 2850 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 
@@ -187,7 +187,7 @@ Text Notes 8200 5300 0    50   ~ 0
 The A port supplies the Left operand.
 Text Notes 8200 5800 0    50   ~ 0
 The B port supplies the Right operand.
-Text GLabel 2900 3350 0    50   Input ~ 0
+Text GLabel 2900 3300 0    50   Input ~ 0
 ~RST
 Text GLabel 7150 5300 0    50   Input ~ 0
 Phi1b
@@ -224,7 +224,7 @@ F8 "Ctl_MEM[14..20]" I L 5550 4150 50
 F9 "Ctl_EX[14..20]" I L 5550 4050 50 
 $EndSheet
 Wire Wire Line
-	2650 3250 3000 3250
+	4850 2850 5200 2850
 Wire Wire Line
 	5550 3950 4900 3950
 Wire Bus Line
@@ -241,7 +241,7 @@ Text Label 4900 4350 0    50   ~ 0
 SelB[0..2]
 Wire Wire Line
 	6750 4000 7250 4000
-Text Label 2650 3250 0    50   ~ 0
+Text Label 4850 2850 0    50   ~ 0
 STALL
 Text Label 4900 3950 0    50   ~ 0
 Ctl_ID20
@@ -267,8 +267,12 @@ Wire Bus Line
 	5550 4050 4900 4050
 Text Label 4900 4050 0    50   ~ 0
 Ctl_EX[0..20]
-Wire Bus Line
-	2050 2150 5200 2150
 Text Label 7250 2650 0    50   ~ 0
 Ctl_EX[0..20]
+Text Notes 800  4350 0    50   ~ 0
+TODO: This is bad. If the instruction decoder depends on STALL and the\nstall logic depends on Ctl_ID then the CPU must decode twice each cycle.\nThis will not do. Instead, there needs to be some way to force Ctl_EX to a\nNOP immediately when a stall is needed.
+Wire Bus Line
+	2050 2150 5200 2150
+Text Label 6900 4000 0    50   ~ 0
+STALL
 $EndSCHEMATC

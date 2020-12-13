@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 16 34
+Sheet 25 34
 Title "MEM/WB: Control Word Register"
 Date ""
 Rev ""
@@ -326,8 +326,6 @@ Wire Wire Line
 	6650 3450 6050 3450
 Entry Wire Line
 	6750 3350 6650 3450
-Text Label 6650 3350 2    50   ~ 0
-Ctl_WB16
 Wire Wire Line
 	6650 3350 6050 3350
 Entry Wire Line
@@ -424,8 +422,8 @@ AR Path="/5FF41DF6/6051F4DB/60549614" Ref="U?"  Part="1"
 AR Path="/5FF41DF6/60541846/60549614" Ref="U?"  Part="1" 
 AR Path="/60B264DC/5FE6C11D/60549614" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FD643E5/60549614" Ref="U46"  Part="1" 
-F 0 "U46" H 5300 4650 50  0000 C CNN
-F 1 "74ABT574" H 5300 4550 50  0000 C CNN
+F 0 "U46" H 5250 4650 50  0000 C CNN
+F 1 "74ABT574" H 5250 4550 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5550 3850 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt574a" H 5550 3850 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0OT4q4QBUTK6FyQPmQhDOg%3D%3D" H 5550 3850 50  0001 C CNN "Mouser"
@@ -727,7 +725,7 @@ $EndComp
 Wire Wire Line
 	850  7450 850  7350
 Text HLabel 7400 3050 2    50   Output ~ 0
-Ctl_WB[16..20]
+Ctl_WB[17..20]
 Entry Wire Line
 	4250 3950 4350 4050
 Entry Wire Line
@@ -745,7 +743,7 @@ SelC_WB0
 Wire Wire Line
 	6650 3850 6050 3850
 Text HLabel 3700 3100 0    50   Input ~ 0
-Ctl_MEM[16..20]
+Ctl_MEM[17..20]
 Text Label 4350 3850 0    50   ~ 0
 SelC_MEM0
 Text HLabel 3700 3750 0    50   Input ~ 0
@@ -764,20 +762,20 @@ Text HLabel 7400 3750 2    50   Output ~ 0
 SelC_WB[0..2]
 Wire Bus Line
 	7400 3750 6750 3750
-Text Label 6650 3450 2    50   ~ 0
+Text Label 6650 3350 2    50   ~ 0
 Ctl_WB17
-Text Label 6650 3550 2    50   ~ 0
+Text Label 6650 3450 2    50   ~ 0
 Ctl_WB18
-Text Label 6650 3650 2    50   ~ 0
+Text Label 6650 3550 2    50   ~ 0
 Ctl_WB19
 Text Label 4350 3650 0    50   ~ 0
-Ctl_MEM19
+Ctl_MEM20
 Text Label 4350 3550 0    50   ~ 0
-Ctl_MEM18
+Ctl_MEM19
 Text Label 4350 3450 0    50   ~ 0
-Ctl_MEM17
+Ctl_MEM18
 Text Label 4350 3350 0    50   ~ 0
-Ctl_MEM16
+Ctl_MEM17
 Entry Wire Line
 	4250 3750 4350 3850
 Wire Wire Line
@@ -788,24 +786,26 @@ Wire Wire Line
 	5050 4050 4350 4050
 Entry Wire Line
 	6750 3750 6650 3850
-Wire Wire Line
-	4350 3750 5050 3750
-Entry Wire Line
-	4250 3650 4350 3750
-Text Label 4350 3750 0    50   ~ 0
-Ctl_MEM20
-Wire Wire Line
-	6650 3750 6050 3750
-Entry Wire Line
-	6750 3650 6650 3750
-Text Label 6650 3750 2    50   ~ 0
+Text Label 6650 3650 2    50   ~ 0
 Ctl_WB20
+$Comp
+L power:VCC #PWR0482
+U 1 1 5FD69851
+P 5050 3750
+F 0 "#PWR0482" H 5050 3600 50  0001 C CNN
+F 1 "VCC" V 5065 3877 50  0000 L CNN
+F 2 "" H 5050 3750 50  0001 C CNN
+F 3 "" H 5050 3750 50  0001 C CNN
+	1    5050 3750
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 6050 3750
 Wire Bus Line
 	6750 3750 6750 3950
 Wire Bus Line
 	4250 3750 4250 3950
 Wire Bus Line
-	4250 3100 4250 3650
+	4250 3100 4250 3550
 Wire Bus Line
-	6750 3050 6750 3650
+	6750 3050 6750 3550
 $EndSCHEMATC

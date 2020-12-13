@@ -34,7 +34,7 @@ Ctl_WB18
 Text Label 5000 3700 3    50   ~ 0
 Ctl_WB19
 Text Label 4700 3700 3    50   ~ 0
-Ctl_WB16
+Ctl_WB17
 Wire Wire Line
 	5150 3650 5150 4300
 Wire Wire Line
@@ -54,7 +54,7 @@ Text HLabel 9150 4400 2    50   Output ~ 0
 Wire Bus Line
 	7650 4850 9150 4850
 Text HLabel 1400 3550 0    50   Input ~ 0
-Ctl_WB[16..20]
+Ctl_WB[17..20]
 Text HLabel 9150 4300 2    50   Output ~ 0
 ~WRL
 Wire Wire Line
@@ -77,13 +77,6 @@ Wire Wire Line
 	4850 4500 9150 4500
 Wire Bus Line
 	1400 5150 6400 5150
-Entry Wire Line
-	4450 3550 4550 3650
 Wire Bus Line
 	1400 3550 5050 3550
-NoConn ~ 4550 4100
-Wire Wire Line
-	4550 3650 4550 4100
-Text Label 4550 3700 3    50   ~ 0
-Ctl_WB17
 $EndSCHEMATC

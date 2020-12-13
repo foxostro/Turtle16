@@ -740,4 +740,6 @@ Wire Bus Line
 	4250 1350 4250 3200
 Wire Bus Line
 	4250 3300 4250 4900
+Text Notes 900  2800 0    50   ~ 0
+TODO: We absolutely need an absolute jump for returning from a procedure.
 $EndSCHEMATC

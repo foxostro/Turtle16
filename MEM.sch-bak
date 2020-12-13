@@ -37,19 +37,11 @@ Text HLabel 9250 3250 2    50   3State ~ 0
 ~MemStore
 Text HLabel 9250 3150 2    50   3State ~ 0
 ~MemLoad
-Entry Bus Bus
-	6600 3550 6700 3450
-Wire Bus Line
-	6700 3450 9250 3450
-Wire Bus Line
-	6600 3550 6600 3900
 Connection ~ 6600 3900
 Wire Bus Line
 	6600 3900 7350 3900
-Text Label 6750 3450 0    50   ~ 0
-SystemBus[0..7]
 Text HLabel 9250 3450 2    50   3State ~ 0
-SystemBus[0..7]
+SystemBus[0..15]
 $Sheet
 S 3600 3600 1800 400 
 U 5FF1115C
@@ -75,12 +67,6 @@ Text HLabel 1950 4900 0    50   Input ~ 0
 Y_MEM[0..15]
 Wire Bus Line
 	5400 3900 6600 3900
-Text Label 6650 3900 0    50   ~ 0
-SystemBus[0..15]
-Text Label 6350 3900 2    50   ~ 0
-SystemBus[0..15]
-Text Label 6650 4500 0    50   ~ 0
-SystemBus[0..15]
 Wire Wire Line
 	3300 4800 3600 4800
 $Sheet
@@ -214,6 +200,10 @@ Wire Wire Line
 	7150 5400 7350 5400
 Wire Bus Line
 	9250 5600 8700 5600
+Wire Bus Line
+	6600 3450 9250 3450
+Wire Bus Line
+	6600 3450 6600 3900
 Wire Bus Line
 	1950 2300 5900 2300
 $EndSCHEMATC

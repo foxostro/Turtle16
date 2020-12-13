@@ -217,7 +217,7 @@ S 1500 2950 1750 500
 U 5FAED671
 F0 "System Bus Connector" 50
 F1 "System Bus Connector.sch" 50
-F2 "IO[0..7]" T R 3250 3150 50 
+F2 "IO[0..15]" T R 3250 3150 50 
 F3 "Addr[0..15]" T R 3250 3050 50 
 F4 "~MemLoad" T R 3250 3250 50 
 F5 "~MemStore" T R 3250 3350 50 
@@ -421,7 +421,7 @@ F4 "Y_MEM[0..15]" I R 3250 4850 50
 F5 "Ctl_MEM[13..20]" I R 3250 4750 50 
 F6 "~MemStore" T R 3250 4150 50 
 F7 "~MemLoad" T R 3250 4250 50 
-F8 "SystemBus[0..7]" T R 3250 4350 50 
+F8 "SystemBus[0..15]" T R 3250 4350 50 
 F9 "Addr[0..15]" T R 3250 4450 50 
 F10 "~RDY" I L 1500 4100 50 
 F11 "SelC_WB[0..2]" O L 1500 4650 50 

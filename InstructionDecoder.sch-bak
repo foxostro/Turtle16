@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 7 34
+Sheet 26 35
 Title "Instruction Decoder"
 Date ""
 Rev ""
@@ -231,20 +231,6 @@ Wire Wire Line
 	2400 2750 2550 2750
 $Comp
 L power:GND #PWR?
-U 1 1 5FF02640
-P 2550 3050
-AR Path="/5FE35007/5FF02640" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FF02640" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FE73F43/5FF02640" Ref="#PWR0116"  Part="1" 
-F 0 "#PWR0116" H 2550 2800 50  0001 C CNN
-F 1 "GND" V 2555 2922 50  0000 R CNN
-F 2 "" H 2550 3050 50  0001 C CNN
-F 3 "" H 2550 3050 50  0001 C CNN
-	1    2550 3050
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR?
 U 1 1 5FF02646
 P 2550 3150
 AR Path="/5FE35007/5FF02646" Ref="#PWR?"  Part="1" 
@@ -315,7 +301,7 @@ F 3 "" H 2550 3550 50  0001 C CNN
 $EndComp
 Connection ~ 1250 7500
 Connection ~ 1250 7800
-Text HLabel 2400 2950 0    50   Input ~ 0
+Text HLabel 2400 3050 0    50   Input ~ 0
 ~RST
 Wire Wire Line
 	2400 2850 2550 2850
@@ -496,20 +482,6 @@ Wire Wire Line
 	5200 2750 5350 2750
 $Comp
 L power:GND #PWR?
-U 1 1 60132D56
-P 5350 3050
-AR Path="/5FE35007/60132D56" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/60132D56" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FE73F43/60132D56" Ref="#PWR0128"  Part="1" 
-F 0 "#PWR0128" H 5350 2800 50  0001 C CNN
-F 1 "GND" V 5355 2922 50  0000 R CNN
-F 2 "" H 5350 3050 50  0001 C CNN
-F 3 "" H 5350 3050 50  0001 C CNN
-	1    5350 3050
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR?
 U 1 1 60132D5C
 P 5350 3150
 AR Path="/5FE35007/60132D5C" Ref="#PWR?"  Part="1" 
@@ -580,7 +552,7 @@ F 3 "" H 5350 3550 50  0001 C CNN
 $EndComp
 Text Label 6900 2350 2    50   ~ 0
 Ctl_ID11
-Text HLabel 5200 2950 0    50   Input ~ 0
+Text HLabel 5200 3050 0    50   Input ~ 0
 ~RST
 Wire Wire Line
 	5200 2850 5350 2850
@@ -759,20 +731,6 @@ Wire Wire Line
 	8000 2750 8150 2750
 $Comp
 L power:GND #PWR?
-U 1 1 6013D39A
-P 8150 3050
-AR Path="/5FE35007/6013D39A" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/6013D39A" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FE73F43/6013D39A" Ref="#PWR0140"  Part="1" 
-F 0 "#PWR0140" H 8150 2800 50  0001 C CNN
-F 1 "GND" V 8155 2922 50  0000 R CNN
-F 2 "" H 8150 3050 50  0001 C CNN
-F 3 "" H 8150 3050 50  0001 C CNN
-	1    8150 3050
-	0    1    1    0   
-$EndComp
-$Comp
-L power:GND #PWR?
 U 1 1 6013D3A0
 P 8150 3150
 AR Path="/5FE35007/6013D3A0" Ref="#PWR?"  Part="1" 
@@ -843,7 +801,7 @@ F 3 "" H 8150 3550 50  0001 C CNN
 $EndComp
 Text Label 9700 2350 2    50   ~ 0
 Ctl_ID19
-Text HLabel 8000 2950 0    50   Input ~ 0
+Text HLabel 8000 3050 0    50   Input ~ 0
 ~RST
 Wire Wire Line
 	8000 2850 8150 2850
@@ -963,13 +921,25 @@ Ctl_ID3
 Text HLabel 2400 2850 0    50   Input ~ 0
 ~J
 Wire Wire Line
-	2400 2950 2550 2950
+	2400 3050 2550 3050
 Text HLabel 5200 2850 0    50   Input ~ 0
 ~J
 Wire Wire Line
-	5200 2950 5350 2950
+	5200 3050 5350 3050
 Text HLabel 8000 2850 0    50   Input ~ 0
 ~J
+Wire Wire Line
+	8000 3050 8150 3050
+Text HLabel 2400 2950 0    50   Input ~ 0
+STALL
+Wire Wire Line
+	2400 2950 2550 2950
+Text HLabel 5200 2950 0    50   Input ~ 0
+STALL
+Wire Wire Line
+	5200 2950 5350 2950
+Text HLabel 8000 2950 0    50   Input ~ 0
+STALL
 Wire Wire Line
 	8000 2950 8150 2950
 Wire Bus Line

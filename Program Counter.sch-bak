@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 17 34
+Sheet 34 35
 Title "Program Counter"
 Date ""
 Rev ""
@@ -350,20 +350,6 @@ F 3 "" H 7150 3650 50  0001 C CNN
 $EndComp
 NoConn ~ 7150 3900
 NoConn ~ 7150 4000
-$Comp
-L power:GND #PWR?
-U 1 1 5FBC609E
-P 7150 3450
-AR Path="/60A71BBF/5FBC609E" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FBC609E" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC609E" Ref="#PWR0262"  Part="1" 
-F 0 "#PWR0262" H 7150 3200 50  0001 C CNN
-F 1 "GND" V 7155 3322 50  0000 R CNN
-F 2 "" H 7150 3450 50  0001 C CNN
-F 3 "" H 7150 3450 50  0001 C CNN
-	1    7150 3450
-	0    -1   -1   0   
-$EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5FBC60A4
@@ -737,10 +723,16 @@ F 3 "" H 3550 6300 50  0001 C CNN
 $EndComp
 NoConn ~ 3550 6100
 NoConn ~ 2550 6000
+Text HLabel 7650 3450 2    50   Input ~ 0
+STALL
+Wire Wire Line
+	7150 3450 7650 3450
 Wire Bus Line
 	7850 1350 7850 3200
 Wire Bus Line
 	4250 1350 4250 3200
 Wire Bus Line
 	4250 3300 4250 4900
+Text Notes 7650 3750 0    50   ~ 0
+When asserted, Stall prevents F from updating.\nSo, the program counter does not update.
 $EndSCHEMATC

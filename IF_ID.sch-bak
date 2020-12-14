@@ -1726,7 +1726,7 @@ Phi1
 Wire Wire Line
 	7350 2950 7300 2950
 Text HLabel 7300 2950 0    50   Input ~ 0
-~FLUSH_IF
+~STALL_IF
 Wire Wire Line
 	7350 4900 7300 4900
 Text HLabel 7300 4900 0    50   Input ~ 0
@@ -1734,7 +1734,7 @@ Phi1
 Wire Wire Line
 	7350 5000 7300 5000
 Text HLabel 7300 5000 0    50   Input ~ 0
-~FLUSH_IF
+~STALL_IF
 Wire Bus Line
 	2000 1750 2000 4650
 Wire Bus Line

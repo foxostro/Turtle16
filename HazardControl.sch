@@ -4,14 +4,14 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 31 35
-Title "Stall Control"
+Title "Hazard Control"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
-Comment3 ""
-Comment4 "Control logic for the Stall signal"
+Comment3 "Currently, this stalls the pipeline on a hazard."
+Comment4 "Control logic for dealing with pipeline hazards"
 $EndDescr
 $Comp
 L power:VCC #PWR?
@@ -238,11 +238,11 @@ Wire Wire Line
 	5950 4550 6500 4550
 Entry Wire Line
 	6500 4550 6600 4650
-Text Label 4300 3750 0    50   ~ 0
+Text Label 4400 3750 0    50   ~ 0
 SelA0
-Text Label 4300 3850 0    50   ~ 0
+Text Label 4400 3850 0    50   ~ 0
 SelA1
-Text Label 4300 3950 0    50   ~ 0
+Text Label 4400 3950 0    50   ~ 0
 SelA2
 Text Label 4400 4050 0    50   ~ 0
 SelB0
@@ -316,14 +316,10 @@ Entry Wire Line
 	3100 3450 3200 3550
 Wire Wire Line
 	3200 3550 4950 3550
-Text Notes 3900 3650 0    50   ~ 0
-WBEN_MEM
-Text Notes 3900 3550 0    50   ~ 0
-WBEN_EX
 Text Notes 950  2050 0    50   ~ 0
 The GAL can implement logic to detect several types of hazards.\n\nOn a jump, the ID and IF stages must both be flushed. The logic here can\nstall the ID stage to achieve that portion of this effect.\n\nIf the Ra or Rb registers refer to the destination register in the EX or MEM\nthen there is a RAW error. In this case, stall the pipeline for a cycle.\n\nTODO:\n\nIf the instruction in EX wants to update the Flags register and the instruction\nin ID wants to make use of the flags then there is a Flags hazard. In this case,\nstall the pipeline for a cycle.
 Text HLabel 6100 3750 2    50   Output ~ 0
-~FLUSH_IF
+~STALL_IF
 Wire Wire Line
 	5950 3750 6100 3750
 NoConn ~ 4950 4350
@@ -335,6 +331,10 @@ Text HLabel 6100 3650 2    50   Output ~ 0
 STALL_PC
 Wire Wire Line
 	5950 3650 6100 3650
+Text Label 4400 3550 0    50   ~ 0
+WBEN_EX
+Text Label 4400 3650 0    50   ~ 0
+WBEN_MEM
 Wire Bus Line
 	4200 3850 4200 4050
 Wire Bus Line

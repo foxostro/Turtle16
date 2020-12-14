@@ -1071,7 +1071,7 @@ AR Path="/5FE35007/5FCE2082/5FD64BA0" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FCFC706/5FD64BA0" Ref="U58"  Part="1" 
 F 0 "U58" H 3950 2700 50  0000 C CNN
 F 1 "74AHCT273" H 3950 2600 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4300 1900 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4300 1900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4300 1900 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8gP6vEF3PWfA%3D%3D" H 4300 1900 50  0001 C CNN "Mouser"
 	1    4300 1900
@@ -1085,7 +1085,7 @@ AR Path="/5FE35007/5FCE2082/5FD6AEDE" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FCFC706/5FD6AEDE" Ref="U59"  Part="1" 
 F 0 "U59" H 3950 4750 50  0000 C CNN
 F 1 "74AHCT273" H 3950 4650 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4300 3950 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4300 3950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4300 3950 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8gP6vEF3PWfA%3D%3D" H 4300 3950 50  0001 C CNN "Mouser"
 	1    4300 3950
@@ -1099,7 +1099,7 @@ AR Path="/5FE35007/5FCE2082/5FD6C0DF" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FCFC706/5FD6C0DF" Ref="U60"  Part="1" 
 F 0 "U60" H 3950 6800 50  0000 C CNN
 F 1 "74AHCT273" H 3950 6700 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4300 6000 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4300 6000 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4300 6000 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT273PW118?qs=P62ublwmbi8gP6vEF3PWfA%3D%3D" H 4300 6000 50  0001 C CNN "Mouser"
 	1    4300 6000

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 31 35
+Sheet 18 35
 Title "Select Store Operand"
 Date ""
 Rev ""
@@ -3122,22 +3122,6 @@ F 3 "" H 3500 4300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3500 3550 3500 3650
-Wire Bus Line
-	3400 1250 3400 2100
-Wire Bus Line
-	5700 1250 5700 4150
-Wire Bus Line
-	1100 1250 1100 4150
-Wire Bus Line
-	8000 1250 8000 4150
-Wire Bus Line
-	10100 1600 10100 4500
-Wire Bus Line
-	7800 1600 7800 4500
-Wire Bus Line
-	5500 1600 5500 4500
-Wire Bus Line
-	3200 1600 3200 4500
 Connection ~ 3500 3650
 Wire Wire Line
 	3500 3650 3500 3750
@@ -3159,4 +3143,20 @@ Wire Wire Line
 Connection ~ 3500 4250
 Wire Wire Line
 	3500 4250 3500 4300
+Wire Bus Line
+	3400 1250 3400 2100
+Wire Bus Line
+	5700 1250 5700 4150
+Wire Bus Line
+	1100 1250 1100 4150
+Wire Bus Line
+	8000 1250 8000 4150
+Wire Bus Line
+	10100 1600 10100 4500
+Wire Bus Line
+	7800 1600 7800 4500
+Wire Bus Line
+	5500 1600 5500 4500
+Wire Bus Line
+	3200 1600 3200 4500
 $EndSCHEMATC

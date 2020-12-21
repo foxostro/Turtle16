@@ -988,7 +988,7 @@ $EndComp
 Text HLabel 1000 1250 1    50   Input ~ 0
 B[0..15]
 Text Notes 1850 6750 0    50   ~ 0
-SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:8, 4:0]
+SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:0]
 $Comp
 L Device:C C?
 U 1 1 6008DADB
@@ -1333,13 +1333,13 @@ Entry Wire Line
 Wire Wire Line
 	8300 3700 8550 3700
 Text Label 8300 3700 0    50   ~ 0
-Ins_EX10
+Ins_EX9
 Entry Wire Line
 	8300 3700 8200 3600
 Wire Wire Line
 	8300 3600 8550 3600
 Text Label 8300 3600 0    50   ~ 0
-Ins_EX10
+Ins_EX8
 Entry Wire Line
 	8300 3600 8200 3500
 Connection ~ 7950 4600
@@ -1364,7 +1364,7 @@ Wire Wire Line
 Wire Wire Line
 	3850 2550 3250 2550
 Text Label 8300 2150 0    50   ~ 0
-Ins_EX9
+Ins_EX6
 Wire Wire Line
 	8300 2150 8550 2150
 Entry Wire Line
@@ -1372,13 +1372,13 @@ Entry Wire Line
 Wire Wire Line
 	8300 2050 8550 2050
 Text Label 8300 2050 0    50   ~ 0
-Ins_EX8
+Ins_EX5
 Entry Wire Line
 	8300 2050 8200 1950
 Wire Wire Line
 	8300 2250 8550 2250
 Text Label 8300 2250 0    50   ~ 0
-Ins_EX10
+Ins_EX7
 Entry Wire Line
 	8300 2250 8200 2150
 Text Label 5950 1850 0    50   ~ 0

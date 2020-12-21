@@ -332,7 +332,7 @@ F6 "PC_EX[0..15]" I L 3850 2950 50
 F7 "StoreOp_EX[0..15]" O R 5300 2600 50 
 $EndSheet
 Text Notes 3600 5200 0    50   ~ 0
-SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:8, 4:0]
+SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:0]
 Text HLabel 1250 4700 0    50   Input ~ 0
 B[0..15]
 Text HLabel 1250 5300 0    50   Input ~ 0

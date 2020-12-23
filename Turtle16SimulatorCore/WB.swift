@@ -1,5 +1,5 @@
 //
-//  WriteBackStage.swift
+//  WB.swift
 //  Turtle16SimulatorCore
 //
 //  Created by Andrew Fox on 12/22/20.
@@ -12,11 +12,11 @@ import Foundation
 // Please refer to WB.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class WriteBackStage: NSObject {
+public class WB: NSObject {
     public struct Input {
-        public var y: UInt16
-        public var storeOp: UInt16
-        public var ctl: UInt32
+        public let y: UInt16
+        public let storeOp: UInt16
+        public let ctl: UInt32
         
         public init(ctl: UInt32) {
             self.y = 0

@@ -1,18 +1,21 @@
+# Turtle16
+
 Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other simple parts. This repo contains the Kicad project and other files necesary to build the hardware. The toolchain and software is provided in a separate repo.
 
 
 
-Project Constraints
--------------------
+## Project Constraints
+
 Microprocessors and programmable hardware such as CPLDs and FPGAs have been avoided. An exception has been made for primitive GALs as these fit the retro computer aesthetic.
 
 
 
-Architecture Overview
----------------------
+## Architecture Overview
+
 The CPU uses a Load/Store architecture based on the classic RISC pipeline. There are eight general-purpose registers, each sixteen bits wide. The load/store unit fetches sixteen-bit words from a sixteen-bit address space. Instructions and Data are split into two separate address spaces, avoiding any possible structural hazard from accessing instructions and data simultaneously.
 
-Pipeline Stages:
+### Pipeline Stages
+
 1. IF — Fetch an instruction from Instruction Memory via the Program Counter
 2. ID — Decode instruction and read the register file. This also performs hazard control on decoding the instruction.
 3. EX — Marshal operands and perform a computation
@@ -33,8 +36,8 @@ The main board does not include RAM or peripherals. The intention is that these 
 
 
 
-Control Signals
----------------
+## Control Signals
+
 The instruction decoder in the ID stage of the CPU pipeline decode the five-bit opcode into twenty one control signals which control subsequent pipeline stages.
 
 0. /HLT — Halt the clock
@@ -61,13 +64,13 @@ The instruction decoder in the ID stage of the CPU pipeline decode the five-bit 
 
 The ID stage contains hazard control logic which additionally produces signals for stalling and flushing the pipeline:
 
-STALL_PC -- Stalls the Program Counter in the IF stage.
-/STALL_IF -- Stalls the Instruction Fetch unit in the IF stage.
+* STALL_PC — Stalls the Program Counter in the IF stage.
+* /STALL_IF — Stalls the Instruction Fetch unit in the IF stage.
 
 
 
-Opcodes
--------
+## Opcodes
+
 The ID stage uses a ROM to decode a five-bit opcode into an array of control signals. The opcodes are as follows. Though, this is definitely something that can be redefined by flashing different data to the chips.
 
 0. nop
@@ -104,17 +107,19 @@ The ID stage uses a ROM to decode a five-bit opcode into an array of control sig
 31. unused
 
 
-Instruction Encoding
---------------------
+## Instruction Encoding
+
 At the top-level instructions have the following forms...
 
-RRR — 0bkkkk'kccc'aaab'bbxx
-RRI — 0bkkkk'kccc'aaai'iiii
-RII — 0bkkkk'kccc'iiii'iiii
-IRI — 0bkkkk'kiii'aaai'iiii
-IRR — 0bkkkk'kiii'aaab'bbii
-III — 0bkkkk'kiii'iiii'iiii
-X   — 0bkkkk'kxxx'xxxx'xxxx
+Format | Encoding scheme
+------ | ---------------
+RRR    | `0bkkkk'kccc'aaab'bbxx`
+RRI    | `0bkkkk'kccc'aaai'iiii`
+RII    | `0bkkkk'kccc'iiii'iiii`
+IRI    | `0bkkkk'kiii'aaai'iiii`
+IRR    | `0bkkkk'kiii'aaab'bbii`
+III    | `0bkkkk'kiii'iiii'iiii`
+X      | `0bkkkk'kxxx'xxxx'xxxx`
 
 where 'k' is a 5-bit opcode, 'c' is the index of the register to select in the write back stage, 'a' is the index of the register to select for the ALU left operand, 'b' is the index of the register to select for the ALU right operand, and 'i' is an immediate value.
 
@@ -122,59 +127,67 @@ More generally, there is a field for an opcode and the fields for a, b, and c. S
 
 
 
-NOP (X-format)
---------------
+### NOP (X-format)
+
 The NOP instruction specifically has all zero instruction bits. The decoded control signals do not assert any control signals at all. The instruction does nothing.
 
 
 
-HLT (X-format)
---------------
+### HLT (X-format)
+
 The HLT instruction halts the CPU clock. There will be a button to resume execution.
 
 
 
-LOAD (RRI-format)
------------------
-0bkkkk'kccc'aaai'iiii
+### LOAD (RRI-format)
+
+`0bkkkk'kccc'aaai'iiii`
 
 Loads a sixteen-bit word from memory at the address given by Ra + Imm and writes that value to the register Rc.
 
-	Rc := mem[Ra + Imm]
+```
+Rc := mem[Ra + Imm]
+```
 
 
 
-STORE (IRR-format)
-------------------
-0bkkkk'kiii'aaab'bbii
+### STORE (IRR-format)
+
+`0bkkkk'kiii'aaab'bbii`
 
 Stores the contents of the register Rc to memory at the address given by Ra + Imm.
 
-	mem[Ra + Imm] := Rc
+```
+mem[Ra + Imm] := Rc
+```
 
 
 
-LI (RII-format)
----------------
-0bkkkk'kccc'iiii'iiii
+### LI (RII-format)
+
+`0bkkkk'kccc'iiii'iiii`
 
 Takes the immediate value, sign-extends it from eight to sixteen bits, and writes it to the register Rc.
 
-	Rc := Imm
+```
+Rc := Imm
+```
 
 
 
-LUI (RII-format)
-----------------
-0bkkkk'kccc'iiii'iiii
+### LUI (RII-format)
+
+`0bkkkk'kccc'iiii'iiii`
 
 Takes the immediate value, shifts it left by eight, and writes it to the upper eight bits of the register Rc. (The lower eight bits are unchanged.)
 
-	Rc[8:15] := Imm
+```
+Rc[8:15] := Imm
+```
 
 
 
-ALU instructions (RRR-format and RRI-format)
+### ALU instructions (RRR-format and RRI-format)
 
 The ALU operands are selected by an array of multiplexer circuitry.
 
@@ -196,93 +209,111 @@ The instruction decode stage provides control signals to choose the ALU function
 
 
 
-JMP (III-format)
-----------------
-0bkkkk'kiii'iiii'iiii
+### JMP (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform an unconditional pc-relative jump by the eleven-bit offset given in Imm:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```
 
 
 
-JR (IRI-format)
----------------
-0bkkkk'kiii'aaai'iiii
+### JR (IRI-format)
+
+`0bkkkk'kiii'aaai'iiii`
 
 Perform an unconditional absolute jump, computing Ra + Imm and setting PC to the result:
 
-	NPC := Ra + Imm
+```
+NPC := Ra + Imm
+```
 
 
 
-JALR (RRI-format)
------------------
-0bkkkk'kccc'aaai'iiii
+### JALR (RRI-format)
+
+`0bkkkk'kccc'aaai'iiii`
 
 Perform an unconditional absolute jump, computing Ra + Imm and setting PC to the result. Store the return address in the register Rc.
 
-	NPC := Ra + Imm
-	Rc := PC+1
+```
+NPC := Ra + Imm
+Rc := PC+1
+```
 	
 As this instruction uses a five-bit immediate value, it is expected that most procedure calls will involve a couple of instructions to fill a register with the absolute jump target. The five-bit immediate value is so small that it isn't even expected to be particularly useful, but that removing it entirely is more complicated than leaving it in.
 
 
 
-BEQ (III-format)
-----------------
-0bkkkk'kiii'iiii'iiii
+### BEQ (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform a conditional pc-relative jump when the Z flag is set:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```
 
 
 
-BNE (III-format)
-----------------
-0bkkkk'kiii'iiii'iiii
+### BNE (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform a conditional pc-relative jump when the Z flag is not set:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```
 
 
 
-BLT (III-format)
-----------------
-0bkkkk'kiii'iiii'iiii
+### BLT (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform a conditional pc-relative jump when the OVF flag is set, performing a signed less-than comparison:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```
 
 
 
-BGE (III-format)
-----------------
-0bkkkk'kiii'iiii'iiii
+### BGE (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform a conditional pc-relative jump when the OVF flag is not set, performing a signed great-than-or-equal-to comparison:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```
 
 
 
-BLTU (III-format)
------------------
-0bkkkk'kiii'iiii'iiii
+### BLTU (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform a conditional pc-relative jump when the Carry flag is set, performing an unsigned less-than comparison:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```
 
 
 
-BGEU (III-format)
-------------------
-0bkkkk'kiii'iiii'iiii
+### BGEU (III-format)
+
+`0bkkkk'kiii'iiii'iiii`
 
 Perform a conditional pc-relative jump when the Carry flag is not set, performing an unsigned great-than-or-equal-to comparison:
 
-	NPC := PC + Imm
+```
+NPC := PC + Imm
+```

@@ -111,8 +111,10 @@
 		6F72FBEA250EB05900130501 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
 		6F73433A259327D400B7E43F /* Turtle16SimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* Turtle16SimulatorCore.framework */; };
 		6F734341259327D400B7E43F /* Turtle16SimulatorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6F7343592593283D00B7E43F /* WriteBackStage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343582593283D00B7E43F /* WriteBackStage.swift */; };
-		6F73436B2593289400B7E43F /* WriteBackStageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F73436A2593289400B7E43F /* WriteBackStageTests.swift */; };
+		6F7343592593283D00B7E43F /* WB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343582593283D00B7E43F /* WB.swift */; };
+		6F73436B2593289400B7E43F /* WBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F73436A2593289400B7E43F /* WBTests.swift */; };
+		6F7343DD25932FD100B7E43F /* MEM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343DC25932FD100B7E43F /* MEM.swift */; };
+		6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343EE25932FEE00B7E43F /* MEMTests.swift */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F7E41912547E036007CAA1A /* CrackleGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */; };
 		6F7E41A12547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */; };
@@ -827,8 +829,10 @@
 		6F734334259327D400B7E43F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F734339259327D400B7E43F /* Turtle16SimulatorCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Turtle16SimulatorCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F734340259327D400B7E43F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6F7343582593283D00B7E43F /* WriteBackStage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteBackStage.swift; sourceTree = "<group>"; };
-		6F73436A2593289400B7E43F /* WriteBackStageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteBackStageTests.swift; sourceTree = "<group>"; };
+		6F7343582593283D00B7E43F /* WB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WB.swift; sourceTree = "<group>"; };
+		6F73436A2593289400B7E43F /* WBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WBTests.swift; sourceTree = "<group>"; };
+		6F7343DC25932FD100B7E43F /* MEM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEM.swift; sourceTree = "<group>"; };
+		6F7343EE25932FEE00B7E43F /* MEMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEMTests.swift; sourceTree = "<group>"; };
 		6F78DA3C23D947F4000ACA88 /* Computer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computer.swift; sourceTree = "<group>"; };
 		6F790AE822EEDD1900B38267 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewLogger.swift; sourceTree = "<group>"; };
@@ -1255,9 +1259,10 @@
 		6F734332259327D400B7E43F /* Turtle16SimulatorCore */ = {
 			isa = PBXGroup;
 			children = (
+				6F7343DC25932FD100B7E43F /* MEM.swift */,
+				6F7343582593283D00B7E43F /* WB.swift */,
 				6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */,
 				6F734334259327D400B7E43F /* Info.plist */,
-				6F7343582593283D00B7E43F /* WriteBackStage.swift */,
 			);
 			path = Turtle16SimulatorCore;
 			sourceTree = "<group>";
@@ -1265,7 +1270,8 @@
 		6F73433D259327D400B7E43F /* Turtle16SimulatorCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				6F73436A2593289400B7E43F /* WriteBackStageTests.swift */,
+				6F7343EE25932FEE00B7E43F /* MEMTests.swift */,
+				6F73436A2593289400B7E43F /* WBTests.swift */,
 				6F734340259327D400B7E43F /* Info.plist */,
 			);
 			path = Turtle16SimulatorCoreTests;
@@ -2319,7 +2325,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F7343592593283D00B7E43F /* WriteBackStage.swift in Sources */,
+				6F7343592593283D00B7E43F /* WB.swift in Sources */,
+				6F7343DD25932FD100B7E43F /* MEM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2327,7 +2334,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F73436B2593289400B7E43F /* WriteBackStageTests.swift in Sources */,
+				6F73436B2593289400B7E43F /* WBTests.swift in Sources */,
+				6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

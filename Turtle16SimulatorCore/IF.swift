@@ -40,13 +40,15 @@ public class IF: NSObject {
     public var prevOutput: UInt16 = 0
     
     public var load: (UInt16) -> UInt16 = {(addr: UInt16) in
-        return 0 // do nothing
+        return 0xffff // bogus
     }
     
     public func step(input: Input) -> Output {
         let aluOutput = alu.step(input: driveALU(input: input))
-        prevOutput = aluOutput.f!
-        return Output(ins: 0, pc: prevOutput)
+        let pc = aluOutput.f!
+        let ins = (input.stallIF==0) ? 0 : load(pc)
+        prevOutput = pc
+        return Output(ins: ins, pc: pc)
     }
     
     public func driveALU(input: Input) -> IDT7831.Input {

@@ -28,7 +28,7 @@ class MEMTests: XCTestCase {
             storeValue = value
             storeAddress = addr
         }
-        let ctl = ~UInt32((1<<15) | (1<<16))
+        let ctl = ~UInt((1<<15) | (1<<16))
         let input = MEM.Input(rdy: 0, y: 0xabab, storeOp: 0xcdcd, selC: 3, ctl: ctl)
         let output = mem.step(input: input)
         XCTAssertEqual(output.y, input.y)
@@ -44,7 +44,7 @@ class MEMTests: XCTestCase {
         mem.load = {(addr: UInt16) in
             return ~addr
         }
-        let ctl = ~UInt32(1<<14)
+        let ctl = ~UInt(1<<14)
         let input = MEM.Input(rdy: 0, y: 0xabab, storeOp: 0xcdcd, selC: 3, ctl: ctl)
         let output = mem.step(input: input)
         XCTAssertEqual(output.y, input.y)

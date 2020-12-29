@@ -116,6 +116,8 @@
 		6F7343DD25932FD100B7E43F /* MEM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343DC25932FD100B7E43F /* MEM.swift */; };
 		6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343EE25932FEE00B7E43F /* MEMTests.swift */; };
 		6F790AEB22EEE6C400B38267 /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
+		6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14E9259A94C30034C7D0 /* EX.swift */; };
+		6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14FB259A94E40034C7D0 /* EXTests.swift */; };
 		6F7E41912547E036007CAA1A /* CrackleGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */; };
 		6F7E41A12547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */; };
 		6F7E41B12547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */; };
@@ -841,6 +843,8 @@
 		6F790AE822EEDD1900B38267 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewLogger.swift; sourceTree = "<group>"; };
 		6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerExecutor.swift; sourceTree = "<group>"; };
+		6F7C14E9259A94C30034C7D0 /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
+		6F7C14FB259A94E40034C7D0 /* EXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTests.swift; sourceTree = "<group>"; };
 		6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleGlobalOptimizer.swift; sourceTree = "<group>"; };
 		6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleConstantPropagationOptimizationPass.swift; sourceTree = "<group>"; };
 		6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleConstantPropagationOptimizationPassTests.swift; sourceTree = "<group>"; };
@@ -1269,6 +1273,7 @@
 			children = (
 				6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */,
 				6FA5D28A2593F6F300044B17 /* IF.swift */,
+				6F7C14E9259A94C30034C7D0 /* EX.swift */,
 				6F7343DC25932FD100B7E43F /* MEM.swift */,
 				6F7343582593283D00B7E43F /* WB.swift */,
 				6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */,
@@ -1282,6 +1287,7 @@
 			children = (
 				6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */,
 				6FA5D29C2593F7E900044B17 /* IFTests.swift */,
+				6F7C14FB259A94E40034C7D0 /* EXTests.swift */,
 				6F7343EE25932FEE00B7E43F /* MEMTests.swift */,
 				6F73436A2593289400B7E43F /* WBTests.swift */,
 				6F734340259327D400B7E43F /* Info.plist */,
@@ -2340,6 +2346,7 @@
 				6FA5D2CF2593FAAA00044B17 /* IDT7831.swift in Sources */,
 				6F7343592593283D00B7E43F /* WB.swift in Sources */,
 				6F7343DD25932FD100B7E43F /* MEM.swift in Sources */,
+				6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */,
 				6FA5D28B2593F6F300044B17 /* IF.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2350,6 +2357,7 @@
 			files = (
 				6FA5D2E12593FAB500044B17 /* IDT7831Tests.swift in Sources */,
 				6F73436B2593289400B7E43F /* WBTests.swift in Sources */,
+				6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */,
 				6FA5D29D2593F7E900044B17 /* IFTests.swift in Sources */,
 				6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */,
 			);

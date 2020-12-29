@@ -16,15 +16,15 @@ public class WB: NSObject {
     public struct Input {
         public let y: UInt16
         public let storeOp: UInt16
-        public let ctl: UInt32
+        public let ctl: UInt
         
-        public init(ctl: UInt32) {
+        public init(ctl: UInt) {
             self.y = 0
             self.storeOp = 0
             self.ctl = ctl
         }
         
-        public init(y: UInt16, storeOp: UInt16, ctl: UInt32) {
+        public init(y: UInt16, storeOp: UInt16, ctl: UInt) {
             self.y = y
             self.storeOp = storeOp
             self.ctl = ctl

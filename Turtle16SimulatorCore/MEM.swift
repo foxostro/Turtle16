@@ -18,9 +18,9 @@ public class MEM: NSObject {
         public let y: UInt16
         public let storeOp: UInt16
         public let selC: UInt
-        public let ctl: UInt32
+        public let ctl: UInt
         
-        public init(rdy: UInt, y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt32) {
+        public init(rdy: UInt, y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt) {
             self.rdy = rdy
             self.y = y
             self.storeOp = storeOp
@@ -33,7 +33,7 @@ public class MEM: NSObject {
         public let y: UInt16
         public let storeOp: UInt16
         public let selC: UInt
-        public let ctl: UInt32
+        public let ctl: UInt
     }
     
     public var load: (UInt16) -> UInt16 = {(addr: UInt16) in

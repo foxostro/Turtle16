@@ -39,12 +39,12 @@ class WBTests: XCTestCase {
     }
     
     func testWriteBackSrcSelectsALUResult() {
-        let output = WB().step(input: WB.Input(y: 0xabab, storeOp: 0xcdcd, ctl: ~UInt32(1<<17)))
+        let output = WB().step(input: WB.Input(y: 0xabab, storeOp: 0xcdcd, ctl: ~(1<<17)))
         XCTAssertEqual(output.c, 0xabab)
     }
     
     func testWriteBackSrcSelectsStoreOp() {
-        let output = WB().step(input: WB.Input(y: 0xabab, storeOp: 0xcdcd, ctl: UInt32(1<<17)))
+        let output = WB().step(input: WB.Input(y: 0xabab, storeOp: 0xcdcd, ctl: 1<<17))
         XCTAssertEqual(output.c, 0xcdcd)
     }
 }

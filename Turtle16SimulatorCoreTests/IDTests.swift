@@ -165,7 +165,7 @@ class IDTests: XCTestCase {
     
     func testStallOnFlagsHazard() throws {
         let id = ID()
-        let beq: UInt16 = 25
+        let beq: UInt16 = 24
         let input = ID.Input(ins: beq<<11, ctl_EX: 0b111111111111111011111)
         let output = id.step(input: input)
         XCTAssertEqual(output.stallPC, 1)

@@ -150,68 +150,81 @@ public class ID: NSObject {
     public var opcodeDecodeROM = Array<UInt>(repeating: 0, count: 512)
     
     public func step(input: Input) -> Output {
-        var stallPC: UInt = 0
-        var stallIF: UInt = 1
-        var stallID: UInt = 1
-        
-        // Flush the pipeline on a jump.
-        if input.j == 0 {
-            stallPC = 0
-            stallIF = 0
-            stallID = 0
-        }
-        
-        // Stall on RAW Hazard with the A port
-        let selA = splitOutSelA(input: input)
-        if (input.selC_EX == selA) && ((input.ctl_EX & (1<<20)) == 0) {
-            stallPC = 1
-            stallIF = 0
-            stallID = 0
-        }
-        if (input.selC_MEM == selA) && ((input.ctl_MEM & (1<<20)) == 0) {
-            stallPC = 1
-            stallIF = 0
-            stallID = 0
-        }
-        
-        // Stall on RAW Hazard with the B port
-        let selB = splitOutSelB(input: input)
-        if (input.selC_EX == selB) && ((input.ctl_EX & (1<<20)) == 0) {
-            stallPC = 1
-            stallIF = 0
-            stallID = 0
-        }
-        if (input.selC_MEM == selB) && ((input.ctl_MEM & (1<<20)) == 0) {
-            stallPC = 1
-            stallIF = 0
-            stallID = 0
-        }
-        
-        // Stall on a Flags Hazard
-        let opcode = UInt((input.ins >> 11) & 31)
-        let beq = 25
-        let bne = 26
-        let blt = 27
-        let bge = 28
-        let bltu = 29
-        let bgeu = 30
-        let areFlagsNeeded = (opcode == beq) || (opcode == bne) || (opcode == blt) || (opcode == bge) || (opcode == bltu) || (opcode == bgeu)
-        if areFlagsNeeded && ((input.ctl_EX & (1<<5)) == 0) {
-            stallPC = 1
-            stallIF = 0
-            stallID = 0
-        }
-        
-        let ctl_EX: UInt = (stallID==0) ? ID.nopControlWord : decodeOpcode(input: input)
+        let stall = generateStallSignals(input: input)
+        let ctl_EX: UInt = ((stall.0 & 1)==0) ? ID.nopControlWord : decodeOpcode(input: input)
         let ins = UInt(input.ins & 0x07ff)
         let a = readRegisterA(input: input)
         let b = readRegisterB(input: input)
-        return Output(stallPC: stallPC,
-                      stallIF: stallIF,
+        return Output(stallPC: stall.1 & 1,
+                      stallIF: stall.0 & 1,
                       ctl_EX: ctl_EX,
                       a: a,
                       b: b,
                       ins: ins)
+    }
+    
+    public func generateStallSignals(input: Input) -> (UInt, UInt) {
+        let selA: UInt = splitOutSelA(input: input)
+        let selB: UInt = splitOutSelB(input: input)
+        
+        let selA0: UInt = selA & 1
+        let selA1: UInt = (selA>>1) & 1
+        let selA2: UInt = (selA>>2) & 1
+        
+        let selB0: UInt = selB & 1
+        let selB1: UInt = (selB>>1) & 1
+        let selB2: UInt = (selB>>2) & 1
+        
+        let selC_EX0: UInt = input.selC_EX & 1
+        let selC_EX1: UInt = (input.selC_EX>>1) & 1
+        let selC_EX2: UInt = (input.selC_EX>>2) & 1
+        
+        let selC_MEM0: UInt = input.selC_MEM & 1
+        let selC_MEM1: UInt = (input.selC_MEM>>1) & 1
+        let selC_MEM2: UInt = (input.selC_MEM>>2) & 1
+        
+        let ctl_EX5: UInt = (input.ctl_EX >> 5) & 1
+        let ctl_EX20: UInt = (input.ctl_EX >> 20) & 1
+        let ctl_MEM20: UInt = (input.ctl_MEM >> 20) & 1
+        
+        // U70, U71, and U72 form an array of XOR gates. We use these to compare
+        // the selected destination register for the instruction in EX and MEM
+        // with the selected source registers for the instruction in ID.
+        let selC_EX_xor_selA0: UInt = selC_EX0 ^ selA0
+        let selC_EX_xor_selA1: UInt = selC_EX1 ^ selA1
+        let selC_EX_xor_selA2: UInt = selC_EX2 ^ selA2
+        
+        let selC_MEM_xor_selA0: UInt = selC_MEM0 ^ selA0
+        let selC_MEM_xor_selA1: UInt = selC_MEM1 ^ selA1
+        let selC_MEM_xor_selA2: UInt = selC_MEM2 ^ selA2
+        
+        let selC_EX_xor_selB0: UInt = selC_EX0 ^ selB0
+        let selC_EX_xor_selB1: UInt = selC_EX1 ^ selB1
+        let selC_EX_xor_selB2: UInt = selC_EX2 ^ selB2
+        
+        let selC_MEM_xor_selB0: UInt = selC_MEM0 ^ selB0
+        let selC_MEM_xor_selB1: UInt = selC_MEM1 ^ selB1
+        let selC_MEM_xor_selB2: UInt = selC_MEM2 ^ selB2
+        
+        // Determine whether the given opcode specifies an instruction that
+        // depends on the ALU flags. This depends on the order of opcodes. The
+        // last eight opcodes must be the ones which use the flags.
+        // This is written in an awkward way so there is a close correspondence
+        // between this code and the HDL used for U73, an ATF22V10.
+        let opcode3: UInt = UInt(input.ins) >> 14
+        let opcode4: UInt = UInt(input.ins) >> 15
+        let areFlagsNeeded: UInt = opcode3 & opcode4
+        
+        let isRawHazardWithAInEX = ~selC_EX_xor_selA0 & ~selC_EX_xor_selA1 & ~selC_EX_xor_selA2 & ~ctl_EX20
+        let isRawHazardWithAInMEM = ~selC_MEM_xor_selA0 & ~selC_MEM_xor_selA1 & ~selC_MEM_xor_selA2 & ~ctl_MEM20
+        let isRawHazardWithBInEX = ~selC_EX_xor_selB0 & ~selC_EX_xor_selB1 & ~selC_EX_xor_selB2 & ~ctl_EX20
+        let isRawHazardWithBInMEM = ~selC_MEM_xor_selB0 & ~selC_MEM_xor_selB1 & ~selC_MEM_xor_selB2 & ~ctl_MEM20
+        let isFlagsHazard = areFlagsNeeded & ~ctl_EX5
+        let stallIF: UInt = ~(isRawHazardWithAInEX | isRawHazardWithAInMEM | isRawHazardWithBInEX | isRawHazardWithBInMEM | isFlagsHazard | ~input.j)
+        
+        let stallPC: UInt = ~stallIF & input.j
+        
+        return (stallIF, stallPC)
     }
     
     public func decodeOpcode(input: Input) -> UInt {

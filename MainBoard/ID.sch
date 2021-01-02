@@ -222,10 +222,8 @@ Text Label 4900 4450 0    50   ~ 0
 SelA[0..2]
 Text Label 4900 4550 0    50   ~ 0
 SelB[0..2]
-Wire Wire Line
-	6750 4100 7250 4100
 Text Label 4750 2900 0    50   ~ 0
-~STALL_ID
+~STALL_IF
 Text Label 4300 2750 0    50   ~ 0
 Ctl_ID[0..23]
 Wire Bus Line
@@ -236,10 +234,6 @@ Text HLabel 4700 4650 0    50   Input ~ 0
 SelC_MEM[0..2]
 Wire Bus Line
 	4700 4650 5550 4650
-Text HLabel 4700 4750 0    50   Input ~ 0
-Ins_EX[0..10]
-Wire Bus Line
-	4700 4750 5550 4750
 Text HLabel 4700 4350 0    50   Input ~ 0
 Ctl_MEM[14..20]
 Wire Bus Line
@@ -250,8 +244,6 @@ Text Label 4900 4250 0    50   ~ 0
 Ctl_EX[0..20]
 Text Label 7250 2650 0    50   ~ 0
 Ctl_EX[0..20]
-Text Label 7250 4100 2    50   ~ 0
-~STALL_ID
 Wire Wire Line
 	6750 4250 7550 4250
 Wire Wire Line
@@ -269,22 +261,27 @@ S 5550 3950 1200 900
 U 5FDA967F
 F0 "Hazard Control" 50
 F1 "HazardControl.sch" 50
-F2 "~STALL_ID" O R 6750 4100 50 
-F3 "SelC_MEM[0..2]" I L 5550 4650 50 
-F4 "SelA[0..2]" I L 5550 4450 50 
-F5 "SelB[0..2]" I L 5550 4550 50 
-F6 "Ins_EX[0..10]" I L 5550 4750 50 
-F7 "Ctl_MEM[14..20]" I L 5550 4350 50 
-F8 "Ctl_EX[0..20]" I L 5550 4250 50 
-F9 "~STALL_IF" O R 6750 4250 50 
-F10 "~J" I L 5550 4050 50 
-F11 "STALL_PC" O R 6750 4400 50 
-F12 "Ins_ID[11..15]" I L 5550 4150 50 
+F2 "SelC_MEM[0..2]" I L 5550 4650 50 
+F3 "SelA[0..2]" I L 5550 4450 50 
+F4 "SelB[0..2]" I L 5550 4550 50 
+F5 "Ins_EX[0..10]" I L 5550 4750 50 
+F6 "Ctl_MEM[14..20]" I L 5550 4350 50 
+F7 "Ctl_EX[0..20]" I L 5550 4250 50 
+F8 "~STALL_IF" O R 6750 4250 50 
+F9 "~J" I L 5550 4050 50 
+F10 "STALL_PC" O R 6750 4400 50 
+F11 "Ins_ID[11..15]" I L 5550 4150 50 
 $EndSheet
 Wire Bus Line
 	5550 4150 4900 4150
 Text Label 5450 4150 2    50   ~ 0
 Ins_ID[11..15]
+Text Label 6950 4250 0    50   ~ 0
+~STALL_IF
 Wire Bus Line
 	2050 2150 5200 2150
+Wire Bus Line
+	4700 4750 5550 4750
+Text HLabel 4700 4750 0    50   Input ~ 0
+Ins_EX[0..10]
 $EndSCHEMATC

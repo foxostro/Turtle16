@@ -34,6 +34,11 @@ public class IF: NSObject {
     public struct Output {
         public let ins: UInt16
         public let pc: UInt16
+        
+        public init(ins: UInt16, pc: UInt16) {
+            self.ins = ins
+            self.pc = pc
+        }
     }
     
     public var alu = IDT7831()

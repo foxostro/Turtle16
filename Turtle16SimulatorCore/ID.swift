@@ -144,6 +144,20 @@ public class ID: NSObject {
         public let a: UInt16
         public let b: UInt16
         public let ins: UInt
+        
+        public init(stallPC: UInt,
+                    stallIF: UInt,
+                    ctl_EX: UInt,
+                    a: UInt16,
+                    b: UInt16,
+                    ins: UInt) {
+            self.stallPC = stallPC
+            self.stallIF = stallIF
+            self.ctl_EX = ctl_EX
+            self.a = a
+            self.b = b
+            self.ins = ins
+        }
     }
     
     public var registerFile = Array<UInt16>(repeating: 0, count: 8)

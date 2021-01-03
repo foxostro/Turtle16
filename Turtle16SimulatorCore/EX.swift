@@ -59,6 +59,14 @@ public class EX: NSObject {
             self.b = b
             self.ins = 0
         }
+        
+        public init(pc: UInt16, ctl: UInt, a: UInt16, b: UInt16, ins: UInt) {
+            self.pc = pc
+            self.ctl = ctl
+            self.a = a
+            self.b = b
+            self.ins = ins
+        }
     }
     
     public struct Output {
@@ -72,6 +80,19 @@ public class EX: NSObject {
         public let storeOp: UInt16
         public let ctl: UInt
         public let selC: UInt
+        
+        public init(carry: UInt, z: UInt, ovf: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt) {
+            self.carry = carry
+            self.z = z
+            self.ovf = ovf
+            self.j = j
+            self.jabs = jabs
+            self.y = y
+            self.hlt = hlt
+            self.storeOp = storeOp
+            self.ctl = ctl
+            self.selC = selC
+        }
     }
     
     public func step(input: Input) -> Output {

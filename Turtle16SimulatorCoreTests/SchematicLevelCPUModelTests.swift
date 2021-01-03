@@ -10,8 +10,112 @@ import XCTest
 import Turtle16SimulatorCore
 
 class SchematicLevelCPUModelTests: XCTestCase {
-    func testExample() throws {
+    func testStartsInResetState() {
         let cpu = SchematicLevelCPUModel()
+        XCTAssertTrue(cpu.isResetting)
+    }
+    
+    func testExitsResetStateAfterSomeTime() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.reset()
+        XCTAssertFalse(cpu.isResetting)
+    }
+    
+    func testNoStoresOrLoadsDuringReset() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.load = {(addr: UInt16) in
+            XCTFail()
+            return 0 // do nothing
+        }
+        cpu.store = {(value: UInt16, addr: UInt16) in
+            XCTFail()
+        }
+        cpu.reset()
+    }
+    
+    func testProgramCounterIsZeroAfterReset() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.reset()
+        XCTAssertEqual(cpu.pc, 0)
+    }
+    
+    func testStepAfterResetIncrementsProgramCounter1() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.reset()
         cpu.step()
+        XCTAssertEqual(cpu.pc, 1)
+    }
+    
+    func testStepAfterResetIncrementsProgramCounter2() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.reset()
+        cpu.step()
+        cpu.step()
+        XCTAssertEqual(cpu.pc, 2)
+    }
+    
+    func testReadAndWriteRegistersThroughCPUInterface() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.setRegister(0, 0xcafe)
+        XCTAssertEqual(cpu.getRegister(0), 0xcafe)
+    }
+    
+    func testExecutingNOPHasNoEffectOnRegisters() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0000000000000000, // NOP
+                            0b0000000000000000, // NOP
+                            0b0000000000000000, // NOP
+                            0b0000000000000000, // NOP
+                            0b0000000000000000, // NOP
+                            0b0000000000000000] // NOP
+        cpu.reset()
+        cpu.setRegister(0, 0xcafe)
+        cpu.setRegister(1, 0x1111)
+        cpu.setRegister(2, 0x2222)
+        cpu.setRegister(3, 0x3333)
+        cpu.setRegister(4, 0x4444)
+        cpu.setRegister(5, 0x5555)
+        cpu.setRegister(6, 0x6666)
+        cpu.setRegister(7, 0x7777)
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        XCTAssertEqual(cpu.getRegister(0), 0xcafe)
+        XCTAssertEqual(cpu.getRegister(1), 0x1111)
+        XCTAssertEqual(cpu.getRegister(2), 0x2222)
+        XCTAssertEqual(cpu.getRegister(3), 0x3333)
+        XCTAssertEqual(cpu.getRegister(4), 0x4444)
+        XCTAssertEqual(cpu.getRegister(5), 0x5555)
+        XCTAssertEqual(cpu.getRegister(6), 0x6666)
+        XCTAssertEqual(cpu.getRegister(7), 0x7777)
+    }
+    
+    func testClearRegisterToZeroWithXOR() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0101100000000000] // XOR r0, r0, r0
+        cpu.reset()
+        cpu.setRegister(0, 0xcafe)
+        cpu.setRegister(1, 0x1111)
+        cpu.setRegister(2, 0x2222)
+        cpu.setRegister(3, 0x3333)
+        cpu.setRegister(4, 0x4444)
+        cpu.setRegister(5, 0x5555)
+        cpu.setRegister(6, 0x6666)
+        cpu.setRegister(7, 0x7777)
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        XCTAssertEqual(cpu.getRegister(0), 0x0000)
+        XCTAssertEqual(cpu.getRegister(1), 0x1111)
+        XCTAssertEqual(cpu.getRegister(2), 0x2222)
+        XCTAssertEqual(cpu.getRegister(3), 0x3333)
+        XCTAssertEqual(cpu.getRegister(4), 0x4444)
+        XCTAssertEqual(cpu.getRegister(5), 0x5555)
+        XCTAssertEqual(cpu.getRegister(6), 0x6666)
+        XCTAssertEqual(cpu.getRegister(7), 0x7777)
     }
 }

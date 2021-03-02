@@ -160,6 +160,8 @@
 		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
 		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
 		6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */; };
+		6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */; };
+		6FAC10A725A25EA600BB3836 /* DecoderGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */; };
 		6FB0D29424710C26003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6FB0D29B24710C26003B5D5C /* TurtleCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D28D24710C26003B5D5C /* TurtleCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2A224710CED003B5D5C /* AtomicBooleanFlag.swift */; };
@@ -915,6 +917,8 @@
 		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurtleVMBenchmarkDriver.swift; sourceTree = "<group>"; };
 		6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDeclaration.swift; sourceTree = "<group>"; };
+		6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGenerator.swift; sourceTree = "<group>"; };
+		6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGeneratorTests.swift; sourceTree = "<group>"; };
 		6FAC5FED236D3F2B0029DFB7 /* TurtleAssembler.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TurtleAssembler.entitlements; sourceTree = "<group>"; };
 		6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclaration.swift; sourceTree = "<group>"; };
 		6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationTests.swift; sourceTree = "<group>"; };
@@ -1286,6 +1290,7 @@
 				6F7343DC25932FD100B7E43F /* MEM.swift */,
 				6F7343582593283D00B7E43F /* WB.swift */,
 				6F889D55259D494900EB647C /* SchematicLevelCPUModel.swift */,
+				6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */,
 				6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */,
 				6F734334259327D400B7E43F /* Info.plist */,
 			);
@@ -1302,6 +1307,7 @@
 				6F7343EE25932FEE00B7E43F /* MEMTests.swift */,
 				6F73436A2593289400B7E43F /* WBTests.swift */,
 				6F889D67259D495400EB647C /* SchematicLevelCPUModelTests.swift */,
+				6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */,
 				6F734340259327D400B7E43F /* Info.plist */,
 			);
 			path = Turtle16SimulatorCoreTests;
@@ -2361,6 +2367,7 @@
 				6F889D32259D308000EB647C /* ID.swift in Sources */,
 				6F7343DD25932FD100B7E43F /* MEM.swift in Sources */,
 				6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */,
+				6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */,
 				6FA5D28B2593F6F300044B17 /* IF.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2375,6 +2382,7 @@
 				6F889D44259D308B00EB647C /* IDTests.swift in Sources */,
 				6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */,
 				6FA5D29D2593F7E900044B17 /* IFTests.swift in Sources */,
+				6FAC10A725A25EA600BB3836 /* DecoderGeneratorTests.swift in Sources */,
 				6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

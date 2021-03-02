@@ -8,6 +8,16 @@
 
 import Foundation
 
+public extension UInt {
+    fileprivate func asBinaryString() -> String {
+        var result = String(self, radix: 2)
+        if result.count < 8 {
+            result = String(repeatElement("0", count: 8 - result.count)) + result
+        }
+        return "0b" + result
+    }
+}
+
 // Models the ID (instruction decode) stage of the Turtle16 pipeline.
 // Please refer to ID.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,
@@ -135,6 +145,28 @@ public class ID: NSObject {
             self.carry = 0
             self.rst = 1
         }
+        
+        public init(ins: UInt16,
+                    selC_EX: UInt,
+                    ctl_EX: UInt,
+                    selC_MEM: UInt,
+                    ctl_MEM: UInt,
+                    j: UInt,
+                    ovf: UInt,
+                    z: UInt,
+                    carry: UInt,
+                    rst: UInt) {
+            self.ins = ins
+            self.selC_EX = selC_EX
+            self.ctl_EX = ctl_EX
+            self.selC_MEM = selC_MEM
+            self.ctl_MEM = ctl_MEM
+            self.j = j
+            self.ovf = ovf
+            self.z = z
+            self.carry = carry
+            self.rst = rst
+        }
     }
     
     public struct Output {
@@ -166,6 +198,7 @@ public class ID: NSObject {
     public func step(input: Input) -> Output {
         let stall = generateStallSignals(input: input)
         let ctl_EX: UInt = ((stall.0 & 1)==0) ? ID.nopControlWord : decodeOpcode(input: input)
+        NSLog("ctl_EX=\(ctl_EX.asBinaryString())")
         let ins = UInt(input.ins & 0x07ff)
         let a = readRegisterA(input: input)
         let b = readRegisterB(input: input)

@@ -20,6 +20,10 @@ public class SchematicLevelCPUModel: NSObject {
         resetCounter > 0
     }
     
+    public var isHalted: Bool {
+        outputEX.hlt == 0
+    }
+    
     public var pc: UInt16 = 0
     
     public var instructions: [UInt16] = []
@@ -63,8 +67,9 @@ public class SchematicLevelCPUModel: NSObject {
                 return 0
             }
         }
-        // TODO: need a better way to generate the decode ROM, of course
-        stageID.opcodeDecodeROM[267] = 0b111100000000111111110
+        
+        let decoder = DecoderGenerator().generate()
+        stageID.opcodeDecodeROM = decoder
     }
     
     public func reset() {
@@ -108,8 +113,15 @@ public class SchematicLevelCPUModel: NSObject {
         
         // ID
         let inputID = ID.Input(ins: outputIF.ins,
+                               selC_EX: outputEX.selC,
+                               ctl_EX: outputEX.ctl,
                                selC_MEM: outputMEM.selC,
-                               ctl_MEM: outputMEM.ctl)
+                               ctl_MEM: outputMEM.ctl,
+                               j: outputEX.j,
+                               ovf: outputEX.ovf,
+                               z: outputEX.z,
+                               carry: outputEX.carry,
+                               rst: rst)
         outputID = stageID.step(input: inputID)
         
         // IF

@@ -17,8 +17,10 @@ class SchematicLevelCPUModelTests: XCTestCase {
     
     func testExitsResetStateAfterSomeTime() {
         let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0000100000000000] // HLT
         cpu.reset()
         XCTAssertFalse(cpu.isResetting)
+        XCTAssertFalse(cpu.isHalted)
     }
     
     func testNoStoresOrLoadsDuringReset() {
@@ -117,5 +119,16 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(cpu.getRegister(5), 0x5555)
         XCTAssertEqual(cpu.getRegister(6), 0x6666)
         XCTAssertEqual(cpu.getRegister(7), 0x7777)
+    }
+    
+    func testHlt() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0000100000000000] // HLT
+        cpu.reset()
+        XCTAssertFalse(cpu.isHalted)
+        cpu.step() // IF
+        XCTAssertFalse(cpu.isHalted)
+        cpu.step() // ID
+        XCTAssertTrue(cpu.isHalted)
     }
 }

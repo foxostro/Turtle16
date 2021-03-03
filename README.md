@@ -92,7 +92,7 @@ The ID stage uses a ROM to decode a five-bit opcode into an array of control sig
 16. andi
 17. ori
 18. xori
-19. noti
+19. *unused*
 20. jmp
 21. jr
 22. jalr

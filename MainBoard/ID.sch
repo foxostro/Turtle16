@@ -279,9 +279,9 @@ Ins_ID[11..15]
 Text Label 6950 4250 0    50   ~ 0
 ~STALL_IF
 Wire Bus Line
-	2050 2150 5200 2150
-Wire Bus Line
 	4700 4750 5550 4750
 Text HLabel 4700 4750 0    50   Input ~ 0
 Ins_EX[0..10]
+Wire Bus Line
+	2050 2150 5200 2150
 $EndSCHEMATC

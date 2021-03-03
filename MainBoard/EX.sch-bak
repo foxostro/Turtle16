@@ -310,7 +310,7 @@ Entry Wire Line
 Text Label 3150 1100 3    50   ~ 0
 Ctl_EX3
 Text Notes 3850 3500 0    50   ~ 0
-SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select Register B << 8\nSelStoreOp=2  —> Select PC+1 (return address)\nSelStoreOp=3  —> Select 8-bit Immediate Value
+SelStoreOp=0  —> Select Register B\nSelStoreOp=1 —> Select PC+1 (return address)\nSelStoreOp=2  —> Select 8-bit Immediate Value\nSelStoreOp=3  —> Select 8-bit Immediate Value << 8
 $Sheet
 S 3850 1900 1450 200 
 U 5FDDE44F

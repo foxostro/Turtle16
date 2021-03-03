@@ -1042,13 +1042,14 @@ F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 5550 7550 50  
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U?
+L MainBoard-rescue:74LS245-74xx U?
 U 1 1 5FE5E4E7
 P 6050 2900
 AR Path="/60A71BBF/5FDDE478/5FE5E4E7" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE5E4E7" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE5E4E7" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB92C55/5FE5E4E7" Ref="U19"  Part="1" 
+AR Path="/5FE5E4E7" Ref="U19"  Part="1" 
 F 0 "U19" H 5750 3700 50  0000 C CNN
 F 1 "74AHCT245" H 5750 3600 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 6050 2900 50  0001 C CNN
@@ -1058,13 +1059,14 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U?
+L MainBoard-rescue:74LS245-74xx U?
 U 1 1 5FE63A46
 P 6050 5000
 AR Path="/60A71BBF/5FDDE478/5FE63A46" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE63A46" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE63A46" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB92C55/5FE63A46" Ref="U20"  Part="1" 
+AR Path="/5FE63A46" Ref="U20"  Part="1" 
 F 0 "U20" H 5750 5800 50  0000 C CNN
 F 1 "74AHCT245" H 5750 5700 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 6050 5000 50  0001 C CNN

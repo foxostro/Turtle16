@@ -194,7 +194,7 @@ Wire Wire Line
 	9550 6450 9550 6350
 Connection ~ 9550 6350
 $Comp
-L CPU:IDT7381 U?
+L MainBoard-rescue:IDT7381-CPU U?
 U 1 1 5FBC5FF4
 P 6050 3950
 AR Path="/60A71BBF/5FBC5FF4" Ref="U?"  Part="1" 

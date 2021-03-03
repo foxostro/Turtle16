@@ -711,13 +711,14 @@ Wire Wire Line
 Text Notes 9150 5100 2    50   ~ 0
 Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
 $Comp
-L 74xx:74LS245 U?
+L MainBoard-rescue:74LS245-74xx U?
 U 1 1 5FE3C856
 P 5850 2950
 AR Path="/60A71BBF/5FDDE478/5FE3C856" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE3C856" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE3C856" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FE3C856" Ref="U17"  Part="1" 
+AR Path="/5FE3C856" Ref="U17"  Part="1" 
 F 0 "U17" H 5550 3750 50  0000 C CNN
 F 1 "74AHCT245" H 5550 3650 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 2950 50  0001 C CNN
@@ -727,13 +728,14 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U?
+L MainBoard-rescue:74LS245-74xx U?
 U 1 1 5FE401BC
 P 5850 5050
 AR Path="/60A71BBF/5FDDE478/5FE401BC" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE401BC" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE401BC" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FE401BC" Ref="U18"  Part="1" 
+AR Path="/5FE401BC" Ref="U18"  Part="1" 
 F 0 "U18" H 5550 5850 50  0000 C CNN
 F 1 "74AHCT245" H 5550 5750 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 5050 50  0001 C CNN

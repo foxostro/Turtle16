@@ -121,6 +121,7 @@ public class EX: NSObject {
                                                       ftab: 1,
                                                       ftf: 1,
                                                       oe: 0))
+        let storeOp = selectStoreOperand(input: input)
         return Output(carry: aluOutput.c16,
                       z: aluOutput.z,
                       ovf: aluOutput.ovf,
@@ -128,7 +129,7 @@ public class EX: NSObject {
                       jabs: jabs,
                       y: aluOutput.f!,
                       hlt: hlt,
-                      storeOp: 0,
+                      storeOp: storeOp,
                       ctl: input.ctl,
                       selC: splitOutSelC(input: input))
     }
@@ -172,15 +173,15 @@ public class EX: NSObject {
         case 0b00:
             return input.b
         case 0b01:
-            var val = UInt16(UInt(input.b & 0xff) << 8) & 0xffff
+            return input.pc
+        case 0b10:
+            var val = UInt16(input.ins & 0xff)
             if (val & (1<<7)) != 0 {
                 val = val | 0b1111111100000000
             }
             return val
-        case 0b10:
-            return input.pc
         case 0b11:
-            var val = UInt16(input.ins & 255)
+            var val = UInt16(UInt16(input.ins & 0xff) << 8) & 0xffff
             if (val & (1<<7)) != 0 {
                 val = val | 0b1111111100000000
             }

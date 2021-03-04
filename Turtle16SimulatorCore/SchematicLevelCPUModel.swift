@@ -38,12 +38,22 @@ public class SchematicLevelCPUModel: NSObject {
         return stageID.registerFile[idx]
     }
     
-    public var load: (UInt16) -> UInt16 = {(addr: UInt16) in
-        return 0 // do nothing
+    public var load: (UInt16) -> UInt16 {
+        get {
+            return stageMEM.load
+        }
+        set(newValue) {
+            stageMEM.load = newValue
+        }
     }
     
-    public var store: (UInt16, UInt16) -> Void = {(value: UInt16, addr: UInt16) in
-        // do nothing
+    public var store: (UInt16, UInt16) -> Void {
+        get {
+            return stageMEM.store
+        }
+        set(newValue) {
+            stageMEM.store = newValue
+        }
     }
 
     public let stageIF = IF()
@@ -61,8 +71,10 @@ public class SchematicLevelCPUModel: NSObject {
     public override init() {
         super.init()
         stageIF.load = {[weak self] (addr: UInt16) in
-            if addr < self!.instructions.count {
-                return self!.instructions[Int(addr)]
+            if addr < 1 {
+                return 0
+            } else if (addr-1) < self!.instructions.count {
+                return self!.instructions[Int(addr-1)]
             } else {
                 return 0
             }

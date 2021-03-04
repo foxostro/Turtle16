@@ -129,30 +129,30 @@ class EXTests: XCTestCase {
     
     func testSelectStoreOperand_1() {
         let ex = EX()
-        let input = EX.Input(ins: 0b0000000000000000, b: 0xcd, pc: 0, ctl: 0b01<<1)
-        let storeOp = ex.selectStoreOperand(input: input)
-        XCTAssertEqual(storeOp, 0xcd00)
-    }
-    
-    func testSelectStoreOperand_2() {
-        let ex = EX()
-        let input = EX.Input(ins: 0b0000000000000000, b: 0, pc: 0xbeef, ctl: 0b10<<1)
+        let input = EX.Input(ins: 0b0000000000000000, b: 0, pc: 0xbeef, ctl: 0b01<<1)
         let storeOp = ex.selectStoreOperand(input: input)
         XCTAssertEqual(storeOp, 0xbeef)
     }
     
-    func testSelectStoreOperand_3_notExtended() {
+    func testSelectStoreOperand_2_notExtended() {
         let ex = EX()
-        let input = EX.Input(ins: 0b00000000001111111, b: 0, pc: 0, ctl: 0b11<<1)
+        let input = EX.Input(ins: 0b00000000001111111, b: 0, pc: 0, ctl: 0b10<<1)
         let storeOp = ex.selectStoreOperand(input: input)
         XCTAssertEqual(storeOp, 127)
     }
     
-    func testSelectStoreOperand_3_signExtended() {
+    func testSelectStoreOperand_2_signExtended() {
         let ex = EX()
-        let input = EX.Input(ins: 0b00000000011111111, b: 0, pc: 0, ctl: 0b11<<1)
+        let input = EX.Input(ins: 0b00000000011111111, b: 0, pc: 0, ctl: 0b10<<1)
         let storeOp = ex.selectStoreOperand(input: input)
         XCTAssertEqual(storeOp, 0xffff)
+    }
+    
+    func testSelectStoreOperand_3() {
+        let ex = EX()
+        let input = EX.Input(ins: 0b0000000011001101, b: 0, pc: 0, ctl: 0b11<<1)
+        let storeOp = ex.selectStoreOperand(input: input)
+        XCTAssertEqual(storeOp, 0xcd00)
     }
     
     func testAdd() {

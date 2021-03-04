@@ -158,4 +158,42 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0xabcd, cpu.getRegister(3))
         XCTAssertEqual(0xffff, observedLoadAddr)
     }
+    
+    func testLi() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0010001100001101] // LI r3, 0xd
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xd, cpu.getRegister(3))
+    }
+    
+    func testLi_signExtended() {
+        let cpu = SchematicLevelCPUModel()
+        // The immediate value embedded in the instruction is 128. The high bit
+        // is set so this is sign-extended to 65408.
+        cpu.instructions = [0b0010001110000000] // LI r3, 65408
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(65408, cpu.getRegister(3))
+    }
+    
+    func testLui() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0010101111001101] // LUI r3, 0xcd
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xcd00, cpu.getRegister(3))
+    }
 }

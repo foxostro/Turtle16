@@ -26,7 +26,7 @@ public class DecoderGenerator: NSObject {
     public static let MemLoad = 14
     public static let MemStore = 15
     public static let AssertStoreOp = 16
-    public static let WriteBackSrc = 17
+    public static let WriteBackSrcFlag = 17
     public static let WRL = 18
     public static let WRH = 19
     public static let WBEN = 20
@@ -88,6 +88,23 @@ public class DecoderGenerator: NSObject {
         return ALUITag(tag: (~val) & 7)
     }
     
+    public enum WriteBackSrcEnum {
+        case aluResult, storeOp
+    }
+    public struct WriteBackSrcTag {
+        let tag: UInt
+    }
+    public static func WriteBackSrc(_ val: WriteBackSrcEnum) -> WriteBackSrcTag {
+        let tag: UInt
+        switch val {
+        case .aluResult:
+            tag = 0
+        case .storeOp:
+            tag = 1
+        }
+        return WriteBackSrcTag(tag: (~tag)&1)
+    }
+    
     public func generate() -> [UInt] {
         var controlWords = Array<UInt>(repeating: 0, count: 512)
         makeControlWord(&controlWords, DecoderGenerator.opcodeNop, [])
@@ -97,8 +114,9 @@ public class DecoderGenerator: NSObject {
         makeControlWord(&controlWords, DecoderGenerator.opcodeLoad, [
             DecoderGenerator.SelRightOp(0b01),
             DecoderGenerator.ALUI(0b011),
+            DecoderGenerator.C0,
             DecoderGenerator.MemLoad,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.storeOp),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -112,7 +130,7 @@ public class DecoderGenerator: NSObject {
         makeControlWord(&controlWords, DecoderGenerator.opcodeLi, [
             DecoderGenerator.SelStoreOp(0b10),
             DecoderGenerator.AssertStoreOp,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.storeOp),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -120,7 +138,7 @@ public class DecoderGenerator: NSObject {
         makeControlWord(&controlWords, DecoderGenerator.opcodeLui, [
             DecoderGenerator.SelStoreOp(0b11),
             DecoderGenerator.AssertStoreOp,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.storeOp),
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
         ])
@@ -135,7 +153,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.I2,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -144,7 +162,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.SelRightOp(0b00),
             DecoderGenerator.FI,
             DecoderGenerator.ALUI(0b010),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -154,7 +172,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b110),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -164,7 +182,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b101),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -174,7 +192,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b100),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -183,7 +201,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b001),
             DecoderGenerator.RS1,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -199,7 +217,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.I2,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -208,7 +226,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.SelRightOp(0b01),
             DecoderGenerator.FI,
             DecoderGenerator.ALUI(0b010),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -218,7 +236,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b110),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -228,7 +246,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b101),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -238,7 +256,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b100),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -283,7 +301,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.FI,
             DecoderGenerator.C0,
             DecoderGenerator.I2,
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -292,7 +310,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.SelRightOp(0b00),
             DecoderGenerator.FI,
             DecoderGenerator.ALUI(0b010),
-            DecoderGenerator.WriteBackSrc,
+            DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
@@ -319,6 +337,9 @@ public class DecoderGenerator: NSObject {
             }
             else if let signal = signal_ as? ALUITag {
                 controlWords[index] = controlWords[index] | (signal.tag << DecoderGenerator.I0)
+            }
+            else if let signal = signal_ as? WriteBackSrcTag {
+                controlWords[index] = controlWords[index] | (signal.tag << DecoderGenerator.WriteBackSrcFlag)
             }
             else {
                 assert(false)

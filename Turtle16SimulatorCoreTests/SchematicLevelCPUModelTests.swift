@@ -129,6 +129,33 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // IF
         XCTAssertFalse(cpu.isHalted)
         cpu.step() // ID
+        XCTAssertFalse(cpu.isHalted)
+        cpu.step() // EX
         XCTAssertTrue(cpu.isHalted)
+    }
+    
+    func testLoad() {
+        var observedLoadAddr: UInt16? = nil
+        let cpu = SchematicLevelCPUModel()
+        cpu.load = {(addr: UInt16) in
+            if observedLoadAddr != nil {
+                XCTFail()
+            }
+            observedLoadAddr = addr
+            return 0xabcd
+        }
+        cpu.store = {(value: UInt16, addr: UInt16) in
+            XCTFail()
+        }
+        cpu.instructions = [0b0001001100100001] // LOAD r3, 1(r1)
+        cpu.reset()
+        cpu.setRegister(1, 0xfffe)
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(3))
+        XCTAssertEqual(0xffff, observedLoadAddr)
     }
 }

@@ -727,4 +727,105 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1002, cpu.pc)
         XCTAssertEqual(0, cpu.getRegister(0))
     }
+    
+    func testJalr() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1011011100100000 // JALR r7, r1, #0 -- r7 := pc + 1 ; pc := r1 + 0
+        ]
+        cpu.reset()
+        cpu.setRegister(1, 1000)
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1000, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1001, cpu.pc)
+        cpu.step() // The JALR instruction writes back to register file now.
+        XCTAssertEqual(1002, cpu.pc)
+        XCTAssertEqual(2, cpu.getRegister(7))
+        cpu.step()
+        XCTAssertEqual(1003, cpu.pc)
+        XCTAssertEqual(0, cpu.getRegister(0))
+    }
+    
+    func testJalr_andThenReturn() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1011011100100000, // JALR r7, r1, #0 -- r7 := pc + 1 ; pc := r1 + 0
+            0b0000100000000000, // HLT
+            0b0000000000000000, // NOP
+            0b0010011000001101, // LI r6, #13
+            0b1010100011111111  // JR r7, #-1 -- pc := r7 - 1
+        ]
+        cpu.reset()
+        cpu.setRegister(1, 3)
+        
+        // IF    ID     EX     MEM    WB
+        // JALR  -      -      -      -
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b1011011100100000)
+       
+        // IF    ID     EX     MEM    WB
+        // HLT   JALR   -      -      -
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000100000000000)
+        
+        // IF    ID     EX     MEM    WB
+        // NOP   NOP    JALR   -      -
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        
+        // IF    ID     EX     MEM    WB
+        // LI    NOP    NOP    JALR   -
+        cpu.step()
+        XCTAssertEqual(4, cpu.pc)
+        XCTAssertNotEqual(2,  cpu.getRegister(7))
+        XCTAssertEqual(cpu.outputIF.ins, 0b0010011000001101)
+        
+        // IF    ID     EX     MEM    WB
+        // JR    LI     NOP    NOP    JALR
+        cpu.step()
+        XCTAssertEqual(5, cpu.pc)
+        XCTAssertEqual(2,  cpu.getRegister(7))
+        XCTAssertEqual(cpu.outputIF.ins, 0b1010100011111111)
+        
+        // IF    ID     EX     MEM    WB
+        // NOP   JR     LI     NOP    NOP
+        cpu.step()
+        XCTAssertEqual(6, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        
+        // IF    ID     EX     MEM    WB
+        // NOP   NOP    JR     LI     NOP
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        
+        // IF    ID     EX     MEM    WB
+        // HLT   NOP    NOP    JR     LI
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000100000000000)
+        XCTAssertEqual(13,  cpu.getRegister(6))
+        
+        // IF    ID     EX     MEM    WB
+        // NOP   HLT    NOP    NOP    JR
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        
+        // IF    ID     EX     MEM    WB
+        // LI    NOP    HLT    NOP    NOP
+        cpu.step()
+        XCTAssertEqual(4, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0010011000001101)
+        XCTAssertTrue(cpu.isHalted)
+    }
 }

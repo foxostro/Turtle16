@@ -1,0 +1,49 @@
+import audio
+import serial
+
+func main() {
+	let noteLength = 2
+	setMasterAudioGain(0x80)
+	serialInit()
+	serialPuts("Piano\n")
+	while true {
+		while serialCount() == 0 {}
+		let character = serialGet()
+		if character == 'a' {
+			serialPuts("A3\n")
+			playNote(noteA3, noteLength)
+		}
+		else if character == 's' {
+			serialPuts("B3\n")
+			playNote(noteB3, noteLength)
+		}
+		else if character == 'd' {
+			serialPuts("C4\n")
+			playNote(noteC4, noteLength)
+		}
+		else if character == 'f' {
+			serialPuts("D4\n")
+			playNote(noteD4, noteLength)
+		}
+		else if character == 'g' {
+			serialPuts("E4\n")
+			playNote(noteE4, noteLength)
+		}
+		else if character == 'h' {
+			serialPuts("F4\n")
+			playNote(noteF4, noteLength)
+		}
+		else if character == 'j' {
+			serialPuts("G4\n")
+			playNote(noteG4, noteLength)
+		}
+		else if character == 'k' {
+			serialPuts("A4\n")
+			playNote(noteA4, noteLength)
+		}
+		else if character == 'l' {
+			serialPuts("B4\n")
+			playNote(noteB4, noteLength)
+		}
+	}
+}

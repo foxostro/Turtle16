@@ -1,0 +1,15 @@
+LI A, 0
+LI B, 0
+LI D, 0
+LI U, 0
+LI V, 0
+LI X, 0
+LI Y, 0
+LI A, 1
+LI B, 2
+LI D, 3
+LI U, 4
+LI V, 5
+LI X, 6
+LI Y, 7
+HLT

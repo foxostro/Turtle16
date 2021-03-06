@@ -1,0 +1,10 @@
+LI X, 0
+LI Y, 0
+LI A, 0
+NOP
+LI A, 1
+NOP
+JMP
+NOP
+NOP
+HLT

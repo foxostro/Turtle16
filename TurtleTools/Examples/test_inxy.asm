@@ -1,0 +1,13 @@
+LI X, 0
+LI Y, 0
+INXY
+INXY
+INXY
+INXY
+INXY
+INXY
+INXY
+INXY
+INXY
+INXY
+HLT # unreachable

@@ -198,7 +198,6 @@ public class ID: NSObject {
     public func step(input: Input) -> Output {
         let stall = generateStallSignals(input: input)
         let ctl_EX: UInt = ((stall.0 & 1)==0) ? ID.nopControlWord : decodeOpcode(input: input)
-        NSLog("ctl_EX=\(ctl_EX.asBinaryString())")
         let ins = UInt(input.ins & 0x07ff)
         let a = readRegisterA(input: input)
         let b = readRegisterB(input: input)

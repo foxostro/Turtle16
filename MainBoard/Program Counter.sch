@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 34 35
+Sheet 34 34
 Title "Program Counter"
 Date ""
 Rev ""
@@ -658,10 +658,6 @@ F 3 "" H 3550 6300 50  0001 C CNN
 $EndComp
 NoConn ~ 3550 6100
 NoConn ~ 2550 6000
-Text HLabel 1500 5700 0    50   Input ~ 0
-STALL_PC
-Text Notes 800  6050 0    50   ~ 0
-When asserted, STALL_PC prevents\nA from updating. So, the program\ncounter does not update.
 $Comp
 L power:GND #PWR?
 U 1 1 5FBC60A4
@@ -712,8 +708,6 @@ F 3 "" H 4950 5900 50  0001 C CNN
 	1    4950 5900
 	0    1    -1   0   
 $EndComp
-Wire Wire Line
-	1500 5700 2550 5700
 $Comp
 L power:VCC #PWR?
 U 1 1 5FE5D391
@@ -727,12 +721,6 @@ F 3 "" H 7150 3450 50  0001 C CNN
 	1    7150 3450
 	0    1    -1   0   
 $EndComp
-Wire Bus Line
-	7850 1350 7850 3200
-Wire Bus Line
-	4250 1350 4250 3200
-Wire Bus Line
-	4250 3300 4250 4900
 $Comp
 L power:GND #PWR?
 U 1 1 5FE653C9
@@ -747,4 +735,11 @@ F 3 "" H 4950 6100 50  0001 C CNN
 	1    4950 6100
 	0    1    -1   0   
 $EndComp
+NoConn ~ 2550 5700
+Wire Bus Line
+	7850 1350 7850 3200
+Wire Bus Line
+	4250 1350 4250 3200
+Wire Bus Line
+	4250 3300 4250 4900
 $EndSCHEMATC

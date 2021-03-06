@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 33 35
+Sheet 33 34
 Title "Instruction RAM"
 Date ""
 Rev ""
@@ -373,7 +373,7 @@ PC15
 Wire Wire Line
 	5650 4500 4900 4500
 $Comp
-L Memory_Flash:SST39SF010 U?
+L MainBoard-rescue:SST39SF010-Memory_Flash U?
 U 1 1 5FDD3142
 P 3000 4200
 AR Path="/5FED3839/5FDD3142" Ref="U?"  Part="1" 
@@ -389,7 +389,7 @@ F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 3000 4200 50  0
 	1    0    0    -1  
 $EndComp
 $Comp
-L Memory_Flash:SST39SF010 U?
+L MainBoard-rescue:SST39SF010-Memory_Flash U?
 U 1 1 5FE21586
 P 6250 4200
 AR Path="/5FED3839/5FE21586" Ref="U?"  Part="1" 

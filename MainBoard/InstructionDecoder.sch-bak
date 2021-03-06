@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 26 35
+Sheet 26 34
 Title "Instruction Decoder"
 Date ""
 Rev ""
@@ -304,7 +304,7 @@ Connection ~ 1250 7800
 Text HLabel 2400 2850 0    50   Input ~ 0
 ~RST
 $Comp
-L Memory_Flash:SST39SF010 U?
+L MainBoard-rescue:SST39SF010-Memory_Flash U?
 U 1 1 5FF028BF
 P 3150 3250
 AR Path="/5FED3839/5FF028BF" Ref="U?"  Part="1" 
@@ -553,7 +553,7 @@ Ctl_ID11
 Text HLabel 5200 2850 0    50   Input ~ 0
 ~RST
 $Comp
-L Memory_Flash:SST39SF010 U?
+L MainBoard-rescue:SST39SF010-Memory_Flash U?
 U 1 1 60132D7F
 P 5950 3250
 AR Path="/5FED3839/60132D7F" Ref="U?"  Part="1" 
@@ -800,7 +800,7 @@ Ctl_ID19
 Text HLabel 8000 2850 0    50   Input ~ 0
 ~RST
 $Comp
-L Memory_Flash:SST39SF010 U?
+L MainBoard-rescue:SST39SF010-Memory_Flash U?
 U 1 1 6013D3C3
 P 8750 3250
 AR Path="/5FED3839/6013D3C3" Ref="U?"  Part="1" 

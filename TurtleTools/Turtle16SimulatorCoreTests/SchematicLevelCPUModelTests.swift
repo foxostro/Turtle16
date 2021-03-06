@@ -633,11 +633,12 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(2, cpu.pc)
     }
     
-    func testJmp_stallsPipelineToAvoidNeedForDelaySlots() {
+    func testJmp_oneBranchDelaySlot() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b1010001111111111, // JMP #1023 -- pc := pc + 1023
-            0b0010000000001101  // LI r0, #0xd
+            0b0010000000001101, // LI r0, #0xd
+            0b0010000100001101, // LI r1, #0xd
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
@@ -653,14 +654,14 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1027, cpu.pc)
         cpu.step()
         XCTAssertEqual(1028, cpu.pc)
-        XCTAssertEqual(0, cpu.getRegister(0))
+        XCTAssertEqual(0xd, cpu.getRegister(0))
+        XCTAssertNotEqual(0xd, cpu.getRegister(1))
     }
     
     func testJr_ImmIsZero() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b1010100000100000, // JR r1, #0 -- pc := r1 + 0
-            0b0010000000001101  // LI r0, #0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1025)
@@ -677,14 +678,12 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1027, cpu.pc)
         cpu.step()
         XCTAssertEqual(1028, cpu.pc)
-        XCTAssertEqual(0, cpu.getRegister(0))
     }
     
     func testJr_ImmIsPositive() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b1010100000101111, // JR r1, #15 -- pc := r1 + 15
-            0b0010000000001101  // LI r0, #0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
@@ -701,14 +700,12 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1017, cpu.pc)
         cpu.step()
         XCTAssertEqual(1018, cpu.pc)
-        XCTAssertEqual(0, cpu.getRegister(0))
     }
     
     func testJr_ImmIsNegative() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b1010100000111111, // JR r1, #-1 -- pc := r1 - 1
-            0b0010000000001101  // LI r0, #0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
@@ -725,7 +722,6 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1001, cpu.pc)
         cpu.step()
         XCTAssertEqual(1002, cpu.pc)
-        XCTAssertEqual(0, cpu.getRegister(0))
     }
     
     func testJalr() {
@@ -756,75 +752,79 @@ class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b1011011100100000, // JALR r7, r1, #0 -- r7 := pc + 1 ; pc := r1 + 0
+            0b0000000000000000, // NOP (branch delay slot)
             0b0000100000000000, // HLT
-            0b0000000000000000, // NOP
+            0b0000000000000010, // NOP
             0b0010011000001101, // LI r6, #13
-            0b1010100011111111  // JR r7, #-1 -- pc := r7 - 1
+            0b1010100011100000, // JR r7, #0 -- pc := r7 + 0
+            0b0000000000001000  // NOP (branch delay slot)
         ]
         cpu.reset()
-        cpu.setRegister(1, 3)
+        cpu.setRegister(1, 4)
         
         // IF    ID     EX     MEM    WB
         // JALR  -      -      -      -
         cpu.step()
-        XCTAssertEqual(1, cpu.pc)
+        XCTAssertEqual(cpu.pc, 1)
         XCTAssertEqual(cpu.outputIF.ins, 0b1011011100100000)
        
         // IF    ID     EX     MEM    WB
-        // HLT   JALR   -      -      -
+        // NOP   JALR   -      -      -
         cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        XCTAssertEqual(cpu.outputIF.ins, 0b0000100000000000)
+        XCTAssertEqual(cpu.pc, 2)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        XCTAssertEqual(cpu.outputID.ins, 0b0000011100100000)
         
         // IF    ID     EX     MEM    WB
         // NOP   NOP    JALR   -      -
         cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        XCTAssertEqual(cpu.pc, 4)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000010)
+        XCTAssertEqual(cpu.outputID.ins, 0b0000000000000000)
         
         // IF    ID     EX     MEM    WB
         // LI    NOP    NOP    JALR   -
         cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        XCTAssertNotEqual(2,  cpu.getRegister(7))
+        XCTAssertEqual(cpu.pc, 5)
         XCTAssertEqual(cpu.outputIF.ins, 0b0010011000001101)
         
         // IF    ID     EX     MEM    WB
         // JR    LI     NOP    NOP    JALR
+        XCTAssertNotEqual(cpu.getRegister(7), 2)
         cpu.step()
-        XCTAssertEqual(5, cpu.pc)
-        XCTAssertEqual(2,  cpu.getRegister(7))
-        XCTAssertEqual(cpu.outputIF.ins, 0b1010100011111111)
+        XCTAssertEqual(cpu.pc, 6)
+        XCTAssertEqual(cpu.getRegister(7), 2)
+        XCTAssertEqual(cpu.outputIF.ins, 0b1010100011100000)
         
         // IF    ID     EX     MEM    WB
         // NOP   JR     LI     NOP    NOP
         cpu.step()
-        XCTAssertEqual(6, cpu.pc)
-        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        XCTAssertEqual(7, cpu.pc)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000001000)
         
         // IF    ID     EX     MEM    WB
         // NOP   NOP    JR     LI     NOP
         cpu.step()
-        XCTAssertEqual(1, cpu.pc)
+        XCTAssertEqual(cpu.pc, 2)
         XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
         
         // IF    ID     EX     MEM    WB
         // HLT   NOP    NOP    JR     LI
         cpu.step()
-        XCTAssertEqual(2, cpu.pc)
+        XCTAssertEqual(cpu.pc, 3)
         XCTAssertEqual(cpu.outputIF.ins, 0b0000100000000000)
-        XCTAssertEqual(13,  cpu.getRegister(6))
+        XCTAssertEqual(cpu.getRegister(6), 13)
         
         // IF    ID     EX     MEM    WB
         // NOP   HLT    NOP    NOP    JR
         cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000000)
+        XCTAssertEqual(cpu.pc, 4)
+        XCTAssertEqual(cpu.outputIF.ins, 0b0000000000000010)
         
         // IF    ID     EX     MEM    WB
         // LI    NOP    HLT    NOP    NOP
         cpu.step()
-        XCTAssertEqual(4, cpu.pc)
+        XCTAssertEqual(cpu.pc, 5)
         XCTAssertEqual(cpu.outputIF.ins, 0b0010011000001101)
         XCTAssertTrue(cpu.isHalted)
     }

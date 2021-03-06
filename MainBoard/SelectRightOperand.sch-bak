@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 20 35
+Sheet 20 34
 Title "Select Right Operand"
 Date ""
 Rev ""
@@ -584,7 +584,7 @@ Wire Wire Line
 Text HLabel 3000 4500 3    50   Output ~ 0
 RightOp[0..15]
 $Comp
-L 74xx:74LS245 U42
+L MainBoard-rescue:74LS245-74xx U42
 U 1 1 5FE0CC90
 P 2000 2000
 F 0 "U42" H 1700 2800 50  0000 C CNN
@@ -785,7 +785,7 @@ F 3 "" H 1500 2400 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS245 U43
+L MainBoard-rescue:74LS245-74xx U43
 U 1 1 5FE11FD9
 P 2000 4050
 F 0 "U43" H 1700 4850 50  0000 C CNN
@@ -1589,7 +1589,7 @@ F 3 "" H 9050 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U50
+L MainBoard-rescue:74LS245-74xx U50
 U 1 1 5FFB6616
 P 9050 4100
 F 0 "U50" H 8750 4900 50  0000 C CNN
@@ -1790,7 +1790,7 @@ F 3 "" H 9050 1250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U49
+L MainBoard-rescue:74LS245-74xx U49
 U 1 1 5FFB65FD
 P 9050 2050
 F 0 "U49" H 8750 2850 50  0000 C CNN
@@ -2023,7 +2023,7 @@ F 3 "" H 6700 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U48
+L MainBoard-rescue:74LS245-74xx U48
 U 1 1 5FF70213
 P 6700 4100
 F 0 "U48" H 6400 4900 50  0000 C CNN
@@ -2224,7 +2224,7 @@ F 3 "" H 6700 1250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U47
+L MainBoard-rescue:74LS245-74xx U47
 U 1 1 5FF701FA
 P 6700 2050
 F 0 "U47" H 6400 2850 50  0000 C CNN
@@ -2439,7 +2439,7 @@ F 3 "" H 4350 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U45
+L MainBoard-rescue:74LS245-74xx U45
 U 1 1 5FE5F64D
 P 4350 4100
 F 0 "U45" H 4050 4900 50  0000 C CNN
@@ -2640,7 +2640,7 @@ F 3 "" H 4350 1250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS245 U44
+L MainBoard-rescue:74LS245-74xx U44
 U 1 1 5FE5F634
 P 4350 2050
 F 0 "U44" H 4050 2850 50  0000 C CNN

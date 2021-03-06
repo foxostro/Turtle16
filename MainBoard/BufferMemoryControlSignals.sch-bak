@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 25 35
+Sheet 25 34
 Title ""
 Date ""
 Rev ""
@@ -309,12 +309,13 @@ Connection ~ 7450 3600
 Wire Wire Line
 	7450 3600 6300 3600
 $Comp
-L 74xx:74LS245 U?
+L MainBoard-rescue:74LS245-74xx U?
 U 1 1 5FE3305C
 P 5800 4000
 AR Path="/60A71BBF/5FDDE478/5FE3305C" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE3305C" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE3305C" Ref="U21"  Part="1" 
+AR Path="/5FE3305C" Ref="U21"  Part="1" 
 F 0 "U21" H 5500 4800 50  0000 C CNN
 F 1 "74AHCT245" H 5500 4700 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5800 4000 50  0001 C CNN

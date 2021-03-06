@@ -196,4 +196,76 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // WB
         XCTAssertEqual(0xcd00, cpu.getRegister(3))
     }
+    
+    func testCmp_equal() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011000000101000] // CMP r1, r2
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, 2)
+        cpu.setRegister(2, 2)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
+        XCTAssertEqual(1, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(1, cpu.z)
+    }
+    
+    func testCmp_notEqual() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011000000101000] // CMP r1, r2
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, 2)
+        cpu.setRegister(2, 1)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
+        XCTAssertEqual(1, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testCmp_lessThan() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011000000101000] // CMP r1, r2
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, 1)
+        cpu.setRegister(2, 2)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
+        XCTAssertEqual(0, cpu.carry)
+        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testCmp_greaterThanOrEqualTo() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011000000101000] // CMP r1, r2
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, 2)
+        cpu.setRegister(2, 1)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
+        XCTAssertEqual(1, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
 }

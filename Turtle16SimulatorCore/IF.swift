@@ -53,7 +53,6 @@ public class IF: NSObject {
         let pc = aluOutput.f!
         let ins = (input.stallIF==0) ? 0 : load(pc)
         prevOutput = pc
-        NSLog("ins=\(ins)")
         return Output(ins: ins, pc: pc)
     }
     

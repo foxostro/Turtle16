@@ -655,4 +655,76 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1028, cpu.pc)
         XCTAssertEqual(0, cpu.getRegister(0))
     }
+    
+    func testJr_ImmIsZero() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010100000100000, // JR r1, #0 -- pc := r1 + 0
+            0b0010000000001101  // LI r0, #0xd
+        ]
+        cpu.reset()
+        cpu.setRegister(1, 1025)
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        XCTAssertEqual(0, cpu.getRegister(0))
+    }
+    
+    func testJr_ImmIsPositive() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010100000101111, // JR r1, #15 -- pc := r1 + 15
+            0b0010000000001101  // LI r0, #0xd
+        ]
+        cpu.reset()
+        cpu.setRegister(1, 1000)
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1015, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1016, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1017, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1018, cpu.pc)
+        XCTAssertEqual(0, cpu.getRegister(0))
+    }
+    
+    func testJr_ImmIsNegative() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010100000111111, // JR r1, #-1 -- pc := r1 - 1
+            0b0010000000001101  // LI r0, #0xd
+        ]
+        cpu.reset()
+        cpu.setRegister(1, 1000)
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(999, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1000, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1001, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1002, cpu.pc)
+        XCTAssertEqual(0, cpu.getRegister(0))
+    }
 }

@@ -94,33 +94,6 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(cpu.getRegister(7), 0x7777)
     }
     
-    func testClearRegisterToZeroWithXOR() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [0b0101100000000000] // XOR r0, r0, r0
-        cpu.reset()
-        cpu.setRegister(0, 0xcafe)
-        cpu.setRegister(1, 0x1111)
-        cpu.setRegister(2, 0x2222)
-        cpu.setRegister(3, 0x3333)
-        cpu.setRegister(4, 0x4444)
-        cpu.setRegister(5, 0x5555)
-        cpu.setRegister(6, 0x6666)
-        cpu.setRegister(7, 0x7777)
-        cpu.step()
-        cpu.step()
-        cpu.step()
-        cpu.step()
-        cpu.step()
-        XCTAssertEqual(cpu.getRegister(0), 0x0000)
-        XCTAssertEqual(cpu.getRegister(1), 0x1111)
-        XCTAssertEqual(cpu.getRegister(2), 0x2222)
-        XCTAssertEqual(cpu.getRegister(3), 0x3333)
-        XCTAssertEqual(cpu.getRegister(4), 0x4444)
-        XCTAssertEqual(cpu.getRegister(5), 0x5555)
-        XCTAssertEqual(cpu.getRegister(6), 0x6666)
-        XCTAssertEqual(cpu.getRegister(7), 0x7777)
-    }
-    
     func testHlt() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [0b0000100000000000] // HLT
@@ -393,5 +366,32 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.carry)
         XCTAssertEqual(0, cpu.ovf)
         XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testXor() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0101100000000000] // XOR r0, r0, r0
+        cpu.reset()
+        cpu.setRegister(0, 0xcafe)
+        cpu.setRegister(1, 0x1111)
+        cpu.setRegister(2, 0x2222)
+        cpu.setRegister(3, 0x3333)
+        cpu.setRegister(4, 0x4444)
+        cpu.setRegister(5, 0x5555)
+        cpu.setRegister(6, 0x6666)
+        cpu.setRegister(7, 0x7777)
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(cpu.getRegister(0), 0x0000)
+        XCTAssertEqual(cpu.getRegister(1), 0x1111)
+        XCTAssertEqual(cpu.getRegister(2), 0x2222)
+        XCTAssertEqual(cpu.getRegister(3), 0x3333)
+        XCTAssertEqual(cpu.getRegister(4), 0x4444)
+        XCTAssertEqual(cpu.getRegister(5), 0x5555)
+        XCTAssertEqual(cpu.getRegister(6), 0x6666)
+        XCTAssertEqual(cpu.getRegister(7), 0x7777)
     }
 }

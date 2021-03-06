@@ -276,10 +276,12 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.JABS
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeJalr, [
+            DecoderGenerator.SelStoreOp(0b01),
             DecoderGenerator.SelRightOp(0b01),
             DecoderGenerator.C0,
             DecoderGenerator.ALUI(0b011),
             DecoderGenerator.J,
+            DecoderGenerator.JABS,
             DecoderGenerator.AssertStoreOp,
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,

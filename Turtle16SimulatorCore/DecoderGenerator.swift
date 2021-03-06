@@ -316,7 +316,8 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
         ])
-        makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeSbc), signals: [
+        
+        makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeSbc), signals: [
             DecoderGenerator.SelRightOp(0b00),
             DecoderGenerator.FI,
             DecoderGenerator.ALUI(0b010),
@@ -325,6 +326,17 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.WRH,
             DecoderGenerator.WBEN
         ])
+        makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeSbc), signals: [
+            DecoderGenerator.SelRightOp(0b00),
+            DecoderGenerator.FI,
+            DecoderGenerator.C0,
+            DecoderGenerator.ALUI(0b010),
+            DecoderGenerator.WriteBackSrc(.aluResult),
+            DecoderGenerator.WRL,
+            DecoderGenerator.WRH,
+            DecoderGenerator.WBEN
+        ])
+        
         return controlWords
     }
     

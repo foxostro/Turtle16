@@ -446,4 +446,21 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.ovf)
         XCTAssertEqual(0, cpu.z)
     }
+    
+    func testSubi() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0111100000100001] // SUBI r0, r1, #1
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, 0)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xffff, cpu.getRegister(0))
+        XCTAssertEqual(0, cpu.carry)
+        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
 }

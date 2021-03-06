@@ -514,4 +514,44 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.ovf)
         XCTAssertEqual(0, cpu.z)
     }
+    
+    func testAdc_carry_is_set() {
+        // r0 = r1 + r2 + Cf
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b1111000000101000] // ADC r0, r1, r2
+        cpu.carry = 1
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 1)
+        cpu.setRegister(2, 1)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(3, cpu.getRegister(0))
+        XCTAssertEqual(0, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testAdc_carry_is_unset() {
+        // r0 = r1 + r2 + Cf
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b1111000000101000] // ADC r0, r1, r2
+        cpu.carry = 0
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 0)
+        cpu.setRegister(2, 0)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0, cpu.getRegister(0))
+        XCTAssertEqual(0, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(1, cpu.z)
+    }
 }

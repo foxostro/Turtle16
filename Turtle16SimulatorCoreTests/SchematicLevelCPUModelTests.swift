@@ -268,4 +268,58 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.ovf)
         XCTAssertEqual(0, cpu.z)
     }
+    
+    func testAdd() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011100000101000] // ADD r0, r1, r2
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 2)
+        cpu.setRegister(2, 1)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(3, cpu.getRegister(0))
+        XCTAssertEqual(0, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testAdd_signedOverflow() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011100000101000] // ADD r0, r1, r2
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 0x7fff)
+        cpu.setRegister(2, 2)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0x8001, cpu.getRegister(0))
+        XCTAssertEqual(0, cpu.carry)
+        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testAdd_unsignedOverflow() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0011100000101000] // ADD r0, r1, r2
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 0xffff)
+        cpu.setRegister(2, 2)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(1, cpu.getRegister(0))
+        XCTAssertEqual(1, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
 }

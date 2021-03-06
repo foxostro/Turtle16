@@ -412,4 +412,21 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.ovf)
         XCTAssertEqual(0, cpu.z)
     }
+    
+    func testCmpi() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [0b0110100000100001] // CMPI r1, #1
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, 2)
+        cpu.reset()
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMPI does not store the result
+        XCTAssertEqual(1, cpu.carry)
+        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.z)
+    }
 }

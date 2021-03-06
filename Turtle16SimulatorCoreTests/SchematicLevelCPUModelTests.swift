@@ -594,4 +594,65 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.ovf)
         XCTAssertEqual(0, cpu.z)
     }
+    
+    func testJmp_forward() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010001111111111, // JMP #1023 -- pc := pc + 1023
+        ]
+        cpu.reset()
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step() // IF
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step() // ID
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step() // EX
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step() // MEM
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step() // WB
+        XCTAssertEqual(1027, cpu.pc)
+    }
+    
+    func testJmp_backward() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010011111111110, // JMP #-2 -- pc := pc - 2
+        ]
+        cpu.reset()
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step() // IF
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step() // ID
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step() // EX
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step() // MEM
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step() // WB
+        XCTAssertEqual(2, cpu.pc)
+    }
+    
+    func testJmp_stallsPipelineToAvoidNeedForDelaySlots() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010001111111111, // JMP #1023 -- pc := pc + 1023
+            0b0010000000001101  // LI r0, #0xd
+        ]
+        cpu.reset()
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        XCTAssertEqual(0, cpu.getRegister(0))
+    }
 }

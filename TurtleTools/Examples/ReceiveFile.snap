@@ -1,0 +1,555 @@
+trait Serial {
+    func print(self: *Serial, s: []const u8)
+    func printByte(self: *Serial, c: u8)
+    func readByte(self: *Serial) -> u8 | None
+}
+
+struct SerialReal {}
+
+impl Serial for SerialReal {
+    func print(self: *SerialReal, s: []const u8) {
+        puts(s)
+    }
+
+    func printByte(self: *SerialReal, c: u8) {
+        putc(c)
+    }
+
+    func readByte(self: *SerialReal) -> u8 | None {
+        return none // TBD
+    }
+}
+
+var serialReal = SerialReal {}
+
+struct SerialFake {
+    inputBuffer: []const u8,
+    outputBuffer: [8]u8,
+    outputCursor: u16
+}
+
+let kEmptyString = ""
+
+impl SerialFake {
+    func init() -> SerialFake {
+        return SerialFake {
+            .inputBuffer = kEmptyString,
+            .outputBuffer = undefined,
+            .outputCursor = 0
+        }
+    }
+
+    func isOutputEqualTo(self: *SerialFake, expected: []const u8) -> bool {
+    	if expected.count > self.outputBuffer.count {
+    		return false
+    	}
+    	if self.outputCursor != expected.count {
+    		return false
+    	}
+    	for i in 0..(expected.count) {
+    		if self.outputBuffer[i] != expected[i] {
+    			return false
+    		}
+    	}
+    	return true
+    }
+
+    func provideInput(self: *SerialFake, s: []const u8) {
+        self.inputBuffer = s
+    }
+
+    func dropFirst(self: *SerialFake) {
+        let n = self.inputBuffer.count
+        if n == 1 {
+            self.inputBuffer = kEmptyString
+        } else {
+            self.inputBuffer = self.inputBuffer[1..n]
+        }
+    }
+}
+
+impl Serial for SerialFake {
+    func print(self: *SerialFake, s: []const u8) {
+        for i in 0..(s.count) {
+            self.outputBuffer[self.outputCursor + i] = s[i]
+        }
+        self.outputCursor = self.outputCursor + s.count
+    }
+
+    func printByte(self: *SerialFake, c: u8) {
+        self.outputBuffer[self.outputCursor] = c
+        self.outputCursor = self.outputCursor + 1
+    }
+
+    func readByte(self: *SerialFake) -> u8 | None {
+        if self.inputBuffer.count == 0 {
+            return none
+        }
+        let result = self.inputBuffer[0]
+        self.dropFirst()
+        return result
+    }
+}
+
+// XMODEM Start of Header
+let kSOH = 0x01
+
+// XMODEM End of Transmission
+let kEOT = 0x04
+
+// XMODEM Acknowledge
+let kACK = 0x06
+
+// XMODEM Not Acknowledge
+let kNAK = 0x15
+
+// XMODEM End of Transmission Block
+let kETB = 0x17
+
+// XMODEM Cancel
+let kCAN = 0x18
+
+// XMODEM "C" to indicate CRC mode
+let kC = 0x43
+
+struct XmodemPacket {
+    start: u8,
+    packetNumber: u8,
+    inversePacketNumber: u8,
+    payload: [128]u8,
+    crc: u16
+}
+
+impl XmodemPacket {
+    func init() -> XmodemPacket {
+        var packet = XmodemPacket {}
+        packet.start = kSOH
+        packet.packetNumber = 1
+        packet.inversePacketNumber = 254
+        packet.crc = 0x00
+        for i in 0..(packet.payload.count) {
+            packet.payload[i] = 0
+        }
+        return packet
+    }
+
+    func computeChecksum(self: *const XmodemPacket) -> u16 {
+        let poly: u16 = 0x1021
+        var crc: u16 = 0
+        for j in 0..(self.payload.count) {
+            crc = crc ^ ((self.payload[j] as u16) << 8)
+            for i in 0..8 {
+                crc = crc << 1
+                if 0 != (crc & 0x8000) {
+                    crc = (crc << 1) ^ poly
+                } else {
+                  crc = crc << 1
+                }
+            }
+        }
+        return crc
+    }
+
+    func isValid(self: *const XmodemPacket) -> bool {
+        let start = self.start
+        if !(start == kSOH || start == kEOT || start == kCAN || start == kETB) {
+            return false
+        }
+        if self.inversePacketNumber + self.packetNumber != 255 {
+            return false
+        }
+        let crc = self.computeChecksum()
+        if crc != self.crc {
+            return false
+        }
+        return true
+    }
+}
+
+struct XmodemProtocol {
+    serial: Serial,
+    packet: XmodemPacket,
+    status: u8
+}
+
+impl XmodemProtocol {
+    func init(serial: Serial) -> XmodemProtocol {
+        return XmodemProtocol {
+            .serial = serial,
+            .packet = undefined,
+            .status = kC
+        }
+    }
+
+    func readU8(self: *XmodemProtocol) -> u8 {
+        var byte: u8 | None = none
+        while byte is None {
+            byte = self.serial.readByte()
+        }
+        return byte as u8
+    }
+
+    func readU16(self: *XmodemProtocol) -> u16 {
+        let highByte: u16 = self.readU8()
+        let lowByte: u16 = self.readU8()
+        let result = (highByte << 8) + lowByte
+        return result
+    }
+
+    func receiveOnePacket(self: *XmodemProtocol) -> u8 {
+        self.packet.start = self.readU8()
+        if self.packet.start == kEOT {
+            return kEOT
+        }
+        if self.packet.start == kETB {
+            return kETB
+        }
+        if self.packet.start == kCAN {
+            return kCAN
+        }
+        self.packet.packetNumber = self.readU8()
+        self.packet.inversePacketNumber = self.readU8()
+        for i in 0..128 {
+            self.packet.payload[i] = self.readU8()
+        }
+        self.packet.crc = self.readU16()
+        if self.packet.isValid() {
+            return kACK
+        } else {
+            return kNAK
+        }
+    }
+
+    func sendACK(self: *XmodemProtocol) {
+        self.serial.printByte(kACK)
+    }
+
+    func sendNAK(self: *XmodemProtocol) {
+        self.serial.printByte(kNAK)
+    }
+
+    func begin(self: *XmodemProtocol) {
+        self.serial.printByte(kC)
+    }
+
+    func run(self: *XmodemProtocol) -> u8 {
+        var status: u8 = kNAK
+        while status == kNAK {
+            status = self.receiveOnePacket()
+            if status == kACK {
+                self.sendACK()
+                return kACK
+            }
+            if status == kEOT {
+                self.sendACK()
+                return kEOT
+            }
+            if status == kETB {
+                self.sendACK()
+                return kETB
+            }
+            if status == kCAN {
+                return status
+            }
+        }
+        assert(false)
+        return kACK
+    }
+
+    func receiveFile(self: *XmodemProtocol) {
+        self.begin()
+        while self.status != kETB && self.status != kCAN {
+            self.status = self.run()
+        }
+    }
+}
+
+func printU8(serial: Serial, value_: u8) {
+    var value: u8 = value_
+    serial.print("0x")
+    var buffer = [_]u8{'0', '0'}
+    var i: u8 = 1
+    while value != 0 {
+        let rem = (value % 16) as u8
+        if rem > 9 {
+            buffer[i] = rem - 10 + 'a'
+        } else {
+            buffer[i] = rem + '0'
+        }
+        value = value / 16
+        i = i - 1
+    }
+    serial.print(buffer)
+}
+
+func printU16(serial: Serial, value_: u16) {
+    var value: u16 = value_
+    serial.print("0x")
+    var buffer = [_]u8{'0', '0', '0', '0'}
+    var i: u8 = 3
+    while value != 0 {
+        let rem = (value % 16) as u8
+        if rem > 9 {
+            buffer[i] = rem - 10 + 'a'
+        } else {
+            buffer[i] = rem + '0'
+        }
+        value = value / 16
+        i = i - 1
+    }
+    serial.print(buffer)
+}
+
+test "print u8" {
+	var serialFake = SerialFake.init()
+	printU8(&serialFake, 0xab)
+	assert(serialFake.isOutputEqualTo("0xab"))
+}
+
+test "print u16" {
+	var serialFake = SerialFake.init()
+	printU16(&serialFake, 0xabcd)
+	assert(serialFake.isOutputEqualTo("0xabcd"))
+}
+
+test "read byte when none is available" {
+	var serialFake = SerialFake.init()
+	let c = serialFake.readByte()
+	match c {
+		(value: u8) -> {
+			assert(false)
+		},
+		(n: None) -> {
+			assert(true)
+		}
+	}
+}
+
+test "read byte when empty string is available" {
+	var serialFake = SerialFake.init()
+	serialFake.provideInput("")
+	let c = serialFake.readByte()
+	match c {
+		(value: u8) -> {
+			assert(false)
+		},
+		(n: None) -> {
+			assert(true)
+		}
+	}
+}
+
+test "read one byte from serial" {
+	var serialFake = SerialFake.init()
+	serialFake.provideInput("a")
+	let a = serialFake.readByte()
+	assert(a is u8)
+	assert((a as u8) == 'a')
+}
+
+test "read two bytes from serial" {
+	var serialFake = SerialFake.init()
+	serialFake.provideInput("ab")
+	let a = serialFake.readByte()
+	assert(a is u8)
+	assert((a as u8) == 'a')
+	let b = serialFake.readByte()
+	assert(b is u8)
+	assert((b as u8) == 'b')
+}
+
+test "compute packet checksum" {
+    var packet = XmodemPacket.init()
+    packet.payload = [128]u8 {
+        1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    }
+    assert((packet.payload[0] as u16) == 1)
+    let crc = packet.computeChecksum()
+    //serialReal.print("crc: ")
+    //printU16(&serialReal, crc)
+    //serialReal.print("\n")
+    assert(crc == 0x2100)
+}
+
+test "receive u8" {
+    var serialFake = SerialFake.init()
+    let data = [3]u8{ kSOH, 0, 255 }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    assert(protocol.readU8() == kSOH)
+    assert(protocol.readU8() == 0)
+    assert(protocol.readU8() == 255)
+}
+
+test "receive u16" {
+    var serialFake = SerialFake.init()
+    let data = [2]u8{ 0xab, 0xcd }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    let value = protocol.readU16()
+    //printU16(&serialReal, value)
+    assert(value == 0xabcd)
+}
+
+test "receive invalid packet: bad start" {
+    var serialFake = SerialFake.init()
+    let data = [133]u8{
+        0xff,
+        1,
+        254,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0x21, 0
+    }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    let status = protocol.receiveOnePacket()
+    assert(status == kNAK)
+    assert(!protocol.packet.isValid())
+}
+
+test "receive invalid packet: bad packet number" {
+    var serialFake = SerialFake.init()
+    let data = [133]u8{
+        kSOH,
+        0,
+        1,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0x21, 0
+    }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    let status = protocol.receiveOnePacket()
+    assert(status == kNAK)
+    assert(!protocol.packet.isValid())
+}
+
+test "receive invalid packet: bad crc" {
+    var serialFake = SerialFake.init()
+    let data = [133]u8{
+        kSOH,
+        1,
+        254,
+        1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0xff, 0
+    }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    let status = protocol.receiveOnePacket()
+    assert(status == kNAK)
+    assert(!protocol.packet.isValid())
+}
+
+test "send C command" {
+    var serialFake = SerialFake.init()
+    var protocol = XmodemProtocol.init(&serialFake)
+    protocol.begin()
+    assert(serialFake.isOutputEqualTo([_]u8{kC}))
+}
+
+test "send ACK reply" {
+    var serialFake = SerialFake.init()
+    var protocol = XmodemProtocol.init(&serialFake)
+    protocol.sendACK()
+    assert(serialFake.isOutputEqualTo([_]u8{kACK}))
+}
+
+test "send NAK reply" {
+    var serialFake = SerialFake.init()
+    var protocol = XmodemProtocol.init(&serialFake)
+    protocol.sendNAK()
+    assert(serialFake.isOutputEqualTo([_]u8{kNAK}))
+}
+
+test "run protocol for one packet and one reply" {
+    var serialFake = SerialFake.init()
+    let data = [133]u8{
+        kSOH,
+        1,
+        254,
+        1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0x21, 0
+    }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    protocol.begin()
+    let status = protocol.run()
+    assert(status == kACK)
+    assert(serialFake.isOutputEqualTo([_]u8{kC, kACK}))
+}
+
+test "run protocol for entire file transfer" {
+    var serialFake = SerialFake.init()
+    let data = [_]u8{
+        kSOH,
+        1,
+        254,
+        1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0x21, 0,
+
+        kSOH,
+        2,
+        253,
+        1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0x21, 0,
+
+        kEOT,
+
+        kETB
+    }
+    serialFake.provideInput(data)
+    var protocol = XmodemProtocol.init(&serialFake)
+    protocol.receiveFile()
+    assert(serialFake.isOutputEqualTo([_]u8{kC, kACK, kACK, kACK, kACK}))
+    assert(protocol.packet.packetNumber == 2)
+}
+
+// TODO: The received file should be copied into either the lower or upper plane of instruction RAM.

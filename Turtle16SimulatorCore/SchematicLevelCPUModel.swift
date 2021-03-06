@@ -28,6 +28,10 @@ public class SchematicLevelCPUModel: NSObject {
     
     public var instructions: [UInt16] = []
     
+    public var carry: UInt = 0
+    public var z: UInt = 0
+    public var ovf: UInt = 0
+    
     public func setRegister(_ idx: Int, _ val: UInt16) {
         assert(idx >= 0 && idx <= 7)
         stageID.registerFile[idx] = val
@@ -123,6 +127,13 @@ public class SchematicLevelCPUModel: NSObject {
                                ins: outputID.ins)
         outputEX = stageEX.step(input: inputEX)
         
+        // Only update flags if the appropriate bit in the control word is set.
+        if ((inputEX.ctl >> DecoderGenerator.FI) & 1) == 0 {
+            carry = outputEX.carry
+            ovf = outputEX.ovf
+            z = outputEX.z
+        }
+        
         // ID
         let inputID = ID.Input(ins: outputIF.ins,
                                selC_EX: outputEX.selC,
@@ -130,9 +141,9 @@ public class SchematicLevelCPUModel: NSObject {
                                selC_MEM: outputMEM.selC,
                                ctl_MEM: outputMEM.ctl,
                                j: outputEX.j,
-                               ovf: outputEX.ovf,
-                               z: outputEX.z,
-                               carry: outputEX.carry,
+                               ovf: ovf,
+                               z: z,
+                               carry: carry,
                                rst: rst)
         outputID = stageID.step(input: inputID)
         

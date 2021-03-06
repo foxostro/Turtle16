@@ -590,14 +590,14 @@ class DecoderGeneratorTests: XCTestCase {
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeJalr) {
             let controlWord = decoder[index]
             XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
+            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b10)
             XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
             XCTAssertEqual((controlWord >> FI) & 1, 0)
             XCTAssertEqual(~(controlWord >> C0) & 1, 0)
             XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
             XCTAssertEqual(~(controlWord >> RS0) & 3, 0b11)
             XCTAssertEqual((controlWord >> J) & 1, 1)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
             XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
             XCTAssertEqual((controlWord >> MemStore) & 1, 0)
             XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)

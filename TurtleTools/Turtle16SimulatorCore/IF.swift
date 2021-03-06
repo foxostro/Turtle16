@@ -14,16 +14,12 @@ import Foundation
 // following naming conventions and organization that matches the schematics.
 public class IF: NSObject {
     public struct Input {
-        public let stallPC: UInt
-        public let stallIF: UInt
         public let y: UInt16
         public let jabs: UInt
         public let j: UInt
         public let rst: UInt
         
-        public init(stallPC: UInt, stallIF: UInt, y: UInt16, jabs: UInt, j: UInt, rst: UInt) {
-            self.stallPC = stallPC
-            self.stallIF = stallIF
+        public init(y: UInt16, jabs: UInt, j: UInt, rst: UInt) {
             self.y = y
             self.jabs = jabs
             self.j = j
@@ -51,7 +47,7 @@ public class IF: NSObject {
     public func step(input: Input) -> Output {
         let aluOutput = alu.step(input: driveALU(input: input))
         let pc = aluOutput.f!
-        let ins = (input.stallIF==0) ? 0 : load(pc)
+        let ins = load(pc)
         prevOutput = pc
         return Output(ins: ins, pc: pc)
     }
@@ -60,7 +56,7 @@ public class IF: NSObject {
         // The ALU control logic is written in this awkward way so that there is
         // a close correspondence between this simulator code and the HDL used
         // for U73, an ATF22V10.
-        let c0: UInt = ~(input.stallPC | (~input.stallPC & ~input.j)) & 1
+        let c0: UInt = input.j & 1
         let i2: UInt = ~input.rst & 1
         let i1: UInt = input.rst & 1
         let i0: UInt = input.rst & 1

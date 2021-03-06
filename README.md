@@ -62,10 +62,7 @@ The instruction decoder in the ID stage of the CPU pipeline decode the five-bit 
 19. /WRH — Write the upper byte in the register file's write port
 20. /WBEN — Enable write back to register file
 
-The ID stage contains hazard control logic which additionally produces signals for stalling and flushing the pipeline:
-
-* STALL_PC — Stalls the Program Counter in the IF stage.
-* /STALL_IF — Stalls the Instruction Fetch unit in the IF stage.
+For the sake of simplicity, there is no hazard control logic in the CPU. It is the responsibility of the programmer to avoid hazards such as RAW hazards, Flags hazards, and issues related to branch delay slots.
 
 
 
@@ -317,3 +314,8 @@ Perform a conditional pc-relative jump when the Carry flag is not set, performin
 ```
 NPC := PC + Imm
 ```
+
+
+# TurtleTools
+
+TurtleTools is a toolchain for the Turtle16 microcomputer hardware. This includes a computer Simulator, Assembler, and a compiler for a new high-level language targeting the hardware.

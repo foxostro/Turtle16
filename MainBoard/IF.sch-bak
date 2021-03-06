@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 32 35
+Sheet 32 34
 Title "IF"
 Date ""
 Rev ""
@@ -71,7 +71,6 @@ F4 "~J" I L 3050 4100 50
 F5 "PC[0..15]" O R 4500 3700 50 
 F6 "Y_EX[0..15]" I L 3050 4000 50 
 F7 "~JABS" I L 3050 4200 50 
-F8 "STALL_PC" I L 3050 4300 50 
 $EndSheet
 $Sheet
 S 6550 3350 1150 750 
@@ -83,18 +82,9 @@ F3 "PC_EX[0..15]" O R 7700 3700 50
 F4 "Ins_IF[0..15]" I L 6550 4000 50 
 F5 "Ins_ID[0..15]" O R 7700 3450 50 
 F6 "Phi1" I L 6550 3450 50 
-F7 "~STALL_IF" I L 6550 3550 50 
 $EndSheet
 Text HLabel 2700 4200 0    50   Input ~ 0
 ~JABS
 Wire Wire Line
 	3050 4200 2700 4200
-Wire Wire Line
-	6300 3550 6550 3550
-Text HLabel 2700 4300 0    50   Input ~ 0
-STALL_PC
-Wire Wire Line
-	3050 4300 2700 4300
-Text HLabel 6300 3550 0    50   Input ~ 0
-~STALL_IF
 $EndSCHEMATC

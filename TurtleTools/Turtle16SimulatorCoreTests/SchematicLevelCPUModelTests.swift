@@ -942,4 +942,42 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step()
         XCTAssertEqual(3, cpu.pc)
     }
+    
+    func testBge_takeTheJump() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1101101111111111 // BGE #1023
+        ]
+        cpu.reset()
+        cpu.ovf = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+    }
+    
+    func testBge_dontTakeTheJump() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1101101111111111 // BGE #1023
+        ]
+        cpu.reset()
+        cpu.ovf = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+    }
 }

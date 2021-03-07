@@ -220,7 +220,7 @@ NPC := PC + Imm
 
 ### JR (IRI-format)
 
-`0bkkkk'kiii'aaai'iiii`
+`0bkkkk'k000'aaai'iiii`
 
 Perform an unconditional absolute jump, computing Ra + Imm and setting PC to the result:
 

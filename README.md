@@ -190,15 +190,15 @@ The ALU operands are selected by an array of multiplexer circuitry.
 
 The Store Operand may be one of the following...
 1. Rb
-2. Rb << 8
-3. PC+1
-4. Eight-bit immediate value
+2. PC + 1
+3. Eight-bit immediate value
+4. (Eight-bit immediate value) << 8
 
 The Right Operand may be one of the following...
 1. Rb
 2. The five-bit immediate value, ins[4:0]
 3. The five-bit immediate value, ins[10:8, 1:0]
-4. The eight-bit immediate value, ins[10:8, 4:0]
+4. The eight-bit immediate value, ins[10:0]
 
 The Left Operand is always Ra.
 

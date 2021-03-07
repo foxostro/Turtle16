@@ -828,4 +828,42 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(cpu.outputIF.ins, 0b0010011000001101)
         XCTAssertTrue(cpu.isHalted)
     }
+    
+    func testBeq_takeTheJump() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1100001111111111 // BEQ #1023
+        ]
+        cpu.reset()
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+    }
+    
+    func testBeq_dontTakeTheJump() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1100001111111111 // BEQ #1023
+        ]
+        cpu.reset()
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+    }
 }

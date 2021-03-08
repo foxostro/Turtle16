@@ -158,10 +158,10 @@ class DecoderGeneratorTests: XCTestCase {
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeStore) {
             let controlWord = decoder[index]
             XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
+            XCTAssertEqual(~(controlWord >> SelStoreOpA) & 3, 0b00)
             XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b10)
             XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
             XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
             XCTAssertEqual((controlWord >> RS0) & 3, 0)
             XCTAssertEqual((controlWord >> J) & 1, 0)

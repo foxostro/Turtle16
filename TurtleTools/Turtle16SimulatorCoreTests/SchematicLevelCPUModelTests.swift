@@ -120,7 +120,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.store = {(value: UInt16, addr: UInt16) in
             XCTFail()
         }
-        cpu.instructions = [0b0001001100100001] // LOAD r3, 1(r1)
+        cpu.instructions = [
+            0b0001001100100001 // LOAD r3, 1(r1)
+        ]
         cpu.reset()
         cpu.setRegister(1, 0xfffe)
         cpu.step() // IF
@@ -130,6 +132,39 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // WB
         XCTAssertEqual(0xabcd, cpu.getRegister(3))
         XCTAssertEqual(0xffff, observedLoadAddr)
+    }
+    
+    func testStore() {
+        var observedStoreAddr: UInt16? = nil
+        var observedStoreVal: UInt16? = nil
+        let cpu = SchematicLevelCPUModel()
+        cpu.store = {(value: UInt16, addr: UInt16) in
+            if observedStoreVal != nil {
+                XCTFail()
+            }
+            observedStoreVal = value
+            
+            if observedStoreAddr != nil {
+                XCTFail()
+            }
+            observedStoreAddr = addr
+        }
+        cpu.instructions = [
+            0b0001111100101111 // STORE r3, -1(r1) -- 0bkkkkkiiiaaabbbii
+        ]
+        
+        cpu.reset()
+        cpu.setRegister(1, 0x0000)
+        cpu.setRegister(3, 0xabcd)
+        
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        
+        XCTAssertEqual(observedStoreAddr, 0xffff)
+        XCTAssertEqual(observedStoreVal,  0xabcd)
     }
     
     func testLi() {

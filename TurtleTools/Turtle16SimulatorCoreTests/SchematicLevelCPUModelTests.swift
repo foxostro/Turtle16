@@ -1732,4 +1732,25 @@ class SchematicLevelCPUModelTests: XCTestCase {
         // the LOAD stores the new value to the register file later in (2).
         XCTAssertEqual(cpu.getRegister(2), 0)
     }
+    
+    func testCountdown() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0111011111100001, // ADDI r7, r7, #1
+            0b0000000000000000, // NOP
+            0b0000000000000000, // NOP
+            0b0000000000000000, // NOP
+            0b0110100011100010, // CMPI r7, #2
+            0b0000000000000000, // NOP
+            0b1101011111111001, // BLT #-7
+            0b0000000000000000, // NOP
+            0b0000100000000000, // HLT
+        ]
+        cpu.reset()
+        while !cpu.isHalted {
+            cpu.step()
+        }
+        
+        XCTAssertEqual(cpu.getRegister(7), 2)
+    }
 }

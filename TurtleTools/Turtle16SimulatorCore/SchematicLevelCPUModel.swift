@@ -127,13 +127,6 @@ public class SchematicLevelCPUModel: NSObject {
                                ins: outputID.ins)
         outputEX = stageEX.step(input: inputEX)
         
-        // Only update flags if the appropriate bit in the control word is set.
-        if ((inputEX.ctl >> DecoderGenerator.FI) & 1) == 0 {
-            carry = outputEX.carry
-            ovf = outputEX.ovf
-            z = outputEX.z
-        }
-        
         // ID
         let inputID = ID.Input(ins: outputIF.ins,
                                ovf: ovf,
@@ -141,6 +134,13 @@ public class SchematicLevelCPUModel: NSObject {
                                carry: carry,
                                rst: rst)
         outputID = stageID.step(input: inputID)
+        
+        // Only update flags if the appropriate bit in the control word is set.
+        if ((inputEX.ctl >> DecoderGenerator.FI) & 1) == 0 {
+            carry = outputEX.carry
+            ovf = outputEX.ovf
+            z = outputEX.z
+        }
         
         // IF
         let inputIF = IF.Input(y: outputEX.y,

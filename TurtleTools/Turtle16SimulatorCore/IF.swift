@@ -57,7 +57,7 @@ public class IF: NSObject {
         // a close correspondence between this simulator code and the HDL used
         // for U73, an ATF22V10.
         let c0: UInt = input.j & 1
-        let i2: UInt = ~input.rst & 1
+        let i2: UInt = 0
         let i1: UInt = input.rst & 1
         let i0: UInt = input.rst & 1
         let rs1: UInt = ~input.j & 1

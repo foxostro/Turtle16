@@ -26,12 +26,14 @@ class IFTests: XCTestCase {
     func testProgramCounterResetsToZero() {
         let ifetch = IF()
         ifetch.load = {(addr: UInt16) in
-            return addr + 0xabcd
+            return addr &+ 0xabcd
         }
-        ifetch.alu.a = 1
+        ifetch.prevOutput = 0xffff
+        ifetch.alu.a = 0xffff
+        ifetch.alu.b = 0xffff
+        ifetch.alu.f = 0xffff
         let input = IF.Input(y: 0, jabs: 1, j: 1, rst: 0)
         let _ = ifetch.step(input: input)
-        XCTAssertEqual(ifetch.alu.f, 0)
         let output = ifetch.step(input: input)
         XCTAssertEqual(output.pc, 0)
         XCTAssertEqual(output.ins, 0xabcd)

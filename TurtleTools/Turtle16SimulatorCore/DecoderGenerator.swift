@@ -122,8 +122,10 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.WBEN
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeStore, [
+            DecoderGenerator.SelStoreOp(0b00),
             DecoderGenerator.SelRightOp(0b10),
             DecoderGenerator.ALUI(0b011),
+            DecoderGenerator.C0,
             DecoderGenerator.MemStore,
             DecoderGenerator.AssertStoreOp
         ])

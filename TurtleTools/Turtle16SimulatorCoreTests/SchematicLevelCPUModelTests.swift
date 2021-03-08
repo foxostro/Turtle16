@@ -1753,4 +1753,31 @@ class SchematicLevelCPUModelTests: XCTestCase {
         
         XCTAssertEqual(cpu.getRegister(7), 2)
     }
+    
+    func testFibonacci() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0010000000000000, // LI r0, #0
+            0b0010000100000001, // LI r1, #1
+            0b0010011100000000, // LI r7, #0
+            0b0000000000000000, // NOP
+            0b0011101000000100, // ADD r2, r0, r1
+            0b0111000000100000, // ADDI r0, r1, #0
+            0b0111011111100001, // ADDI r7, r7, #1
+            0b0000000000000000, // NOP
+            0b0111000101000000, // ADDI r1, r2, #0
+            0b0110100011101000, // CMPI r7, #8
+            0b0000000000000000, // NOP
+            0b0000000000000000, // NOP
+            0b1101011111110111, // BLT #-9
+            0b0000000000000000, // NOP
+            0b0000100000000000, // HLT
+        ]
+        cpu.reset()
+        while !cpu.isHalted {
+            cpu.step()
+        }
+        
+        XCTAssertEqual(cpu.getRegister(2), 34)
+    }
 }

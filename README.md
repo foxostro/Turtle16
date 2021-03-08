@@ -152,10 +152,10 @@ Rc := mem[Ra + Imm]
 
 `0bkkkk'kiii'aaab'bbii`
 
-Stores the contents of the register Rc to memory at the address given by Ra + Imm.
+Stores the contents of the register Rb to memory at the address given by Ra + Imm.
 
 ```
-mem[Ra + Imm] := Rc
+mem[Ra + Imm] := Rb
 ```
 
 

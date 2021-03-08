@@ -834,7 +834,64 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1100001111111111 // BEQ #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
         cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
@@ -856,7 +913,46 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1100001111111111 // BEQ #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
         cpu.z = 0
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
@@ -872,7 +968,64 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1100101111111111 // BNE #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
         cpu.z = 0
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
@@ -894,7 +1047,46 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1100101111111111 // BNE #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
         cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
@@ -910,8 +1102,65 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1101001111111111 // BLT #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
         cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -932,8 +1181,47 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1101001111111111 // BLT #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
         cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -948,8 +1236,65 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1101101111111111 // BGE #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
         cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -970,8 +1315,47 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1101101111111111 // BGE #1023
         ]
+        
         cpu.reset()
+        cpu.carry = 0
         cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -986,8 +1370,65 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1110001111111111 // BLTU #1023
         ]
+        
         cpu.reset()
         cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -1008,8 +1449,47 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1110001111111111 // BLTU #1023
         ]
+        
         cpu.reset()
         cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -1024,8 +1504,65 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1110101111111111 // BGEU #1023
         ]
+        
         cpu.reset()
         cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1025, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1026, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1027, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1028, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 0
+        cpu.ovf = 1
+        cpu.z = 1
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -1046,8 +1583,11 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b1110101111111111 // BGEU #1023
         ]
+        
         cpu.reset()
         cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 0
         XCTAssertEqual(0, cpu.pc)
         cpu.step()
         XCTAssertEqual(1, cpu.pc)
@@ -1055,5 +1595,63 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(2, cpu.pc)
         cpu.step()
         XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 0
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 0
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+        
+        cpu.reset()
+        cpu.carry = 1
+        cpu.ovf = 1
+        cpu.z = 1
+        XCTAssertEqual(0, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(1, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(2, cpu.pc)
+        cpu.step()
+        XCTAssertEqual(3, cpu.pc)
+    }
+    
+    func testDemonstrateHazard_RAW() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0010000100000000, // LI r1, #0
+            0b0011100000101000  // ADD r0, r1, r2
+        ]
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 1)
+        cpu.setRegister(2, 1)
+        cpu.reset()
+        //            IF    ID  EX  MEM WB
+        cpu.step() // LI    -   -   -   -
+        cpu.step() // ADD   LI  -   -   -
+        cpu.step() // -     ADD LI  -   -  (parameters of ADD are resolved here)
+        cpu.step() // -     -   ADD LI  -
+        cpu.step() // -     -   -   ADD LI (result of LI is stored here)
+        cpu.step() // -     -   -   -   ADD
+        XCTAssertEqual(cpu.getRegister(0), 2)
+        XCTAssertEqual(cpu.getRegister(1), 0)
+        XCTAssertEqual(cpu.getRegister(2), 1)
     }
 }

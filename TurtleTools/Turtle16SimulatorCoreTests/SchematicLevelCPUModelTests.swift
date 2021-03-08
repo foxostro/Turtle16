@@ -1654,4 +1654,23 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(cpu.getRegister(1), 0)
         XCTAssertEqual(cpu.getRegister(2), 1)
     }
+    
+    func testDemonstrateHazard_Flags() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0011000000101000, // CMP r1, r2
+            0b1100001111111111  // BEQ #1023
+        ]
+        cpu.reset()
+        cpu.setRegister(1, 1)
+        cpu.setRegister(2, 1)
+        cpu.carry = 0
+        cpu.ovf = 0
+        cpu.z = 0
+        //            IF    ID  EX  MEM WB
+        cpu.step() // CMP   -   -   -   -
+        cpu.step() // BEQ   CMP -   -   -
+        cpu.step() // -     BEQ CMP -   - (flags are updated at the end of the cycle)
+        XCTAssertEqual(cpu.outputID.ctl_EX, ID.nopControlWord)
+    }
 }

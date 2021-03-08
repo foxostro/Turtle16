@@ -1708,4 +1708,28 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // -     BEQ CMP -   - (flags are updated at the end of the cycle)
         XCTAssertEqual(cpu.outputID.ctl_EX, ID.nopControlWord)
     }
+    
+    func testDemonstrateHazard_MemoryLoad() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.load = {(addr: UInt16) in
+            return 1
+        }
+        cpu.instructions = [
+            0b0001000011100000, // LOAD r0, r7
+            0b0011101000000100  // ADD r2, r0, r1
+        ]
+        cpu.reset()
+        
+        //            IF    ID      EX      MEM     WB
+        cpu.step() // LOAD  -       -       -       -
+        cpu.step() // ADD   LOAD    -       -       -
+        cpu.step() // -     ADD     LOAD    -       -         (1)
+        cpu.step() // -     -       ADD     LOAD    -
+        cpu.step() // -     -        -      ADD     LOAD      (2)
+        cpu.step() // -     -        -      -       ADD
+        
+        // The parameters of ADD are resolved in the ID stage at (1). However,
+        // the LOAD stores the new value to the register file later in (2).
+        XCTAssertEqual(cpu.getRegister(2), 0)
+    }
 }

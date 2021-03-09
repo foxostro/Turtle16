@@ -608,53 +608,53 @@ class DecoderGeneratorTests: XCTestCase {
         }
     }
     
-    fileprivate func isRelativeJump(_ ctlHighZ: UInt) -> Bool {
-        guard (ctlHighZ >> HLT) & 1 == 1 else {
+    fileprivate func isRelativeJump(_ controlBits: UInt) -> Bool {
+        guard (controlBits >> HLT) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> SelStoreOpA) & 3 == 0b11 else {
+        guard (controlBits >> SelStoreOpA) & 3 == 0b11 else {
             return false
         }
-        guard (ctlHighZ >> SelRightOpA) & 3 == 0b11 else {
+        guard (controlBits >> SelRightOpA) & 3 == 0b11 else {
             return false
         }
-        guard (ctlHighZ >> FI) & 1 == 1 else {
+        guard (controlBits >> FI) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> C0) & 1 == 1 else {
+        guard (controlBits >> C0) & 1 == 0 else {
             return false
         }
-        guard (ctlHighZ >> I0) & 7 == 0b101 else {
+        guard (controlBits >> I0) & 7 == 0b011 else {
             return false
         }
-        guard (ctlHighZ >> RS0) & 3 == 0b11 else {
+        guard (controlBits >> RS0) & 3 == 0b10 else {
             return false
         }
-        guard (ctlHighZ >> J) & 1 == 0 else {
+        guard (controlBits >> J) & 1 == 0 else {
             return false
         }
-        guard (ctlHighZ >> JABS) & 1 == 1 else {
+        guard (controlBits >> JABS) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> MemLoad) & 1 == 1 else {
+        guard (controlBits >> MemLoad) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> MemStore) & 1 == 1 else {
+        guard (controlBits >> MemStore) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> AssertStoreOp) & 1 == 1 else {
+        guard (controlBits >> AssertStoreOp) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> WriteBackSrcFlag) & 1 == 1 else {
+        guard (controlBits >> WriteBackSrcFlag) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> WRL) & 1 == 1 else {
+        guard (controlBits >> WRL) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> WRH) & 1 == 1 else {
+        guard (controlBits >> WRH) & 1 == 1 else {
             return false
         }
-        guard (ctlHighZ >> WBEN) & 1 == 1 else {
+        guard (controlBits >> WBEN) & 1 == 1 else {
             return false
         }
         return true

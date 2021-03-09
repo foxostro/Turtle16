@@ -8,16 +8,6 @@
 
 import Foundation
 
-public extension UInt {
-    fileprivate func asBinaryString() -> String {
-        var result = String(self, radix: 2)
-        if result.count < 8 {
-            result = String(repeatElement("0", count: 8 - result.count)) + result
-        }
-        return "0b" + result
-    }
-}
-
 // Models the ID (instruction decode) stage of the Turtle16 pipeline.
 // Please refer to ID.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,

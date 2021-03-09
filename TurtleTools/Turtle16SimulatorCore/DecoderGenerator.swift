@@ -291,8 +291,10 @@ public class DecoderGenerator: NSObject {
         ])
         let signalsForRelativeJump: [Any] = [
             DecoderGenerator.SelRightOp(0b11),
-            DecoderGenerator.ALUI(0b101),
-            DecoderGenerator.J,
+            DecoderGenerator.RS0,
+            DecoderGenerator.C0,
+            DecoderGenerator.ALUI(0b011),
+            DecoderGenerator.J
         ]
         let bits = [UInt(0), UInt(1)]
         for carry in bits {

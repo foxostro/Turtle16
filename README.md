@@ -113,7 +113,7 @@ Format | Encoding scheme
 RRR    | `0bkkkk'kccc'aaab'bbxx`
 RRI    | `0bkkkk'kccc'aaai'iiii`
 RII    | `0bkkkk'kccc'iiii'iiii`
-IRI    | `0bkkkk'kiii'aaai'iiii`
+XRI    | `0bkkkk'kxxx'aaai'iiii`
 IRR    | `0bkkkk'kiii'aaab'bbii`
 III    | `0bkkkk'kiii'iiii'iiii`
 X      | `0bkkkk'kxxx'xxxx'xxxx`
@@ -218,7 +218,7 @@ NPC := PC + Imm
 
 
 
-### JR (IRI-format)
+### JR (XRI-format)
 
 `0bkkkk'k000'aaai'iiii`
 

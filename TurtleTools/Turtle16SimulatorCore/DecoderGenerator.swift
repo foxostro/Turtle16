@@ -127,15 +127,35 @@ public class DecoderGenerator: NSObject {
             }
         }
     }
+    public enum RSMuxMode {
+        case af // Left is A, Right is F
+        case az // Left is A, Right is 0
+        case zb // Left is 0, Right is B
+        case ab // Left is A, Right is B
+        
+        public func controlWord() -> UInt {
+            switch self {
+            case .af: return 0b00
+            case .az: return 0b01
+            case .zb: return 0b10
+            case .ab: return 0b11
+            }
+        }
+    }
     public struct ALUControlTag {
         let i: UInt
+        let rs: UInt
         let c0: UInt
     }
-    public static func ALUControl(fn: ALUFunction, c0: UInt) -> ALUControlTag {
+    public static func ALUControl(fn: ALUFunction, rs: RSMuxMode, c0: UInt) -> ALUControlTag {
         assert(c0 < 2)
         let i = fn.controlWord()
         assert(i < 8)
-        return ALUControlTag(i: i & 7, c0: c0 & 1)
+        let rsControlWord = rs.controlWord()
+        assert(rsControlWord < 4)
+        return ALUControlTag(i: i & 7,
+                             rs: rsControlWord & 3,
+                             c0: c0 & 1)
     }
     
     public enum WriteBackSrcEnum {
@@ -163,7 +183,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeLoad, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
+            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
             DecoderGenerator.MemLoad,
             DecoderGenerator.WriteBackSrc(.storeOp),
             DecoderGenerator.WRL,
@@ -173,7 +193,7 @@ public class DecoderGenerator: NSObject {
         makeControlWord(&controlWords, DecoderGenerator.opcodeStore, [
             DecoderGenerator.SelStoreOp(.b),
             DecoderGenerator.SelRightOp(.imm_10_8_1_0),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
+            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
             DecoderGenerator.MemStore,
             DecoderGenerator.AssertStoreOp
         ])
@@ -194,14 +214,12 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeCmp, [
             DecoderGenerator.SelRightOp(.b),
-            DecoderGenerator.ALUControl(fn: .sub, c0: 1),
-            DecoderGenerator.FI,
-            DecoderGenerator.I0,
-            DecoderGenerator.I2
+            DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
+            DecoderGenerator.FI
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeAdd, [
             DecoderGenerator.SelRightOp(.b),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
+            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -210,7 +228,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeSub, [
             DecoderGenerator.SelRightOp(.b),
-            DecoderGenerator.ALUControl(fn: .sub, c0: 1),
+            DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -219,7 +237,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeAnd, [
             DecoderGenerator.SelRightOp(.b),
-            DecoderGenerator.ALUControl(fn: .and, c0: 0),
+            DecoderGenerator.ALUControl(fn: .and, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -228,7 +246,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeOr, [
             DecoderGenerator.SelRightOp(.b),
-            DecoderGenerator.ALUControl(fn: .or, c0: 0),
+            DecoderGenerator.ALUControl(fn: .or, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -237,7 +255,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeXor, [
             DecoderGenerator.SelRightOp(.b),
-            DecoderGenerator.ALUControl(fn: .xor, c0: 0),
+            DecoderGenerator.ALUControl(fn: .xor, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -245,8 +263,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.WBEN
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeNot, [
-            DecoderGenerator.ALUControl(fn: .not, c0: 0),
-            DecoderGenerator.RS1,
+            DecoderGenerator.ALUControl(fn: .not, rs: .az, c0: 0),
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
             DecoderGenerator.WRH,
@@ -254,12 +271,12 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeCmpi, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .sub, c0: 1),
+            DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
             DecoderGenerator.FI
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeAddi, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
+            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -268,7 +285,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeSubi, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .sub, c0: 1),
+            DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -277,7 +294,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeAndi, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .and, c0: 0),
+            DecoderGenerator.ALUControl(fn: .and, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -286,7 +303,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeOri, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .or, c0: 0),
+            DecoderGenerator.ALUControl(fn: .or, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -295,7 +312,7 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeXori, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .xor, c0: 0),
+            DecoderGenerator.ALUControl(fn: .xor, rs: .ab, c0: 0),
             DecoderGenerator.FI,
             DecoderGenerator.WriteBackSrc(.aluResult),
             DecoderGenerator.WRL,
@@ -304,20 +321,19 @@ public class DecoderGenerator: NSObject {
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeJmp, [
             DecoderGenerator.SelRightOp(.imm_10_0),
-            DecoderGenerator.ALUControl(fn: .or, c0: 0),
-            DecoderGenerator.RS0,
+            DecoderGenerator.ALUControl(fn: .or, rs: .zb, c0: 0),
             DecoderGenerator.J
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeJr, [
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
+            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
             DecoderGenerator.J,
             DecoderGenerator.JABS
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeJalr, [
             DecoderGenerator.SelStoreOp(.pc),
             DecoderGenerator.SelRightOp(.imm_4_0),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
+            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
             DecoderGenerator.J,
             DecoderGenerator.JABS,
             DecoderGenerator.AssertStoreOp,
@@ -327,8 +343,7 @@ public class DecoderGenerator: NSObject {
         ])
         let signalsForRelativeJump: [Any] = [
             DecoderGenerator.SelRightOp(.imm_10_0),
-            DecoderGenerator.ALUControl(fn: .add, c0: 0),
-            DecoderGenerator.RS0,
+            DecoderGenerator.ALUControl(fn: .add, rs: .zb, c0: 0),
             DecoderGenerator.J
         ]
         let bits = [UInt(0), UInt(1)]
@@ -344,7 +359,7 @@ public class DecoderGenerator: NSObject {
                     
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
                         DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .add, c0: 0),
+                        DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
                         DecoderGenerator.FI,
                         DecoderGenerator.WriteBackSrc(.aluResult),
                         DecoderGenerator.WRL,
@@ -353,7 +368,7 @@ public class DecoderGenerator: NSObject {
                     ])
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
                         DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .add, c0: 1),
+                        DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 1),
                         DecoderGenerator.FI,
                         DecoderGenerator.WriteBackSrc(.aluResult),
                         DecoderGenerator.WRL,
@@ -363,7 +378,7 @@ public class DecoderGenerator: NSObject {
                     
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
                         DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .sub, c0: 1),
+                        DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
                         DecoderGenerator.FI,
                         DecoderGenerator.WriteBackSrc(.aluResult),
                         DecoderGenerator.WRL,
@@ -372,7 +387,7 @@ public class DecoderGenerator: NSObject {
                     ])
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
                         DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .sub, c0: 0),
+                        DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 0),
                         DecoderGenerator.FI,
                         DecoderGenerator.WriteBackSrc(.aluResult),
                         DecoderGenerator.WRL,
@@ -411,9 +426,11 @@ public class DecoderGenerator: NSObject {
                 next = (prev
                             & ~(0b111 << DecoderGenerator.I0)
                             & ~(1 << DecoderGenerator.C0)
+                            & ~(0b11 << DecoderGenerator.RS0)
                         )
                         | (signal.i << DecoderGenerator.I0)
                         | (signal.c0 << DecoderGenerator.C0)
+                        | (signal.rs << DecoderGenerator.RS0)
             }
             else if let signal = signal_ as? WriteBackSrcTag {
                 next = (prev & ~(1 << DecoderGenerator.WriteBackSrcFlag))
